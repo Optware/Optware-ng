@@ -167,21 +167,21 @@ $(MAKE_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(MAKE_IPK_DIR)/opt/sbin or $(MAKE_IPK_DIR)/opt/bin
+# Binaries should be installed into $(MAKE_IPK_DIR)$(TARGET_PREFIX)/sbin or $(MAKE_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(MAKE_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(MAKE_IPK_DIR)/opt/etc/make/...
-# Documentation files should be installed in $(MAKE_IPK_DIR)/opt/doc/make/...
-# Daemon startup scripts should be installed in $(MAKE_IPK_DIR)/opt/etc/init.d/S??make
+# Libraries and include files should be installed into $(MAKE_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(MAKE_IPK_DIR)$(TARGET_PREFIX)/etc/make/...
+# Documentation files should be installed in $(MAKE_IPK_DIR)$(TARGET_PREFIX)/doc/make/...
+# Daemon startup scripts should be installed in $(MAKE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??make
 #
 # You may need to patch your application to make it use these locations.
 #
 $(MAKE_IPK): $(MAKE_BUILD_DIR)/.built
 	rm -rf $(MAKE_IPK_DIR) $(MAKE_IPK)
 	$(MAKE) -C $(MAKE_BUILD_DIR) DESTDIR=$(MAKE_IPK_DIR) install-strip
-	rm -f $(MAKE_IPK_DIR)/opt/share/info/dir
-#	$(INSTALL) -d $(MAKE_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(MAKE_SOURCE_DIR)/rc.make $(MAKE_IPK_DIR)/opt/etc/init.d/SXXmake
+	rm -f $(MAKE_IPK_DIR)$(TARGET_PREFIX)/share/info/dir
+#	$(INSTALL) -d $(MAKE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(MAKE_SOURCE_DIR)/rc.make $(MAKE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXmake
 	$(MAKE) $(MAKE_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 644 $(MAKE_SOURCE_DIR)/postinst $(MAKE_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 644 $(MAKE_SOURCE_DIR)/prerm $(MAKE_IPK_DIR)/CONTROL/prerm

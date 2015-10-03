@@ -41,7 +41,7 @@ PY-BTPD-WEBUI_IPK_VERSION=1
 
 #
 # PY-BTPD-WEBUI_CONFFILES should be a list of user-editable files
-#PY-BTPD-WEBUI_CONFFILES=/opt/etc/py-btpd-webui.conf /opt/etc/init.d/SXXpy-btpd-webui
+#PY-BTPD-WEBUI_CONFFILES=$(TARGET_PREFIX)/etc/py-btpd-webui.conf $(TARGET_PREFIX)/etc/init.d/SXXpy-btpd-webui
 
 #
 # PY-BTPD-WEBUI_PATCHES should list any patches, in the the order in
@@ -116,17 +116,17 @@ $(PY-BTPD-WEBUI_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-BTPD-WEBUI_SOURCE) $(PY-B
 	if test "$(BUILD_DIR)/$(PY-BTPD-WEBUI_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(PY-BTPD-WEBUI_DIR) $(@D) ; \
 	fi
-	sed -i -e "s|^TWISTD=.*|TWISTD=/opt/bin/twistd|" -e "s|^BTPDWEBUI=.*|BTPDWEBUI=/opt/bin/btpd-webui-server|" $(@D)/scripts/btpd-webui
+	sed -i -e "s|^TWISTD=.*|TWISTD=$(TARGET_PREFIX)/bin/twistd|" -e "s|^BTPDWEBUI=.*|BTPDWEBUI=$(TARGET_PREFIX)/bin/btpd-webui-server|" $(@D)/scripts/btpd-webui
 	(cd $(@D); \
 	    ( \
 		echo "[build_ext]"; \
 		echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.5"; \
 		echo "library-dirs=$(STAGING_LIB_DIR)"; \
-		echo "rpath=/opt/lib"; \
+		echo "rpath=$(TARGET_PREFIX)/lib"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python2.5"; \
+		echo "executable=$(TARGET_PREFIX)/bin/python2.5"; \
 		echo "[install]"; \
-		echo "install_scripts=/opt/bin"; \
+		echo "install_scripts=$(TARGET_PREFIX)/bin"; \
 	    ) >> setup.cfg \
 	)
 	touch $@
@@ -157,7 +157,7 @@ $(PY-BTPD-WEBUI_BUILD_DIR)/.staged: $(PY-BTPD-WEBUI_BUILD_DIR)/.built
 	rm -f $@
 	(cd $(@D); \
 		CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(STAGING_DIR) --prefix=/opt)
+		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	touch $@
 
 py-btpd-webui-stage: $(PY-BTPD-WEBUI_BUILD_DIR)/.staged
@@ -183,12 +183,12 @@ $(PY-BTPD-WEBUI_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PY-BTPD-WEBUI_IPK_DIR)/opt/sbin or $(PY-BTPD-WEBUI_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PY-BTPD-WEBUI_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PY-BTPD-WEBUI_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PY-BTPD-WEBUI_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PY-BTPD-WEBUI_IPK_DIR)/opt/etc/py-btpd-webui/...
-# Documentation files should be installed in $(PY-BTPD-WEBUI_IPK_DIR)/opt/doc/py-btpd-webui/...
-# Daemon startup scripts should be installed in $(PY-BTPD-WEBUI_IPK_DIR)/opt/etc/init.d/S??py-btpd-webui
+# Libraries and include files should be installed into $(PY-BTPD-WEBUI_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PY-BTPD-WEBUI_IPK_DIR)$(TARGET_PREFIX)/etc/py-btpd-webui/...
+# Documentation files should be installed in $(PY-BTPD-WEBUI_IPK_DIR)$(TARGET_PREFIX)/doc/py-btpd-webui/...
+# Daemon startup scripts should be installed in $(PY-BTPD-WEBUI_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??py-btpd-webui
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -196,11 +196,11 @@ $(PY-BTPD-WEBUI_IPK): $(PY-BTPD-WEBUI_BUILD_DIR)/.built
 	rm -rf $(PY-BTPD-WEBUI_IPK_DIR) $(BUILD_DIR)/py-btpd-webui_*_$(TARGET_ARCH).ipk
 	(cd $(PY-BTPD-WEBUI_BUILD_DIR); \
 		CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(PY-BTPD-WEBUI_IPK_DIR) --prefix=/opt)
+		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(PY-BTPD-WEBUI_IPK_DIR) --prefix=$(TARGET_PREFIX))
 	$(MAKE) $(PY-BTPD-WEBUI_IPK_DIR)/CONTROL/control
 	echo $(PY-BTPD-WEBUI_CONFFILES) | sed -e 's/ /\n/g' > $(PY-BTPD-WEBUI_IPK_DIR)/CONTROL/conffiles
-	mkdir -p $(PY-BTPD-WEBUI_IPK_DIR)/opt/doc/py-btpd-webui
-	cp -f $(PY-BTPD-WEBUI_BUILD_DIR)/README $(PY-BTPD-WEBUI_IPK_DIR)/opt/doc/py-btpd-webui/
+	mkdir -p $(PY-BTPD-WEBUI_IPK_DIR)$(TARGET_PREFIX)/doc/py-btpd-webui
+	cp -f $(PY-BTPD-WEBUI_BUILD_DIR)/README $(PY-BTPD-WEBUI_IPK_DIR)$(TARGET_PREFIX)/doc/py-btpd-webui/
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-BTPD-WEBUI_IPK_DIR)
 
 #

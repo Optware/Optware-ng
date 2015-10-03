@@ -118,7 +118,7 @@ endif
 	fi
 	mv $(BUILD_DIR)/$(WHOIS_DIR) $(@D)
 	sed -i -e '/^CFLAGS/s|$$| $$(CPPFLAGS)|' $(@D)/Makefile
-	sed -i -e 's|$$(BASEDIR)/usr/share|$$(BASEDIR)/opt/share|' $(@D)/po/Makefile
+	sed -i -e 's|$$(BASEDIR)/usr/share|$$(BASEDIR)$(TARGET_PREFIX)/share|' $(@D)/po/Makefile
 	touch $@
 
 whois-unpack: $(WHOIS_BUILD_DIR)/.configured
@@ -132,7 +132,7 @@ $(WHOIS_BUILD_DIR)/.built: $(WHOIS_BUILD_DIR)/.configured
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(WHOIS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(WHOIS_LDFLAGS)" \
-		prefix=/opt
+		prefix=$(TARGET_PREFIX)
 	touch $@
 
 #
@@ -172,22 +172,22 @@ $(WHOIS_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(WHOIS_IPK_DIR)/opt/sbin or $(WHOIS_IPK_DIR)/opt/bin
+# Binaries should be installed into $(WHOIS_IPK_DIR)$(TARGET_PREFIX)/sbin or $(WHOIS_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(WHOIS_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(WHOIS_IPK_DIR)/opt/etc/whois/...
-# Documentation files should be installed in $(WHOIS_IPK_DIR)/opt/doc/whois/...
-# Daemon startup scripts should be installed in $(WHOIS_IPK_DIR)/opt/etc/init.d/S??whois
+# Libraries and include files should be installed into $(WHOIS_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(WHOIS_IPK_DIR)$(TARGET_PREFIX)/etc/whois/...
+# Documentation files should be installed in $(WHOIS_IPK_DIR)$(TARGET_PREFIX)/doc/whois/...
+# Daemon startup scripts should be installed in $(WHOIS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??whois
 #
 # You may need to patch your application to make it use these locations.
 #
 $(WHOIS_IPK): $(WHOIS_BUILD_DIR)/.built
 	rm -rf $(WHOIS_IPK_DIR) $(BUILD_DIR)/whois_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(WHOIS_IPK_DIR)/opt/bin/
-	$(INSTALL) -d $(WHOIS_IPK_DIR)/opt/share/man/man1
+	$(INSTALL) -d $(WHOIS_IPK_DIR)$(TARGET_PREFIX)/bin/
+	$(INSTALL) -d $(WHOIS_IPK_DIR)$(TARGET_PREFIX)/share/man/man1
 	$(MAKE) -C $(WHOIS_BUILD_DIR) BASEDIR=$(WHOIS_IPK_DIR) prefix=$(TARGET_PREFIX) install
-	$(STRIP_COMMAND) $(WHOIS_IPK_DIR)/opt/bin/*
-#	$(INSTALL) -d $(WHOIS_IPK_DIR)/opt/etc/init.d
+	$(STRIP_COMMAND) $(WHOIS_IPK_DIR)$(TARGET_PREFIX)/bin/*
+#	$(INSTALL) -d $(WHOIS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
 	$(MAKE) $(WHOIS_IPK_DIR)/CONTROL/control
 	echo $(WHOIS_CONFFILES) | sed -e 's/ /\n/g' > $(WHOIS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(WHOIS_IPK_DIR)

@@ -41,7 +41,7 @@ BZRTOOLS_IPK_VERSION=1
 
 #
 # BZRTOOLS_CONFFILES should be a list of user-editable files
-#BZRTOOLS_CONFFILES=/opt/etc/bzrtools.conf /opt/etc/init.d/SXXbzrtools
+#BZRTOOLS_CONFFILES=$(TARGET_PREFIX)/etc/bzrtools.conf $(TARGET_PREFIX)/etc/init.d/SXXbzrtools
 
 #
 # BZRTOOLS_PATCHES should list any patches, in the the order in
@@ -119,11 +119,11 @@ $(BZRTOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(BZRTOOLS_SOURCE) $(BZRTOOLS_PATCH
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.5"; \
 	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
-	        echo "rpath=/opt/lib"; \
+	        echo "rpath=$(TARGET_PREFIX)/lib"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python2.5"; \
+		echo "executable=$(TARGET_PREFIX)/bin/python2.5"; \
 		echo "[install]"; \
-		echo "install_scripts=/opt/bin"; \
+		echo "install_scripts=$(TARGET_PREFIX)/bin"; \
 	    ) >> setup.cfg; \
 	)
 	# 2.6
@@ -135,11 +135,11 @@ $(BZRTOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(BZRTOOLS_SOURCE) $(BZRTOOLS_PATCH
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.6"; \
 	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
-	        echo "rpath=/opt/lib"; \
+	        echo "rpath=$(TARGET_PREFIX)/lib"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python2.6"; \
+		echo "executable=$(TARGET_PREFIX)/bin/python2.6"; \
 		echo "[install]"; \
-		echo "install_scripts=/opt/bin"; \
+		echo "install_scripts=$(TARGET_PREFIX)/bin"; \
 	    ) >> setup.cfg; \
 	)
 	touch $@
@@ -211,30 +211,30 @@ $(PY26-BZRTOOLS_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(BZRTOOLS_IPK_DIR)/opt/sbin or $(BZRTOOLS_IPK_DIR)/opt/bin
+# Binaries should be installed into $(BZRTOOLS_IPK_DIR)$(TARGET_PREFIX)/sbin or $(BZRTOOLS_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(BZRTOOLS_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(BZRTOOLS_IPK_DIR)/opt/etc/bzrtools/...
-# Documentation files should be installed in $(BZRTOOLS_IPK_DIR)/opt/doc/bzrtools/...
-# Daemon startup scripts should be installed in $(BZRTOOLS_IPK_DIR)/opt/etc/init.d/S??bzrtools
+# Libraries and include files should be installed into $(BZRTOOLS_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(BZRTOOLS_IPK_DIR)$(TARGET_PREFIX)/etc/bzrtools/...
+# Documentation files should be installed in $(BZRTOOLS_IPK_DIR)$(TARGET_PREFIX)/doc/bzrtools/...
+# Daemon startup scripts should be installed in $(BZRTOOLS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??bzrtools
 #
 # You may need to patch your application to make it use these locations.
 #
 $(PY25-BZRTOOLS_IPK): $(BZRTOOLS_BUILD_DIR)/.built
 	rm -rf $(PY25-BZRTOOLS_IPK_DIR) $(BUILD_DIR)/py25-bzrtools_*_$(TARGET_ARCH).ipk
 	(cd $(BZRTOOLS_BUILD_DIR)/2.5; \
-	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(PY25-BZRTOOLS_IPK_DIR) --prefix=/opt; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(PY25-BZRTOOLS_IPK_DIR) --prefix=$(TARGET_PREFIX); \
 	)
-#	$(STRIP_COMMAND) $(PY25-BZRTOOLS_IPK_DIR)/opt/lib/python2.5/site-packages/bzrlib/*.so
+#	$(STRIP_COMMAND) $(PY25-BZRTOOLS_IPK_DIR)$(TARGET_PREFIX)/lib/python2.5/site-packages/bzrlib/*.so
 	$(MAKE) $(PY25-BZRTOOLS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-BZRTOOLS_IPK_DIR)
 
 $(PY26-BZRTOOLS_IPK): $(BZRTOOLS_BUILD_DIR)/.built
 	rm -rf $(PY26-BZRTOOLS_IPK_DIR) $(BUILD_DIR)/py26-bzrtools_*_$(TARGET_ARCH).ipk
 	(cd $(BZRTOOLS_BUILD_DIR)/2.6; \
-	    $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(PY26-BZRTOOLS_IPK_DIR) --prefix=/opt; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(PY26-BZRTOOLS_IPK_DIR) --prefix=$(TARGET_PREFIX); \
 	)
-#	$(STRIP_COMMAND) $(PY26-BZRTOOLS_IPK_DIR)/opt/lib/python2.6/site-packages/bzrlib/*.so
+#	$(STRIP_COMMAND) $(PY26-BZRTOOLS_IPK_DIR)$(TARGET_PREFIX)/lib/python2.6/site-packages/bzrlib/*.so
 	$(MAKE) $(PY26-BZRTOOLS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-BZRTOOLS_IPK_DIR)
 

@@ -39,7 +39,7 @@ OCAML_IPK_VERSION=1
 
 #
 # OCAML_CONFFILES should be a list of user-editable files
-#OCAML_CONFFILES=/opt/etc/ocaml.conf /opt/etc/init.d/SXXocaml
+#OCAML_CONFFILES=$(TARGET_PREFIX)/etc/ocaml.conf $(TARGET_PREFIX)/etc/init.d/SXXocaml
 
 #
 # OCAML_PATCHES should list any patches, in the the order in
@@ -171,8 +171,8 @@ $(OCAML_IPK_DIR)/CONTROL/control:
 $(OCAML_IPK): $(OCAML_BUILD_DIR)/.built
 	rm -rf $(OCAML_IPK_DIR) $(BUILD_DIR)/ocaml_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(OCAML_BUILD_DIR) PREFIX=$(OCAML_IPK_DIR)$(TARGET_PREFIX) install
-	for exe in ocamlrun ocamlyacc; do $(STRIP_COMMAND) $(OCAML_IPK_DIR)/opt/bin/$$exe; done
-	for so in `find $(OCAML_IPK_DIR)/opt/lib/ocaml -name '*.so'`; do $(STRIP_COMMAND) $$so; done
+	for exe in ocamlrun ocamlyacc; do $(STRIP_COMMAND) $(OCAML_IPK_DIR)$(TARGET_PREFIX)/bin/$$exe; done
+	for so in `find $(OCAML_IPK_DIR)$(TARGET_PREFIX)/lib/ocaml -name '*.so'`; do $(STRIP_COMMAND) $$so; done
 	$(MAKE) $(OCAML_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(OCAML_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(OCAML_IPK_DIR)

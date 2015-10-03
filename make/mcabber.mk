@@ -40,7 +40,7 @@ MCABBER_IPK_VERSION=1
 
 #
 # MCABBER_CONFFILES should be a list of user-editable files
-#MCABBER_CONFFILES=/opt/etc/mcabber.conf /opt/etc/init.d/SXXmcabber
+#MCABBER_CONFFILES=$(TARGET_PREFIX)/etc/mcabber.conf $(TARGET_PREFIX)/etc/init.d/SXXmcabber
 
 #
 # MCABBER_PATCHES should list any patches, in the the order in
@@ -190,23 +190,23 @@ $(MCABBER_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(MCABBER_IPK_DIR)/opt/sbin or $(MCABBER_IPK_DIR)/opt/bin
+# Binaries should be installed into $(MCABBER_IPK_DIR)$(TARGET_PREFIX)/sbin or $(MCABBER_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(MCABBER_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(MCABBER_IPK_DIR)/opt/etc/mcabber/...
-# Documentation files should be installed in $(MCABBER_IPK_DIR)/opt/doc/mcabber/...
-# Daemon startup scripts should be installed in $(MCABBER_IPK_DIR)/opt/etc/init.d/S??mcabber
+# Libraries and include files should be installed into $(MCABBER_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(MCABBER_IPK_DIR)$(TARGET_PREFIX)/etc/mcabber/...
+# Documentation files should be installed in $(MCABBER_IPK_DIR)$(TARGET_PREFIX)/doc/mcabber/...
+# Daemon startup scripts should be installed in $(MCABBER_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??mcabber
 #
 # You may need to patch your application to make it use these locations.
 #
 $(MCABBER_IPK): $(MCABBER_BUILD_DIR)/.built
 	rm -rf $(MCABBER_IPK_DIR) $(BUILD_DIR)/mcabber_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MCABBER_BUILD_DIR) DESTDIR=$(MCABBER_IPK_DIR) install-strip
-#	$(INSTALL) -d $(MCABBER_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(MCABBER_SOURCE_DIR)/mcabber.conf $(MCABBER_IPK_DIR)/opt/etc/mcabber.conf
-#	$(INSTALL) -d $(MCABBER_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(MCABBER_SOURCE_DIR)/rc.mcabber $(MCABBER_IPK_DIR)/opt/etc/init.d/SXXmcabber
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MCABBER_IPK_DIR)/opt/etc/init.d/SXXmcabber
+#	$(INSTALL) -d $(MCABBER_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(MCABBER_SOURCE_DIR)/mcabber.conf $(MCABBER_IPK_DIR)$(TARGET_PREFIX)/etc/mcabber.conf
+#	$(INSTALL) -d $(MCABBER_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(MCABBER_SOURCE_DIR)/rc.mcabber $(MCABBER_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXmcabber
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MCABBER_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXmcabber
 	$(MAKE) $(MCABBER_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(MCABBER_SOURCE_DIR)/postinst $(MCABBER_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MCABBER_IPK_DIR)/CONTROL/postinst

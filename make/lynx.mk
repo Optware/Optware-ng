@@ -18,7 +18,7 @@ LYNX_CONFLICTS=
 
 LYNX_IPK_VERSION=1
 
-LYNX_CONFFILES=/opt/etc/lynx.cfg
+LYNX_CONFFILES=$(TARGET_PREFIX)/etc/lynx.cfg
 
 LYNX_BUILD_DIR=$(BUILD_DIR)/lynx
 LYNX_SOURCE_DIR=$(SOURCE_DIR)/lynx
@@ -53,7 +53,7 @@ $(LYNX_BUILD_DIR)/.configured: $(DL_DIR)/$(LYNX_SOURCE) $(LYNX_PATCHES)
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=$(TARGET_PREFIX) \
-		--libdir=/opt/etc \
+		--libdir=$(TARGET_PREFIX)/etc \
 		--without-libiconv-prefix \
 		--with-ssl=$(STAGING_PREFIX) \
 		--with-screen=ncurses \
@@ -104,7 +104,7 @@ $(LYNX_IPK_DIR)/CONTROL/control:
 $(LYNX_IPK): $(LYNX_BUILD_DIR)/.built
 	rm -rf $(LYNX_IPK_DIR) $(BUILD_DIR)/lynx_*_$(TARGET_ARCH).ipk
 	$(MAKE) -j1 -C $(LYNX_BUILD_DIR) DESTDIR=$(LYNX_IPK_DIR) install
-	$(STRIP_COMMAND) $(LYNX_IPK_DIR)/opt/bin/*
+	$(STRIP_COMMAND) $(LYNX_IPK_DIR)$(TARGET_PREFIX)/bin/*
 	$(MAKE) $(LYNX_IPK_DIR)/CONTROL/control
 	echo $(LYNX_CONFFILES) | sed -e 's/ /\n/g' > $(LYNX_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LYNX_IPK_DIR)

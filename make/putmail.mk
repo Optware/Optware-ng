@@ -41,7 +41,7 @@ PUTMAIL_IPK_VERSION=1
 
 #
 # PUTMAIL_CONFFILES should be a list of user-editable files
-#PUTMAIL_CONFFILES=/opt/etc/putmail.conf /opt/etc/init.d/SXXputmail
+#PUTMAIL_CONFFILES=$(TARGET_PREFIX)/etc/putmail.conf $(TARGET_PREFIX)/etc/init.d/SXXputmail
 
 #
 # PUTMAIL_PATCHES should list any patches, in the the order in
@@ -160,12 +160,12 @@ $(PUTMAIL_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PUTMAIL_IPK_DIR)/opt/sbin or $(PUTMAIL_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PUTMAIL_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PUTMAIL_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PUTMAIL_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PUTMAIL_IPK_DIR)/opt/etc/putmail/...
-# Documentation files should be installed in $(PUTMAIL_IPK_DIR)/opt/doc/putmail/...
-# Daemon startup scripts should be installed in $(PUTMAIL_IPK_DIR)/opt/etc/init.d/S??putmail
+# Libraries and include files should be installed into $(PUTMAIL_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PUTMAIL_IPK_DIR)$(TARGET_PREFIX)/etc/putmail/...
+# Documentation files should be installed in $(PUTMAIL_IPK_DIR)$(TARGET_PREFIX)/doc/putmail/...
+# Daemon startup scripts should be installed in $(PUTMAIL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??putmail
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -175,7 +175,7 @@ $(PUTMAIL_IPK): $(PUTMAIL_BUILD_DIR)/.built
 	(cd $(PUTMAIL_BUILD_DIR); \
 		DESTDIR=$(PUTMAIL_IPK_DIR) PREFIX=$(TARGET_PREFIX) ./install.sh; \
 	)
-	sed -i -e '1s|^#!.*|#!/opt/bin/python|' $(PUTMAIL_IPK_DIR)/opt/bin/putmail.py
+	sed -i -e '1s|^#!.*|#!$(TARGET_PREFIX)/bin/python|' $(PUTMAIL_IPK_DIR)$(TARGET_PREFIX)/bin/putmail.py
 	$(MAKE) $(PUTMAIL_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PUTMAIL_IPK_DIR)
 

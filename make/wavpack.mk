@@ -44,7 +44,7 @@ WAVPACK_IPK_VERSION=1
 
 #
 # WAVPACK_CONFFILES should be a list of user-editable files
-#WAVPACK_CONFFILES=/opt/etc/wavpack.conf /opt/etc/init.d/SXXwavpack
+#WAVPACK_CONFFILES=$(TARGET_PREFIX)/etc/wavpack.conf $(TARGET_PREFIX)/etc/init.d/SXXwavpack
 
 #
 # WAVPACK_PATCHES should list any patches, in the the order in
@@ -189,12 +189,12 @@ $(WAVPACK_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(WAVPACK_IPK_DIR)/opt/sbin or $(WAVPACK_IPK_DIR)/opt/bin
+# Binaries should be installed into $(WAVPACK_IPK_DIR)$(TARGET_PREFIX)/sbin or $(WAVPACK_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(WAVPACK_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(WAVPACK_IPK_DIR)/opt/etc/wavpack/...
-# Documentation files should be installed in $(WAVPACK_IPK_DIR)/opt/doc/wavpack/...
-# Daemon startup scripts should be installed in $(WAVPACK_IPK_DIR)/opt/etc/init.d/S??wavpack
+# Libraries and include files should be installed into $(WAVPACK_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(WAVPACK_IPK_DIR)$(TARGET_PREFIX)/etc/wavpack/...
+# Documentation files should be installed in $(WAVPACK_IPK_DIR)$(TARGET_PREFIX)/doc/wavpack/...
+# Daemon startup scripts should be installed in $(WAVPACK_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??wavpack
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -202,12 +202,12 @@ $(WAVPACK_IPK): $(WAVPACK_BUILD_DIR)/.built
 	rm -rf $(WAVPACK_IPK_DIR) $(BUILD_DIR)/wavpack_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(WAVPACK_BUILD_DIR) DESTDIR=$(WAVPACK_IPK_DIR) install-strip
 	sed -i -e '/^exec_prefix=/d' -e '/^prefix=/s/$$/\nexec_prefix=\$${prefix}/' \
-					$(WAVPACK_IPK_DIR)/opt/lib/pkgconfig/wavpack.pc
-#	$(INSTALL) -d $(WAVPACK_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(WAVPACK_SOURCE_DIR)/wavpack.conf $(WAVPACK_IPK_DIR)/opt/etc/wavpack.conf
-#	$(INSTALL) -d $(WAVPACK_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(WAVPACK_SOURCE_DIR)/rc.wavpack $(WAVPACK_IPK_DIR)/opt/etc/init.d/SXXwavpack
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(WAVPACK_IPK_DIR)/opt/etc/init.d/SXXwavpack
+					$(WAVPACK_IPK_DIR)$(TARGET_PREFIX)/lib/pkgconfig/wavpack.pc
+#	$(INSTALL) -d $(WAVPACK_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(WAVPACK_SOURCE_DIR)/wavpack.conf $(WAVPACK_IPK_DIR)$(TARGET_PREFIX)/etc/wavpack.conf
+#	$(INSTALL) -d $(WAVPACK_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(WAVPACK_SOURCE_DIR)/rc.wavpack $(WAVPACK_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXwavpack
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(WAVPACK_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXwavpack
 	$(MAKE) $(WAVPACK_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(WAVPACK_SOURCE_DIR)/postinst $(WAVPACK_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(WAVPACK_IPK_DIR)/CONTROL/postinst

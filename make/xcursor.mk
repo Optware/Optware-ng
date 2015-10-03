@@ -156,7 +156,7 @@ $(XCURSOR_IPK): $(XCURSOR_BUILD_DIR)/.built
 	rm -rf $(XCURSOR_IPK_DIR) $(BUILD_DIR)/xcursor_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(XCURSOR_BUILD_DIR) DESTDIR=$(XCURSOR_IPK_DIR) install-strip
 	$(MAKE) $(XCURSOR_IPK_DIR)/CONTROL/control
-	rm -f $(XCURSOR_IPK_DIR)/opt/lib/*.la
+	rm -f $(XCURSOR_IPK_DIR)$(TARGET_PREFIX)/lib/*.la
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XCURSOR_IPK_DIR)
 
 #

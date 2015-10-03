@@ -18,7 +18,7 @@ ATFTP_CONFLICTS=
 
 ATFTP_IPK_VERSION=10
 
-ATFTP_CONFFILES=/opt/etc/xinetd.d/atftp
+ATFTP_CONFFILES=$(TARGET_PREFIX)/etc/xinetd.d/atftp
 
 ATFTP_PATCHES = $(ATFTP_SOURCE_DIR)/CLK_TCK.patch
 ifeq ($(OPTWARE_TARGET), $(filter buildroot-i686 cs05q1armel cs05q3armel cs08q1armel fsg3v4 i686g25 slugosbe slugosle slugos5be slugos5le syno-e500 ts509, $(OPTWARE_TARGET)))
@@ -87,12 +87,12 @@ $(ATFTP_IPK_DIR)/CONTROL/control:
 
 $(ATFTP_IPK): $(ATFTP_BUILD_DIR)/.built
 	rm -rf $(ATFTP_IPK_DIR) $(BUILD_DIR)/atftp_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(ATFTP_IPK_DIR)/opt/bin
-	$(STRIP_COMMAND) $(ATFTP_BUILD_DIR)/atftp -o $(ATFTP_IPK_DIR)/opt/bin/atftp
-	$(INSTALL) -d $(ATFTP_IPK_DIR)/opt/sbin
-	$(STRIP_COMMAND) $(ATFTP_BUILD_DIR)/atftpd -o $(ATFTP_IPK_DIR)/opt/sbin/atftpd
-	$(INSTALL) -d $(ATFTP_IPK_DIR)/opt/etc/xinetd.d
-	$(INSTALL) -m 644 $(ATFTP_SOURCE_DIR)/atftp $(ATFTP_IPK_DIR)/opt/etc/xinetd.d/atftp
+	$(INSTALL) -d $(ATFTP_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(STRIP_COMMAND) $(ATFTP_BUILD_DIR)/atftp -o $(ATFTP_IPK_DIR)$(TARGET_PREFIX)/bin/atftp
+	$(INSTALL) -d $(ATFTP_IPK_DIR)$(TARGET_PREFIX)/sbin
+	$(STRIP_COMMAND) $(ATFTP_BUILD_DIR)/atftpd -o $(ATFTP_IPK_DIR)$(TARGET_PREFIX)/sbin/atftpd
+	$(INSTALL) -d $(ATFTP_IPK_DIR)$(TARGET_PREFIX)/etc/xinetd.d
+	$(INSTALL) -m 644 $(ATFTP_SOURCE_DIR)/atftp $(ATFTP_IPK_DIR)$(TARGET_PREFIX)/etc/xinetd.d/atftp
 	$(MAKE) $(ATFTP_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 644 $(ATFTP_SOURCE_DIR)/postinst $(ATFTP_IPK_DIR)/CONTROL/postinst
 	echo $(ATFTP_CONFFILES) | sed -e 's/ /\n/g' > $(ATFTP_IPK_DIR)/CONTROL/conffiles

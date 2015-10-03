@@ -42,7 +42,7 @@ PY-CFFI_IPK_VERSION=1
 
 #
 # PY-CFFI_CONFFILES should be a list of user-editable files
-#PY-CFFI_CONFFILES=/opt/etc/py-cffi.conf /opt/etc/init.d/SXXpy-cffi
+#PY-CFFI_CONFFILES=$(TARGET_PREFIX)/etc/py-cffi.conf $(TARGET_PREFIX)/etc/init.d/SXXpy-cffi
 
 #
 # PY-CFFI_PATCHES should list any patches, in the the order in
@@ -128,9 +128,9 @@ $(PY-CFFI_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CFFI_SOURCE) $(PY-CFFI_PATCHES)
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.6"; \
 	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
 		echo "[install]"; \
-		echo "install_scripts = /opt/bin"; \
+		echo "install_scripts = $(TARGET_PREFIX)/bin"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python2.6"; \
+		echo "executable=$(TARGET_PREFIX)/bin/python2.6"; \
 	    ) >> setup.cfg \
 	)
 #	cd $(BUILD_DIR); $(PY-CFFI_UNZIP) $(DL_DIR)/$(PY-CFFI_SOURCE)
@@ -143,9 +143,9 @@ $(PY-CFFI_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CFFI_SOURCE) $(PY-CFFI_PATCHES)
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.7"; \
 	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
 		echo "[install]"; \
-		echo "install_scripts = /opt/bin"; \
+		echo "install_scripts = $(TARGET_PREFIX)/bin"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python2.7"; \
+		echo "executable=$(TARGET_PREFIX)/bin/python2.7"; \
 	    ) >> setup.cfg \
 	)
 #	cd $(BUILD_DIR); $(PY-CFFI_UNZIP) $(DL_DIR)/$(PY-CFFI_SOURCE)
@@ -158,9 +158,9 @@ $(PY-CFFI_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CFFI_SOURCE) $(PY-CFFI_PATCHES)
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python$(PYTHON3_VERSION_MAJOR)m"; \
 	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
 		echo "[install]"; \
-		echo "install_scripts = /opt/bin"; \
+		echo "install_scripts = $(TARGET_PREFIX)/bin"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python$(PYTHON3_VERSION_MAJOR)"; \
+		echo "executable=$(TARGET_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR)"; \
 	    ) >> setup.cfg \
 	)
 #	sed -i -e '/#include <ffi\.h>/s/$$/\n#include <Python.h>/' $(@D)/2.4/c/malloc_closure.h \
@@ -204,17 +204,17 @@ $(PY-CFFI_BUILD_DIR)/.staged: $(PY-CFFI_BUILD_DIR)/.built
 	(cd $(@D)/2.6; \
 	$(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
 	PKG_CONFIG_PATH=$(STAGING_LIB_DIR)/pkgconfig \
-	$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(STAGING_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	rm -rf $(STAGING_LIB_DIR)/python2.7/site-packages/cffi*
 	(cd $(@D)/2.7; \
 	$(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
 	PKG_CONFIG_PATH=$(STAGING_LIB_DIR)/pkgconfig \
-	$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(STAGING_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	rm -rf $(STAGING_LIB_DIR)/python$(PYTHON3_VERSION_MAJOR)/site-packages/cffi*
 	(cd $(@D)/3; \
 	$(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
 	PKG_CONFIG_PATH=$(STAGING_LIB_DIR)/pkgconfig \
-	$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(STAGING_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	touch $@
 
 $(PY-CFFI_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(PY-CFFI_SOURCE) make/py-cffi.mk
@@ -258,19 +258,19 @@ $(PY-CFFI_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(PY-CFFI_SOURCE) 
 		$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py build)
 	(cd $(@D)/2.6; \
 	PKG_CONFIG_PATH=$(HOST_STAGING_LIB_DIR)/pkgconfig \
-		$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+		$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(HOST_STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	(cd $(@D)/2.7; \
 	PKG_CONFIG_PATH=$(HOST_STAGING_LIB_DIR)/pkgconfig \
 		$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py build)
 	(cd $(@D)/2.7; \
 	PKG_CONFIG_PATH=$(HOST_STAGING_LIB_DIR)/pkgconfig \
-		$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+		$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(HOST_STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	(cd $(@D)/3; \
 	PKG_CONFIG_PATH=$(HOST_STAGING_LIB_DIR)/pkgconfig \
 		$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py build)
 	(cd $(@D)/3; \
 	PKG_CONFIG_PATH=$(HOST_STAGING_LIB_DIR)/pkgconfig \
-		$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+		$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(HOST_STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	touch $@
 
 py-cffi-stage: $(PY-CFFI_BUILD_DIR)/.staged
@@ -326,12 +326,12 @@ $(PY3-CFFI_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PY-CFFI_IPK_DIR)/opt/sbin or $(PY-CFFI_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PY-CFFI_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PY-CFFI_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PY-CFFI_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PY-CFFI_IPK_DIR)/opt/etc/py-cffi/...
-# Documentation files should be installed in $(PY-CFFI_IPK_DIR)/opt/doc/py-cffi/...
-# Daemon startup scripts should be installed in $(PY-CFFI_IPK_DIR)/opt/etc/init.d/S??py-cffi
+# Libraries and include files should be installed into $(PY-CFFI_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PY-CFFI_IPK_DIR)$(TARGET_PREFIX)/etc/py-cffi/...
+# Documentation files should be installed in $(PY-CFFI_IPK_DIR)$(TARGET_PREFIX)/doc/py-cffi/...
+# Daemon startup scripts should be installed in $(PY-CFFI_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??py-cffi
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -342,9 +342,9 @@ $(PY26-CFFI_IPK): $(PY-CFFI_BUILD_DIR)/.built
 	$(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
 	PKG_CONFIG_PATH=$(STAGING_LIB_DIR)/pkgconfig \
-	$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(PY26-CFFI_IPK_DIR) --prefix=/opt)
-	$(STRIP_COMMAND) $(PY26-CFFI_IPK_DIR)/opt/lib/python2.6/site-packages/*.so
-#	rm -f $(PY26-CFFI_IPK_DIR)/opt/bin/easy_install
+	$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(PY26-CFFI_IPK_DIR) --prefix=$(TARGET_PREFIX))
+	$(STRIP_COMMAND) $(PY26-CFFI_IPK_DIR)$(TARGET_PREFIX)/lib/python2.6/site-packages/*.so
+#	rm -f $(PY26-CFFI_IPK_DIR)$(TARGET_PREFIX)/bin/easy_install
 	$(MAKE) $(PY26-CFFI_IPK_DIR)/CONTROL/control
 	echo $(PY-CFFI_CONFFILES) | sed -e 's/ /\n/g' > $(PY26-CFFI_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-CFFI_IPK_DIR)
@@ -356,9 +356,9 @@ $(PY27-CFFI_IPK): $(PY-CFFI_BUILD_DIR)/.built
 	$(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.7/site-packages \
 	PKG_CONFIG_PATH=$(STAGING_LIB_DIR)/pkgconfig \
-	$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(PY27-CFFI_IPK_DIR) --prefix=/opt)
-	$(STRIP_COMMAND) $(PY27-CFFI_IPK_DIR)/opt/lib/python2.7/site-packages/*.so
-	rm -f $(PY27-CFFI_IPK_DIR)/opt/bin/easy_install
+	$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(PY27-CFFI_IPK_DIR) --prefix=$(TARGET_PREFIX))
+	$(STRIP_COMMAND) $(PY27-CFFI_IPK_DIR)$(TARGET_PREFIX)/lib/python2.7/site-packages/*.so
+	rm -f $(PY27-CFFI_IPK_DIR)$(TARGET_PREFIX)/bin/easy_install
 	$(MAKE) $(PY27-CFFI_IPK_DIR)/CONTROL/control
 	echo $(PY-CFFI_CONFFILES) | sed -e 's/ /\n/g' > $(PY27-CFFI_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY27-CFFI_IPK_DIR)
@@ -370,9 +370,9 @@ $(PY3-CFFI_IPK): $(PY-CFFI_BUILD_DIR)/.built
 	$(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python$(PYTHON3_VERSION_MAJOR)/site-packages \
 	PKG_CONFIG_PATH=$(STAGING_LIB_DIR)/pkgconfig \
-	$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(PY3-CFFI_IPK_DIR) --prefix=/opt)
-	$(STRIP_COMMAND) $(PY3-CFFI_IPK_DIR)/opt/lib/python$(PYTHON3_VERSION_MAJOR)/site-packages/*.so
-	rm -f $(PY3-CFFI_IPK_DIR)/opt/bin/easy_install
+	$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(PY3-CFFI_IPK_DIR) --prefix=$(TARGET_PREFIX))
+	$(STRIP_COMMAND) $(PY3-CFFI_IPK_DIR)$(TARGET_PREFIX)/lib/python$(PYTHON3_VERSION_MAJOR)/site-packages/*.so
+	rm -f $(PY3-CFFI_IPK_DIR)$(TARGET_PREFIX)/bin/easy_install
 	$(MAKE) $(PY3-CFFI_IPK_DIR)/CONTROL/control
 	echo $(PY-CFFI_CONFFILES) | sed -e 's/ /\n/g' > $(PY3-CFFI_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY3-CFFI_IPK_DIR)

@@ -47,7 +47,7 @@ endif
 
 #
 # APR_UTIL_CONFFILES should be a list of user-editable files
-#APR_UTIL_CONFFILES=/opt/etc/apr-util.conf /opt/etc/init.d/SXXapr-util
+#APR_UTIL_CONFFILES=$(TARGET_PREFIX)/etc/apr-util.conf $(TARGET_PREFIX)/etc/init.d/SXXapr-util
 
 #
 # APR_UTIL_PATCHES should list any patches, in the the order in
@@ -147,7 +147,7 @@ endif
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=$(STAGING_PREFIX) \
-		--libdir=/opt/lib \
+		--libdir=$(TARGET_PREFIX)/lib \
 		--disable-static \
 		--enable-layout=GNU \
 		--with-apr=$(STAGING_PREFIX) \
@@ -201,22 +201,22 @@ apr-util-stage: $(APR_UTIL_BUILD_DIR)/.staged
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(APR_UTIL_IPK_DIR)/opt/sbin or $(APR_UTIL_IPK_DIR)/opt/bin
+# Binaries should be installed into $(APR_UTIL_IPK_DIR)$(TARGET_PREFIX)/sbin or $(APR_UTIL_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(APR_UTIL_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(APR_UTIL_IPK_DIR)/opt/etc/apr-util/...
-# Documentation files should be installed in $(APR_UTIL_IPK_DIR)/opt/doc/apr-util/...
-# Daemon startup scripts should be installed in $(APR_UTIL_IPK_DIR)/opt/etc/init.d/S??apr-util
+# Libraries and include files should be installed into $(APR_UTIL_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(APR_UTIL_IPK_DIR)$(TARGET_PREFIX)/etc/apr-util/...
+# Documentation files should be installed in $(APR_UTIL_IPK_DIR)$(TARGET_PREFIX)/doc/apr-util/...
+# Daemon startup scripts should be installed in $(APR_UTIL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??apr-util
 #
 # You may need to patch your application to make it use these locations.
 #
 $(APR_UTIL_IPK): $(APR_UTIL_BUILD_DIR)/.staged
 	rm -rf $(APR_UTIL_IPK_DIR) $(BUILD_DIR)/apr-util_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(APR_UTIL_BUILD_DIR) DESTDIR=$(APR_UTIL_IPK_DIR) libdir=/opt/lib prefix=/delete-me install
+	$(MAKE) -C $(APR_UTIL_BUILD_DIR) DESTDIR=$(APR_UTIL_IPK_DIR) libdir=$(TARGET_PREFIX)/lib prefix=/delete-me install
 	rm -rf $(APR_UTIL_IPK_DIR)/delete-me
-	rm -f $(APR_UTIL_IPK_DIR)/opt/lib/*.la
-	$(STRIP_COMMAND) $(APR_UTIL_IPK_DIR)/opt/lib/*.so.[0-9]*.[0-9]*.[0-9]*
-	$(STRIP_COMMAND) $(APR_UTIL_IPK_DIR)/opt/lib/apr-util*/*.so
+	rm -f $(APR_UTIL_IPK_DIR)$(TARGET_PREFIX)/lib/*.la
+	$(STRIP_COMMAND) $(APR_UTIL_IPK_DIR)$(TARGET_PREFIX)/lib/*.so.[0-9]*.[0-9]*.[0-9]*
+	$(STRIP_COMMAND) $(APR_UTIL_IPK_DIR)$(TARGET_PREFIX)/lib/apr-util*/*.so
 	$(MAKE) $(APR_UTIL_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(APR_UTIL_IPK_DIR)
 

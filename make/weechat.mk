@@ -43,7 +43,7 @@ WEECHAT_IPK_VERSION=3
 
 #
 # WEECHAT_CONFFILES should be a list of user-editable files
-#WEECHAT_CONFFILES=/opt/etc/weechat.conf /opt/etc/init.d/SXXweechat
+#WEECHAT_CONFFILES=$(TARGET_PREFIX)/etc/weechat.conf $(TARGET_PREFIX)/etc/init.d/SXXweechat
 
 #
 # WEECHAT_PATCHES should list any patches, in the the order in
@@ -212,23 +212,23 @@ $(WEECHAT_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(WEECHAT_IPK_DIR)/opt/sbin or $(WEECHAT_IPK_DIR)/opt/bin
+# Binaries should be installed into $(WEECHAT_IPK_DIR)$(TARGET_PREFIX)/sbin or $(WEECHAT_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(WEECHAT_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(WEECHAT_IPK_DIR)/opt/etc/weechat/...
-# Documentation files should be installed in $(WEECHAT_IPK_DIR)/opt/doc/weechat/...
-# Daemon startup scripts should be installed in $(WEECHAT_IPK_DIR)/opt/etc/init.d/S??weechat
+# Libraries and include files should be installed into $(WEECHAT_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(WEECHAT_IPK_DIR)$(TARGET_PREFIX)/etc/weechat/...
+# Documentation files should be installed in $(WEECHAT_IPK_DIR)$(TARGET_PREFIX)/doc/weechat/...
+# Daemon startup scripts should be installed in $(WEECHAT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??weechat
 #
 # You may need to patch your application to make it use these locations.
 #
 $(WEECHAT_IPK): $(WEECHAT_BUILD_DIR)/.built
 	rm -rf $(WEECHAT_IPK_DIR) $(BUILD_DIR)/weechat_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(WEECHAT_BUILD_DIR) DESTDIR=$(WEECHAT_IPK_DIR) install-strip
-#	$(INSTALL) -d $(WEECHAT_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(WEECHAT_SOURCE_DIR)/weechat.conf $(WEECHAT_IPK_DIR)/opt/etc/weechat.conf
-#	$(INSTALL) -d $(WEECHAT_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(WEECHAT_SOURCE_DIR)/rc.weechat $(WEECHAT_IPK_DIR)/opt/etc/init.d/SXXweechat
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(WEECHAT_IPK_DIR)/opt/etc/init.d/SXXweechat
+#	$(INSTALL) -d $(WEECHAT_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(WEECHAT_SOURCE_DIR)/weechat.conf $(WEECHAT_IPK_DIR)$(TARGET_PREFIX)/etc/weechat.conf
+#	$(INSTALL) -d $(WEECHAT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(WEECHAT_SOURCE_DIR)/rc.weechat $(WEECHAT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXweechat
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(WEECHAT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXweechat
 	$(MAKE) $(WEECHAT_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(WEECHAT_SOURCE_DIR)/postinst $(WEECHAT_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(WEECHAT_IPK_DIR)/CONTROL/postinst

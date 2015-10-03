@@ -40,7 +40,7 @@ LIBDVBPSI_IPK_VERSION=1
 
 #
 # LIBDVBPSI_CONFFILES should be a list of user-editable files
-#LIBDVBPSI_CONFFILES=/opt/etc/libdvbpsi.conf /opt/etc/init.d/SXXlibdvbpsi
+#LIBDVBPSI_CONFFILES=$(TARGET_PREFIX)/etc/libdvbpsi.conf $(TARGET_PREFIX)/etc/init.d/SXXlibdvbpsi
 
 #
 # LIBDVBPSI_PATCHES should list any patches, in the the order in
@@ -176,23 +176,23 @@ $(LIBDVBPSI_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LIBDVBPSI_IPK_DIR)/opt/sbin or $(LIBDVBPSI_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LIBDVBPSI_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LIBDVBPSI_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LIBDVBPSI_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LIBDVBPSI_IPK_DIR)/opt/etc/libdvbpsi/...
-# Documentation files should be installed in $(LIBDVBPSI_IPK_DIR)/opt/doc/libdvbpsi/...
-# Daemon startup scripts should be installed in $(LIBDVBPSI_IPK_DIR)/opt/etc/init.d/S??libdvbpsi
+# Libraries and include files should be installed into $(LIBDVBPSI_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LIBDVBPSI_IPK_DIR)$(TARGET_PREFIX)/etc/libdvbpsi/...
+# Documentation files should be installed in $(LIBDVBPSI_IPK_DIR)$(TARGET_PREFIX)/doc/libdvbpsi/...
+# Daemon startup scripts should be installed in $(LIBDVBPSI_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??libdvbpsi
 #
 # You may need to patch your application to make it use these locations.
 #
 $(LIBDVBPSI_IPK): $(LIBDVBPSI_BUILD_DIR)/.built
 	rm -rf $(LIBDVBPSI_IPK_DIR) $(BUILD_DIR)/libdvbpsi_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBDVBPSI_BUILD_DIR) DESTDIR=$(LIBDVBPSI_IPK_DIR) install-strip
-#	$(INSTALL) -d $(LIBDVBPSI_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(LIBDVBPSI_SOURCE_DIR)/libdvbpsi.conf $(LIBDVBPSI_IPK_DIR)/opt/etc/libdvbpsi.conf
-#	$(INSTALL) -d $(LIBDVBPSI_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(LIBDVBPSI_SOURCE_DIR)/rc.libdvbpsi $(LIBDVBPSI_IPK_DIR)/opt/etc/init.d/SXXlibdvbpsi
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/opt/etc/init.d/SXXlibdvbpsi
+#	$(INSTALL) -d $(LIBDVBPSI_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(LIBDVBPSI_SOURCE_DIR)/libdvbpsi.conf $(LIBDVBPSI_IPK_DIR)$(TARGET_PREFIX)/etc/libdvbpsi.conf
+#	$(INSTALL) -d $(LIBDVBPSI_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(LIBDVBPSI_SOURCE_DIR)/rc.libdvbpsi $(LIBDVBPSI_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibdvbpsi
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibdvbpsi
 	$(MAKE) $(LIBDVBPSI_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(LIBDVBPSI_SOURCE_DIR)/postinst $(LIBDVBPSI_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/postinst

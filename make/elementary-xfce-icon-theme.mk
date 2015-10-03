@@ -54,7 +54,7 @@ ELEMENTARY-XFCE-ICON-THEME_IPK_VERSION=1
 
 #
 # ELEMENTARY-XFCE-ICON-THEME_CONFFILES should be a list of user-editable files
-#ELEMENTARY-XFCE-ICON-THEME_CONFFILES=/opt/etc/elementary-xfce-icon-theme.conf /opt/etc/init.d/SXXelementary-xfce-icon-theme
+#ELEMENTARY-XFCE-ICON-THEME_CONFFILES=$(TARGET_PREFIX)/etc/elementary-xfce-icon-theme.conf $(TARGET_PREFIX)/etc/init.d/SXXelementary-xfce-icon-theme
 
 #
 # ELEMENTARY-XFCE-ICON-THEME_PATCHES should list any patches, in the the order in
@@ -244,19 +244,19 @@ $(ELEMENTARY-XFCE-DARKEST-ICON-THEME_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(ELEMENTARY-XFCE-ICON-THEME_IPK_DIR)/opt/sbin or $(ELEMENTARY-XFCE-ICON-THEME_IPK_DIR)/opt/bin
+# Binaries should be installed into $(ELEMENTARY-XFCE-ICON-THEME_IPK_DIR)$(TARGET_PREFIX)/sbin or $(ELEMENTARY-XFCE-ICON-THEME_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(ELEMENTARY-XFCE-ICON-THEME_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(ELEMENTARY-XFCE-ICON-THEME_IPK_DIR)/opt/etc/elementary-xfce-icon-theme/...
-# Documentation files should be installed in $(ELEMENTARY-XFCE-ICON-THEME_IPK_DIR)/opt/doc/elementary-xfce-icon-theme/...
-# Daemon startup scripts should be installed in $(ELEMENTARY-XFCE-ICON-THEME_IPK_DIR)/opt/etc/init.d/S??elementary-xfce-icon-theme
+# Libraries and include files should be installed into $(ELEMENTARY-XFCE-ICON-THEME_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(ELEMENTARY-XFCE-ICON-THEME_IPK_DIR)$(TARGET_PREFIX)/etc/elementary-xfce-icon-theme/...
+# Documentation files should be installed in $(ELEMENTARY-XFCE-ICON-THEME_IPK_DIR)$(TARGET_PREFIX)/doc/elementary-xfce-icon-theme/...
+# Daemon startup scripts should be installed in $(ELEMENTARY-XFCE-ICON-THEME_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??elementary-xfce-icon-theme
 #
 # You may need to patch your application to make it use these locations.
 #
 $(ELEMENTARY-XFCE-ICON-THEME_IPK): $(ELEMENTARY-XFCE-ICON-THEME_BUILD_DIR)/.built
 	rm -rf $(ELEMENTARY-XFCE-ICON-THEME_IPK_DIR) $(BUILD_DIR)/elementary-xfce-icon-theme_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(ELEMENTARY-XFCE-ICON-THEME_IPK_DIR)/opt/share/icons
-	cp -af $(ELEMENTARY-XFCE-ICON-THEME_BUILD_DIR)/elementary-xfce $(ELEMENTARY-XFCE-ICON-THEME_IPK_DIR)/opt/share/icons
+	$(INSTALL) -d $(ELEMENTARY-XFCE-ICON-THEME_IPK_DIR)$(TARGET_PREFIX)/share/icons
+	cp -af $(ELEMENTARY-XFCE-ICON-THEME_BUILD_DIR)/elementary-xfce $(ELEMENTARY-XFCE-ICON-THEME_IPK_DIR)$(TARGET_PREFIX)/share/icons
 	$(MAKE) $(ELEMENTARY-XFCE-ICON-THEME_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 755 $(ELEMENTARY-XFCE-ICON-THEME_SOURCE_DIR)/postinst $(ELEMENTARY-XFCE-ICON-THEME_IPK_DIR)/CONTROL/postinst
 	$(INSTALL) -m 755 $(ELEMENTARY-XFCE-ICON-THEME_SOURCE_DIR)/prerm $(ELEMENTARY-XFCE-ICON-THEME_IPK_DIR)/CONTROL/prerm
@@ -267,8 +267,8 @@ $(ELEMENTARY-XFCE-ICON-THEME_IPK): $(ELEMENTARY-XFCE-ICON-THEME_BUILD_DIR)/.buil
 
 $(ELEMENTARY-XFCE-DARK-ICON-THEME_IPK): $(ELEMENTARY-XFCE-ICON-THEME_BUILD_DIR)/.built
 	rm -rf $(ELEMENTARY-XFCE-DARK-ICON-THEME_IPK_DIR) $(BUILD_DIR)/elementary-xfce-dark-icon-theme_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(ELEMENTARY-XFCE-DARK-ICON-THEME_IPK_DIR)/opt/share/icons
-	cp -af $(ELEMENTARY-XFCE-ICON-THEME_BUILD_DIR)/elementary-xfce-dark $(ELEMENTARY-XFCE-DARK-ICON-THEME_IPK_DIR)/opt/share/icons
+	$(INSTALL) -d $(ELEMENTARY-XFCE-DARK-ICON-THEME_IPK_DIR)$(TARGET_PREFIX)/share/icons
+	cp -af $(ELEMENTARY-XFCE-ICON-THEME_BUILD_DIR)/elementary-xfce-dark $(ELEMENTARY-XFCE-DARK-ICON-THEME_IPK_DIR)$(TARGET_PREFIX)/share/icons
 	$(MAKE) $(ELEMENTARY-XFCE-DARK-ICON-THEME_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 755 $(ELEMENTARY-XFCE-ICON-THEME_SOURCE_DIR)/postinst $(ELEMENTARY-XFCE-DARK-ICON-THEME_IPK_DIR)/CONTROL/postinst
 	$(INSTALL) -m 755 $(ELEMENTARY-XFCE-ICON-THEME_SOURCE_DIR)/prerm $(ELEMENTARY-XFCE-DARK-ICON-THEME_IPK_DIR)/CONTROL/prerm
@@ -279,8 +279,8 @@ $(ELEMENTARY-XFCE-DARK-ICON-THEME_IPK): $(ELEMENTARY-XFCE-ICON-THEME_BUILD_DIR)/
 
 $(ELEMENTARY-XFCE-DARKER-ICON-THEME_IPK): $(ELEMENTARY-XFCE-ICON-THEME_BUILD_DIR)/.built
 	rm -rf $(ELEMENTARY-XFCE-DARKER-ICON-THEME_IPK_DIR) $(BUILD_DIR)/elementary-xfce-darker-icon-theme_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(ELEMENTARY-XFCE-DARKER-ICON-THEME_IPK_DIR)/opt/share/icons
-	cp -af $(ELEMENTARY-XFCE-ICON-THEME_BUILD_DIR)/elementary-xfce-darker $(ELEMENTARY-XFCE-DARKER-ICON-THEME_IPK_DIR)/opt/share/icons
+	$(INSTALL) -d $(ELEMENTARY-XFCE-DARKER-ICON-THEME_IPK_DIR)$(TARGET_PREFIX)/share/icons
+	cp -af $(ELEMENTARY-XFCE-ICON-THEME_BUILD_DIR)/elementary-xfce-darker $(ELEMENTARY-XFCE-DARKER-ICON-THEME_IPK_DIR)$(TARGET_PREFIX)/share/icons
 	$(MAKE) $(ELEMENTARY-XFCE-DARKER-ICON-THEME_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 755 $(ELEMENTARY-XFCE-ICON-THEME_SOURCE_DIR)/postinst $(ELEMENTARY-XFCE-DARKER-ICON-THEME_IPK_DIR)/CONTROL/postinst
 	$(INSTALL) -m 755 $(ELEMENTARY-XFCE-ICON-THEME_SOURCE_DIR)/prerm $(ELEMENTARY-XFCE-DARKER-ICON-THEME_IPK_DIR)/CONTROL/prerm
@@ -291,8 +291,8 @@ $(ELEMENTARY-XFCE-DARKER-ICON-THEME_IPK): $(ELEMENTARY-XFCE-ICON-THEME_BUILD_DIR
 
 $(ELEMENTARY-XFCE-DARKEST-ICON-THEME_IPK): $(ELEMENTARY-XFCE-ICON-THEME_BUILD_DIR)/.built
 	rm -rf $(ELEMENTARY-XFCE-DARKEST-ICON-THEME_IPK_DIR) $(BUILD_DIR)/elementary-xfce-darkest-icon-theme_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(ELEMENTARY-XFCE-DARKEST-ICON-THEME_IPK_DIR)/opt/share/icons
-	cp -af $(ELEMENTARY-XFCE-ICON-THEME_BUILD_DIR)/elementary-xfce-darkest $(ELEMENTARY-XFCE-DARKEST-ICON-THEME_IPK_DIR)/opt/share/icons
+	$(INSTALL) -d $(ELEMENTARY-XFCE-DARKEST-ICON-THEME_IPK_DIR)$(TARGET_PREFIX)/share/icons
+	cp -af $(ELEMENTARY-XFCE-ICON-THEME_BUILD_DIR)/elementary-xfce-darkest $(ELEMENTARY-XFCE-DARKEST-ICON-THEME_IPK_DIR)$(TARGET_PREFIX)/share/icons
 	$(MAKE) $(ELEMENTARY-XFCE-DARKEST-ICON-THEME_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 755 $(ELEMENTARY-XFCE-ICON-THEME_SOURCE_DIR)/postinst $(ELEMENTARY-XFCE-DARKEST-ICON-THEME_IPK_DIR)/CONTROL/postinst
 	$(INSTALL) -m 755 $(ELEMENTARY-XFCE-ICON-THEME_SOURCE_DIR)/prerm $(ELEMENTARY-XFCE-DARKEST-ICON-THEME_IPK_DIR)/CONTROL/prerm

@@ -40,7 +40,7 @@ BFTPD_IPK_VERSION=1
 
 #
 # BFTPD_CONFFILES should be a list of user-editable files
-BFTPD_CONFFILES=/opt/etc/bftpd.conf
+BFTPD_CONFFILES=$(TARGET_PREFIX)/etc/bftpd.conf
 
 #
 # BFTPD_PATCHES should list any patches, in the the order in
@@ -116,11 +116,11 @@ $(BFTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(BFTPD_SOURCE) $(BFTPD_PATCHES) make/
 		then mv $(BUILD_DIR)/$(BFTPD_DIR) $(@D) ; \
 	fi
 	sed -i -e '/INSTALL/s/-[go] 0//g' \
-	       -e 's| /var/| $$(DESTDIR)/opt/var/|' \
+	       -e 's| /var/| $$(DESTDIR)$(TARGET_PREFIX)/var/|' \
 	       -e '/^CFLAGS/s|$$| $$(CPPFLAGS)|' \
-	       -e 's|/etc/|/opt/etc/|g' \
+	       -e 's|/etc/|$(TARGET_PREFIX)/etc/|g' \
 		$(@D)/Makefile.in
-	sed -i -e 's|/etc/|/opt/etc/|g' $(@D)/mypaths.h
+	sed -i -e 's|/etc/|$(TARGET_PREFIX)/etc/|g' $(@D)/mypaths.h
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(BFTPD_CPPFLAGS)" \
@@ -131,8 +131,8 @@ $(BFTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(BFTPD_SOURCE) $(BFTPD_PATCHES) make/
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=$(TARGET_PREFIX) \
-		--sysconfdir=/opt/etc \
-		--localstatedir=/opt/var \
+		--sysconfdir=$(TARGET_PREFIX)/etc \
+		--localstatedir=$(TARGET_PREFIX)/var \
 		--enable-libz \
 		--disable-nls \
 		--disable-static \
@@ -191,30 +191,30 @@ $(BFTPD_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(BFTPD_IPK_DIR)/opt/sbin or $(BFTPD_IPK_DIR)/opt/bin
+# Binaries should be installed into $(BFTPD_IPK_DIR)$(TARGET_PREFIX)/sbin or $(BFTPD_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(BFTPD_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(BFTPD_IPK_DIR)/opt/etc/bftpd/...
-# Documentation files should be installed in $(BFTPD_IPK_DIR)/opt/doc/bftpd/...
-# Daemon startup scripts should be installed in $(BFTPD_IPK_DIR)/opt/etc/init.d/S??bftpd
+# Libraries and include files should be installed into $(BFTPD_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(BFTPD_IPK_DIR)$(TARGET_PREFIX)/etc/bftpd/...
+# Documentation files should be installed in $(BFTPD_IPK_DIR)$(TARGET_PREFIX)/doc/bftpd/...
+# Daemon startup scripts should be installed in $(BFTPD_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??bftpd
 #
 # You may need to patch your application to make it use these locations.
 #
 $(BFTPD_IPK): $(BFTPD_BUILD_DIR)/.built
 	rm -rf $(BFTPD_IPK_DIR) $(BUILD_DIR)/bftpd_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(BFTPD_IPK_DIR)/opt/etc
-	$(INSTALL) -d $(BFTPD_IPK_DIR)/opt/sbin
-	$(INSTALL) -d $(BFTPD_IPK_DIR)/opt/man/man8
-	$(INSTALL) -d $(BFTPD_IPK_DIR)/opt/var/log
-	touch $(BFTPD_IPK_DIR)/opt/etc/bftpd.conf
+	$(INSTALL) -d $(BFTPD_IPK_DIR)$(TARGET_PREFIX)/etc
+	$(INSTALL) -d $(BFTPD_IPK_DIR)$(TARGET_PREFIX)/sbin
+	$(INSTALL) -d $(BFTPD_IPK_DIR)$(TARGET_PREFIX)/man/man8
+	$(INSTALL) -d $(BFTPD_IPK_DIR)$(TARGET_PREFIX)/var/log
+	touch $(BFTPD_IPK_DIR)$(TARGET_PREFIX)/etc/bftpd.conf
 	$(MAKE) -C $(BFTPD_BUILD_DIR) DESTDIR=$(BFTPD_IPK_DIR) install
-	$(STRIP_COMMAND) $(BFTPD_IPK_DIR)/opt/sbin/bftpd
-	rm -f $(BFTPD_IPK_DIR)/opt/var/log/bftpd.log
-#	$(INSTALL) -d $(BFTPD_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(BFTPD_SOURCE_DIR)/bftpd.conf $(BFTPD_IPK_DIR)/opt/etc/bftpd.conf
-#	$(INSTALL) -d $(BFTPD_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(BFTPD_SOURCE_DIR)/rc.bftpd $(BFTPD_IPK_DIR)/opt/etc/init.d/SXXbftpd
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(BFTPD_IPK_DIR)/opt/etc/init.d/SXXbftpd
+	$(STRIP_COMMAND) $(BFTPD_IPK_DIR)$(TARGET_PREFIX)/sbin/bftpd
+	rm -f $(BFTPD_IPK_DIR)$(TARGET_PREFIX)/var/log/bftpd.log
+#	$(INSTALL) -d $(BFTPD_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(BFTPD_SOURCE_DIR)/bftpd.conf $(BFTPD_IPK_DIR)$(TARGET_PREFIX)/etc/bftpd.conf
+#	$(INSTALL) -d $(BFTPD_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(BFTPD_SOURCE_DIR)/rc.bftpd $(BFTPD_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXbftpd
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(BFTPD_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXbftpd
 	$(MAKE) $(BFTPD_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(BFTPD_SOURCE_DIR)/postinst $(BFTPD_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(BFTPD_IPK_DIR)/CONTROL/postinst

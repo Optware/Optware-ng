@@ -82,7 +82,7 @@ $(PERL-CLASS-DATA-INHERITABLE_IPK): $(PERL-CLASS-DATA-INHERITABLE_BUILD_DIR)/.bu
 	rm -rf $(PERL-CLASS-DATA-INHERITABLE_IPK_DIR) $(BUILD_DIR)/perl-class-data-inheritable_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PERL-CLASS-DATA-INHERITABLE_BUILD_DIR) DESTDIR=$(PERL-CLASS-DATA-INHERITABLE_IPK_DIR) install
 	find $(PERL-CLASS-DATA-INHERITABLE_IPK_DIR)$(TARGET_PREFIX) -name 'perllocal.pod' -exec rm -f {} \;
-	(cd $(PERL-CLASS-DATA-INHERITABLE_IPK_DIR)/opt/lib/perl5 ; \
+	(cd $(PERL-CLASS-DATA-INHERITABLE_IPK_DIR)$(TARGET_PREFIX)/lib/perl5 ; \
 		find . -name '*.so' -exec chmod +w {} \; ; \
 		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
 		find . -name '*.so' -exec chmod -w {} \; ; \

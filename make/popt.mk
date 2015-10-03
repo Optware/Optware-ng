@@ -174,9 +174,9 @@ $(POPT_IPK_DIR)/CONTROL/control:
 $(POPT_IPK): $(POPT_BUILD_DIR)/.built
 	rm -rf $(POPT_IPK_DIR) $(BUILD_DIR)/popt_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(POPT_BUILD_DIR) DESTDIR=$(POPT_IPK_DIR) install-strip transform=""
-	rm -f $(POPT_IPK_DIR)/opt/lib/*.a
-	rm -f $(POPT_IPK_DIR)/opt/lib/*.la
-	$(STRIP_COMMAND) $(POPT_IPK_DIR)/opt/lib/*.so.*
+	rm -f $(POPT_IPK_DIR)$(TARGET_PREFIX)/lib/*.a
+	rm -f $(POPT_IPK_DIR)$(TARGET_PREFIX)/lib/*.la
+	$(STRIP_COMMAND) $(POPT_IPK_DIR)$(TARGET_PREFIX)/lib/*.so.*
 	$(MAKE) $(POPT_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(POPT_IPK_DIR)
 

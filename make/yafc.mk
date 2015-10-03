@@ -40,7 +40,7 @@ YAFC_IPK_VERSION=2
 
 #
 # YAFC_CONFFILES should be a list of user-editable files
-#YAFC_CONFFILES=/opt/etc/yafc.conf /opt/etc/init.d/SXXyafc
+#YAFC_CONFFILES=$(TARGET_PREFIX)/etc/yafc.conf $(TARGET_PREFIX)/etc/init.d/SXXyafc
 
 #
 # YAFC_PATCHES should list any patches, in the the order in
@@ -186,24 +186,24 @@ $(YAFC_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(YAFC_IPK_DIR)/opt/sbin or $(YAFC_IPK_DIR)/opt/bin
+# Binaries should be installed into $(YAFC_IPK_DIR)$(TARGET_PREFIX)/sbin or $(YAFC_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(YAFC_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(YAFC_IPK_DIR)/opt/etc/yafc/...
-# Documentation files should be installed in $(YAFC_IPK_DIR)/opt/doc/yafc/...
-# Daemon startup scripts should be installed in $(YAFC_IPK_DIR)/opt/etc/init.d/S??yafc
+# Libraries and include files should be installed into $(YAFC_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(YAFC_IPK_DIR)$(TARGET_PREFIX)/etc/yafc/...
+# Documentation files should be installed in $(YAFC_IPK_DIR)$(TARGET_PREFIX)/doc/yafc/...
+# Daemon startup scripts should be installed in $(YAFC_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??yafc
 #
 # You may need to patch your application to make it use these locations.
 #
 $(YAFC_IPK): $(YAFC_BUILD_DIR)/.built
 	rm -rf $(YAFC_IPK_DIR) $(BUILD_DIR)/yafc_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(YAFC_BUILD_DIR) DESTDIR=$(YAFC_IPK_DIR) install-strip
-	rm -f $(YAFC_IPK_DIR)/opt/info/dir
-#	$(INSTALL) -d $(YAFC_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(YAFC_SOURCE_DIR)/yafc.conf $(YAFC_IPK_DIR)/opt/etc/yafc.conf
-#	$(INSTALL) -d $(YAFC_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(YAFC_SOURCE_DIR)/rc.yafc $(YAFC_IPK_DIR)/opt/etc/init.d/SXXyafc
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(YAFC_IPK_DIR)/opt/etc/init.d/SXXyafc
+	rm -f $(YAFC_IPK_DIR)$(TARGET_PREFIX)/info/dir
+#	$(INSTALL) -d $(YAFC_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(YAFC_SOURCE_DIR)/yafc.conf $(YAFC_IPK_DIR)$(TARGET_PREFIX)/etc/yafc.conf
+#	$(INSTALL) -d $(YAFC_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(YAFC_SOURCE_DIR)/rc.yafc $(YAFC_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXyafc
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(YAFC_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXyafc
 	$(MAKE) $(YAFC_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(YAFC_SOURCE_DIR)/postinst $(YAFC_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(YAFC_IPK_DIR)/CONTROL/postinst

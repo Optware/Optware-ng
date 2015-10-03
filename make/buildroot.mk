@@ -122,7 +122,7 @@ buildroot-headers:
 	@echo "$(OPTWARE_TARGET): $(BUILDROOT_CUSTOM_HEADERS)"
 #
 # BUILDROOT_CONFFILES should be a list of user-editable files
-# BUILDROOT_CONFFILES=/opt/etc/buildroot.conf /opt/etc/init.d/SXXbuildroot
+# BUILDROOT_CONFFILES=$(TARGET_PREFIX)/etc/buildroot.conf $(TARGET_PREFIX)/etc/init.d/SXXbuildroot
 
 #
 # BUILDROOT_PATCHES should list any patches, in the the order in
@@ -253,12 +253,12 @@ endif
 		make oldconfig \
 	)
 ifneq ($(OPTWARE_TARGET), ts101)
-	sed -i.orig -e '/^+/s|/lib/|/opt/lib/|g' $(BUILDROOT_BUILD_DIR)/toolchain/gcc/$(BUILDROOT_GCC)/100-uclibc-conf.patch
-	sed -i.orig -e '/^+/s|/lib/|/opt/lib/|g' $(BUILDROOT_BUILD_DIR)/toolchain/binutils/$(BUILDROOT_BINUTILS)/100-uclibc-conf.patch
-#	sed -i.orig -e '/^+/s|/lib/|/opt/lib/|g' $(BUILDROOT_BUILD_DIR)/toolchain/binutils/$(BUILDROOT_BINUTILS)/110-uclibc-libtool-conf.patch
-	sed -i.orig.0 -e 's|(TARGET_DIR)/lib|(TARGET_DIR)/opt/lib|g' $(BUILDROOT_TOOLS_MK)
-	sed -i.orig.1 -e 's|(TARGET_DIR)/usr|(TARGET_DIR)/opt|g' $(BUILDROOT_TOOLS_MK)
-	sed -i.orig.2 -e 's|=/usr|=/opt|g;s|=\\"/lib|=\\"/opt/lib|g;s|=\\"/usr|=\\"/opt|g' $(BUILDROOT_TOOLS_MK)
+	sed -i.orig -e '/^+/s|/lib/|$(TARGET_PREFIX)/lib/|g' $(BUILDROOT_BUILD_DIR)/toolchain/gcc/$(BUILDROOT_GCC)/100-uclibc-conf.patch
+	sed -i.orig -e '/^+/s|/lib/|$(TARGET_PREFIX)/lib/|g' $(BUILDROOT_BUILD_DIR)/toolchain/binutils/$(BUILDROOT_BINUTILS)/100-uclibc-conf.patch
+#	sed -i.orig -e '/^+/s|/lib/|$(TARGET_PREFIX)/lib/|g' $(BUILDROOT_BUILD_DIR)/toolchain/binutils/$(BUILDROOT_BINUTILS)/110-uclibc-libtool-conf.patch
+	sed -i.orig.0 -e 's|(TARGET_DIR)/lib|(TARGET_DIR)$(TARGET_PREFIX)/lib|g' $(BUILDROOT_TOOLS_MK)
+	sed -i.orig.1 -e 's|(TARGET_DIR)/usr|(TARGET_DIR)$(TARGET_PREFIX)|g' $(BUILDROOT_TOOLS_MK)
+	sed -i.orig.2 -e 's|=/usr|=$(TARGET_PREFIX)|g;s|=\\"/lib|=\\"$(TARGET_PREFIX)/lib|g;s|=\\"/usr|=\\"$(TARGET_PREFIX)|g' $(BUILDROOT_TOOLS_MK)
 	cp $(BUILDROOT_SOURCE_DIR)/400-ld-native-search-path.patch \
 	  $(BUILDROOT_BUILD_DIR)/toolchain/binutils/$(BUILDROOT_BINUTILS)/
 	cp $(BUILDROOT_SOURCE_DIR)/410-bfd-elfxx-mips-opt.patch \
@@ -325,12 +325,12 @@ $(BUILDROOT_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(BUILDROOT_IPK_DIR)/opt/sbin or $(BUILDROOT_IPK_DIR)/opt/bin
+# Binaries should be installed into $(BUILDROOT_IPK_DIR)$(TARGET_PREFIX)/sbin or $(BUILDROOT_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(BUILDROOT_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(BUILDROOT_IPK_DIR)/opt/etc/buildroot/...
-# Documentation files should be installed in $(BUILDROOT_IPK_DIR)/opt/doc/buildroot/...
-# Daemon startup scripts should be installed in $(BUILDROOT_IPK_DIR)/opt/etc/init.d/S??buildroot
+# Libraries and include files should be installed into $(BUILDROOT_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(BUILDROOT_IPK_DIR)$(TARGET_PREFIX)/etc/buildroot/...
+# Documentation files should be installed in $(BUILDROOT_IPK_DIR)$(TARGET_PREFIX)/doc/buildroot/...
+# Daemon startup scripts should be installed in $(BUILDROOT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??buildroot
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -338,13 +338,13 @@ $(BUILDROOT_IPK): $(BUILDROOT_BUILD_DIR)/.built
 	rm -rf $(BUILDROOT_IPK_DIR) $(BUILD_DIR)/buildroot_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(BUILDROOT_BUILD_DIR) DESTDIR=$(BUILDROOT_IPK_DIR) install-strip
 	$(INSTALL) -d $(BUILDROOT_IPK_DIR)
-#	tar -xv -C $(BUILDROOT_IPK_DIR) -f $(BUILDROOT_BUILD_DIR)/rootfs.$(TARGET_ARCH).tar ./opt
-	cp -fa $(BUILDROOT_BUILD_DIR)/build_$(TARGET_ARCH)/root/opt/ $(BUILDROOT_IPK_DIR)
+#	tar -xv -C $(BUILDROOT_IPK_DIR) -f $(BUILDROOT_BUILD_DIR)/rootfs.$(TARGET_ARCH).tar .$(TARGET_PREFIX)
+	cp -fa $(BUILDROOT_BUILD_DIR)/build_$(TARGET_ARCH)/root$(TARGET_PREFIX)/ $(BUILDROOT_IPK_DIR)
 #	Remove files provided by uclibc-opt
-	rm -f $(patsubst %, $(BUILDROOT_IPK_DIR)/opt/lib/%*so*, $(UCLIBC-OPT_LIBS))
-	rm -f $(BUILDROOT_IPK_DIR)/opt/sbin/ldconfig
-#	$(INSTALL) -m 755 $(BUILDROOT_BUILD_DIR)/build_$(TARGET_ARCH)/root/usr/bin/ccache $(BUILDROOT_IPK_DIR)/opt/bin
-	$(INSTALL) -m 755 $(BUILDROOT_BUILD_DIR)/build_$(TARGET_ARCH)/root/usr/bin/gdb $(BUILDROOT_IPK_DIR)/opt/bin
+	rm -f $(patsubst %, $(BUILDROOT_IPK_DIR)$(TARGET_PREFIX)/lib/%*so*, $(UCLIBC-OPT_LIBS))
+	rm -f $(BUILDROOT_IPK_DIR)$(TARGET_PREFIX)/sbin/ldconfig
+#	$(INSTALL) -m 755 $(BUILDROOT_BUILD_DIR)/build_$(TARGET_ARCH)/root/usr/bin/ccache $(BUILDROOT_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(INSTALL) -m 755 $(BUILDROOT_BUILD_DIR)/build_$(TARGET_ARCH)/root/usr/bin/gdb $(BUILDROOT_IPK_DIR)$(TARGET_PREFIX)/bin
 	$(MAKE) $(BUILDROOT_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 755 $(BUILDROOT_SOURCE_DIR)/postinst $(BUILDROOT_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 755 $(BUILDROOT_SOURCE_DIR)/prerm $(BUILDROOT_IPK_DIR)/CONTROL/prerm

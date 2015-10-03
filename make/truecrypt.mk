@@ -40,7 +40,7 @@ TRUECRYPT_IPK_VERSION=1
 
 #
 # TRUECRYPT_CONFFILES should be a list of user-editable files
-#TRUECRYPT_CONFFILES=/opt/etc/truecrypt.conf /opt/etc/init.d/SXXtruecrypt
+#TRUECRYPT_CONFFILES=$(TARGET_PREFIX)/etc/truecrypt.conf $(TARGET_PREFIX)/etc/init.d/SXXtruecrypt
 
 #
 # TRUECRYPT_PATCHES should list any patches, in the the order in
@@ -69,7 +69,7 @@ TRUECRYPT_SOURCE_DIR=$(SOURCE_DIR)/truecrypt
 TRUECRYPT_IPK_DIR=$(BUILD_DIR)/truecrypt-$(TRUECRYPT_VERSION)-ipk
 TRUECRYPT_IPK=$(BUILD_DIR)/truecrypt_$(TRUECRYPT_VERSION)-$(TRUECRYPT_IPK_VERSION)_$(TARGET_ARCH).ipk
 
-TRUECRYPT_MODDIR=$(TRUECRYPT_IPK_DIR)/opt/lib/modules/2.6.12.6-arm1/extra
+TRUECRYPT_MODDIR=$(TRUECRYPT_IPK_DIR)$(TARGET_PREFIX)/lib/modules/2.6.12.6-arm1/extra
 
 .PHONY: truecrypt-source truecrypt-unpack truecrypt truecrypt-stage truecrypt-ipk truecrypt-clean truecrypt-dirclean truecrypt-check
 
@@ -125,7 +125,7 @@ $(TRUECRYPT_BUILD_DIR)/.configured: $(DL_DIR)/$(TRUECRYPT_SOURCE) $(TRUECRYPT_PA
 		-e 's|M=$$(PWD)|& $(KERNEL-MODULES-FLAGS)|' \
 		$(@D)/Linux/Kernel/Makefile
 	sed -i	-e 's|@strip |$(TARGET_STRIP) |' $(@D)/Linux/Cli/Makefile
-	sed -i	-e '/setenv.*PATH/s|"/|"/opt/sbin:/opt/bin:/|' $(@D)/Linux/Cli/Cli.c
+	sed -i	-e '/setenv.*PATH/s|"/|"$(TARGET_PREFIX)/sbin:$(TARGET_PREFIX)/bin:/|' $(@D)/Linux/Cli/Cli.c
 	touch $@
 
 truecrypt-unpack: $(TRUECRYPT_BUILD_DIR)/.configured
@@ -180,12 +180,12 @@ $(TRUECRYPT_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(TRUECRYPT_IPK_DIR)/opt/sbin or $(TRUECRYPT_IPK_DIR)/opt/bin
+# Binaries should be installed into $(TRUECRYPT_IPK_DIR)$(TARGET_PREFIX)/sbin or $(TRUECRYPT_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(TRUECRYPT_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(TRUECRYPT_IPK_DIR)/opt/etc/truecrypt/...
-# Documentation files should be installed in $(TRUECRYPT_IPK_DIR)/opt/doc/truecrypt/...
-# Daemon startup scripts should be installed in $(TRUECRYPT_IPK_DIR)/opt/etc/init.d/S??truecrypt
+# Libraries and include files should be installed into $(TRUECRYPT_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(TRUECRYPT_IPK_DIR)$(TARGET_PREFIX)/etc/truecrypt/...
+# Documentation files should be installed in $(TRUECRYPT_IPK_DIR)$(TARGET_PREFIX)/doc/truecrypt/...
+# Daemon startup scripts should be installed in $(TRUECRYPT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??truecrypt
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -194,18 +194,18 @@ $(TRUECRYPT_IPK): $(TRUECRYPT_BUILD_DIR)/.built
 	$(INSTALL) -d $(TRUECRYPT_MODDIR)
 	$(STRIP_COMMAND) $(TRUECRYPT_BUILD_DIR)/Linux/Kernel/truecrypt.ko \
 		-o $(TRUECRYPT_MODDIR)/truecrypt.ko
-	$(INSTALL) -d $(TRUECRYPT_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(TRUECRYPT_IPK_DIR)$(TARGET_PREFIX)/bin
 	$(STRIP_COMMAND) $(TRUECRYPT_BUILD_DIR)/Linux/Cli/truecrypt \
-		-o $(TRUECRYPT_IPK_DIR)/opt/bin/truecrypt
-	$(INSTALL) -d $(TRUECRYPT_IPK_DIR)/opt/share/man/man1
-	$(INSTALL) $(TRUECRYPT_BUILD_DIR)/Linux/Cli/Man/truecrypt.1 $(TRUECRYPT_IPK_DIR)/opt/share/man/man1/
-	$(INSTALL) -d $(TRUECRYPT_IPK_DIR)/opt/share/truecrypt/doc
+		-o $(TRUECRYPT_IPK_DIR)$(TARGET_PREFIX)/bin/truecrypt
+	$(INSTALL) -d $(TRUECRYPT_IPK_DIR)$(TARGET_PREFIX)/share/man/man1
+	$(INSTALL) $(TRUECRYPT_BUILD_DIR)/Linux/Cli/Man/truecrypt.1 $(TRUECRYPT_IPK_DIR)$(TARGET_PREFIX)/share/man/man1/
+	$(INSTALL) -d $(TRUECRYPT_IPK_DIR)$(TARGET_PREFIX)/share/truecrypt/doc
 	$(INSTALL) -m 644 \
 		$(TRUECRYPT_BUILD_DIR)/License.txt \
-		$(TRUECRYPT_IPK_DIR)/opt/share/truecrypt/doc/
+		$(TRUECRYPT_IPK_DIR)$(TARGET_PREFIX)/share/truecrypt/doc/
 	$(INSTALL) -m 644 \
 		"$(TRUECRYPT_BUILD_DIR)/Release/Setup Files/TrueCrypt User Guide.pdf" \
-		$(TRUECRYPT_IPK_DIR)/opt/share/truecrypt/doc/TrueCrypt-User-Guide.pdf
+		$(TRUECRYPT_IPK_DIR)$(TARGET_PREFIX)/share/truecrypt/doc/TrueCrypt-User-Guide.pdf
 #	$(MAKE) -C $(TRUECRYPT_BUILD_DIR) DESTDIR=$(TRUECRYPT_IPK_DIR) install-strip
 	$(MAKE) $(TRUECRYPT_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(TRUECRYPT_SOURCE_DIR)/postinst $(TRUECRYPT_IPK_DIR)/CONTROL/postinst

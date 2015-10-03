@@ -40,7 +40,7 @@ PY-SQLITE_IPK_VERSION=1
 
 #
 # PY-SQLITE_CONFFILES should be a list of user-editable files
-#PY-SQLITE_CONFFILES=/opt/etc/py-sqlite.conf /opt/etc/init.d/SXXpy-sqlite
+#PY-SQLITE_CONFFILES=$(TARGET_PREFIX)/etc/py-sqlite.conf $(TARGET_PREFIX)/etc/init.d/SXXpy-sqlite
 
 #
 # PY-SQLITE_PATCHES should list any patches, in the the order in
@@ -111,9 +111,9 @@ $(PY-SQLITE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SQLITE_SOURCE) $(PY-SQLITE_PA
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
 	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
 	        echo "libraries=sqlite3"; \
-	        echo "rpath=/opt/lib"; \
+	        echo "rpath=$(TARGET_PREFIX)/lib"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python" \
+		echo "executable=$(TARGET_PREFIX)/bin/python" \
 	    ) > setup.cfg; \
 	)
 	touch $@
@@ -168,12 +168,12 @@ $(PY-SQLITE_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PY-SQLITE_IPK_DIR)/opt/sbin or $(PY-SQLITE_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PY-SQLITE_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PY-SQLITE_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PY-SQLITE_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PY-SQLITE_IPK_DIR)/opt/etc/py-sqlite/...
-# Documentation files should be installed in $(PY-SQLITE_IPK_DIR)/opt/doc/py-sqlite/...
-# Daemon startup scripts should be installed in $(PY-SQLITE_IPK_DIR)/opt/etc/init.d/S??py-sqlite
+# Libraries and include files should be installed into $(PY-SQLITE_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PY-SQLITE_IPK_DIR)$(TARGET_PREFIX)/etc/py-sqlite/...
+# Documentation files should be installed in $(PY-SQLITE_IPK_DIR)$(TARGET_PREFIX)/doc/py-sqlite/...
+# Daemon startup scripts should be installed in $(PY-SQLITE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??py-sqlite
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -183,9 +183,9 @@ $(PY-SQLITE_IPK): $(PY-SQLITE_BUILD_DIR)/.built
 	(cd $(PY-SQLITE_BUILD_DIR); \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 -c "import setuptools; execfile('setup.py')" install \
-	    --root=$(PY-SQLITE_IPK_DIR) --prefix=/opt; \
+	    --root=$(PY-SQLITE_IPK_DIR) --prefix=$(TARGET_PREFIX); \
 	)
-	$(STRIP_COMMAND) $(PY-SQLITE_IPK_DIR)/opt/lib/python2.4/site-packages/pysqlite2/_sqlite.so
+	$(STRIP_COMMAND) $(PY-SQLITE_IPK_DIR)$(TARGET_PREFIX)/lib/python2.4/site-packages/pysqlite2/_sqlite.so
 	$(MAKE) $(PY-SQLITE_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-SQLITE_IPK_DIR)
 

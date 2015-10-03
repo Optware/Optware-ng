@@ -40,7 +40,7 @@ SDPARM_IPK_VERSION=1
 
 #
 # SDPARM_CONFFILES should be a list of user-editable files
-#SDPARM_CONFFILES=/opt/etc/sdparm.conf /opt/etc/init.d/SXXsdparm
+#SDPARM_CONFFILES=$(TARGET_PREFIX)/etc/sdparm.conf $(TARGET_PREFIX)/etc/init.d/SXXsdparm
 
 #
 # SDPARM_PATCHES should list any patches, in the the order in
@@ -175,22 +175,22 @@ $(SDPARM_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(SDPARM_IPK_DIR)/opt/sbin or $(SDPARM_IPK_DIR)/opt/bin
+# Binaries should be installed into $(SDPARM_IPK_DIR)$(TARGET_PREFIX)/sbin or $(SDPARM_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(SDPARM_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(SDPARM_IPK_DIR)/opt/etc/sdparm/...
-# Documentation files should be installed in $(SDPARM_IPK_DIR)/opt/doc/sdparm/...
-# Daemon startup scripts should be installed in $(SDPARM_IPK_DIR)/opt/etc/init.d/S??sdparm
+# Libraries and include files should be installed into $(SDPARM_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(SDPARM_IPK_DIR)$(TARGET_PREFIX)/etc/sdparm/...
+# Documentation files should be installed in $(SDPARM_IPK_DIR)$(TARGET_PREFIX)/doc/sdparm/...
+# Daemon startup scripts should be installed in $(SDPARM_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??sdparm
 #
 # You may need to patch your application to make it use these locations.
 #
 $(SDPARM_IPK): $(SDPARM_BUILD_DIR)/.built
 	rm -rf $(SDPARM_IPK_DIR) $(BUILD_DIR)/sdparm_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SDPARM_BUILD_DIR) DESTDIR=$(SDPARM_IPK_DIR) install-strip
-#	$(INSTALL) -d $(SDPARM_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(SDPARM_SOURCE_DIR)/sdparm.conf $(SDPARM_IPK_DIR)/opt/etc/sdparm.conf
-#	$(INSTALL) -d $(SDPARM_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(SDPARM_SOURCE_DIR)/rc.sdparm $(SDPARM_IPK_DIR)/opt/etc/init.d/SXXsdparm
+#	$(INSTALL) -d $(SDPARM_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(SDPARM_SOURCE_DIR)/sdparm.conf $(SDPARM_IPK_DIR)$(TARGET_PREFIX)/etc/sdparm.conf
+#	$(INSTALL) -d $(SDPARM_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(SDPARM_SOURCE_DIR)/rc.sdparm $(SDPARM_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXsdparm
 	$(MAKE) $(SDPARM_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(SDPARM_SOURCE_DIR)/postinst $(SDPARM_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 755 $(SDPARM_SOURCE_DIR)/prerm $(SDPARM_IPK_DIR)/CONTROL/prerm

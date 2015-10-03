@@ -46,7 +46,7 @@ ZNC_IPK_VERSION=1
 
 #
 # ZNC_CONFFILES should be a list of user-editable files
-ZNC_CONFFILES=/opt/etc/default/znc /opt/etc/init.d/S91znc
+ZNC_CONFFILES=$(TARGET_PREFIX)/etc/default/znc $(TARGET_PREFIX)/etc/init.d/S91znc
 
 #
 # ZNC_PATCHES should list any patches, in the the order in
@@ -185,22 +185,22 @@ $(ZNC_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(ZNC_IPK_DIR)/opt/sbin or $(ZNC_IPK_DIR)/opt/bin
+# Binaries should be installed into $(ZNC_IPK_DIR)$(TARGET_PREFIX)/sbin or $(ZNC_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(ZNC_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(ZNC_IPK_DIR)/opt/etc/znc/...
-# Documentation files should be installed in $(ZNC_IPK_DIR)/opt/doc/znc/...
-# Daemon startup scripts should be installed in $(ZNC_IPK_DIR)/opt/etc/init.d/S??znc
+# Libraries and include files should be installed into $(ZNC_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(ZNC_IPK_DIR)$(TARGET_PREFIX)/etc/znc/...
+# Documentation files should be installed in $(ZNC_IPK_DIR)$(TARGET_PREFIX)/doc/znc/...
+# Daemon startup scripts should be installed in $(ZNC_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??znc
 #
 # You may need to patch your application to make it use these locations.
 #
 $(ZNC_IPK): $(ZNC_BUILD_DIR)/.built
 	rm -rf $(ZNC_IPK_DIR) $(BUILD_DIR)/znc_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(ZNC_BUILD_DIR) DESTDIR=$(ZNC_IPK_DIR) install
-	$(INSTALL) -d $(ZNC_IPK_DIR)/opt/etc/init.d
-	$(INSTALL) -d $(ZNC_IPK_DIR)/opt/etc/default
-	$(INSTALL) -m 644 $(ZNC_SOURCE_DIR)/znc.default $(ZNC_IPK_DIR)/opt/etc/default/znc
-	$(INSTALL) -m 755 $(ZNC_SOURCE_DIR)/rc.znc $(ZNC_IPK_DIR)/opt/etc/init.d/S91znc
+	$(INSTALL) -d $(ZNC_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(INSTALL) -d $(ZNC_IPK_DIR)$(TARGET_PREFIX)/etc/default
+	$(INSTALL) -m 644 $(ZNC_SOURCE_DIR)/znc.default $(ZNC_IPK_DIR)$(TARGET_PREFIX)/etc/default/znc
+	$(INSTALL) -m 755 $(ZNC_SOURCE_DIR)/rc.znc $(ZNC_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S91znc
 	$(MAKE) $(ZNC_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 755 $(ZNC_SOURCE_DIR)/postinst $(ZNC_IPK_DIR)/CONTROL/postinst
 	$(INSTALL) -m 755 $(ZNC_SOURCE_DIR)/prerm $(ZNC_IPK_DIR)/CONTROL/prerm

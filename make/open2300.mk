@@ -40,7 +40,7 @@ OPEN2300_IPK_VERSION=1
 
 #
 # OPEN2300_CONFFILES should be a list of user-editable files
-#OPEN2300_CONFFILES=/opt/etc/open2300.conf /opt/etc/init.d/SXXopen2300
+#OPEN2300_CONFFILES=$(TARGET_PREFIX)/etc/open2300.conf $(TARGET_PREFIX)/etc/init.d/SXXopen2300
 
 #
 # OPEN2300_PATCHES should list any patches, in the the order in
@@ -185,12 +185,12 @@ $(OPEN2300_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(OPEN2300_IPK_DIR)/opt/sbin or $(OPEN2300_IPK_DIR)/opt/bin
+# Binaries should be installed into $(OPEN2300_IPK_DIR)$(TARGET_PREFIX)/sbin or $(OPEN2300_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(OPEN2300_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(OPEN2300_IPK_DIR)/opt/etc/open2300/...
-# Documentation files should be installed in $(OPEN2300_IPK_DIR)/opt/doc/open2300/...
-# Daemon startup scripts should be installed in $(OPEN2300_IPK_DIR)/opt/etc/init.d/S??open2300
+# Libraries and include files should be installed into $(OPEN2300_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(OPEN2300_IPK_DIR)$(TARGET_PREFIX)/etc/open2300/...
+# Documentation files should be installed in $(OPEN2300_IPK_DIR)$(TARGET_PREFIX)/doc/open2300/...
+# Daemon startup scripts should be installed in $(OPEN2300_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??open2300
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -199,15 +199,15 @@ $(OPEN2300_IPK): $(OPEN2300_BUILD_DIR)/.built
 	$(MAKE) -C $(OPEN2300_BUILD_DIR) install \
 		prefix=$(OPEN2300_IPK_DIR)$(TARGET_PREFIX) \
 		;
-	$(INSTALL) -m 755 $(OPEN2300_BUILD_DIR)/mysql2300 $(OPEN2300_IPK_DIR)/opt/bin
-	$(INSTALL) -m 755 $(OPEN2300_BUILD_DIR)/pgsql2300 $(OPEN2300_IPK_DIR)/opt/bin
-	$(STRIP_COMMAND) $(OPEN2300_IPK_DIR)/opt/bin/*2300
-	$(INSTALL) -d $(OPEN2300_IPK_DIR)/opt/etc/
-	$(INSTALL) -m 644 $(OPEN2300_BUILD_DIR)/open2300-dist.conf $(OPEN2300_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(OPEN2300_SOURCE_DIR)/open2300.conf $(OPEN2300_IPK_DIR)/opt/etc/open2300.conf
-#	$(INSTALL) -d $(OPEN2300_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(OPEN2300_SOURCE_DIR)/rc.open2300 $(OPEN2300_IPK_DIR)/opt/etc/init.d/SXXopen2300
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(OPEN2300_IPK_DIR)/opt/etc/init.d/SXXopen2300
+	$(INSTALL) -m 755 $(OPEN2300_BUILD_DIR)/mysql2300 $(OPEN2300_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(INSTALL) -m 755 $(OPEN2300_BUILD_DIR)/pgsql2300 $(OPEN2300_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(STRIP_COMMAND) $(OPEN2300_IPK_DIR)$(TARGET_PREFIX)/bin/*2300
+	$(INSTALL) -d $(OPEN2300_IPK_DIR)$(TARGET_PREFIX)/etc/
+	$(INSTALL) -m 644 $(OPEN2300_BUILD_DIR)/open2300-dist.conf $(OPEN2300_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(OPEN2300_SOURCE_DIR)/open2300.conf $(OPEN2300_IPK_DIR)$(TARGET_PREFIX)/etc/open2300.conf
+#	$(INSTALL) -d $(OPEN2300_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(OPEN2300_SOURCE_DIR)/rc.open2300 $(OPEN2300_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXopen2300
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(OPEN2300_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXopen2300
 	$(MAKE) $(OPEN2300_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(OPEN2300_SOURCE_DIR)/postinst $(OPEN2300_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(OPEN2300_IPK_DIR)/CONTROL/postinst

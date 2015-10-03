@@ -44,7 +44,7 @@ PCIUTILS_IPK_VERSION=1
 
 #
 # PCIUTILS_CONFFILES should be a list of user-editable files
-#PCIUTILS_CONFFILES=/opt/etc/pciutils.conf /opt/etc/init.d/SXXpciutils
+#PCIUTILS_CONFFILES=$(TARGET_PREFIX)/etc/pciutils.conf $(TARGET_PREFIX)/etc/init.d/SXXpciutils
 
 #
 # PCIUTILS_PATCHES should list any patches, in the the order in
@@ -188,12 +188,12 @@ $(PCIUTILS_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PCIUTILS_IPK_DIR)/opt/sbin or $(PCIUTILS_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PCIUTILS_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PCIUTILS_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PCIUTILS_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PCIUTILS_IPK_DIR)/opt/etc/pciutils/...
-# Documentation files should be installed in $(PCIUTILS_IPK_DIR)/opt/doc/pciutils/...
-# Daemon startup scripts should be installed in $(PCIUTILS_IPK_DIR)/opt/etc/init.d/S??pciutils
+# Libraries and include files should be installed into $(PCIUTILS_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PCIUTILS_IPK_DIR)$(TARGET_PREFIX)/etc/pciutils/...
+# Documentation files should be installed in $(PCIUTILS_IPK_DIR)$(TARGET_PREFIX)/doc/pciutils/...
+# Daemon startup scripts should be installed in $(PCIUTILS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??pciutils
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -204,12 +204,12 @@ $(PCIUTILS_IPK): $(PCIUTILS_BUILD_DIR)/.built
 		PREFIX=$(TARGET_PREFIX) \
 		STRIP="" \
 	;
-	$(STRIP_COMMAND) $(PCIUTILS_IPK_DIR)/opt/sbin/lspci $(PCIUTILS_IPK_DIR)/opt/sbin/setpci
-#	$(INSTALL) -d $(PCIUTILS_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(PCIUTILS_SOURCE_DIR)/pciutils.conf $(PCIUTILS_IPK_DIR)/opt/etc/pciutils.conf
-#	$(INSTALL) -d $(PCIUTILS_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(PCIUTILS_SOURCE_DIR)/rc.pciutils $(PCIUTILS_IPK_DIR)/opt/etc/init.d/SXXpciutils
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(PCIUTILS_IPK_DIR)/opt/etc/init.d/SXXpciutils
+	$(STRIP_COMMAND) $(PCIUTILS_IPK_DIR)$(TARGET_PREFIX)/sbin/lspci $(PCIUTILS_IPK_DIR)$(TARGET_PREFIX)/sbin/setpci
+#	$(INSTALL) -d $(PCIUTILS_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(PCIUTILS_SOURCE_DIR)/pciutils.conf $(PCIUTILS_IPK_DIR)$(TARGET_PREFIX)/etc/pciutils.conf
+#	$(INSTALL) -d $(PCIUTILS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(PCIUTILS_SOURCE_DIR)/rc.pciutils $(PCIUTILS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXpciutils
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(PCIUTILS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXpciutils
 	$(MAKE) $(PCIUTILS_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(PCIUTILS_SOURCE_DIR)/postinst $(PCIUTILS_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(PCIUTILS_IPK_DIR)/CONTROL/postinst

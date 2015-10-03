@@ -40,7 +40,7 @@ SRECORD_IPK_VERSION=1
 
 #
 # SRECORD_CONFFILES should be a list of user-editable files
-#SRECORD_CONFFILES=/opt/etc/srecord.conf /opt/etc/init.d/SXXsrecord
+#SRECORD_CONFFILES=$(TARGET_PREFIX)/etc/srecord.conf $(TARGET_PREFIX)/etc/init.d/SXXsrecord
 
 #
 # SRECORD_PATCHES should list any patches, in the the order in
@@ -178,12 +178,12 @@ $(SRECORD_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(SRECORD_IPK_DIR)/opt/sbin or $(SRECORD_IPK_DIR)/opt/bin
+# Binaries should be installed into $(SRECORD_IPK_DIR)$(TARGET_PREFIX)/sbin or $(SRECORD_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(SRECORD_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(SRECORD_IPK_DIR)/opt/etc/srecord/...
-# Documentation files should be installed in $(SRECORD_IPK_DIR)/opt/doc/srecord/...
-# Daemon startup scripts should be installed in $(SRECORD_IPK_DIR)/opt/etc/init.d/S??srecord
+# Libraries and include files should be installed into $(SRECORD_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(SRECORD_IPK_DIR)$(TARGET_PREFIX)/etc/srecord/...
+# Documentation files should be installed in $(SRECORD_IPK_DIR)$(TARGET_PREFIX)/doc/srecord/...
+# Daemon startup scripts should be installed in $(SRECORD_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??srecord
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -191,7 +191,7 @@ $(SRECORD_IPK): $(SRECORD_BUILD_DIR)/.built
 	rm -rf $(SRECORD_IPK_DIR) $(BUILD_DIR)/srecord_*_$(TARGET_ARCH).ipk
 	rm -f $(SRECORD_BUILD_DIR)/.bindir $(SRECORD_BUILD_DIR)/man/.mandir
 	$(MAKE) -C $(SRECORD_BUILD_DIR) DESTDIR=$(SRECORD_IPK_DIR) install
-	$(STRIP_COMMAND) $(SRECORD_IPK_DIR)/opt/bin/srec_*
+	$(STRIP_COMMAND) $(SRECORD_IPK_DIR)$(TARGET_PREFIX)/bin/srec_*
 	$(MAKE) $(SRECORD_IPK_DIR)/CONTROL/control
 	echo $(SRECORD_CONFFILES) | sed -e 's/ /\n/g' > $(SRECORD_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SRECORD_IPK_DIR)

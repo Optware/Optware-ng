@@ -40,7 +40,7 @@ FAAD2_IPK_VERSION=3
 
 #
 # FAAD2_CONFFILES should be a list of user-editable files
-#FAAD2_CONFFILES=/opt/etc/faad2.conf /opt/etc/init.d/SXXfaad2
+#FAAD2_CONFFILES=$(TARGET_PREFIX)/etc/faad2.conf $(TARGET_PREFIX)/etc/init.d/SXXfaad2
 
 #
 # FAAD2_PATCHES should list any patches, in the the order in
@@ -192,24 +192,24 @@ $(FAAD2_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(FAAD2_IPK_DIR)/opt/sbin or $(FAAD2_IPK_DIR)/opt/bin
+# Binaries should be installed into $(FAAD2_IPK_DIR)$(TARGET_PREFIX)/sbin or $(FAAD2_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(FAAD2_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(FAAD2_IPK_DIR)/opt/etc/faad2/...
-# Documentation files should be installed in $(FAAD2_IPK_DIR)/opt/doc/faad2/...
-# Daemon startup scripts should be installed in $(FAAD2_IPK_DIR)/opt/etc/init.d/S??faad2
+# Libraries and include files should be installed into $(FAAD2_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(FAAD2_IPK_DIR)$(TARGET_PREFIX)/etc/faad2/...
+# Documentation files should be installed in $(FAAD2_IPK_DIR)$(TARGET_PREFIX)/doc/faad2/...
+# Daemon startup scripts should be installed in $(FAAD2_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??faad2
 #
 # You may need to patch your application to make it use these locations.
 #
 $(FAAD2_IPK): $(FAAD2_BUILD_DIR)/.built
 	rm -rf $(FAAD2_IPK_DIR) $(BUILD_DIR)/faad2_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(FAAD2_BUILD_DIR) DESTDIR=$(FAAD2_IPK_DIR) install-strip
-	$(STRIP_COMMAND) $(FAAD2_IPK_DIR)/opt/lib/libfaad.so.[0-9].[0-9].[0-9]
-#	$(INSTALL) -d $(FAAD2_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(FAAD2_SOURCE_DIR)/faad2.conf $(FAAD2_IPK_DIR)/opt/etc/faad2.conf
-#	$(INSTALL) -d $(FAAD2_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(FAAD2_SOURCE_DIR)/rc.faad2 $(FAAD2_IPK_DIR)/opt/etc/init.d/SXXfaad2
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/opt/etc/init.d/SXXfaad2
+	$(STRIP_COMMAND) $(FAAD2_IPK_DIR)$(TARGET_PREFIX)/lib/libfaad.so.[0-9].[0-9].[0-9]
+#	$(INSTALL) -d $(FAAD2_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(FAAD2_SOURCE_DIR)/faad2.conf $(FAAD2_IPK_DIR)$(TARGET_PREFIX)/etc/faad2.conf
+#	$(INSTALL) -d $(FAAD2_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(FAAD2_SOURCE_DIR)/rc.faad2 $(FAAD2_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXfaad2
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXfaad2
 	$(MAKE) $(FAAD2_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(FAAD2_SOURCE_DIR)/postinst $(FAAD2_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/postinst

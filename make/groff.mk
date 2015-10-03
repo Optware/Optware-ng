@@ -73,12 +73,12 @@ groff-source: $(DL_DIR)/$(GROFF_SOURCE) $(GROFF_PATCHES)
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(GROFF_IPK_DIR)/opt/sbin or $(GROFF_IPK_DIR)/opt/bin
+# Binaries should be installed into $(GROFF_IPK_DIR)$(TARGET_PREFIX)/sbin or $(GROFF_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(GROFF_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(GROFF_IPK_DIR)/opt/etc/groff/...
-# Documentation files should be installed in $(GROFF_IPK_DIR)/opt/doc/groff/...
-# Daemon startup scripts should be installed in $(GROFF_IPK_DIR)/opt/etc/init.d/S??groff
+# Libraries and include files should be installed into $(GROFF_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(GROFF_IPK_DIR)$(TARGET_PREFIX)/etc/groff/...
+# Documentation files should be installed in $(GROFF_IPK_DIR)$(TARGET_PREFIX)/doc/groff/...
+# Daemon startup scripts should be installed in $(GROFF_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??groff
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -130,33 +130,33 @@ $(GROFF_IPK_DIR)/CONTROL/control:
 
 $(GROFF_IPK): $(GROFF_BUILD_DIR)/.built
 	rm -rf $(GROFF_IPK_DIR) $(BUILD_DIR)/groff_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(GROFF_IPK_DIR)/opt
-	$(INSTALL) -d $(GROFF_IPK_DIR)/opt/info
+	$(INSTALL) -d $(GROFF_IPK_DIR)$(TARGET_PREFIX)
+	$(INSTALL) -d $(GROFF_IPK_DIR)$(TARGET_PREFIX)/info
 	$(MAKE) -C $(GROFF_BUILD_DIR) DESTDIR=$(GROFF_IPK_DIR) install
-	$(STRIP_COMMAND) $(GROFF_IPK_DIR)/opt/bin/addftinfo
-	$(STRIP_COMMAND) $(GROFF_IPK_DIR)/opt/bin/eqn
-	$(STRIP_COMMAND) $(GROFF_IPK_DIR)/opt/bin/grn
-	$(STRIP_COMMAND) $(GROFF_IPK_DIR)/opt/bin/grodvi
-	$(STRIP_COMMAND) $(GROFF_IPK_DIR)/opt/bin/groff
-	$(STRIP_COMMAND) $(GROFF_IPK_DIR)/opt/bin/grolbp
-	$(STRIP_COMMAND) $(GROFF_IPK_DIR)/opt/bin/grolj4
-	$(STRIP_COMMAND) $(GROFF_IPK_DIR)/opt/bin/grops
-	$(STRIP_COMMAND) $(GROFF_IPK_DIR)/opt/bin/grotty
-	$(STRIP_COMMAND) $(GROFF_IPK_DIR)/opt/bin/hpftodit
-	$(STRIP_COMMAND) $(GROFF_IPK_DIR)/opt/bin/indxbib
-	$(STRIP_COMMAND) $(GROFF_IPK_DIR)/opt/bin/lkbib
-	$(STRIP_COMMAND) $(GROFF_IPK_DIR)/opt/bin/lookbib
-	$(STRIP_COMMAND) $(GROFF_IPK_DIR)/opt/bin/pfbtops
-	$(STRIP_COMMAND) $(GROFF_IPK_DIR)/opt/bin/pic
-	$(STRIP_COMMAND) $(GROFF_IPK_DIR)/opt/bin/post-grohtml
-	$(STRIP_COMMAND) $(GROFF_IPK_DIR)/opt/bin/pre-grohtml
-	$(STRIP_COMMAND) $(GROFF_IPK_DIR)/opt/bin/refer
-	$(STRIP_COMMAND) $(GROFF_IPK_DIR)/opt/bin/soelim
-	$(STRIP_COMMAND) $(GROFF_IPK_DIR)/opt/bin/tbl
-	$(STRIP_COMMAND) $(GROFF_IPK_DIR)/opt/bin/tfmtodit
-	$(STRIP_COMMAND) $(GROFF_IPK_DIR)/opt/bin/troff
-	rm -f $(GROFF_IPK_DIR)/opt/info/dir
-	rm -f $(GROFF_IPK_DIR)/opt/info/dir.old
+	$(STRIP_COMMAND) $(GROFF_IPK_DIR)$(TARGET_PREFIX)/bin/addftinfo
+	$(STRIP_COMMAND) $(GROFF_IPK_DIR)$(TARGET_PREFIX)/bin/eqn
+	$(STRIP_COMMAND) $(GROFF_IPK_DIR)$(TARGET_PREFIX)/bin/grn
+	$(STRIP_COMMAND) $(GROFF_IPK_DIR)$(TARGET_PREFIX)/bin/grodvi
+	$(STRIP_COMMAND) $(GROFF_IPK_DIR)$(TARGET_PREFIX)/bin/groff
+	$(STRIP_COMMAND) $(GROFF_IPK_DIR)$(TARGET_PREFIX)/bin/grolbp
+	$(STRIP_COMMAND) $(GROFF_IPK_DIR)$(TARGET_PREFIX)/bin/grolj4
+	$(STRIP_COMMAND) $(GROFF_IPK_DIR)$(TARGET_PREFIX)/bin/grops
+	$(STRIP_COMMAND) $(GROFF_IPK_DIR)$(TARGET_PREFIX)/bin/grotty
+	$(STRIP_COMMAND) $(GROFF_IPK_DIR)$(TARGET_PREFIX)/bin/hpftodit
+	$(STRIP_COMMAND) $(GROFF_IPK_DIR)$(TARGET_PREFIX)/bin/indxbib
+	$(STRIP_COMMAND) $(GROFF_IPK_DIR)$(TARGET_PREFIX)/bin/lkbib
+	$(STRIP_COMMAND) $(GROFF_IPK_DIR)$(TARGET_PREFIX)/bin/lookbib
+	$(STRIP_COMMAND) $(GROFF_IPK_DIR)$(TARGET_PREFIX)/bin/pfbtops
+	$(STRIP_COMMAND) $(GROFF_IPK_DIR)$(TARGET_PREFIX)/bin/pic
+	$(STRIP_COMMAND) $(GROFF_IPK_DIR)$(TARGET_PREFIX)/bin/post-grohtml
+	$(STRIP_COMMAND) $(GROFF_IPK_DIR)$(TARGET_PREFIX)/bin/pre-grohtml
+	$(STRIP_COMMAND) $(GROFF_IPK_DIR)$(TARGET_PREFIX)/bin/refer
+	$(STRIP_COMMAND) $(GROFF_IPK_DIR)$(TARGET_PREFIX)/bin/soelim
+	$(STRIP_COMMAND) $(GROFF_IPK_DIR)$(TARGET_PREFIX)/bin/tbl
+	$(STRIP_COMMAND) $(GROFF_IPK_DIR)$(TARGET_PREFIX)/bin/tfmtodit
+	$(STRIP_COMMAND) $(GROFF_IPK_DIR)$(TARGET_PREFIX)/bin/troff
+	rm -f $(GROFF_IPK_DIR)$(TARGET_PREFIX)/info/dir
+	rm -f $(GROFF_IPK_DIR)$(TARGET_PREFIX)/info/dir.old
 	$(MAKE) $(GROFF_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GROFF_IPK_DIR)
 

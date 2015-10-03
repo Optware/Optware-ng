@@ -47,7 +47,7 @@ MINIDLNA_IPK_VERSION=2
 
 #
 # MINIDLNA_CONFFILES should be a list of user-editable files
-MINIDLNA_CONFFILES=/opt/etc/minidlna.conf /opt/etc/init.d/S98minidlna
+MINIDLNA_CONFFILES=$(TARGET_PREFIX)/etc/minidlna.conf $(TARGET_PREFIX)/etc/init.d/S98minidlna
 
 #
 # MINIDLNA_PATCHES should list any patches, in the the order in
@@ -172,10 +172,10 @@ endif
 	if ! $(TARGET_CC) -E sources/common/test_sendfile.c >/dev/null 2>&1; then \
 		sed -i -e 's/-D_FILE_OFFSET_BITS=64 //' $(@D)/nothumbs/Makefile; \
 	fi
-	sed -i -e 's|-rpath -Wl,[^ \t]*|-rpath -Wl,/opt/lib|g' $(@D)/nothumbs/Makefile
+	sed -i -e 's|-rpath -Wl,[^ \t]*|-rpath -Wl,$(TARGET_PREFIX)/lib|g' $(@D)/nothumbs/Makefile
 	sed -i.orig \
-		 -e 's|/etc/|/opt&|' \
-		 -e 's|/usr/|/opt/|' \
+		 -e 's|/etc/|$(TARGET_PREFIX)&|' \
+		 -e 's|/usr/|$(TARGET_PREFIX)/|' \
 		$(@D)/nothumbs/minidlna.c
 	### configure version with thumbnails
 	sed -i -e '/^AM_SILENT_RULES/s/^/dnl /' $(@D)/thumbs/configure.ac
@@ -198,10 +198,10 @@ endif
 	if ! $(TARGET_CC) -E sources/common/test_sendfile.c >/dev/null 2>&1; then \
 		sed -i -e 's/-D_FILE_OFFSET_BITS=64 //' $(@D)/thumbs/Makefile; \
 	fi
-	sed -i -e 's|-rpath -Wl,[^ \t]*|-rpath -Wl,/opt/lib|g' $(@D)/thumbs/Makefile
+	sed -i -e 's|-rpath -Wl,[^ \t]*|-rpath -Wl,$(TARGET_PREFIX)/lib|g' $(@D)/thumbs/Makefile
 	sed -i.orig \
-		 -e 's|/etc/|/opt&|' \
-		 -e 's|/usr/|/opt/|' \
+		 -e 's|/etc/|$(TARGET_PREFIX)&|' \
+		 -e 's|/usr/|$(TARGET_PREFIX)/|' \
 		$(@D)/thumbs/minidlna.c
 	touch $@
 
@@ -284,12 +284,12 @@ endif
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(MINIDLNA_IPK_DIR)/opt/sbin or $(MINIDLNA_IPK_DIR)/opt/bin
+# Binaries should be installed into $(MINIDLNA_IPK_DIR)$(TARGET_PREFIX)/sbin or $(MINIDLNA_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(MINIDLNA_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(MINIDLNA_IPK_DIR)/opt/etc/minidlna/...
-# Documentation files should be installed in $(MINIDLNA_IPK_DIR)/opt/doc/minidlna/...
-# Daemon startup scripts should be installed in $(MINIDLNA_IPK_DIR)/opt/etc/init.d/S??minidlna
+# Libraries and include files should be installed into $(MINIDLNA_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(MINIDLNA_IPK_DIR)$(TARGET_PREFIX)/etc/minidlna/...
+# Documentation files should be installed in $(MINIDLNA_IPK_DIR)$(TARGET_PREFIX)/doc/minidlna/...
+# Daemon startup scripts should be installed in $(MINIDLNA_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??minidlna
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -299,12 +299,12 @@ $(MINIDLNA_IPK): $(MINIDLNA_BUILD_DIR)/.built
 		DESTDIR=$(MINIDLNA_IPK_DIR) \
 		PREFIX=$(MINIDLNA_IPK_DIR) \
 		INSTALLPREFIX=$(MINIDLNA_IPK_DIR)$(TARGET_PREFIX) \
-		ETCINSTALLDIR=$(MINIDLNA_IPK_DIR)/opt/etc \
+		ETCINSTALLDIR=$(MINIDLNA_IPK_DIR)$(TARGET_PREFIX)/etc \
 		;
-	$(STRIP_COMMAND) $(MINIDLNA_IPK_DIR)/opt/sbin/*
-	$(INSTALL) -d $(MINIDLNA_IPK_DIR)/opt/etc/init.d $(MINIDLNA_IPK_DIR)/opt/etc/minidlna
-	$(INSTALL) -m 644 $(MINIDLNA_SOURCE_DIR)/minidlna.conf $(MINIDLNA_IPK_DIR)/opt/etc/minidlna.conf
-	$(INSTALL) -m 755 $(MINIDLNA_SOURCE_DIR)/rc.minidlna $(MINIDLNA_IPK_DIR)/opt/etc/init.d/S98minidlna
+	$(STRIP_COMMAND) $(MINIDLNA_IPK_DIR)$(TARGET_PREFIX)/sbin/*
+	$(INSTALL) -d $(MINIDLNA_IPK_DIR)$(TARGET_PREFIX)/etc/init.d $(MINIDLNA_IPK_DIR)$(TARGET_PREFIX)/etc/minidlna
+	$(INSTALL) -m 644 $(MINIDLNA_SOURCE_DIR)/minidlna.conf $(MINIDLNA_IPK_DIR)$(TARGET_PREFIX)/etc/minidlna.conf
+	$(INSTALL) -m 755 $(MINIDLNA_SOURCE_DIR)/rc.minidlna $(MINIDLNA_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S98minidlna
 	$(MAKE) $(MINIDLNA_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(MINIDLNA_SOURCE_DIR)/postinst $(MINIDLNA_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 755 $(MINIDLNA_SOURCE_DIR)/prerm $(MINIDLNA_IPK_DIR)/CONTROL/prerm
@@ -317,12 +317,12 @@ $(MINIDLNA_THUMBNAIL_IPK): $(MINIDLNA_BUILD_DIR)/.built
 		DESTDIR=$(MINIDLNA_THUMBNAIL_IPK_DIR) \
 		PREFIX=$(MINIDLNA_THUMBNAIL_IPK_DIR) \
 		INSTALLPREFIX=$(MINIDLNA_THUMBNAIL_IPK_DIR)$(TARGET_PREFIX) \
-		ETCINSTALLDIR=$(MINIDLNA_THUMBNAIL_IPK_DIR)/opt/etc \
+		ETCINSTALLDIR=$(MINIDLNA_THUMBNAIL_IPK_DIR)$(TARGET_PREFIX)/etc \
 		;
-	$(STRIP_COMMAND) $(MINIDLNA_THUMBNAIL_IPK_DIR)/opt/sbin/*
-	$(INSTALL) -d $(MINIDLNA_THUMBNAIL_IPK_DIR)/opt/etc/init.d
-	$(INSTALL) -m 644 $(MINIDLNA_SOURCE_DIR)/minidlna.thumbs.conf $(MINIDLNA_THUMBNAIL_IPK_DIR)/opt/etc/minidlna.conf
-	$(INSTALL) -m 755 $(MINIDLNA_SOURCE_DIR)/rc.minidlna $(MINIDLNA_THUMBNAIL_IPK_DIR)/opt/etc/init.d/S98minidlna
+	$(STRIP_COMMAND) $(MINIDLNA_THUMBNAIL_IPK_DIR)$(TARGET_PREFIX)/sbin/*
+	$(INSTALL) -d $(MINIDLNA_THUMBNAIL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(INSTALL) -m 644 $(MINIDLNA_SOURCE_DIR)/minidlna.thumbs.conf $(MINIDLNA_THUMBNAIL_IPK_DIR)$(TARGET_PREFIX)/etc/minidlna.conf
+	$(INSTALL) -m 755 $(MINIDLNA_SOURCE_DIR)/rc.minidlna $(MINIDLNA_THUMBNAIL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S98minidlna
 	$(MAKE) $(MINIDLNA_THUMBNAIL_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(MINIDLNA_SOURCE_DIR)/postinst $(MINIDLNA_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 755 $(MINIDLNA_SOURCE_DIR)/prerm $(MINIDLNA_IPK_DIR)/CONTROL/prerm

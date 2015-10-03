@@ -110,7 +110,7 @@ $(JFSUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(JFSUTILS_SOURCE) $(JFSUTILS_PATCH
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=$(TARGET_PREFIX) \
-  		--libdir=/opt/lib          \
+  		--libdir=$(TARGET_PREFIX)/lib          \
 	)
 	touch $@
 
@@ -157,16 +157,16 @@ $(JFSUTILS_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(JFSUTILS_IPK_DIR)/opt/sbin or $(JFSUTILS_IPK_DIR)/opt/bin
+# Binaries should be installed into $(JFSUTILS_IPK_DIR)$(TARGET_PREFIX)/sbin or $(JFSUTILS_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(JFSUTILS_IPK_DIR)/opt/{lib,include}
+# Libraries and include files should be installed into $(JFSUTILS_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
 # 
 #
 # You may need to patch your application to make it use these locations.
 #
 $(JFSUTILS_IPK): $(JFSUTILS_BUILD_DIR)/.built
 	rm -rf $(JFSUTILS_IPK_DIR) $(BUILD_DIR)/jfsutils_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(JFSUTILS_IPK_DIR)/opt/sbin
+	$(INSTALL) -d $(JFSUTILS_IPK_DIR)$(TARGET_PREFIX)/sbin
 	$(MAKE) -C $(JFSUTILS_BUILD_DIR) DESTDIR=$(JFSUTILS_IPK_DIR) install-strip
 	$(MAKE) $(JFSUTILS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(JFSUTILS_IPK_DIR)

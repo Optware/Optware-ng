@@ -37,7 +37,7 @@ BINUTILS_CONFLICTS=
 
 #
 # BINUTILS_CONFFILES should be a list of user-editable files
-#BINUTILS_CONFFILES=/opt/etc/binutils.conf /opt/etc/init.d/SXXbinutils
+#BINUTILS_CONFFILES=$(TARGET_PREFIX)/etc/binutils.conf $(TARGET_PREFIX)/etc/init.d/SXXbinutils
 
 ifneq ($(GCC_TARGET_NAME),)
 BINUTILS_TARGET_NAME=$(GCC_TARGET_NAME)
@@ -188,27 +188,27 @@ $(BINUTILS_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(BINUTILS_IPK_DIR)/opt/sbin or $(BINUTILS_IPK_DIR)/opt/bin
+# Binaries should be installed into $(BINUTILS_IPK_DIR)$(TARGET_PREFIX)/sbin or $(BINUTILS_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(BINUTILS_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(BINUTILS_IPK_DIR)/opt/etc/binutils/...
-# Documentation files should be installed in $(BINUTILS_IPK_DIR)/opt/doc/binutils/...
-# Daemon startup scripts should be installed in $(BINUTILS_IPK_DIR)/opt/etc/init.d/S??binutils
+# Libraries and include files should be installed into $(BINUTILS_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(BINUTILS_IPK_DIR)$(TARGET_PREFIX)/etc/binutils/...
+# Documentation files should be installed in $(BINUTILS_IPK_DIR)$(TARGET_PREFIX)/doc/binutils/...
+# Daemon startup scripts should be installed in $(BINUTILS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??binutils
 #
 # You may need to patch your application to make it use these locations.
 #
 $(BINUTILS_IPK): $(BINUTILS_BUILD_DIR)/.built
 	rm -rf $(BINUTILS_IPK_DIR) $(BUILD_DIR)/binutils_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(BINUTILS_BUILD_DIR) DESTDIR=$(BINUTILS_IPK_DIR) install
-	rm -f $(BINUTILS_IPK_DIR)/opt/share/info/dir
-	-$(STRIP_COMMAND) $(BINUTILS_IPK_DIR)/opt/bin/*
-	mv $(BINUTILS_IPK_DIR)/opt/bin/strings $(BINUTILS_IPK_DIR)/opt/bin/binutils-strings
+	rm -f $(BINUTILS_IPK_DIR)$(TARGET_PREFIX)/share/info/dir
+	-$(STRIP_COMMAND) $(BINUTILS_IPK_DIR)$(TARGET_PREFIX)/bin/*
+	mv $(BINUTILS_IPK_DIR)$(TARGET_PREFIX)/bin/strings $(BINUTILS_IPK_DIR)$(TARGET_PREFIX)/bin/binutils-strings
 	$(MAKE) $(BINUTILS_IPK_DIR)/CONTROL/control
 	(echo "#!/bin/sh" ; \
-	 echo "update-alternatives --install /opt/bin/strings strings /opt/bin/binutils-strings 50" ; \
+	 echo "update-alternatives --install $(TARGET_PREFIX)/bin/strings strings $(TARGET_PREFIX)/bin/binutils-strings 50" ; \
 	) > $(BINUTILS_IPK_DIR)/CONTROL/postinst
 	(echo "#!/bin/sh" ; \
-	 echo "update-alternatives --remove strings /opt/bin/binutils-strings" ; \
+	 echo "update-alternatives --remove strings $(TARGET_PREFIX)/bin/binutils-strings" ; \
 	) > $(BINUTILS_IPK_DIR)/CONTROL/prerm
 	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ |]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

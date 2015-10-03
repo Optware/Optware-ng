@@ -46,7 +46,7 @@ UP-IMAPPROXY_IPK_VERSION=1
 
 #
 # UP-IMAPPROXY_CONFFILES should be a list of user-editable files
-UP-IMAPPROXY_CONFFILES=/opt/etc/imapproxy.conf /opt/etc/init.d/S60imapproxy
+UP-IMAPPROXY_CONFFILES=$(TARGET_PREFIX)/etc/imapproxy.conf $(TARGET_PREFIX)/etc/init.d/S60imapproxy
 
 #
 # UP-IMAPPROXY_PATCHES should list any patches, in the the order in
@@ -185,25 +185,25 @@ $(UP-IMAPPROXY_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(UP-IMAPPROXY_IPK_DIR)/opt/sbin or $(UP-IMAPPROXY_IPK_DIR)/opt/bin
+# Binaries should be installed into $(UP-IMAPPROXY_IPK_DIR)$(TARGET_PREFIX)/sbin or $(UP-IMAPPROXY_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(UP-IMAPPROXY_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(UP-IMAPPROXY_IPK_DIR)/opt/etc/up-imapproxy/...
-# Documentation files should be installed in $(UP-IMAPPROXY_IPK_DIR)/opt/doc/up-imapproxy/...
-# Daemon startup scripts should be installed in $(UP-IMAPPROXY_IPK_DIR)/opt/etc/init.d/S??up-imapproxy
+# Libraries and include files should be installed into $(UP-IMAPPROXY_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(UP-IMAPPROXY_IPK_DIR)$(TARGET_PREFIX)/etc/up-imapproxy/...
+# Documentation files should be installed in $(UP-IMAPPROXY_IPK_DIR)$(TARGET_PREFIX)/doc/up-imapproxy/...
+# Daemon startup scripts should be installed in $(UP-IMAPPROXY_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??up-imapproxy
 #
 # You may need to patch your application to make it use these locations.
 #
 $(UP-IMAPPROXY_IPK): $(UP-IMAPPROXY_BUILD_DIR)/.built
 	rm -rf $(UP-IMAPPROXY_IPK_DIR) $(BUILD_DIR)/up-imapproxy_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(UP-IMAPPROXY_IPK_DIR)/opt/sbin/
-	$(INSTALL) -m 0755 $(UP-IMAPPROXY_BUILD_DIR)/bin/* $(UP-IMAPPROXY_IPK_DIR)/opt/sbin/
-	$(STRIP_COMMAND) $(UP-IMAPPROXY_IPK_DIR)/opt/sbin/*
-	$(INSTALL) -d $(UP-IMAPPROXY_IPK_DIR)/opt/etc/
-	$(INSTALL) -m 644 $(UP-IMAPPROXY_BUILD_DIR)/scripts/imapproxy.conf $(UP-IMAPPROXY_IPK_DIR)/opt/etc/imapproxy.conf
-	$(INSTALL) -d $(UP-IMAPPROXY_IPK_DIR)/opt/etc/init.d
-	$(INSTALL) -m 755 $(UP-IMAPPROXY_SOURCE_DIR)/imapproxy.init $(UP-IMAPPROXY_IPK_DIR)/opt/etc/init.d/S60imapproxy
-	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(UP-IMAPPROXY_IPK_DIR)/opt/etc/init.d/S60imapproxy
+	$(INSTALL) -d $(UP-IMAPPROXY_IPK_DIR)$(TARGET_PREFIX)/sbin/
+	$(INSTALL) -m 0755 $(UP-IMAPPROXY_BUILD_DIR)/bin/* $(UP-IMAPPROXY_IPK_DIR)$(TARGET_PREFIX)/sbin/
+	$(STRIP_COMMAND) $(UP-IMAPPROXY_IPK_DIR)$(TARGET_PREFIX)/sbin/*
+	$(INSTALL) -d $(UP-IMAPPROXY_IPK_DIR)$(TARGET_PREFIX)/etc/
+	$(INSTALL) -m 644 $(UP-IMAPPROXY_BUILD_DIR)/scripts/imapproxy.conf $(UP-IMAPPROXY_IPK_DIR)$(TARGET_PREFIX)/etc/imapproxy.conf
+	$(INSTALL) -d $(UP-IMAPPROXY_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(INSTALL) -m 755 $(UP-IMAPPROXY_SOURCE_DIR)/imapproxy.init $(UP-IMAPPROXY_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S60imapproxy
+	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(UP-IMAPPROXY_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S60imapproxy
 	$(MAKE) $(UP-IMAPPROXY_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(UP-IMAPPROXY_SOURCE_DIR)/postinst $(UP-IMAPPROXY_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/postinst

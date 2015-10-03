@@ -158,7 +158,7 @@ $(ICE_IPK): $(ICE_BUILD_DIR)/.built
 	rm -rf $(ICE_IPK_DIR) $(BUILD_DIR)/ice_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(ICE_BUILD_DIR) DESTDIR=$(ICE_IPK_DIR) install-strip
 	$(MAKE) $(ICE_IPK_DIR)/CONTROL/control
-	rm -f $(ICE_IPK_DIR)/opt/lib/*.la
+	rm -f $(ICE_IPK_DIR)$(TARGET_PREFIX)/lib/*.la
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ICE_IPK_DIR)
 
 #

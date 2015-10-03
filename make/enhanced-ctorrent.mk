@@ -156,19 +156,19 @@ $(ENHANCED_CTORRENT_IPK_DIR)/CONTROL/control:
 # in order to prevent a conflict with the original CTorrent package
 # available in the Optware repository. 
 #
-# Binaries should be installed into $(ENHANCED_CTORRENT_IPK_DIR)/opt/bin
-# Libraries and include files should be installed into $(ENHANCED_CTORRENT_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(ENHANCED_CTORRENT_IPK_DIR)/opt/etc/enhanced-ctorrent/...
-# Documentation files should be installed in $(ENHANCED_CTORRENT_IPK_DIR)/opt/doc/enhanced-ctorrent/...
+# Binaries should be installed into $(ENHANCED_CTORRENT_IPK_DIR)$(TARGET_PREFIX)/bin
+# Libraries and include files should be installed into $(ENHANCED_CTORRENT_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(ENHANCED_CTORRENT_IPK_DIR)$(TARGET_PREFIX)/etc/enhanced-ctorrent/...
+# Documentation files should be installed in $(ENHANCED_CTORRENT_IPK_DIR)$(TARGET_PREFIX)/doc/enhanced-ctorrent/...
 #
 $(ENHANCED_CTORRENT_IPK): $(ENHANCED_CTORRENT_BUILD_DIR)/.built
 	rm -rf $(ENHANCED_CTORRENT_IPK_DIR) $(ENHANCED_CTORRENT_IPK)
-	$(INSTALL) -d $(ENHANCED_CTORRENT_IPK_DIR)/opt/bin
-	$(STRIP_COMMAND) $(ENHANCED_CTORRENT_BUILD_DIR)/ctorrent -o $(ENHANCED_CTORRENT_IPK_DIR)/opt/bin/enhanced-ctorrent
-	$(INSTALL) -d $(ENHANCED_CTORRENT_IPK_DIR)/opt/doc/enhanced-ctorrent
-	$(INSTALL) -m 755 $(ENHANCED_CTORRENT_SOURCE_DIR)/README.nslu2 $(ENHANCED_CTORRENT_IPK_DIR)/opt/doc/enhanced-ctorrent/README.nslu2
-	$(INSTALL) -m 755 $(ENHANCED_CTORRENT_SOURCE_DIR)/README-DNH.TXT $(ENHANCED_CTORRENT_IPK_DIR)/opt/doc/enhanced-ctorrent/README-DNH.TXT
-	$(INSTALL) -m 755 $(ENHANCED_CTORRENT_SOURCE_DIR)/UserGuide $(ENHANCED_CTORRENT_IPK_DIR)/opt/doc/enhanced-ctorrent/UserGuide
+	$(INSTALL) -d $(ENHANCED_CTORRENT_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(STRIP_COMMAND) $(ENHANCED_CTORRENT_BUILD_DIR)/ctorrent -o $(ENHANCED_CTORRENT_IPK_DIR)$(TARGET_PREFIX)/bin/enhanced-ctorrent
+	$(INSTALL) -d $(ENHANCED_CTORRENT_IPK_DIR)$(TARGET_PREFIX)/doc/enhanced-ctorrent
+	$(INSTALL) -m 755 $(ENHANCED_CTORRENT_SOURCE_DIR)/README.nslu2 $(ENHANCED_CTORRENT_IPK_DIR)$(TARGET_PREFIX)/doc/enhanced-ctorrent/README.nslu2
+	$(INSTALL) -m 755 $(ENHANCED_CTORRENT_SOURCE_DIR)/README-DNH.TXT $(ENHANCED_CTORRENT_IPK_DIR)$(TARGET_PREFIX)/doc/enhanced-ctorrent/README-DNH.TXT
+	$(INSTALL) -m 755 $(ENHANCED_CTORRENT_SOURCE_DIR)/UserGuide $(ENHANCED_CTORRENT_IPK_DIR)$(TARGET_PREFIX)/doc/enhanced-ctorrent/UserGuide
 	$(MAKE) $(ENHANCED_CTORRENT_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ENHANCED_CTORRENT_IPK_DIR)
 

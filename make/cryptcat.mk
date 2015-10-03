@@ -40,7 +40,7 @@ CRYPTCAT_IPK_VERSION=1
 
 #
 # CRYPTCAT_CONFFILES should be a list of user-editable files
-#CRYPTCAT_CONFFILES=/opt/etc/cryptcat.conf /opt/etc/init.d/SXXcryptcat
+#CRYPTCAT_CONFFILES=$(TARGET_PREFIX)/etc/cryptcat.conf $(TARGET_PREFIX)/etc/init.d/SXXcryptcat
 
 #
 # CRYPTCAT_PATCHES should list any patches, in the the order in
@@ -185,23 +185,23 @@ $(CRYPTCAT_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(CRYPTCAT_IPK_DIR)/opt/sbin or $(CRYPTCAT_IPK_DIR)/opt/bin
+# Binaries should be installed into $(CRYPTCAT_IPK_DIR)$(TARGET_PREFIX)/sbin or $(CRYPTCAT_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(CRYPTCAT_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(CRYPTCAT_IPK_DIR)/opt/etc/cryptcat/...
-# Documentation files should be installed in $(CRYPTCAT_IPK_DIR)/opt/doc/cryptcat/...
-# Daemon startup scripts should be installed in $(CRYPTCAT_IPK_DIR)/opt/etc/init.d/S??cryptcat
+# Libraries and include files should be installed into $(CRYPTCAT_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(CRYPTCAT_IPK_DIR)$(TARGET_PREFIX)/etc/cryptcat/...
+# Documentation files should be installed in $(CRYPTCAT_IPK_DIR)$(TARGET_PREFIX)/doc/cryptcat/...
+# Daemon startup scripts should be installed in $(CRYPTCAT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??cryptcat
 #
 # You may need to patch your application to make it use these locations.
 #
 $(CRYPTCAT_IPK): $(CRYPTCAT_BUILD_DIR)/.built
 	rm -rf $(CRYPTCAT_IPK_DIR) $(BUILD_DIR)/cryptcat_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(CRYPTCAT_BUILD_DIR) DESTDIR=$(CRYPTCAT_IPK_DIR) install-strip
-	$(INSTALL) -d $(CRYPTCAT_IPK_DIR)/opt/bin/
-	$(INSTALL) -m 755 $(CRYPTCAT_BUILD_DIR)/cryptcat $(CRYPTCAT_IPK_DIR)/opt/bin/
-	$(INSTALL) -d $(CRYPTCAT_IPK_DIR)/opt/share/doc/cryptcat
-	$(INSTALL) -m 644 $(CRYPTCAT_BUILD_DIR)/[CR]* $(CRYPTCAT_IPK_DIR)/opt/share/doc/cryptcat/
-	$(STRIP_COMMAND) $(CRYPTCAT_IPK_DIR)/opt/bin/cryptcat
+	$(INSTALL) -d $(CRYPTCAT_IPK_DIR)$(TARGET_PREFIX)/bin/
+	$(INSTALL) -m 755 $(CRYPTCAT_BUILD_DIR)/cryptcat $(CRYPTCAT_IPK_DIR)$(TARGET_PREFIX)/bin/
+	$(INSTALL) -d $(CRYPTCAT_IPK_DIR)$(TARGET_PREFIX)/share/doc/cryptcat
+	$(INSTALL) -m 644 $(CRYPTCAT_BUILD_DIR)/[CR]* $(CRYPTCAT_IPK_DIR)$(TARGET_PREFIX)/share/doc/cryptcat/
+	$(STRIP_COMMAND) $(CRYPTCAT_IPK_DIR)$(TARGET_PREFIX)/bin/cryptcat
 	$(MAKE) $(CRYPTCAT_IPK_DIR)/CONTROL/control
 	echo $(CRYPTCAT_CONFFILES) | sed -e 's/ /\n/g' > $(CRYPTCAT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CRYPTCAT_IPK_DIR)

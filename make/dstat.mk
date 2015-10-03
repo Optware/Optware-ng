@@ -30,7 +30,7 @@ DSTAT_IPK_VERSION=1
 
 #
 # DSTAT_CONFFILES should be a list of user-editable files
-#DSTAT_CONFFILES=/opt/etc/dstat.conf /opt/etc/init.d/SXXdstat
+#DSTAT_CONFFILES=$(TARGET_PREFIX)/etc/dstat.conf $(TARGET_PREFIX)/etc/init.d/SXXdstat
 
 #
 # DSTAT_PATCHES should list any patches, in the the order in
@@ -105,7 +105,7 @@ $(DSTAT_BUILD_DIR)/.configured: $(DL_DIR)/$(DSTAT_SOURCE) $(DSTAT_PATCHES) make/
 	if test "$(BUILD_DIR)/$(DSTAT_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(DSTAT_DIR) $(@D) ; \
 	fi
-	sed -i -e 's@#!/usr/bin/env python@#!/opt/bin/python@' $(@D)/dstat
+	sed -i -e 's@#!/usr/bin/env python@#!$(TARGET_PREFIX)/bin/python@' $(@D)/dstat
 	touch $@
 
 dstat-unpack: $(DSTAT_BUILD_DIR)/.configured
@@ -115,7 +115,7 @@ dstat-unpack: $(DSTAT_BUILD_DIR)/.configured
 #
 $(DSTAT_BUILD_DIR)/.built: $(DSTAT_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(@D) prefix=$(TARGET_PREFIX) sysconfdir=/opt/etc
+	$(MAKE) -C $(@D) prefix=$(TARGET_PREFIX) sysconfdir=$(TARGET_PREFIX)/etc
 	touch $@
 
 #
@@ -155,19 +155,19 @@ $(DSTAT_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(DSTAT_IPK_DIR)/opt/sbin or $(DSTAT_IPK_DIR)/opt/bin
+# Binaries should be installed into $(DSTAT_IPK_DIR)$(TARGET_PREFIX)/sbin or $(DSTAT_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(DSTAT_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(DSTAT_IPK_DIR)/opt/etc/dstat/...
-# Documentation files should be installed in $(DSTAT_IPK_DIR)/opt/doc/dstat/...
-# Daemon startup scripts should be installed in $(DSTAT_IPK_DIR)/opt/etc/init.d/S??dstat
+# Libraries and include files should be installed into $(DSTAT_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(DSTAT_IPK_DIR)$(TARGET_PREFIX)/etc/dstat/...
+# Documentation files should be installed in $(DSTAT_IPK_DIR)$(TARGET_PREFIX)/doc/dstat/...
+# Daemon startup scripts should be installed in $(DSTAT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??dstat
 #
 # You may need to patch your application to make it use these locations.
 #
 $(DSTAT_IPK): $(DSTAT_BUILD_DIR)/.built
 	rm -rf $(DSTAT_IPK_DIR) $(BUILD_DIR)/dstat_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(DSTAT_BUILD_DIR) install \
-		DESTDIR=$(DSTAT_IPK_DIR) prefix=$(TARGET_PREFIX) sysconfdir=/opt/etc
+		DESTDIR=$(DSTAT_IPK_DIR) prefix=$(TARGET_PREFIX) sysconfdir=$(TARGET_PREFIX)/etc
 	$(MAKE) $(DSTAT_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(DSTAT_IPK_DIR)
 

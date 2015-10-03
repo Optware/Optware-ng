@@ -38,7 +38,7 @@ WXBASE_IPK_VERSION=1
 
 #
 # WXBASE_CONFFILES should be a list of user-editable files
-## WXBASE_CONFFILES=/opt/etc/wxbase.conf /opt/etc/init.d/SXXwxbase
+## WXBASE_CONFFILES=$(TARGET_PREFIX)/etc/wxbase.conf $(TARGET_PREFIX)/etc/init.d/SXXwxbase
 
 #
 # WXBASE_PATCHES should list any patches, in the the order in
@@ -189,23 +189,23 @@ $(WXBASE_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(WXBASE_IPK_DIR)/opt/sbin or $(WXBASE_IPK_DIR)/opt/bin
+# Binaries should be installed into $(WXBASE_IPK_DIR)$(TARGET_PREFIX)/sbin or $(WXBASE_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(WXBASE_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(WXBASE_IPK_DIR)/opt/etc/wxbase/...
-# Documentation files should be installed in $(WXBASE_IPK_DIR)/opt/doc/wxbase/...
-# Daemon startup scripts should be installed in $(WXBASE_IPK_DIR)/opt/etc/init.d/S??wxbase
+# Libraries and include files should be installed into $(WXBASE_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(WXBASE_IPK_DIR)$(TARGET_PREFIX)/etc/wxbase/...
+# Documentation files should be installed in $(WXBASE_IPK_DIR)$(TARGET_PREFIX)/doc/wxbase/...
+# Daemon startup scripts should be installed in $(WXBASE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??wxbase
 #
 # You may need to patch your application to make it use these locations.
 #
 $(WXBASE_IPK): $(WXBASE_BUILD_DIR)/.built
 	rm -rf $(WXBASE_IPK_DIR) $(BUILD_DIR)/wxbase_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(WXBASE_BUILD_DIR) DESTDIR=$(WXBASE_IPK_DIR) install-strip
-	$(STRIP_COMMAND) $(WXBASE_IPK_DIR)/opt/lib/libwx_baseu_net-*.so.*.*.*
+	$(STRIP_COMMAND) $(WXBASE_IPK_DIR)$(TARGET_PREFIX)/lib/libwx_baseu_net-*.so.*.*.*
 	$(MAKE) $(WXBASE_IPK_DIR)/CONTROL/control
-	cd $(WXBASE_IPK_DIR)/opt/bin; rm -rf wx-config; \
+	cd $(WXBASE_IPK_DIR)$(TARGET_PREFIX)/bin; rm -rf wx-config; \
 		ln -s ../lib/wx/config/$(GNU_TARGET_NAME)* wx-config
-	cp $(WXBASE_IPK_DIR)/opt/lib/wx/include/$(GNU_TARGET_NAME)-*/wx/setup.h $(WXBASE_IPK_DIR)/opt/include/wx-2.8/wx/
+	cp $(WXBASE_IPK_DIR)$(TARGET_PREFIX)/lib/wx/include/$(GNU_TARGET_NAME)-*/wx/setup.h $(WXBASE_IPK_DIR)$(TARGET_PREFIX)/include/wx-2.8/wx/
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(WXBASE_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(WXBASE_IPK_DIR)
 

@@ -43,7 +43,7 @@ LZO_DEPENDS=
 
 #
 # LZO_CONFFILES should be a list of user-editable files
-#LZO_CONFFILES=/opt/etc/lzo.conf /opt/etc/init.d/SXXlzo
+#LZO_CONFFILES=$(TARGET_PREFIX)/etc/lzo.conf $(TARGET_PREFIX)/etc/init.d/SXXlzo
 
 #
 # LZO_PATCHES should list any patches, in the the order in
@@ -170,19 +170,19 @@ lzo-stage: $(LZO_BUILD_DIR)/.staged
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LZO_IPK_DIR)/opt/sbin or $(LZO_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LZO_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LZO_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LZO_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LZO_IPK_DIR)/opt/etc/lzo/...
-# Documentation files should be installed in $(LZO_IPK_DIR)/opt/doc/lzo/...
-# Daemon startup scripts should be installed in $(LZO_IPK_DIR)/opt/etc/init.d/S??lzo
+# Libraries and include files should be installed into $(LZO_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LZO_IPK_DIR)$(TARGET_PREFIX)/etc/lzo/...
+# Documentation files should be installed in $(LZO_IPK_DIR)$(TARGET_PREFIX)/doc/lzo/...
+# Daemon startup scripts should be installed in $(LZO_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??lzo
 #
 # You may need to patch your application to make it use these locations.
 #
 $(LZO_IPK): $(LZO_BUILD_DIR)/.built
 	rm -rf $(LZO_IPK_DIR) $(BUILD_DIR)/lzo_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LZO_BUILD_DIR) DESTDIR=$(LZO_IPK_DIR) install-strip
-	rm -f $(LZO_IPK_DIR)/opt/lib/liblzo2.a
+	rm -f $(LZO_IPK_DIR)$(TARGET_PREFIX)/lib/liblzo2.a
 	# Install control file
 	make  $(LZO_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 644 $(LZO_SOURCE_DIR)/postinst $(LZO_IPK_DIR)/CONTROL

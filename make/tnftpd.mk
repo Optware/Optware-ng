@@ -40,7 +40,7 @@ TNFTPD_IPK_VERSION=1
 
 #
 # TNFTPD_CONFFILES should be a list of user-editable files
-#TNFTPD_CONFFILES=/opt/etc/tnftpd.conf /opt/etc/init.d/SXXtnftpd
+#TNFTPD_CONFFILES=$(TARGET_PREFIX)/etc/tnftpd.conf $(TARGET_PREFIX)/etc/init.d/SXXtnftpd
 
 #
 # TNFTPD_PATCHES should list any patches, in the the order in
@@ -180,21 +180,21 @@ $(TNFTPD_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(TNFTPD_IPK_DIR)/opt/sbin or $(TNFTPD_IPK_DIR)/opt/bin
+# Binaries should be installed into $(TNFTPD_IPK_DIR)$(TARGET_PREFIX)/sbin or $(TNFTPD_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(TNFTPD_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(TNFTPD_IPK_DIR)/opt/etc/tnftpd/...
-# Documentation files should be installed in $(TNFTPD_IPK_DIR)/opt/doc/tnftpd/...
-# Daemon startup scripts should be installed in $(TNFTPD_IPK_DIR)/opt/etc/init.d/S??tnftpd
+# Libraries and include files should be installed into $(TNFTPD_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(TNFTPD_IPK_DIR)$(TARGET_PREFIX)/etc/tnftpd/...
+# Documentation files should be installed in $(TNFTPD_IPK_DIR)$(TARGET_PREFIX)/doc/tnftpd/...
+# Daemon startup scripts should be installed in $(TNFTPD_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??tnftpd
 #
 # You may need to patch your application to make it use these locations.
 #
 $(TNFTPD_IPK): $(TNFTPD_BUILD_DIR)/.built
 	rm -rf $(TNFTPD_IPK_DIR) $(BUILD_DIR)/tnftpd_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(TNFTPD_BUILD_DIR) prefix=$(TNFTPD_IPK_DIR)$(TARGET_PREFIX) install
-	chmod +w $(TNFTPD_IPK_DIR)/opt/libexec/tnftpd; \
-	$(STRIP_COMMAND) $(TNFTPD_IPK_DIR)/opt/libexec/tnftpd; \
-	chmod -w $(TNFTPD_IPK_DIR)/opt/libexec/tnftpd
+	chmod +w $(TNFTPD_IPK_DIR)$(TARGET_PREFIX)/libexec/tnftpd; \
+	$(STRIP_COMMAND) $(TNFTPD_IPK_DIR)$(TARGET_PREFIX)/libexec/tnftpd; \
+	chmod -w $(TNFTPD_IPK_DIR)$(TARGET_PREFIX)/libexec/tnftpd
 	$(MAKE) $(TNFTPD_IPK_DIR)/CONTROL/control
 	echo $(TNFTPD_CONFFILES) | sed -e 's/ /\n/g' > $(TNFTPD_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TNFTPD_IPK_DIR)

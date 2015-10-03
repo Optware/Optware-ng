@@ -47,7 +47,7 @@ STREAMRIPPER_IPK_VERSION=1
 #
 # STREAMRIPPER_CONFFILES should be a list of user-editable files
 STREAMRIPPER_CONFFILES=
-#/opt/etc/streamripper.conf /opt/etc/init.d/SXXstreamripper
+#$(TARGET_PREFIX)/etc/streamripper.conf $(TARGET_PREFIX)/etc/init.d/SXXstreamripper
 
 #
 # STREAMRIPPER_PATCHES should list any patches, in the the order in
@@ -182,23 +182,23 @@ $(STREAMRIPPER_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(STREAMRIPPER_IPK_DIR)/opt/sbin or $(STREAMRIPPER_IPK_DIR)/opt/bin
+# Binaries should be installed into $(STREAMRIPPER_IPK_DIR)$(TARGET_PREFIX)/sbin or $(STREAMRIPPER_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(STREAMRIPPER_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(STREAMRIPPER_IPK_DIR)/opt/etc/streamripper/...
-# Documentation files should be installed in $(STREAMRIPPER_IPK_DIR)/opt/doc/streamripper/...
-# Daemon startup scripts should be installed in $(STREAMRIPPER_IPK_DIR)/opt/etc/init.d/S??streamripper
+# Libraries and include files should be installed into $(STREAMRIPPER_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(STREAMRIPPER_IPK_DIR)$(TARGET_PREFIX)/etc/streamripper/...
+# Documentation files should be installed in $(STREAMRIPPER_IPK_DIR)$(TARGET_PREFIX)/doc/streamripper/...
+# Daemon startup scripts should be installed in $(STREAMRIPPER_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??streamripper
 #
 # You may need to patch your application to make it use these locations.
 #
 $(STREAMRIPPER_IPK): $(STREAMRIPPER_BUILD_DIR)/.built
 	rm -rf $(STREAMRIPPER_IPK_DIR) $(BUILD_DIR)/streamripper_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(STREAMRIPPER_BUILD_DIR) DESTDIR=$(STREAMRIPPER_IPK_DIR) install
-	$(STRIP_COMMAND) $(STREAMRIPPER_IPK_DIR)/opt/bin/streamripper
-#	$(INSTALL) -d $(STREAMRIPPER_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(STREAMRIPPER_SOURCE_DIR)/streamripper.conf $(STREAMRIPPER_IPK_DIR)/opt/etc/streamripper.conf
-#	$(INSTALL) -d $(STREAMRIPPER_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(STREAMRIPPER_SOURCE_DIR)/rc.streamripper $(STREAMRIPPER_IPK_DIR)/opt/etc/init.d/SXXstreamripper
+	$(STRIP_COMMAND) $(STREAMRIPPER_IPK_DIR)$(TARGET_PREFIX)/bin/streamripper
+#	$(INSTALL) -d $(STREAMRIPPER_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(STREAMRIPPER_SOURCE_DIR)/streamripper.conf $(STREAMRIPPER_IPK_DIR)$(TARGET_PREFIX)/etc/streamripper.conf
+#	$(INSTALL) -d $(STREAMRIPPER_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(STREAMRIPPER_SOURCE_DIR)/rc.streamripper $(STREAMRIPPER_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXstreamripper
 	$(MAKE) $(STREAMRIPPER_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(STREAMRIPPER_SOURCE_DIR)/postinst $(STREAMRIPPER_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 755 $(STREAMRIPPER_SOURCE_DIR)/prerm $(STREAMRIPPER_IPK_DIR)/CONTROL/prerm

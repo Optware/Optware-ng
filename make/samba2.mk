@@ -35,9 +35,9 @@ SAMBA2_CONFLICTS=samba, samba34, samba35
 
 #
 # SAMBA2_CONFFILES should be a list of user-editable files
-SAMBA2_CONFFILES=/opt/etc/init.d/S80samba \
-		/opt/etc/samba/smb.conf \
-		/opt/etc/xinetd.d/swat
+SAMBA2_CONFFILES=$(TARGET_PREFIX)/etc/init.d/S80samba \
+		$(TARGET_PREFIX)/etc/samba/smb.conf \
+		$(TARGET_PREFIX)/etc/xinetd.d/swat
 
 
 #
@@ -119,7 +119,7 @@ SAMBA2_CROSS_ENVS=\
 		fu_cv_sys_stat_statvfs64=yes
 endif
 
-SAMBA2_INST_DIR=/opt
+SAMBA2_INST_DIR=$(TARGET_PREFIX)
 SAMBA2_EXEC_PREFIX=$(SAMBA2_INST_DIR)
 SAMBA2_BIN_DIR=$(SAMBA2_INST_DIR)/bin
 SAMBA2_SBIN_DIR=$(SAMBA2_INST_DIR)/sbin
@@ -289,33 +289,33 @@ $(SAMBA2_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(SAMBA2_IPK_DIR)/opt/sbin or $(SAMBA2_IPK_DIR)/opt/bin
+# Binaries should be installed into $(SAMBA2_IPK_DIR)$(TARGET_PREFIX)/sbin or $(SAMBA2_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(SAMBA2_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(SAMBA2_IPK_DIR)/opt/etc/samba2/...
-# Documentation files should be installed in $(SAMBA2_IPK_DIR)/opt/doc/samba2/...
-# Daemon startup scripts should be installed in $(SAMBA2_IPK_DIR)/opt/etc/init.d/S??samba2
+# Libraries and include files should be installed into $(SAMBA2_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(SAMBA2_IPK_DIR)$(TARGET_PREFIX)/etc/samba2/...
+# Documentation files should be installed in $(SAMBA2_IPK_DIR)$(TARGET_PREFIX)/doc/samba2/...
+# Daemon startup scripts should be installed in $(SAMBA2_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??samba2
 #
 # You may need to patch your application to make it use these locations.
 #
 $(SAMBA2_IPK): $(SAMBA2_BUILD_DIR)/.built
 	rm -rf $(SAMBA2_IPK_DIR) $(BUILD_DIR)/samba2_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(SAMBA2_IPK_DIR)/opt/share/
+	$(INSTALL) -d $(SAMBA2_IPK_DIR)$(TARGET_PREFIX)/share/
 	$(MAKE) -C $(SAMBA2_BUILD_DIR) DESTDIR=$(SAMBA2_IPK_DIR) install
 	###in case install creates usr/local/samba/private dir for some reason
 	rm -rf $(SAMBA2_IPK_DIR)/usr
 	###smbmount and smbumount need to be root privelaged to work from user accounts
-	chmod +s $(SAMBA2_IPK_DIR)/opt/bin/smbmount $(SAMBA2_IPK_DIR)/opt/bin/smbumount
-	$(STRIP_COMMAND) `ls $(SAMBA2_IPK_DIR)/opt/sbin/* | egrep -v 'mount.smbfs'`
-	$(STRIP_COMMAND) `ls $(SAMBA2_IPK_DIR)/opt/bin/* | egrep -v 'findsmb|smbtar'`
-	$(INSTALL) -d $(SAMBA2_IPK_DIR)/opt/etc/init.d
-	$(INSTALL) -m 755 $(SAMBA2_SOURCE_DIR)/rc.samba $(SAMBA2_IPK_DIR)/opt/etc/init.d/S80samba
-	$(INSTALL) -d $(SAMBA2_IPK_DIR)/opt/etc/samba
-	$(INSTALL) -d $(SAMBA2_IPK_DIR)/opt/etc/xinetd.d
-	$(INSTALL) -m 644 $(SAMBA2_SOURCE_DIR)/swat $(SAMBA2_IPK_DIR)/opt/etc/xinetd.d
-	$(INSTALL) -m 644 $(SAMBA2_SOURCE_DIR)/smb.conf $(SAMBA2_IPK_DIR)/opt/etc/samba/
-	$(INSTALL) -d $(SAMBA2_IPK_DIR)/opt/var/log/samba
-	$(INSTALL) -d $(SAMBA2_IPK_DIR)/opt/var/spool/samba
+	chmod +s $(SAMBA2_IPK_DIR)$(TARGET_PREFIX)/bin/smbmount $(SAMBA2_IPK_DIR)$(TARGET_PREFIX)/bin/smbumount
+	$(STRIP_COMMAND) `ls $(SAMBA2_IPK_DIR)$(TARGET_PREFIX)/sbin/* | egrep -v 'mount.smbfs'`
+	$(STRIP_COMMAND) `ls $(SAMBA2_IPK_DIR)$(TARGET_PREFIX)/bin/* | egrep -v 'findsmb|smbtar'`
+	$(INSTALL) -d $(SAMBA2_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(INSTALL) -m 755 $(SAMBA2_SOURCE_DIR)/rc.samba $(SAMBA2_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S80samba
+	$(INSTALL) -d $(SAMBA2_IPK_DIR)$(TARGET_PREFIX)/etc/samba
+	$(INSTALL) -d $(SAMBA2_IPK_DIR)$(TARGET_PREFIX)/etc/xinetd.d
+	$(INSTALL) -m 644 $(SAMBA2_SOURCE_DIR)/swat $(SAMBA2_IPK_DIR)$(TARGET_PREFIX)/etc/xinetd.d
+	$(INSTALL) -m 644 $(SAMBA2_SOURCE_DIR)/smb.conf $(SAMBA2_IPK_DIR)$(TARGET_PREFIX)/etc/samba/
+	$(INSTALL) -d $(SAMBA2_IPK_DIR)$(TARGET_PREFIX)/var/log/samba
+	$(INSTALL) -d $(SAMBA2_IPK_DIR)$(TARGET_PREFIX)/var/spool/samba
 	$(MAKE) $(SAMBA2_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 644 $(SAMBA2_SOURCE_DIR)/postinst $(SAMBA2_IPK_DIR)/CONTROL/postinst
 	$(INSTALL) -m 644 $(SAMBA2_SOURCE_DIR)/preinst $(SAMBA2_IPK_DIR)/CONTROL/preinst

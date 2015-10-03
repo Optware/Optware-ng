@@ -44,7 +44,7 @@ QUILT_IPK_VERSION=5
 
 #
 # QUILT_CONFFILES should be a list of user-editable files
-#QUILT_CONFFILES=/opt/etc/quilt.conf /opt/etc/init.d/SXXquilt
+#QUILT_CONFFILES=$(TARGET_PREFIX)/etc/quilt.conf $(TARGET_PREFIX)/etc/init.d/SXXquilt
 
 #
 # QUILT_PATCHES should list any patches, in the the order in
@@ -121,9 +121,9 @@ $(QUILT_BUILD_DIR)/.configured: $(DL_DIR)/$(QUILT_SOURCE) $(QUILT_PATCHES) make/
 		then mv $(BUILD_DIR)/$(QUILT_DIR) $(@D) ; \
 	fi
 	sed -i \
-		-e '/@BASH/s|$$(BASH)|/opt/bin/bash|' \
-		-e '/@PERL/s|$$(PERL)|/opt/bin/perl|' \
-		-e '/@PATCH/s|$$(PATCH)|/opt/bin/patch|' \
+		-e '/@BASH/s|$$(BASH)|$(TARGET_PREFIX)/bin/bash|' \
+		-e '/@PERL/s|$$(PERL)|$(TARGET_PREFIX)/bin/perl|' \
+		-e '/@PATCH/s|$$(PATCH)|$(TARGET_PREFIX)/bin/patch|' \
 		$(@D)/Makefile.in
 	sed -i -e 's|patch_version=\$$2|patch_version=$(shell $(PATCH) --version|head -n 1|sed 's/.* //')|' $(@D)/configure
 	(cd $(@D); \
@@ -207,24 +207,24 @@ $(QUILT-LITE_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(QUILT_IPK_DIR)/opt/sbin or $(QUILT_IPK_DIR)/opt/bin
+# Binaries should be installed into $(QUILT_IPK_DIR)$(TARGET_PREFIX)/sbin or $(QUILT_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(QUILT_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(QUILT_IPK_DIR)/opt/etc/quilt/...
-# Documentation files should be installed in $(QUILT_IPK_DIR)/opt/doc/quilt/...
-# Daemon startup scripts should be installed in $(QUILT_IPK_DIR)/opt/etc/init.d/S??quilt
+# Libraries and include files should be installed into $(QUILT_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(QUILT_IPK_DIR)$(TARGET_PREFIX)/etc/quilt/...
+# Documentation files should be installed in $(QUILT_IPK_DIR)$(TARGET_PREFIX)/doc/quilt/...
+# Daemon startup scripts should be installed in $(QUILT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??quilt
 #
 # You may need to patch your application to make it use these locations.
 #
 $(QUILT_IPK): $(QUILT_BUILD_DIR)/.built
 	rm -rf $(QUILT_IPK_DIR) $(BUILD_DIR)/quilt_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(QUILT_BUILD_DIR) install BUILD_ROOT=$(QUILT_IPK_DIR) COMPAT_SYMLINKS=""
-	$(STRIP_COMMAND) $(QUILT_IPK_DIR)/opt/lib/quilt/backup-files
-	$(INSTALL) -d $(QUILT_IPK_DIR)/opt/etc/
-	$(INSTALL) -m 644 $(QUILT_SOURCE_DIR)/quilt.quiltrc $(QUILT_IPK_DIR)/opt/etc/quilt.quiltrc
-#	$(INSTALL) -d $(QUILT_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(QUILT_SOURCE_DIR)/rc.quilt $(QUILT_IPK_DIR)/opt/etc/init.d/SXXquilt
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/opt/etc/init.d/SXXquilt
+	$(STRIP_COMMAND) $(QUILT_IPK_DIR)$(TARGET_PREFIX)/lib/quilt/backup-files
+	$(INSTALL) -d $(QUILT_IPK_DIR)$(TARGET_PREFIX)/etc/
+	$(INSTALL) -m 644 $(QUILT_SOURCE_DIR)/quilt.quiltrc $(QUILT_IPK_DIR)$(TARGET_PREFIX)/etc/quilt.quiltrc
+#	$(INSTALL) -d $(QUILT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(QUILT_SOURCE_DIR)/rc.quilt $(QUILT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXquilt
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXquilt
 	$(MAKE) $(QUILT_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(QUILT_SOURCE_DIR)/postinst $(QUILT_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/postinst
@@ -236,17 +236,17 @@ $(QUILT_IPK): $(QUILT_BUILD_DIR)/.built
 $(QUILT-LITE_IPK): $(QUILT_BUILD_DIR)/.built
 	rm -rf $(QUILT-LITE_IPK_DIR) $(BUILD_DIR)/quilt-lite_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(QUILT_BUILD_DIR) install BUILD_ROOT=$(QUILT-LITE_IPK_DIR) COMPAT_SYMLINKS=""
-	( cd $(QUILT-LITE_IPK_DIR)/opt/bin ; rm -f guards )
-	( cd $(QUILT-LITE_IPK_DIR)/opt/etc ; rm -rf bash_completion.d )
-	( cd $(QUILT-LITE_IPK_DIR)/opt/share ; rm -rf doc emacs man )
-	( cd $(QUILT-LITE_IPK_DIR)/opt/share/quilt ; \
+	( cd $(QUILT-LITE_IPK_DIR)$(TARGET_PREFIX)/bin ; rm -f guards )
+	( cd $(QUILT-LITE_IPK_DIR)$(TARGET_PREFIX)/etc ; rm -rf bash_completion.d )
+	( cd $(QUILT-LITE_IPK_DIR)$(TARGET_PREFIX)/share ; rm -rf doc emacs man )
+	( cd $(QUILT-LITE_IPK_DIR)$(TARGET_PREFIX)/share/quilt ; \
 	  rm -f annotate )
-	( cd $(QUILT-LITE_IPK_DIR)/opt/share/quilt/scripts ; \
+	( cd $(QUILT-LITE_IPK_DIR)$(TARGET_PREFIX)/share/quilt/scripts ; \
 	  rm -f dependency-graph edmail parse-patch remove-trailing-ws )
 	( cd $(QUILT-LITE_IPK_DIR) ; $(PATCH) -p0 < $(QUILT_SOURCE_DIR)/quilt-lite.patch )
-	$(STRIP_COMMAND) $(QUILT-LITE_IPK_DIR)/opt/lib/quilt/backup-files
-	$(INSTALL) -d $(QUILT-LITE_IPK_DIR)/opt/etc/
-	$(INSTALL) -m 644 $(QUILT_SOURCE_DIR)/quilt.quiltrc $(QUILT-LITE_IPK_DIR)/opt/etc/quilt.quiltrc
+	$(STRIP_COMMAND) $(QUILT-LITE_IPK_DIR)$(TARGET_PREFIX)/lib/quilt/backup-files
+	$(INSTALL) -d $(QUILT-LITE_IPK_DIR)$(TARGET_PREFIX)/etc/
+	$(INSTALL) -m 644 $(QUILT_SOURCE_DIR)/quilt.quiltrc $(QUILT-LITE_IPK_DIR)$(TARGET_PREFIX)/etc/quilt.quiltrc
 	$(MAKE) $(QUILT-LITE_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(QUILT-LITE_IPK_DIR)
 

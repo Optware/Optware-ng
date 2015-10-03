@@ -43,7 +43,7 @@ DANSGUARDIAN_IPK_VERSION=1
 
 #
 # DANSGUARDIAN_CONFFILES should be a list of user-editable files
-#DANSGUARDIAN_CONFFILES=/opt/etc/dansguardian.conf /opt/etc/init.d/SXXdansguardian
+#DANSGUARDIAN_CONFFILES=$(TARGET_PREFIX)/etc/dansguardian.conf $(TARGET_PREFIX)/etc/init.d/SXXdansguardian
 
 #
 # DANSGUARDIAN_PATCHES should list any patches, in the the order in
@@ -187,23 +187,23 @@ $(DANSGUARDIAN_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(DANSGUARDIAN_IPK_DIR)/opt/sbin or $(DANSGUARDIAN_IPK_DIR)/opt/bin
+# Binaries should be installed into $(DANSGUARDIAN_IPK_DIR)$(TARGET_PREFIX)/sbin or $(DANSGUARDIAN_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(DANSGUARDIAN_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(DANSGUARDIAN_IPK_DIR)/opt/etc/dansguardian/...
-# Documentation files should be installed in $(DANSGUARDIAN_IPK_DIR)/opt/doc/dansguardian/...
-# Daemon startup scripts should be installed in $(DANSGUARDIAN_IPK_DIR)/opt/etc/init.d/S??dansguardian
+# Libraries and include files should be installed into $(DANSGUARDIAN_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(DANSGUARDIAN_IPK_DIR)$(TARGET_PREFIX)/etc/dansguardian/...
+# Documentation files should be installed in $(DANSGUARDIAN_IPK_DIR)$(TARGET_PREFIX)/doc/dansguardian/...
+# Daemon startup scripts should be installed in $(DANSGUARDIAN_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??dansguardian
 #
 # You may need to patch your application to make it use these locations.
 #
 $(DANSGUARDIAN_IPK): $(DANSGUARDIAN_BUILD_DIR)/.built
 	rm -rf $(DANSGUARDIAN_IPK_DIR) $(BUILD_DIR)/dansguardian_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(DANSGUARDIAN_BUILD_DIR) DESTDIR=$(DANSGUARDIAN_IPK_DIR) install-strip
-#	$(INSTALL) -d $(DANSGUARDIAN_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(DANSGUARDIAN_SOURCE_DIR)/dansguardian.conf $(DANSGUARDIAN_IPK_DIR)/opt/etc/dansguardian.conf
-#	$(INSTALL) -d $(DANSGUARDIAN_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(DANSGUARDIAN_SOURCE_DIR)/rc.dansguardian $(DANSGUARDIAN_IPK_DIR)/opt/etc/init.d/SXXdansguardian
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(DANSGUARDIAN_IPK_DIR)/opt/etc/init.d/SXXdansguardian
+#	$(INSTALL) -d $(DANSGUARDIAN_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(DANSGUARDIAN_SOURCE_DIR)/dansguardian.conf $(DANSGUARDIAN_IPK_DIR)$(TARGET_PREFIX)/etc/dansguardian.conf
+#	$(INSTALL) -d $(DANSGUARDIAN_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(DANSGUARDIAN_SOURCE_DIR)/rc.dansguardian $(DANSGUARDIAN_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXdansguardian
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(DANSGUARDIAN_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXdansguardian
 	$(MAKE) $(DANSGUARDIAN_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(DANSGUARDIAN_SOURCE_DIR)/postinst $(DANSGUARDIAN_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(DANSGUARDIAN_IPK_DIR)/CONTROL/postinst

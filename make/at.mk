@@ -40,7 +40,7 @@ AT_IPK_VERSION=5
 
 #
 # AT_CONFFILES should be a list of user-editable files
-AT_CONFFILES=/opt/etc/init.d/S20at
+AT_CONFFILES=$(TARGET_PREFIX)/etc/init.d/S20at
 
 #
 # AT_PATCHES should list any patches, in the the order in
@@ -128,16 +128,16 @@ $(AT_BUILD_DIR)/.configured: $(DL_DIR)/$(AT_SOURCE) $(AT_PATCHES) make/at.mk
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(AT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(AT_LDFLAGS)" \
-		ac_cv_path_SENDMAIL=/opt/sbin/sendmail \
+		ac_cv_path_SENDMAIL=$(TARGET_PREFIX)/sbin/sendmail \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=$(TARGET_PREFIX) \
 		\
-		--with-etcdir=/opt/etc \
-		--with-jobdir=/opt/var/spool/cron/atjobs \
-		--with-atspool=/opt/var/spool/cron/atspool \
+		--with-etcdir=$(TARGET_PREFIX)/etc \
+		--with-jobdir=$(TARGET_PREFIX)/var/spool/cron/atjobs \
+		--with-atspool=$(TARGET_PREFIX)/var/spool/cron/atspool \
 		--with-daemon_username=$(AT_DAEMON) \
 		--with-daemon_groupname=$(AT_DAEMON) \
 		\
@@ -195,23 +195,23 @@ $(AT_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(AT_IPK_DIR)/opt/sbin or $(AT_IPK_DIR)/opt/bin
+# Binaries should be installed into $(AT_IPK_DIR)$(TARGET_PREFIX)/sbin or $(AT_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(AT_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(AT_IPK_DIR)/opt/etc/at/...
-# Documentation files should be installed in $(AT_IPK_DIR)/opt/doc/at/...
-# Daemon startup scripts should be installed in $(AT_IPK_DIR)/opt/etc/init.d/S??at
+# Libraries and include files should be installed into $(AT_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(AT_IPK_DIR)$(TARGET_PREFIX)/etc/at/...
+# Documentation files should be installed in $(AT_IPK_DIR)$(TARGET_PREFIX)/doc/at/...
+# Daemon startup scripts should be installed in $(AT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??at
 #
 # You may need to patch your application to make it use these locations.
 #
 $(AT_IPK): $(AT_BUILD_DIR)/.built
 	rm -rf $(AT_IPK_DIR) $(BUILD_DIR)/at_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(AT_BUILD_DIR) IROOT=$(AT_IPK_DIR) install
-	$(STRIP_COMMAND) $(AT_IPK_DIR)/opt/bin/at $(AT_IPK_DIR)/opt/sbin/atd
-#	$(INSTALL) -d $(AT_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(AT_SOURCE_DIR)/at.conf $(AT_IPK_DIR)/opt/etc/at.conf
-	$(INSTALL) -d $(AT_IPK_DIR)/opt/etc/init.d
-	$(INSTALL) -m 755 $(AT_SOURCE_DIR)/rc.at $(AT_IPK_DIR)/opt/etc/init.d/S20at
+	$(STRIP_COMMAND) $(AT_IPK_DIR)$(TARGET_PREFIX)/bin/at $(AT_IPK_DIR)$(TARGET_PREFIX)/sbin/atd
+#	$(INSTALL) -d $(AT_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(AT_SOURCE_DIR)/at.conf $(AT_IPK_DIR)$(TARGET_PREFIX)/etc/at.conf
+	$(INSTALL) -d $(AT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(INSTALL) -m 755 $(AT_SOURCE_DIR)/rc.at $(AT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S20at
 	$(MAKE) $(AT_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 755 $(AT_SOURCE_DIR)/postinst $(AT_IPK_DIR)/CONTROL/postinst
 	sed -ie 's/nobody/$(AT_DAEMON)/g' $(AT_IPK_DIR)/CONTROL/postinst

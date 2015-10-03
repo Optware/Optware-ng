@@ -40,7 +40,7 @@ CALC_IPK_VERSION=1
 
 #
 # CALC_CONFFILES should be a list of user-editable files
-#CALC_CONFFILES=/opt/etc/calc.conf /opt/etc/init.d/SXXcalc
+#CALC_CONFFILES=$(TARGET_PREFIX)/etc/calc.conf $(TARGET_PREFIX)/etc/init.d/SXXcalc
 
 #
 # CALC_PATCHES should list any patches, in the the order in
@@ -129,7 +129,7 @@ $(CALC_BUILD_DIR)/.configured: $(DL_DIR)/$(CALC_SOURCE) $(CALC_PATCHES) make/cal
 		then mv $(BUILD_DIR)/$(CALC_DIR) $(@D) ; \
 	fi
 	sed -i -e 's| -I/usr/include||; s|/usr/include|$(TARGET_INCDIR)|' $(@D)/Makefile $(@D)/*/Makefile
-	sed -i -e 's|/usr/lib/|/opt/lib|' $(@D)/hist.h
+	sed -i -e 's|/usr/lib/|$(TARGET_PREFIX)/lib|' $(@D)/hist.h
 #	(cd $(CALC_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(CALC_CPPFLAGS)" \
@@ -156,12 +156,12 @@ $(CALC_BUILD_DIR)/.built: $(CALC_BUILD_DIR)/.configured
 		$(TARGET_CONFIGURE_OPTS) $(CALC_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(CALC_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(CALC_LDFLAGS)" \
-		CALC_SHAREDIR=/opt/share/calc \
-		BINDIR=/opt/bin \
+		CALC_SHAREDIR=$(TARGET_PREFIX)/share/calc \
+		BINDIR=$(TARGET_PREFIX)/bin \
 		INCDIR=$(TARGET_INCDIR) \
-		MANDIR=/opt/man \
-		LIBDIR=/opt/lib \
-		DEFAULT_LIB_INSTALL_PATH=/opt/lib \
+		MANDIR=$(TARGET_PREFIX)/man \
+		LIBDIR=$(TARGET_PREFIX)/lib \
+		DEFAULT_LIB_INSTALL_PATH=$(TARGET_PREFIX)/lib \
 		;
 	touch $@
 
@@ -202,33 +202,33 @@ $(CALC_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(CALC_IPK_DIR)/opt/sbin or $(CALC_IPK_DIR)/opt/bin
+# Binaries should be installed into $(CALC_IPK_DIR)$(TARGET_PREFIX)/sbin or $(CALC_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(CALC_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(CALC_IPK_DIR)/opt/etc/calc/...
-# Documentation files should be installed in $(CALC_IPK_DIR)/opt/doc/calc/...
-# Daemon startup scripts should be installed in $(CALC_IPK_DIR)/opt/etc/init.d/S??calc
+# Libraries and include files should be installed into $(CALC_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(CALC_IPK_DIR)$(TARGET_PREFIX)/etc/calc/...
+# Documentation files should be installed in $(CALC_IPK_DIR)$(TARGET_PREFIX)/doc/calc/...
+# Daemon startup scripts should be installed in $(CALC_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??calc
 #
 # You may need to patch your application to make it use these locations.
 #
 $(CALC_IPK): $(CALC_BUILD_DIR)/.built
 	rm -rf $(CALC_IPK_DIR) $(BUILD_DIR)/calc_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(CALC_BUILD_DIR) T=$(CALC_IPK_DIR) install \
-		CALC_SHAREDIR=/opt/share/calc \
-		BINDIR=/opt/bin \
-		INCDIR=/opt/include \
-		MANDIR=/opt/man \
-		LIBDIR=/opt/lib \
+		CALC_SHAREDIR=$(TARGET_PREFIX)/share/calc \
+		BINDIR=$(TARGET_PREFIX)/bin \
+		INCDIR=$(TARGET_PREFIX)/include \
+		MANDIR=$(TARGET_PREFIX)/man \
+		LIBDIR=$(TARGET_PREFIX)/lib \
 		;
-	chmod +w $(CALC_IPK_DIR)/opt/bin/calc && \
-		$(STRIP_COMMAND) $(CALC_IPK_DIR)/opt/bin/calc && \
-	chmod -w $(CALC_IPK_DIR)/opt/bin/calc
-	$(STRIP_COMMAND) $(CALC_IPK_DIR)/opt/lib/lib*calc*so.$(CALC_VERSION)
-#	$(INSTALL) -d $(CALC_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(CALC_SOURCE_DIR)/calc.conf $(CALC_IPK_DIR)/opt/etc/calc.conf
-#	$(INSTALL) -d $(CALC_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(CALC_SOURCE_DIR)/rc.calc $(CALC_IPK_DIR)/opt/etc/init.d/SXXcalc
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(CALC_IPK_DIR)/opt/etc/init.d/SXXcalc
+	chmod +w $(CALC_IPK_DIR)$(TARGET_PREFIX)/bin/calc && \
+		$(STRIP_COMMAND) $(CALC_IPK_DIR)$(TARGET_PREFIX)/bin/calc && \
+	chmod -w $(CALC_IPK_DIR)$(TARGET_PREFIX)/bin/calc
+	$(STRIP_COMMAND) $(CALC_IPK_DIR)$(TARGET_PREFIX)/lib/lib*calc*so.$(CALC_VERSION)
+#	$(INSTALL) -d $(CALC_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(CALC_SOURCE_DIR)/calc.conf $(CALC_IPK_DIR)$(TARGET_PREFIX)/etc/calc.conf
+#	$(INSTALL) -d $(CALC_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(CALC_SOURCE_DIR)/rc.calc $(CALC_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXcalc
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(CALC_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXcalc
 	$(MAKE) $(CALC_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(CALC_SOURCE_DIR)/postinst $(CALC_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(CALC_IPK_DIR)/CONTROL/postinst

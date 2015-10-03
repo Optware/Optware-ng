@@ -41,7 +41,7 @@ PY-GNOSIS-UTILS_IPK_VERSION=1
 
 #
 # PY-GNOSIS-UTILS_CONFFILES should be a list of user-editable files
-#PY-GNOSIS-UTILS_CONFFILES=/opt/etc/py-gnosis-utils.conf /opt/etc/init.d/SXXpy-gnosis-utils
+#PY-GNOSIS-UTILS_CONFFILES=$(TARGET_PREFIX)/etc/py-gnosis-utils.conf $(TARGET_PREFIX)/etc/init.d/SXXpy-gnosis-utils
 
 #
 # PY-GNOSIS-UTILS_PATCHES should list any patches, in the the order in
@@ -118,11 +118,11 @@ $(PY-GNOSIS-UTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-GNOSIS-UTILS_SOURCE) $(
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
 	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
-	        echo "rpath=/opt/lib"; \
+	        echo "rpath=$(TARGET_PREFIX)/lib"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python2.4"; \
+		echo "executable=$(TARGET_PREFIX)/bin/python2.4"; \
 		echo "[install]"; \
-		echo "install_scripts=/opt/bin"; \
+		echo "install_scripts=$(TARGET_PREFIX)/bin"; \
 	    ) >> setup.cfg; \
 	)
 	# 2.5
@@ -134,11 +134,11 @@ $(PY-GNOSIS-UTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-GNOSIS-UTILS_SOURCE) $(
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.5"; \
 	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
-	        echo "rpath=/opt/lib"; \
+	        echo "rpath=$(TARGET_PREFIX)/lib"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python2.5"; \
+		echo "executable=$(TARGET_PREFIX)/bin/python2.5"; \
 		echo "[install]"; \
-		echo "install_scripts=/opt/bin"; \
+		echo "install_scripts=$(TARGET_PREFIX)/bin"; \
 	    ) >> setup.cfg; \
 	)
 	touch $(PY-GNOSIS-UTILS_BUILD_DIR)/.configured
@@ -208,12 +208,12 @@ $(PY25-GNOSIS-UTILS_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PY-GNOSIS-UTILS_IPK_DIR)/opt/sbin or $(PY-GNOSIS-UTILS_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PY-GNOSIS-UTILS_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PY-GNOSIS-UTILS_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PY-GNOSIS-UTILS_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PY-GNOSIS-UTILS_IPK_DIR)/opt/etc/py-gnosis-utils/...
-# Documentation files should be installed in $(PY-GNOSIS-UTILS_IPK_DIR)/opt/doc/py-gnosis-utils/...
-# Daemon startup scripts should be installed in $(PY-GNOSIS-UTILS_IPK_DIR)/opt/etc/init.d/S??py-gnosis-utils
+# Libraries and include files should be installed into $(PY-GNOSIS-UTILS_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PY-GNOSIS-UTILS_IPK_DIR)$(TARGET_PREFIX)/etc/py-gnosis-utils/...
+# Documentation files should be installed in $(PY-GNOSIS-UTILS_IPK_DIR)$(TARGET_PREFIX)/doc/py-gnosis-utils/...
+# Daemon startup scripts should be installed in $(PY-GNOSIS-UTILS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??py-gnosis-utils
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -223,7 +223,7 @@ $(PY24-GNOSIS-UTILS_IPK) $(PY25-GNOSIS-UTILS_IPK): $(PY-GNOSIS-UTILS_BUILD_DIR)/
 	cd $(PY-GNOSIS-UTILS_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 -c "import setuptools; execfile('setup.py')" install \
-	    --root=$(PY24-GNOSIS-UTILS_IPK_DIR) --prefix=/opt
+	    --root=$(PY24-GNOSIS-UTILS_IPK_DIR) --prefix=$(TARGET_PREFIX)
 	$(MAKE) $(PY24-GNOSIS-UTILS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-GNOSIS-UTILS_IPK_DIR)
 	# 2.5
@@ -231,8 +231,8 @@ $(PY24-GNOSIS-UTILS_IPK) $(PY25-GNOSIS-UTILS_IPK): $(PY-GNOSIS-UTILS_BUILD_DIR)/
 	cd $(PY-GNOSIS-UTILS_BUILD_DIR)/2.5; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 -c "import setuptools; execfile('setup.py')" install \
-	    --root=$(PY25-GNOSIS-UTILS_IPK_DIR) --prefix=/opt
-#	for f in $(PY25-GNOSIS-UTILS_IPK_DIR)/opt/*bin/*; \
+	    --root=$(PY25-GNOSIS-UTILS_IPK_DIR) --prefix=$(TARGET_PREFIX)
+#	for f in $(PY25-GNOSIS-UTILS_IPK_DIR)$(TARGET_PREFIX)/*bin/*; \
 		do mv $$f `echo $$f | sed 's|$$|-2.5|'`; done
 	$(MAKE) $(PY25-GNOSIS-UTILS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-GNOSIS-UTILS_IPK_DIR)

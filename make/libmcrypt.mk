@@ -40,7 +40,7 @@ LIBMCRYPT_IPK_VERSION=1
 
 #
 # LIBMCRYPT_CONFFILES should be a list of user-editable files
-#LIBMCRYPT_CONFFILES=/opt/etc/libmcrypt.conf /opt/etc/init.d/SXXlibmcrypt
+#LIBMCRYPT_CONFFILES=$(TARGET_PREFIX)/etc/libmcrypt.conf $(TARGET_PREFIX)/etc/init.d/SXXlibmcrypt
 
 #
 # LIBMCRYPT_PATCHES should list any patches, in the the order in
@@ -183,24 +183,24 @@ $(LIBMCRYPT_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LIBMCRYPT_IPK_DIR)/opt/sbin or $(LIBMCRYPT_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LIBMCRYPT_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LIBMCRYPT_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LIBMCRYPT_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LIBMCRYPT_IPK_DIR)/opt/etc/libmcrypt/...
-# Documentation files should be installed in $(LIBMCRYPT_IPK_DIR)/opt/doc/libmcrypt/...
-# Daemon startup scripts should be installed in $(LIBMCRYPT_IPK_DIR)/opt/etc/init.d/S??libmcrypt
+# Libraries and include files should be installed into $(LIBMCRYPT_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LIBMCRYPT_IPK_DIR)$(TARGET_PREFIX)/etc/libmcrypt/...
+# Documentation files should be installed in $(LIBMCRYPT_IPK_DIR)$(TARGET_PREFIX)/doc/libmcrypt/...
+# Daemon startup scripts should be installed in $(LIBMCRYPT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??libmcrypt
 #
 # You may need to patch your application to make it use these locations.
 #
 $(LIBMCRYPT_IPK): $(LIBMCRYPT_BUILD_DIR)/.built
 	rm -rf $(LIBMCRYPT_IPK_DIR) $(BUILD_DIR)/libmcrypt_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBMCRYPT_BUILD_DIR) DESTDIR=$(LIBMCRYPT_IPK_DIR) install-strip
-	rm -f $(LIBMCRYPT_IPK_DIR)/opt/lib/libmcrypt.la
-#	$(INSTALL) -d $(LIBMCRYPT_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(LIBMCRYPT_SOURCE_DIR)/libmcrypt.conf $(LIBMCRYPT_IPK_DIR)/opt/etc/libmcrypt.conf
-#	$(INSTALL) -d $(LIBMCRYPT_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(LIBMCRYPT_SOURCE_DIR)/rc.libmcrypt $(LIBMCRYPT_IPK_DIR)/opt/etc/init.d/SXXlibmcrypt
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBMCRYPT_IPK_DIR)/opt/etc/init.d/SXXlibmcrypt
+	rm -f $(LIBMCRYPT_IPK_DIR)$(TARGET_PREFIX)/lib/libmcrypt.la
+#	$(INSTALL) -d $(LIBMCRYPT_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(LIBMCRYPT_SOURCE_DIR)/libmcrypt.conf $(LIBMCRYPT_IPK_DIR)$(TARGET_PREFIX)/etc/libmcrypt.conf
+#	$(INSTALL) -d $(LIBMCRYPT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(LIBMCRYPT_SOURCE_DIR)/rc.libmcrypt $(LIBMCRYPT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibmcrypt
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBMCRYPT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibmcrypt
 	$(MAKE) $(LIBMCRYPT_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(LIBMCRYPT_SOURCE_DIR)/postinst $(LIBMCRYPT_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBMCRYPT_IPK_DIR)/CONTROL/postinst

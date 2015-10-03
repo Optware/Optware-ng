@@ -40,7 +40,7 @@ TAGLIB_IPK_VERSION=1
 
 #
 # TAGLIB_CONFFILES should be a list of user-editable files
-#TAGLIB_CONFFILES=/opt/etc/taglib.conf /opt/etc/init.d/SXXtaglib
+#TAGLIB_CONFFILES=$(TARGET_PREFIX)/etc/taglib.conf $(TARGET_PREFIX)/etc/init.d/SXXtaglib
 
 #
 # TAGLIB_PATCHES should list any patches, in the the order in
@@ -179,23 +179,23 @@ $(TAGLIB_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(TAGLIB_IPK_DIR)/opt/sbin or $(TAGLIB_IPK_DIR)/opt/bin
+# Binaries should be installed into $(TAGLIB_IPK_DIR)$(TARGET_PREFIX)/sbin or $(TAGLIB_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(TAGLIB_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(TAGLIB_IPK_DIR)/opt/etc/taglib/...
-# Documentation files should be installed in $(TAGLIB_IPK_DIR)/opt/doc/taglib/...
-# Daemon startup scripts should be installed in $(TAGLIB_IPK_DIR)/opt/etc/init.d/S??taglib
+# Libraries and include files should be installed into $(TAGLIB_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(TAGLIB_IPK_DIR)$(TARGET_PREFIX)/etc/taglib/...
+# Documentation files should be installed in $(TAGLIB_IPK_DIR)$(TARGET_PREFIX)/doc/taglib/...
+# Daemon startup scripts should be installed in $(TAGLIB_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??taglib
 #
 # You may need to patch your application to make it use these locations.
 #
 $(TAGLIB_IPK): $(TAGLIB_BUILD_DIR)/.built
 	rm -rf $(TAGLIB_IPK_DIR) $(BUILD_DIR)/taglib_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(TAGLIB_BUILD_DIR) DESTDIR=$(TAGLIB_IPK_DIR) transform="" install-strip
-#	$(INSTALL) -d $(TAGLIB_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(TAGLIB_SOURCE_DIR)/taglib.conf $(TAGLIB_IPK_DIR)/opt/etc/taglib.conf
-#	$(INSTALL) -d $(TAGLIB_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(TAGLIB_SOURCE_DIR)/rc.taglib $(TAGLIB_IPK_DIR)/opt/etc/init.d/SXXtaglib
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(TAGLIB_IPK_DIR)/opt/etc/init.d/SXXtaglib
+#	$(INSTALL) -d $(TAGLIB_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(TAGLIB_SOURCE_DIR)/taglib.conf $(TAGLIB_IPK_DIR)$(TARGET_PREFIX)/etc/taglib.conf
+#	$(INSTALL) -d $(TAGLIB_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(TAGLIB_SOURCE_DIR)/rc.taglib $(TAGLIB_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXtaglib
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(TAGLIB_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXtaglib
 	$(MAKE) $(TAGLIB_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(TAGLIB_SOURCE_DIR)/postinst $(TAGLIB_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(TAGLIB_IPK_DIR)/CONTROL/postinst

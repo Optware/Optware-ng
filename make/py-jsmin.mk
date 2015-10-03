@@ -43,7 +43,7 @@ PY-JSMIN_IPK_VERSION=1
 
 #
 # PY-JSMIN_CONFFILES should be a list of user-editable files
-#PY-JSMIN_CONFFILES=/opt/etc/py-jsmin.conf /opt/etc/init.d/SXXpy-jsmin
+#PY-JSMIN_CONFFILES=$(TARGET_PREFIX)/etc/py-jsmin.conf $(TARGET_PREFIX)/etc/init.d/SXXpy-jsmin
 
 #
 # PY-JSMIN_PATCHES should list any patches, in the the order in
@@ -127,9 +127,9 @@ $(PY-JSMIN_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-JSMIN_SOURCE) $(PY-JSMIN_PATCH
 	(cd $(@D)/2.5; \
 	    ( \
 	    echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python2.5"; \
+	    echo "executable=$(TARGET_PREFIX)/bin/python2.5"; \
 	    echo "[install]"; \
-	    echo "install_scripts=/opt/bin"; \
+	    echo "install_scripts=$(TARGET_PREFIX)/bin"; \
 	    ) > setup.cfg \
 	)
 	# 2.6
@@ -142,9 +142,9 @@ $(PY-JSMIN_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-JSMIN_SOURCE) $(PY-JSMIN_PATCH
 	(cd $(@D)/2.6; \
 	    ( \
 	    echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python2.6"; \
+	    echo "executable=$(TARGET_PREFIX)/bin/python2.6"; \
 	    echo "[install]"; \
-	    echo "install_scripts=/opt/bin"; \
+	    echo "install_scripts=$(TARGET_PREFIX)/bin"; \
 	    ) > setup.cfg \
 	)
 	# 2.7
@@ -157,9 +157,9 @@ $(PY-JSMIN_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-JSMIN_SOURCE) $(PY-JSMIN_PATCH
 	(cd $(@D)/2.7; \
 	    ( \
 	    echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python2.7"; \
+	    echo "executable=$(TARGET_PREFIX)/bin/python2.7"; \
 	    echo "[install]"; \
-	    echo "install_scripts=/opt/bin"; \
+	    echo "install_scripts=$(TARGET_PREFIX)/bin"; \
 	    ) > setup.cfg \
 	)
 	# 3
@@ -172,9 +172,9 @@ $(PY-JSMIN_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-JSMIN_SOURCE) $(PY-JSMIN_PATCH
 	(cd $(@D)/3; \
 	    ( \
 	    echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python$(PYTHON3_VERSION_MAJOR)"; \
+	    echo "executable=$(TARGET_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR)"; \
 	    echo "[install]"; \
-	    echo "install_scripts=/opt/bin"; \
+	    echo "install_scripts=$(TARGET_PREFIX)/bin"; \
 	    ) > setup.cfg \
 	)
 	touch $@
@@ -223,7 +223,7 @@ $(PY-JSMIN_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(PY-JSMIN_SOURCE
 	    echo "[build_scripts]"; \
 	    echo "executable=$(HOST_STAGING_PREFIX)/bin/python2.5"; \
 	    echo "[install]"; \
-	    echo "install_scripts=/opt/bin"; \
+	    echo "install_scripts=$(TARGET_PREFIX)/bin"; \
 	    ) >> setup.cfg; \
 	)
 	$(PY-JSMIN_UNZIP) $(DL_DIR)/$(PY-JSMIN_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
@@ -236,7 +236,7 @@ $(PY-JSMIN_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(PY-JSMIN_SOURCE
 	    echo "[build_scripts]"; \
 	    echo "executable=$(HOST_STAGING_PREFIX)/bin/python2.6"; \
 	    echo "[install]"; \
-	    echo "install_scripts=/opt/bin"; \
+	    echo "install_scripts=$(TARGET_PREFIX)/bin"; \
 	    ) >> setup.cfg; \
 	)
 	$(PY-JSMIN_UNZIP) $(DL_DIR)/$(PY-JSMIN_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
@@ -249,7 +249,7 @@ $(PY-JSMIN_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(PY-JSMIN_SOURCE
 	    echo "[build_scripts]"; \
 	    echo "executable=$(HOST_STAGING_PREFIX)/bin/python2.7"; \
 	    echo "[install]"; \
-	    echo "install_scripts=/opt/bin"; \
+	    echo "install_scripts=$(TARGET_PREFIX)/bin"; \
 	    ) >> setup.cfg; \
 	)
 	$(PY-JSMIN_UNZIP) $(DL_DIR)/$(PY-JSMIN_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
@@ -262,17 +262,17 @@ $(PY-JSMIN_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(PY-JSMIN_SOURCE
 	    echo "[build_scripts]"; \
 	    echo "executable=$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR)"; \
 	    echo "[install]"; \
-	    echo "install_scripts=/opt/bin"; \
+	    echo "install_scripts=$(TARGET_PREFIX)/bin"; \
 	    ) >> setup.cfg; \
 	)
 	(cd $(@D)/2.5; \
-		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(HOST_STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	(cd $(@D)/2.6; \
-		$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+		$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(HOST_STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	(cd $(@D)/2.7; \
-		$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+		$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(HOST_STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	(cd $(@D)/3; \
-		$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+		$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(HOST_STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	touch $@
 
 py-jsmin-host-stage: $(PY-JSMIN_HOST_BUILD_DIR)/.staged
@@ -342,12 +342,12 @@ $(PY3-JSMIN_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PY-JSMIN_IPK_DIR)/opt/sbin or $(PY-JSMIN_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PY-JSMIN_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PY-JSMIN_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PY-JSMIN_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PY-JSMIN_IPK_DIR)/opt/etc/py-jsmin/...
-# Documentation files should be installed in $(PY-JSMIN_IPK_DIR)/opt/doc/py-jsmin/...
-# Daemon startup scripts should be installed in $(PY-JSMIN_IPK_DIR)/opt/etc/init.d/S??py-jsmin
+# Libraries and include files should be installed into $(PY-JSMIN_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PY-JSMIN_IPK_DIR)$(TARGET_PREFIX)/etc/py-jsmin/...
+# Documentation files should be installed in $(PY-JSMIN_IPK_DIR)$(TARGET_PREFIX)/doc/py-jsmin/...
+# Daemon startup scripts should be installed in $(PY-JSMIN_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??py-jsmin
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -355,7 +355,7 @@ $(PY25-JSMIN_IPK): $(PY-JSMIN_BUILD_DIR)/.built
 	rm -rf $(BUILD_DIR)/py*-jsmin_*_$(TARGET_ARCH).ipk
 	rm -rf $(PY25-JSMIN_IPK_DIR) $(BUILD_DIR)/py25-jsmin_*_$(TARGET_ARCH).ipk
 	(cd $(PY-JSMIN_BUILD_DIR)/2.5; \
-	$(HOST_STAGING_PREFIX)/bin/python2.5 -c "import setuptools; execfile('setup.py')" install --root=$(PY25-JSMIN_IPK_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python2.5 -c "import setuptools; execfile('setup.py')" install --root=$(PY25-JSMIN_IPK_DIR) --prefix=$(TARGET_PREFIX))
 	$(MAKE) $(PY25-JSMIN_IPK_DIR)/CONTROL/control
 #	echo $(PY-JSMIN_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-JSMIN_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-JSMIN_IPK_DIR)
@@ -363,7 +363,7 @@ $(PY25-JSMIN_IPK): $(PY-JSMIN_BUILD_DIR)/.built
 $(PY26-JSMIN_IPK): $(PY-JSMIN_BUILD_DIR)/.built
 	rm -rf $(PY26-JSMIN_IPK_DIR) $(BUILD_DIR)/py26-jsmin_*_$(TARGET_ARCH).ipk
 	(cd $(PY-JSMIN_BUILD_DIR)/2.6; \
-	$(HOST_STAGING_PREFIX)/bin/python2.6 -c "import setuptools; execfile('setup.py')" install --root=$(PY26-JSMIN_IPK_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python2.6 -c "import setuptools; execfile('setup.py')" install --root=$(PY26-JSMIN_IPK_DIR) --prefix=$(TARGET_PREFIX))
 	$(MAKE) $(PY26-JSMIN_IPK_DIR)/CONTROL/control
 #	echo $(PY-JSMIN_CONFFILES) | sed -e 's/ /\n/g' > $(PY26-JSMIN_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-JSMIN_IPK_DIR)
@@ -371,7 +371,7 @@ $(PY26-JSMIN_IPK): $(PY-JSMIN_BUILD_DIR)/.built
 $(PY27-JSMIN_IPK): $(PY-JSMIN_BUILD_DIR)/.built
 	rm -rf $(PY27-JSMIN_IPK_DIR) $(BUILD_DIR)/py27-jsmin_*_$(TARGET_ARCH).ipk
 	(cd $(PY-JSMIN_BUILD_DIR)/2.7; \
-	$(HOST_STAGING_PREFIX)/bin/python2.7 -c "import setuptools; execfile('setup.py')" install --root=$(PY27-JSMIN_IPK_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python2.7 -c "import setuptools; execfile('setup.py')" install --root=$(PY27-JSMIN_IPK_DIR) --prefix=$(TARGET_PREFIX))
 	$(MAKE) $(PY27-JSMIN_IPK_DIR)/CONTROL/control
 #	echo $(PY-JSMIN_CONFFILES) | sed -e 's/ /\n/g' > $(PY27-JSMIN_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY27-JSMIN_IPK_DIR)
@@ -379,7 +379,7 @@ $(PY27-JSMIN_IPK): $(PY-JSMIN_BUILD_DIR)/.built
 $(PY3-JSMIN_IPK): $(PY-JSMIN_BUILD_DIR)/.built
 	rm -rf $(PY3-JSMIN_IPK_DIR) $(BUILD_DIR)/py3-jsmin_*_$(TARGET_ARCH).ipk
 	(cd $(PY-JSMIN_BUILD_DIR)/3; \
-	$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(PY3-JSMIN_IPK_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(PY3-JSMIN_IPK_DIR) --prefix=$(TARGET_PREFIX))
 	$(MAKE) $(PY3-JSMIN_IPK_DIR)/CONTROL/control
 #	echo $(PY-JSMIN_CONFFILES) | sed -e 's/ /\n/g' > $(PY3-JSMIN_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY3-JSMIN_IPK_DIR)

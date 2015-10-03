@@ -47,7 +47,7 @@ LLINK_IPK_VERSION=1
 
 #
 # LLINK_CONFFILES should be a list of user-editable files
-LLINK_CONFFILES=/opt/share/llink/llink.conf /opt/share/llink/jukebox.conf
+LLINK_CONFFILES=$(TARGET_PREFIX)/share/llink/llink.conf $(TARGET_PREFIX)/share/llink/jukebox.conf
 
 #
 # LLINK_PATCHES should list any patches, in the the order in
@@ -214,12 +214,12 @@ $(LLINK-DEV_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LLINK_IPK_DIR)/opt/sbin or $(LLINK_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LLINK_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LLINK_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LLINK_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LLINK_IPK_DIR)/opt/etc/llink/...
-# Documentation files should be installed in $(LLINK_IPK_DIR)/opt/doc/llink/...
-# Daemon startup scripts should be installed in $(LLINK_IPK_DIR)/opt/etc/init.d/S??llink
+# Libraries and include files should be installed into $(LLINK_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LLINK_IPK_DIR)$(TARGET_PREFIX)/etc/llink/...
+# Documentation files should be installed in $(LLINK_IPK_DIR)$(TARGET_PREFIX)/doc/llink/...
+# Daemon startup scripts should be installed in $(LLINK_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??llink
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -227,20 +227,20 @@ $(LLINK_IPK) $(LLINK-DEV_IPK): $(LLINK_BUILD_DIR)/.built
 	rm -rf $(LLINK_IPK_DIR) $(BUILD_DIR)/llink_*_$(TARGET_ARCH).ipk
 	rm -rf $(LLINK-DEV_IPK_DIR) $(BUILD_DIR)/llink-dev_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LLINK_BUILD_DIR) DESTDIR=$(LLINK_IPK_DIR) install-strip
-	$(INSTALL) -d $(LLINK_IPK_DIR)/opt/share/llink
-	mv $(LLINK_IPK_DIR)/opt/bin/* $(LLINK_IPK_DIR)/opt/share/llink
-	rm -rf $(LLINK_IPK_DIR)/opt/bin
-	cp -a $(LLINK_BUILD_DIR)/src/skin $(LLINK_IPK_DIR)/opt/share/llink/
-	cp -p $(LLINK_BUILD_DIR)/src/*.conf $(LLINK_IPK_DIR)/opt/share/llink/
-	$(INSTALL) -d $(LLINK_IPK_DIR)/opt/share/doc/llink
+	$(INSTALL) -d $(LLINK_IPK_DIR)$(TARGET_PREFIX)/share/llink
+	mv $(LLINK_IPK_DIR)$(TARGET_PREFIX)/bin/* $(LLINK_IPK_DIR)$(TARGET_PREFIX)/share/llink
+	rm -rf $(LLINK_IPK_DIR)$(TARGET_PREFIX)/bin
+	cp -a $(LLINK_BUILD_DIR)/src/skin $(LLINK_IPK_DIR)$(TARGET_PREFIX)/share/llink/
+	cp -p $(LLINK_BUILD_DIR)/src/*.conf $(LLINK_IPK_DIR)$(TARGET_PREFIX)/share/llink/
+	$(INSTALL) -d $(LLINK_IPK_DIR)$(TARGET_PREFIX)/share/doc/llink
 	$(INSTALL) \
 		$(LLINK_BUILD_DIR)/LICENSE \
 		$(LLINK_BUILD_DIR)/README.txt \
 		$(LLINK_BUILD_DIR)/Example* \
-		$(LLINK_IPK_DIR)/opt/share/doc/llink/
-	$(INSTALL) -d $(LLINK-DEV_IPK_DIR)/opt
-	mv $(LLINK_IPK_DIR)/opt/include $(LLINK-DEV_IPK_DIR)/opt
-	mv $(LLINK_IPK_DIR)/opt/lib $(LLINK-DEV_IPK_DIR)/opt
+		$(LLINK_IPK_DIR)$(TARGET_PREFIX)/share/doc/llink/
+	$(INSTALL) -d $(LLINK-DEV_IPK_DIR)$(TARGET_PREFIX)
+	mv $(LLINK_IPK_DIR)$(TARGET_PREFIX)/include $(LLINK-DEV_IPK_DIR)$(TARGET_PREFIX)
+	mv $(LLINK_IPK_DIR)$(TARGET_PREFIX)/lib $(LLINK-DEV_IPK_DIR)$(TARGET_PREFIX)
 	$(MAKE) $(LLINK_IPK_DIR)/CONTROL/control
 	echo $(LLINK_CONFFILES) | sed -e 's/ /\n/g' > $(LLINK_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LLINK_IPK_DIR)

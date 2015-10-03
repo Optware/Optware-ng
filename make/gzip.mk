@@ -163,33 +163,33 @@ $(GZIP_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(GZIP_IPK_DIR)/opt/sbin or $(GZIP_IPK_DIR)/opt/bin
+# Binaries should be installed into $(GZIP_IPK_DIR)$(TARGET_PREFIX)/sbin or $(GZIP_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(GZIP_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(GZIP_IPK_DIR)/opt/etc/gzip/...
-# Documentation files should be installed in $(GZIP_IPK_DIR)/opt/doc/gzip/...
-# Daemon startup scripts should be installed in $(GZIP_IPK_DIR)/opt/etc/init.d/S??gzip
+# Libraries and include files should be installed into $(GZIP_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(GZIP_IPK_DIR)$(TARGET_PREFIX)/etc/gzip/...
+# Documentation files should be installed in $(GZIP_IPK_DIR)$(TARGET_PREFIX)/doc/gzip/...
+# Daemon startup scripts should be installed in $(GZIP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??gzip
 #
 # You may need to patch your application to make it use these locations.
 #
 $(GZIP_IPK): $(GZIP_BUILD_DIR)/.built
 	rm -rf $(GZIP_IPK_DIR) $(BUILD_DIR)/gzip_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(GZIP_IPK_DIR)/opt/bin
-	$(INSTALL) -d $(GZIP_IPK_DIR)/opt/lib
-	$(INSTALL) -d $(GZIP_IPK_DIR)/opt/info
-	$(INSTALL) -d $(GZIP_IPK_DIR)/opt/man/man1
+	$(INSTALL) -d $(GZIP_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(INSTALL) -d $(GZIP_IPK_DIR)$(TARGET_PREFIX)/lib
+	$(INSTALL) -d $(GZIP_IPK_DIR)$(TARGET_PREFIX)/info
+	$(INSTALL) -d $(GZIP_IPK_DIR)$(TARGET_PREFIX)/man/man1
 	$(MAKE) -C $(GZIP_BUILD_DIR) prefix=$(GZIP_IPK_DIR)$(TARGET_PREFIX) install
-	rm -f $(GZIP_IPK_DIR)/opt/share/info/dir
+	rm -f $(GZIP_IPK_DIR)$(TARGET_PREFIX)/share/info/dir
 	$(MAKE) $(GZIP_IPK_DIR)/CONTROL/control
 	echo "#!/bin/sh" > $(GZIP_IPK_DIR)/CONTROL/postinst
 	echo "#!/bin/sh" > $(GZIP_IPK_DIR)/CONTROL/prerm
-	cd $(GZIP_IPK_DIR)/opt/bin; \
+	cd $(GZIP_IPK_DIR)$(TARGET_PREFIX)/bin; \
 	for f in gunzip gzip zcat; do \
 	    mv $$f gzip-$$f; \
 	    $(STRIP_COMMAND) gzip-$$f; \
-	    echo "update-alternatives --install /opt/bin/$$f $$f /opt/bin/gzip-$$f 80" \
+	    echo "update-alternatives --install $(TARGET_PREFIX)/bin/$$f $$f $(TARGET_PREFIX)/bin/gzip-$$f 80" \
 		>> $(GZIP_IPK_DIR)/CONTROL/postinst; \
-	    echo "update-alternatives --remove $$f /opt/bin/gzip-$$f" \
+	    echo "update-alternatives --remove $$f $(TARGET_PREFIX)/bin/gzip-$$f" \
 		>> $(GZIP_IPK_DIR)/CONTROL/prerm; \
 	done
 	if test -n "$(UPD-ALT_PREFIX)"; then \

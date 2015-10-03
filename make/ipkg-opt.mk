@@ -38,7 +38,7 @@ IPKG-OPT_IPK_VERSION=11
 
 #
 # IPKG-OPT_CONFFILES should be a list of user-editable files
-IPKG-OPT_CONFFILES=/opt/etc/ipkg.conf
+IPKG-OPT_CONFFILES=$(TARGET_PREFIX)/etc/ipkg.conf
 
 #
 # If the compilation of the package requires additional
@@ -135,7 +135,7 @@ $(IPKG-OPT_BUILD_DIR)/.configured: $(DL_DIR)/ipkg-opt-$(IPKG-OPT_VERSION).tar.gz
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--with-ipkglibdir=/opt/lib \
+		--with-ipkglibdir=$(TARGET_PREFIX)/lib \
 		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 	)
@@ -182,12 +182,12 @@ $(IPKG-OPT_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(IPKG-OPT_IPK_DIR)/opt/sbin or $(IPKG-OPT_IPK_DIR)/opt/bin
+# Binaries should be installed into $(IPKG-OPT_IPK_DIR)$(TARGET_PREFIX)/sbin or $(IPKG-OPT_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(IPKG-OPT_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(IPKG-OPT_IPK_DIR)/opt/etc/ipkg/...
-# Documentation files should be installed in $(IPKG-OPT_IPK_DIR)/opt/doc/ipkg-opt/...
-# Daemon startup scripts should be installed in $(IPKG-OPT_IPK_DIR)/opt/etc/init.d/S??ipkg
+# Libraries and include files should be installed into $(IPKG-OPT_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(IPKG-OPT_IPK_DIR)$(TARGET_PREFIX)/etc/ipkg/...
+# Documentation files should be installed in $(IPKG-OPT_IPK_DIR)$(TARGET_PREFIX)/doc/ipkg-opt/...
+# Daemon startup scripts should be installed in $(IPKG-OPT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??ipkg
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -196,25 +196,25 @@ $(IPKG-OPT_IPK): $(IPKG-OPT_BUILD_DIR)/.built
 	rm -rf $(IPKG-OPT_IPK_DIR) $(BUILD_DIR)/ipkg-opt_*_$(TARGET_ARCH).ipk
 	PATH="$(PATH):$(TOOL_BUILD_DIR)/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)/bin/" \
 		$(MAKE) -C $(IPKG-OPT_BUILD_DIR) DESTDIR=$(IPKG-OPT_IPK_DIR) install-strip
-	$(INSTALL) -d $(IPKG-OPT_IPK_DIR)/opt/etc/
+	$(INSTALL) -d $(IPKG-OPT_IPK_DIR)$(TARGET_PREFIX)/etc/
 ifneq (, $(filter ddwrt ds101 ds101g fsg3 gumstix1151 mss nas100d nslu2 oleg slugosbe slugosle ts72xx wl500g, $(OPTWARE_TARGET)))
 	echo "#Uncomment the following line for native packages feed (if any)" \
-		> $(IPKG-OPT_IPK_DIR)/opt/etc/ipkg.conf
+		> $(IPKG-OPT_IPK_DIR)$(TARGET_PREFIX)/etc/ipkg.conf
 	echo "#src/gz native $(IPKG-OPT_FEEDS)/$(OPTWARE_TARGET)/native/stable"\
-			>> $(IPKG-OPT_IPK_DIR)/opt/etc/ipkg.conf
+			>> $(IPKG-OPT_IPK_DIR)$(TARGET_PREFIX)/etc/ipkg.conf
 	echo "src/gz optware $(IPKG-OPT_FEEDS)/$(OPTWARE_TARGET)/cross/stable" \
-			>> $(IPKG-OPT_IPK_DIR)/opt/etc/ipkg.conf
-	echo "dest /opt/ /" >> $(IPKG-OPT_IPK_DIR)/opt/etc/ipkg.conf
-	echo "#option verbose-wget" >> $(IPKG-OPT_IPK_DIR)/opt/etc/ipkg.conf
+			>> $(IPKG-OPT_IPK_DIR)$(TARGET_PREFIX)/etc/ipkg.conf
+	echo "dest $(TARGET_PREFIX)/ /" >> $(IPKG-OPT_IPK_DIR)$(TARGET_PREFIX)/etc/ipkg.conf
+	echo "#option verbose-wget" >> $(IPKG-OPT_IPK_DIR)$(TARGET_PREFIX)/etc/ipkg.conf
 else
 	$(INSTALL) -m 644 $(IPKG-OPT_SOURCE_DIR)/ipkg.conf \
-		$(IPKG-OPT_IPK_DIR)/opt/etc/ipkg.conf
+		$(IPKG-OPT_IPK_DIR)$(TARGET_PREFIX)/etc/ipkg.conf
 endif
-	rm $(IPKG-OPT_IPK_DIR)/opt/lib/*.a
-	rm $(IPKG-OPT_IPK_DIR)/opt/lib/*.la
-	rm -rf $(IPKG-OPT_IPK_DIR)/opt/include
-	mv $(IPKG-OPT_IPK_DIR)/opt/bin/ipkg-cl $(IPKG-OPT_IPK_DIR)/opt/bin/ipkg
-	ln -s ipkg $(IPKG-OPT_IPK_DIR)/opt/bin/ipkg-opt
+	rm $(IPKG-OPT_IPK_DIR)$(TARGET_PREFIX)/lib/*.a
+	rm $(IPKG-OPT_IPK_DIR)$(TARGET_PREFIX)/lib/*.la
+	rm -rf $(IPKG-OPT_IPK_DIR)$(TARGET_PREFIX)/include
+	mv $(IPKG-OPT_IPK_DIR)$(TARGET_PREFIX)/bin/ipkg-cl $(IPKG-OPT_IPK_DIR)$(TARGET_PREFIX)/bin/ipkg
+	ln -s ipkg $(IPKG-OPT_IPK_DIR)$(TARGET_PREFIX)/bin/ipkg-opt
 	$(MAKE) $(IPKG-OPT_IPK_DIR)/CONTROL/control
 	echo $(IPKG-OPT_CONFFILES) | sed -e 's/ /\n/g' > $(IPKG-OPT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(IPKG-OPT_IPK_DIR)

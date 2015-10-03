@@ -61,7 +61,7 @@ FFMPEG_IPK_VERSION ?= 1
 
 #
 # FFMPEG_CONFFILES should be a list of user-editable files
-#FFMPEG_CONFFILES=/opt/etc/ffmpeg.conf /opt/etc/init.d/SXXffmpeg
+#FFMPEG_CONFFILES=$(TARGET_PREFIX)/etc/ffmpeg.conf $(TARGET_PREFIX)/etc/init.d/SXXffmpeg
 
 #
 ## FFMPEG_PATCHES should list any patches, in the the order in
@@ -335,25 +335,25 @@ $(FFMPEG_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(FFMPEG_IPK_DIR)/opt/sbin or $(FFMPEG_IPK_DIR)/opt/bin
+# Binaries should be installed into $(FFMPEG_IPK_DIR)$(TARGET_PREFIX)/sbin or $(FFMPEG_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(FFMPEG_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(FFMPEG_IPK_DIR)/opt/etc/ffmpeg/...
-# Documentation files should be installed in $(FFMPEG_IPK_DIR)/opt/doc/ffmpeg/...
-# Daemon startup scripts should be installed in $(FFMPEG_IPK_DIR)/opt/etc/init.d/S??ffmpeg
+# Libraries and include files should be installed into $(FFMPEG_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(FFMPEG_IPK_DIR)$(TARGET_PREFIX)/etc/ffmpeg/...
+# Documentation files should be installed in $(FFMPEG_IPK_DIR)$(TARGET_PREFIX)/doc/ffmpeg/...
+# Daemon startup scripts should be installed in $(FFMPEG_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??ffmpeg
 #
 # You may need to patch your application to make it use these locations.
 #
 $(FFMPEG_IPK): $(FFMPEG_BUILD_DIR)/.built
 	rm -rf $(FFMPEG_IPK_DIR) $(BUILD_DIR)/ffmpeg_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(FFMPEG_BUILD_DIR) mandir=$(FFMPEG_IPK_DIR)/opt/share/man \
-		bindir=$(FFMPEG_IPK_DIR)/opt/bin libdir=$(FFMPEG_IPK_DIR)/opt/lib \
+	$(MAKE) -C $(FFMPEG_BUILD_DIR) mandir=$(FFMPEG_IPK_DIR)$(TARGET_PREFIX)/share/man \
+		bindir=$(FFMPEG_IPK_DIR)$(TARGET_PREFIX)/bin libdir=$(FFMPEG_IPK_DIR)$(TARGET_PREFIX)/lib \
 		prefix=$(FFMPEG_IPK_DIR)$(TARGET_PREFIX) \
 		LDCONFIG='$$(warning ldconfig disabled when building package)' install
-	if [ -f $(FFMPEG_IPK_DIR)/opt/include/libavutil/time.h ]; then \
-		mv -f $(FFMPEG_IPK_DIR)/opt/include/libavutil/time.h $(FFMPEG_IPK_DIR)/opt/include/libavutil/time.h_; \
+	if [ -f $(FFMPEG_IPK_DIR)$(TARGET_PREFIX)/include/libavutil/time.h ]; then \
+		mv -f $(FFMPEG_IPK_DIR)$(TARGET_PREFIX)/include/libavutil/time.h $(FFMPEG_IPK_DIR)$(TARGET_PREFIX)/include/libavutil/time.h_; \
 	fi
-	$(STRIP_COMMAND) $(FFMPEG_IPK_DIR)/opt/bin/*
+	$(STRIP_COMMAND) $(FFMPEG_IPK_DIR)$(TARGET_PREFIX)/bin/*
 	find $(FFMPEG_IPK_DIR) -type f -name "*.so" -exec $(STRIP_COMMAND) {} \;
 	$(MAKE) $(FFMPEG_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(FFMPEG_IPK_DIR)

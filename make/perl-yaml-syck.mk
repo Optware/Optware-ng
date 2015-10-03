@@ -90,7 +90,7 @@ $(PERL-YAML-SYCK_IPK): $(PERL-YAML-SYCK_BUILD_DIR)/.built
 	rm -rf $(PERL-YAML-SYCK_IPK_DIR) $(BUILD_DIR)/perl-yaml-syck_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PERL-YAML-SYCK_BUILD_DIR) DESTDIR=$(PERL-YAML-SYCK_IPK_DIR) install
 	find $(PERL-YAML-SYCK_IPK_DIR)$(TARGET_PREFIX) -name 'perllocal.pod' -exec rm -f {} \;
-	(cd $(PERL-YAML-SYCK_IPK_DIR)/opt/lib/perl5 ; \
+	(cd $(PERL-YAML-SYCK_IPK_DIR)$(TARGET_PREFIX)/lib/perl5 ; \
 		find . -name '*.so' -exec chmod +w {} \; ; \
 		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
 		find . -name '*.so' -exec chmod -w {} \; ; \

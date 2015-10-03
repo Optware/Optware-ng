@@ -40,7 +40,7 @@ RSSTAIL_IPK_VERSION=1
 
 #
 # RSSTAIL_CONFFILES should be a list of user-editable files
-#RSSTAIL_CONFFILES=/opt/etc/rsstail.conf /opt/etc/init.d/SXXrsstail
+#RSSTAIL_CONFFILES=$(TARGET_PREFIX)/etc/rsstail.conf $(TARGET_PREFIX)/etc/init.d/SXXrsstail
 
 #
 # RSSTAIL_PATCHES should list any patches, in the the order in
@@ -181,23 +181,23 @@ $(RSSTAIL_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(RSSTAIL_IPK_DIR)/opt/sbin or $(RSSTAIL_IPK_DIR)/opt/bin
+# Binaries should be installed into $(RSSTAIL_IPK_DIR)$(TARGET_PREFIX)/sbin or $(RSSTAIL_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(RSSTAIL_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(RSSTAIL_IPK_DIR)/opt/etc/rsstail/...
-# Documentation files should be installed in $(RSSTAIL_IPK_DIR)/opt/doc/rsstail/...
-# Daemon startup scripts should be installed in $(RSSTAIL_IPK_DIR)/opt/etc/init.d/S??rsstail
+# Libraries and include files should be installed into $(RSSTAIL_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(RSSTAIL_IPK_DIR)$(TARGET_PREFIX)/etc/rsstail/...
+# Documentation files should be installed in $(RSSTAIL_IPK_DIR)$(TARGET_PREFIX)/doc/rsstail/...
+# Daemon startup scripts should be installed in $(RSSTAIL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??rsstail
 #
 # You may need to patch your application to make it use these locations.
 #
 $(RSSTAIL_IPK): $(RSSTAIL_BUILD_DIR)/.built
 	rm -rf $(RSSTAIL_IPK_DIR) $(BUILD_DIR)/rsstail_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(RSSTAIL_BUILD_DIR) DESTDIR=$(RSSTAIL_IPK_DIR) install-strip
-	$(INSTALL) -d $(RSSTAIL_IPK_DIR)/opt/bin/
-	$(INSTALL) $(RSSTAIL_BUILD_DIR)/rsstail $(RSSTAIL_IPK_DIR)/opt/bin/
-	$(STRIP_COMMAND) $(RSSTAIL_IPK_DIR)/opt/bin/rsstail
-	$(INSTALL) -d $(RSSTAIL_IPK_DIR)/opt/share/man/man1
-	$(INSTALL) $(RSSTAIL_BUILD_DIR)/rsstail.1 $(RSSTAIL_IPK_DIR)/opt/share/man/man1
+	$(INSTALL) -d $(RSSTAIL_IPK_DIR)$(TARGET_PREFIX)/bin/
+	$(INSTALL) $(RSSTAIL_BUILD_DIR)/rsstail $(RSSTAIL_IPK_DIR)$(TARGET_PREFIX)/bin/
+	$(STRIP_COMMAND) $(RSSTAIL_IPK_DIR)$(TARGET_PREFIX)/bin/rsstail
+	$(INSTALL) -d $(RSSTAIL_IPK_DIR)$(TARGET_PREFIX)/share/man/man1
+	$(INSTALL) $(RSSTAIL_BUILD_DIR)/rsstail.1 $(RSSTAIL_IPK_DIR)$(TARGET_PREFIX)/share/man/man1
 	$(MAKE) $(RSSTAIL_IPK_DIR)/CONTROL/control
 #	echo $(RSSTAIL_CONFFILES) | sed -e 's/ /\n/g' > $(RSSTAIL_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(RSSTAIL_IPK_DIR)

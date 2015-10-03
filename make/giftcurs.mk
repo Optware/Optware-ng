@@ -39,7 +39,7 @@ GIFTCURS_IPK_VERSION=2
 
 #
 # GIFTCURS_CONFFILES should be a list of user-editable files
-GIFTCURS_CONFFILES=/opt/etc/giFTcurs.conf /opt/etc/init.d/SXXgiFTcurs
+GIFTCURS_CONFFILES=$(TARGET_PREFIX)/etc/giFTcurs.conf $(TARGET_PREFIX)/etc/init.d/SXXgiFTcurs
 
 #
 # GIFTCURS_PATCHES should list any patches, in the the order in
@@ -171,19 +171,19 @@ $(GIFTCURS_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(GIFTCURS_IPK_DIR)/opt/sbin or $(GIFTCURS_IPK_DIR)/opt/bin
+# Binaries should be installed into $(GIFTCURS_IPK_DIR)$(TARGET_PREFIX)/sbin or $(GIFTCURS_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(GIFTCURS_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(GIFTCURS_IPK_DIR)/opt/etc/giFTcurs/...
-# Documentation files should be installed in $(GIFTCURS_IPK_DIR)/opt/doc/giFTcurs/...
-# Daemon startup scripts should be installed in $(GIFTCURS_IPK_DIR)/opt/etc/init.d/S??giFTcurs
+# Libraries and include files should be installed into $(GIFTCURS_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(GIFTCURS_IPK_DIR)$(TARGET_PREFIX)/etc/giFTcurs/...
+# Documentation files should be installed in $(GIFTCURS_IPK_DIR)$(TARGET_PREFIX)/doc/giFTcurs/...
+# Daemon startup scripts should be installed in $(GIFTCURS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??giFTcurs
 #
 # You may need to patch your application to make it use these locations.
 #
 $(GIFTCURS_IPK): $(GIFTCURS_BUILD_DIR)/.built
 	rm -rf $(GIFTCURS_IPK_DIR) $(BUILD_DIR)/giftcurs_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(GIFTCURS_IPK_DIR)/opt/bin
-	$(STRIP_COMMAND) $(GIFTCURS_BUILD_DIR)/src/giFTcurs -o $(GIFTCURS_IPK_DIR)/opt/bin/giFTcurs
+	$(INSTALL) -d $(GIFTCURS_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(STRIP_COMMAND) $(GIFTCURS_BUILD_DIR)/src/giFTcurs -o $(GIFTCURS_IPK_DIR)$(TARGET_PREFIX)/bin/giFTcurs
 	$(MAKE) $(GIFTCURS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GIFTCURS_IPK_DIR)
 

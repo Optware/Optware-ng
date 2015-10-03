@@ -50,7 +50,7 @@ FUSE_IPK_VERSION=1
 
 #
 # FUSE_CONFFILES should be a list of user-editable files
-FUSE_CONFFILES=/opt/etc/init.d/fuse /opt/etc/udev/rules.d/99-fuse.rules
+FUSE_CONFFILES=$(TARGET_PREFIX)/etc/init.d/fuse $(TARGET_PREFIX)/etc/udev/rules.d/99-fuse.rules
 
 #
 # FUSE_PATCHES should list any patches, in the the order in
@@ -145,15 +145,15 @@ endif
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(FUSE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(FUSE_LDFLAGS)" \
-		MOUNT_FUSE_PATH=/opt/sbin \
-		UDEV_RULES_PATH=/opt/etc/udev/rules.d \
-		INIT_D_PATH=/opt/etc/init.d \
+		MOUNT_FUSE_PATH=$(TARGET_PREFIX)/sbin \
+		UDEV_RULES_PATH=$(TARGET_PREFIX)/etc/udev/rules.d \
+		INIT_D_PATH=$(TARGET_PREFIX)/etc/init.d \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=$(TARGET_PREFIX) \
-		--sysconfdir=/opt/etc \
+		--sysconfdir=$(TARGET_PREFIX)/etc \
 		--disable-nls \
 		--disable-static \
 		--program-transform-name='s/^//' \
@@ -241,25 +241,25 @@ $(LIBFUSE-DEV_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(FUSE_IPK_DIR)/opt/sbin or $(FUSE_IPK_DIR)/opt/bin
+# Binaries should be installed into $(FUSE_IPK_DIR)$(TARGET_PREFIX)/sbin or $(FUSE_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(FUSE_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(FUSE_IPK_DIR)/opt/etc/fuse/...
-# Documentation files should be installed in $(FUSE_IPK_DIR)/opt/doc/fuse/...
-# Daemon startup scripts should be installed in $(FUSE_IPK_DIR)/opt/etc/init.d/S??fuse
+# Libraries and include files should be installed into $(FUSE_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(FUSE_IPK_DIR)$(TARGET_PREFIX)/etc/fuse/...
+# Documentation files should be installed in $(FUSE_IPK_DIR)$(TARGET_PREFIX)/doc/fuse/...
+# Daemon startup scripts should be installed in $(FUSE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??fuse
 #
 # You may need to patch your application to make it use these locations.
 #
 $(LIBFUSE_IPK): $(FUSE_BUILD_DIR)/.built
 	rm -rf $(LIBFUSE_IPK_DIR) $(BUILD_DIR)/libfuse_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(FUSE_BUILD_DIR)/lib DESTDIR=$(LIBFUSE_IPK_DIR) install
-	rm -f $(LIBFUSE_IPK_DIR)/opt/lib/*.la
-	$(STRIP_COMMAND) $(LIBFUSE_IPK_DIR)/opt/lib/*
-#	$(INSTALL) -d $(FUSE_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(FUSE_SOURCE_DIR)/fuse.conf $(FUSE_IPK_DIR)/opt/etc/fuse.conf
-#	$(INSTALL) -d $(FUSE_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(FUSE_SOURCE_DIR)/rc.fuse $(FUSE_IPK_DIR)/opt/etc/init.d/SXXfuse
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(FUSE_IPK_DIR)/opt/etc/init.d/SXXfuse
+	rm -f $(LIBFUSE_IPK_DIR)$(TARGET_PREFIX)/lib/*.la
+	$(STRIP_COMMAND) $(LIBFUSE_IPK_DIR)$(TARGET_PREFIX)/lib/*
+#	$(INSTALL) -d $(FUSE_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(FUSE_SOURCE_DIR)/fuse.conf $(FUSE_IPK_DIR)$(TARGET_PREFIX)/etc/fuse.conf
+#	$(INSTALL) -d $(FUSE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(FUSE_SOURCE_DIR)/rc.fuse $(FUSE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXfuse
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(FUSE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXfuse
 	$(MAKE) $(LIBFUSE_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(FUSE_SOURCE_DIR)/postinst $(FUSE_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(FUSE_IPK_DIR)/CONTROL/postinst
@@ -277,12 +277,12 @@ $(FUSE_IPK): $(FUSE_BUILD_DIR)/.built
 	rm -rf $(FUSE_IPK_DIR) $(BUILD_DIR)/fuse_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(FUSE_BUILD_DIR)/util DESTDIR=$(FUSE_IPK_DIR) install
 	rm -rf $(FUSE_IPK_DIR)/dev
-	$(STRIP_COMMAND) $(FUSE_IPK_DIR)/opt/bin/* $(FUSE_IPK_DIR)/opt/sbin/*
-#	$(INSTALL) -d $(FUSE_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(FUSE_SOURCE_DIR)/fuse.conf $(FUSE_IPK_DIR)/opt/etc/fuse.conf
-#	$(INSTALL) -d $(FUSE_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(FUSE_SOURCE_DIR)/rc.fuse $(FUSE_IPK_DIR)/opt/etc/init.d/SXXfuse
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(FUSE_IPK_DIR)/opt/etc/init.d/SXXfuse
+	$(STRIP_COMMAND) $(FUSE_IPK_DIR)$(TARGET_PREFIX)/bin/* $(FUSE_IPK_DIR)$(TARGET_PREFIX)/sbin/*
+#	$(INSTALL) -d $(FUSE_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(FUSE_SOURCE_DIR)/fuse.conf $(FUSE_IPK_DIR)$(TARGET_PREFIX)/etc/fuse.conf
+#	$(INSTALL) -d $(FUSE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(FUSE_SOURCE_DIR)/rc.fuse $(FUSE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXfuse
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(FUSE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXfuse
 	$(MAKE) $(FUSE_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(FUSE_SOURCE_DIR)/postinst $(FUSE_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(FUSE_IPK_DIR)/CONTROL/postinst

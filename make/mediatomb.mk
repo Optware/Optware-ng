@@ -48,9 +48,9 @@ MEDIATOMB_IPK_VERSION=5
 
 #
 # MEDIATOMB_CONFFILES should be a list of user-editable files
-MEDIATOMB_CONFFILES=/opt/etc/mediatomb.conf \
-					/opt/etc/init.d/S90mediatomb \
-					/opt/etc/default/mediatomb
+MEDIATOMB_CONFFILES=$(TARGET_PREFIX)/etc/mediatomb.conf \
+					$(TARGET_PREFIX)/etc/init.d/S90mediatomb \
+					$(TARGET_PREFIX)/etc/default/mediatomb
 
 #
 # MEDIATOMB_PATCHES should list any patches, in the the order in
@@ -247,28 +247,28 @@ $(MEDIATOMB_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(MEDIATOMB_IPK_DIR)/opt/sbin or $(MEDIATOMB_IPK_DIR)/opt/bin
+# Binaries should be installed into $(MEDIATOMB_IPK_DIR)$(TARGET_PREFIX)/sbin or $(MEDIATOMB_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(MEDIATOMB_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(MEDIATOMB_IPK_DIR)/opt/etc/mediatomb/...
-# Documentation files should be installed in $(MEDIATOMB_IPK_DIR)/opt/doc/mediatomb/...
-# Daemon startup scripts should be installed in $(MEDIATOMB_IPK_DIR)/opt/etc/init.d/S??mediatomb
+# Libraries and include files should be installed into $(MEDIATOMB_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(MEDIATOMB_IPK_DIR)$(TARGET_PREFIX)/etc/mediatomb/...
+# Documentation files should be installed in $(MEDIATOMB_IPK_DIR)$(TARGET_PREFIX)/doc/mediatomb/...
+# Daemon startup scripts should be installed in $(MEDIATOMB_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??mediatomb
 #
 # You may need to patch your application to make it use these locations.
 #
 $(MEDIATOMB_IPK): $(MEDIATOMB_BUILD_DIR)/.built
 	rm -rf $(MEDIATOMB_IPK_DIR) $(BUILD_DIR)/mediatomb_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MEDIATOMB_BUILD_DIR) DESTDIR=$(MEDIATOMB_IPK_DIR) install-strip
-	$(INSTALL) -d $(MEDIATOMB_IPK_DIR)/opt/etc/
-	$(INSTALL) -d $(MEDIATOMB_IPK_DIR)/opt/var/run/
-	$(INSTALL) -d $(MEDIATOMB_IPK_DIR)/opt/etc/init.d
-	$(INSTALL) -d $(MEDIATOMB_IPK_DIR)/opt/var/lock
-	$(INSTALL) -d $(MEDIATOMB_IPK_DIR)/opt/var/log
-	$(INSTALL) -d $(MEDIATOMB_IPK_DIR)/opt/etc/default
-	$(INSTALL) -m 644 $(MEDIATOMB_SOURCE_DIR)/mediatomb-conf-optware $(MEDIATOMB_IPK_DIR)/opt/etc/mediatomb.conf
-	$(INSTALL) -m 644 $(MEDIATOMB_SOURCE_DIR)/mediatomb-default-optware $(MEDIATOMB_IPK_DIR)/opt/etc/default/mediatomb
-	$(INSTALL) -m 755 $(MEDIATOMB_SOURCE_DIR)/mediatomb-service-optware $(MEDIATOMB_IPK_DIR)/opt/etc/init.d/S90mediatomb
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MEDIATOMB_IPK_DIR)/opt/etc/init.d/SXXmediatomb
+	$(INSTALL) -d $(MEDIATOMB_IPK_DIR)$(TARGET_PREFIX)/etc/
+	$(INSTALL) -d $(MEDIATOMB_IPK_DIR)$(TARGET_PREFIX)/var/run/
+	$(INSTALL) -d $(MEDIATOMB_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(INSTALL) -d $(MEDIATOMB_IPK_DIR)$(TARGET_PREFIX)/var/lock
+	$(INSTALL) -d $(MEDIATOMB_IPK_DIR)$(TARGET_PREFIX)/var/log
+	$(INSTALL) -d $(MEDIATOMB_IPK_DIR)$(TARGET_PREFIX)/etc/default
+	$(INSTALL) -m 644 $(MEDIATOMB_SOURCE_DIR)/mediatomb-conf-optware $(MEDIATOMB_IPK_DIR)$(TARGET_PREFIX)/etc/mediatomb.conf
+	$(INSTALL) -m 644 $(MEDIATOMB_SOURCE_DIR)/mediatomb-default-optware $(MEDIATOMB_IPK_DIR)$(TARGET_PREFIX)/etc/default/mediatomb
+	$(INSTALL) -m 755 $(MEDIATOMB_SOURCE_DIR)/mediatomb-service-optware $(MEDIATOMB_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S90mediatomb
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MEDIATOMB_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXmediatomb
 	$(MAKE) $(MEDIATOMB_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(MEDIATOMB_SOURCE_DIR)/postinst $(MEDIATOMB_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MEDIATOMB_IPK_DIR)/CONTROL/postinst

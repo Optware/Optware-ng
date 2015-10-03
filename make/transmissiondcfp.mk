@@ -59,7 +59,7 @@ TRANSMISSIONDCFP_IPK_VERSION=1
 
 #
 # TRANSMISSIONDCFP_CONFFILES should be a list of user-editable files
-#TRANSMISSIONDCFP_CONFFILES=/opt/etc/transmissiondcfp.conf
+#TRANSMISSIONDCFP_CONFFILES=$(TARGET_PREFIX)/etc/transmissiondcfp.conf
 
 TRANSMISSIONDCFP_PATCHES = $(TRANSMISSIONDCFP_SOURCE_DIR)/int64_switch.patch
 
@@ -199,7 +199,7 @@ endif
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=$(TARGET_PREFIX) \
-		--datadir=/opt/share \
+		--datadir=$(TARGET_PREFIX)/share \
 		--disable-gtk \
 		--disable-wx \
 		--disable-nls \
@@ -303,12 +303,12 @@ $(TRANSMISSIONDCFP_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(TRANSMISSIONDCFP_IPK_DIR)/opt/sbin or $(TRANSMISSIONDCFP_IPK_DIR)/opt/bin
+# Binaries should be installed into $(TRANSMISSIONDCFP_IPK_DIR)$(TARGET_PREFIX)/sbin or $(TRANSMISSIONDCFP_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(TRANSMISSIONDCFP_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(TRANSMISSIONDCFP_IPK_DIR)/opt/etc/transmissiondcfp/...
-# Documentation files should be installed in $(TRANSMISSIONDCFP_IPK_DIR)/opt/doc/transmissiondcfp/...
-# Daemon startup scripts should be installed in $(TRANSMISSIONDCFP_IPK_DIR)/opt/etc/init.d/S??transmissiondcfp
+# Libraries and include files should be installed into $(TRANSMISSIONDCFP_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(TRANSMISSIONDCFP_IPK_DIR)$(TARGET_PREFIX)/etc/transmissiondcfp/...
+# Documentation files should be installed in $(TRANSMISSIONDCFP_IPK_DIR)$(TARGET_PREFIX)/doc/transmissiondcfp/...
+# Daemon startup scripts should be installed in $(TRANSMISSIONDCFP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??transmissiondcfp
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -316,14 +316,14 @@ $(TRANSMISSIONDCFP_IPK_DIR)/CONTROL/control:
 $(TRANSMISSIONDCFP_IPK): $(TRANSMISSIONDCFP_BUILD_DIR)/.built
 
 	rm -rf $(TRANSMISSIONDCFP_IPK_DIR) $(BUILD_DIR)/transmissiondcfp_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(TRANSMISSIONDCFP_IPK_DIR)/opt
+	$(INSTALL) -d $(TRANSMISSIONDCFP_IPK_DIR)$(TARGET_PREFIX)
 	$(MAKE) -C $(TRANSMISSIONDCFP_BUILD_DIR) DESTDIR=$(TRANSMISSIONDCFP_IPK_DIR) install-strip
-#	$(INSTALL) -d $(TRANSMISSIONDCFP_IPK_DIR)/opt/etc
-#	$(INSTALL) -m 644 $(TRANSMISSIONDCFP_SOURCE_DIR)/transmissiondcfp.conf $(TRANSMISSIONDCFP_IPK_DIR)/opt/etc/transmissiondcfp.conf
-	$(INSTALL) -d $(TRANSMISSIONDCFP_IPK_DIR)/opt/share/doc/transmissiondcfp
-	$(INSTALL) -m 666 $(TRANSMISSIONDCFP_BUILD_DIR)/[CNR]*  $(TRANSMISSIONDCFP_IPK_DIR)/opt/share/doc/transmissiondcfp
-	$(INSTALL) -d $(TRANSMISSIONDCFP_IPK_DIR)/opt/var/log
-	$(INSTALL) -d $(TRANSMISSIONDCFP_IPK_DIR)/opt/var/run
+#	$(INSTALL) -d $(TRANSMISSIONDCFP_IPK_DIR)$(TARGET_PREFIX)/etc
+#	$(INSTALL) -m 644 $(TRANSMISSIONDCFP_SOURCE_DIR)/transmissiondcfp.conf $(TRANSMISSIONDCFP_IPK_DIR)$(TARGET_PREFIX)/etc/transmissiondcfp.conf
+	$(INSTALL) -d $(TRANSMISSIONDCFP_IPK_DIR)$(TARGET_PREFIX)/share/doc/transmissiondcfp
+	$(INSTALL) -m 666 $(TRANSMISSIONDCFP_BUILD_DIR)/[CNR]*  $(TRANSMISSIONDCFP_IPK_DIR)$(TARGET_PREFIX)/share/doc/transmissiondcfp
+	$(INSTALL) -d $(TRANSMISSIONDCFP_IPK_DIR)$(TARGET_PREFIX)/var/log
+	$(INSTALL) -d $(TRANSMISSIONDCFP_IPK_DIR)$(TARGET_PREFIX)/var/run
 	$(MAKE) $(TRANSMISSIONDCFP_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 755 $(TRANSMISSIONDCFP_SOURCE_DIR)/postinst $(TRANSMISSIONDCFP_IPK_DIR)/CONTROL/postinst
 	echo $(TRANSMISSIONDCFP_CONFFILES) | sed -e 's/ /\n/g' > $(TRANSMISSIONDCFP_IPK_DIR)/CONTROL/conffiles

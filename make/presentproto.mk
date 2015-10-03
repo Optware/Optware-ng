@@ -149,12 +149,12 @@ presentproto-stage: $(PRESENTPROTO_BUILD_DIR)/.staged
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PRESENTPROTO_IPK_DIR)/opt/sbin or $(PRESENTPROTO_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PRESENTPROTO_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PRESENTPROTO_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PRESENTPROTO_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PRESENTPROTO_IPK_DIR)/opt/etc/presentproto/...
-# Documentation files should be installed in $(PRESENTPROTO_IPK_DIR)/opt/doc/presentproto/...
-# Daemon startup scripts should be installed in $(PRESENTPROTO_IPK_DIR)/opt/etc/init.d/S??presentproto
+# Libraries and include files should be installed into $(PRESENTPROTO_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PRESENTPROTO_IPK_DIR)$(TARGET_PREFIX)/etc/presentproto/...
+# Documentation files should be installed in $(PRESENTPROTO_IPK_DIR)$(TARGET_PREFIX)/doc/presentproto/...
+# Daemon startup scripts should be installed in $(PRESENTPROTO_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??presentproto
 #
 # You may need to patch your application to make it use these locations.
 #

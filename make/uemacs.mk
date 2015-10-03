@@ -40,7 +40,7 @@ UEMACS_IPK_VERSION=2
 
 #
 # UEMACS_CONFFILES should be a list of user-editable files
-UEMACS_CONFFILES=/opt/etc/.uemacsrc
+UEMACS_CONFFILES=$(TARGET_PREFIX)/etc/.uemacsrc
 
 #
 # UEMACS_PATCHES should list any patches, in the the order in
@@ -189,30 +189,30 @@ $(UEMACS_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(UEMACS_IPK_DIR)/opt/sbin or $(UEMACS_IPK_DIR)/opt/bin
+# Binaries should be installed into $(UEMACS_IPK_DIR)$(TARGET_PREFIX)/sbin or $(UEMACS_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(UEMACS_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(UEMACS_IPK_DIR)/opt/etc/uemacs/...
-# Documentation files should be installed in $(UEMACS_IPK_DIR)/opt/doc/uemacs/...
-# Daemon startup scripts should be installed in $(UEMACS_IPK_DIR)/opt/etc/init.d/S??uemacs
+# Libraries and include files should be installed into $(UEMACS_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(UEMACS_IPK_DIR)$(TARGET_PREFIX)/etc/uemacs/...
+# Documentation files should be installed in $(UEMACS_IPK_DIR)$(TARGET_PREFIX)/doc/uemacs/...
+# Daemon startup scripts should be installed in $(UEMACS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??uemacs
 #
 # You may need to patch your application to make it use these locations.
 #
 $(UEMACS_IPK): $(UEMACS_BUILD_DIR)/.built
 	rm -rf $(UEMACS_IPK_DIR) $(BUILD_DIR)/uemacs_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(UEMACS_IPK_DIR)/opt/bin $(UEMACS_IPK_DIR)/opt/etc
+	$(INSTALL) -d $(UEMACS_IPK_DIR)$(TARGET_PREFIX)/bin $(UEMACS_IPK_DIR)$(TARGET_PREFIX)/etc
 	$(MAKE) -C $(UEMACS_BUILD_DIR) \
-		BINDIR=$(UEMACS_IPK_DIR)/opt/bin \
-		LIBDIR=$(UEMACS_IPK_DIR)/opt/etc \
+		BINDIR=$(UEMACS_IPK_DIR)$(TARGET_PREFIX)/bin \
+		LIBDIR=$(UEMACS_IPK_DIR)$(TARGET_PREFIX)/etc \
 		$(INSTALL)
-	cd $(UEMACS_IPK_DIR)/opt/bin; ln -s em uemacs
-	mv $(UEMACS_IPK_DIR)/opt/etc/.emacsrc $(UEMACS_IPK_DIR)/opt/etc/.uemacsrc
-	mv $(UEMACS_IPK_DIR)/opt/etc/emacs.hlp $(UEMACS_IPK_DIR)/opt/etc/uemacs.hlp
-#	$(INSTALL) -d $(UEMACS_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(UEMACS_SOURCE_DIR)/uemacs.conf $(UEMACS_IPK_DIR)/opt/etc/uemacs.conf
-#	$(INSTALL) -d $(UEMACS_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(UEMACS_SOURCE_DIR)/rc.uemacs $(UEMACS_IPK_DIR)/opt/etc/init.d/SXXuemacs
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(UEMACS_IPK_DIR)/opt/etc/init.d/SXXuemacs
+	cd $(UEMACS_IPK_DIR)$(TARGET_PREFIX)/bin; ln -s em uemacs
+	mv $(UEMACS_IPK_DIR)$(TARGET_PREFIX)/etc/.emacsrc $(UEMACS_IPK_DIR)$(TARGET_PREFIX)/etc/.uemacsrc
+	mv $(UEMACS_IPK_DIR)$(TARGET_PREFIX)/etc/emacs.hlp $(UEMACS_IPK_DIR)$(TARGET_PREFIX)/etc/uemacs.hlp
+#	$(INSTALL) -d $(UEMACS_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(UEMACS_SOURCE_DIR)/uemacs.conf $(UEMACS_IPK_DIR)$(TARGET_PREFIX)/etc/uemacs.conf
+#	$(INSTALL) -d $(UEMACS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(UEMACS_SOURCE_DIR)/rc.uemacs $(UEMACS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXuemacs
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(UEMACS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXuemacs
 	$(MAKE) $(UEMACS_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(UEMACS_SOURCE_DIR)/postinst $(UEMACS_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(UEMACS_IPK_DIR)/CONTROL/postinst

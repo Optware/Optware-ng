@@ -41,7 +41,7 @@ PY-SERIAL_IPK_VERSION=1
 
 #
 # PY-SERIAL_CONFFILES should be a list of user-editable files
-#PY-SERIAL_CONFFILES=/opt/etc/py-serial.conf /opt/etc/init.d/SXXpy-serial
+#PY-SERIAL_CONFFILES=$(TARGET_PREFIX)/etc/py-serial.conf $(TARGET_PREFIX)/etc/init.d/SXXpy-serial
 
 #
 # PY-SERIAL_PATCHES should list any patches, in the the order in
@@ -120,7 +120,7 @@ $(PY-SERIAL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SERIAL_SOURCE) $(PY-SERIAL_PA
 	mv $(BUILD_DIR)/$(PY-SERIAL_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
 	    (echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python2.5") > setup.cfg \
+	    echo "executable=$(TARGET_PREFIX)/bin/python2.5") > setup.cfg \
 	)
 	# 2.6
 	rm -rf $(BUILD_DIR)/$(PY-SERIAL_DIR)
@@ -129,7 +129,7 @@ $(PY-SERIAL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SERIAL_SOURCE) $(PY-SERIAL_PA
 	mv $(BUILD_DIR)/$(PY-SERIAL_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
 	    (echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python2.6") > setup.cfg \
+	    echo "executable=$(TARGET_PREFIX)/bin/python2.6") > setup.cfg \
 	)
 	touch $@
 
@@ -208,12 +208,12 @@ $(PY26-SERIAL_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PY-SERIAL_IPK_DIR)/opt/sbin or $(PY-SERIAL_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PY-SERIAL_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PY-SERIAL_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PY-SERIAL_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PY-SERIAL_IPK_DIR)/opt/etc/py-serial/...
-# Documentation files should be installed in $(PY-SERIAL_IPK_DIR)/opt/doc/py-serial/...
-# Daemon startup scripts should be installed in $(PY-SERIAL_IPK_DIR)/opt/etc/init.d/S??py-serial
+# Libraries and include files should be installed into $(PY-SERIAL_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PY-SERIAL_IPK_DIR)$(TARGET_PREFIX)/etc/py-serial/...
+# Documentation files should be installed in $(PY-SERIAL_IPK_DIR)$(TARGET_PREFIX)/doc/py-serial/...
+# Daemon startup scripts should be installed in $(PY-SERIAL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??py-serial
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -222,7 +222,7 @@ $(PY25-SERIAL_IPK): $(PY-SERIAL_BUILD_DIR)/.built
 	rm -rf $(PY25-SERIAL_IPK_DIR) $(BUILD_DIR)/py25-serial_*_$(TARGET_ARCH).ipk
 	(cd $(PY-SERIAL_BUILD_DIR)/2.5; \
 	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
-	--root=$(PY25-SERIAL_IPK_DIR) --prefix=/opt)
+	--root=$(PY25-SERIAL_IPK_DIR) --prefix=$(TARGET_PREFIX))
 	$(MAKE) $(PY25-SERIAL_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-SERIAL_IPK_DIR)
 
@@ -231,13 +231,13 @@ $(PY26-SERIAL_IPK) $(PY-SERIAL-COMMON_IPK): $(PY-SERIAL_BUILD_DIR)/.built
 	rm -rf $(PY-SERIAL-COMMON_IPK_DIR) $(BUILD_DIR)/py-serial-common_*_$(TARGET_ARCH).ipk
 	(cd $(PY-SERIAL_BUILD_DIR)/2.6; \
 	$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install \
-	--root=$(PY26-SERIAL_IPK_DIR) --prefix=/opt)
+	--root=$(PY26-SERIAL_IPK_DIR) --prefix=$(TARGET_PREFIX))
 	$(MAKE) $(PY26-SERIAL_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-SERIAL_IPK_DIR)
-	$(INSTALL) -d $(PY-SERIAL-COMMON_IPK_DIR)/opt/share/doc/py-serial/examples
-	$(INSTALL) $(PY-SERIAL_BUILD_DIR)/2.6/[CLR]*.txt $(PY-SERIAL-COMMON_IPK_DIR)/opt/share/doc/py-serial/
-	$(INSTALL) $(PY-SERIAL_BUILD_DIR)/2.6/examples/* $(PY-SERIAL-COMMON_IPK_DIR)/opt/share/doc/py-serial/examples/
-	mv $(PY26-SERIAL_IPK_DIR)/opt/bin/miniterm.py $(PY26-SERIAL_IPK_DIR)/opt/bin/miniterm.py26
+	$(INSTALL) -d $(PY-SERIAL-COMMON_IPK_DIR)$(TARGET_PREFIX)/share/doc/py-serial/examples
+	$(INSTALL) $(PY-SERIAL_BUILD_DIR)/2.6/[CLR]*.txt $(PY-SERIAL-COMMON_IPK_DIR)$(TARGET_PREFIX)/share/doc/py-serial/
+	$(INSTALL) $(PY-SERIAL_BUILD_DIR)/2.6/examples/* $(PY-SERIAL-COMMON_IPK_DIR)$(TARGET_PREFIX)/share/doc/py-serial/examples/
+	mv $(PY26-SERIAL_IPK_DIR)$(TARGET_PREFIX)/bin/miniterm.py $(PY26-SERIAL_IPK_DIR)$(TARGET_PREFIX)/bin/miniterm.py26
 	$(MAKE) $(PY-SERIAL-COMMON_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-SERIAL-COMMON_IPK_DIR)
 

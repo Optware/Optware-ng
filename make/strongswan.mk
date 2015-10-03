@@ -46,7 +46,7 @@ STRONGSWAN_IPK_VERSION=1
 
 #
 # STRONGSWAN_CONFFILES should be a list of user-editable files
-#STRONGSWAN_CONFFILES=/opt/etc/strongswan.conf /opt/etc/init.d/SXXstrongswan
+#STRONGSWAN_CONFFILES=$(TARGET_PREFIX)/etc/strongswan.conf $(TARGET_PREFIX)/etc/init.d/SXXstrongswan
 
 #
 # STRONGSWAN_PATCHES should list any patches, in the the order in
@@ -195,33 +195,33 @@ $(STRONGSWAN_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(STRONGSWAN_IPK_DIR)/opt/sbin or $(STRONGSWAN_IPK_DIR)/opt/bin
+# Binaries should be installed into $(STRONGSWAN_IPK_DIR)$(TARGET_PREFIX)/sbin or $(STRONGSWAN_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(STRONGSWAN_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(STRONGSWAN_IPK_DIR)/opt/etc/strongswan/...
-# Documentation files should be installed in $(STRONGSWAN_IPK_DIR)/opt/doc/strongswan/...
-# Daemon startup scripts should be installed in $(STRONGSWAN_IPK_DIR)/opt/etc/init.d/S??strongswan
+# Libraries and include files should be installed into $(STRONGSWAN_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(STRONGSWAN_IPK_DIR)$(TARGET_PREFIX)/etc/strongswan/...
+# Documentation files should be installed in $(STRONGSWAN_IPK_DIR)$(TARGET_PREFIX)/doc/strongswan/...
+# Daemon startup scripts should be installed in $(STRONGSWAN_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??strongswan
 #
 # You may need to patch your application to make it use these locations.
 #
 $(STRONGSWAN_IPK): $(STRONGSWAN_BUILD_DIR)/.built
 	rm -rf $(STRONGSWAN_IPK_DIR) $(BUILD_DIR)/strongswan_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(STRONGSWAN_BUILD_DIR) DESTDIR=$(STRONGSWAN_IPK_DIR) install-strip
-	$(INSTALL) -d $(STRONGSWAN_BUILD_DIR)/opt/lib
-	$(INSTALL) -m 644 $(STRONGSWAN_BUILD_DIR)/src/libstrongswan/.libs/libstrongswan.so.0.0.0  $(STRONGSWAN_IPK_DIR)/opt/lib
-	$(STRIP_COMMAND) $(STRONGSWAN_IPK_DIR)/opt/lib/libstrongswan.so.0.0.0
-	cd $(STRONGSWAN_IPK_DIR)/opt/lib && ln -fs libstrongswan.so.0.0.0 libstrongswan.so.0
-	cd $(STRONGSWAN_IPK_DIR)/opt/lib && ln -fs libstrongswan.so.0.0.0 libstrongswan.so
-	$(INSTALL) -m 644 $(STRONGSWAN_BUILD_DIR)/src/libcharon/.libs/libcharon.so.0.0.0  $(STRONGSWAN_IPK_DIR)/opt/lib
-	$(STRIP_COMMAND) $(STRONGSWAN_IPK_DIR)/opt/lib/libcharon.so.0.0.0
-	cd $(STRONGSWAN_IPK_DIR)/opt/lib && ln -fs libcharon.so.0.0.0 libcharon.so.0
-	cd $(STRONGSWAN_IPK_DIR)/opt/lib && ln -fs libcharon.so.0.0.0 libcharon.so
+	$(INSTALL) -d $(STRONGSWAN_BUILD_DIR)$(TARGET_PREFIX)/lib
+	$(INSTALL) -m 644 $(STRONGSWAN_BUILD_DIR)/src/libstrongswan/.libs/libstrongswan.so.0.0.0  $(STRONGSWAN_IPK_DIR)$(TARGET_PREFIX)/lib
+	$(STRIP_COMMAND) $(STRONGSWAN_IPK_DIR)$(TARGET_PREFIX)/lib/libstrongswan.so.0.0.0
+	cd $(STRONGSWAN_IPK_DIR)$(TARGET_PREFIX)/lib && ln -fs libstrongswan.so.0.0.0 libstrongswan.so.0
+	cd $(STRONGSWAN_IPK_DIR)$(TARGET_PREFIX)/lib && ln -fs libstrongswan.so.0.0.0 libstrongswan.so
+	$(INSTALL) -m 644 $(STRONGSWAN_BUILD_DIR)/src/libcharon/.libs/libcharon.so.0.0.0  $(STRONGSWAN_IPK_DIR)$(TARGET_PREFIX)/lib
+	$(STRIP_COMMAND) $(STRONGSWAN_IPK_DIR)$(TARGET_PREFIX)/lib/libcharon.so.0.0.0
+	cd $(STRONGSWAN_IPK_DIR)$(TARGET_PREFIX)/lib && ln -fs libcharon.so.0.0.0 libcharon.so.0
+	cd $(STRONGSWAN_IPK_DIR)$(TARGET_PREFIX)/lib && ln -fs libcharon.so.0.0.0 libcharon.so
 
-#	$(INSTALL) -d $(STRONGSWAN_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(STRONGSWAN_SOURCE_DIR)/strongswan.conf $(STRONGSWAN_IPK_DIR)/opt/etc/strongswan.conf
-#	$(INSTALL) -d $(STRONGSWAN_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(STRONGSWAN_SOURCE_DIR)/rc.strongswan $(STRONGSWAN_IPK_DIR)/opt/etc/init.d/SXXstrongswan
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(STRONGSWAN_IPK_DIR)/opt/etc/init.d/SXXstrongswan
+#	$(INSTALL) -d $(STRONGSWAN_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(STRONGSWAN_SOURCE_DIR)/strongswan.conf $(STRONGSWAN_IPK_DIR)$(TARGET_PREFIX)/etc/strongswan.conf
+#	$(INSTALL) -d $(STRONGSWAN_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(STRONGSWAN_SOURCE_DIR)/rc.strongswan $(STRONGSWAN_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXstrongswan
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(STRONGSWAN_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXstrongswan
 	$(MAKE) $(STRONGSWAN_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(STRONGSWAN_SOURCE_DIR)/postinst $(STRONGSWAN_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(STRONGSWAN_IPK_DIR)/CONTROL/postinst

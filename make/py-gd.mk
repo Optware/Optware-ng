@@ -41,7 +41,7 @@ PY-GD_IPK_VERSION=4
 
 #
 # PY-GD_CONFFILES should be a list of user-editable files
-#PY-GD_CONFFILES=/opt/etc/py-gd.conf /opt/etc/init.d/SXXpy-gd
+#PY-GD_CONFFILES=$(TARGET_PREFIX)/etc/py-gd.conf $(TARGET_PREFIX)/etc/init.d/SXXpy-gd
 
 #
 # PY-GD_PATCHES should list any patches, in the the order in
@@ -120,9 +120,9 @@ $(PY-GD_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-GD_SOURCE) $(PY-GD_PATCHES)
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
 	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
-	        echo "rpath=/opt/lib"; \
+	        echo "rpath=$(TARGET_PREFIX)/lib"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python2.4" \
+		echo "executable=$(TARGET_PREFIX)/bin/python2.4" \
 	    ) > setup.cfg; \
 	)
 	# 2.5
@@ -136,9 +136,9 @@ $(PY-GD_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-GD_SOURCE) $(PY-GD_PATCHES)
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.5"; \
 	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
-	        echo "rpath=/opt/lib"; \
+	        echo "rpath=$(TARGET_PREFIX)/lib"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python2.5" \
+		echo "executable=$(TARGET_PREFIX)/bin/python2.5" \
 	    ) > setup.cfg; \
 	)
 	touch $@
@@ -210,12 +210,12 @@ $(PY25-GD_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PY-GD_IPK_DIR)/opt/sbin or $(PY-GD_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PY-GD_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PY-GD_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PY-GD_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PY-GD_IPK_DIR)/opt/etc/py-gd/...
-# Documentation files should be installed in $(PY-GD_IPK_DIR)/opt/doc/py-gd/...
-# Daemon startup scripts should be installed in $(PY-GD_IPK_DIR)/opt/etc/init.d/S??py-gd
+# Libraries and include files should be installed into $(PY-GD_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PY-GD_IPK_DIR)$(TARGET_PREFIX)/etc/py-gd/...
+# Documentation files should be installed in $(PY-GD_IPK_DIR)$(TARGET_PREFIX)/doc/py-gd/...
+# Daemon startup scripts should be installed in $(PY-GD_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??py-gd
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -224,9 +224,9 @@ $(PY24-GD_IPK): $(PY-GD_BUILD_DIR)/.built
 	(cd $(PY-GD_BUILD_DIR)/2.4; \
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 Setup.py install \
-	    --root=$(PY24-GD_IPK_DIR) --prefix=/opt; \
+	    --root=$(PY24-GD_IPK_DIR) --prefix=$(TARGET_PREFIX); \
 	)
-	for so in `find $(PY24-GD_IPK_DIR)/opt/lib/python2.4/site-packages -name '*.so'`; \
+	for so in `find $(PY24-GD_IPK_DIR)$(TARGET_PREFIX)/lib/python2.4/site-packages -name '*.so'`; \
 		do $(STRIP_COMMAND) $$so; done
 	$(MAKE) $(PY24-GD_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-GD_IPK_DIR)
@@ -236,9 +236,9 @@ $(PY25-GD_IPK): $(PY-GD_BUILD_DIR)/.built
 	(cd $(PY-GD_BUILD_DIR)/2.5; \
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 Setup.py install \
-	    --root=$(PY25-GD_IPK_DIR) --prefix=/opt; \
+	    --root=$(PY25-GD_IPK_DIR) --prefix=$(TARGET_PREFIX); \
 	)
-	for so in `find $(PY25-GD_IPK_DIR)/opt/lib/python2.5/site-packages -name '*.so'`; \
+	for so in `find $(PY25-GD_IPK_DIR)$(TARGET_PREFIX)/lib/python2.5/site-packages -name '*.so'`; \
 		do $(STRIP_COMMAND) $$so; done
 	$(MAKE) $(PY25-GD_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-GD_IPK_DIR)

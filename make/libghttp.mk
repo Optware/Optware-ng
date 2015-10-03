@@ -46,7 +46,7 @@ LIBGHTTP_IPK_VERSION=1
 
 #
 # LIBGHTTP_CONFFILES should be a list of user-editable files
-#LIBGHTTP_CONFFILES=/opt/etc/libghttp.conf /opt/etc/init.d/SXXlibghttp
+#LIBGHTTP_CONFFILES=$(TARGET_PREFIX)/etc/libghttp.conf $(TARGET_PREFIX)/etc/init.d/SXXlibghttp
 
 #
 # LIBGHTTP_PATCHES should list any patches, in the the order in
@@ -177,22 +177,22 @@ $(LIBGHTTP_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LIBGHTTP_IPK_DIR)/opt/sbin or $(LIBGHTTP_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LIBGHTTP_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LIBGHTTP_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LIBGHTTP_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LIBGHTTP_IPK_DIR)/opt/etc/libghttp/...
-# Documentation files should be installed in $(LIBGHTTP_IPK_DIR)/opt/doc/libghttp/...
-# Daemon startup scripts should be installed in $(LIBGHTTP_IPK_DIR)/opt/etc/init.d/S??libghttp
+# Libraries and include files should be installed into $(LIBGHTTP_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LIBGHTTP_IPK_DIR)$(TARGET_PREFIX)/etc/libghttp/...
+# Documentation files should be installed in $(LIBGHTTP_IPK_DIR)$(TARGET_PREFIX)/doc/libghttp/...
+# Daemon startup scripts should be installed in $(LIBGHTTP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??libghttp
 #
 # You may need to patch your application to make it use these locations.
 #
 $(LIBGHTTP_IPK): $(LIBGHTTP_BUILD_DIR)/.built
 	rm -rf $(LIBGHTTP_IPK_DIR) $(BUILD_DIR)/LIBGHTTP_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBGHTTP_BUILD_DIR) DESTDIR=$(LIBGHTTP_IPK_DIR) install-strip
-#	$(INSTALL) -d $(LIBGHTTP_IPK_DIR)/opt/include
-#	$(INSTALL) -m 644 $(LIBGHTTP_BUILD_DIR)/ghttp.h $(LIBGHTTP_IPK_DIR)/opt/include
-#	$(INSTALL) -d $(LIBGHTTP_IPK_DIR)/opt/lib
-#	$(INSTALL) -m 644 $(LIBGHTTP_BUILD_DIR)/libghttp.la $(LIBGHTTP_IPK_DIR)/opt/lib
+#	$(INSTALL) -d $(LIBGHTTP_IPK_DIR)$(TARGET_PREFIX)/include
+#	$(INSTALL) -m 644 $(LIBGHTTP_BUILD_DIR)/ghttp.h $(LIBGHTTP_IPK_DIR)$(TARGET_PREFIX)/include
+#	$(INSTALL) -d $(LIBGHTTP_IPK_DIR)$(TARGET_PREFIX)/lib
+#	$(INSTALL) -m 644 $(LIBGHTTP_BUILD_DIR)/libghttp.la $(LIBGHTTP_IPK_DIR)$(TARGET_PREFIX)/lib
 	$(MAKE) $(LIBGHTTP_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBGHTTP_IPK_DIR)
 

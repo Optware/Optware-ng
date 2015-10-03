@@ -40,7 +40,7 @@ INOTAIL_IPK_VERSION=1
 
 #
 # INOTAIL_CONFFILES should be a list of user-editable files
-#INOTAIL_CONFFILES=/opt/etc/inotail.conf /opt/etc/init.d/SXXinotail
+#INOTAIL_CONFFILES=$(TARGET_PREFIX)/etc/inotail.conf $(TARGET_PREFIX)/etc/init.d/SXXinotail
 
 #
 # INOTAIL_PATCHES should list any patches, in the the order in
@@ -181,12 +181,12 @@ $(INOTAIL_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(INOTAIL_IPK_DIR)/opt/sbin or $(INOTAIL_IPK_DIR)/opt/bin
+# Binaries should be installed into $(INOTAIL_IPK_DIR)$(TARGET_PREFIX)/sbin or $(INOTAIL_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(INOTAIL_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(INOTAIL_IPK_DIR)/opt/etc/inotail/...
-# Documentation files should be installed in $(INOTAIL_IPK_DIR)/opt/doc/inotail/...
-# Daemon startup scripts should be installed in $(INOTAIL_IPK_DIR)/opt/etc/init.d/S??inotail
+# Libraries and include files should be installed into $(INOTAIL_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(INOTAIL_IPK_DIR)$(TARGET_PREFIX)/etc/inotail/...
+# Documentation files should be installed in $(INOTAIL_IPK_DIR)$(TARGET_PREFIX)/doc/inotail/...
+# Daemon startup scripts should be installed in $(INOTAIL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??inotail
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -194,8 +194,8 @@ $(INOTAIL_IPK): $(INOTAIL_BUILD_DIR)/.built
 	rm -rf $(INOTAIL_IPK_DIR) $(BUILD_DIR)/inotail_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(INOTAIL_BUILD_DIR) install \
 		DESTDIR=$(INOTAIL_IPK_DIR) \
-		prefix=$(INOTAIL_IPK_DIR)/opt
-	$(STRIP_COMMAND) $(INOTAIL_IPK_DIR)/opt/bin/inotail
+		prefix=$(INOTAIL_IPK_DIR)$(TARGET_PREFIX)
+	$(STRIP_COMMAND) $(INOTAIL_IPK_DIR)$(TARGET_PREFIX)/bin/inotail
 	$(MAKE) $(INOTAIL_IPK_DIR)/CONTROL/control
 	echo $(INOTAIL_CONFFILES) | sed -e 's/ /\n/g' > $(INOTAIL_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(INOTAIL_IPK_DIR)

@@ -51,7 +51,7 @@ SNOWNEWS_IPK_VERSION=1
 
 #
 # SNOWNEWS_CONFFILES should be a list of user-editable files
-#SNOWNEWS_CONFFILES=/opt/etc/snownews.conf /opt/etc/init.d/SXXsnownews
+#SNOWNEWS_CONFFILES=$(TARGET_PREFIX)/etc/snownews.conf $(TARGET_PREFIX)/etc/init.d/SXXsnownews
 
 #
 # SNOWNEWS_PATCHES should list any patches, in the the order in
@@ -195,19 +195,19 @@ $(SNOWNEWS_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(SNOWNEWS_IPK_DIR)/opt/sbin or $(SNOWNEWS_IPK_DIR)/opt/bin
+# Binaries should be installed into $(SNOWNEWS_IPK_DIR)$(TARGET_PREFIX)/sbin or $(SNOWNEWS_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(SNOWNEWS_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(SNOWNEWS_IPK_DIR)/opt/etc/snownews/...
-# Documentation files should be installed in $(SNOWNEWS_IPK_DIR)/opt/doc/snownews/...
-# Daemon startup scripts should be installed in $(SNOWNEWS_IPK_DIR)/opt/etc/init.d/S??snownews
+# Libraries and include files should be installed into $(SNOWNEWS_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(SNOWNEWS_IPK_DIR)$(TARGET_PREFIX)/etc/snownews/...
+# Documentation files should be installed in $(SNOWNEWS_IPK_DIR)$(TARGET_PREFIX)/doc/snownews/...
+# Daemon startup scripts should be installed in $(SNOWNEWS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??snownews
 #
 # You may need to patch your application to make it use these locations.
 #
 $(SNOWNEWS_IPK): $(SNOWNEWS_BUILD_DIR)/.built
 	rm -rf $(SNOWNEWS_IPK_DIR) $(BUILD_DIR)/snownews_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SNOWNEWS_BUILD_DIR) DESTDIR=$(SNOWNEWS_IPK_DIR) install
-	$(TARGET_STRIP) $(SNOWNEWS_IPK_DIR)/opt/bin/snownews
+	$(TARGET_STRIP) $(SNOWNEWS_IPK_DIR)$(TARGET_PREFIX)/bin/snownews
 	$(MAKE) $(SNOWNEWS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SNOWNEWS_IPK_DIR)
 

@@ -46,7 +46,7 @@ DNSSEC-TRIGGER_IPK_VERSION=1
 
 #
 # DNSSEC-TRIGGER_CONFFILES should be a list of user-editable files
-#DNSSEC-TRIGGER_CONFFILES=/opt/etc/dnssec-trigger.conf /opt/etc/init.d/SXXdnssec-trigger
+#DNSSEC-TRIGGER_CONFFILES=$(TARGET_PREFIX)/etc/dnssec-trigger.conf $(TARGET_PREFIX)/etc/init.d/SXXdnssec-trigger
 
 #
 # DNSSEC-TRIGGER_PATCHES should list any patches, in the the order in
@@ -183,25 +183,25 @@ $(DNSSEC-TRIGGER_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(DNSSEC-TRIGGER_IPK_DIR)/opt/sbin or $(DNSSEC-TRIGGER_IPK_DIR)/opt/bin
+# Binaries should be installed into $(DNSSEC-TRIGGER_IPK_DIR)$(TARGET_PREFIX)/sbin or $(DNSSEC-TRIGGER_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(DNSSEC-TRIGGER_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(DNSSEC-TRIGGER_IPK_DIR)/opt/etc/dnssec-trigger/...
-# Documentation files should be installed in $(DNSSEC-TRIGGER_IPK_DIR)/opt/doc/dnssec-trigger/...
-# Daemon startup scripts should be installed in $(DNSSEC-TRIGGER_IPK_DIR)/opt/etc/init.d/S??dnssec-trigger
+# Libraries and include files should be installed into $(DNSSEC-TRIGGER_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(DNSSEC-TRIGGER_IPK_DIR)$(TARGET_PREFIX)/etc/dnssec-trigger/...
+# Documentation files should be installed in $(DNSSEC-TRIGGER_IPK_DIR)$(TARGET_PREFIX)/doc/dnssec-trigger/...
+# Daemon startup scripts should be installed in $(DNSSEC-TRIGGER_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??dnssec-trigger
 #
 # You may need to patch your application to make it use these locations.
 #
 $(DNSSEC-TRIGGER_IPK): $(DNSSEC-TRIGGER_BUILD_DIR)/.built
 	rm -rf $(DNSSEC-TRIGGER_IPK_DIR) $(BUILD_DIR)/dnssec-trigger_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(DNSSEC-TRIGGER_BUILD_DIR) DESTDIR=$(DNSSEC-TRIGGER_IPK_DIR) install
-	$(INSTALL) -d $(DNSSEC-TRIGGER_IPK_DIR)/opt/etc/
-	$(INSTALL) -m 644 $(DNSSEC-TRIGGER_BUILD_DIR)/example.conf $(DNSSEC-TRIGGER_IPK_DIR)/opt/etc/dnssec-trigger.conf
+	$(INSTALL) -d $(DNSSEC-TRIGGER_IPK_DIR)$(TARGET_PREFIX)/etc/
+	$(INSTALL) -m 644 $(DNSSEC-TRIGGER_BUILD_DIR)/example.conf $(DNSSEC-TRIGGER_IPK_DIR)$(TARGET_PREFIX)/etc/dnssec-trigger.conf
 	$(STRIP_COMMAND) \
-		$(DNSSEC-TRIGGER_IPK_DIR)/opt/sbin/dnssec-trigger-control \
-		$(DNSSEC-TRIGGER_IPK_DIR)/opt/sbin/dnssec-triggerd
-#	$(INSTALL) -m 755 $(DNSSEC-TRIGGER_SOURCE_DIR)/rc.dnssec-trigger $(DNSSEC-TRIGGER_IPK_DIR)/opt/etc/init.d/SXXdnssec-trigger
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(DNSSEC-TRIGGER_IPK_DIR)/opt/etc/init.d/SXXdnssec-trigger
+		$(DNSSEC-TRIGGER_IPK_DIR)$(TARGET_PREFIX)/sbin/dnssec-trigger-control \
+		$(DNSSEC-TRIGGER_IPK_DIR)$(TARGET_PREFIX)/sbin/dnssec-triggerd
+#	$(INSTALL) -m 755 $(DNSSEC-TRIGGER_SOURCE_DIR)/rc.dnssec-trigger $(DNSSEC-TRIGGER_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXdnssec-trigger
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(DNSSEC-TRIGGER_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXdnssec-trigger
 	$(MAKE) $(DNSSEC-TRIGGER_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(DNSSEC-TRIGGER_SOURCE_DIR)/postinst $(DNSSEC-TRIGGER_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(DNSSEC-TRIGGER_IPK_DIR)/CONTROL/postinst

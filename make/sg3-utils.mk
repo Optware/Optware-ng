@@ -40,7 +40,7 @@ SG3-UTILS_IPK_VERSION=1
 
 #
 # SG3-UTILS_CONFFILES should be a list of user-editable files
-#SG3-UTILS_CONFFILES=/opt/etc/sg3-utils.conf /opt/etc/init.d/SXXsg3-utils
+#SG3-UTILS_CONFFILES=$(TARGET_PREFIX)/etc/sg3-utils.conf $(TARGET_PREFIX)/etc/init.d/SXXsg3-utils
 
 #
 # SG3-UTILS_PATCHES should list any patches, in the the order in
@@ -177,23 +177,23 @@ $(SG3-UTILS_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(SG3-UTILS_IPK_DIR)/opt/sbin or $(SG3-UTILS_IPK_DIR)/opt/bin
+# Binaries should be installed into $(SG3-UTILS_IPK_DIR)$(TARGET_PREFIX)/sbin or $(SG3-UTILS_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(SG3-UTILS_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(SG3-UTILS_IPK_DIR)/opt/etc/sg3-utils/...
-# Documentation files should be installed in $(SG3-UTILS_IPK_DIR)/opt/doc/sg3-utils/...
-# Daemon startup scripts should be installed in $(SG3-UTILS_IPK_DIR)/opt/etc/init.d/S??sg3-utils
+# Libraries and include files should be installed into $(SG3-UTILS_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(SG3-UTILS_IPK_DIR)$(TARGET_PREFIX)/etc/sg3-utils/...
+# Documentation files should be installed in $(SG3-UTILS_IPK_DIR)$(TARGET_PREFIX)/doc/sg3-utils/...
+# Daemon startup scripts should be installed in $(SG3-UTILS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??sg3-utils
 #
 # You may need to patch your application to make it use these locations.
 #
 $(SG3-UTILS_IPK): $(SG3-UTILS_BUILD_DIR)/.built
 	rm -rf $(SG3-UTILS_IPK_DIR) $(BUILD_DIR)/sg3-utils_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SG3-UTILS_BUILD_DIR) DESTDIR=$(SG3-UTILS_IPK_DIR) install-strip
-#	$(INSTALL) -d $(SG3-UTILS_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(SG3-UTILS_SOURCE_DIR)/sg3-utils.conf $(SG3-UTILS_IPK_DIR)/opt/etc/sg3-utils.conf
-#	$(INSTALL) -d $(SG3-UTILS_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(SG3-UTILS_SOURCE_DIR)/rc.sg3-utils $(SG3-UTILS_IPK_DIR)/opt/etc/init.d/SXXsg3-utils
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SG3-UTILS_IPK_DIR)/opt/etc/init.d/SXXsg3-utils
+#	$(INSTALL) -d $(SG3-UTILS_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(SG3-UTILS_SOURCE_DIR)/sg3-utils.conf $(SG3-UTILS_IPK_DIR)$(TARGET_PREFIX)/etc/sg3-utils.conf
+#	$(INSTALL) -d $(SG3-UTILS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(SG3-UTILS_SOURCE_DIR)/rc.sg3-utils $(SG3-UTILS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXsg3-utils
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SG3-UTILS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXsg3-utils
 	$(MAKE) $(SG3-UTILS_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(SG3-UTILS_SOURCE_DIR)/postinst $(SG3-UTILS_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SG3-UTILS_IPK_DIR)/CONTROL/postinst

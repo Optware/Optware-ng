@@ -49,7 +49,7 @@ EXO_IPK_VERSION=1
 
 #
 # EXO_CONFFILES should be a list of user-editable files
-#EXO_CONFFILES=/opt/etc/exo.conf /opt/etc/init.d/SXXexo
+#EXO_CONFFILES=$(TARGET_PREFIX)/etc/exo.conf $(TARGET_PREFIX)/etc/init.d/SXXexo
 
 #
 # EXO_PATCHES should list any patches, in the the order in
@@ -192,24 +192,24 @@ $(EXO_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(EXO_IPK_DIR)/opt/sbin or $(EXO_IPK_DIR)/opt/bin
+# Binaries should be installed into $(EXO_IPK_DIR)$(TARGET_PREFIX)/sbin or $(EXO_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(EXO_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(EXO_IPK_DIR)/opt/etc/exo/...
-# Documentation files should be installed in $(EXO_IPK_DIR)/opt/doc/exo/...
-# Daemon startup scripts should be installed in $(EXO_IPK_DIR)/opt/etc/init.d/S??exo
+# Libraries and include files should be installed into $(EXO_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(EXO_IPK_DIR)$(TARGET_PREFIX)/etc/exo/...
+# Documentation files should be installed in $(EXO_IPK_DIR)$(TARGET_PREFIX)/doc/exo/...
+# Daemon startup scripts should be installed in $(EXO_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??exo
 #
 # You may need to patch your application to make it use these locations.
 #
 $(EXO_IPK): $(EXO_BUILD_DIR)/.built
 	rm -rf $(EXO_IPK_DIR) $(BUILD_DIR)/exo_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(EXO_BUILD_DIR) DESTDIR=$(EXO_IPK_DIR) install-strip
-	rm -f $(EXO_IPK_DIR)/opt/lib/*.la
-#	$(INSTALL) -d $(EXO_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(EXO_SOURCE_DIR)/exo.conf $(EXO_IPK_DIR)/opt/etc/exo.conf
-#	$(INSTALL) -d $(EXO_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(EXO_SOURCE_DIR)/rc.exo $(EXO_IPK_DIR)/opt/etc/init.d/SXXexo
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(EXO_IPK_DIR)/opt/etc/init.d/SXXexo
+	rm -f $(EXO_IPK_DIR)$(TARGET_PREFIX)/lib/*.la
+#	$(INSTALL) -d $(EXO_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(EXO_SOURCE_DIR)/exo.conf $(EXO_IPK_DIR)$(TARGET_PREFIX)/etc/exo.conf
+#	$(INSTALL) -d $(EXO_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(EXO_SOURCE_DIR)/rc.exo $(EXO_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXexo
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(EXO_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXexo
 	$(MAKE) $(EXO_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(EXO_SOURCE_DIR)/postinst $(EXO_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(EXO_IPK_DIR)/CONTROL/postinst

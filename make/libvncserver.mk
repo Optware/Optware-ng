@@ -40,7 +40,7 @@ LIBVNCSERVER_IPK_VERSION=2
 
 #
 # LIBVNCSERVER_CONFFILES should be a list of user-editable files
-#LIBVNCSERVER_CONFFILES=/opt/etc/libvncserver.conf /opt/etc/init.d/SXXlibvncserver
+#LIBVNCSERVER_CONFFILES=$(TARGET_PREFIX)/etc/libvncserver.conf $(TARGET_PREFIX)/etc/init.d/SXXlibvncserver
 
 #
 # LIBVNCSERVER_PATCHES should list any patches, in the the order in
@@ -183,23 +183,23 @@ $(LIBVNCSERVER_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LIBVNCSERVER_IPK_DIR)/opt/sbin or $(LIBVNCSERVER_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LIBVNCSERVER_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LIBVNCSERVER_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LIBVNCSERVER_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LIBVNCSERVER_IPK_DIR)/opt/etc/libvncserver/...
-# Documentation files should be installed in $(LIBVNCSERVER_IPK_DIR)/opt/doc/libvncserver/...
-# Daemon startup scripts should be installed in $(LIBVNCSERVER_IPK_DIR)/opt/etc/init.d/S??libvncserver
+# Libraries and include files should be installed into $(LIBVNCSERVER_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LIBVNCSERVER_IPK_DIR)$(TARGET_PREFIX)/etc/libvncserver/...
+# Documentation files should be installed in $(LIBVNCSERVER_IPK_DIR)$(TARGET_PREFIX)/doc/libvncserver/...
+# Daemon startup scripts should be installed in $(LIBVNCSERVER_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??libvncserver
 #
 # You may need to patch your application to make it use these locations.
 #
 $(LIBVNCSERVER_IPK): $(LIBVNCSERVER_BUILD_DIR)/.built
 	rm -rf $(LIBVNCSERVER_IPK_DIR) $(BUILD_DIR)/libvncserver_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBVNCSERVER_BUILD_DIR) DESTDIR=$(LIBVNCSERVER_IPK_DIR) install-strip
-	rm -f $(LIBVNCSERVER_IPK_DIR)/opt/lib/*.la
-	$(INSTALL) -d $(LIBVNCSERVER_IPK_DIR)/opt/share/libvncserver/examples
+	rm -f $(LIBVNCSERVER_IPK_DIR)$(TARGET_PREFIX)/lib/*.la
+	$(INSTALL) -d $(LIBVNCSERVER_IPK_DIR)$(TARGET_PREFIX)/share/libvncserver/examples
 	cd $(LIBVNCSERVER_BUILD_DIR)/examples/.libs/; \
 	for f in *; do \
-		$(STRIP_COMMAND) $$f -o $(LIBVNCSERVER_IPK_DIR)/opt/share/libvncserver/examples/$$f; \
+		$(STRIP_COMMAND) $$f -o $(LIBVNCSERVER_IPK_DIR)$(TARGET_PREFIX)/share/libvncserver/examples/$$f; \
 	done
 	$(MAKE) $(LIBVNCSERVER_IPK_DIR)/CONTROL/control
 	echo $(LIBVNCSERVER_CONFFILES) | sed -e 's/ /\n/g' > $(LIBVNCSERVER_IPK_DIR)/CONTROL/conffiles

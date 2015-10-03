@@ -51,8 +51,8 @@ SAMBA_ADDITIONAL_CODEPAGES=CP866
 
 #
 # SAMBA_CONFFILES should be a list of user-editable files
-SAMBA_CONFFILES=/opt/etc/init.d/S08samba
-SAMBA3-SWAT_CONFFILES=/opt/etc/xinetd.d/swat
+SAMBA_CONFFILES=$(TARGET_PREFIX)/etc/init.d/S08samba
+SAMBA3-SWAT_CONFFILES=$(TARGET_PREFIX)/etc/xinetd.d/swat
 
 #
 # SAMBA_PATCHES should list any patches, in the the order in
@@ -105,7 +105,7 @@ SAMBA3-SWAT_IPK=$(BUILD_DIR)/samba3-swat_$(SAMBA_VERSION)-$(SAMBA_IPK_VERSION)_$
 
 SAMBA_BUILD_DIR_SRC=$(SAMBA_BUILD_DIR)/source
 
-SAMBA_INST_DIR=/opt
+SAMBA_INST_DIR=$(TARGET_PREFIX)
 SAMBA_EXEC_PREFIX=$(SAMBA_INST_DIR)
 SAMBA_BIN_DIR=$(SAMBA_INST_DIR)/bin
 SAMBA_SBIN_DIR=$(SAMBA_INST_DIR)/sbin
@@ -354,12 +354,12 @@ $(SAMBA3-SWAT_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(SAMBA_IPK_DIR)/opt/sbin or $(SAMBA_IPK_DIR)/opt/bin
+# Binaries should be installed into $(SAMBA_IPK_DIR)$(TARGET_PREFIX)/sbin or $(SAMBA_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(SAMBA_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(SAMBA_IPK_DIR)/opt/etc/samba/...
-# Documentation files should be installed in $(SAMBA_IPK_DIR)/opt/doc/samba/...
-# Daemon startup scripts should be installed in $(SAMBA_IPK_DIR)/opt/etc/init.d/S??samba
+# Libraries and include files should be installed into $(SAMBA_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(SAMBA_IPK_DIR)$(TARGET_PREFIX)/etc/samba/...
+# Documentation files should be installed in $(SAMBA_IPK_DIR)$(TARGET_PREFIX)/doc/samba/...
+# Daemon startup scripts should be installed in $(SAMBA_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??samba
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -369,13 +369,13 @@ $(SAMBA_IPK) $(SAMBA3-DEV_IPK) $(SAMBA3-SWAT_IPK): $(SAMBA_BUILD_DIR)/.built
 	rm -rf $(SAMBA3-SWAT_IPK_DIR) $(BUILD_DIR)/samba3-swat_*_$(TARGET_ARCH).ipk
 	# samba3
 	$(MAKE) -C $(SAMBA_BUILD_DIR) DESTDIR=$(SAMBA_IPK_DIR) install
-	$(STRIP_COMMAND) `ls $(SAMBA_IPK_DIR)/opt/sbin/* | egrep -v 'mount.smbfs'`
-	$(STRIP_COMMAND) `ls $(SAMBA_IPK_DIR)/opt/bin/* | egrep -v 'findsmb|smbtar'`
+	$(STRIP_COMMAND) `ls $(SAMBA_IPK_DIR)$(TARGET_PREFIX)/sbin/* | egrep -v 'mount.smbfs'`
+	$(STRIP_COMMAND) `ls $(SAMBA_IPK_DIR)$(TARGET_PREFIX)/bin/* | egrep -v 'findsmb|smbtar'`
 	cd $(SAMBA_BUILD_DIR)/bin/; for f in lib*.so.[01]; \
-		do cp -a $$f $(SAMBA_IPK_DIR)/opt/lib/$$f; done
-	$(STRIP_COMMAND) `find $(SAMBA_IPK_DIR)/opt/lib -name '*.so'`
-	$(INSTALL) -d $(SAMBA_IPK_DIR)/opt/etc/init.d
-	$(INSTALL) -m 755 $(SAMBA_SOURCE_DIR)/rc.samba $(SAMBA_IPK_DIR)/opt/etc/init.d/S08samba
+		do cp -a $$f $(SAMBA_IPK_DIR)$(TARGET_PREFIX)/lib/$$f; done
+	$(STRIP_COMMAND) `find $(SAMBA_IPK_DIR)$(TARGET_PREFIX)/lib -name '*.so'`
+	$(INSTALL) -d $(SAMBA_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(INSTALL) -m 755 $(SAMBA_SOURCE_DIR)/rc.samba $(SAMBA_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S08samba
 	$(MAKE) $(SAMBA_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 644 $(SAMBA_SOURCE_DIR)/postinst $(SAMBA_IPK_DIR)/CONTROL/postinst
 	$(INSTALL) -m 644 $(SAMBA_SOURCE_DIR)/preinst $(SAMBA_IPK_DIR)/CONTROL/preinst
@@ -385,14 +385,14 @@ ifeq ($(OPTWARE_TARGET), $(filter ds101 ds101g, $(OPTWARE_TARGET)))
 endif
 	echo $(SAMBA_CONFFILES) | sed -e 's/ /\n/g' > $(SAMBA_IPK_DIR)/CONTROL/conffiles
 	# samba3-dev
-	$(INSTALL) -d $(SAMBA3-DEV_IPK_DIR)/opt
-	mv $(SAMBA_IPK_DIR)/opt/include $(SAMBA3-DEV_IPK_DIR)/opt/
+	$(INSTALL) -d $(SAMBA3-DEV_IPK_DIR)$(TARGET_PREFIX)
+	mv $(SAMBA_IPK_DIR)$(TARGET_PREFIX)/include $(SAMBA3-DEV_IPK_DIR)$(TARGET_PREFIX)/
 	# samba3-swat
-	$(INSTALL) -d $(SAMBA3-SWAT_IPK_DIR)/opt/share $(SAMBA3-SWAT_IPK_DIR)/opt/sbin
-	mv $(SAMBA_IPK_DIR)/opt/share/swat $(SAMBA3-SWAT_IPK_DIR)/opt/share/
-	mv $(SAMBA_IPK_DIR)/opt/sbin/swat $(SAMBA3-SWAT_IPK_DIR)/opt/sbin/
-	$(INSTALL) -d $(SAMBA3-SWAT_IPK_DIR)/opt/etc/xinetd.d
-	$(INSTALL) -m 755 $(SAMBA_SOURCE_DIR)/swat $(SAMBA3-SWAT_IPK_DIR)/opt/etc/xinetd.d/swat
+	$(INSTALL) -d $(SAMBA3-SWAT_IPK_DIR)$(TARGET_PREFIX)/share $(SAMBA3-SWAT_IPK_DIR)$(TARGET_PREFIX)/sbin
+	mv $(SAMBA_IPK_DIR)$(TARGET_PREFIX)/share/swat $(SAMBA3-SWAT_IPK_DIR)$(TARGET_PREFIX)/share/
+	mv $(SAMBA_IPK_DIR)$(TARGET_PREFIX)/sbin/swat $(SAMBA3-SWAT_IPK_DIR)$(TARGET_PREFIX)/sbin/
+	$(INSTALL) -d $(SAMBA3-SWAT_IPK_DIR)$(TARGET_PREFIX)/etc/xinetd.d
+	$(INSTALL) -m 755 $(SAMBA_SOURCE_DIR)/swat $(SAMBA3-SWAT_IPK_DIR)$(TARGET_PREFIX)/etc/xinetd.d/swat
 	# building ipk's
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SAMBA_IPK_DIR)
 	$(MAKE) $(SAMBA3-DEV_IPK_DIR)/CONTROL/control

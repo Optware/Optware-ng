@@ -40,7 +40,7 @@ TNFTP_IPK_VERSION=1
 
 #
 # TNFTP_CONFFILES should be a list of user-editable files
-#TNFTP_CONFFILES=/opt/etc/tnftp.conf /opt/etc/init.d/SXXtnftp
+#TNFTP_CONFFILES=$(TARGET_PREFIX)/etc/tnftp.conf $(TARGET_PREFIX)/etc/init.d/SXXtnftp
 
 #
 # TNFTP_PATCHES should list any patches, in the the order in
@@ -186,12 +186,12 @@ $(TNFTP_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(TNFTP_IPK_DIR)/opt/sbin or $(TNFTP_IPK_DIR)/opt/bin
+# Binaries should be installed into $(TNFTP_IPK_DIR)$(TARGET_PREFIX)/sbin or $(TNFTP_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(TNFTP_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(TNFTP_IPK_DIR)/opt/etc/tnftp/...
-# Documentation files should be installed in $(TNFTP_IPK_DIR)/opt/doc/tnftp/...
-# Daemon startup scripts should be installed in $(TNFTP_IPK_DIR)/opt/etc/init.d/S??tnftp
+# Libraries and include files should be installed into $(TNFTP_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(TNFTP_IPK_DIR)$(TARGET_PREFIX)/etc/tnftp/...
+# Documentation files should be installed in $(TNFTP_IPK_DIR)$(TARGET_PREFIX)/doc/tnftp/...
+# Daemon startup scripts should be installed in $(TNFTP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??tnftp
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -200,15 +200,15 @@ $(TNFTP_IPK): $(TNFTP_BUILD_DIR)/.built
 	$(MAKE) -C $(TNFTP_BUILD_DIR) install \
 		transform='s:^ftp:tnftp:' \
 		prefix=$(TNFTP_IPK_DIR)$(TARGET_PREFIX) \
-		mandircat1=$(TNFTP_IPK_DIR)/opt/share/man/man1 
-	chmod +w $(TNFTP_IPK_DIR)/opt/bin/tnftp && \
-	$(STRIP_COMMAND) $(TNFTP_IPK_DIR)/opt/bin/tnftp && \
-	chmod -w $(TNFTP_IPK_DIR)/opt/bin/tnftp
-#	$(INSTALL) -d $(TNFTP_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(TNFTP_SOURCE_DIR)/tnftp.conf $(TNFTP_IPK_DIR)/opt/etc/tnftp.conf
-#	$(INSTALL) -d $(TNFTP_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(TNFTP_SOURCE_DIR)/rc.tnftp $(TNFTP_IPK_DIR)/opt/etc/init.d/SXXtnftp
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/opt/etc/init.d/SXXtnftp
+		mandircat1=$(TNFTP_IPK_DIR)$(TARGET_PREFIX)/share/man/man1 
+	chmod +w $(TNFTP_IPK_DIR)$(TARGET_PREFIX)/bin/tnftp && \
+	$(STRIP_COMMAND) $(TNFTP_IPK_DIR)$(TARGET_PREFIX)/bin/tnftp && \
+	chmod -w $(TNFTP_IPK_DIR)$(TARGET_PREFIX)/bin/tnftp
+#	$(INSTALL) -d $(TNFTP_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(TNFTP_SOURCE_DIR)/tnftp.conf $(TNFTP_IPK_DIR)$(TARGET_PREFIX)/etc/tnftp.conf
+#	$(INSTALL) -d $(TNFTP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(TNFTP_SOURCE_DIR)/rc.tnftp $(TNFTP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXtnftp
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXtnftp
 	$(MAKE) $(TNFTP_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(TNFTP_SOURCE_DIR)/postinst $(TNFTP_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/postinst

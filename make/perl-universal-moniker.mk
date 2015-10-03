@@ -83,7 +83,7 @@ $(PERL-UNIVERSAL-MONIKER_IPK): $(PERL-UNIVERSAL-MONIKER_BUILD_DIR)/.built
 	rm -rf $(PERL-UNIVERSAL-MONIKER_IPK_DIR) $(BUILD_DIR)/perl-universal-moniker_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PERL-UNIVERSAL-MONIKER_BUILD_DIR) DESTDIR=$(PERL-UNIVERSAL-MONIKER_IPK_DIR) install
 	find $(PERL-UNIVERSAL-MONIKER_IPK_DIR)$(TARGET_PREFIX) -name 'perllocal.pod' -exec rm -f {} \;
-	(cd $(PERL-UNIVERSAL-MONIKER_IPK_DIR)/opt/lib/perl5 ; \
+	(cd $(PERL-UNIVERSAL-MONIKER_IPK_DIR)$(TARGET_PREFIX)/lib/perl5 ; \
 		find . -name '*.so' -exec chmod +w {} \; ; \
 		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
 		find . -name '*.so' -exec chmod -w {} \; ; \

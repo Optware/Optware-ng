@@ -148,20 +148,20 @@ xtrans-stage: $(XTRANS_BUILD_DIR)/.staged
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(XTRANS_IPK_DIR)/opt/sbin or $(XTRANS_IPK_DIR)/opt/bin
+# Binaries should be installed into $(XTRANS_IPK_DIR)$(TARGET_PREFIX)/sbin or $(XTRANS_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(XTRANS_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(XTRANS_IPK_DIR)/opt/etc/xtrans/...
-# Documentation files should be installed in $(XTRANS_IPK_DIR)/opt/doc/xtrans/...
-# Daemon startup scripts should be installed in $(XTRANS_IPK_DIR)/opt/etc/init.d/S??xtrans
+# Libraries and include files should be installed into $(XTRANS_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(XTRANS_IPK_DIR)$(TARGET_PREFIX)/etc/xtrans/...
+# Documentation files should be installed in $(XTRANS_IPK_DIR)$(TARGET_PREFIX)/doc/xtrans/...
+# Daemon startup scripts should be installed in $(XTRANS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??xtrans
 #
 # You may need to patch your application to make it use these locations.
 #
 $(XTRANS_IPK): $(XTRANS_BUILD_DIR)/.built
 	rm -rf $(XTRANS_IPK_DIR) $(BUILD_DIR)/xtrans_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(XTRANS_BUILD_DIR) DESTDIR=$(XTRANS_IPK_DIR) install
-	-mv -f $(XTRANS_IPK_DIR)/opt/share/pkgconfig/xtrans.pc  $(XTRANS_IPK_DIR)/opt/lib/pkgconfig/
-	rm -rf $(XTRANS_IPK_DIR)/opt/share/pkgconfig
+	-mv -f $(XTRANS_IPK_DIR)$(TARGET_PREFIX)/share/pkgconfig/xtrans.pc  $(XTRANS_IPK_DIR)$(TARGET_PREFIX)/lib/pkgconfig/
+	rm -rf $(XTRANS_IPK_DIR)$(TARGET_PREFIX)/share/pkgconfig
 	$(MAKE) $(XTRANS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XTRANS_IPK_DIR)
 

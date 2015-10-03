@@ -124,23 +124,23 @@ $(CCXSTREAM_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(CCXSTREAM_IPK_DIR)/opt/sbin or $(CCXSTREAM_IPK_DIR)/opt/bin
+# Binaries should be installed into $(CCXSTREAM_IPK_DIR)$(TARGET_PREFIX)/sbin or $(CCXSTREAM_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(CCXSTREAM_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(CCXSTREAM_IPK_DIR)/opt/etc/ccxstream/...
-# Documentation files should be installed in $(CCXSTREAM_IPK_DIR)/opt/doc/ccxstream/...
-# Daemon startup scripts should be installed in $(CCXSTREAM_IPK_DIR)/opt/etc/init.d/S??ccxstream
+# Libraries and include files should be installed into $(CCXSTREAM_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(CCXSTREAM_IPK_DIR)$(TARGET_PREFIX)/etc/ccxstream/...
+# Documentation files should be installed in $(CCXSTREAM_IPK_DIR)$(TARGET_PREFIX)/doc/ccxstream/...
+# Daemon startup scripts should be installed in $(CCXSTREAM_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??ccxstream
 #
 # You may need to patch your application to make it use these locations.
 #
 $(CCXSTREAM_IPK): $(CCXSTREAM_BUILD_DIR)/.built
 	rm -rf $(CCXSTREAM_IPK_DIR) $(CCXSTREAM_IPK)
-	$(INSTALL) -d $(CCXSTREAM_IPK_DIR)/opt/doc/ccxstream
-	$(INSTALL) -m 644 $(CCXSTREAM_BUILD_DIR)/README $(CCXSTREAM_IPK_DIR)/opt/doc/ccxstream
-	$(INSTALL) -d $(CCXSTREAM_IPK_DIR)/opt/sbin
-	$(STRIP_COMMAND) $(CCXSTREAM_BUILD_DIR)/ccxstream -o $(CCXSTREAM_IPK_DIR)/opt/sbin/ccxstream
-	$(INSTALL) -d $(CCXSTREAM_IPK_DIR)/opt/etc/init.d
-	$(INSTALL) -m 755 $(CCXSTREAM_SOURCE_DIR)/rc.ccxstream $(CCXSTREAM_IPK_DIR)/opt/etc/init.d/S75ccxstream
+	$(INSTALL) -d $(CCXSTREAM_IPK_DIR)$(TARGET_PREFIX)/doc/ccxstream
+	$(INSTALL) -m 644 $(CCXSTREAM_BUILD_DIR)/README $(CCXSTREAM_IPK_DIR)$(TARGET_PREFIX)/doc/ccxstream
+	$(INSTALL) -d $(CCXSTREAM_IPK_DIR)$(TARGET_PREFIX)/sbin
+	$(STRIP_COMMAND) $(CCXSTREAM_BUILD_DIR)/ccxstream -o $(CCXSTREAM_IPK_DIR)$(TARGET_PREFIX)/sbin/ccxstream
+	$(INSTALL) -d $(CCXSTREAM_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(INSTALL) -m 755 $(CCXSTREAM_SOURCE_DIR)/rc.ccxstream $(CCXSTREAM_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S75ccxstream
 	$(MAKE) $(CCXSTREAM_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 644 $(CCXSTREAM_SOURCE_DIR)/postinst $(CCXSTREAM_IPK_DIR)/CONTROL/postinst
 	$(INSTALL) -m 644 $(CCXSTREAM_SOURCE_DIR)/prerm $(CCXSTREAM_IPK_DIR)/CONTROL/prerm

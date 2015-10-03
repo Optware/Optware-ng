@@ -24,7 +24,7 @@ DENYHOSTS_IPK_VERSION=5
 
 #
 # DENYHOSTS_CONFFILES should be a list of user-editable files
-DENYHOSTS_CONFFILES=/opt/etc/denyhosts.cfg /opt/etc/init.d/S01denyhosts
+DENYHOSTS_CONFFILES=$(TARGET_PREFIX)/etc/denyhosts.cfg $(TARGET_PREFIX)/etc/init.d/S01denyhosts
 
 
 #
@@ -113,24 +113,24 @@ $(DENYHOSTS_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(DENYHOSTS_IPK_DIR)/opt/sbin or $(DENYHOSTS_IPK_DIR)/opt/bin
+# Binaries should be installed into $(DENYHOSTS_IPK_DIR)$(TARGET_PREFIX)/sbin or $(DENYHOSTS_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(DENYHOSTS_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(DENYHOSTS_IPK_DIR)/opt/etc/denyhosts/...
-# Documentation files should be installed in $(DENYHOSTS_IPK_DIR)/opt/doc/denyhosts/...
-# Daemon startup scripts should be installed in $(DENYHOSTS_IPK_DIR)/opt/etc/init.d/S??denyhosts
+# Libraries and include files should be installed into $(DENYHOSTS_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(DENYHOSTS_IPK_DIR)$(TARGET_PREFIX)/etc/denyhosts/...
+# Documentation files should be installed in $(DENYHOSTS_IPK_DIR)$(TARGET_PREFIX)/doc/denyhosts/...
+# Daemon startup scripts should be installed in $(DENYHOSTS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??denyhosts
 #
 # You may need to patch your application to make it use these locations.
 #
 $(DENYHOSTS_IPK): $(DENYHOSTS_BUILD_DIR)/.built
 	rm -rf $(DENYHOSTS_IPK_DIR) $(BUILD_DIR)/denyhosts_*_$(TARGET_ARCH).ipk
 	$(INSTALL) -d $(DENYHOSTS_IPK_DIR)/var/run/
-	$(INSTALL) -d $(DENYHOSTS_IPK_DIR)/opt/etc/
-	$(INSTALL) -m 644 $(DENYHOSTS_SOURCE_DIR)/denyhosts.cfg $(DENYHOSTS_IPK_DIR)/opt/etc/denyhosts.cfg
-	$(INSTALL) -d $(DENYHOSTS_IPK_DIR)/opt/etc/init.d
-	$(INSTALL) -m 755 $(DENYHOSTS_SOURCE_DIR)/rc.denyhosts $(DENYHOSTS_IPK_DIR)/opt/etc/init.d/S01denyhosts
-	$(INSTALL) -dv $(DENYHOSTS_IPK_DIR)/opt/share/denyhosts
-	cp -r $(DENYHOSTS_BUILD_DIR)/* $(DENYHOSTS_IPK_DIR)/opt/share/denyhosts
+	$(INSTALL) -d $(DENYHOSTS_IPK_DIR)$(TARGET_PREFIX)/etc/
+	$(INSTALL) -m 644 $(DENYHOSTS_SOURCE_DIR)/denyhosts.cfg $(DENYHOSTS_IPK_DIR)$(TARGET_PREFIX)/etc/denyhosts.cfg
+	$(INSTALL) -d $(DENYHOSTS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(INSTALL) -m 755 $(DENYHOSTS_SOURCE_DIR)/rc.denyhosts $(DENYHOSTS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S01denyhosts
+	$(INSTALL) -dv $(DENYHOSTS_IPK_DIR)$(TARGET_PREFIX)/share/denyhosts
+	cp -r $(DENYHOSTS_BUILD_DIR)/* $(DENYHOSTS_IPK_DIR)$(TARGET_PREFIX)/share/denyhosts
 	$(MAKE) $(DENYHOSTS_IPK_DIR)/CONTROL/control
 	echo $(DENYHOSTS_CONFFILES) | sed -e 's/ /\n/g' > $(DENYHOSTS_IPK_DIR)/CONTROL/conffiles
 	$(INSTALL) -m 755 $(DENYHOSTS_SOURCE_DIR)/postinst $(DENYHOSTS_IPK_DIR)/CONTROL/postinst

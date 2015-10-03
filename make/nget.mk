@@ -41,7 +41,7 @@ NGET_IPK_VERSION=5
 
 #
 # NGET_CONFFILES should be a list of user-editable files
-#NGET_CONFFILES=/opt/etc/nget.conf /opt/etc/init.d/SXXnget
+#NGET_CONFFILES=$(TARGET_PREFIX)/etc/nget.conf $(TARGET_PREFIX)/etc/init.d/SXXnget
 
 #
 # NGET_PATCHES should list any patches, in the the order in
@@ -201,12 +201,12 @@ $(NGET_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(NGET_IPK_DIR)/opt/sbin or $(NGET_IPK_DIR)/opt/bin
+# Binaries should be installed into $(NGET_IPK_DIR)$(TARGET_PREFIX)/sbin or $(NGET_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(NGET_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(NGET_IPK_DIR)/opt/etc/nget/...
-# Documentation files should be installed in $(NGET_IPK_DIR)/opt/doc/nget/...
-# Daemon startup scripts should be installed in $(NGET_IPK_DIR)/opt/etc/init.d/S??nget
+# Libraries and include files should be installed into $(NGET_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(NGET_IPK_DIR)$(TARGET_PREFIX)/etc/nget/...
+# Documentation files should be installed in $(NGET_IPK_DIR)$(TARGET_PREFIX)/doc/nget/...
+# Daemon startup scripts should be installed in $(NGET_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??nget
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -216,9 +216,9 @@ $(NGET_IPK): $(NGET_BUILD_DIR)/.built
 		prefix=$(NGET_IPK_DIR)$(TARGET_PREFIX) \
 		$(INSTALL)_bin="install -m 0755" \
 		$(INSTALL)
-	$(STRIP_COMMAND) $(NGET_IPK_DIR)/opt/bin/*
-	$(INSTALL) -d $(NGET_IPK_DIR)/opt/share/doc/example/nget
-	$(INSTALL) -m 644 $(NGET_SOURCE_DIR)/example.ngetrc $(NGET_IPK_DIR)/opt/share/doc/example/nget/
+	$(STRIP_COMMAND) $(NGET_IPK_DIR)$(TARGET_PREFIX)/bin/*
+	$(INSTALL) -d $(NGET_IPK_DIR)$(TARGET_PREFIX)/share/doc/example/nget
+	$(INSTALL) -m 644 $(NGET_SOURCE_DIR)/example.ngetrc $(NGET_IPK_DIR)$(TARGET_PREFIX)/share/doc/example/nget/
 	$(MAKE) $(NGET_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NGET_IPK_DIR)
 

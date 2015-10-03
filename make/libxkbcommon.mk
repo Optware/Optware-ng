@@ -46,7 +46,7 @@ LIBXKBCOMMON_IPK_VERSION=1
 
 #
 # LIBXKBCOMMON_CONFFILES should be a list of user-editable files
-#LIBXKBCOMMON_CONFFILES=/opt/etc/libxkbcommon.conf /opt/etc/init.d/SXXlibxkbcommon
+#LIBXKBCOMMON_CONFFILES=$(TARGET_PREFIX)/etc/libxkbcommon.conf $(TARGET_PREFIX)/etc/init.d/SXXlibxkbcommon
 
 #
 # LIBXKBCOMMON_PATCHES should list any patches, in the the order in
@@ -188,24 +188,24 @@ $(LIBXKBCOMMON_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LIBXKBCOMMON_IPK_DIR)/opt/sbin or $(LIBXKBCOMMON_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LIBXKBCOMMON_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LIBXKBCOMMON_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LIBXKBCOMMON_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LIBXKBCOMMON_IPK_DIR)/opt/etc/libxkbcommon/...
-# Documentation files should be installed in $(LIBXKBCOMMON_IPK_DIR)/opt/doc/libxkbcommon/...
-# Daemon startup scripts should be installed in $(LIBXKBCOMMON_IPK_DIR)/opt/etc/init.d/S??libxkbcommon
+# Libraries and include files should be installed into $(LIBXKBCOMMON_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LIBXKBCOMMON_IPK_DIR)$(TARGET_PREFIX)/etc/libxkbcommon/...
+# Documentation files should be installed in $(LIBXKBCOMMON_IPK_DIR)$(TARGET_PREFIX)/doc/libxkbcommon/...
+# Daemon startup scripts should be installed in $(LIBXKBCOMMON_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??libxkbcommon
 #
 # You may need to patch your application to make it use these locations.
 #
 $(LIBXKBCOMMON_IPK): $(LIBXKBCOMMON_BUILD_DIR)/.built
 	rm -rf $(LIBXKBCOMMON_IPK_DIR) $(BUILD_DIR)/libxkbcommon_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBXKBCOMMON_BUILD_DIR) DESTDIR=$(LIBXKBCOMMON_IPK_DIR) install-strip
-	rm -f $(LIBXKBCOMMON_IPK_DIR)/opt/lib/*.la
-#	$(INSTALL) -d $(LIBXKBCOMMON_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(LIBXKBCOMMON_SOURCE_DIR)/libxkbcommon.conf $(LIBXKBCOMMON_IPK_DIR)/opt/etc/libxkbcommon.conf
-#	$(INSTALL) -d $(LIBXKBCOMMON_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(LIBXKBCOMMON_SOURCE_DIR)/rc.libxkbcommon $(LIBXKBCOMMON_IPK_DIR)/opt/etc/init.d/SXXlibxkbcommon
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBXKBCOMMON_IPK_DIR)/opt/etc/init.d/SXXlibxkbcommon
+	rm -f $(LIBXKBCOMMON_IPK_DIR)$(TARGET_PREFIX)/lib/*.la
+#	$(INSTALL) -d $(LIBXKBCOMMON_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(LIBXKBCOMMON_SOURCE_DIR)/libxkbcommon.conf $(LIBXKBCOMMON_IPK_DIR)$(TARGET_PREFIX)/etc/libxkbcommon.conf
+#	$(INSTALL) -d $(LIBXKBCOMMON_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(LIBXKBCOMMON_SOURCE_DIR)/rc.libxkbcommon $(LIBXKBCOMMON_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibxkbcommon
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBXKBCOMMON_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibxkbcommon
 	$(MAKE) $(LIBXKBCOMMON_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(LIBXKBCOMMON_SOURCE_DIR)/postinst $(LIBXKBCOMMON_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBXKBCOMMON_IPK_DIR)/CONTROL/postinst

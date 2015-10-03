@@ -42,7 +42,7 @@ DELUGE_IPK_VERSION=4
 
 #
 # DELUGE_CONFFILES should be a list of user-editable files
-DELUGE_CONFFILES=/opt/etc/init.d/S80deluged /opt/etc/init.d/S80deluge-web
+DELUGE_CONFFILES=$(TARGET_PREFIX)/etc/init.d/S80deluged $(TARGET_PREFIX)/etc/init.d/S80deluge-web
 
 #
 # DELUGE_PATCHES should list any patches, in the the order in
@@ -123,20 +123,20 @@ $(DELUGE_BUILD_DIR)/.configured: $(DL_DIR)/$(DELUGE_SOURCE) $(DELUGE_PATCHES) ma
 	(cd $(@D); \
 	    ( \
 		echo "[install]"; \
-		echo "install_scripts = /opt/bin"; \
+		echo "install_scripts = $(TARGET_PREFIX)/bin"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python2.7"; \
+		echo "executable=$(TARGET_PREFIX)/bin/python2.7"; \
 	    ) >> setup.cfg \
 	)
 	### don't build rasterbar libtorrent
 	sed -i -e 's/build_libtorrent = True/build_libtorrent = False/' $(@D)/setup.py
-	### set default deluge config dir to /opt/etc
+	### set default deluge config dir to $(TARGET_PREFIX)/etc
 	sed -i -e '/from xdg\.BaseDirectory import save_config_path/s/^/#/' \
-		-e 's|return os\.path\.join(save_config_path("deluge"), filename)|return os.path.join("/opt/etc/deluge", filename)|' \
-		-e 's|return save_config_path("deluge")|return "/opt/etc/deluge"|' \
+		-e 's|return os\.path\.join(save_config_path("deluge"), filename)|return os.path.join("$(TARGET_PREFIX)/etc/deluge", filename)|' \
+		-e 's|return save_config_path("deluge")|return "$(TARGET_PREFIX)/etc/deluge"|' \
 									$(@D)/deluge/common.py
-	### usr /opt/share instead of /usr/share
-	find $(@D)/deluge -type f -name *.py -exec sed -i -e 's|/usr/share|/opt/share|g' {} \;
+	### usr $(TARGET_PREFIX)/share instead of /usr/share
+	find $(@D)/deluge -type f -name *.py -exec sed -i -e 's|/usr/share|$(TARGET_PREFIX)/share|g' {} \;
 	touch $@
 
 deluge-unpack: $(DELUGE_BUILD_DIR)/.configured
@@ -163,7 +163,7 @@ $(DELUGE_BUILD_DIR)/.staged: $(DELUGE_BUILD_DIR)/.built
 	rm -f $@
 	rm -rf $(STAGING_LIB_DIR)/python2.7/site-packages/deluge*
 	(cd $(@D); \
-	$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(STAGING_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	touch $@
 
 deluge-stage: $(DELUGE_BUILD_DIR)/.staged
@@ -203,12 +203,12 @@ $(DELUGE_GTK_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(DELUGE_IPK_DIR)/opt/sbin or $(DELUGE_IPK_DIR)/opt/bin
+# Binaries should be installed into $(DELUGE_IPK_DIR)$(TARGET_PREFIX)/sbin or $(DELUGE_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(DELUGE_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(DELUGE_IPK_DIR)/opt/etc/deluge/...
-# Documentation files should be installed in $(DELUGE_IPK_DIR)/opt/doc/deluge/...
-# Daemon startup scripts should be installed in $(DELUGE_IPK_DIR)/opt/etc/init.d/S??deluge
+# Libraries and include files should be installed into $(DELUGE_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(DELUGE_IPK_DIR)$(TARGET_PREFIX)/etc/deluge/...
+# Documentation files should be installed in $(DELUGE_IPK_DIR)$(TARGET_PREFIX)/doc/deluge/...
+# Daemon startup scripts should be installed in $(DELUGE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??deluge
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -218,24 +218,24 @@ $(DELUGE_IPKS): $(DELUGE_BUILD_DIR)/.built
 		$(DELUGE_GTK_IPK_DIR) $(BUILD_DIR)/deluge-gtk_*_$(TARGET_ARCH).ipk
 	(cd $(DELUGE_BUILD_DIR); \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.7/site-packages \
-	$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(DELUGE_IPK_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(DELUGE_IPK_DIR) --prefix=$(TARGET_PREFIX))
 ifeq (py-gtk, $(filter py-gtk, $(PACKAGES)))
-	$(INSTALL) -d $(DELUGE_GTK_IPK_DIR)/opt/bin $(DELUGE_GTK_IPK_DIR)/opt/share/man/man1
-	mv -f $(DELUGE_IPK_DIR)/opt/bin/deluge-gtk $(DELUGE_GTK_IPK_DIR)/opt/bin
-	mv -f $(DELUGE_IPK_DIR)/opt/share/man/man1/deluge-gtk.1 $(DELUGE_GTK_IPK_DIR)/opt/share/man/man1
-	mv -f $(DELUGE_IPK_DIR)/opt/share/applications $(DELUGE_IPK_DIR)/opt/share/icons $(DELUGE_IPK_DIR)/opt/share/pixmaps \
-		$(DELUGE_GTK_IPK_DIR)/opt/share
+	$(INSTALL) -d $(DELUGE_GTK_IPK_DIR)$(TARGET_PREFIX)/bin $(DELUGE_GTK_IPK_DIR)$(TARGET_PREFIX)/share/man/man1
+	mv -f $(DELUGE_IPK_DIR)$(TARGET_PREFIX)/bin/deluge-gtk $(DELUGE_GTK_IPK_DIR)$(TARGET_PREFIX)/bin
+	mv -f $(DELUGE_IPK_DIR)$(TARGET_PREFIX)/share/man/man1/deluge-gtk.1 $(DELUGE_GTK_IPK_DIR)$(TARGET_PREFIX)/share/man/man1
+	mv -f $(DELUGE_IPK_DIR)$(TARGET_PREFIX)/share/applications $(DELUGE_IPK_DIR)$(TARGET_PREFIX)/share/icons $(DELUGE_IPK_DIR)$(TARGET_PREFIX)/share/pixmaps \
+		$(DELUGE_GTK_IPK_DIR)$(TARGET_PREFIX)/share
 	$(MAKE) $(DELUGE_GTK_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(DELUGE_GTK_IPK_DIR)
 else
-	rm -f $(DELUGE_IPK_DIR)/opt/bin/deluge-gtk $(DELUGE_IPK_DIR)/opt/share/man/man1/deluge-gtk.1
-	rm -rf $(DELUGE_IPK_DIR)/opt/share/applications $(DELUGE_IPK_DIR)/opt/share/icons $(DELUGE_IPK_DIR)/opt/share/pixmaps
+	rm -f $(DELUGE_IPK_DIR)$(TARGET_PREFIX)/bin/deluge-gtk $(DELUGE_IPK_DIR)$(TARGET_PREFIX)/share/man/man1/deluge-gtk.1
+	rm -rf $(DELUGE_IPK_DIR)$(TARGET_PREFIX)/share/applications $(DELUGE_IPK_DIR)$(TARGET_PREFIX)/share/icons $(DELUGE_IPK_DIR)$(TARGET_PREFIX)/share/pixmaps
 endif
 	### init scripts
-	$(INSTALL) -d $(DELUGE_IPK_DIR)/opt/etc/init.d
-	$(INSTALL) -m 755 $(DELUGE_SOURCE_DIR)/S80deluged $(DELUGE_IPK_DIR)/opt/etc/init.d
-	$(INSTALL) -m 755 $(DELUGE_SOURCE_DIR)/S80deluge-web $(DELUGE_IPK_DIR)/opt/etc/init.d
-	$(INSTALL) -m 755 $(DELUGE_SOURCE_DIR)/deluge-web-reset_password $(DELUGE_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(DELUGE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(INSTALL) -m 755 $(DELUGE_SOURCE_DIR)/S80deluged $(DELUGE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(INSTALL) -m 755 $(DELUGE_SOURCE_DIR)/S80deluge-web $(DELUGE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(INSTALL) -m 755 $(DELUGE_SOURCE_DIR)/deluge-web-reset_password $(DELUGE_IPK_DIR)$(TARGET_PREFIX)/bin
 	$(MAKE) $(DELUGE_IPK_DIR)/CONTROL/control
 	### post-install: change default deluge ui to console
 	$(INSTALL) -m 755 $(DELUGE_SOURCE_DIR)/postinst $(DELUGE_IPK_DIR)/CONTROL/postinst

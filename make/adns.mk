@@ -34,7 +34,7 @@ ADNS_IPK_VERSION=2
 
 #
 # ADNS_CONFFILES should be a list of user-editable files
-ADNS_CONFFILES=/opt/etc/adns.conf /opt/etc/init.d/SXXadns
+ADNS_CONFFILES=$(TARGET_PREFIX)/etc/adns.conf $(TARGET_PREFIX)/etc/init.d/SXXadns
 
 #
 # ADNS_PATCHES should list any patches, in the the order in
@@ -168,31 +168,31 @@ $(ADNS_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(ADNS_IPK_DIR)/opt/sbin or $(ADNS_IPK_DIR)/opt/bin
+# Binaries should be installed into $(ADNS_IPK_DIR)$(TARGET_PREFIX)/sbin or $(ADNS_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(ADNS_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(ADNS_IPK_DIR)/opt/etc/adns/...
-# Documentation files should be installed in $(ADNS_IPK_DIR)/opt/doc/adns/...
-# Daemon startup scripts should be installed in $(ADNS_IPK_DIR)/opt/etc/init.d/S??adns
+# Libraries and include files should be installed into $(ADNS_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(ADNS_IPK_DIR)$(TARGET_PREFIX)/etc/adns/...
+# Documentation files should be installed in $(ADNS_IPK_DIR)$(TARGET_PREFIX)/doc/adns/...
+# Daemon startup scripts should be installed in $(ADNS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??adns
 #
 # You may need to patch your application to make it use these locations.
 #
 $(ADNS_IPK): $(ADNS_BUILD_DIR)/.built
 	rm -rf $(ADNS_IPK_DIR) $(BUILD_DIR)/adns_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(ADNS_IPK_DIR)/opt/lib/
-	#$(INSTALL) -m 644 $(ADNS_BUILD_DIR)/src/libadns.a $(ADNS_IPK_DIR)/opt/lib/libadns.a
+	$(INSTALL) -d $(ADNS_IPK_DIR)$(TARGET_PREFIX)/lib/
+	#$(INSTALL) -m 644 $(ADNS_BUILD_DIR)/src/libadns.a $(ADNS_IPK_DIR)$(TARGET_PREFIX)/lib/libadns.a
 	$(INSTALL) -m 755 $(ADNS_BUILD_DIR)/dynamic/libadns.so.[0-9]*.[0-9]* \
-		 $(ADNS_IPK_DIR)/opt/lib/
-	cd $(ADNS_IPK_DIR)/opt/lib && ln -sf libadns.so.[0-9]*.[0-9]* libadns.so.1
-	ln -sf libadns.so.1 $(ADNS_IPK_DIR)/opt/lib/libadns.so
-	$(STRIP_COMMAND) $(ADNS_IPK_DIR)/opt/lib/libadns.so.[0-9]*.[0-9]*
-	$(INSTALL) -d $(ADNS_IPK_DIR)/opt/include/
-	$(INSTALL) -m 644 $(ADNS_BUILD_DIR)/src/adns.h $(ADNS_IPK_DIR)/opt/include/adns.h
-	$(INSTALL) -d $(ADNS_IPK_DIR)/opt/bin/
-	$(INSTALL) -m 755 $(ADNS_BUILD_DIR)/client/adnslogres    $(ADNS_IPK_DIR)/opt/bin/adnslogres
-	$(INSTALL) -m 755 $(ADNS_BUILD_DIR)/client/adnshost      $(ADNS_IPK_DIR)/opt/bin/adnshost
-	$(INSTALL) -m 755 $(ADNS_BUILD_DIR)/client/adnsresfilter $(ADNS_IPK_DIR)/opt/bin/adnsresfilter
-	$(STRIP_COMMAND) $(ADNS_IPK_DIR)/opt/bin/*
+		 $(ADNS_IPK_DIR)$(TARGET_PREFIX)/lib/
+	cd $(ADNS_IPK_DIR)$(TARGET_PREFIX)/lib && ln -sf libadns.so.[0-9]*.[0-9]* libadns.so.1
+	ln -sf libadns.so.1 $(ADNS_IPK_DIR)$(TARGET_PREFIX)/lib/libadns.so
+	$(STRIP_COMMAND) $(ADNS_IPK_DIR)$(TARGET_PREFIX)/lib/libadns.so.[0-9]*.[0-9]*
+	$(INSTALL) -d $(ADNS_IPK_DIR)$(TARGET_PREFIX)/include/
+	$(INSTALL) -m 644 $(ADNS_BUILD_DIR)/src/adns.h $(ADNS_IPK_DIR)$(TARGET_PREFIX)/include/adns.h
+	$(INSTALL) -d $(ADNS_IPK_DIR)$(TARGET_PREFIX)/bin/
+	$(INSTALL) -m 755 $(ADNS_BUILD_DIR)/client/adnslogres    $(ADNS_IPK_DIR)$(TARGET_PREFIX)/bin/adnslogres
+	$(INSTALL) -m 755 $(ADNS_BUILD_DIR)/client/adnshost      $(ADNS_IPK_DIR)$(TARGET_PREFIX)/bin/adnshost
+	$(INSTALL) -m 755 $(ADNS_BUILD_DIR)/client/adnsresfilter $(ADNS_IPK_DIR)$(TARGET_PREFIX)/bin/adnsresfilter
+	$(STRIP_COMMAND) $(ADNS_IPK_DIR)$(TARGET_PREFIX)/bin/*
 	$(INSTALL) -d $(ADNS_IPK_DIR)/CONTROL
 	$(MAKE) $(ADNS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ADNS_IPK_DIR)

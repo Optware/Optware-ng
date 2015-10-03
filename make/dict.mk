@@ -44,7 +44,7 @@ DICT_IPK_VERSION=1
 
 #
 # DICT_CONFFILES should be a list of user-editable files
-DICT_CONFFILES=/opt/etc/dict.conf
+DICT_CONFFILES=$(TARGET_PREFIX)/etc/dict.conf
 
 #
 # DICT_PATCHES should list any patches, in the the order in
@@ -169,21 +169,21 @@ $(DICT_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(DICT_IPK_DIR)/opt/sbin or $(DICT_IPK_DIR)/opt/bin
+# Binaries should be installed into $(DICT_IPK_DIR)$(TARGET_PREFIX)/sbin or $(DICT_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(DICT_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(DICT_IPK_DIR)/opt/etc/dict/...
-# Documentation files should be installed in $(DICT_IPK_DIR)/opt/doc/dict/...
-# Daemon startup scripts should be installed in $(DICT_IPK_DIR)/opt/etc/init.d/S??dict
+# Libraries and include files should be installed into $(DICT_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(DICT_IPK_DIR)$(TARGET_PREFIX)/etc/dict/...
+# Documentation files should be installed in $(DICT_IPK_DIR)$(TARGET_PREFIX)/doc/dict/...
+# Daemon startup scripts should be installed in $(DICT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??dict
 #
 # You may need to patch your application to make it use these locations.
 #
 $(DICT_IPK): $(DICT_BUILD_DIR)/.built
 	rm -rf $(DICT_IPK_DIR) $(BUILD_DIR)/dict_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(DICT_BUILD_DIR) DESTDIR=$(DICT_IPK_DIR) install.dict
-	$(STRIP_COMMAND) $(DICT_IPK_DIR)/opt/bin/dict
-	$(INSTALL) -d $(DICT_IPK_DIR)/opt/etc/
-	$(INSTALL) -m 644 $(DICT_SOURCE_DIR)/dict.conf $(DICT_IPK_DIR)/opt/etc/dict.conf
+	$(STRIP_COMMAND) $(DICT_IPK_DIR)$(TARGET_PREFIX)/bin/dict
+	$(INSTALL) -d $(DICT_IPK_DIR)$(TARGET_PREFIX)/etc/
+	$(INSTALL) -m 644 $(DICT_SOURCE_DIR)/dict.conf $(DICT_IPK_DIR)$(TARGET_PREFIX)/etc/dict.conf
 	$(MAKE) $(DICT_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(DICT_IPK_DIR)
 

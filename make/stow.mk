@@ -10,7 +10,7 @@ STOW_SOURCE=stow-$(STOW_VERSION).tar.gz
 STOW_DIR=stow-$(STOW_VERSION)
 STOW_UNZIP=zcat
 STOW_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
-STOW_DESCRIPTION=This is GNU Stow, a program for managing the installation of software packages, keeping them separate while making them appear to be installed in the same place (/opt/local).
+STOW_DESCRIPTION=This is GNU Stow, a program for managing the installation of software packages, keeping them separate while making them appear to be installed in the same place ($(TARGET_PREFIX)/local).
 STOW_SECTION=util
 STOW_PRIORITY=optional
 STOW_DEPENDS=perl
@@ -81,12 +81,12 @@ $(STOW_IPK_DIR)/CONTROL/control:
 
 $(STOW_IPK): $(STOW_BUILD_DIR)/.built
 	rm -rf $(STOW_IPK_DIR) $(BUILD_DIR)/stow_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(STOW_IPK_DIR)/opt/bin
-	$(INSTALL) -d $(STOW_IPK_DIR)/opt/info
-	$(INSTALL) -d $(STOW_IPK_DIR)/opt/man/man8
-	$(INSTALL) -d $(STOW_IPK_DIR)/opt/local/stow
+	$(INSTALL) -d $(STOW_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(INSTALL) -d $(STOW_IPK_DIR)$(TARGET_PREFIX)/info
+	$(INSTALL) -d $(STOW_IPK_DIR)$(TARGET_PREFIX)/man/man8
+	$(INSTALL) -d $(STOW_IPK_DIR)$(TARGET_PREFIX)/local/stow
 	$(MAKE) -C $(STOW_BUILD_DIR) DESTDIR=$(STOW_IPK_DIR) install
-	rm -f $(STOW_IPK_DIR)/opt/info/dir{,.old}
+	rm -f $(STOW_IPK_DIR)$(TARGET_PREFIX)/info/dir{,.old}
 	$(MAKE) $(STOW_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(STOW_SOURCE_DIR)/postinst $(STOW_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 755 $(STOW_SOURCE_DIR)/prerm $(STOW_IPK_DIR)/CONTROL/prerm

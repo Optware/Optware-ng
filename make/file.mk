@@ -202,12 +202,12 @@ $(FILE_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(FILE_IPK_DIR)/opt/sbin or $(FILE_IPK_DIR)/opt/bin
+# Binaries should be installed into $(FILE_IPK_DIR)$(TARGET_PREFIX)/sbin or $(FILE_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(FILE_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(FILE_IPK_DIR)/opt/etc/file/...
-# Documentation files should be installed in $(FILE_IPK_DIR)/opt/doc/file/...
-# Daemon startup scripts should be installed in $(FILE_IPK_DIR)/opt/etc/init.d/S??file
+# Libraries and include files should be installed into $(FILE_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(FILE_IPK_DIR)$(TARGET_PREFIX)/etc/file/...
+# Documentation files should be installed in $(FILE_IPK_DIR)$(TARGET_PREFIX)/doc/file/...
+# Daemon startup scripts should be installed in $(FILE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??file
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -216,10 +216,10 @@ $(FILE_IPK): $(FILE_BUILD_DIR)/.built
 	$(MAKE) -C $(FILE_BUILD_DIR) install-strip \
 		DESTDIR=$(FILE_IPK_DIR) \
 		FILE_COMPILE=$(FILE_HOST_BUILD_DIR)/src/file
-	rm -f $(FILE_IPK_DIR)/opt/lib/libmagic.la
-	rm -f $(FILE_IPK_DIR)/opt/share/file/magic.mgc
-	$(INSTALL) -d $(FILE_IPK_DIR)/opt/share/file
-	cp -rp $(FILE_BUILD_DIR)/magic/Magdir $(FILE_IPK_DIR)/opt/share/file/magic
+	rm -f $(FILE_IPK_DIR)$(TARGET_PREFIX)/lib/libmagic.la
+	rm -f $(FILE_IPK_DIR)$(TARGET_PREFIX)/share/file/magic.mgc
+	$(INSTALL) -d $(FILE_IPK_DIR)$(TARGET_PREFIX)/share/file
+	cp -rp $(FILE_BUILD_DIR)/magic/Magdir $(FILE_IPK_DIR)$(TARGET_PREFIX)/share/file/magic
 	$(MAKE) $(FILE_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 644 $(FILE_SOURCE_DIR)/postinst $(FILE_IPK_DIR)/CONTROL/postinst
 	$(INSTALL) -m 644 $(FILE_SOURCE_DIR)/prerm $(FILE_IPK_DIR)/CONTROL/prerm

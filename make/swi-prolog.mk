@@ -41,7 +41,7 @@ SWI-PROLOG_IPK_VERSION=2
 
 #
 # SWI-PROLOG_CONFFILES should be a list of user-editable files
-#SWI-PROLOG_CONFFILES=/opt/etc/swi-prolog.conf /opt/etc/init.d/SXXswi-prolog
+#SWI-PROLOG_CONFFILES=$(TARGET_PREFIX)/etc/swi-prolog.conf $(TARGET_PREFIX)/etc/init.d/SXXswi-prolog
 
 #
 # SWI-PROLOG_PATCHES should list any patches, in the the order in
@@ -90,7 +90,7 @@ SWI-PROLOG_IPK=$(BUILD_DIR)/swi-prolog_$(SWI-PROLOG_VERSION)-$(SWI-PROLOG_IPK_VE
 ifeq ($(HOSTCC), $(TARGET_CC))
 SWI-PROLOG_LD_LIBRARY_PATH=LD_LIBRARY_PATH=$(STAGING_LIB_DIR)
 else
-SWI-PROLOG_LD_LIBRARY_PATH=LD_LIBRARY_PATH=$(SWI-PROLOG_BUILD_DIR)/hostbuild/opt/lib
+SWI-PROLOG_LD_LIBRARY_PATH=LD_LIBRARY_PATH=$(SWI-PROLOG_BUILD_DIR)/hostbuild$(TARGET_PREFIX)/lib
 endif
 
 .PHONY: swi-prolog-source swi-prolog-unpack swi-prolog swi-prolog-stage swi-prolog-ipk swi-prolog-clean swi-prolog-dirclean swi-prolog-check
@@ -277,32 +277,32 @@ $(SWI-PROLOG_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(SWI-PROLOG_IPK_DIR)/opt/sbin or $(SWI-PROLOG_IPK_DIR)/opt/bin
+# Binaries should be installed into $(SWI-PROLOG_IPK_DIR)$(TARGET_PREFIX)/sbin or $(SWI-PROLOG_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(SWI-PROLOG_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(SWI-PROLOG_IPK_DIR)/opt/etc/swi-prolog/...
-# Documentation files should be installed in $(SWI-PROLOG_IPK_DIR)/opt/doc/swi-prolog/...
-# Daemon startup scripts should be installed in $(SWI-PROLOG_IPK_DIR)/opt/etc/init.d/S??swi-prolog
+# Libraries and include files should be installed into $(SWI-PROLOG_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(SWI-PROLOG_IPK_DIR)$(TARGET_PREFIX)/etc/swi-prolog/...
+# Documentation files should be installed in $(SWI-PROLOG_IPK_DIR)$(TARGET_PREFIX)/doc/swi-prolog/...
+# Daemon startup scripts should be installed in $(SWI-PROLOG_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??swi-prolog
 #
 # You may need to patch your application to make it use these locations.
 #
 $(SWI-PROLOG_IPK): $(SWI-PROLOG_BUILD_DIR)/.built
 	rm -rf $(SWI-PROLOG_IPK_DIR) $(BUILD_DIR)/swi-prolog_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SWI-PROLOG_BUILD_DIR) install DESTDIR=$(SWI-PROLOG_IPK_DIR)
-	$(STRIP_COMMAND) $(SWI-PROLOG_IPK_DIR)/opt/lib/$(SWI-PROLOG_PL)-$(SWI-PROLOG_VERSION)/bin/$(SWI-PROLOG_TARGET)/*pl*
+	$(STRIP_COMMAND) $(SWI-PROLOG_IPK_DIR)$(TARGET_PREFIX)/lib/$(SWI-PROLOG_PL)-$(SWI-PROLOG_VERSION)/bin/$(SWI-PROLOG_TARGET)/*pl*
 	$(MAKE) -C $(SWI-PROLOG_BUILD_DIR)/packages install DESTDIR=$(SWI-PROLOG_IPK_DIR)
-	rm $(SWI-PROLOG_IPK_DIR)/opt/lib/$(SWI-PROLOG_PL)-$(SWI-PROLOG_VERSION)/lib/$(SWI-PROLOG_TARGET)/lib*.a
-	(cd $(SWI-PROLOG_IPK_DIR)/opt/lib/$(SWI-PROLOG_PL)-$(SWI-PROLOG_VERSION); \
+	rm $(SWI-PROLOG_IPK_DIR)$(TARGET_PREFIX)/lib/$(SWI-PROLOG_PL)-$(SWI-PROLOG_VERSION)/lib/$(SWI-PROLOG_TARGET)/lib*.a
+	(cd $(SWI-PROLOG_IPK_DIR)$(TARGET_PREFIX)/lib/$(SWI-PROLOG_PL)-$(SWI-PROLOG_VERSION); \
 		for f in `find . -name '*.so'`; do \
 			chmod +w $$f; $(STRIP_COMMAND) $$f; chmod -w $$f; \
 		done; \
 	)
-	$(INSTALL) -d $(SWI-PROLOG_IPK_DIR)/opt/share/doc/swi-prolog/demo
-	$(INSTALL) -m 644 $(SWI-PROLOG_BUILD_DIR)/demo/* $(SWI-PROLOG_IPK_DIR)/opt/share/doc/swi-prolog/demo
-#	$(INSTALL) -d $(SWI-PROLOG_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(SWI-PROLOG_SOURCE_DIR)/swi-prolog.conf $(SWI-PROLOG_IPK_DIR)/opt/etc/swi-prolog.conf
-#	$(INSTALL) -d $(SWI-PROLOG_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(SWI-PROLOG_SOURCE_DIR)/rc.swi-prolog $(SWI-PROLOG_IPK_DIR)/opt/etc/init.d/SXXswi-prolog
+	$(INSTALL) -d $(SWI-PROLOG_IPK_DIR)$(TARGET_PREFIX)/share/doc/swi-prolog/demo
+	$(INSTALL) -m 644 $(SWI-PROLOG_BUILD_DIR)/demo/* $(SWI-PROLOG_IPK_DIR)$(TARGET_PREFIX)/share/doc/swi-prolog/demo
+#	$(INSTALL) -d $(SWI-PROLOG_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(SWI-PROLOG_SOURCE_DIR)/swi-prolog.conf $(SWI-PROLOG_IPK_DIR)$(TARGET_PREFIX)/etc/swi-prolog.conf
+#	$(INSTALL) -d $(SWI-PROLOG_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(SWI-PROLOG_SOURCE_DIR)/rc.swi-prolog $(SWI-PROLOG_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXswi-prolog
 	$(MAKE) $(SWI-PROLOG_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(SWI-PROLOG_SOURCE_DIR)/postinst $(SWI-PROLOG_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 755 $(SWI-PROLOG_SOURCE_DIR)/prerm $(SWI-PROLOG_IPK_DIR)/CONTROL/prerm

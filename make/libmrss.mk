@@ -40,7 +40,7 @@ LIBMRSS_IPK_VERSION=1
 
 #
 # LIBMRSS_CONFFILES should be a list of user-editable files
-#LIBMRSS_CONFFILES=/opt/etc/libmrss.conf /opt/etc/init.d/SXXlibmrss
+#LIBMRSS_CONFFILES=$(TARGET_PREFIX)/etc/libmrss.conf $(TARGET_PREFIX)/etc/init.d/SXXlibmrss
 
 #
 # LIBMRSS_PATCHES should list any patches, in the the order in
@@ -179,12 +179,12 @@ $(LIBMRSS_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LIBMRSS_IPK_DIR)/opt/sbin or $(LIBMRSS_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LIBMRSS_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LIBMRSS_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LIBMRSS_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LIBMRSS_IPK_DIR)/opt/etc/libmrss/...
-# Documentation files should be installed in $(LIBMRSS_IPK_DIR)/opt/doc/libmrss/...
-# Daemon startup scripts should be installed in $(LIBMRSS_IPK_DIR)/opt/etc/init.d/S??libmrss
+# Libraries and include files should be installed into $(LIBMRSS_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LIBMRSS_IPK_DIR)$(TARGET_PREFIX)/etc/libmrss/...
+# Documentation files should be installed in $(LIBMRSS_IPK_DIR)$(TARGET_PREFIX)/doc/libmrss/...
+# Daemon startup scripts should be installed in $(LIBMRSS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??libmrss
 #
 # You may need to patch your application to make it use these locations.
 #

@@ -46,7 +46,7 @@ LIBDRM_IPK_VERSION=1
 
 #
 # LIBDRM_CONFFILES should be a list of user-editable files
-#LIBDRM_CONFFILES=/opt/etc/libdrm.conf /opt/etc/init.d/SXXlibdrm
+#LIBDRM_CONFFILES=$(TARGET_PREFIX)/etc/libdrm.conf $(TARGET_PREFIX)/etc/init.d/SXXlibdrm
 
 #
 # LIBDRM_PATCHES should list any patches, in the the order in
@@ -189,24 +189,24 @@ $(LIBDRM_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LIBDRM_IPK_DIR)/opt/sbin or $(LIBDRM_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LIBDRM_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LIBDRM_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LIBDRM_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LIBDRM_IPK_DIR)/opt/etc/libdrm/...
-# Documentation files should be installed in $(LIBDRM_IPK_DIR)/opt/doc/libdrm/...
-# Daemon startup scripts should be installed in $(LIBDRM_IPK_DIR)/opt/etc/init.d/S??libdrm
+# Libraries and include files should be installed into $(LIBDRM_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LIBDRM_IPK_DIR)$(TARGET_PREFIX)/etc/libdrm/...
+# Documentation files should be installed in $(LIBDRM_IPK_DIR)$(TARGET_PREFIX)/doc/libdrm/...
+# Daemon startup scripts should be installed in $(LIBDRM_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??libdrm
 #
 # You may need to patch your application to make it use these locations.
 #
 $(LIBDRM_IPK): $(LIBDRM_BUILD_DIR)/.built
 	rm -rf $(LIBDRM_IPK_DIR) $(BUILD_DIR)/libdrm_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBDRM_BUILD_DIR) DESTDIR=$(LIBDRM_IPK_DIR) install-strip
-	rm -f $(LIBDRM_IPK_DIR)/opt/lib/*.la
-#	$(INSTALL) -d $(LIBDRM_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(LIBDRM_SOURCE_DIR)/libdrm.conf $(LIBDRM_IPK_DIR)/opt/etc/libdrm.conf
-#	$(INSTALL) -d $(LIBDRM_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(LIBDRM_SOURCE_DIR)/rc.libdrm $(LIBDRM_IPK_DIR)/opt/etc/init.d/SXXlibdrm
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBDRM_IPK_DIR)/opt/etc/init.d/SXXlibdrm
+	rm -f $(LIBDRM_IPK_DIR)$(TARGET_PREFIX)/lib/*.la
+#	$(INSTALL) -d $(LIBDRM_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(LIBDRM_SOURCE_DIR)/libdrm.conf $(LIBDRM_IPK_DIR)$(TARGET_PREFIX)/etc/libdrm.conf
+#	$(INSTALL) -d $(LIBDRM_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(LIBDRM_SOURCE_DIR)/rc.libdrm $(LIBDRM_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibdrm
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBDRM_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibdrm
 	$(MAKE) $(LIBDRM_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(LIBDRM_SOURCE_DIR)/postinst $(LIBDRM_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBDRM_IPK_DIR)/CONTROL/postinst

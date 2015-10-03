@@ -40,7 +40,7 @@ ASTERISK14_CORE_SOUNDS_EN_GSM_IPK_VERSION=1
 
 #
 # ASTERISK14_CORE_SOUNDS_EN_GSM_CONFFILES should be a list of user-editable files
-#ASTERISK14_CORE_SOUNDS_EN_GSM_CONFFILES=/opt/etc/asterisk14-core-sounds-en-gsm.conf /opt/etc/init.d/SXXasterisk14-core-sounds-en-gsm
+#ASTERISK14_CORE_SOUNDS_EN_GSM_CONFFILES=$(TARGET_PREFIX)/etc/asterisk14-core-sounds-en-gsm.conf $(TARGET_PREFIX)/etc/init.d/SXXasterisk14-core-sounds-en-gsm
 
 #
 # ASTERISK14_CORE_SOUNDS_EN_GSM_PATCHES should list any patches, in the the order in
@@ -162,32 +162,32 @@ $(ASTERISK14_CORE_SOUNDS_EN_GSM_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(ASTERISK14_CORE_SOUNDS_EN_GSM_IPK_DIR)/opt/sbin or $(ASTERISK14_CORE_SOUNDS_EN_GSM_IPK_DIR)/opt/bin
+# Binaries should be installed into $(ASTERISK14_CORE_SOUNDS_EN_GSM_IPK_DIR)$(TARGET_PREFIX)/sbin or $(ASTERISK14_CORE_SOUNDS_EN_GSM_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(ASTERISK14_CORE_SOUNDS_EN_GSM_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(ASTERISK14_CORE_SOUNDS_EN_GSM_IPK_DIR)/opt/etc/asterisk14-core-sounds-en-gsm/...
-# Documentation files should be installed in $(ASTERISK14_CORE_SOUNDS_EN_GSM_IPK_DIR)/opt/doc/asterisk14-core-sounds-en-gsm/...
-# Daemon startup scripts should be installed in $(ASTERISK14_CORE_SOUNDS_EN_GSM_IPK_DIR)/opt/etc/init.d/S??asterisk14-core-sounds-en-gsm
+# Libraries and include files should be installed into $(ASTERISK14_CORE_SOUNDS_EN_GSM_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(ASTERISK14_CORE_SOUNDS_EN_GSM_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk14-core-sounds-en-gsm/...
+# Documentation files should be installed in $(ASTERISK14_CORE_SOUNDS_EN_GSM_IPK_DIR)$(TARGET_PREFIX)/doc/asterisk14-core-sounds-en-gsm/...
+# Daemon startup scripts should be installed in $(ASTERISK14_CORE_SOUNDS_EN_GSM_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??asterisk14-core-sounds-en-gsm
 #
 # You may need to patch your application to make it use these locations.
 #
 $(ASTERISK14_CORE_SOUNDS_EN_GSM_IPK): $(ASTERISK14_CORE_SOUNDS_EN_GSM_BUILD_DIR)/.built
 	rm -rf $(ASTERISK14_CORE_SOUNDS_EN_GSM_IPK_DIR) $(BUILD_DIR)/asterisk14-core-sounds-en-gsm_*_$(TARGET_ARCH).ipk
 	$(MAKE) $(ASTERISK14_CORE_SOUNDS_EN_GSM_IPK_DIR)/CONTROL/control
-	$(INSTALL) -d $(ASTERISK14_CORE_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds
-	$(INSTALL) -m 644 $(ASTERISK14_CORE_SOUNDS_EN_GSM_BUILD_DIR)/*.gsm $(ASTERISK14_CORE_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds
-	$(INSTALL) -d $(ASTERISK14_CORE_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/dictate
-	$(INSTALL) -m 644 $(ASTERISK14_CORE_SOUNDS_EN_GSM_BUILD_DIR)/dictate/*.gsm $(ASTERISK14_CORE_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/dictate
-	$(INSTALL) -d $(ASTERISK14_CORE_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/digits
-	$(INSTALL) -m 644 $(ASTERISK14_CORE_SOUNDS_EN_GSM_BUILD_DIR)/digits/*.gsm $(ASTERISK14_CORE_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/digits
-	$(INSTALL) -d $(ASTERISK14_CORE_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/followme
-	$(INSTALL) -m 644 $(ASTERISK14_CORE_SOUNDS_EN_GSM_BUILD_DIR)/followme/*.gsm $(ASTERISK14_CORE_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/followme
-	$(INSTALL) -d $(ASTERISK14_CORE_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/letters
-	$(INSTALL) -m 644 $(ASTERISK14_CORE_SOUNDS_EN_GSM_BUILD_DIR)/letters/*.gsm $(ASTERISK14_CORE_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/letters
-	$(INSTALL) -d $(ASTERISK14_CORE_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/phonetic
-	$(INSTALL) -m 644 $(ASTERISK14_CORE_SOUNDS_EN_GSM_BUILD_DIR)/phonetic/*.gsm $(ASTERISK14_CORE_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/phonetic
-	$(INSTALL) -d $(ASTERISK14_CORE_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/silence
-	$(INSTALL) -m 644 $(ASTERISK14_CORE_SOUNDS_EN_GSM_BUILD_DIR)/silence/*.gsm $(ASTERISK14_CORE_SOUNDS_EN_GSM_IPK_DIR)/opt/var/lib/asterisk/sounds/silence
+	$(INSTALL) -d $(ASTERISK14_CORE_SOUNDS_EN_GSM_IPK_DIR)$(TARGET_PREFIX)/var/lib/asterisk/sounds
+	$(INSTALL) -m 644 $(ASTERISK14_CORE_SOUNDS_EN_GSM_BUILD_DIR)/*.gsm $(ASTERISK14_CORE_SOUNDS_EN_GSM_IPK_DIR)$(TARGET_PREFIX)/var/lib/asterisk/sounds
+	$(INSTALL) -d $(ASTERISK14_CORE_SOUNDS_EN_GSM_IPK_DIR)$(TARGET_PREFIX)/var/lib/asterisk/sounds/dictate
+	$(INSTALL) -m 644 $(ASTERISK14_CORE_SOUNDS_EN_GSM_BUILD_DIR)/dictate/*.gsm $(ASTERISK14_CORE_SOUNDS_EN_GSM_IPK_DIR)$(TARGET_PREFIX)/var/lib/asterisk/sounds/dictate
+	$(INSTALL) -d $(ASTERISK14_CORE_SOUNDS_EN_GSM_IPK_DIR)$(TARGET_PREFIX)/var/lib/asterisk/sounds/digits
+	$(INSTALL) -m 644 $(ASTERISK14_CORE_SOUNDS_EN_GSM_BUILD_DIR)/digits/*.gsm $(ASTERISK14_CORE_SOUNDS_EN_GSM_IPK_DIR)$(TARGET_PREFIX)/var/lib/asterisk/sounds/digits
+	$(INSTALL) -d $(ASTERISK14_CORE_SOUNDS_EN_GSM_IPK_DIR)$(TARGET_PREFIX)/var/lib/asterisk/sounds/followme
+	$(INSTALL) -m 644 $(ASTERISK14_CORE_SOUNDS_EN_GSM_BUILD_DIR)/followme/*.gsm $(ASTERISK14_CORE_SOUNDS_EN_GSM_IPK_DIR)$(TARGET_PREFIX)/var/lib/asterisk/sounds/followme
+	$(INSTALL) -d $(ASTERISK14_CORE_SOUNDS_EN_GSM_IPK_DIR)$(TARGET_PREFIX)/var/lib/asterisk/sounds/letters
+	$(INSTALL) -m 644 $(ASTERISK14_CORE_SOUNDS_EN_GSM_BUILD_DIR)/letters/*.gsm $(ASTERISK14_CORE_SOUNDS_EN_GSM_IPK_DIR)$(TARGET_PREFIX)/var/lib/asterisk/sounds/letters
+	$(INSTALL) -d $(ASTERISK14_CORE_SOUNDS_EN_GSM_IPK_DIR)$(TARGET_PREFIX)/var/lib/asterisk/sounds/phonetic
+	$(INSTALL) -m 644 $(ASTERISK14_CORE_SOUNDS_EN_GSM_BUILD_DIR)/phonetic/*.gsm $(ASTERISK14_CORE_SOUNDS_EN_GSM_IPK_DIR)$(TARGET_PREFIX)/var/lib/asterisk/sounds/phonetic
+	$(INSTALL) -d $(ASTERISK14_CORE_SOUNDS_EN_GSM_IPK_DIR)$(TARGET_PREFIX)/var/lib/asterisk/sounds/silence
+	$(INSTALL) -m 644 $(ASTERISK14_CORE_SOUNDS_EN_GSM_BUILD_DIR)/silence/*.gsm $(ASTERISK14_CORE_SOUNDS_EN_GSM_IPK_DIR)$(TARGET_PREFIX)/var/lib/asterisk/sounds/silence
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ASTERISK14_CORE_SOUNDS_EN_GSM_IPK_DIR)
 
 #

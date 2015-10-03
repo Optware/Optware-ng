@@ -39,7 +39,7 @@ LIBDVDREAD_IPK_VERSION=1
 
 #
 # LIBDVDREAD_CONFFILES should be a list of user-editable files
-LIBDVDREAD_CONFFILES=/opt/etc/libdvdread.conf /opt/etc/init.d/SXXlibdvdread
+LIBDVDREAD_CONFFILES=$(TARGET_PREFIX)/etc/libdvdread.conf $(TARGET_PREFIX)/etc/init.d/SXXlibdvdread
 
 #
 ## LIBDVDREAD_PATCHES should list any patches, in the the order in
@@ -167,12 +167,12 @@ $(LIBDVDREAD_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LIBDVDREAD_IPK_DIR)/opt/sbin or $(LIBDVDREAD_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LIBDVDREAD_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LIBDVDREAD_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LIBDVDREAD_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LIBDVDREAD_IPK_DIR)/opt/etc/libdvdread/...
-# Documentation files should be installed in $(LIBDVDREAD_IPK_DIR)/opt/doc/libdvdread/...
-# Daemon startup scripts should be installed in $(LIBDVDREAD_IPK_DIR)/opt/etc/init.d/S??libdvdread
+# Libraries and include files should be installed into $(LIBDVDREAD_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LIBDVDREAD_IPK_DIR)$(TARGET_PREFIX)/etc/libdvdread/...
+# Documentation files should be installed in $(LIBDVDREAD_IPK_DIR)$(TARGET_PREFIX)/doc/libdvdread/...
+# Daemon startup scripts should be installed in $(LIBDVDREAD_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??libdvdread
 #
 # You may need to patch your application to make it use these locations.
 #

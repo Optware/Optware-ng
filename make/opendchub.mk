@@ -40,7 +40,7 @@ OPENDCHUB_IPK_VERSION=1
 
 #
 # OPENDCHUB_CONFFILES should be a list of user-editable files
-#OPENDCHUB_CONFFILES=/opt/etc/opendchub.conf /opt/etc/init.d/SXXopendchub
+#OPENDCHUB_CONFFILES=$(TARGET_PREFIX)/etc/opendchub.conf $(TARGET_PREFIX)/etc/init.d/SXXopendchub
 
 #
 # OPENDCHUB_PATCHES should list any patches, in the the order in
@@ -188,29 +188,29 @@ $(OPENDCHUB_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(OPENDCHUB_IPK_DIR)/opt/sbin or $(OPENDCHUB_IPK_DIR)/opt/bin
+# Binaries should be installed into $(OPENDCHUB_IPK_DIR)$(TARGET_PREFIX)/sbin or $(OPENDCHUB_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(OPENDCHUB_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(OPENDCHUB_IPK_DIR)/opt/etc/opendchub/...
-# Documentation files should be installed in $(OPENDCHUB_IPK_DIR)/opt/doc/opendchub/...
-# Daemon startup scripts should be installed in $(OPENDCHUB_IPK_DIR)/opt/etc/init.d/S??opendchub
+# Libraries and include files should be installed into $(OPENDCHUB_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(OPENDCHUB_IPK_DIR)$(TARGET_PREFIX)/etc/opendchub/...
+# Documentation files should be installed in $(OPENDCHUB_IPK_DIR)$(TARGET_PREFIX)/doc/opendchub/...
+# Daemon startup scripts should be installed in $(OPENDCHUB_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??opendchub
 #
 # You may need to patch your application to make it use these locations.
 #
 $(OPENDCHUB_IPK): $(OPENDCHUB_BUILD_DIR)/.built
 	rm -rf $(OPENDCHUB_IPK_DIR) $(BUILD_DIR)/opendchub_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(OPENDCHUB_BUILD_DIR) DESTDIR=$(OPENDCHUB_IPK_DIR) install
-	$(STRIP_COMMAND) $(OPENDCHUB_IPK_DIR)/opt/*bin/*
-	$(INSTALL) -d $(OPENDCHUB_IPK_DIR)/opt/share/doc/opendchub
+	$(STRIP_COMMAND) $(OPENDCHUB_IPK_DIR)$(TARGET_PREFIX)/*bin/*
+	$(INSTALL) -d $(OPENDCHUB_IPK_DIR)$(TARGET_PREFIX)/share/doc/opendchub
 	$(INSTALL) $(OPENDCHUB_BUILD_DIR)/[ACRN]* \
 		$(OPENDCHUB_BUILD_DIR)/Documentation/* \
 		$(OPENDCHUB_BUILD_DIR)/Samplescripts/* \
-		$(OPENDCHUB_IPK_DIR)/opt/share/doc/opendchub/
-#	$(INSTALL) -d $(OPENDCHUB_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(OPENDCHUB_SOURCE_DIR)/opendchub.conf $(OPENDCHUB_IPK_DIR)/opt/etc/opendchub.conf
-#	$(INSTALL) -d $(OPENDCHUB_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(OPENDCHUB_SOURCE_DIR)/rc.opendchub $(OPENDCHUB_IPK_DIR)/opt/etc/init.d/SXXopendchub
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(OPENDCHUB_IPK_DIR)/opt/etc/init.d/SXXopendchub
+		$(OPENDCHUB_IPK_DIR)$(TARGET_PREFIX)/share/doc/opendchub/
+#	$(INSTALL) -d $(OPENDCHUB_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(OPENDCHUB_SOURCE_DIR)/opendchub.conf $(OPENDCHUB_IPK_DIR)$(TARGET_PREFIX)/etc/opendchub.conf
+#	$(INSTALL) -d $(OPENDCHUB_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(OPENDCHUB_SOURCE_DIR)/rc.opendchub $(OPENDCHUB_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXopendchub
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(OPENDCHUB_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXopendchub
 	$(MAKE) $(OPENDCHUB_IPK_DIR)/CONTROL/control
 	echo $(OPENDCHUB_CONFFILES) | sed -e 's/ /\n/g' > $(OPENDCHUB_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(OPENDCHUB_IPK_DIR)

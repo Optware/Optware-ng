@@ -40,7 +40,7 @@ ASTERISK14_EXTRA_SOUNDS_EN_ALAW_IPK_VERSION=1
 
 #
 # ASTERISK14_EXTRA_SOUNDS_EN_ALAW_CONFFILES should be a list of user-editable files
-#ASTERISK14_EXTRA_SOUNDS_EN_ALAW_CONFFILES=/opt/etc/asterisk14-extra-sounds-en-alaw.conf /opt/etc/init.d/SXXasterisk14-extra-sounds-en-alaw
+#ASTERISK14_EXTRA_SOUNDS_EN_ALAW_CONFFILES=$(TARGET_PREFIX)/etc/asterisk14-extra-sounds-en-alaw.conf $(TARGET_PREFIX)/etc/init.d/SXXasterisk14-extra-sounds-en-alaw
 
 #
 # ASTERISK14_EXTRA_SOUNDS_EN_ALAW_PATCHES should list any patches, in the the order in
@@ -161,24 +161,24 @@ $(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_IPK_DIR)/opt/sbin or $(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_IPK_DIR)/opt/bin
+# Binaries should be installed into $(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_IPK_DIR)$(TARGET_PREFIX)/sbin or $(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_IPK_DIR)/opt/etc/asterisk14-extra-sounds-en-alaw/...
-# Documentation files should be installed in $(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_IPK_DIR)/opt/doc/asterisk14-extra-sounds-en-alaw/...
-# Daemon startup scripts should be installed in $(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_IPK_DIR)/opt/etc/init.d/S??asterisk14-extra-sounds-en-alaw
+# Libraries and include files should be installed into $(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk14-extra-sounds-en-alaw/...
+# Documentation files should be installed in $(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_IPK_DIR)$(TARGET_PREFIX)/doc/asterisk14-extra-sounds-en-alaw/...
+# Daemon startup scripts should be installed in $(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??asterisk14-extra-sounds-en-alaw
 #
 # You may need to patch your application to make it use these locations.
 #
 $(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_IPK): $(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_BUILD_DIR)/.built
 	rm -rf $(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_IPK_DIR) $(BUILD_DIR)/asterisk14-extra-sounds-en-alaw_*_$(TARGET_ARCH).ipk
 	$(MAKE) $(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_IPK_DIR)/CONTROL/control
-	$(INSTALL) -d $(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_IPK_DIR)/opt/var/lib/asterisk/sounds
-	$(INSTALL) -m 644 $(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_BUILD_DIR)/*.alaw $(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_IPK_DIR)/opt/var/lib/asterisk/sounds
-	$(INSTALL) -d $(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_IPK_DIR)/opt/var/lib/asterisk/sounds/ha
-	$(INSTALL) -m 644 $(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_BUILD_DIR)/ha/*.alaw $(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_IPK_DIR)/opt/var/lib/asterisk/sounds/ha
-	$(INSTALL) -d $(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_IPK_DIR)/opt/var/lib/asterisk/sounds/wx
-	$(INSTALL) -m 644 $(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_BUILD_DIR)/wx/*.alaw $(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_IPK_DIR)/opt/var/lib/asterisk/sounds/wx
+	$(INSTALL) -d $(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_IPK_DIR)$(TARGET_PREFIX)/var/lib/asterisk/sounds
+	$(INSTALL) -m 644 $(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_BUILD_DIR)/*.alaw $(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_IPK_DIR)$(TARGET_PREFIX)/var/lib/asterisk/sounds
+	$(INSTALL) -d $(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_IPK_DIR)$(TARGET_PREFIX)/var/lib/asterisk/sounds/ha
+	$(INSTALL) -m 644 $(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_BUILD_DIR)/ha/*.alaw $(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_IPK_DIR)$(TARGET_PREFIX)/var/lib/asterisk/sounds/ha
+	$(INSTALL) -d $(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_IPK_DIR)$(TARGET_PREFIX)/var/lib/asterisk/sounds/wx
+	$(INSTALL) -m 644 $(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_BUILD_DIR)/wx/*.alaw $(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_IPK_DIR)$(TARGET_PREFIX)/var/lib/asterisk/sounds/wx
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ASTERISK14_EXTRA_SOUNDS_EN_ALAW_IPK_DIR)
 
 #

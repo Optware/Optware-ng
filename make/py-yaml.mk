@@ -41,7 +41,7 @@ PY-YAML_IPK_VERSION=1
 
 #
 # PY-YAML_CONFFILES should be a list of user-editable files
-#PY-YAML_CONFFILES=/opt/etc/py-yaml.conf /opt/etc/init.d/SXXpy-yaml
+#PY-YAML_CONFFILES=$(TARGET_PREFIX)/etc/py-yaml.conf $(TARGET_PREFIX)/etc/init.d/SXXpy-yaml
 
 #
 # PY-YAML_PATCHES should list any patches, in the the order in
@@ -116,9 +116,9 @@ $(PY-YAML_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-YAML_SOURCE) $(PY-YAML_PATCHES)
 	(cd $(PY-YAML_BUILD_DIR)/2.6; \
 	    ( \
 	    echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python2.6"; \
+	    echo "executable=$(TARGET_PREFIX)/bin/python2.6"; \
 	    echo "[install]"; \
-	    echo "install_scripts=/opt/bin"; \
+	    echo "install_scripts=$(TARGET_PREFIX)/bin"; \
 	    ) >> setup.cfg \
 	)
 	# 2.5
@@ -131,9 +131,9 @@ $(PY-YAML_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-YAML_SOURCE) $(PY-YAML_PATCHES)
 	(cd $(PY-YAML_BUILD_DIR)/2.5; \
 	    ( \
 	    echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python2.5"; \
+	    echo "executable=$(TARGET_PREFIX)/bin/python2.5"; \
 	    echo "[install]"; \
-	    echo "install_scripts=/opt/bin"; \
+	    echo "install_scripts=$(TARGET_PREFIX)/bin"; \
 	    ) >> setup.cfg \
 	)
 	touch $(PY-YAML_BUILD_DIR)/.configured
@@ -205,12 +205,12 @@ $(PY25-YAML_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PY-YAML_IPK_DIR)/opt/sbin or $(PY-YAML_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PY-YAML_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PY-YAML_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PY-YAML_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PY-YAML_IPK_DIR)/opt/etc/py-yaml/...
-# Documentation files should be installed in $(PY-YAML_IPK_DIR)/opt/doc/py-yaml/...
-# Daemon startup scripts should be installed in $(PY-YAML_IPK_DIR)/opt/etc/init.d/S??py-yaml
+# Libraries and include files should be installed into $(PY-YAML_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PY-YAML_IPK_DIR)$(TARGET_PREFIX)/etc/py-yaml/...
+# Documentation files should be installed in $(PY-YAML_IPK_DIR)$(TARGET_PREFIX)/doc/py-yaml/...
+# Daemon startup scripts should be installed in $(PY-YAML_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??py-yaml
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -222,7 +222,7 @@ $(PY26-YAML_IPK): $(PY-YAML_BUILD_DIR)/.built
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.6 \
 		-c "import setuptools; execfile('setup.py')" install \
-		--root=$(PY26-YAML_IPK_DIR) --prefix=/opt
+		--root=$(PY26-YAML_IPK_DIR) --prefix=$(TARGET_PREFIX)
 	$(MAKE) $(PY26-YAML_IPK_DIR)/CONTROL/control
 #	echo $(PY-YAML_CONFFILES) | sed -e 's/ /\n/g' > $(PY26-YAML_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-YAML_IPK_DIR)
@@ -233,7 +233,7 @@ $(PY25-YAML_IPK): $(PY-YAML_BUILD_DIR)/.built
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.5 \
 		-c "import setuptools; execfile('setup.py')" install \
-		--root=$(PY25-YAML_IPK_DIR) --prefix=/opt
+		--root=$(PY25-YAML_IPK_DIR) --prefix=$(TARGET_PREFIX)
 	$(MAKE) $(PY25-YAML_IPK_DIR)/CONTROL/control
 #	echo $(PY-YAML_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-YAML_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-YAML_IPK_DIR)

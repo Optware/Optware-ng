@@ -41,7 +41,7 @@ LIBMPC_IPK_VERSION=1
 
 #
 # LIBMPC_CONFFILES should be a list of user-editable files
-#LIBMPC_CONFFILES=/opt/etc/libmpc.conf /opt/etc/init.d/SXXlibmpc
+#LIBMPC_CONFFILES=$(TARGET_PREFIX)/etc/libmpc.conf $(TARGET_PREFIX)/etc/init.d/SXXlibmpc
 
 #
 # LIBMPC_PATCHES should list any patches, in the the order in
@@ -180,24 +180,24 @@ $(LIBMPC_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LIBMPC_IPK_DIR)/opt/sbin or $(LIBMPC_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LIBMPC_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LIBMPC_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LIBMPC_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LIBMPC_IPK_DIR)/opt/etc/libmpc/...
-# Documentation files should be installed in $(LIBMPC_IPK_DIR)/opt/doc/libmpc/...
-# Daemon startup scripts should be installed in $(LIBMPC_IPK_DIR)/opt/etc/init.d/S??libmpc
+# Libraries and include files should be installed into $(LIBMPC_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LIBMPC_IPK_DIR)$(TARGET_PREFIX)/etc/libmpc/...
+# Documentation files should be installed in $(LIBMPC_IPK_DIR)$(TARGET_PREFIX)/doc/libmpc/...
+# Daemon startup scripts should be installed in $(LIBMPC_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??libmpc
 #
 # You may need to patch your application to make it use these locations.
 #
 $(LIBMPC_IPK): $(LIBMPC_BUILD_DIR)/.built
 	rm -rf $(LIBMPC_IPK_DIR) $(BUILD_DIR)/libmpc_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBMPC_BUILD_DIR) DESTDIR=$(LIBMPC_IPK_DIR) install-strip
-	$(STRIP_COMMAND) $(LIBMPC_IPK_DIR)/opt/lib/libmpc.so.*
-#	$(INSTALL) -d $(LIBMPC_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(LIBMPC_SOURCE_DIR)/libmpc.conf $(LIBMPC_IPK_DIR)/opt/etc/libmpc.conf
-#	$(INSTALL) -d $(LIBMPC_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(LIBMPC_SOURCE_DIR)/rc.libmpc $(LIBMPC_IPK_DIR)/opt/etc/init.d/SXXlibmpc
-	rm -f $(LIBMPC_IPK_DIR)/opt/share/info/dir $(LIBMPC_IPK_DIR)/opt/lib/libmpc.la
+	$(STRIP_COMMAND) $(LIBMPC_IPK_DIR)$(TARGET_PREFIX)/lib/libmpc.so.*
+#	$(INSTALL) -d $(LIBMPC_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(LIBMPC_SOURCE_DIR)/libmpc.conf $(LIBMPC_IPK_DIR)$(TARGET_PREFIX)/etc/libmpc.conf
+#	$(INSTALL) -d $(LIBMPC_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(LIBMPC_SOURCE_DIR)/rc.libmpc $(LIBMPC_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibmpc
+	rm -f $(LIBMPC_IPK_DIR)$(TARGET_PREFIX)/share/info/dir $(LIBMPC_IPK_DIR)$(TARGET_PREFIX)/lib/libmpc.la
 	$(MAKE) $(LIBMPC_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(LIBMPC_SOURCE_DIR)/postinst $(LIBMPC_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 755 $(LIBMPC_SOURCE_DIR)/prerm $(LIBMPC_IPK_DIR)/CONTROL/prerm

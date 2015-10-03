@@ -137,25 +137,25 @@ $(LESS_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LESS_IPK_DIR)/opt/sbin or $(LESS_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LESS_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LESS_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LESS_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LESS_IPK_DIR)/opt/etc/less/...
-# Documentation files should be installed in $(LESS_IPK_DIR)/opt/doc/less/...
-# Daemon startup scripts should be installed in $(LESS_IPK_DIR)/opt/etc/init.d/S??less
+# Libraries and include files should be installed into $(LESS_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LESS_IPK_DIR)$(TARGET_PREFIX)/etc/less/...
+# Documentation files should be installed in $(LESS_IPK_DIR)$(TARGET_PREFIX)/doc/less/...
+# Daemon startup scripts should be installed in $(LESS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??less
 #
 # You may need to patch your application to make it use these locations.
 #
 $(LESS_IPK): $(LESS_BUILD_DIR)/.built
 	rm -rf $(LESS_IPK_DIR) $(BUILD_DIR)/less_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(LESS_IPK_DIR)/opt/bin
-	$(STRIP_COMMAND) $(LESS_BUILD_DIR)/less -o $(LESS_IPK_DIR)/opt/bin/less-less
+	$(INSTALL) -d $(LESS_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(STRIP_COMMAND) $(LESS_BUILD_DIR)/less -o $(LESS_IPK_DIR)$(TARGET_PREFIX)/bin/less-less
 	$(MAKE) $(LESS_IPK_DIR)/CONTROL/control
 	(echo "#!/bin/sh"; \
-	 echo "update-alternatives --install /opt/bin/less less /opt/bin/less-less 80"; \
+	 echo "update-alternatives --install $(TARGET_PREFIX)/bin/less less $(TARGET_PREFIX)/bin/less-less 80"; \
 	) > $(LESS_IPK_DIR)/CONTROL/postinst
 	(echo "#!/bin/sh"; \
-	 echo "update-alternatives --remove less /opt/bin/less-less"; \
+	 echo "update-alternatives --remove less $(TARGET_PREFIX)/bin/less-less"; \
 	) > $(LESS_IPK_DIR)/CONTROL/prerm
 	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

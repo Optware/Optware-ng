@@ -40,7 +40,7 @@ PERL_ASSP_IPK_VERSION=1
 
 #
 # PERL_ASSP_CONFFILES should be a list of user-editable files
-# PERL_ASSP_CONFFILES=/opt/etc/perl-assp.conf /opt/etc/init.d/SXXperl-assp
+# PERL_ASSP_CONFFILES=$(TARGET_PREFIX)/etc/perl-assp.conf $(TARGET_PREFIX)/etc/init.d/SXXperl-assp
 
 #
 # PERL_ASSP_PATCHES should list any patches, in the the order in
@@ -137,7 +137,7 @@ $(PERL_ASSP_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL_ASSP_SOURCE) $(PERL_ASSP_PA
 	fi
 	(cd $(PERL_ASSP_BUILD_DIR); \
 		for f in $(PERL_ASSP_USE_DOS2UNIX); \
-		  do sed -i -e 's/\r//g' -e 's|/usr/|/opt/|g' $${f} ;\
+		  do sed -i -e 's/\r//g' -e 's|/usr/|$(TARGET_PREFIX)/|g' $${f} ;\
 		done \
 	)
 	touch $(PERL_ASSP_BUILD_DIR)/.configured
@@ -189,40 +189,40 @@ $(PERL_ASSP_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PERL_ASSP_IPK_DIR)/opt/sbin or $(PERL_ASSP_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PERL_ASSP_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PERL_ASSP_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PERL_ASSP_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PERL_ASSP_IPK_DIR)/opt/etc/perl-assp/...
-# Documentation files should be installed in $(PERL_ASSP_IPK_DIR)/opt/doc/perl-assp/...
-# Daemon startup scripts should be installed in $(PERL_ASSP_IPK_DIR)/opt/etc/init.d/S??perl-assp
+# Libraries and include files should be installed into $(PERL_ASSP_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PERL_ASSP_IPK_DIR)$(TARGET_PREFIX)/etc/perl-assp/...
+# Documentation files should be installed in $(PERL_ASSP_IPK_DIR)$(TARGET_PREFIX)/doc/perl-assp/...
+# Daemon startup scripts should be installed in $(PERL_ASSP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??perl-assp
 #
 # You may need to patch your application to make it use these locations.
 #
 $(PERL_ASSP_IPK): $(PERL_ASSP_BUILD_DIR)/.built
 	rm -rf $(PERL_ASSP_IPK_DIR) $(BUILD_DIR)/perl-assp_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(PERL_ASSP_IPK_DIR)/opt/lib/assp
-	$(INSTALL) -d $(PERL_ASSP_IPK_DIR)/opt/sbin
-	$(INSTALL) -m 755 $(PERL_ASSP_BUILD_DIR)/*.pl $(PERL_ASSP_IPK_DIR)/opt/lib/assp
-	$(INSTALL) -m 755 $(PERL_ASSP_BUILD_DIR)/stats.sh $(PERL_ASSP_IPK_DIR)/opt/lib/assp
-	$(INSTALL) -d $(PERL_ASSP_IPK_DIR)/opt/lib/assp
-	$(INSTALL) -m 755 $(PERL_ASSP_BUILD_DIR)/*.pl $(PERL_ASSP_IPK_DIR)/opt/lib/assp
-	$(INSTALL) -m 755 $(PERL_ASSP_BUILD_DIR)/stats.sh $(PERL_ASSP_IPK_DIR)/opt/lib/assp
-	$(INSTALL) -m 644 $(PERL_ASSP_BUILD_DIR)/nodelay.txt $(PERL_ASSP_IPK_DIR)/opt/lib/assp
-	$(INSTALL) -m 644 $(PERL_ASSP_BUILD_DIR)/redre.txt $(PERL_ASSP_IPK_DIR)/opt/lib/assp
-	$(INSTALL) -d $(PERL_ASSP_IPK_DIR)/opt/lib/assp/reports
-	$(INSTALL) -m 644 $(PERL_ASSP_BUILD_DIR)/*report.txt $(PERL_ASSP_IPK_DIR)/opt/lib/assp/reports
-	$(INSTALL) -d $(PERL_ASSP_IPK_DIR)/opt/lib/assp/images
-	$(INSTALL) -m 644 $(PERL_ASSP_BUILD_DIR)/images/* $(PERL_ASSP_IPK_DIR)/opt/lib/assp/images
-	ln -s $(PERL_ASSP_IPK_DIR)/opt/lib/assp/assp.pl $(PERL_ASSP_IPK_DIR)/opt/sbin/assp
-	ln -s $(PERL_ASSP_IPK_DIR)/opt/lib/assp/stats.sh $(PERL_ASSP_IPK_DIR)/opt/sbin/assplog
-#	$(INSTALL) -d $(PERL_ASSP_IPK_DIR)/opt/man/man8
-#	$(INSTALL) -m 644 $(PERL_ASSP_BUILD_DIR)/assp.8 $(PERL_ASSP_IPK_DIR)/opt/man/man8
-#	$(INSTALL) -m 644 $(PERL_ASSP_BUILD_DIR)/assplog.8 $(PERL_ASSP_IPK_DIR)/opt/man/man8
-#	$(INSTALL) -d $(PERL_ASSP_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(PERL_ASSP_SOURCE_DIR)/perl-assp.conf $(PERL_ASSP_IPK_DIR)/opt/etc/perl-assp.conf
-#	$(INSTALL) -d $(PERL_ASSP_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(PERL_ASSP_SOURCE_DIR)/rc.perl-assp $(PERL_ASSP_IPK_DIR)/opt/etc/init.d/SXXperl-assp
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/opt/etc/init.d/SXXperl-assp
+	$(INSTALL) -d $(PERL_ASSP_IPK_DIR)$(TARGET_PREFIX)/lib/assp
+	$(INSTALL) -d $(PERL_ASSP_IPK_DIR)$(TARGET_PREFIX)/sbin
+	$(INSTALL) -m 755 $(PERL_ASSP_BUILD_DIR)/*.pl $(PERL_ASSP_IPK_DIR)$(TARGET_PREFIX)/lib/assp
+	$(INSTALL) -m 755 $(PERL_ASSP_BUILD_DIR)/stats.sh $(PERL_ASSP_IPK_DIR)$(TARGET_PREFIX)/lib/assp
+	$(INSTALL) -d $(PERL_ASSP_IPK_DIR)$(TARGET_PREFIX)/lib/assp
+	$(INSTALL) -m 755 $(PERL_ASSP_BUILD_DIR)/*.pl $(PERL_ASSP_IPK_DIR)$(TARGET_PREFIX)/lib/assp
+	$(INSTALL) -m 755 $(PERL_ASSP_BUILD_DIR)/stats.sh $(PERL_ASSP_IPK_DIR)$(TARGET_PREFIX)/lib/assp
+	$(INSTALL) -m 644 $(PERL_ASSP_BUILD_DIR)/nodelay.txt $(PERL_ASSP_IPK_DIR)$(TARGET_PREFIX)/lib/assp
+	$(INSTALL) -m 644 $(PERL_ASSP_BUILD_DIR)/redre.txt $(PERL_ASSP_IPK_DIR)$(TARGET_PREFIX)/lib/assp
+	$(INSTALL) -d $(PERL_ASSP_IPK_DIR)$(TARGET_PREFIX)/lib/assp/reports
+	$(INSTALL) -m 644 $(PERL_ASSP_BUILD_DIR)/*report.txt $(PERL_ASSP_IPK_DIR)$(TARGET_PREFIX)/lib/assp/reports
+	$(INSTALL) -d $(PERL_ASSP_IPK_DIR)$(TARGET_PREFIX)/lib/assp/images
+	$(INSTALL) -m 644 $(PERL_ASSP_BUILD_DIR)/images/* $(PERL_ASSP_IPK_DIR)$(TARGET_PREFIX)/lib/assp/images
+	ln -s $(PERL_ASSP_IPK_DIR)$(TARGET_PREFIX)/lib/assp/assp.pl $(PERL_ASSP_IPK_DIR)$(TARGET_PREFIX)/sbin/assp
+	ln -s $(PERL_ASSP_IPK_DIR)$(TARGET_PREFIX)/lib/assp/stats.sh $(PERL_ASSP_IPK_DIR)$(TARGET_PREFIX)/sbin/assplog
+#	$(INSTALL) -d $(PERL_ASSP_IPK_DIR)$(TARGET_PREFIX)/man/man8
+#	$(INSTALL) -m 644 $(PERL_ASSP_BUILD_DIR)/assp.8 $(PERL_ASSP_IPK_DIR)$(TARGET_PREFIX)/man/man8
+#	$(INSTALL) -m 644 $(PERL_ASSP_BUILD_DIR)/assplog.8 $(PERL_ASSP_IPK_DIR)$(TARGET_PREFIX)/man/man8
+#	$(INSTALL) -d $(PERL_ASSP_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(PERL_ASSP_SOURCE_DIR)/perl-assp.conf $(PERL_ASSP_IPK_DIR)$(TARGET_PREFIX)/etc/perl-assp.conf
+#	$(INSTALL) -d $(PERL_ASSP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(PERL_ASSP_SOURCE_DIR)/rc.perl-assp $(PERL_ASSP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXperl-assp
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXperl-assp
 	$(MAKE) $(PERL_ASSP_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(PERL_ASSP_SOURCE_DIR)/postinst $(PERL_ASSP_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/postinst

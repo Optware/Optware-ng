@@ -45,7 +45,7 @@ IPERF_IPK_VERSION=2
 
 #
 # IPERF_CONFFILES should be a list of user-editable files
-#IPERF_CONFFILES=/opt/etc/iperf.conf /opt/etc/init.d/SXXiperf
+#IPERF_CONFFILES=$(TARGET_PREFIX)/etc/iperf.conf $(TARGET_PREFIX)/etc/init.d/SXXiperf
 
 #
 # IPERF_PATCHES should list any patches, in the the order in
@@ -172,12 +172,12 @@ $(IPERF_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(IPERF_IPK_DIR)/opt/sbin or $(IPERF_IPK_DIR)/opt/bin
+# Binaries should be installed into $(IPERF_IPK_DIR)$(TARGET_PREFIX)/sbin or $(IPERF_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(IPERF_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(IPERF_IPK_DIR)/opt/etc/iperf/...
-# Documentation files should be installed in $(IPERF_IPK_DIR)/opt/doc/iperf/...
-# Daemon startup scripts should be installed in $(IPERF_IPK_DIR)/opt/etc/init.d/S??iperf
+# Libraries and include files should be installed into $(IPERF_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(IPERF_IPK_DIR)$(TARGET_PREFIX)/etc/iperf/...
+# Documentation files should be installed in $(IPERF_IPK_DIR)$(TARGET_PREFIX)/doc/iperf/...
+# Daemon startup scripts should be installed in $(IPERF_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??iperf
 #
 # You may need to patch your application to make it use these locations.
 #

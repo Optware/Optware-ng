@@ -58,7 +58,7 @@ $(PERL-NET-SSLEAY_BUILD_DIR)/.built: $(PERL-NET-SSLEAY_BUILD_DIR)/.configured
 		INC="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		LDDLFLAGS="-shared $(STAGING_LDFLAGS)" \
-		LD_RUN_PATH=/opt/lib \
+		LD_RUN_PATH=$(TARGET_PREFIX)/lib \
 		EXTRALIBS="-lssl -lcrypto -lz" \
 		LDLOADLIBS="-lssl -lcrypto -lz" \
 		$(PERL_INC) \
@@ -93,7 +93,7 @@ $(PERL-NET-SSLEAY_IPK): $(PERL-NET-SSLEAY_BUILD_DIR)/.built
 	rm -rf $(PERL-NET-SSLEAY_IPK_DIR) $(BUILD_DIR)/perl-net-ssleay_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PERL-NET-SSLEAY_BUILD_DIR) DESTDIR=$(PERL-NET-SSLEAY_IPK_DIR) install
 	find $(PERL-NET-SSLEAY_IPK_DIR)$(TARGET_PREFIX) -name 'perllocal.pod' -exec rm -f {} \;
-	(cd $(PERL-NET-SSLEAY_IPK_DIR)/opt/lib/perl5 ; \
+	(cd $(PERL-NET-SSLEAY_IPK_DIR)$(TARGET_PREFIX)/lib/perl5 ; \
 		find . -name '*.so' -exec chmod +w {} \; ; \
 		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
 		find . -name '*.so' -exec chmod -w {} \; ; \

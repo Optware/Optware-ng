@@ -40,7 +40,7 @@ KAFFE_IPK_VERSION=2
 
 #
 # KAFFE_CONFFILES should be a list of user-editable files
-#KAFFE_CONFFILES=/opt/etc/kaffe.conf /opt/etc/init.d/SXXkaffe
+#KAFFE_CONFFILES=$(TARGET_PREFIX)/etc/kaffe.conf $(TARGET_PREFIX)/etc/init.d/SXXkaffe
 
 #
 # KAFFE_PATCHES should list any patches, in the the order in
@@ -53,7 +53,7 @@ KAFFE_IPK_VERSION=2
 # compilation or linking flags, then list them here.
 #
 KAFFE_CPPFLAGS=
-KAFFE_LDFLAGS="-Wl,-rpath,/opt/jre/lib/$(TARGET_ARCH)"
+KAFFE_LDFLAGS="-Wl,-rpath,$(TARGET_PREFIX)/jre/lib/$(TARGET_ARCH)"
 
 #
 # KAFFE_BUILD_DIR is the directory in which the build is done.
@@ -143,7 +143,7 @@ $(KAFFE_BUILD_DIR)/.configured: $(KAFFE_BUILD_DIR)/.hostbuilt
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(KAFFE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(KAFFE_LDFLAGS)" \
-		KAFFEH=$(KAFFE_HOST_BUILD_DIR)/opt/bin/kaffeh \
+		KAFFEH=$(KAFFE_HOST_BUILD_DIR)$(TARGET_PREFIX)/bin/kaffeh \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -206,22 +206,22 @@ $(KAFFE_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(KAFFE_IPK_DIR)/opt/sbin or $(KAFFE_IPK_DIR)/opt/bin
+# Binaries should be installed into $(KAFFE_IPK_DIR)$(TARGET_PREFIX)/sbin or $(KAFFE_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(KAFFE_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(KAFFE_IPK_DIR)/opt/etc/kaffe/...
-# Documentation files should be installed in $(KAFFE_IPK_DIR)/opt/doc/kaffe/...
-# Daemon startup scripts should be installed in $(KAFFE_IPK_DIR)/opt/etc/init.d/S??kaffe
+# Libraries and include files should be installed into $(KAFFE_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(KAFFE_IPK_DIR)$(TARGET_PREFIX)/etc/kaffe/...
+# Documentation files should be installed in $(KAFFE_IPK_DIR)$(TARGET_PREFIX)/doc/kaffe/...
+# Daemon startup scripts should be installed in $(KAFFE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??kaffe
 #
 # You may need to patch your application to make it use these locations.
 #
 $(KAFFE_IPK): $(KAFFE_BUILD_DIR)/.built
 	rm -rf $(KAFFE_IPK_DIR) $(BUILD_DIR)/kaffe_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(KAFFE_BUILD_DIR) DESTDIR=$(KAFFE_IPK_DIR) install-strip
-#	$(INSTALL) -d $(KAFFE_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(KAFFE_SOURCE_DIR)/kaffe.conf $(KAFFE_IPK_DIR)/opt/etc/kaffe.conf
-#	$(INSTALL) -d $(KAFFE_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(KAFFE_SOURCE_DIR)/rc.kaffe $(KAFFE_IPK_DIR)/opt/etc/init.d/SXXkaffe
+#	$(INSTALL) -d $(KAFFE_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(KAFFE_SOURCE_DIR)/kaffe.conf $(KAFFE_IPK_DIR)$(TARGET_PREFIX)/etc/kaffe.conf
+#	$(INSTALL) -d $(KAFFE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(KAFFE_SOURCE_DIR)/rc.kaffe $(KAFFE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXkaffe
 	$(MAKE) $(KAFFE_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(KAFFE_SOURCE_DIR)/postinst $(KAFFE_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 755 $(KAFFE_SOURCE_DIR)/prerm $(KAFFE_IPK_DIR)/CONTROL/prerm

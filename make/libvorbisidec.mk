@@ -39,7 +39,7 @@ LIBVORBISIDEC_IPK_VERSION=2
 
 #
 # LIBVORBISIDEC_CONFFILES should be a list of user-editable files
-#LIBVORBISIDEC_CONFFILES=/opt/etc/libvorbisidec.conf /opt/etc/init.d/SXXlibvorbisidec
+#LIBVORBISIDEC_CONFFILES=$(TARGET_PREFIX)/etc/libvorbisidec.conf $(TARGET_PREFIX)/etc/init.d/SXXlibvorbisidec
 
 #
 # LIBVORBISIDEC_PATCHES should list any patches, in the the order in
@@ -171,20 +171,20 @@ $(LIBVORBISIDEC_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LIBVORBISIDEC_IPK_DIR)/opt/sbin or $(LIBVORBISIDEC_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LIBVORBISIDEC_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LIBVORBISIDEC_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LIBVORBISIDEC_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LIBVORBISIDEC_IPK_DIR)/opt/etc/libvorbisidec/...
-# Documentation files should be installed in $(LIBVORBISIDEC_IPK_DIR)/opt/doc/libvorbisidec/...
-# Daemon startup scripts should be installed in $(LIBVORBISIDEC_IPK_DIR)/opt/etc/init.d/S??libvorbisidec
+# Libraries and include files should be installed into $(LIBVORBISIDEC_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LIBVORBISIDEC_IPK_DIR)$(TARGET_PREFIX)/etc/libvorbisidec/...
+# Documentation files should be installed in $(LIBVORBISIDEC_IPK_DIR)$(TARGET_PREFIX)/doc/libvorbisidec/...
+# Daemon startup scripts should be installed in $(LIBVORBISIDEC_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??libvorbisidec
 #
 # You may need to patch your application to make it use these locations.
 #
 $(LIBVORBISIDEC_IPK): $(LIBVORBISIDEC_BUILD_DIR)/.built
 	rm -rf $(LIBVORBISIDEC_IPK_DIR) $(BUILD_DIR)/libvorbisidec_*_${TARGET_ARCH}.ipk
 	$(MAKE) -C $(LIBVORBISIDEC_BUILD_DIR) DESTDIR=$(LIBVORBISIDEC_IPK_DIR) install
-	$(STRIP_COMMAND) $(LIBVORBISIDEC_IPK_DIR)/opt/lib/libvorbisidec.so.*.*.*
-	rm -f $(LIBVORBISIDEC_IPK_DIR)/opt/lib/libvorbisidec.a
+	$(STRIP_COMMAND) $(LIBVORBISIDEC_IPK_DIR)$(TARGET_PREFIX)/lib/libvorbisidec.so.*.*.*
+	rm -f $(LIBVORBISIDEC_IPK_DIR)$(TARGET_PREFIX)/lib/libvorbisidec.a
 	$(MAKE) $(LIBVORBISIDEC_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBVORBISIDEC_IPK_DIR)
 

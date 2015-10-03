@@ -50,7 +50,7 @@ UDNS_IPK_VERSION=1
 
 #
 # UDNS_CONFFILES should be a list of user-editable files
-#UDNS_CONFFILES=/opt/etc/udns.conf /opt/etc/init.d/SXXudns
+#UDNS_CONFFILES=$(TARGET_PREFIX)/etc/udns.conf $(TARGET_PREFIX)/etc/init.d/SXXudns
 
 #
 # UDNS_PATCHES should list any patches, in the the order in
@@ -218,28 +218,28 @@ $(LIBUDNS_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(UDNS_IPK_DIR)/opt/sbin or $(UDNS_IPK_DIR)/opt/bin
+# Binaries should be installed into $(UDNS_IPK_DIR)$(TARGET_PREFIX)/sbin or $(UDNS_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(UDNS_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(UDNS_IPK_DIR)/opt/etc/udns/...
-# Documentation files should be installed in $(UDNS_IPK_DIR)/opt/doc/udns/...
-# Daemon startup scripts should be installed in $(UDNS_IPK_DIR)/opt/etc/init.d/S??udns
+# Libraries and include files should be installed into $(UDNS_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(UDNS_IPK_DIR)$(TARGET_PREFIX)/etc/udns/...
+# Documentation files should be installed in $(UDNS_IPK_DIR)$(TARGET_PREFIX)/doc/udns/...
+# Daemon startup scripts should be installed in $(UDNS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??udns
 #
 # You may need to patch your application to make it use these locations.
 #
 $(UDNS_IPK): $(UDNS_BUILD_DIR)/.built
 	rm -rf $(UDNS_IPK_DIR) $(BUILD_DIR)/udns_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(UDNS_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(UDNS_IPK_DIR)$(TARGET_PREFIX)/bin
 	for app in dnsget ex-rdns rblcheck; do \
-		$(INSTALL) -m 755 $(UDNS_BUILD_DIR)/$${app}_s $(UDNS_IPK_DIR)/opt/bin/$${app}; \
-		$(STRIP_COMMAND) $(UDNS_IPK_DIR)/opt/bin/$${app}; \
+		$(INSTALL) -m 755 $(UDNS_BUILD_DIR)/$${app}_s $(UDNS_IPK_DIR)$(TARGET_PREFIX)/bin/$${app}; \
+		$(STRIP_COMMAND) $(UDNS_IPK_DIR)$(TARGET_PREFIX)/bin/$${app}; \
 	done
 #	$(MAKE) -C $(UDNS_BUILD_DIR) DESTDIR=$(UDNS_IPK_DIR) install-strip
-#	$(INSTALL) -d $(UDNS_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(UDNS_SOURCE_DIR)/udns.conf $(UDNS_IPK_DIR)/opt/etc/udns.conf
-#	$(INSTALL) -d $(UDNS_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(UDNS_SOURCE_DIR)/rc.udns $(UDNS_IPK_DIR)/opt/etc/init.d/SXXudns
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(UDNS_IPK_DIR)/opt/etc/init.d/SXXudns
+#	$(INSTALL) -d $(UDNS_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(UDNS_SOURCE_DIR)/udns.conf $(UDNS_IPK_DIR)$(TARGET_PREFIX)/etc/udns.conf
+#	$(INSTALL) -d $(UDNS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(UDNS_SOURCE_DIR)/rc.udns $(UDNS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXudns
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(UDNS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXudns
 	$(MAKE) $(UDNS_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(UDNS_SOURCE_DIR)/postinst $(UDNS_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(UDNS_IPK_DIR)/CONTROL/postinst
@@ -255,16 +255,16 @@ $(UDNS_IPK): $(UDNS_BUILD_DIR)/.built
 
 $(LIBUDNS_IPK): $(UDNS_BUILD_DIR)/.built
 	rm -rf $(LIBUDNS_IPK_DIR) $(BUILD_DIR)/libudns_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(LIBUDNS_IPK_DIR)/opt/lib $(LIBUDNS_IPK_DIR)/opt/include
-	cp -af $(UDNS_BUILD_DIR)/libudns*.so* $(LIBUDNS_IPK_DIR)/opt/lib
-	$(STRIP_COMMAND) $(LIBUDNS_IPK_DIR)/opt/lib/libudns.so.0
-	cp -f $(UDNS_BUILD_DIR)/udns.h $(LIBUDNS_IPK_DIR)/opt/include
+	$(INSTALL) -d $(LIBUDNS_IPK_DIR)$(TARGET_PREFIX)/lib $(LIBUDNS_IPK_DIR)$(TARGET_PREFIX)/include
+	cp -af $(UDNS_BUILD_DIR)/libudns*.so* $(LIBUDNS_IPK_DIR)$(TARGET_PREFIX)/lib
+	$(STRIP_COMMAND) $(LIBUDNS_IPK_DIR)$(TARGET_PREFIX)/lib/libudns.so.0
+	cp -f $(UDNS_BUILD_DIR)/udns.h $(LIBUDNS_IPK_DIR)$(TARGET_PREFIX)/include
 #	$(MAKE) -C $(UDNS_BUILD_DIR) DESTDIR=$(UDNS_IPK_DIR) install-strip
-#	$(INSTALL) -d $(UDNS_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(UDNS_SOURCE_DIR)/udns.conf $(UDNS_IPK_DIR)/opt/etc/udns.conf
-#	$(INSTALL) -d $(UDNS_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(UDNS_SOURCE_DIR)/rc.udns $(UDNS_IPK_DIR)/opt/etc/init.d/SXXudns
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(UDNS_IPK_DIR)/opt/etc/init.d/SXXudns
+#	$(INSTALL) -d $(UDNS_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(UDNS_SOURCE_DIR)/udns.conf $(UDNS_IPK_DIR)$(TARGET_PREFIX)/etc/udns.conf
+#	$(INSTALL) -d $(UDNS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(UDNS_SOURCE_DIR)/rc.udns $(UDNS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXudns
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(UDNS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXudns
 	$(MAKE) $(LIBUDNS_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(UDNS_SOURCE_DIR)/postinst $(UDNS_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(UDNS_IPK_DIR)/CONTROL/postinst

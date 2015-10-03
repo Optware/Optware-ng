@@ -177,12 +177,12 @@ $(LIBSIGC++_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LIBSIGC++_IPK_DIR)/opt/sbin or $(LIBSIGC++_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LIBSIGC++_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LIBSIGC++_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LIBSIGC++_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LIBSIGC++_IPK_DIR)/opt/etc/libsigc++/...
-# Documentation files should be installed in $(LIBSIGC++_IPK_DIR)/opt/doc/libsigc++/...
-# Daemon startup scripts should be installed in $(LIBSIGC++_IPK_DIR)/opt/etc/init.d/S??libsigc++
+# Libraries and include files should be installed into $(LIBSIGC++_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LIBSIGC++_IPK_DIR)$(TARGET_PREFIX)/etc/libsigc++/...
+# Documentation files should be installed in $(LIBSIGC++_IPK_DIR)$(TARGET_PREFIX)/doc/libsigc++/...
+# Daemon startup scripts should be installed in $(LIBSIGC++_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??libsigc++
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -191,11 +191,11 @@ $(LIBSIGC++_IPK): $(LIBSIGC++_BUILD_DIR)/.built
 	$(MAKE) -C $(LIBSIGC++_BUILD_DIR) install-strip \
 		DESTDIR=$(LIBSIGC++_IPK_DIR) SUBDIRS=sigc++
 	# remove documentation and stuff
-	rm -rf $(LIBSIGC++_IPK_DIR)/opt/include
-	rm -rf $(LIBSIGC++_IPK_DIR)/opt/share
-	rm -rf $(LIBSIGC++_IPK_DIR)/opt/lib/pkgconfig
-	rm -rf $(LIBSIGC++_IPK_DIR)/opt/lib/*.la
-	rm -rf $(LIBSIGC++_IPK_DIR)/opt/lib/sigc++-2.0
+	rm -rf $(LIBSIGC++_IPK_DIR)$(TARGET_PREFIX)/include
+	rm -rf $(LIBSIGC++_IPK_DIR)$(TARGET_PREFIX)/share
+	rm -rf $(LIBSIGC++_IPK_DIR)$(TARGET_PREFIX)/lib/pkgconfig
+	rm -rf $(LIBSIGC++_IPK_DIR)$(TARGET_PREFIX)/lib/*.la
+	rm -rf $(LIBSIGC++_IPK_DIR)$(TARGET_PREFIX)/lib/sigc++-2.0
 	$(MAKE) $(LIBSIGC++_IPK_DIR)/CONTROL/control
 	echo $(LIBSIGC++_CONFFILES) | sed -e 's/ /\n/g' > $(LIBSIGC++_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBSIGC++_IPK_DIR)

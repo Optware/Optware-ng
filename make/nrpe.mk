@@ -35,7 +35,7 @@ NRPE_IPK_VERSION=1
 
 #
 # NRPE_CONFFILES should be a list of user-editable files
-# NRPE_CONFFILES=/opt/etc/nrpe.conf /opt/etc/init.d/SXXnrpe # TODO
+# NRPE_CONFFILES=$(TARGET_PREFIX)/etc/nrpe.conf $(TARGET_PREFIX)/etc/init.d/SXXnrpe # TODO
 
 #
 # NRPE_PATCHES should list any patches, in the the order in
@@ -178,25 +178,25 @@ $(NRPE_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(NRPE_IPK_DIR)/opt/sbin or $(NRPE_IPK_DIR)/opt/bin
+# Binaries should be installed into $(NRPE_IPK_DIR)$(TARGET_PREFIX)/sbin or $(NRPE_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(NRPE_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(NRPE_IPK_DIR)/opt/etc/nrpe/...
-# Documentation files should be installed in $(NRPE_IPK_DIR)/opt/doc/nrpe/...
-# Daemon startup scripts should be installed in $(NRPE_IPK_DIR)/opt/etc/init.d/S??nrpe
+# Libraries and include files should be installed into $(NRPE_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(NRPE_IPK_DIR)$(TARGET_PREFIX)/etc/nrpe/...
+# Documentation files should be installed in $(NRPE_IPK_DIR)$(TARGET_PREFIX)/doc/nrpe/...
+# Daemon startup scripts should be installed in $(NRPE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??nrpe
 #
 # You may need to patch your application to make it use these locations.
 #
 $(NRPE_IPK): $(NRPE_BUILD_DIR)/.built
 	rm -rf $(NRPE_IPK_DIR) $(BUILD_DIR)/nrpe_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(NRPE_IPK_DIR)/opt/sbin/
-	cp $(NRPE_BUILD_DIR)/src/nrpe $(NRPE_IPK_DIR)/opt/sbin
-	$(STRIP_COMMAND) $(NRPE_IPK_DIR)/opt/sbin/*
-	$(INSTALL) -d $(NRPE_IPK_DIR)/opt/etc/
-	$(INSTALL) -m 644 $(NRPE_BUILD_DIR)/sample-config/nrpe.cfg $(NRPE_IPK_DIR)/opt/etc/nrpe.cfg
-	$(INSTALL) -d $(NRPE_IPK_DIR)/opt/etc/init.d
-	$(INSTALL) -m 755 $(NRPE_BUILD_DIR)/init-script $(NRPE_IPK_DIR)/opt/etc/init.d/S99nrpe
-	sed -i 's#/opt/bin#/opt/sbin#' $(NRPE_IPK_DIR)/opt/etc/init.d/S99nrpe
+	$(INSTALL) -d $(NRPE_IPK_DIR)$(TARGET_PREFIX)/sbin/
+	cp $(NRPE_BUILD_DIR)/src/nrpe $(NRPE_IPK_DIR)$(TARGET_PREFIX)/sbin
+	$(STRIP_COMMAND) $(NRPE_IPK_DIR)$(TARGET_PREFIX)/sbin/*
+	$(INSTALL) -d $(NRPE_IPK_DIR)$(TARGET_PREFIX)/etc/
+	$(INSTALL) -m 644 $(NRPE_BUILD_DIR)/sample-config/nrpe.cfg $(NRPE_IPK_DIR)$(TARGET_PREFIX)/etc/nrpe.cfg
+	$(INSTALL) -d $(NRPE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(INSTALL) -m 755 $(NRPE_BUILD_DIR)/init-script $(NRPE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S99nrpe
+	sed -i 's#$(TARGET_PREFIX)/bin#$(TARGET_PREFIX)/sbin#' $(NRPE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S99nrpe
 	$(MAKE) $(NRPE_IPK_DIR)/CONTROL/control
 	# $(INSTALL) -m 755 $(NRPE_SOURCE_DIR)/postinst $(NRPE_IPK_DIR)/CONTROL/postinst
 	# $(INSTALL) -m 755 $(NRPE_SOURCE_DIR)/prerm $(NRPE_IPK_DIR)/CONTROL/prerm

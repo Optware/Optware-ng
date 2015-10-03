@@ -19,7 +19,7 @@ TELLDUS-CORE_CONFLICTS=
 
 TELLDUS-CORE_IPK_VERSION=2
 
-TELLDUS-CORE_CONFFILES=/opt/etc/tellstick.conf /opt/etc/init.d/S50tellstick
+TELLDUS-CORE_CONFFILES=$(TARGET_PREFIX)/etc/tellstick.conf $(TARGET_PREFIX)/etc/init.d/S50tellstick
 TELLDUS-CORE_PATCHES=$(TELLDUS-CORE_SOURCE_DIR)/telldus-core.patch
 
 TELLDUS-CORE_CPPFLAGS=
@@ -91,7 +91,7 @@ $(TELLDUS-CORE_BUILD_DIR)/.configured: $(DL_DIR)/$(TELLDUS-CORE_SOURCE) $(TELLDU
 		cmake \
                         -DCMAKE_SKIP_BUILD_RPATH=TRUE \
                         -DCMAKE_BUILD_WITH_INSTALL_RPATH=TRUE \
-                        -DCMAKE_INSTALL_RPATH="/opt/lib" \
+                        -DCMAKE_INSTALL_RPATH="$(TARGET_PREFIX)/lib" \
                         -DCMAKE_INSTALL_RPATH_USE_LINK_PATH=TRUE \
 			-DBUILD_RFCMD=0 \
 			-DCMAKE_INSTALL_PREFIX=$(TARGET_PREFIX) \
@@ -156,14 +156,14 @@ $(TELLDUS-CORE_IPK_DIR)/CONTROL/control:
 $(TELLDUS-CORE_IPK): $(TELLDUS-CORE_BUILD_DIR)/.built
 	rm -rf $(TELLDUS-CORE_IPK_DIR) $(BUILD_DIR)/telldus-core_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(TELLDUS-CORE_BUILD_DIR) DESTDIR=$(TELLDUS-CORE_IPK_DIR) install
-	$(STRIP_COMMAND) $(TELLDUS-CORE_IPK_DIR)/opt/bin/tdtool
-	$(STRIP_COMMAND) $(TELLDUS-CORE_IPK_DIR)/opt/lib/libtelldus-core.so.2.0.4
-	$(INSTALL) -d $(TELLDUS-CORE_IPK_DIR)/opt/etc/init.d
-	$(INSTALL) -d $(TELLDUS-CORE_IPK_DIR)/opt/var/state
-	$(INSTALL) -m 755 $(TELLDUS-CORE_SOURCE_DIR)/rc.tellstick.sh $(TELLDUS-CORE_IPK_DIR)/opt/etc/init.d/S50tellstick
-	$(INSTALL) -d $(TELLDUS-CORE_IPK_DIR)/opt/var/state
-	touch $(TELLDUS-CORE_IPK_DIR)/opt/var/state/telldus-core.conf
-	chmod 666 $(TELLDUS-CORE_IPK_DIR)/opt/var/state/telldus-core.conf
+	$(STRIP_COMMAND) $(TELLDUS-CORE_IPK_DIR)$(TARGET_PREFIX)/bin/tdtool
+	$(STRIP_COMMAND) $(TELLDUS-CORE_IPK_DIR)$(TARGET_PREFIX)/lib/libtelldus-core.so.2.0.4
+	$(INSTALL) -d $(TELLDUS-CORE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(INSTALL) -d $(TELLDUS-CORE_IPK_DIR)$(TARGET_PREFIX)/var/state
+	$(INSTALL) -m 755 $(TELLDUS-CORE_SOURCE_DIR)/rc.tellstick.sh $(TELLDUS-CORE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S50tellstick
+	$(INSTALL) -d $(TELLDUS-CORE_IPK_DIR)$(TARGET_PREFIX)/var/state
+	touch $(TELLDUS-CORE_IPK_DIR)$(TARGET_PREFIX)/var/state/telldus-core.conf
+	chmod 666 $(TELLDUS-CORE_IPK_DIR)$(TARGET_PREFIX)/var/state/telldus-core.conf
 	$(MAKE) $(TELLDUS-CORE_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 755 $(TELLDUS-CORE_SOURCE_DIR)/postinst $(TELLDUS-CORE_IPK_DIR)/CONTROL/postinst
 	echo $(TELLDUS-CORE_CONFFILES) | sed -e 's/ /\n/g' > $(TELLDUS-CORE_IPK_DIR)/CONTROL/conffiles

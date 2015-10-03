@@ -39,7 +39,7 @@ GHOSTSCRIPT_IPK_VERSION=2
 
 #
 # GHOSTSCRIPT_CONFFILES should be a list of user-editable files
-# GHOSTSCRIPT_CONFFILES=/opt/etc/ghostscript.conf /opt/etc/init.d/SXXghostscript
+# GHOSTSCRIPT_CONFFILES=$(TARGET_PREFIX)/etc/ghostscript.conf $(TARGET_PREFIX)/etc/init.d/SXXghostscript
 
 #
 ## GHOSTSCRIPT_PATCHES should list any patches, in the the order in
@@ -161,7 +161,7 @@ endif
 		--disable-static \
 		; \
 	)
-	sed -i -e 's|-I/opt/include ||' $(@D)/Makefile
+	sed -i -e 's|-I$(TARGET_PREFIX)/include ||' $(@D)/Makefile
 	touch $@
 
 ghostscript-unpack: $(GHOSTSCRIPT_BUILD_DIR)/.configured
@@ -229,12 +229,12 @@ $(GHOSTSCRIPT_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(GHOSTSCRIPT_IPK_DIR)/opt/sbin or $(GHOSTSCRIPT_IPK_DIR)/opt/bin
+# Binaries should be installed into $(GHOSTSCRIPT_IPK_DIR)$(TARGET_PREFIX)/sbin or $(GHOSTSCRIPT_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(GHOSTSCRIPT_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(GHOSTSCRIPT_IPK_DIR)/opt/etc/ghostscript/...
-# Documentation files should be installed in $(GHOSTSCRIPT_IPK_DIR)/opt/doc/ghostscript/...
-# Daemon startup scripts should be installed in $(GHOSTSCRIPT_IPK_DIR)/opt/etc/init.d/S??ghostscript
+# Libraries and include files should be installed into $(GHOSTSCRIPT_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(GHOSTSCRIPT_IPK_DIR)$(TARGET_PREFIX)/etc/ghostscript/...
+# Documentation files should be installed in $(GHOSTSCRIPT_IPK_DIR)$(TARGET_PREFIX)/doc/ghostscript/...
+# Daemon startup scripts should be installed in $(GHOSTSCRIPT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??ghostscript
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -247,8 +247,8 @@ $(GHOSTSCRIPT_IPK): $(GHOSTSCRIPT_BUILD_DIR)/.built
 		GENARCH_XE=$(GHOSTSCRIPT_HOST_BUILD_DIR)/obj/genarch \
 		GENCONF_XE=$(GHOSTSCRIPT_HOST_BUILD_DIR)/obj/genconf \
 		;
-	$(STRIP_COMMAND) $(GHOSTSCRIPT_IPK_DIR)/opt/bin/gs $(GHOSTSCRIPT_IPK_DIR)/opt/lib/cups/filter/pdftoraster
-	sed -i -e 's|/usr/share|/opt/share|' $(GHOSTSCRIPT_IPK_DIR)/opt/lib/cups/filter/psto*
+	$(STRIP_COMMAND) $(GHOSTSCRIPT_IPK_DIR)$(TARGET_PREFIX)/bin/gs $(GHOSTSCRIPT_IPK_DIR)$(TARGET_PREFIX)/lib/cups/filter/pdftoraster
+	sed -i -e 's|/usr/share|$(TARGET_PREFIX)/share|' $(GHOSTSCRIPT_IPK_DIR)$(TARGET_PREFIX)/lib/cups/filter/psto*
 	$(MAKE) $(GHOSTSCRIPT_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GHOSTSCRIPT_IPK_DIR)
 

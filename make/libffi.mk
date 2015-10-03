@@ -41,7 +41,7 @@ LIBFFI_IPK_VERSION=1
 
 #
 # LIBFFI_CONFFILES should be a list of user-editable files
-#LIBFFI_CONFFILES=/opt/etc/libffi.conf /opt/etc/init.d/SXXlibffi
+#LIBFFI_CONFFILES=$(TARGET_PREFIX)/etc/libffi.conf $(TARGET_PREFIX)/etc/init.d/SXXlibffi
 
 #
 # LIBFFI_PATCHES should list any patches, in the the order in
@@ -208,27 +208,27 @@ $(LIBFFI_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LIBFFI_IPK_DIR)/opt/sbin or $(LIBFFI_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LIBFFI_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LIBFFI_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LIBFFI_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LIBFFI_IPK_DIR)/opt/etc/libffi/...
-# Documentation files should be installed in $(LIBFFI_IPK_DIR)/opt/doc/libffi/...
-# Daemon startup scripts should be installed in $(LIBFFI_IPK_DIR)/opt/etc/init.d/S??libffi
+# Libraries and include files should be installed into $(LIBFFI_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LIBFFI_IPK_DIR)$(TARGET_PREFIX)/etc/libffi/...
+# Documentation files should be installed in $(LIBFFI_IPK_DIR)$(TARGET_PREFIX)/doc/libffi/...
+# Daemon startup scripts should be installed in $(LIBFFI_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??libffi
 #
 # You may need to patch your application to make it use these locations.
 #
 $(LIBFFI_IPK): $(LIBFFI_BUILD_DIR)/.built
 	rm -rf $(LIBFFI_IPK_DIR) $(BUILD_DIR)/libffi_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBFFI_BUILD_DIR) DESTDIR=$(LIBFFI_IPK_DIR) install-strip
-	$(STRIP_COMMAND) $(LIBFFI_IPK_DIR)/opt/lib/libffi.so.*
-#	$(INSTALL) -d $(LIBFFI_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(LIBFFI_SOURCE_DIR)/libffi.conf $(LIBFFI_IPK_DIR)/opt/etc/libffi.conf
-#	$(INSTALL) -d $(LIBFFI_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(LIBFFI_SOURCE_DIR)/rc.libffi $(LIBFFI_IPK_DIR)/opt/etc/init.d/SXXlibffi
-	rm -f $(LIBFFI_IPK_DIR)/opt/share/info/dir $(LIBFFI_IPK_DIR)/opt/lib/libffi.la
-	mkdir -p $(LIBFFI_IPK_DIR)/opt/include
-	mv $(LIBFFI_IPK_DIR)/opt/lib/libffi-$(LIBFFI_VERSION)/include/* $(LIBFFI_IPK_DIR)/opt/include
-	rm -rf $(LIBFFI_IPK_DIR)/opt/lib/libffi-$(LIBFFI_VERSION)
+	$(STRIP_COMMAND) $(LIBFFI_IPK_DIR)$(TARGET_PREFIX)/lib/libffi.so.*
+#	$(INSTALL) -d $(LIBFFI_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(LIBFFI_SOURCE_DIR)/libffi.conf $(LIBFFI_IPK_DIR)$(TARGET_PREFIX)/etc/libffi.conf
+#	$(INSTALL) -d $(LIBFFI_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(LIBFFI_SOURCE_DIR)/rc.libffi $(LIBFFI_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibffi
+	rm -f $(LIBFFI_IPK_DIR)$(TARGET_PREFIX)/share/info/dir $(LIBFFI_IPK_DIR)$(TARGET_PREFIX)/lib/libffi.la
+	mkdir -p $(LIBFFI_IPK_DIR)$(TARGET_PREFIX)/include
+	mv $(LIBFFI_IPK_DIR)$(TARGET_PREFIX)/lib/libffi-$(LIBFFI_VERSION)/include/* $(LIBFFI_IPK_DIR)$(TARGET_PREFIX)/include
+	rm -rf $(LIBFFI_IPK_DIR)$(TARGET_PREFIX)/lib/libffi-$(LIBFFI_VERSION)
 	$(MAKE) $(LIBFFI_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(LIBFFI_SOURCE_DIR)/postinst $(LIBFFI_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 755 $(LIBFFI_SOURCE_DIR)/prerm $(LIBFFI_IPK_DIR)/CONTROL/prerm

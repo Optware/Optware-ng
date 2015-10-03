@@ -116,8 +116,8 @@ $(IMAP_BUILD_DIR)/.configured: $(DL_DIR)/$(IMAP_SOURCE) $(IMAP_PATCHES)
 	$(IMAP_UNZIP) $(DL_DIR)/$(IMAP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(IMAP_DIR) $(IMAP_BUILD_DIR)
 	cat $(IMAP_PATCHES) | $(PATCH) -d $(IMAP_BUILD_DIR) -p1
-	sed -i -e 's!/usr!/opt!g' $(IMAP_BUILD_DIR)/src/osdep/unix/Makefile
-	sed -i -e 's!/var!/opt/var!g' $(IMAP_BUILD_DIR)/src/osdep/unix/Makefile
+	sed -i -e 's!/usr!$(TARGET_PREFIX)!g' $(IMAP_BUILD_DIR)/src/osdep/unix/Makefile
+	sed -i -e 's!/var!$(TARGET_PREFIX)/var!g' $(IMAP_BUILD_DIR)/src/osdep/unix/Makefile
 	touch $(IMAP_BUILD_DIR)/.configured
 
 imap-unpack: $(IMAP_BUILD_DIR)/.configured
@@ -181,12 +181,12 @@ $(IMAP_LIBS_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(IMAP_IPK_DIR)/opt/sbin or $(IMAP_IPK_DIR)/opt/bin
+# Binaries should be installed into $(IMAP_IPK_DIR)$(TARGET_PREFIX)/sbin or $(IMAP_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(IMAP_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(IMAP_IPK_DIR)/opt/etc/imap/...
-# Documentation files should be installed in $(IMAP_IPK_DIR)/opt/doc/imap/...
-# Daemon startup scripts should be installed in $(IMAP_IPK_DIR)/opt/etc/init.d/S??imap
+# Libraries and include files should be installed into $(IMAP_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(IMAP_IPK_DIR)$(TARGET_PREFIX)/etc/imap/...
+# Documentation files should be installed in $(IMAP_IPK_DIR)$(TARGET_PREFIX)/doc/imap/...
+# Daemon startup scripts should be installed in $(IMAP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??imap
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -194,25 +194,25 @@ $(IMAP_IPK): $(IMAP_BUILD_DIR)/.built
 	# make imap-libs ipk
 	rm -rf $(IMAP_LIBS_IPK_DIR) $(BUILD_DIR)/imap-libs_*_$(TARGET_ARCH).ipk
 	$(MAKE) $(IMAP_LIBS_IPK_DIR)/CONTROL/control
-	$(INSTALL) -d $(IMAP_LIBS_IPK_DIR)/opt/lib
-	cp -a $(IMAP_BUILD_DIR)/c-client/libc-client.so* $(IMAP_LIBS_IPK_DIR)/opt/lib
-	chmod a+rx $(IMAP_LIBS_IPK_DIR)/opt/lib/*
-	$(TARGET_STRIP) $(IMAP_LIBS_IPK_DIR)/opt/lib/libc-client.so.0
+	$(INSTALL) -d $(IMAP_LIBS_IPK_DIR)$(TARGET_PREFIX)/lib
+	cp -a $(IMAP_BUILD_DIR)/c-client/libc-client.so* $(IMAP_LIBS_IPK_DIR)$(TARGET_PREFIX)/lib
+	chmod a+rx $(IMAP_LIBS_IPK_DIR)$(TARGET_PREFIX)/lib/*
+	$(TARGET_STRIP) $(IMAP_LIBS_IPK_DIR)$(TARGET_PREFIX)/lib/libc-client.so.0
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(IMAP_LIBS_IPK_DIR)
 	# make main ipk
 	rm -rf $(IMAP_IPK_DIR) $(BUILD_DIR)/imap_*_$(TARGET_ARCH).ipk
 	$(MAKE) $(IMAP_IPK_DIR)/CONTROL/control
-	$(INSTALL) -d $(IMAP_IPK_DIR)/opt/bin
-	$(INSTALL) -m 755 $(IMAP_BUILD_DIR)/tmail/tmail $(IMAP_IPK_DIR)/opt/bin
-	$(INSTALL) -m 755 $(IMAP_BUILD_DIR)/dmail/dmail $(IMAP_IPK_DIR)/opt/bin
-	$(INSTALL) -d $(IMAP_IPK_DIR)/opt/sbin
-	$(INSTALL) -m 755 $(IMAP_BUILD_DIR)/imapd/imapd $(IMAP_IPK_DIR)/opt/sbin
-	$(INSTALL) -m 755 $(IMAP_BUILD_DIR)/ipopd/ipop2d $(IMAP_IPK_DIR)/opt/sbin
-	$(INSTALL) -m 755 $(IMAP_BUILD_DIR)/ipopd/ipop3d $(IMAP_IPK_DIR)/opt/sbin
-	$(TARGET_STRIP) $(IMAP_IPK_DIR)/opt/sbin/* $(IMAP_IPK_DIR)/opt/bin/*
+	$(INSTALL) -d $(IMAP_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(INSTALL) -m 755 $(IMAP_BUILD_DIR)/tmail/tmail $(IMAP_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(INSTALL) -m 755 $(IMAP_BUILD_DIR)/dmail/dmail $(IMAP_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(INSTALL) -d $(IMAP_IPK_DIR)$(TARGET_PREFIX)/sbin
+	$(INSTALL) -m 755 $(IMAP_BUILD_DIR)/imapd/imapd $(IMAP_IPK_DIR)$(TARGET_PREFIX)/sbin
+	$(INSTALL) -m 755 $(IMAP_BUILD_DIR)/ipopd/ipop2d $(IMAP_IPK_DIR)$(TARGET_PREFIX)/sbin
+	$(INSTALL) -m 755 $(IMAP_BUILD_DIR)/ipopd/ipop3d $(IMAP_IPK_DIR)$(TARGET_PREFIX)/sbin
+	$(TARGET_STRIP) $(IMAP_IPK_DIR)$(TARGET_PREFIX)/sbin/* $(IMAP_IPK_DIR)$(TARGET_PREFIX)/bin/*
 	### FIXME: could do with some setting up of the daemons here
-	#$(INSTALL) -d $(IMAP_IPK_DIR)/opt/etc/init.d
-	#$(INSTALL) -m 755 $(IMAP_SOURCE_DIR)/rc.imap $(IMAP_IPK_DIR)/opt/etc/init.d/SXXimap
+	#$(INSTALL) -d $(IMAP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	#$(INSTALL) -m 755 $(IMAP_SOURCE_DIR)/rc.imap $(IMAP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXimap
 	#$(INSTALL) -m 755 $(IMAP_SOURCE_DIR)/postinst $(IMAP_IPK_DIR)/CONTROL/postinst
 	#$(INSTALL) -m 755 $(IMAP_SOURCE_DIR)/prerm $(IMAP_IPK_DIR)/CONTROL/prerm
 	#echo $(IMAP_CONFFILES) | sed -e 's/ /\n/g' > $(IMAP_IPK_DIR)/CONTROL/conffiles

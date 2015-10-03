@@ -40,7 +40,7 @@ DMSETUP_IPK_VERSION=1
 
 #
 # DMSETUP_CONFFILES should be a list of user-editable files
-#DMSETUP_CONFFILES=/opt/etc/dmsetup.conf /opt/etc/init.d/SXXdmsetup
+#DMSETUP_CONFFILES=$(TARGET_PREFIX)/etc/dmsetup.conf $(TARGET_PREFIX)/etc/init.d/SXXdmsetup
 
 #
 # DMSETUP_PATCHES should list any patches, in the the order in
@@ -178,12 +178,12 @@ $(DMSETUP_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(DMSETUP_IPK_DIR)/opt/sbin or $(DMSETUP_IPK_DIR)/opt/bin
+# Binaries should be installed into $(DMSETUP_IPK_DIR)$(TARGET_PREFIX)/sbin or $(DMSETUP_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(DMSETUP_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(DMSETUP_IPK_DIR)/opt/etc/dmsetup/...
-# Documentation files should be installed in $(DMSETUP_IPK_DIR)/opt/doc/dmsetup/...
-# Daemon startup scripts should be installed in $(DMSETUP_IPK_DIR)/opt/etc/init.d/S??dmsetup
+# Libraries and include files should be installed into $(DMSETUP_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(DMSETUP_IPK_DIR)$(TARGET_PREFIX)/etc/dmsetup/...
+# Documentation files should be installed in $(DMSETUP_IPK_DIR)$(TARGET_PREFIX)/doc/dmsetup/...
+# Daemon startup scripts should be installed in $(DMSETUP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??dmsetup
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -193,8 +193,8 @@ $(DMSETUP_IPK): $(DMSETUP_BUILD_DIR)/.built
 		DESTDIR=$(DMSETUP_IPK_DIR) \
 		OWNER="" GROUP=""
 	for f in \
-		$(DMSETUP_IPK_DIR)/opt/sbin/dmsetup \
-		$(DMSETUP_IPK_DIR)/opt/lib/libdevmapper.so.[0-9]*.[0-9]* ; \
+		$(DMSETUP_IPK_DIR)$(TARGET_PREFIX)/sbin/dmsetup \
+		$(DMSETUP_IPK_DIR)$(TARGET_PREFIX)/lib/libdevmapper.so.[0-9]*.[0-9]* ; \
 	do chmod +w $$f; $(STRIP_COMMAND) $$f; chmod -w $$f; done
 	$(MAKE) $(DMSETUP_IPK_DIR)/CONTROL/control
 	echo $(DMSETUP_CONFFILES) | sed -e 's/ /\n/g' > $(DMSETUP_IPK_DIR)/CONTROL/conffiles

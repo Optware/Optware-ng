@@ -40,7 +40,7 @@ PRIVOXY_IPK_VERSION=2
 
 #
 # PRIVOXY_CONFFILES should be a list of user-editable files
-#PRIVOXY_CONFFILES=/opt/etc/privoxy.conf /opt/etc/init.d/SXXprivoxy
+#PRIVOXY_CONFFILES=$(TARGET_PREFIX)/etc/privoxy.conf $(TARGET_PREFIX)/etc/init.d/SXXprivoxy
 
 #
 # PRIVOXY_PATCHES should list any patches, in the the order in
@@ -141,10 +141,10 @@ $(PRIVOXY_BUILD_DIR)/.configured: $(DL_DIR)/$(PRIVOXY_SOURCE) $(PRIVOXY_PATCHES)
 	)
 	(cd $(@D); \
 		sed -i \
-		    -e '/SED.*config/s|$$(CONF_DEST)|/opt/etc/privoxy|' \
-		    -e '/SED.*config/s|$$(LOG_DEST)|/opt/var/log/privoxy|' \
-		    -e '/SED.*config/s|$$(DOC_DEST)|/opt/share/doc/privoxy|' \
-		    -e '/SED.*config/s|$$(prefix)|/opt|' \
+		    -e '/SED.*config/s|$$(CONF_DEST)|$(TARGET_PREFIX)/etc/privoxy|' \
+		    -e '/SED.*config/s|$$(LOG_DEST)|$(TARGET_PREFIX)/var/log/privoxy|' \
+		    -e '/SED.*config/s|$$(DOC_DEST)|$(TARGET_PREFIX)/share/doc/privoxy|' \
+		    -e '/SED.*config/s|$$(prefix)|$(TARGET_PREFIX)|' \
 		    GNUmakefile; \
 	)
 #	$(PATCH_LIBTOOL) $(@D)/libtool
@@ -199,23 +199,23 @@ $(PRIVOXY_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PRIVOXY_IPK_DIR)/opt/sbin or $(PRIVOXY_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PRIVOXY_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PRIVOXY_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PRIVOXY_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PRIVOXY_IPK_DIR)/opt/etc/privoxy/...
-# Documentation files should be installed in $(PRIVOXY_IPK_DIR)/opt/doc/privoxy/...
-# Daemon startup scripts should be installed in $(PRIVOXY_IPK_DIR)/opt/etc/init.d/S??privoxy
+# Libraries and include files should be installed into $(PRIVOXY_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PRIVOXY_IPK_DIR)$(TARGET_PREFIX)/etc/privoxy/...
+# Documentation files should be installed in $(PRIVOXY_IPK_DIR)$(TARGET_PREFIX)/doc/privoxy/...
+# Daemon startup scripts should be installed in $(PRIVOXY_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??privoxy
 #
 # You may need to patch your application to make it use these locations.
 #
 $(PRIVOXY_IPK): $(PRIVOXY_BUILD_DIR)/.built
 	rm -rf $(PRIVOXY_IPK_DIR) $(BUILD_DIR)/privoxy_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PRIVOXY_BUILD_DIR) prefix=$(PRIVOXY_IPK_DIR)$(TARGET_PREFIX) install
-	$(STRIP_COMMAND) $(PRIVOXY_IPK_DIR)/opt/sbin/privoxy
-#	$(INSTALL) -d $(PRIVOXY_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(PRIVOXY_SOURCE_DIR)/privoxy.conf $(PRIVOXY_IPK_DIR)/opt/etc/privoxy.conf
-#	$(INSTALL) -d $(PRIVOXY_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(PRIVOXY_SOURCE_DIR)/rc.privoxy $(PRIVOXY_IPK_DIR)/opt/etc/init.d/SXXprivoxy
+	$(STRIP_COMMAND) $(PRIVOXY_IPK_DIR)$(TARGET_PREFIX)/sbin/privoxy
+#	$(INSTALL) -d $(PRIVOXY_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(PRIVOXY_SOURCE_DIR)/privoxy.conf $(PRIVOXY_IPK_DIR)$(TARGET_PREFIX)/etc/privoxy.conf
+#	$(INSTALL) -d $(PRIVOXY_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(PRIVOXY_SOURCE_DIR)/rc.privoxy $(PRIVOXY_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXprivoxy
 	$(MAKE) $(PRIVOXY_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(PRIVOXY_SOURCE_DIR)/postinst $(PRIVOXY_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 755 $(PRIVOXY_SOURCE_DIR)/prerm $(PRIVOXY_IPK_DIR)/CONTROL/prerm

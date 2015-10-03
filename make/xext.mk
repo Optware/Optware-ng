@@ -150,12 +150,12 @@ xext-stage: $(XEXT_BUILD_DIR)/.staged
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(XEXT_IPK_DIR)/opt/sbin or $(XEXT_IPK_DIR)/opt/bin
+# Binaries should be installed into $(XEXT_IPK_DIR)$(TARGET_PREFIX)/sbin or $(XEXT_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(XEXT_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(XEXT_IPK_DIR)/opt/etc/xext/...
-# Documentation files should be installed in $(XEXT_IPK_DIR)/opt/doc/xext/...
-# Daemon startup scripts should be installed in $(XEXT_IPK_DIR)/opt/etc/init.d/S??xext
+# Libraries and include files should be installed into $(XEXT_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(XEXT_IPK_DIR)$(TARGET_PREFIX)/etc/xext/...
+# Documentation files should be installed in $(XEXT_IPK_DIR)$(TARGET_PREFIX)/doc/xext/...
+# Daemon startup scripts should be installed in $(XEXT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??xext
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -164,7 +164,7 @@ $(XEXT_IPK): $(XEXT_BUILD_DIR)/.built
 	$(MAKE) -C $(XEXT_BUILD_DIR) DESTDIR=$(XEXT_IPK_DIR) install-strip
 	$(MAKE) $(XEXT_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 644 $(XEXT_SOURCE_DIR)/postinst $(XEXT_IPK_DIR)/CONTROL/postinst
-	rm -f $(XEXT_IPK_DIR)/opt/lib/*.la
+	rm -f $(XEXT_IPK_DIR)$(TARGET_PREFIX)/lib/*.la
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XEXT_IPK_DIR)
 
 #

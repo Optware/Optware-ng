@@ -40,7 +40,7 @@ DOS2UNIX_IPK_VERSION=1
 
 #
 # DOS2UNIX_CONFFILES should be a list of user-editable files
-#DOS2UNIX_CONFFILES=/opt/etc/dos2unix.conf /opt/etc/init.d/SXXdos2unix
+#DOS2UNIX_CONFFILES=$(TARGET_PREFIX)/etc/dos2unix.conf $(TARGET_PREFIX)/etc/init.d/SXXdos2unix
 
 #
 # DOS2UNIX_PATCHES should list any patches, in the the order in
@@ -187,19 +187,19 @@ $(DOS2UNIX_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(DOS2UNIX_IPK_DIR)/opt/sbin or $(DOS2UNIX_IPK_DIR)/opt/bin
+# Binaries should be installed into $(DOS2UNIX_IPK_DIR)$(TARGET_PREFIX)/sbin or $(DOS2UNIX_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(DOS2UNIX_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(DOS2UNIX_IPK_DIR)/opt/etc/dos2unix/...
-# Documentation files should be installed in $(DOS2UNIX_IPK_DIR)/opt/doc/dos2unix/...
-# Daemon startup scripts should be installed in $(DOS2UNIX_IPK_DIR)/opt/etc/init.d/S??dos2unix
+# Libraries and include files should be installed into $(DOS2UNIX_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(DOS2UNIX_IPK_DIR)$(TARGET_PREFIX)/etc/dos2unix/...
+# Documentation files should be installed in $(DOS2UNIX_IPK_DIR)$(TARGET_PREFIX)/doc/dos2unix/...
+# Daemon startup scripts should be installed in $(DOS2UNIX_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??dos2unix
 #
 # You may need to patch your application to make it use these locations.
 #
 $(DOS2UNIX_IPK): $(DOS2UNIX_BUILD_DIR)/.built
 	rm -rf $(DOS2UNIX_IPK_DIR) $(BUILD_DIR)/dos2unix_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(DOS2UNIX_BUILD_DIR) DESTDIR=$(DOS2UNIX_IPK_DIR) prefix=$(TARGET_PREFIX) install
-	$(STRIP_COMMAND) $(DOS2UNIX_IPK_DIR)/opt/bin/dos2unix $(DOS2UNIX_IPK_DIR)/opt/bin/unix2dos
+	$(STRIP_COMMAND) $(DOS2UNIX_IPK_DIR)$(TARGET_PREFIX)/bin/dos2unix $(DOS2UNIX_IPK_DIR)$(TARGET_PREFIX)/bin/unix2dos
 	$(MAKE) $(DOS2UNIX_IPK_DIR)/CONTROL/control
 	echo $(DOS2UNIX_CONFFILES) | sed -e 's/ /\n/g' > $(DOS2UNIX_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(DOS2UNIX_IPK_DIR)

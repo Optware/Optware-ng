@@ -46,7 +46,7 @@ MESALIB_IPK_VERSION=2
 
 #
 # MESALIB_CONFFILES should be a list of user-editable files
-#MESALIB_CONFFILES=/opt/etc/mesalib.conf /opt/etc/init.d/SXXmesalib
+#MESALIB_CONFFILES=$(TARGET_PREFIX)/etc/mesalib.conf $(TARGET_PREFIX)/etc/init.d/SXXmesalib
 
 #
 # MESALIB_PATCHES should list any patches, in the the order in
@@ -206,24 +206,24 @@ $(MESALIB_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(MESALIB_IPK_DIR)/opt/sbin or $(MESALIB_IPK_DIR)/opt/bin
+# Binaries should be installed into $(MESALIB_IPK_DIR)$(TARGET_PREFIX)/sbin or $(MESALIB_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(MESALIB_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(MESALIB_IPK_DIR)/opt/etc/mesalib/...
-# Documentation files should be installed in $(MESALIB_IPK_DIR)/opt/doc/mesalib/...
-# Daemon startup scripts should be installed in $(MESALIB_IPK_DIR)/opt/etc/init.d/S??mesalib
+# Libraries and include files should be installed into $(MESALIB_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(MESALIB_IPK_DIR)$(TARGET_PREFIX)/etc/mesalib/...
+# Documentation files should be installed in $(MESALIB_IPK_DIR)$(TARGET_PREFIX)/doc/mesalib/...
+# Daemon startup scripts should be installed in $(MESALIB_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??mesalib
 #
 # You may need to patch your application to make it use these locations.
 #
 $(MESALIB_IPK): $(MESALIB_BUILD_DIR)/.built
 	rm -rf $(MESALIB_IPK_DIR) $(BUILD_DIR)/mesalib_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MESALIB_BUILD_DIR) DESTDIR=$(MESALIB_IPK_DIR) install-strip
-	rm -f $(MESALIB_IPK_DIR)/opt/lib/*.la
-#	$(INSTALL) -d $(MESALIB_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(MESALIB_SOURCE_DIR)/mesalib.conf $(MESALIB_IPK_DIR)/opt/etc/mesalib.conf
-#	$(INSTALL) -d $(MESALIB_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(MESALIB_SOURCE_DIR)/rc.mesalib $(MESALIB_IPK_DIR)/opt/etc/init.d/SXXmesalib
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MESALIB_IPK_DIR)/opt/etc/init.d/SXXmesalib
+	rm -f $(MESALIB_IPK_DIR)$(TARGET_PREFIX)/lib/*.la
+#	$(INSTALL) -d $(MESALIB_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(MESALIB_SOURCE_DIR)/mesalib.conf $(MESALIB_IPK_DIR)$(TARGET_PREFIX)/etc/mesalib.conf
+#	$(INSTALL) -d $(MESALIB_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(MESALIB_SOURCE_DIR)/rc.mesalib $(MESALIB_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXmesalib
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MESALIB_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXmesalib
 	$(MAKE) $(MESALIB_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(MESALIB_SOURCE_DIR)/postinst $(MESALIB_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MESALIB_IPK_DIR)/CONTROL/postinst

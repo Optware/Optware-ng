@@ -53,7 +53,7 @@ ICES0_IPK_VERSION=2
 
 #
 # ICES0_CONFFILES should be a list of user-editable files
-#ICES0_CONFFILES=/opt/etc/ices.conf /opt/etc/init.d/SXXices
+#ICES0_CONFFILES=$(TARGET_PREFIX)/etc/ices.conf $(TARGET_PREFIX)/etc/init.d/SXXices
 
 #
 # ICES0_PATCHES should list any patches, in the the order in
@@ -139,7 +139,7 @@ endif
 	fi
 ifeq (yes, $(ICES0_WITH_PERL))
 	sed -i -e '/PERLCFLAGS=/s|`.*`|"-D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 -I$(STAGING_LIB_DIR)/$(PERL_LIB_CORE_DIR)"|' \
-	       -e '/PERLLIBS=/s|`.*`|"-Wl,-E -L$(STAGING_LIB_DIR)/$(PERL_LIB_CORE_DIR) -Wl,-rpath,/opt/lib/$(PERL_LIB_CORE_DIR) -lperl -lnsl -ldl -lm -lcrypt -lutil -lc"|' \
+	       -e '/PERLLIBS=/s|`.*`|"-Wl,-E -L$(STAGING_LIB_DIR)/$(PERL_LIB_CORE_DIR) -Wl,-rpath,$(TARGET_PREFIX)/lib/$(PERL_LIB_CORE_DIR) -lperl -lnsl -ldl -lm -lcrypt -lutil -lc"|' \
 		$(@D)/configure
 	if test "$(PERL_MAJOR_VER)" = "5.8"; then \
 		sed -i -e '/PERLLIBS=/s|-lperl|$(STAGING_LIB_DIR)/$(PERL_LIB_CORE_DIR)/../auto/DynaLoader/DynaLoader.a &|' $(@D)/configure; \
@@ -215,23 +215,23 @@ $(ICES0_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(ICES0_IPK_DIR)/opt/sbin or $(ICES0_IPK_DIR)/opt/bin
+# Binaries should be installed into $(ICES0_IPK_DIR)$(TARGET_PREFIX)/sbin or $(ICES0_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(ICES0_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(ICES0_IPK_DIR)/opt/etc/ices/...
-# Documentation files should be installed in $(ICES0_IPK_DIR)/opt/doc/ices/...
-# Daemon startup scripts should be installed in $(ICES0_IPK_DIR)/opt/etc/init.d/S??ices
+# Libraries and include files should be installed into $(ICES0_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(ICES0_IPK_DIR)$(TARGET_PREFIX)/etc/ices/...
+# Documentation files should be installed in $(ICES0_IPK_DIR)$(TARGET_PREFIX)/doc/ices/...
+# Daemon startup scripts should be installed in $(ICES0_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??ices
 #
 # You may need to patch your application to make it use these locations.
 #
 $(ICES0_IPK): $(ICES0_BUILD_DIR)/.built
 	rm -rf $(ICES0_IPK_DIR) $(BUILD_DIR)/ices_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(ICES0_BUILD_DIR) DESTDIR=$(ICES0_IPK_DIR) install-strip
-#	$(INSTALL) -d $(ICES0_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(ICES0_SOURCE_DIR)/ices.conf $(ICES0_IPK_DIR)/opt/etc/ices.conf
-#	$(INSTALL) -d $(ICES0_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(ICES0_SOURCE_DIR)/rc.ices $(ICES0_IPK_DIR)/opt/etc/init.d/SXXices
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(ICES0_IPK_DIR)/opt/etc/init.d/SXXices
+#	$(INSTALL) -d $(ICES0_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(ICES0_SOURCE_DIR)/ices.conf $(ICES0_IPK_DIR)$(TARGET_PREFIX)/etc/ices.conf
+#	$(INSTALL) -d $(ICES0_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(ICES0_SOURCE_DIR)/rc.ices $(ICES0_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXices
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(ICES0_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXices
 	$(MAKE) $(ICES0_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(ICES0_SOURCE_DIR)/postinst $(ICES0_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(ICES0_IPK_DIR)/CONTROL/postinst

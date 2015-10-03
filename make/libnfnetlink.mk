@@ -40,7 +40,7 @@ LIBNFNETLINK_IPK_VERSION=1
 
 #
 # LIBNFNETLINK_CONFFILES should be a list of user-editable files
-#LIBNFNETLINK_CONFFILES=/opt/etc/libnfnetlink.conf /opt/etc/init.d/SXXlibnfnetlink
+#LIBNFNETLINK_CONFFILES=$(TARGET_PREFIX)/etc/libnfnetlink.conf $(TARGET_PREFIX)/etc/init.d/SXXlibnfnetlink
 
 #
 # LIBNFNETLINK_PATCHES should list any patches, in the the order in
@@ -179,24 +179,24 @@ $(LIBNFNETLINK_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LIBNFNETLINK_IPK_DIR)/opt/sbin or $(LIBNFNETLINK_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LIBNFNETLINK_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LIBNFNETLINK_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LIBNFNETLINK_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LIBNFNETLINK_IPK_DIR)/opt/etc/libnfnetlink/...
-# Documentation files should be installed in $(LIBNFNETLINK_IPK_DIR)/opt/doc/libnfnetlink/...
-# Daemon startup scripts should be installed in $(LIBNFNETLINK_IPK_DIR)/opt/etc/init.d/S??libnfnetlink
+# Libraries and include files should be installed into $(LIBNFNETLINK_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LIBNFNETLINK_IPK_DIR)$(TARGET_PREFIX)/etc/libnfnetlink/...
+# Documentation files should be installed in $(LIBNFNETLINK_IPK_DIR)$(TARGET_PREFIX)/doc/libnfnetlink/...
+# Daemon startup scripts should be installed in $(LIBNFNETLINK_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??libnfnetlink
 #
 # You may need to patch your application to make it use these locations.
 #
 $(LIBNFNETLINK_IPK): $(LIBNFNETLINK_BUILD_DIR)/.built
 	rm -rf $(LIBNFNETLINK_IPK_DIR) $(BUILD_DIR)/libnfnetlink_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBNFNETLINK_BUILD_DIR) DESTDIR=$(LIBNFNETLINK_IPK_DIR) install-strip
-	rm -rf $(LIBNFNETLINK_IPK_DIR)/opt/include
-#	$(INSTALL) -d $(LIBNFNETLINK_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(LIBNFNETLINK_SOURCE_DIR)/libnfnetlink.conf $(LIBNFNETLINK_IPK_DIR)/opt/etc/libnfnetlink.conf
-#	$(INSTALL) -d $(LIBNFNETLINK_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(LIBNFNETLINK_SOURCE_DIR)/rc.libnfnetlink $(LIBNFNETLINK_IPK_DIR)/opt/etc/init.d/SXXlibnfnetlink
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBNFNETLINK_IPK_DIR)/opt/etc/init.d/SXXlibnfnetlink
+	rm -rf $(LIBNFNETLINK_IPK_DIR)$(TARGET_PREFIX)/include
+#	$(INSTALL) -d $(LIBNFNETLINK_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(LIBNFNETLINK_SOURCE_DIR)/libnfnetlink.conf $(LIBNFNETLINK_IPK_DIR)$(TARGET_PREFIX)/etc/libnfnetlink.conf
+#	$(INSTALL) -d $(LIBNFNETLINK_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(LIBNFNETLINK_SOURCE_DIR)/rc.libnfnetlink $(LIBNFNETLINK_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibnfnetlink
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBNFNETLINK_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibnfnetlink
 	$(MAKE) $(LIBNFNETLINK_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(LIBNFNETLINK_SOURCE_DIR)/postinst $(LIBNFNETLINK_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBNFNETLINK_IPK_DIR)/CONTROL/postinst

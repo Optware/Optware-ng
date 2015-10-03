@@ -21,7 +21,7 @@ DHCP_CONFLICTS=
 
 DHCP_IPK_VERSION=1
 
-DHCP_CONFFILES=/opt/etc/dhcpd.conf
+DHCP_CONFFILES=$(TARGET_PREFIX)/etc/dhcpd.conf
 
 #DHCP_PATCHES=$(DHCP_SOURCE_DIR)/linux_ipv6_discover.patch
 
@@ -58,9 +58,9 @@ $(DHCP_BUILD_DIR)/.configured: $(DL_DIR)/$(DHCP_SOURCE) make/dhcp.mk
 		$(PATCH) -d $(BUILD_DIR)/$(DHCP_DIR) -p1 ; \
 	fi
 	mv $(BUILD_DIR)/$(DHCP_DIR) $(@D)
-	sed -i -e 's/\/\* #define _PATH_DHCPD_PID.*/#define _PATH_DHCPD_PID      "\/opt\/var\/run\/dhcpd.pid"/' $(@D)/includes/site.h
-	sed -i -e 's/\/\* #define _PATH_DHCPD_DB.*/#define _PATH_DHCPD_DB      "\/opt\/etc\/dhcpd.leases"/' $(@D)/includes/site.h
-	sed -i -e 's/\/\* #define _PATH_DHCPD_CONF.*/#define _PATH_DHCPD_CONF      "\/opt\/etc\/dhcpd.conf"/' $(@D)/includes/site.h
+	sed -i -e 's/\/\* #define _PATH_DHCPD_PID.*/#define _PATH_DHCPD_PID      "\$(TARGET_PREFIX)\/var\/run\/dhcpd.pid"/' $(@D)/includes/site.h
+	sed -i -e 's/\/\* #define _PATH_DHCPD_DB.*/#define _PATH_DHCPD_DB      "\$(TARGET_PREFIX)\/etc\/dhcpd.leases"/' $(@D)/includes/site.h
+	sed -i -e 's/\/\* #define _PATH_DHCPD_CONF.*/#define _PATH_DHCPD_CONF      "\$(TARGET_PREFIX)\/etc\/dhcpd.conf"/' $(@D)/includes/site.h
 	sed -i -e '/STD_CWARNINGS=/s/ -Werror//' $(@D)/configure
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -109,11 +109,11 @@ $(DHCP_IPK_DIR)/CONTROL/control:
 $(DHCP_IPK): $(DHCP_BUILD_DIR)/.built
 	rm -rf $(DHCP_IPK_DIR) $(BUILD_DIR)/dhcp_*_$(TARGET_ARCH).ipk
 	$(INSTALL) -d $(DHCP_IPK_DIR)/CONTROL
-	$(INSTALL) -d $(DHCP_IPK_DIR)/opt/sbin $(DHCP_IPK_DIR)/opt/etc/init.d
-	$(STRIP_COMMAND) $(DHCP_BUILD_DIR)/`find  builds/dhcp -name work* | cut -d/ -f3`/server/dhcpd -o $(DHCP_IPK_DIR)/opt/sbin/dhcpd
-	$(INSTALL) -m 755 $(SOURCE_DIR)/dhcp.rc $(DHCP_IPK_DIR)/opt/etc/init.d/S56dhcp
-	touch $(DHCP_IPK_DIR)/opt/etc/dhcpd.leases
-	cp $(DHCP_BUILD_DIR)/server/dhcpd.conf $(DHCP_IPK_DIR)/opt/etc/
+	$(INSTALL) -d $(DHCP_IPK_DIR)$(TARGET_PREFIX)/sbin $(DHCP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(STRIP_COMMAND) $(DHCP_BUILD_DIR)/`find  builds/dhcp -name work* | cut -d/ -f3`/server/dhcpd -o $(DHCP_IPK_DIR)$(TARGET_PREFIX)/sbin/dhcpd
+	$(INSTALL) -m 755 $(SOURCE_DIR)/dhcp.rc $(DHCP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S56dhcp
+	touch $(DHCP_IPK_DIR)$(TARGET_PREFIX)/etc/dhcpd.leases
+	cp $(DHCP_BUILD_DIR)/server/dhcpd.conf $(DHCP_IPK_DIR)$(TARGET_PREFIX)/etc/
 	echo $(DHCP_CONFFILES) | sed -e 's/ /\n/g' > $(DHCP_IPK_DIR)/CONTROL/conffiles
 	$(MAKE) $(DHCP_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(DHCP_IPK_DIR)

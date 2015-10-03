@@ -159,25 +159,25 @@ $(UNZIP_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(UNZIP_IPK_DIR)/opt/sbin or $(UNZIP_IPK_DIR)/opt/bin
+# Binaries should be installed into $(UNZIP_IPK_DIR)$(TARGET_PREFIX)/sbin or $(UNZIP_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(UNZIP_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(UNZIP_IPK_DIR)/opt/etc/unzip/...
-# Documentation files should be installed in $(UNZIP_IPK_DIR)/opt/doc/unzip/...
-# Daemon startup scripts should be installed in $(UNZIP_IPK_DIR)/opt/etc/init.d/S??unzip
+# Libraries and include files should be installed into $(UNZIP_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(UNZIP_IPK_DIR)$(TARGET_PREFIX)/etc/unzip/...
+# Documentation files should be installed in $(UNZIP_IPK_DIR)$(TARGET_PREFIX)/doc/unzip/...
+# Daemon startup scripts should be installed in $(UNZIP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??unzip
 #
 # You may need to patch your application to make it use these locations.
 #
 $(UNZIP_IPK): $(UNZIP_BUILD_DIR)/.built
 	rm -rf $(UNZIP_IPK_DIR) $(BUILD_DIR)/unzip_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(UNZIP_BUILD_DIR) -f unix/Makefile prefix=$(UNZIP_IPK_DIR)$(TARGET_PREFIX) install
-	mv $(UNZIP_IPK_DIR)/opt/bin/unzip $(UNZIP_IPK_DIR)/opt/bin/unzip-unzip
+	mv $(UNZIP_IPK_DIR)$(TARGET_PREFIX)/bin/unzip $(UNZIP_IPK_DIR)$(TARGET_PREFIX)/bin/unzip-unzip
 	$(MAKE) $(UNZIP_IPK_DIR)/CONTROL/control
 	(echo "#!/bin/sh"; \
-	 echo "update-alternatives --install /opt/bin/unzip unzip /opt/bin/unzip-unzip 80"; \
+	 echo "update-alternatives --install $(TARGET_PREFIX)/bin/unzip unzip $(TARGET_PREFIX)/bin/unzip-unzip 80"; \
 	) > $(UNZIP_IPK_DIR)/CONTROL/postinst
 	(echo "#!/bin/sh"; \
-	 echo "update-alternatives --remove unzip /opt/bin/unzip-unzip"; \
+	 echo "update-alternatives --remove unzip $(TARGET_PREFIX)/bin/unzip-unzip"; \
 	) > $(UNZIP_IPK_DIR)/CONTROL/prerm
 	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

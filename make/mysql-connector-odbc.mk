@@ -40,7 +40,7 @@ MYSQL_CONNECTOR_ODBC_IPK_VERSION=2
 
 #
 # MYSQL_CONNECTOR_ODBC_CONFFILES should be a list of user-editable files
-#MYSQL_CONNECTOR_ODBC_CONFFILES=/opt/etc/mysql-connector-odbc.conf /opt/etc/init.d/SXXmysql-connector-odbc
+#MYSQL_CONNECTOR_ODBC_CONFFILES=$(TARGET_PREFIX)/etc/mysql-connector-odbc.conf $(TARGET_PREFIX)/etc/init.d/SXXmysql-connector-odbc
 
 #
 # MYSQL_CONNECTOR_ODBC_PATCHES should list any patches, in the the order in
@@ -185,12 +185,12 @@ $(MYSQL_CONNECTOR_ODBC_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(MYSQL_CONNECTOR_ODBC_IPK_DIR)/opt/sbin or $(MYSQL_CONNECTOR_ODBC_IPK_DIR)/opt/bin
+# Binaries should be installed into $(MYSQL_CONNECTOR_ODBC_IPK_DIR)$(TARGET_PREFIX)/sbin or $(MYSQL_CONNECTOR_ODBC_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(MYSQL_CONNECTOR_ODBC_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(MYSQL_CONNECTOR_ODBC_IPK_DIR)/opt/etc/mysql-connector-odbc/...
-# Documentation files should be installed in $(MYSQL_CONNECTOR_ODBC_IPK_DIR)/opt/doc/mysql-connector-odbc/...
-# Daemon startup scripts should be installed in $(MYSQL_CONNECTOR_ODBC_IPK_DIR)/opt/etc/init.d/S??mysql-connector-odbc
+# Libraries and include files should be installed into $(MYSQL_CONNECTOR_ODBC_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(MYSQL_CONNECTOR_ODBC_IPK_DIR)$(TARGET_PREFIX)/etc/mysql-connector-odbc/...
+# Documentation files should be installed in $(MYSQL_CONNECTOR_ODBC_IPK_DIR)$(TARGET_PREFIX)/doc/mysql-connector-odbc/...
+# Daemon startup scripts should be installed in $(MYSQL_CONNECTOR_ODBC_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??mysql-connector-odbc
 #
 # You may need to patch your application to make it use these locations.
 #

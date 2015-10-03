@@ -40,7 +40,7 @@ LIBICAL_IPK_VERSION=1
 
 #
 # LIBICAL_CONFFILES should be a list of user-editable files
-#LIBICAL_CONFFILES=/opt/etc/libical.conf /opt/etc/init.d/SXXlibical
+#LIBICAL_CONFFILES=$(TARGET_PREFIX)/etc/libical.conf $(TARGET_PREFIX)/etc/init.d/SXXlibical
 
 #
 # LIBICAL_PATCHES should list any patches, in the the order in
@@ -177,23 +177,23 @@ $(LIBICAL_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LIBICAL_IPK_DIR)/opt/sbin or $(LIBICAL_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LIBICAL_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LIBICAL_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LIBICAL_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LIBICAL_IPK_DIR)/opt/etc/libical/...
-# Documentation files should be installed in $(LIBICAL_IPK_DIR)/opt/doc/libical/...
-# Daemon startup scripts should be installed in $(LIBICAL_IPK_DIR)/opt/etc/init.d/S??libical
+# Libraries and include files should be installed into $(LIBICAL_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LIBICAL_IPK_DIR)$(TARGET_PREFIX)/etc/libical/...
+# Documentation files should be installed in $(LIBICAL_IPK_DIR)$(TARGET_PREFIX)/doc/libical/...
+# Daemon startup scripts should be installed in $(LIBICAL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??libical
 #
 # You may need to patch your application to make it use these locations.
 #
 $(LIBICAL_IPK): $(LIBICAL_BUILD_DIR)/.built
 	rm -rf $(LIBICAL_IPK_DIR) $(BUILD_DIR)/libical_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBICAL_BUILD_DIR) DESTDIR=$(LIBICAL_IPK_DIR) install-strip
-#	$(INSTALL) -d $(LIBICAL_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(LIBICAL_SOURCE_DIR)/libical.conf $(LIBICAL_IPK_DIR)/opt/etc/libical.conf
-#	$(INSTALL) -d $(LIBICAL_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(LIBICAL_SOURCE_DIR)/rc.libical $(LIBICAL_IPK_DIR)/opt/etc/init.d/SXXlibical
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBICAL_IPK_DIR)/opt/etc/init.d/SXXlibical
+#	$(INSTALL) -d $(LIBICAL_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(LIBICAL_SOURCE_DIR)/libical.conf $(LIBICAL_IPK_DIR)$(TARGET_PREFIX)/etc/libical.conf
+#	$(INSTALL) -d $(LIBICAL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(LIBICAL_SOURCE_DIR)/rc.libical $(LIBICAL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibical
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBICAL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibical
 	$(MAKE) $(LIBICAL_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(LIBICAL_SOURCE_DIR)/postinst $(LIBICAL_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBICAL_IPK_DIR)/CONTROL/postinst

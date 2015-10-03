@@ -34,7 +34,7 @@ LAME_CONFLICTS=
 
 #
 # LAME_CONFFILES should be a list of user-editable files
-LAME_CONFFILES=/opt/etc/lame.conf /opt/etc/init.d/SXXlame
+LAME_CONFFILES=$(TARGET_PREFIX)/etc/lame.conf $(TARGET_PREFIX)/etc/init.d/SXXlame
 
 #
 ## LAME_PATCHES should list any patches, in the the order in
@@ -178,19 +178,19 @@ $(LAME_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LAME_IPK_DIR)/opt/sbin or $(LAME_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LAME_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LAME_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LAME_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LAME_IPK_DIR)/opt/etc/lame/...
-# Documentation files should be installed in $(LAME_IPK_DIR)/opt/doc/lame/...
-# Daemon startup scripts should be installed in $(LAME_IPK_DIR)/opt/etc/init.d/S??lame
+# Libraries and include files should be installed into $(LAME_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LAME_IPK_DIR)$(TARGET_PREFIX)/etc/lame/...
+# Documentation files should be installed in $(LAME_IPK_DIR)$(TARGET_PREFIX)/doc/lame/...
+# Daemon startup scripts should be installed in $(LAME_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??lame
 #
 # You may need to patch your application to make it use these locations.
 #
 $(LAME_IPK): $(LAME_BUILD_DIR)/.built
 	rm -rf $(LAME_IPK_DIR) $(BUILD_DIR)/lame_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LAME_BUILD_DIR) DESTDIR=$(LAME_IPK_DIR) install-strip
-	rm -f $(LAME_IPK_DIR)/opt/lib/libmp3lame.a
+	rm -f $(LAME_IPK_DIR)$(TARGET_PREFIX)/lib/libmp3lame.a
 	$(MAKE) $(LAME_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LAME_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(LAME_IPK_DIR)

@@ -40,7 +40,7 @@ RC_IPK_VERSION=1
 
 #
 # RC_CONFFILES should be a list of user-editable files
-#RC_CONFFILES=/opt/etc/rc.conf /opt/etc/init.d/SXXrc
+#RC_CONFFILES=$(TARGET_PREFIX)/etc/rc.conf $(TARGET_PREFIX)/etc/init.d/SXXrc
 
 #
 # RC_PATCHES should list any patches, in the the order in
@@ -187,23 +187,23 @@ $(RC_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(RC_IPK_DIR)/opt/sbin or $(RC_IPK_DIR)/opt/bin
+# Binaries should be installed into $(RC_IPK_DIR)$(TARGET_PREFIX)/sbin or $(RC_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(RC_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(RC_IPK_DIR)/opt/etc/rc/...
-# Documentation files should be installed in $(RC_IPK_DIR)/opt/doc/rc/...
-# Daemon startup scripts should be installed in $(RC_IPK_DIR)/opt/etc/init.d/S??rc
+# Libraries and include files should be installed into $(RC_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(RC_IPK_DIR)$(TARGET_PREFIX)/etc/rc/...
+# Documentation files should be installed in $(RC_IPK_DIR)$(TARGET_PREFIX)/doc/rc/...
+# Daemon startup scripts should be installed in $(RC_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??rc
 #
 # You may need to patch your application to make it use these locations.
 #
 $(RC_IPK): $(RC_BUILD_DIR)/.built
 	rm -rf $(RC_IPK_DIR) $(BUILD_DIR)/rc_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(RC_BUILD_DIR) DESTDIR=$(RC_IPK_DIR) install-strip
-#	$(INSTALL) -d $(RC_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(RC_SOURCE_DIR)/rc.conf $(RC_IPK_DIR)/opt/etc/rc.conf
-#	$(INSTALL) -d $(RC_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(RC_SOURCE_DIR)/rc.rc $(RC_IPK_DIR)/opt/etc/init.d/SXXrc
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/opt/etc/init.d/SXXrc
+#	$(INSTALL) -d $(RC_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(RC_SOURCE_DIR)/rc.conf $(RC_IPK_DIR)$(TARGET_PREFIX)/etc/rc.conf
+#	$(INSTALL) -d $(RC_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(RC_SOURCE_DIR)/rc.rc $(RC_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXrc
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXrc
 	$(MAKE) $(RC_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(RC_SOURCE_DIR)/postinst $(RC_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/postinst

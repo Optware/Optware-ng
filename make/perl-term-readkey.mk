@@ -93,7 +93,7 @@ $(PERL-TERM-READKEY_IPK): $(PERL-TERM-READKEY_BUILD_DIR)/.built
 	rm -rf $(PERL-TERM-READKEY_IPK_DIR) $(BUILD_DIR)/perl-term-readkey_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PERL-TERM-READKEY_BUILD_DIR) DESTDIR=$(PERL-TERM-READKEY_IPK_DIR) install
 	find $(PERL-TERM-READKEY_IPK_DIR)$(TARGET_PREFIX) -name 'perllocal.pod' -exec rm -f {} \;
-	(cd $(PERL-TERM-READKEY_IPK_DIR)/opt/lib/perl5 ; \
+	(cd $(PERL-TERM-READKEY_IPK_DIR)$(TARGET_PREFIX)/lib/perl5 ; \
 		find . -name '*.so' -exec chmod +w {} \; ; \
 		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
 		find . -name '*.so' -exec chmod -w {} \; ; \

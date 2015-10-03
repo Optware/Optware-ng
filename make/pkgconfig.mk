@@ -35,7 +35,7 @@ PKGCONFIG_LOCALES=
 
 #
 # PKGCONFIG_CONFFILES should be a list of user-editable files
-#PKGCONFIG_CONFFILES=/opt/etc/pkgconfig.conf /opt/etc/init.d/SXXpkgconfig
+#PKGCONFIG_CONFFILES=$(TARGET_PREFIX)/etc/pkgconfig.conf $(TARGET_PREFIX)/etc/init.d/SXXpkgconfig
 
 #
 # PKGCONFIG_PATCHES should list any patches, in the the order in
@@ -185,19 +185,19 @@ $(PKGCONFIG_BUILD_DIR)/.built: $(PKGCONFIG_BUILD_DIR)/.configured
 #
 pkgconfig: $(PKGCONFIG_BUILD_DIR)/.built
 
-# Binaries should be installed into $(PKGCONFIG_IPK_DIR)/opt/sbin or $(PKGCONFIG_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PKGCONFIG_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PKGCONFIG_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PKGCONFIG_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PKGCONFIG_IPK_DIR)/opt/etc/pkgconfig/...
-# Documentation files should be installed in $(PKGCONFIG_IPK_DIR)/opt/doc/pkgconfig/...
-# Daemon startup scripts should be installed in $(PKGCONFIG_IPK_DIR)/opt/etc/init.d/S??pkgconfig
+# Libraries and include files should be installed into $(PKGCONFIG_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PKGCONFIG_IPK_DIR)$(TARGET_PREFIX)/etc/pkgconfig/...
+# Documentation files should be installed in $(PKGCONFIG_IPK_DIR)$(TARGET_PREFIX)/doc/pkgconfig/...
+# Daemon startup scripts should be installed in $(PKGCONFIG_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??pkgconfig
 #
 # You may need to patch your application to make it use these locations.
 #
 $(PKGCONFIG_IPK): $(PKGCONFIG_BUILD_DIR)/.built
 	rm -rf $(PKGCONFIG_IPK_DIR) $(BUILD_DIR)/pkgconfig_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PKGCONFIG_BUILD_DIR) DESTDIR=$(PKGCONFIG_IPK_DIR) install
-	$(STRIP_COMMAND) $(PKGCONFIG_IPK_DIR)/opt/bin/pkg-config
+	$(STRIP_COMMAND) $(PKGCONFIG_IPK_DIR)$(TARGET_PREFIX)/bin/pkg-config
 	$(MAKE) $(PKGCONFIG_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PKGCONFIG_IPK_DIR)
 

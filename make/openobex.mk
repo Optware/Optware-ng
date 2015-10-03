@@ -40,7 +40,7 @@ OPENOBEX_IPK_VERSION=1
 
 #
 # OPENOBEX_CONFFILES should be a list of user-editable files
-#OPENOBEX_CONFFILES=/opt/etc/openobex.conf /opt/etc/init.d/SXXopenobex
+#OPENOBEX_CONFFILES=$(TARGET_PREFIX)/etc/openobex.conf $(TARGET_PREFIX)/etc/init.d/SXXopenobex
 
 #
 # OPENOBEX_PATCHES should list any patches, in the the order in
@@ -184,24 +184,24 @@ $(OPENOBEX_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(OPENOBEX_IPK_DIR)/opt/sbin or $(OPENOBEX_IPK_DIR)/opt/bin
+# Binaries should be installed into $(OPENOBEX_IPK_DIR)$(TARGET_PREFIX)/sbin or $(OPENOBEX_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(OPENOBEX_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(OPENOBEX_IPK_DIR)/opt/etc/openobex/...
-# Documentation files should be installed in $(OPENOBEX_IPK_DIR)/opt/doc/openobex/...
-# Daemon startup scripts should be installed in $(OPENOBEX_IPK_DIR)/opt/etc/init.d/S??openobex
+# Libraries and include files should be installed into $(OPENOBEX_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(OPENOBEX_IPK_DIR)$(TARGET_PREFIX)/etc/openobex/...
+# Documentation files should be installed in $(OPENOBEX_IPK_DIR)$(TARGET_PREFIX)/doc/openobex/...
+# Daemon startup scripts should be installed in $(OPENOBEX_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??openobex
 #
 # You may need to patch your application to make it use these locations.
 #
 $(OPENOBEX_IPK): $(OPENOBEX_BUILD_DIR)/.built
 	rm -rf $(OPENOBEX_IPK_DIR) $(BUILD_DIR)/openobex_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(OPENOBEX_BUILD_DIR) DESTDIR=$(OPENOBEX_IPK_DIR) install-strip
-	rm -f $(OPENOBEX_IPK_DIR)/opt/lib/libopenobex.la
-#	$(INSTALL) -d $(OPENOBEX_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(OPENOBEX_SOURCE_DIR)/openobex.conf $(OPENOBEX_IPK_DIR)/opt/etc/openobex.conf
-#	$(INSTALL) -d $(OPENOBEX_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(OPENOBEX_SOURCE_DIR)/rc.openobex $(OPENOBEX_IPK_DIR)/opt/etc/init.d/SXXopenobex
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(OPENOBEX_IPK_DIR)/opt/etc/init.d/SXXopenobex
+	rm -f $(OPENOBEX_IPK_DIR)$(TARGET_PREFIX)/lib/libopenobex.la
+#	$(INSTALL) -d $(OPENOBEX_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(OPENOBEX_SOURCE_DIR)/openobex.conf $(OPENOBEX_IPK_DIR)$(TARGET_PREFIX)/etc/openobex.conf
+#	$(INSTALL) -d $(OPENOBEX_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(OPENOBEX_SOURCE_DIR)/rc.openobex $(OPENOBEX_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXopenobex
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(OPENOBEX_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXopenobex
 	$(MAKE) $(OPENOBEX_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(OPENOBEX_SOURCE_DIR)/postinst $(OPENOBEX_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(OPENOBEX_IPK_DIR)/CONTROL/postinst

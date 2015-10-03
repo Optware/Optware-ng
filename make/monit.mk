@@ -24,7 +24,7 @@ MONIT_IPK_VERSION=2
 
 #
 # MONIT_CONFFILES should be a list of user-editable files
-MONIT_CONFFILES=/opt/etc/monitrc /opt/etc/init.d/S99monit
+MONIT_CONFFILES=$(TARGET_PREFIX)/etc/monitrc $(TARGET_PREFIX)/etc/init.d/S99monit
 
 #
 # MONIT_PATCHES should list any patches, in the the order in
@@ -152,14 +152,14 @@ $(MONIT_IPK_DIR)/CONTROL/control:
 $(MONIT_IPK): $(MONIT_BUILD_DIR)/.built
 	rm -rf $(MONIT_IPK_DIR) $(BUILD_DIR)/monit_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MONIT_BUILD_DIR) DESTDIR=$(MONIT_IPK_DIR) install
-	chmod 755 $(MONIT_IPK_DIR)/opt/bin/monit
-	$(STRIP_COMMAND) $(MONIT_IPK_DIR)/opt/bin/monit
-	rm -rf $(MONIT_IPK_DIR)/opt/man
-	$(INSTALL) -d $(MONIT_IPK_DIR)/opt/etc/
-	$(INSTALL) -d $(MONIT_IPK_DIR)/opt/var/run
-	$(INSTALL) -d $(MONIT_IPK_DIR)/opt/etc/init.d
-	$(INSTALL) -m 700 $(MONIT_BUILD_DIR)/monitrc $(MONIT_IPK_DIR)/opt/etc/monitrc
-	$(INSTALL) -m 755 $(MONIT_SOURCE_DIR)/rc.monit $(MONIT_IPK_DIR)/opt/etc/init.d/S99monit
+	chmod 755 $(MONIT_IPK_DIR)$(TARGET_PREFIX)/bin/monit
+	$(STRIP_COMMAND) $(MONIT_IPK_DIR)$(TARGET_PREFIX)/bin/monit
+	rm -rf $(MONIT_IPK_DIR)$(TARGET_PREFIX)/man
+	$(INSTALL) -d $(MONIT_IPK_DIR)$(TARGET_PREFIX)/etc/
+	$(INSTALL) -d $(MONIT_IPK_DIR)$(TARGET_PREFIX)/var/run
+	$(INSTALL) -d $(MONIT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(INSTALL) -m 700 $(MONIT_BUILD_DIR)/monitrc $(MONIT_IPK_DIR)$(TARGET_PREFIX)/etc/monitrc
+	$(INSTALL) -m 755 $(MONIT_SOURCE_DIR)/rc.monit $(MONIT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S99monit
 	$(MAKE) $(MONIT_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 755 $(MONIT_SOURCE_DIR)/postinst $(MONIT_IPK_DIR)/CONTROL/postinst
 	$(INSTALL) -m 755 $(MONIT_SOURCE_DIR)/prerm $(MONIT_IPK_DIR)/CONTROL/prerm

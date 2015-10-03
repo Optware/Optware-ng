@@ -218,33 +218,33 @@ $(COREUTILS_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(COREUTILS_IPK_DIR)/opt/sbin or $(COREUTILS_IPK_DIR)/opt/bin
+# Binaries should be installed into $(COREUTILS_IPK_DIR)$(TARGET_PREFIX)/sbin or $(COREUTILS_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(COREUTILS_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(COREUTILS_IPK_DIR)/opt/etc/coreutils/...
-# Documentation files should be installed in $(COREUTILS_IPK_DIR)/opt/doc/coreutils/...
-# Daemon startup scripts should be installed in $(COREUTILS_IPK_DIR)/opt/etc/init.d/S??coreutils
+# Libraries and include files should be installed into $(COREUTILS_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(COREUTILS_IPK_DIR)$(TARGET_PREFIX)/etc/coreutils/...
+# Documentation files should be installed in $(COREUTILS_IPK_DIR)$(TARGET_PREFIX)/doc/coreutils/...
+# Daemon startup scripts should be installed in $(COREUTILS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??coreutils
 #
 # You may need to patch your application to make it use these locations.
 #
 $(COREUTILS_IPK): $(COREUTILS_BUILD_DIR)/.built
 	rm -rf $(COREUTILS_IPK_DIR) $(BUILD_DIR)/coreutils_*_$(TARGET_ARCH).ipk
 	# Install binaries
-	$(INSTALL) -d $(COREUTILS_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(COREUTILS_IPK_DIR)$(TARGET_PREFIX)/bin
 	$(MAKE) -C $(COREUTILS_BUILD_DIR) DESTDIR=$(COREUTILS_IPK_DIR) install-exec
 	# copy su - can't install it as install only works for root
-	cp -p $(COREUTILS_BUILD_DIR)/src/su $(COREUTILS_IPK_DIR)/opt/bin/su
+	cp -p $(COREUTILS_BUILD_DIR)/src/su $(COREUTILS_IPK_DIR)$(TARGET_PREFIX)/bin/su
 	# Install makefiles
-	$(INSTALL) -d $(COREUTILS_IPK_DIR)/opt/man/man1	
+	$(INSTALL) -d $(COREUTILS_IPK_DIR)$(TARGET_PREFIX)/man/man1	
 	$(MAKE) -C $(COREUTILS_BUILD_DIR)/man DESTDIR=$(COREUTILS_IPK_DIR) install
-	$(STRIP_COMMAND) $(COREUTILS_IPK_DIR)/opt/bin/* $(COREUTILS_IPK_DIR)/opt/lib/coreutils/lib*.so
+	$(STRIP_COMMAND) $(COREUTILS_IPK_DIR)$(TARGET_PREFIX)/bin/* $(COREUTILS_IPK_DIR)$(TARGET_PREFIX)/lib/coreutils/lib*.so
 	$(MAKE) $(COREUTILS_IPK_DIR)/CONTROL/control
 	echo "#!/bin/sh" > $(COREUTILS_IPK_DIR)/CONTROL/postinst
-	(echo "/bin/chown 0:0 /opt/bin/coreutils-su"; \
-	 echo "/bin/chmod 4755 /opt/bin/coreutils-su"; \
+	(echo "/bin/chown 0:0 $(TARGET_PREFIX)/bin/coreutils-su"; \
+	 echo "/bin/chmod 4755 $(TARGET_PREFIX)/bin/coreutils-su"; \
 	) >> $(COREUTILS_IPK_DIR)/CONTROL/postinst
 	echo "#!/bin/sh" > $(COREUTILS_IPK_DIR)/CONTROL/prerm
-	cd $(COREUTILS_IPK_DIR)/opt/bin; \
+	cd $(COREUTILS_IPK_DIR)$(TARGET_PREFIX)/bin; \
 	for p in *; do \
 	    if test "$$p" = "["; then \
 		q=coreutils-lbracket; \
@@ -252,7 +252,7 @@ $(COREUTILS_IPK): $(COREUTILS_BUILD_DIR)/.built
 		q=coreutils-$$p; \
 	    fi; \
 	    mv $$p $$q; \
-	    echo "update-alternatives --install '/opt/bin/$$p' '$$p' '$$q' 50" \
+	    echo "update-alternatives --install '$(TARGET_PREFIX)/bin/$$p' '$$p' '$$q' 50" \
 		>> $(COREUTILS_IPK_DIR)/CONTROL/postinst; \
 	    echo "update-alternatives --remove '$$p' '$$q'" \
 		>> $(COREUTILS_IPK_DIR)/CONTROL/prerm; \
@@ -262,10 +262,10 @@ $(COREUTILS_IPK): $(COREUTILS_BUILD_DIR)/.built
 			$(COREUTILS_IPK_DIR)/CONTROL/postinst $(COREUTILS_IPK_DIR)/CONTROL/prerm; \
 	fi
 ifeq ($(OPTWARE_WRITE_OUTSIDE_OPT_ALLOWED),true)
-	$(INSTALL) -d $(COREUTILS_IPK_DIR)/opt/etc/init.d
-	$(INSTALL) -m 755 $(COREUTILS_SOURCE_DIR)/rc.coreutils $(COREUTILS_IPK_DIR)/opt/etc/init.d/S05coreutils
+	$(INSTALL) -d $(COREUTILS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(INSTALL) -m 755 $(COREUTILS_SOURCE_DIR)/rc.coreutils $(COREUTILS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S05coreutils
 	$(INSTALL) -d $(COREUTILS_IPK_DIR)/usr/bin
-	ln -s /opt/bin/env $(COREUTILS_IPK_DIR)/usr/bin/env
+	ln -s $(TARGET_PREFIX)/bin/env $(COREUTILS_IPK_DIR)/usr/bin/env
 endif
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(COREUTILS_IPK_DIR)
 

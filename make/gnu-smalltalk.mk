@@ -40,7 +40,7 @@ GNU_SMALLTALK_IPK_VERSION=2
 
 #
 # GNU_SMALLTALK_CONFFILES should be a list of user-editable files
-#GNU_SMALLTALK_CONFFILES=/opt/etc/gnu-smalltalk.conf /opt/etc/init.d/SXXgnu-smalltalk
+#GNU_SMALLTALK_CONFFILES=$(TARGET_PREFIX)/etc/gnu-smalltalk.conf $(TARGET_PREFIX)/etc/init.d/SXXgnu-smalltalk
 
 #
 # GNU_SMALLTALK_PATCHES should list any patches, in the the order in
@@ -223,12 +223,12 @@ $(GNU_SMALLTALK_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(GNU_SMALLTALK_IPK_DIR)/opt/sbin or $(GNU_SMALLTALK_IPK_DIR)/opt/bin
+# Binaries should be installed into $(GNU_SMALLTALK_IPK_DIR)$(TARGET_PREFIX)/sbin or $(GNU_SMALLTALK_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(GNU_SMALLTALK_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(GNU_SMALLTALK_IPK_DIR)/opt/etc/gnu-smalltalk/...
-# Documentation files should be installed in $(GNU_SMALLTALK_IPK_DIR)/opt/doc/gnu-smalltalk/...
-# Daemon startup scripts should be installed in $(GNU_SMALLTALK_IPK_DIR)/opt/etc/init.d/S??gnu-smalltalk
+# Libraries and include files should be installed into $(GNU_SMALLTALK_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(GNU_SMALLTALK_IPK_DIR)$(TARGET_PREFIX)/etc/gnu-smalltalk/...
+# Documentation files should be installed in $(GNU_SMALLTALK_IPK_DIR)$(TARGET_PREFIX)/doc/gnu-smalltalk/...
+# Daemon startup scripts should be installed in $(GNU_SMALLTALK_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??gnu-smalltalk
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -237,10 +237,10 @@ $(GNU_SMALLTALK_IPK): $(GNU_SMALLTALK_BUILD_DIR)/.built
 	$(MAKE) -C $(GNU_SMALLTALK_BUILD_DIR) install-strip \
 		DESTDIR=$(GNU_SMALLTALK_IPK_DIR) \
 		GNU_SMALLTALK_HOST_BUILD_DIR=$(GNU_SMALLTALK_HOST_BUILD_DIR)
-	$(STRIP_COMMAND) $(GNU_SMALLTALK_IPK_DIR)/opt/bin/gst-load
-	rm -f $(GNU_SMALLTALK_IPK_DIR)/opt/lib/smalltalk/*.la
-#	rm -f $(GNU_SMALLTALK_IPK_DIR)/opt/lib/libsigsegv*
-#	rm -f $(GNU_SMALLTALK_IPK_DIR)/opt/include/sigsegv*
+	$(STRIP_COMMAND) $(GNU_SMALLTALK_IPK_DIR)$(TARGET_PREFIX)/bin/gst-load
+	rm -f $(GNU_SMALLTALK_IPK_DIR)$(TARGET_PREFIX)/lib/smalltalk/*.la
+#	rm -f $(GNU_SMALLTALK_IPK_DIR)$(TARGET_PREFIX)/lib/libsigsegv*
+#	rm -f $(GNU_SMALLTALK_IPK_DIR)$(TARGET_PREFIX)/include/sigsegv*
 	$(MAKE) $(GNU_SMALLTALK_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 755 $(GNU_SMALLTALK_SOURCE_DIR)/postinst $(GNU_SMALLTALK_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(GNU_SMALLTALK_IPK_DIR)/CONTROL/postinst

@@ -46,7 +46,7 @@ GDCHART_IPK_VERSION=3
 
 #
 # GDCHART_CONFFILES should be a list of user-editable files
-#GDCHART_CONFFILES=/opt/etc/gdchart.conf /opt/etc/init.d/SXXgdchart
+#GDCHART_CONFFILES=$(TARGET_PREFIX)/etc/gdchart.conf $(TARGET_PREFIX)/etc/init.d/SXXgdchart
 
 #
 # GDCHART_PATCHES should list any patches, in the the order in
@@ -173,21 +173,21 @@ $(GDCHART_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(GDCHART_IPK_DIR)/opt/sbin or $(GDCHART_IPK_DIR)/opt/bin
+# Binaries should be installed into $(GDCHART_IPK_DIR)$(TARGET_PREFIX)/sbin or $(GDCHART_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(GDCHART_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(GDCHART_IPK_DIR)/opt/etc/gdchart/...
-# Documentation files should be installed in $(GDCHART_IPK_DIR)/opt/doc/gdchart/...
-# Daemon startup scripts should be installed in $(GDCHART_IPK_DIR)/opt/etc/init.d/S??gdchart
+# Libraries and include files should be installed into $(GDCHART_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(GDCHART_IPK_DIR)$(TARGET_PREFIX)/etc/gdchart/...
+# Documentation files should be installed in $(GDCHART_IPK_DIR)$(TARGET_PREFIX)/doc/gdchart/...
+# Daemon startup scripts should be installed in $(GDCHART_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??gdchart
 #
 # You may need to patch your application to make it use these locations.
 #
 $(GDCHART_IPK): $(GDCHART_BUILD_DIR)/.built
 	rm -rf $(GDCHART_IPK_DIR) $(BUILD_DIR)/gdchart_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(GDCHART_IPK_DIR)/opt/include $(GDCHART_IPK_DIR)/opt/lib
+	$(INSTALL) -d $(GDCHART_IPK_DIR)$(TARGET_PREFIX)/include $(GDCHART_IPK_DIR)$(TARGET_PREFIX)/lib
 	$(MAKE) -C $(GDCHART_BUILD_DIR) \
-		PREFIX_INC=$(GDCHART_IPK_DIR)/opt/include \
-		PREFIX_LIB=$(GDCHART_IPK_DIR)/opt/lib \
+		PREFIX_INC=$(GDCHART_IPK_DIR)$(TARGET_PREFIX)/include \
+		PREFIX_LIB=$(GDCHART_IPK_DIR)$(TARGET_PREFIX)/lib \
 		GD_INCL=$(STAGING_INCLUDE_DIR)/ \
 		GD_LD=$(STAGING_LIB_DIR)/ \
 		$(INSTALL)

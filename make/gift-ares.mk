@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 GIFTARES_REPOSITORY=:pserver:anonymous@cvs.gift-ares.berlios.de:/cvsroot/gift-ares
-GIFTARES_SITE=http://download.berlios.de/gift-ares
+GIFTARES_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/gift-ares.berlios
 #GIFTARES_VERSION=20060501
 GIFTARES_VERSION=0.3.0
 GIFTARES_SOURCE=gift-ares-$(GIFTARES_VERSION).tar.gz
@@ -42,7 +42,7 @@ GIFTARES_IPK_VERSION=2
 
 #
 # GIFTARES_CONFFILES should be a list of user-editable files
-GIFTARES_CONFFILES=/opt/share/giFT/Ares/Ares.conf.template
+GIFTARES_CONFFILES=$(TARGET_PREFIX)/share/giFT/Ares/Ares.conf.template
 
 #
 # GIFTARES_PATCHES should list any patches, in the the order in
@@ -192,23 +192,23 @@ $(GIFTARES_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(GIFTARES_IPK_DIR)/opt/sbin or $(GIFTARES_IPK_DIR)/opt/bin
+# Binaries should be installed into $(GIFTARES_IPK_DIR)$(TARGET_PREFIX)/sbin or $(GIFTARES_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(GIFTARES_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(GIFTARES_IPK_DIR)/opt/etc/gift-ares/...
-# Documentation files should be installed in $(GIFTARES_IPK_DIR)/opt/doc/gift-ares/...
-# Daemon startup scripts should be installed in $(GIFTARES_IPK_DIR)/opt/etc/init.d/S??gift-ares
+# Libraries and include files should be installed into $(GIFTARES_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(GIFTARES_IPK_DIR)$(TARGET_PREFIX)/etc/gift-ares/...
+# Documentation files should be installed in $(GIFTARES_IPK_DIR)$(TARGET_PREFIX)/doc/gift-ares/...
+# Daemon startup scripts should be installed in $(GIFTARES_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??gift-ares
 #
 # You may need to patch your application to make it use these locations.
 #
 $(GIFTARES_IPK): $(GIFTARES_BUILD_DIR)/.built
 	rm -rf $(GIFTARES_IPK_DIR) $(BUILD_DIR)/gift-ares_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(GIFTARES_IPK_DIR)/opt/lib/giFT
-	$(STRIP_COMMAND) $(GIFTARES_BUILD_DIR)/gift/.libs/libAres.so -o $(GIFTARES_IPK_DIR)/opt/lib/giFT/libAres.so
-	$(INSTALL) -m 644 $(GIFTARES_BUILD_DIR)/gift/.libs/libAres.la $(GIFTARES_IPK_DIR)/opt/lib/giFT/libAres.la
-	$(INSTALL) -d $(GIFTARES_IPK_DIR)/opt/share/giFT/Ares
-	$(INSTALL) -m 644 $(GIFTARES_BUILD_DIR)/data/Ares.conf.template $(GIFTARES_IPK_DIR)/opt/share/giFT/Ares/Ares.conf.template
-	$(INSTALL) -m 644 $(GIFTARES_BUILD_DIR)/data/nodes $(GIFTARES_IPK_DIR)/opt/share/giFT/Ares/nodes
+	$(INSTALL) -d $(GIFTARES_IPK_DIR)$(TARGET_PREFIX)/lib/giFT
+	$(STRIP_COMMAND) $(GIFTARES_BUILD_DIR)/gift/.libs/libAres.so -o $(GIFTARES_IPK_DIR)$(TARGET_PREFIX)/lib/giFT/libAres.so
+	$(INSTALL) -m 644 $(GIFTARES_BUILD_DIR)/gift/.libs/libAres.la $(GIFTARES_IPK_DIR)$(TARGET_PREFIX)/lib/giFT/libAres.la
+	$(INSTALL) -d $(GIFTARES_IPK_DIR)$(TARGET_PREFIX)/share/giFT/Ares
+	$(INSTALL) -m 644 $(GIFTARES_BUILD_DIR)/data/Ares.conf.template $(GIFTARES_IPK_DIR)$(TARGET_PREFIX)/share/giFT/Ares/Ares.conf.template
+	$(INSTALL) -m 644 $(GIFTARES_BUILD_DIR)/data/nodes $(GIFTARES_IPK_DIR)$(TARGET_PREFIX)/share/giFT/Ares/nodes
 	$(INSTALL) -d $(GIFTARES_IPK_DIR)/CONTROL
 	$(MAKE) $(GIFTARES_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GIFTARES_IPK_DIR)

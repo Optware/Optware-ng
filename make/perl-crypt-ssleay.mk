@@ -59,7 +59,7 @@ $(PERL-CRYPT-SSLEAY_BUILD_DIR)/.built: $(PERL-CRYPT-SSLEAY_BUILD_DIR)/.configure
 		LD=$(TARGET_CC) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
-		LD_RUN_PATH=/opt/lib \
+		LD_RUN_PATH=$(TARGET_PREFIX)/lib \
 		$(PERL_INC) \
 	PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl"
 	touch $(PERL-CRYPT-SSLEAY_BUILD_DIR)/.built
@@ -92,7 +92,7 @@ $(PERL-CRYPT-SSLEAY_IPK): $(PERL-CRYPT-SSLEAY_BUILD_DIR)/.built
 	rm -rf $(PERL-CRYPT-SSLEAY_IPK_DIR) $(BUILD_DIR)/perl-crypt-ssleay_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PERL-CRYPT-SSLEAY_BUILD_DIR) DESTDIR=$(PERL-CRYPT-SSLEAY_IPK_DIR) install
 	find $(PERL-CRYPT-SSLEAY_IPK_DIR)$(TARGET_PREFIX) -name 'perllocal.pod' -exec rm -f {} \;
-	(cd $(PERL-CRYPT-SSLEAY_IPK_DIR)/opt/lib/perl5 ; \
+	(cd $(PERL-CRYPT-SSLEAY_IPK_DIR)$(TARGET_PREFIX)/lib/perl5 ; \
 		find . -name '*.so' -exec chmod +w {} \; ; \
 		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
 		find . -name '*.so' -exec chmod -w {} \; ; \

@@ -177,24 +177,24 @@ $(ASTERISK14-CHAN-CAPI_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(ASTERISK14-CHAN-CAPI_IPK_DIR)/opt/sbin or $(ASTERISK14-CHAN-CAPI_IPK_DIR)/opt/bin
+# Binaries should be installed into $(ASTERISK14-CHAN-CAPI_IPK_DIR)$(TARGET_PREFIX)/sbin or $(ASTERISK14-CHAN-CAPI_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(ASTERISK14-CHAN-CAPI_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(ASTERISK14-CHAN-CAPI_IPK_DIR)/opt/etc/asterisk14-chan-capi/...
-# Documentation files should be installed in $(ASTERISK14-CHAN-CAPI_IPK_DIR)/opt/doc/asterisk14-chan-capi/...
-# Daemon startup scripts should be installed in $(ASTERISK14-CHAN-CAPI_IPK_DIR)/opt/etc/init.d/S??asterisk14-chan-capi
+# Libraries and include files should be installed into $(ASTERISK14-CHAN-CAPI_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(ASTERISK14-CHAN-CAPI_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk14-chan-capi/...
+# Documentation files should be installed in $(ASTERISK14-CHAN-CAPI_IPK_DIR)$(TARGET_PREFIX)/doc/asterisk14-chan-capi/...
+# Daemon startup scripts should be installed in $(ASTERISK14-CHAN-CAPI_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??asterisk14-chan-capi
 #
 # You may need to patch your application to make it use these locations.
 #
 $(ASTERISK14-CHAN-CAPI_IPK): $(ASTERISK14-CHAN-CAPI_BUILD_DIR)/.built
 	rm -rf $(ASTERISK14-CHAN-CAPI_IPK_DIR) $(BUILD_DIR)/asterisk14-chan-capi_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(ASTERISK14-CHAN-CAPI_BUILD_DIR) install \
-		MODULES_DIR=$(ASTERISK14-CHAN-CAPI_IPK_DIR)/opt/lib/asterisk/modules \
+		MODULES_DIR=$(ASTERISK14-CHAN-CAPI_IPK_DIR)$(TARGET_PREFIX)/lib/asterisk/modules \
 		ASTERISK_HEADER_DIR=$(STAGING_INCLUDE_DIR) \
 		;
-	$(STRIP_COMMAND) $(ASTERISK14-CHAN-CAPI_IPK_DIR)/opt/lib/asterisk/modules/*.so
-	$(INSTALL) -d $(ASTERISK14-CHAN-CAPI_IPK_DIR)/opt/etc/asterisk/sample/
-	$(INSTALL) -m 644 $(ASTERISK14-CHAN-CAPI_BUILD_DIR)/capi.conf $(ASTERISK14-CHAN-CAPI_IPK_DIR)/opt/etc/asterisk/sample/capi.conf
+	$(STRIP_COMMAND) $(ASTERISK14-CHAN-CAPI_IPK_DIR)$(TARGET_PREFIX)/lib/asterisk/modules/*.so
+	$(INSTALL) -d $(ASTERISK14-CHAN-CAPI_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/sample/
+	$(INSTALL) -m 644 $(ASTERISK14-CHAN-CAPI_BUILD_DIR)/capi.conf $(ASTERISK14-CHAN-CAPI_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/sample/capi.conf
 	$(MAKE) $(ASTERISK14-CHAN-CAPI_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(ASTERISK14-CHAN-CAPI_SOURCE_DIR)/postinst $(ASTERISK14-CHAN-CAPI_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/postinst

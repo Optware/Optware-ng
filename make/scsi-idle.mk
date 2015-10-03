@@ -40,7 +40,7 @@ SCSI_IDLE_IPK_VERSION=2
 
 #
 # SCSI_IDLE_CONFFILES should be a list of user-editable files
-SCSI_IDLE_CONFFILES=/opt/etc/scsi-idle.conf /opt/etc/init.d/SXXscsi-idle
+SCSI_IDLE_CONFFILES=$(TARGET_PREFIX)/etc/scsi-idle.conf $(TARGET_PREFIX)/etc/init.d/SXXscsi-idle
 
 #
 # SCSI_IDLE_PATCHES should list any patches, in the the order in
@@ -116,7 +116,7 @@ $(SCSI_IDLE_BUILD_DIR)/.configured: $(DL_DIR)/$(SCSI_IDLE_SOURCE) $(SCSI_IDLE_PA
 		then mv $(BUILD_DIR)/$(SCSI_IDLE_DIR) $(SCSI_IDLE_BUILD_DIR) ; \
 	fi
 	(cd $(SCSI_IDLE_BUILD_DIR); \
-		sed -i -e 's|/usr/local|$$(DESTDIR)/opt|;/CFLAGS/d' Makefile \
+		sed -i -e 's|/usr/local|$$(DESTDIR)$(TARGET_PREFIX)|;/CFLAGS/d' Makefile \
 	)
 
 #		$(TARGET_CONFIGURE_OPTS) \
@@ -181,28 +181,28 @@ $(SCSI_IDLE_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(SCSI_IDLE_IPK_DIR)/opt/sbin or $(SCSI_IDLE_IPK_DIR)/opt/bin
+# Binaries should be installed into $(SCSI_IDLE_IPK_DIR)$(TARGET_PREFIX)/sbin or $(SCSI_IDLE_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(SCSI_IDLE_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(SCSI_IDLE_IPK_DIR)/opt/etc/scsi-idle/...
-# Documentation files should be installed in $(SCSI_IDLE_IPK_DIR)/opt/doc/scsi-idle/...
-# Daemon startup scripts should be installed in $(SCSI_IDLE_IPK_DIR)/opt/etc/init.d/S??scsi-idle
+# Libraries and include files should be installed into $(SCSI_IDLE_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(SCSI_IDLE_IPK_DIR)$(TARGET_PREFIX)/etc/scsi-idle/...
+# Documentation files should be installed in $(SCSI_IDLE_IPK_DIR)$(TARGET_PREFIX)/doc/scsi-idle/...
+# Daemon startup scripts should be installed in $(SCSI_IDLE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??scsi-idle
 #
 # You may need to patch your application to make it use these locations.
 #
 $(SCSI_IDLE_IPK): $(SCSI_IDLE_BUILD_DIR)/.built
 	rm -rf $(SCSI_IDLE_IPK_DIR) $(BUILD_DIR)/scsi-idle_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(SCSI_IDLE_IPK_DIR)/opt/sbin
+	$(INSTALL) -d $(SCSI_IDLE_IPK_DIR)$(TARGET_PREFIX)/sbin
 	$(MAKE) -C $(SCSI_IDLE_BUILD_DIR) DESTDIR=$(SCSI_IDLE_IPK_DIR) install
-	$(STRIP_COMMAND) $(SCSI_IDLE_IPK_DIR)/opt/sbin/scsi-idle
-	$(STRIP_COMMAND) $(SCSI_IDLE_IPK_DIR)/opt/sbin/scsi-start
-	$(STRIP_COMMAND) $(SCSI_IDLE_IPK_DIR)/opt/sbin/scsi-stop
-	$(INSTALL) -d $(SCSI_IDLE_IPK_DIR)/opt/share/doc/
-	$(INSTALL) -m 644 $(SCSI_IDLE_BUILD_DIR)/scsi-idle.README $(SCSI_IDLE_IPK_DIR)/opt/share/doc/
-#	$(INSTALL) -m 644 $(SCSI_IDLE_SOURCE_DIR)/scsi-idle.conf $(SCSI_IDLE_IPK_DIR)/opt/etc/scsi-idle.conf
-#	$(INSTALL) -d $(SCSI_IDLE_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(SCSI_IDLE_SOURCE_DIR)/rc.scsi-idle $(SCSI_IDLE_IPK_DIR)/opt/etc/init.d/SXXscsi-idle
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SCSI_IDLE_IPK_DIR)/opt/etc/init.d/SXXscsi-idle
+	$(STRIP_COMMAND) $(SCSI_IDLE_IPK_DIR)$(TARGET_PREFIX)/sbin/scsi-idle
+	$(STRIP_COMMAND) $(SCSI_IDLE_IPK_DIR)$(TARGET_PREFIX)/sbin/scsi-start
+	$(STRIP_COMMAND) $(SCSI_IDLE_IPK_DIR)$(TARGET_PREFIX)/sbin/scsi-stop
+	$(INSTALL) -d $(SCSI_IDLE_IPK_DIR)$(TARGET_PREFIX)/share/doc/
+	$(INSTALL) -m 644 $(SCSI_IDLE_BUILD_DIR)/scsi-idle.README $(SCSI_IDLE_IPK_DIR)$(TARGET_PREFIX)/share/doc/
+#	$(INSTALL) -m 644 $(SCSI_IDLE_SOURCE_DIR)/scsi-idle.conf $(SCSI_IDLE_IPK_DIR)$(TARGET_PREFIX)/etc/scsi-idle.conf
+#	$(INSTALL) -d $(SCSI_IDLE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(SCSI_IDLE_SOURCE_DIR)/rc.scsi-idle $(SCSI_IDLE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXscsi-idle
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SCSI_IDLE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXscsi-idle
 	$(MAKE) $(SCSI_IDLE_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(SCSI_IDLE_SOURCE_DIR)/postinst $(SCSI_IDLE_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SCSI_IDLE_IPK_DIR)/CONTROL/postinst

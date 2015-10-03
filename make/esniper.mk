@@ -49,7 +49,7 @@ ESNIPER_IPK_VERSION=1
 
 #
 # ESNIPER_CONFFILES should be a list of user-editable files
-#ESNIPER_CONFFILES=/opt/etc/esniper.conf /opt/etc/init.d/SXXesniper
+#ESNIPER_CONFFILES=$(TARGET_PREFIX)/etc/esniper.conf $(TARGET_PREFIX)/etc/init.d/SXXesniper
 
 #
 # ESNIPER_PATCHES should list any patches, in the the order in
@@ -196,19 +196,19 @@ $(ESNIPER_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(ESNIPER_IPK_DIR)/opt/sbin or $(ESNIPER_IPK_DIR)/opt/bin
+# Binaries should be installed into $(ESNIPER_IPK_DIR)$(TARGET_PREFIX)/sbin or $(ESNIPER_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(ESNIPER_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(ESNIPER_IPK_DIR)/opt/etc/esniper/...
-# Documentation files should be installed in $(ESNIPER_IPK_DIR)/opt/doc/esniper/...
-# Daemon startup scripts should be installed in $(ESNIPER_IPK_DIR)/opt/etc/init.d/S??esniper
+# Libraries and include files should be installed into $(ESNIPER_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(ESNIPER_IPK_DIR)$(TARGET_PREFIX)/etc/esniper/...
+# Documentation files should be installed in $(ESNIPER_IPK_DIR)$(TARGET_PREFIX)/doc/esniper/...
+# Daemon startup scripts should be installed in $(ESNIPER_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??esniper
 #
 # You may need to patch your application to make it use these locations.
 #
 $(ESNIPER_IPK): $(ESNIPER_BUILD_DIR)/.built
 	rm -rf $(ESNIPER_IPK_DIR) $(BUILD_DIR)/esniper_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(ESNIPER_BUILD_DIR) DESTDIR=$(ESNIPER_IPK_DIR) install-strip
-	$(INSTALL) -d $(ESNIPER_IPK_DIR)/opt/etc/
+	$(INSTALL) -d $(ESNIPER_IPK_DIR)$(TARGET_PREFIX)/etc/
 	$(MAKE) $(ESNIPER_IPK_DIR)/CONTROL/control
 #	echo $(ESNIPER_CONFFILES) | sed -e 's/ /\n/g' > $(ESNIPER_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ESNIPER_IPK_DIR)

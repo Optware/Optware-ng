@@ -41,7 +41,7 @@ PY-ELEMENTTREE_IPK_VERSION=5
 
 #
 # PY-ELEMENTTREE_CONFFILES should be a list of user-editable files
-#PY-ELEMENTTREE_CONFFILES=/opt/etc/py-elementtree.conf /opt/etc/init.d/SXXpy-elementtree
+#PY-ELEMENTTREE_CONFFILES=$(TARGET_PREFIX)/etc/py-elementtree.conf $(TARGET_PREFIX)/etc/init.d/SXXpy-elementtree
 
 #
 # PY-ELEMENTTREE_PATCHES should list any patches, in the the order in
@@ -116,7 +116,7 @@ $(PY-ELEMENTTREE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-ELEMENTTREE_SOURCE) $(PY
 	mv $(BUILD_DIR)/$(PY-ELEMENTTREE_DIR) $(PY-ELEMENTTREE_BUILD_DIR)/2.4
 	(cd $(PY-ELEMENTTREE_BUILD_DIR)/2.4; \
 	    (echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python2.4") > setup.cfg \
+	    echo "executable=$(TARGET_PREFIX)/bin/python2.4") > setup.cfg \
 	)
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-ELEMENTTREE_DIR)
@@ -125,7 +125,7 @@ $(PY-ELEMENTTREE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-ELEMENTTREE_SOURCE) $(PY
 	mv $(BUILD_DIR)/$(PY-ELEMENTTREE_DIR) $(PY-ELEMENTTREE_BUILD_DIR)/2.5
 	(cd $(PY-ELEMENTTREE_BUILD_DIR)/2.5; \
 	    (echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python2.5") > setup.cfg \
+	    echo "executable=$(TARGET_PREFIX)/bin/python2.5") > setup.cfg \
 	)
 	touch $@
 
@@ -152,7 +152,7 @@ $(PY-ELEMENTTREE_BUILD_DIR)/.staged: $(PY-ELEMENTTREE_BUILD_DIR)/.built
 	(cd $(PY-ELEMENTTREE_BUILD_DIR)/2.4; \
 	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 -c "import setuptools; execfile('setup.py')" \
-	    $(INSTALL) --root=$(STAGING_DIR) --prefix=/opt)
+	    $(INSTALL) --root=$(STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	touch $@
 
 py-elementtree-stage: $(PY-ELEMENTTREE_BUILD_DIR)/.staged
@@ -192,12 +192,12 @@ $(PY25-ELEMENTTREE_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PY-ELEMENTTREE_IPK_DIR)/opt/sbin or $(PY-ELEMENTTREE_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PY-ELEMENTTREE_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PY-ELEMENTTREE_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PY-ELEMENTTREE_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PY-ELEMENTTREE_IPK_DIR)/opt/etc/py-elementtree/...
-# Documentation files should be installed in $(PY-ELEMENTTREE_IPK_DIR)/opt/doc/py-elementtree/...
-# Daemon startup scripts should be installed in $(PY-ELEMENTTREE_IPK_DIR)/opt/etc/init.d/S??py-elementtree
+# Libraries and include files should be installed into $(PY-ELEMENTTREE_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PY-ELEMENTTREE_IPK_DIR)$(TARGET_PREFIX)/etc/py-elementtree/...
+# Documentation files should be installed in $(PY-ELEMENTTREE_IPK_DIR)$(TARGET_PREFIX)/doc/py-elementtree/...
+# Daemon startup scripts should be installed in $(PY-ELEMENTTREE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??py-elementtree
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -207,7 +207,7 @@ $(PY24-ELEMENTTREE_IPK): $(PY-ELEMENTTREE_BUILD_DIR)/.built
 	(cd $(PY-ELEMENTTREE_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.4 -c "import setuptools; execfile('setup.py')" \
-	$(INSTALL) --root=$(PY24-ELEMENTTREE_IPK_DIR) --prefix=/opt)
+	$(INSTALL) --root=$(PY24-ELEMENTTREE_IPK_DIR) --prefix=$(TARGET_PREFIX))
 	$(MAKE) $(PY24-ELEMENTTREE_IPK_DIR)/CONTROL/control
 #	echo $(PY-ELEMENTTREE_CONFFILES) | sed -e 's/ /\n/g' > $(PY24-ELEMENTTREE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-ELEMENTTREE_IPK_DIR)
@@ -217,7 +217,7 @@ $(PY25-ELEMENTTREE_IPK): $(PY-ELEMENTTREE_BUILD_DIR)/.built
 	(cd $(PY-ELEMENTTREE_BUILD_DIR)/2.5; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.5 -c "import setuptools; execfile('setup.py')" \
-	$(INSTALL) --root=$(PY25-ELEMENTTREE_IPK_DIR) --prefix=/opt)
+	$(INSTALL) --root=$(PY25-ELEMENTTREE_IPK_DIR) --prefix=$(TARGET_PREFIX))
 	$(MAKE) $(PY25-ELEMENTTREE_IPK_DIR)/CONTROL/control
 #	echo $(PY-ELEMENTTREE_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-ELEMENTTREE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-ELEMENTTREE_IPK_DIR)

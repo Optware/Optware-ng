@@ -53,7 +53,7 @@ GIT-MANPAGES_SOURCE=git-manpages-$(GIT_VERSION).tar.gz
 
 #
 # GIT_CONFFILES should be a list of user-editable files
-#GIT_CONFFILES=/opt/etc/git.conf /opt/etc/init.d/SXXgit
+#GIT_CONFFILES=$(TARGET_PREFIX)/etc/git.conf $(TARGET_PREFIX)/etc/init.d/SXXgit
 
 #
 # GIT_PATCHES should list any patches, in the the order in
@@ -326,12 +326,12 @@ $(GIT-SVN_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(GIT_IPK_DIR)/opt/sbin or $(GIT_IPK_DIR)/opt/bin
+# Binaries should be installed into $(GIT_IPK_DIR)$(TARGET_PREFIX)/sbin or $(GIT_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(GIT_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(GIT_IPK_DIR)/opt/etc/git/...
-# Documentation files should be installed in $(GIT_IPK_DIR)/opt/doc/git/...
-# Daemon startup scripts should be installed in $(GIT_IPK_DIR)/opt/etc/init.d/S??git
+# Libraries and include files should be installed into $(GIT_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(GIT_IPK_DIR)$(TARGET_PREFIX)/etc/git/...
+# Documentation files should be installed in $(GIT_IPK_DIR)$(TARGET_PREFIX)/doc/git/...
+# Daemon startup scripts should be installed in $(GIT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??git
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -351,15 +351,15 @@ $(GIT_IPK): $(GIT_BUILD_DIR)/.built
 		prefix=$(TARGET_PREFIX) \
 		$(INSTALL)
 ifneq (,$(filter perl, $(PACKAGES)))
-	for f in `find $(GIT_IPK_DIR)/opt/lib -name perllocal.pod`; \
+	for f in `find $(GIT_IPK_DIR)$(TARGET_PREFIX)/lib -name perllocal.pod`; \
 		do mv $$f $$f.git; done
 endif
-	rm -f $(GIT_IPK_DIR)/opt/bin/git
-	ln -s ../libexec/git-core/git $(GIT_IPK_DIR)/opt/bin/git
-	$(INSTALL) -d $(GIT_IPK_DIR)/opt/etc/bash_completion.d
+	rm -f $(GIT_IPK_DIR)$(TARGET_PREFIX)/bin/git
+	ln -s ../libexec/git-core/git $(GIT_IPK_DIR)$(TARGET_PREFIX)/bin/git
+	$(INSTALL) -d $(GIT_IPK_DIR)$(TARGET_PREFIX)/etc/bash_completion.d
 	$(INSTALL) $(<D)/contrib/completion/*.bash \
 		$(<D)/contrib/completion/*.sh \
-		$(GIT_IPK_DIR)/opt/etc/bash_completion.d
+		$(GIT_IPK_DIR)$(TARGET_PREFIX)/etc/bash_completion.d
 	$(MAKE) $(GIT_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GIT_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(GIT_IPK_DIR)
@@ -382,20 +382,20 @@ $(GIT-LITE_IPK): $(GIT-LITE_BUILD_DIR)/.built
 		$(GIT_MAKE_FLAGS) \
 		prefix=$(TARGET_PREFIX) \
 		$(INSTALL)
-	( cd $(GIT-LITE_IPK_DIR)/opt/bin ; \
+	( cd $(GIT-LITE_IPK_DIR)$(TARGET_PREFIX)/bin ; \
 	  rm -f git-cvsserver git-receive-pack git-shell git-upload-archive git-upload-pack git-remote-* )
-	rm -f $(GIT-LITE_IPK_DIR)/opt/bin/git
-	ln -s ../libexec/git-core/git $(GIT-LITE_IPK_DIR)/opt/bin/git
-	rm -rf $(GIT-LITE_IPK_DIR)/opt/lib
-	rm -rf $(GIT-LITE_IPK_DIR)/opt/share/man
+	rm -f $(GIT-LITE_IPK_DIR)$(TARGET_PREFIX)/bin/git
+	ln -s ../libexec/git-core/git $(GIT-LITE_IPK_DIR)$(TARGET_PREFIX)/bin/git
+	rm -rf $(GIT-LITE_IPK_DIR)$(TARGET_PREFIX)/lib
+	rm -rf $(GIT-LITE_IPK_DIR)$(TARGET_PREFIX)/share/man
 	$(MAKE) $(GIT-LITE_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GIT-LITE_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(GIT-LITE_IPK_DIR)
 
 $(GIT-MANPAGES_IPK): $(DL_DIR)/$(GIT-MANPAGES_SOURCE)
 	rm -rf $(GIT-MANPAGES_IPK_DIR) $(BUILD_DIR)/git-manpages_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(GIT-MANPAGES_IPK_DIR)/opt/man
-	tar -xzvf $(DL_DIR)/$(GIT-MANPAGES_SOURCE) -C $(GIT-MANPAGES_IPK_DIR)/opt/man
+	$(INSTALL) -d $(GIT-MANPAGES_IPK_DIR)$(TARGET_PREFIX)/man
+	tar -xzvf $(DL_DIR)/$(GIT-MANPAGES_SOURCE) -C $(GIT-MANPAGES_IPK_DIR)$(TARGET_PREFIX)/man
 	$(MAKE) $(GIT-MANPAGES_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GIT-MANPAGES_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(GIT-MANPAGES_IPK_DIR)

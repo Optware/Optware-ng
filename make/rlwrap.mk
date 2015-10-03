@@ -40,7 +40,7 @@ RLWRAP_IPK_VERSION=1
 
 #
 # RLWRAP_CONFFILES should be a list of user-editable files
-#RLWRAP_CONFFILES=/opt/etc/rlwrap.conf /opt/etc/init.d/SXXrlwrap
+#RLWRAP_CONFFILES=$(TARGET_PREFIX)/etc/rlwrap.conf $(TARGET_PREFIX)/etc/init.d/SXXrlwrap
 
 #
 # RLWRAP_PATCHES should list any patches, in the the order in
@@ -184,19 +184,19 @@ $(RLWRAP_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(RLWRAP_IPK_DIR)/opt/sbin or $(RLWRAP_IPK_DIR)/opt/bin
+# Binaries should be installed into $(RLWRAP_IPK_DIR)$(TARGET_PREFIX)/sbin or $(RLWRAP_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(RLWRAP_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(RLWRAP_IPK_DIR)/opt/etc/rlwrap/...
-# Documentation files should be installed in $(RLWRAP_IPK_DIR)/opt/doc/rlwrap/...
-# Daemon startup scripts should be installed in $(RLWRAP_IPK_DIR)/opt/etc/init.d/S??rlwrap
+# Libraries and include files should be installed into $(RLWRAP_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(RLWRAP_IPK_DIR)$(TARGET_PREFIX)/etc/rlwrap/...
+# Documentation files should be installed in $(RLWRAP_IPK_DIR)$(TARGET_PREFIX)/doc/rlwrap/...
+# Daemon startup scripts should be installed in $(RLWRAP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??rlwrap
 #
 # You may need to patch your application to make it use these locations.
 #
 $(RLWRAP_IPK): $(RLWRAP_BUILD_DIR)/.built
 	rm -rf $(RLWRAP_IPK_DIR) $(BUILD_DIR)/rlwrap_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(RLWRAP_BUILD_DIR) DESTDIR=$(RLWRAP_IPK_DIR) install
-	$(STRIP_COMMAND) $(RLWRAP_IPK_DIR)/opt/bin/rlwrap
+	$(STRIP_COMMAND) $(RLWRAP_IPK_DIR)$(TARGET_PREFIX)/bin/rlwrap
 	$(MAKE) $(RLWRAP_IPK_DIR)/CONTROL/control
 	echo $(RLWRAP_CONFFILES) | sed -e 's/ /\n/g' > $(RLWRAP_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(RLWRAP_IPK_DIR)

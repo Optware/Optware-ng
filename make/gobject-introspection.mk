@@ -46,7 +46,7 @@ GOBJECT-INTROSPECTION_IPK_VERSION=2
 
 #
 # GOBJECT-INTROSPECTION_CONFFILES should be a list of user-editable files
-#GOBJECT-INTROSPECTION_CONFFILES=/opt/etc/gobject-introspection.conf /opt/etc/init.d/SXXgobject-introspection
+#GOBJECT-INTROSPECTION_CONFFILES=$(TARGET_PREFIX)/etc/gobject-introspection.conf $(TARGET_PREFIX)/etc/init.d/SXXgobject-introspection
 
 #
 # GOBJECT-INTROSPECTION_PATCHES should list any patches, in the the order in
@@ -225,12 +225,12 @@ $(GOBJECT-INTROSPECTION_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(GOBJECT-INTROSPECTION_IPK_DIR)/opt/sbin or $(GOBJECT-INTROSPECTION_IPK_DIR)/opt/bin
+# Binaries should be installed into $(GOBJECT-INTROSPECTION_IPK_DIR)$(TARGET_PREFIX)/sbin or $(GOBJECT-INTROSPECTION_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(GOBJECT-INTROSPECTION_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(GOBJECT-INTROSPECTION_IPK_DIR)/opt/etc/gobject-introspection/...
-# Documentation files should be installed in $(GOBJECT-INTROSPECTION_IPK_DIR)/opt/doc/gobject-introspection/...
-# Daemon startup scripts should be installed in $(GOBJECT-INTROSPECTION_IPK_DIR)/opt/etc/init.d/S??gobject-introspection
+# Libraries and include files should be installed into $(GOBJECT-INTROSPECTION_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(GOBJECT-INTROSPECTION_IPK_DIR)$(TARGET_PREFIX)/etc/gobject-introspection/...
+# Documentation files should be installed in $(GOBJECT-INTROSPECTION_IPK_DIR)$(TARGET_PREFIX)/doc/gobject-introspection/...
+# Daemon startup scripts should be installed in $(GOBJECT-INTROSPECTION_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??gobject-introspection
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -239,19 +239,19 @@ $(GOBJECT-INTROSPECTION_IPK): $(GOBJECT-INTROSPECTION_BUILD_DIR)/.built
 	$(MAKE) -C $(GOBJECT-INTROSPECTION_BUILD_DIR) DESTDIR=$(GOBJECT-INTROSPECTION_IPK_DIR) install-girepoHEADERS \
 		$(INSTALL)-libLTLIBRARIES install-pkgconfigDATA install-binSCRIPTS install-binPROGRAMS install-m4DATA \
 		$(INSTALL)-man1 install-pkgpyexecLTLIBRARIES install-pkgpyexecPYTHON
-	find $(GOBJECT-INTROSPECTION_IPK_DIR)/opt/lib -type f -name *.la -exec rm -f {} \;
-	-$(STRIP_COMMAND) $(GOBJECT-INTROSPECTION_IPK_DIR)/opt/bin/*
-	$(STRIP_COMMAND) $(addprefix $(GOBJECT-INTROSPECTION_IPK_DIR)/opt/lib/, libgirepository-1.0.so.1.0.0 \
+	find $(GOBJECT-INTROSPECTION_IPK_DIR)$(TARGET_PREFIX)/lib -type f -name *.la -exec rm -f {} \;
+	-$(STRIP_COMMAND) $(GOBJECT-INTROSPECTION_IPK_DIR)$(TARGET_PREFIX)/bin/*
+	$(STRIP_COMMAND) $(addprefix $(GOBJECT-INTROSPECTION_IPK_DIR)$(TARGET_PREFIX)/lib/, libgirepository-1.0.so.1.0.0 \
 		gobject-introspection/giscanner/_giscanner.so)
-	$(MAKE) -C $(GOBJECT-INTROSPECTION_HOST_BUILD_DIR) DESTDIR=$(GOBJECT-INTROSPECTION_IPK_DIR) GIR_DIR=/opt/share/gir-1.0 \
+	$(MAKE) -C $(GOBJECT-INTROSPECTION_HOST_BUILD_DIR) DESTDIR=$(GOBJECT-INTROSPECTION_IPK_DIR) GIR_DIR=$(TARGET_PREFIX)/share/gir-1.0 \
 		$(INSTALL)-girDATA
-	sed -i -e '0,/^#!/s|^#!.*|#!/opt/bin/python2.7|' $(addprefix $(GOBJECT-INTROSPECTION_IPK_DIR)/opt/bin/, g-ir-annotation-tool \
+	sed -i -e '0,/^#!/s|^#!.*|#!$(TARGET_PREFIX)/bin/python2.7|' $(addprefix $(GOBJECT-INTROSPECTION_IPK_DIR)$(TARGET_PREFIX)/bin/, g-ir-annotation-tool \
 							g-ir-doc-tool g-ir-scanner)
-#	$(INSTALL) -d $(GOBJECT-INTROSPECTION_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(GOBJECT-INTROSPECTION_SOURCE_DIR)/gobject-introspection.conf $(GOBJECT-INTROSPECTION_IPK_DIR)/opt/etc/gobject-introspection.conf
-#	$(INSTALL) -d $(GOBJECT-INTROSPECTION_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(GOBJECT-INTROSPECTION_SOURCE_DIR)/rc.gobject-introspection $(GOBJECT-INTROSPECTION_IPK_DIR)/opt/etc/init.d/SXXgobject-introspection
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(GOBJECT-INTROSPECTION_IPK_DIR)/opt/etc/init.d/SXXgobject-introspection
+#	$(INSTALL) -d $(GOBJECT-INTROSPECTION_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(GOBJECT-INTROSPECTION_SOURCE_DIR)/gobject-introspection.conf $(GOBJECT-INTROSPECTION_IPK_DIR)$(TARGET_PREFIX)/etc/gobject-introspection.conf
+#	$(INSTALL) -d $(GOBJECT-INTROSPECTION_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(GOBJECT-INTROSPECTION_SOURCE_DIR)/rc.gobject-introspection $(GOBJECT-INTROSPECTION_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXgobject-introspection
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(GOBJECT-INTROSPECTION_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXgobject-introspection
 	$(MAKE) $(GOBJECT-INTROSPECTION_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 755 $(GOBJECT-INTROSPECTION_SOURCE_DIR)/postinst $(GOBJECT-INTROSPECTION_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(GOBJECT-INTROSPECTION_IPK_DIR)/CONTROL/postinst

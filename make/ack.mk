@@ -87,7 +87,7 @@ $(ACK_IPK): $(ACK_BUILD_DIR)/.built
 	rm -rf $(ACK_IPK_DIR) $(BUILD_DIR)/ack_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(ACK_BUILD_DIR) DESTDIR=$(ACK_IPK_DIR) install
 	find $(ACK_IPK_DIR)$(TARGET_PREFIX) -name 'perllocal.pod' -exec rm -f {} \;
-	(cd $(ACK_IPK_DIR)/opt/lib/perl5 ; \
+	(cd $(ACK_IPK_DIR)$(TARGET_PREFIX)/lib/perl5 ; \
 		find . -name '*.so' -exec chmod +w {} \; ; \
 		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
 		find . -name '*.so' -exec chmod -w {} \; ; \

@@ -19,7 +19,7 @@ DNSMASQ_CONFLICTS=
 DNSMASQ_IPK_VERSION=1
 
 # DNSMASQ_CONFFILES should be a list of user-editable files
-DNSMASQ_CONFFILES=/opt/etc/dnsmasq.conf
+DNSMASQ_CONFFILES=$(TARGET_PREFIX)/etc/dnsmasq.conf
 
 DNSMASQ_PATCHES=$(DNSMASQ_SOURCE_DIR)/conffile.patch $(DNSMASQ_SOURCE_DIR)/src-dnsmasq.h.patch
 
@@ -75,22 +75,22 @@ $(DNSMASQ_IPK_DIR)/CONTROL/control:
 
 $(DNSMASQ_IPK): $(DNSMASQ_BUILD_DIR)/.built
 	rm -rf $(DNSMASQ_IPK_DIR) $(BUILD_DIR)/dnsmasq_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(DNSMASQ_IPK_DIR)/opt/sbin $(DNSMASQ_IPK_DIR)/opt/etc/init.d
-	$(STRIP_COMMAND) $(DNSMASQ_BUILD_DIR)/src/dnsmasq -o $(DNSMASQ_IPK_DIR)/opt/sbin/dnsmasq
-	$(INSTALL) -m 644 $(DNSMASQ_BUILD_DIR)/dnsmasq.conf.example $(DNSMASQ_IPK_DIR)/opt/etc/dnsmasq.conf
-	$(INSTALL) -m 755 $(DNSMASQ_SOURCE_DIR)/rc.dnsmasq $(DNSMASQ_IPK_DIR)/opt/etc/init.d/S56dnsmasq
+	$(INSTALL) -d $(DNSMASQ_IPK_DIR)$(TARGET_PREFIX)/sbin $(DNSMASQ_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(STRIP_COMMAND) $(DNSMASQ_BUILD_DIR)/src/dnsmasq -o $(DNSMASQ_IPK_DIR)$(TARGET_PREFIX)/sbin/dnsmasq
+	$(INSTALL) -m 644 $(DNSMASQ_BUILD_DIR)/dnsmasq.conf.example $(DNSMASQ_IPK_DIR)$(TARGET_PREFIX)/etc/dnsmasq.conf
+	$(INSTALL) -m 755 $(DNSMASQ_SOURCE_DIR)/rc.dnsmasq $(DNSMASQ_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S56dnsmasq
 	$(MAKE) $(DNSMASQ_IPK_DIR)/CONTROL/control	
 	echo $(DNSMASQ_CONFFILES) | sed -e 's/ /\n/g' > $(DNSMASQ_IPK_DIR)/CONTROL/conffiles
 	$(INSTALL) -m 644 $(DNSMASQ_SOURCE_DIR)/postinst $(DNSMASQ_IPK_DIR)/CONTROL/postinst
 	$(INSTALL) -m 644 $(DNSMASQ_SOURCE_DIR)/prerm $(DNSMASQ_IPK_DIR)/CONTROL/prerm
-	$(INSTALL) -d $(DNSMASQ_IPK_DIR)/opt/man/man8 $(DNSMASQ_IPK_DIR)/opt/doc/dnsmasq
-	$(INSTALL) -m 644 $(DNSMASQ_BUILD_DIR)/man/dnsmasq.8  $(DNSMASQ_IPK_DIR)/opt/man/man8/dnsmasq.8
+	$(INSTALL) -d $(DNSMASQ_IPK_DIR)$(TARGET_PREFIX)/man/man8 $(DNSMASQ_IPK_DIR)$(TARGET_PREFIX)/doc/dnsmasq
+	$(INSTALL) -m 644 $(DNSMASQ_BUILD_DIR)/man/dnsmasq.8  $(DNSMASQ_IPK_DIR)$(TARGET_PREFIX)/man/man8/dnsmasq.8
 	$(INSTALL) -m 644 $(DNSMASQ_BUILD_DIR)/dnsmasq.conf.example \
-		$(DNSMASQ_IPK_DIR)/opt/doc/dnsmasq/dnsmasq.conf.example
+		$(DNSMASQ_IPK_DIR)$(TARGET_PREFIX)/doc/dnsmasq/dnsmasq.conf.example
 	$(INSTALL) -m 644 $(DNSMASQ_BUILD_DIR)/doc.html \
-		$(DNSMASQ_IPK_DIR)/opt/doc/dnsmasq/doc.html
+		$(DNSMASQ_IPK_DIR)$(TARGET_PREFIX)/doc/dnsmasq/doc.html
 	$(INSTALL) -m 644 $(DNSMASQ_BUILD_DIR)/setup.html \
-		$(DNSMASQ_IPK_DIR)/opt/doc/dnsmasq/setup.html
+		$(DNSMASQ_IPK_DIR)$(TARGET_PREFIX)/doc/dnsmasq/setup.html
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(DNSMASQ_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(DNSMASQ_IPK_DIR)
 

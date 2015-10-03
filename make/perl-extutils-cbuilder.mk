@@ -83,7 +83,7 @@ $(PERL-EXTUTILS-CBUILDER_IPK): $(PERL-EXTUTILS-CBUILDER_BUILD_DIR)/.built
 	rm -rf $(PERL-EXTUTILS-CBUILDER_IPK_DIR) $(BUILD_DIR)/perl-extutils-cbuilder_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PERL-EXTUTILS-CBUILDER_BUILD_DIR) DESTDIR=$(PERL-EXTUTILS-CBUILDER_IPK_DIR) install
 	find $(PERL-EXTUTILS-CBUILDER_IPK_DIR)$(TARGET_PREFIX) -name 'perllocal.pod' -exec rm -f {} \;
-	(cd $(PERL-EXTUTILS-CBUILDER_IPK_DIR)/opt/lib/perl5 ; \
+	(cd $(PERL-EXTUTILS-CBUILDER_IPK_DIR)$(TARGET_PREFIX)/lib/perl5 ; \
 		find . -name '*.so' -exec chmod +w {} \; ; \
 		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
 		find . -name '*.so' -exec chmod -w {} \; ; \

@@ -40,7 +40,7 @@ DASH_IPK_VERSION=1
 
 #
 # DASH_CONFFILES should be a list of user-editable files
-#DASH_CONFFILES=/opt/etc/dash.conf /opt/etc/init.d/SXXdash
+#DASH_CONFFILES=$(TARGET_PREFIX)/etc/dash.conf $(TARGET_PREFIX)/etc/init.d/SXXdash
 
 #
 # DASH_PATCHES should list any patches, in the the order in
@@ -176,23 +176,23 @@ $(DASH_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(DASH_IPK_DIR)/opt/sbin or $(DASH_IPK_DIR)/opt/bin
+# Binaries should be installed into $(DASH_IPK_DIR)$(TARGET_PREFIX)/sbin or $(DASH_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(DASH_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(DASH_IPK_DIR)/opt/etc/dash/...
-# Documentation files should be installed in $(DASH_IPK_DIR)/opt/doc/dash/...
-# Daemon startup scripts should be installed in $(DASH_IPK_DIR)/opt/etc/init.d/S??dash
+# Libraries and include files should be installed into $(DASH_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(DASH_IPK_DIR)$(TARGET_PREFIX)/etc/dash/...
+# Documentation files should be installed in $(DASH_IPK_DIR)$(TARGET_PREFIX)/doc/dash/...
+# Daemon startup scripts should be installed in $(DASH_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??dash
 #
 # You may need to patch your application to make it use these locations.
 #
 $(DASH_IPK): $(DASH_BUILD_DIR)/.built
 	rm -rf $(DASH_IPK_DIR) $(BUILD_DIR)/dash_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(DASH_BUILD_DIR) DESTDIR=$(DASH_IPK_DIR) install-strip
-#	$(INSTALL) -d $(DASH_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(DASH_SOURCE_DIR)/dash.conf $(DASH_IPK_DIR)/opt/etc/dash.conf
-#	$(INSTALL) -d $(DASH_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(DASH_SOURCE_DIR)/rc.dash $(DASH_IPK_DIR)/opt/etc/init.d/SXXdash
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/opt/etc/init.d/SXXdash
+#	$(INSTALL) -d $(DASH_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(DASH_SOURCE_DIR)/dash.conf $(DASH_IPK_DIR)$(TARGET_PREFIX)/etc/dash.conf
+#	$(INSTALL) -d $(DASH_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(DASH_SOURCE_DIR)/rc.dash $(DASH_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXdash
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXdash
 	$(MAKE) $(DASH_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(DASH_SOURCE_DIR)/postinst $(DASH_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/postinst

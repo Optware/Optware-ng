@@ -86,7 +86,7 @@ VLC_CONFLICTS=
 
 #
 # VLC_CONFFILES should be a list of user-editable files
-#VLC_CONFFILES=/opt/etc/vlc.conf /opt/etc/init.d/SXXvlc
+#VLC_CONFFILES=$(TARGET_PREFIX)/etc/vlc.conf $(TARGET_PREFIX)/etc/init.d/SXXvlc
 
 #
 # VLC_PATCHES should list any patches, in the the order in
@@ -304,8 +304,8 @@ endif
 		--disable-macosx-dialog-provider \
 		--disable-static \
 	)
-	find $(@D) -type f -name Makefile -exec sed -i -e 's|-L/opt/lib|-L$(STAGING_LIB_DIR)|g' \
-	       -e 's;-I/opt/include\|-I/usr/include;-I$(STAGING_INCLUDE_DIR);g' {} \;
+	find $(@D) -type f -name Makefile -exec sed -i -e 's|-L$(TARGET_PREFIX)/lib|-L$(STAGING_LIB_DIR)|g' \
+	       -e 's;-I$(TARGET_PREFIX)/include\|-I/usr/include;-I$(STAGING_INCLUDE_DIR);g' {} \;
 	sed -i -e '/^#define HAVE_SCHED_GETAFFINITY/s|^|//|' $(@D)/config.h
 	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
@@ -361,12 +361,12 @@ endif
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(VLC_IPK_DIR)/opt/sbin or $(VLC_IPK_DIR)/opt/bin
+# Binaries should be installed into $(VLC_IPK_DIR)$(TARGET_PREFIX)/sbin or $(VLC_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(VLC_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(VLC_IPK_DIR)/opt/etc/vlc/...
-# Documentation files should be installed in $(VLC_IPK_DIR)/opt/doc/vlc/...
-# Daemon startup scripts should be installed in $(VLC_IPK_DIR)/opt/etc/init.d/S??vlc
+# Libraries and include files should be installed into $(VLC_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(VLC_IPK_DIR)$(TARGET_PREFIX)/etc/vlc/...
+# Documentation files should be installed in $(VLC_IPK_DIR)$(TARGET_PREFIX)/doc/vlc/...
+# Daemon startup scripts should be installed in $(VLC_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??vlc
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -374,11 +374,11 @@ $(VLC_IPK): $(VLC_BUILD_DIR)/.built
 	rm -rf $(VLC_IPK_DIR) $(BUILD_DIR)/vlc_*_$(TARGET_ARCH).ipk
 	env STRIPPROG=$(TARGET_STRIP) \
 	$(MAKE) -C $(VLC_BUILD_DIR) DESTDIR=$(VLC_IPK_DIR) install-strip program_transform_name=""
-#	$(INSTALL) -d $(VLC_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(VLC_SOURCE_DIR)/vlc.conf $(VLC_IPK_DIR)/opt/etc/vlc.conf
-#	$(INSTALL) -d $(VLC_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(VLC_SOURCE_DIR)/rc.vlc $(VLC_IPK_DIR)/opt/etc/init.d/SXXvlc
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/opt/etc/init.d/SXXvlc
+#	$(INSTALL) -d $(VLC_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(VLC_SOURCE_DIR)/vlc.conf $(VLC_IPK_DIR)$(TARGET_PREFIX)/etc/vlc.conf
+#	$(INSTALL) -d $(VLC_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(VLC_SOURCE_DIR)/rc.vlc $(VLC_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXvlc
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXvlc
 	$(MAKE) $(VLC_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(VLC_SOURCE_DIR)/postinst $(VLC_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/postinst

@@ -42,7 +42,7 @@ PY-IDNA_IPK_VERSION=1
 
 #
 # PY-IDNA_CONFFILES should be a list of user-editable files
-#PY-IDNA_CONFFILES=/opt/etc/py-idna.conf /opt/etc/init.d/SXXpy-idna
+#PY-IDNA_CONFFILES=$(TARGET_PREFIX)/etc/py-idna.conf $(TARGET_PREFIX)/etc/init.d/SXXpy-idna
 
 #
 # PY-IDNA_PATCHES should list any patches, in the the order in
@@ -124,9 +124,9 @@ $(PY-IDNA_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-IDNA_SOURCE) $(PY-IDNA_PATCHES)
 	(cd $(@D)/2.6; \
 	    ( \
 		echo "[install]"; \
-		echo "install_scripts = /opt/bin"; \
+		echo "install_scripts = $(TARGET_PREFIX)/bin"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python2.6"; \
+		echo "executable=$(TARGET_PREFIX)/bin/python2.6"; \
 	    ) >> setup.cfg \
 	)
 #	cd $(BUILD_DIR); $(PY-IDNA_UNZIP) $(DL_DIR)/$(PY-IDNA_SOURCE)
@@ -136,9 +136,9 @@ $(PY-IDNA_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-IDNA_SOURCE) $(PY-IDNA_PATCHES)
 	(cd $(@D)/2.7; \
 	    ( \
 		echo "[install]"; \
-		echo "install_scripts = /opt/bin"; \
+		echo "install_scripts = $(TARGET_PREFIX)/bin"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python2.7"; \
+		echo "executable=$(TARGET_PREFIX)/bin/python2.7"; \
 	    ) >> setup.cfg \
 	)
 #	cd $(BUILD_DIR); $(PY-IDNA_UNZIP) $(DL_DIR)/$(PY-IDNA_SOURCE)
@@ -148,9 +148,9 @@ $(PY-IDNA_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-IDNA_SOURCE) $(PY-IDNA_PATCHES)
 	(cd $(@D)/3; \
 	    ( \
 		echo "[install]"; \
-		echo "install_scripts=/opt/bin"; \
+		echo "install_scripts=$(TARGET_PREFIX)/bin"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python$(PYTHON3_VERSION_MAJOR)"; \
+		echo "executable=$(TARGET_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR)"; \
 	    ) >> setup.cfg; \
 	)
 	touch $@
@@ -178,11 +178,11 @@ py-idna: $(PY-IDNA_BUILD_DIR)/.built
 $(PY-IDNA_BUILD_DIR)/.staged: $(PY-IDNA_BUILD_DIR)/.built
 	rm -f $@
 	(cd $(@D)/2.6; \
-	$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(STAGING_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	(cd $(@D)/2.7; \
-	$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(STAGING_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	(cd $(@D)/3; \
-	$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(STAGING_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	touch $@
 
 $(PY-IDNA_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(PY-IDNA_SOURCE) make/py-idna.mk
@@ -198,13 +198,13 @@ $(PY-IDNA_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(PY-IDNA_SOURCE) 
 	mv $(HOST_BUILD_DIR)/$(PY-IDNA_DIR) $(@D)/3
 	(cd $(@D)/2.6; $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py build)
 	(cd $(@D)/2.6; \
-	$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(HOST_STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	(cd $(@D)/2.7; $(HOST_STAGING_PREFIX)/bin/python2.7 setup.py build)
 	(cd $(@D)/2.7; \
-	$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(HOST_STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	(cd $(@D)/2.7; $(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py build)
 	(cd $(@D)/3; \
-	$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(HOST_STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	touch $@
 
 py-idna-stage: $(PY-IDNA_BUILD_DIR)/.staged
@@ -260,12 +260,12 @@ $(PY3-IDNA_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PY-IDNA_IPK_DIR)/opt/sbin or $(PY-IDNA_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PY-IDNA_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PY-IDNA_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PY-IDNA_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PY-IDNA_IPK_DIR)/opt/etc/py-idna/...
-# Documentation files should be installed in $(PY-IDNA_IPK_DIR)/opt/doc/py-idna/...
-# Daemon startup scripts should be installed in $(PY-IDNA_IPK_DIR)/opt/etc/init.d/S??py-idna
+# Libraries and include files should be installed into $(PY-IDNA_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PY-IDNA_IPK_DIR)$(TARGET_PREFIX)/etc/py-idna/...
+# Documentation files should be installed in $(PY-IDNA_IPK_DIR)$(TARGET_PREFIX)/doc/py-idna/...
+# Daemon startup scripts should be installed in $(PY-IDNA_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??py-idna
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -274,8 +274,8 @@ $(PY26-IDNA_IPK): $(PY-IDNA_BUILD_DIR)/.built
 	rm -rf $(PY26-IDNA_IPK_DIR) $(BUILD_DIR)/py26-idna_*_$(TARGET_ARCH).ipk
 	(cd $(PY-IDNA_BUILD_DIR)/2.6; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
-	$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(PY26-IDNA_IPK_DIR) --prefix=/opt)
-#	rm -f $(PY26-IDNA_IPK_DIR)/opt/bin/easy_install
+	$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(PY26-IDNA_IPK_DIR) --prefix=$(TARGET_PREFIX))
+#	rm -f $(PY26-IDNA_IPK_DIR)$(TARGET_PREFIX)/bin/easy_install
 	$(MAKE) $(PY26-IDNA_IPK_DIR)/CONTROL/control
 	echo $(PY-IDNA_CONFFILES) | sed -e 's/ /\n/g' > $(PY26-IDNA_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-IDNA_IPK_DIR)
@@ -285,8 +285,8 @@ $(PY27-IDNA_IPK): $(PY-IDNA_BUILD_DIR)/.built
 	rm -rf $(PY27-IDNA_IPK_DIR) $(BUILD_DIR)/py27-idna_*_$(TARGET_ARCH).ipk
 	(cd $(PY-IDNA_BUILD_DIR)/2.7; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.7/site-packages \
-	$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(PY27-IDNA_IPK_DIR) --prefix=/opt)
-	rm -f $(PY27-IDNA_IPK_DIR)/opt/bin/easy_install
+	$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(PY27-IDNA_IPK_DIR) --prefix=$(TARGET_PREFIX))
+	rm -f $(PY27-IDNA_IPK_DIR)$(TARGET_PREFIX)/bin/easy_install
 	$(MAKE) $(PY27-IDNA_IPK_DIR)/CONTROL/control
 	echo $(PY-IDNA_CONFFILES) | sed -e 's/ /\n/g' > $(PY27-IDNA_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY27-IDNA_IPK_DIR)
@@ -296,8 +296,8 @@ $(PY3-IDNA_IPK): $(PY-IDNA_BUILD_DIR)/.built
 	rm -rf $(PY3-IDNA_IPK_DIR) $(BUILD_DIR)/py3-idna_*_$(TARGET_ARCH).ipk
 	(cd $(PY-IDNA_BUILD_DIR)/3; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python$(PYTHON3_VERSION_MAJOR)/site-packages \
-	$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(PY3-IDNA_IPK_DIR) --prefix=/opt)
-	rm -f $(PY3-IDNA_IPK_DIR)/opt/bin/easy_install
+	$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(PY3-IDNA_IPK_DIR) --prefix=$(TARGET_PREFIX))
+	rm -f $(PY3-IDNA_IPK_DIR)$(TARGET_PREFIX)/bin/easy_install
 	$(MAKE) $(PY3-IDNA_IPK_DIR)/CONTROL/control
 	echo $(PY-IDNA_CONFFILES) | sed -e 's/ /\n/g' > $(PY3-IDNA_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY3-IDNA_IPK_DIR)

@@ -9,8 +9,8 @@
 
 UCLIBC-OPT_VERSION ?= 0.9.28
 UCLIBC-OPT_IPK_VERSION ?= $(BUILDROOT_IPK_VERSION)
-UCLIBC-OPT_LIBS_SOURCE_DIR ?= $(BUILDROOT_BUILD_DIR)/build_$(TARGET_ARCH)/root/opt/lib
-ifeq ($(UCLIBC-OPT_LIBS_SOURCE_DIR),$(BUILDROOT_BUILD_DIR)/build_$(TARGET_ARCH)/root/opt/lib)
+UCLIBC-OPT_LIBS_SOURCE_DIR ?= $(BUILDROOT_BUILD_DIR)/build_$(TARGET_ARCH)/root$(TARGET_PREFIX)/lib
+ifeq ($(UCLIBC-OPT_LIBS_SOURCE_DIR),$(BUILDROOT_BUILD_DIR)/build_$(TARGET_ARCH)/root$(TARGET_PREFIX)/lib)
 UCLIBC-OPT_FROM_BUILDROOT=1
 endif
 
@@ -72,12 +72,12 @@ $(UCLIBC-OPT_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(UCLIBC-OPT_IPK_DIR)/opt/sbin or $(UCLIBC-OPT_IPK_DIR)/opt/bin
+# Binaries should be installed into $(UCLIBC-OPT_IPK_DIR)$(TARGET_PREFIX)/sbin or $(UCLIBC-OPT_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(UCLIBC-OPT_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(UCLIBC-OPT_IPK_DIR)/opt/etc/uclibc-opt/...
-# Documentation files should be installed in $(UCLIBC-OPT_IPK_DIR)/opt/doc/uclibc-opt/...
-# Daemon startup scripts should be installed in $(UCLIBC-OPT_IPK_DIR)/opt/etc/init.d/S??uclibc-opt
+# Libraries and include files should be installed into $(UCLIBC-OPT_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(UCLIBC-OPT_IPK_DIR)$(TARGET_PREFIX)/etc/uclibc-opt/...
+# Documentation files should be installed in $(UCLIBC-OPT_IPK_DIR)$(TARGET_PREFIX)/doc/uclibc-opt/...
+# Daemon startup scripts should be installed in $(UCLIBC-OPT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??uclibc-opt
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -115,20 +115,20 @@ endif
 	$(INSTALL) -d $(UCLIBC-OPT_IPK_DIR)
 #	$(MAKE) -C $(BUILDROOT_BUILD_DIR) DESTDIR=$(UCLIBC-OPT_IPK_DIR) install-strip
 #	tar -xv -C $(UCLIBC-OPT_IPK_DIR) -f $(BUILDROOT_BUILD_DIR)/rootfs.$(TARGET_ARCH).tar \
-#		--wildcards $(UCLIBC-OPT_LIBS_PATTERN) ./opt/sbin/ldconfig
-	$(INSTALL) -d $(UCLIBC-OPT_IPK_DIR)/opt/etc
-	$(INSTALL) -d $(UCLIBC-OPT_IPK_DIR)/opt/lib
-	cp -af $(UCLIBC-OPT_LIBS_PATTERN) $(UCLIBC-OPT_IPK_DIR)/opt/lib
-	-$(STRIP_COMMAND) $(patsubst %, $(UCLIBC-OPT_IPK_DIR)/opt/lib/%*so*, $(UCLIBC-OPT_LIBS))
+#		--wildcards $(UCLIBC-OPT_LIBS_PATTERN) .$(TARGET_PREFIX)/sbin/ldconfig
+	$(INSTALL) -d $(UCLIBC-OPT_IPK_DIR)$(TARGET_PREFIX)/etc
+	$(INSTALL) -d $(UCLIBC-OPT_IPK_DIR)$(TARGET_PREFIX)/lib
+	cp -af $(UCLIBC-OPT_LIBS_PATTERN) $(UCLIBC-OPT_IPK_DIR)$(TARGET_PREFIX)/lib
+	-$(STRIP_COMMAND) $(patsubst %, $(UCLIBC-OPT_IPK_DIR)$(TARGET_PREFIX)/lib/%*so*, $(UCLIBC-OPT_LIBS))
 	### package non-stripped libpthread and libthread_db
 	cp -f $(UCLIBC-OPT_LIBS_SOURCE_DIR)/libpthread* $(UCLIBC-OPT_LIBS_SOURCE_DIR)/libthread_db* \
-							$(UCLIBC-OPT_IPK_DIR)/opt/lib
+							$(UCLIBC-OPT_IPK_DIR)$(TARGET_PREFIX)/lib
 	$(MAKE) $(UCLIBC-OPT_IPK_DIR)/CONTROL/control
 ifdef UCLIBC-OPT_FROM_BUILDROOT
-	$(INSTALL) -d $(UCLIBC-OPT_IPK_DIR)/opt/usr/lib
-	$(INSTALL) -d $(UCLIBC-OPT_IPK_DIR)/opt/sbin
-	$(INSTALL) -m 755 $(BUILDROOT_BUILD_DIR)/build_$(TARGET_ARCH)/root/opt/sbin/ldconfig \
-		$(UCLIBC-OPT_IPK_DIR)/opt/sbin
+	$(INSTALL) -d $(UCLIBC-OPT_IPK_DIR)$(TARGET_PREFIX)/usr/lib
+	$(INSTALL) -d $(UCLIBC-OPT_IPK_DIR)$(TARGET_PREFIX)/sbin
+	$(INSTALL) -m 755 $(BUILDROOT_BUILD_DIR)/build_$(TARGET_ARCH)/root$(TARGET_PREFIX)/sbin/ldconfig \
+		$(UCLIBC-OPT_IPK_DIR)$(TARGET_PREFIX)/sbin
 	$(INSTALL) -m 755 $(BUILDROOT_SOURCE_DIR)/postinst $(UCLIBC-OPT_IPK_DIR)/CONTROL/postinst
 endif
 #	$(INSTALL) -m 755 $(BUILDROOT_SOURCE_DIR)/prerm $(UCLIBC-OPT_IPK_DIR)/CONTROL/prerm

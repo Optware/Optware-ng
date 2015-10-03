@@ -40,7 +40,7 @@ OLEO_IPK_VERSION=2
 
 #
 # OLEO_CONFFILES should be a list of user-editable files
-#OLEO_CONFFILES=/opt/etc/oleo.conf /opt/etc/init.d/SXXoleo
+#OLEO_CONFFILES=$(TARGET_PREFIX)/etc/oleo.conf $(TARGET_PREFIX)/etc/init.d/SXXoleo
 
 #
 # OLEO_PATCHES should list any patches, in the the order in
@@ -183,25 +183,25 @@ $(OLEO_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(OLEO_IPK_DIR)/opt/sbin or $(OLEO_IPK_DIR)/opt/bin
+# Binaries should be installed into $(OLEO_IPK_DIR)$(TARGET_PREFIX)/sbin or $(OLEO_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(OLEO_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(OLEO_IPK_DIR)/opt/etc/oleo/...
-# Documentation files should be installed in $(OLEO_IPK_DIR)/opt/doc/oleo/...
-# Daemon startup scripts should be installed in $(OLEO_IPK_DIR)/opt/etc/init.d/S??oleo
+# Libraries and include files should be installed into $(OLEO_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(OLEO_IPK_DIR)$(TARGET_PREFIX)/etc/oleo/...
+# Documentation files should be installed in $(OLEO_IPK_DIR)$(TARGET_PREFIX)/doc/oleo/...
+# Daemon startup scripts should be installed in $(OLEO_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??oleo
 #
 # You may need to patch your application to make it use these locations.
 #
 $(OLEO_IPK): $(OLEO_BUILD_DIR)/.built
 	rm -rf $(OLEO_IPK_DIR) $(BUILD_DIR)/oleo_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(OLEO_BUILD_DIR) prefix=$(OLEO_IPK_DIR)$(TARGET_PREFIX) install
-	rm -f $(OLEO_IPK_DIR)/opt/info/dir
-	$(STRIP_COMMAND) $(OLEO_IPK_DIR)/opt/bin/oleo
-#	$(INSTALL) -d $(OLEO_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(OLEO_SOURCE_DIR)/oleo.conf $(OLEO_IPK_DIR)/opt/etc/oleo.conf
-#	$(INSTALL) -d $(OLEO_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(OLEO_SOURCE_DIR)/rc.oleo $(OLEO_IPK_DIR)/opt/etc/init.d/SXXoleo
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(OLEO_IPK_DIR)/opt/etc/init.d/SXXoleo
+	rm -f $(OLEO_IPK_DIR)$(TARGET_PREFIX)/info/dir
+	$(STRIP_COMMAND) $(OLEO_IPK_DIR)$(TARGET_PREFIX)/bin/oleo
+#	$(INSTALL) -d $(OLEO_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(OLEO_SOURCE_DIR)/oleo.conf $(OLEO_IPK_DIR)$(TARGET_PREFIX)/etc/oleo.conf
+#	$(INSTALL) -d $(OLEO_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(OLEO_SOURCE_DIR)/rc.oleo $(OLEO_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXoleo
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(OLEO_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXoleo
 	$(MAKE) $(OLEO_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(OLEO_SOURCE_DIR)/postinst $(OLEO_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(OLEO_IPK_DIR)/CONTROL/postinst

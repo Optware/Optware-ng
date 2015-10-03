@@ -41,7 +41,7 @@ PY-SELECTOR_IPK_VERSION=1
 
 #
 # PY-SELECTOR_CONFFILES should be a list of user-editable files
-#PY-SELECTOR_CONFFILES=/opt/etc/py-selector.conf /opt/etc/init.d/SXXpy-selector
+#PY-SELECTOR_CONFFILES=$(TARGET_PREFIX)/etc/py-selector.conf $(TARGET_PREFIX)/etc/init.d/SXXpy-selector
 
 #
 # PY-SELECTOR_PATCHES should list any patches, in the the order in
@@ -117,7 +117,7 @@ $(PY-SELECTOR_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SELECTOR_SOURCE) $(PY-SELEC
 	(cd $(PY-SELECTOR_BUILD_DIR)/2.4; \
 	    sed -i -e '/use_setuptools/d' setup.py; \
 	    (echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python2.4") >> setup.cfg \
+	    echo "executable=$(TARGET_PREFIX)/bin/python2.4") >> setup.cfg \
 	)
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-SELECTOR_DIR)
@@ -127,7 +127,7 @@ $(PY-SELECTOR_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SELECTOR_SOURCE) $(PY-SELEC
 	(cd $(PY-SELECTOR_BUILD_DIR)/2.5; \
 	    sed -i -e '/use_setuptools/d' setup.py; \
 	    (echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python2.5") >> setup.cfg \
+	    echo "executable=$(TARGET_PREFIX)/bin/python2.5") >> setup.cfg \
 	)
 	touch $@
 
@@ -196,12 +196,12 @@ $(PY25-SELECTOR_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PY-SELECTOR_IPK_DIR)/opt/sbin or $(PY-SELECTOR_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PY-SELECTOR_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PY-SELECTOR_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PY-SELECTOR_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PY-SELECTOR_IPK_DIR)/opt/etc/py-selector/...
-# Documentation files should be installed in $(PY-SELECTOR_IPK_DIR)/opt/doc/py-selector/...
-# Daemon startup scripts should be installed in $(PY-SELECTOR_IPK_DIR)/opt/etc/init.d/S??py-selector
+# Libraries and include files should be installed into $(PY-SELECTOR_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PY-SELECTOR_IPK_DIR)$(TARGET_PREFIX)/etc/py-selector/...
+# Documentation files should be installed in $(PY-SELECTOR_IPK_DIR)$(TARGET_PREFIX)/doc/py-selector/...
+# Daemon startup scripts should be installed in $(PY-SELECTOR_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??py-selector
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -210,7 +210,7 @@ $(PY24-SELECTOR_IPK): $(PY-SELECTOR_BUILD_DIR)/.built
 	(cd $(PY-SELECTOR_BUILD_DIR)/2.4; \
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
-		--root=$(PY24-SELECTOR_IPK_DIR) --prefix=/opt)
+		--root=$(PY24-SELECTOR_IPK_DIR) --prefix=$(TARGET_PREFIX))
 	$(MAKE) $(PY24-SELECTOR_IPK_DIR)/CONTROL/control
 #	echo $(PY-SELECTOR_CONFFILES) | sed -e 's/ /\n/g' > $(PY24-SELECTOR_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-SELECTOR_IPK_DIR)
@@ -220,7 +220,7 @@ $(PY25-SELECTOR_IPK): $(PY-SELECTOR_BUILD_DIR)/.built
 	(cd $(PY-SELECTOR_BUILD_DIR)/2.5; \
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
-		--root=$(PY25-SELECTOR_IPK_DIR) --prefix=/opt)
+		--root=$(PY25-SELECTOR_IPK_DIR) --prefix=$(TARGET_PREFIX))
 	$(MAKE) $(PY25-SELECTOR_IPK_DIR)/CONTROL/control
 #	echo $(PY-SELECTOR_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-SELECTOR_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-SELECTOR_IPK_DIR)

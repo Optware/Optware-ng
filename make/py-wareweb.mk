@@ -46,7 +46,7 @@ PY-WAREWEB_CONFLICTS=
 
 #
 # PY-WAREWEB_CONFFILES should be a list of user-editable files
-#PY-WAREWEB_CONFFILES=/opt/etc/py-wareweb.conf /opt/etc/init.d/SXXpy-wareweb
+#PY-WAREWEB_CONFFILES=$(TARGET_PREFIX)/etc/py-wareweb.conf $(TARGET_PREFIX)/etc/init.d/SXXpy-wareweb
 
 #
 # PY-WAREWEB_PATCHES should list any patches, in the the order in
@@ -121,7 +121,7 @@ endif
         fi
 	mv $(BUILD_DIR)/$(PY-WAREWEB_DIR) $(PY-WAREWEB_BUILD_DIR)
 	(cd $(PY-WAREWEB_BUILD_DIR); \
-	    (echo "[build_scripts]"; echo "executable=/opt/bin/python") >> setup.cfg \
+	    (echo "[build_scripts]"; echo "executable=$(TARGET_PREFIX)/bin/python") >> setup.cfg \
 	)
 	touch $(PY-WAREWEB_BUILD_DIR)/.configured
 
@@ -171,12 +171,12 @@ $(PY-WAREWEB_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PY-WAREWEB_IPK_DIR)/opt/sbin or $(PY-WAREWEB_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PY-WAREWEB_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PY-WAREWEB_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PY-WAREWEB_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PY-WAREWEB_IPK_DIR)/opt/etc/py-wareweb/...
-# Documentation files should be installed in $(PY-WAREWEB_IPK_DIR)/opt/doc/py-wareweb/...
-# Daemon startup scripts should be installed in $(PY-WAREWEB_IPK_DIR)/opt/etc/init.d/S??py-wareweb
+# Libraries and include files should be installed into $(PY-WAREWEB_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PY-WAREWEB_IPK_DIR)$(TARGET_PREFIX)/etc/py-wareweb/...
+# Documentation files should be installed in $(PY-WAREWEB_IPK_DIR)$(TARGET_PREFIX)/doc/py-wareweb/...
+# Daemon startup scripts should be installed in $(PY-WAREWEB_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??py-wareweb
 #
 # You may need to patch your application to make it use these locations.
 #

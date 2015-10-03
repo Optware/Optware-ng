@@ -42,7 +42,7 @@ PY-CPARSER_IPK_VERSION=1
 
 #
 # PY-CPARSER_CONFFILES should be a list of user-editable files
-#PY-CPARSER_CONFFILES=/opt/etc/py-cparser.conf /opt/etc/init.d/SXXpy-cparser
+#PY-CPARSER_CONFFILES=$(TARGET_PREFIX)/etc/py-cparser.conf $(TARGET_PREFIX)/etc/init.d/SXXpy-cparser
 
 #
 # PY-CPARSER_PATCHES should list any patches, in the the order in
@@ -123,9 +123,9 @@ $(PY-CPARSER_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CPARSER_SOURCE) $(PY-CPARSER
 	(cd $(@D)/2.6; \
 	    ( \
 		echo "[install]"; \
-		echo "install_scripts = /opt/bin"; \
+		echo "install_scripts = $(TARGET_PREFIX)/bin"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python2.6"; \
+		echo "executable=$(TARGET_PREFIX)/bin/python2.6"; \
 	    ) >> setup.cfg \
 	)
 #	cd $(BUILD_DIR); $(PY-CPARSER_UNZIP) $(DL_DIR)/$(PY-CPARSER_SOURCE)
@@ -135,9 +135,9 @@ $(PY-CPARSER_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CPARSER_SOURCE) $(PY-CPARSER
 	(cd $(@D)/2.7; \
 	    ( \
 		echo "[install]"; \
-		echo "install_scripts = /opt/bin"; \
+		echo "install_scripts = $(TARGET_PREFIX)/bin"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python2.7"; \
+		echo "executable=$(TARGET_PREFIX)/bin/python2.7"; \
 	    ) >> setup.cfg \
 	)
 #	cd $(BUILD_DIR); $(PY-CPARSER_UNZIP) $(DL_DIR)/$(PY-CPARSER_SOURCE)
@@ -147,9 +147,9 @@ $(PY-CPARSER_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CPARSER_SOURCE) $(PY-CPARSER
 	(cd $(@D)/3; \
 	    ( \
 		echo "[install]"; \
-		echo "install_scripts = /opt/bin"; \
+		echo "install_scripts = $(TARGET_PREFIX)/bin"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python$(PYTHON3_VERSION_MAJOR)"; \
+		echo "executable=$(TARGET_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR)"; \
 	    ) >> setup.cfg \
 	)
 	touch $@
@@ -178,13 +178,13 @@ $(PY-CPARSER_BUILD_DIR)/.staged: $(PY-CPARSER_BUILD_DIR)/.built
 	rm -f $@
 	rm -rf $(STAGING_LIB_DIR)/python2.6/site-packages/pycparser*
 	(cd $(@D)/2.6; \
-	$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(STAGING_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	rm -rf $(STAGING_LIB_DIR)/python2.7/site-packages/pycparser*
 	(cd $(@D)/2.7; \
-	$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(STAGING_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	rm -rf $(STAGING_LIB_DIR)/python$(PYTHON3_VERSION_MAJOR)/site-packages/pycparser*
 	(cd $(@D)/3; \
-	$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(STAGING_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	touch $@
 
 $(PY-CPARSER_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(PY-CPARSER_SOURCE) make/py-cparser.mk
@@ -199,13 +199,13 @@ $(PY-CPARSER_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(PY-CPARSER_SO
 	mv $(HOST_BUILD_DIR)/$(PY-CPARSER_DIR) $(@D)/3
 	(cd $(@D)/2.6; $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py build)
 	(cd $(@D)/2.6; \
-	$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(HOST_STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	(cd $(@D)/2.7; $(HOST_STAGING_PREFIX)/bin/python2.7 setup.py build)
 	(cd $(@D)/2.7; \
-	$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(HOST_STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	(cd $(@D)/3; $(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py build)
 	(cd $(@D)/3; \
-	$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(HOST_STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	touch $@
 
 py-cparser-stage: $(PY-CPARSER_BUILD_DIR)/.staged
@@ -261,12 +261,12 @@ $(PY3-CPARSER_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PY-CPARSER_IPK_DIR)/opt/sbin or $(PY-CPARSER_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PY-CPARSER_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PY-CPARSER_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PY-CPARSER_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PY-CPARSER_IPK_DIR)/opt/etc/py-cparser/...
-# Documentation files should be installed in $(PY-CPARSER_IPK_DIR)/opt/doc/py-cparser/...
-# Daemon startup scripts should be installed in $(PY-CPARSER_IPK_DIR)/opt/etc/init.d/S??py-cparser
+# Libraries and include files should be installed into $(PY-CPARSER_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PY-CPARSER_IPK_DIR)$(TARGET_PREFIX)/etc/py-cparser/...
+# Documentation files should be installed in $(PY-CPARSER_IPK_DIR)$(TARGET_PREFIX)/doc/py-cparser/...
+# Daemon startup scripts should be installed in $(PY-CPARSER_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??py-cparser
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -275,8 +275,8 @@ $(PY26-CPARSER_IPK): $(PY-CPARSER_BUILD_DIR)/.built
 	rm -rf $(PY26-CPARSER_IPK_DIR) $(BUILD_DIR)/py26-cparser_*_$(TARGET_ARCH).ipk
 	(cd $(PY-CPARSER_BUILD_DIR)/2.6; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
-	$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(PY26-CPARSER_IPK_DIR) --prefix=/opt)
-#	rm -f $(PY26-CPARSER_IPK_DIR)/opt/bin/easy_install
+	$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(PY26-CPARSER_IPK_DIR) --prefix=$(TARGET_PREFIX))
+#	rm -f $(PY26-CPARSER_IPK_DIR)$(TARGET_PREFIX)/bin/easy_install
 	$(MAKE) $(PY26-CPARSER_IPK_DIR)/CONTROL/control
 	echo $(PY-CPARSER_CONFFILES) | sed -e 's/ /\n/g' > $(PY26-CPARSER_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-CPARSER_IPK_DIR)
@@ -286,8 +286,8 @@ $(PY27-CPARSER_IPK): $(PY-CPARSER_BUILD_DIR)/.built
 	rm -rf $(PY27-CPARSER_IPK_DIR) $(BUILD_DIR)/py27-cparser_*_$(TARGET_ARCH).ipk
 	(cd $(PY-CPARSER_BUILD_DIR)/2.7; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.7/site-packages \
-	$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(PY27-CPARSER_IPK_DIR) --prefix=/opt)
-	rm -f $(PY27-CPARSER_IPK_DIR)/opt/bin/easy_install
+	$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(PY27-CPARSER_IPK_DIR) --prefix=$(TARGET_PREFIX))
+	rm -f $(PY27-CPARSER_IPK_DIR)$(TARGET_PREFIX)/bin/easy_install
 	$(MAKE) $(PY27-CPARSER_IPK_DIR)/CONTROL/control
 	echo $(PY-CPARSER_CONFFILES) | sed -e 's/ /\n/g' > $(PY27-CPARSER_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY27-CPARSER_IPK_DIR)
@@ -297,8 +297,8 @@ $(PY3-CPARSER_IPK): $(PY-CPARSER_BUILD_DIR)/.built
 	rm -rf $(PY3-CPARSER_IPK_DIR) $(BUILD_DIR)/py3-cparser_*_$(TARGET_ARCH).ipk
 	(cd $(PY-CPARSER_BUILD_DIR)/3; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python$(PYTHON3_VERSION_MAJOR)/site-packages \
-	$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(PY3-CPARSER_IPK_DIR) --prefix=/opt)
-	rm -f $(PY3-CPARSER_IPK_DIR)/opt/bin/easy_install
+	$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(PY3-CPARSER_IPK_DIR) --prefix=$(TARGET_PREFIX))
+	rm -f $(PY3-CPARSER_IPK_DIR)$(TARGET_PREFIX)/bin/easy_install
 	$(MAKE) $(PY3-CPARSER_IPK_DIR)/CONTROL/control
 	echo $(PY-CPARSER_CONFFILES) | sed -e 's/ /\n/g' > $(PY3-CPARSER_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY3-CPARSER_IPK_DIR)

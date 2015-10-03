@@ -41,7 +41,7 @@ PY-SIMPLEJSON_IPK_VERSION=1
 
 #
 # PY-SIMPLEJSON_CONFFILES should be a list of user-editable files
-#PY-SIMPLEJSON_CONFFILES=/opt/etc/py-simplejson.conf /opt/etc/init.d/SXXpy-simplejson
+#PY-SIMPLEJSON_CONFFILES=$(TARGET_PREFIX)/etc/py-simplejson.conf $(TARGET_PREFIX)/etc/init.d/SXXpy-simplejson
 
 #
 # PY-SIMPLEJSON_PATCHES should list any patches, in the the order in
@@ -120,9 +120,9 @@ $(PY-SIMPLEJSON_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SIMPLEJSON_SOURCE) $(PY-S
 	    echo "[build_ext]"; \
 	    echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.5"; \
 	    echo "library-dirs=$(STAGING_LIB_DIR)"; \
-	    echo "rpath=/opt/lib"; \
+	    echo "rpath=$(TARGET_PREFIX)/lib"; \
 	    echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python2.5") >> setup.cfg \
+	    echo "executable=$(TARGET_PREFIX)/bin/python2.5") >> setup.cfg \
 	)
 	# 2.6
 	rm -rf $(BUILD_DIR)/$(PY-SIMPLEJSON_DIR)
@@ -134,9 +134,9 @@ $(PY-SIMPLEJSON_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SIMPLEJSON_SOURCE) $(PY-S
 	    echo "[build_ext]"; \
 	    echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.6"; \
 	    echo "library-dirs=$(STAGING_LIB_DIR)"; \
-	    echo "rpath=/opt/lib"; \
+	    echo "rpath=$(TARGET_PREFIX)/lib"; \
 	    echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python2.6") >> setup.cfg \
+	    echo "executable=$(TARGET_PREFIX)/bin/python2.6") >> setup.cfg \
 	)
 	touch $@
 
@@ -207,12 +207,12 @@ $(PY26-SIMPLEJSON_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PY-SIMPLEJSON_IPK_DIR)/opt/sbin or $(PY-SIMPLEJSON_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PY-SIMPLEJSON_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PY-SIMPLEJSON_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PY-SIMPLEJSON_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PY-SIMPLEJSON_IPK_DIR)/opt/etc/py-simplejson/...
-# Documentation files should be installed in $(PY-SIMPLEJSON_IPK_DIR)/opt/doc/py-simplejson/...
-# Daemon startup scripts should be installed in $(PY-SIMPLEJSON_IPK_DIR)/opt/etc/init.d/S??py-simplejson
+# Libraries and include files should be installed into $(PY-SIMPLEJSON_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PY-SIMPLEJSON_IPK_DIR)$(TARGET_PREFIX)/etc/py-simplejson/...
+# Documentation files should be installed in $(PY-SIMPLEJSON_IPK_DIR)$(TARGET_PREFIX)/doc/py-simplejson/...
+# Daemon startup scripts should be installed in $(PY-SIMPLEJSON_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??py-simplejson
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -222,8 +222,8 @@ $(PY25-SIMPLEJSON_IPK): $(PY-SIMPLEJSON_BUILD_DIR)/.built
 	cd $(PY-SIMPLEJSON_BUILD_DIR)/2.5; \
 	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
-	    --root=$(PY25-SIMPLEJSON_IPK_DIR) --prefix=/opt
-	$(STRIP_COMMAND) $(PY25-SIMPLEJSON_IPK_DIR)/opt/lib/python2.5/site-packages/simplejson/*.so
+	    --root=$(PY25-SIMPLEJSON_IPK_DIR) --prefix=$(TARGET_PREFIX)
+	$(STRIP_COMMAND) $(PY25-SIMPLEJSON_IPK_DIR)$(TARGET_PREFIX)/lib/python2.5/site-packages/simplejson/*.so
 	$(MAKE) $(PY25-SIMPLEJSON_IPK_DIR)/CONTROL/control
 #	echo $(PY-SIMPLEJSON_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-SIMPLEJSON_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-SIMPLEJSON_IPK_DIR)
@@ -233,8 +233,8 @@ $(PY26-SIMPLEJSON_IPK): $(PY-SIMPLEJSON_BUILD_DIR)/.built
 	cd $(PY-SIMPLEJSON_BUILD_DIR)/2.6; \
 	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
 	    $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install \
-	    --root=$(PY26-SIMPLEJSON_IPK_DIR) --prefix=/opt
-	$(STRIP_COMMAND) $(PY26-SIMPLEJSON_IPK_DIR)/opt/lib/python2.6/site-packages/simplejson/*.so
+	    --root=$(PY26-SIMPLEJSON_IPK_DIR) --prefix=$(TARGET_PREFIX)
+	$(STRIP_COMMAND) $(PY26-SIMPLEJSON_IPK_DIR)$(TARGET_PREFIX)/lib/python2.6/site-packages/simplejson/*.so
 	$(MAKE) $(PY26-SIMPLEJSON_IPK_DIR)/CONTROL/control
 #	echo $(PY-SIMPLEJSON_CONFFILES) | sed -e 's/ /\n/g' > $(PY26-SIMPLEJSON_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-SIMPLEJSON_IPK_DIR)

@@ -207,12 +207,12 @@ $(PCRE-DEV_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PCRE_IPK_DIR)/opt/sbin or $(PCRE_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PCRE_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PCRE_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PCRE_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PCRE_IPK_DIR)/opt/etc/pcre/...
-# Documentation files should be installed in $(PCRE_IPK_DIR)/opt/doc/pcre/...
-# Daemon startup scripts should be installed in $(PCRE_IPK_DIR)/opt/etc/init.d/S??pcre
+# Libraries and include files should be installed into $(PCRE_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PCRE_IPK_DIR)$(TARGET_PREFIX)/etc/pcre/...
+# Documentation files should be installed in $(PCRE_IPK_DIR)$(TARGET_PREFIX)/doc/pcre/...
+# Daemon startup scripts should be installed in $(PCRE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??pcre
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -221,19 +221,19 @@ $(PCRE_IPK) $(PCRE-DEV_IPK): $(PCRE_BUILD_DIR)/.built
 	rm -rf $(PCRE-DEV_IPK_DIR) $(BUILD_DIR)/pcre-dev_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PCRE_BUILD_DIR) DESTDIR=$(PCRE_IPK_DIR) install
 	find $(PCRE_IPK_DIR) -type d -exec chmod go+rx {} \;
-	$(STRIP_COMMAND) $(PCRE_IPK_DIR)/opt/bin/pcregrep
-	$(STRIP_COMMAND) $(PCRE_IPK_DIR)/opt/bin/pcretest
-	$(STRIP_COMMAND) $(PCRE_IPK_DIR)/opt/lib/*.so
-	rm -f $(PCRE_IPK_DIR)/opt/lib/*.la
-	$(INSTALL) -d $(PCRE-DEV_IPK_DIR)/opt/bin
-	mv $(PCRE_IPK_DIR)/opt/bin/pcre-config $(PCRE-DEV_IPK_DIR)/opt/bin/
-	$(INSTALL) -d $(PCRE-DEV_IPK_DIR)/opt/lib
-	mv $(PCRE_IPK_DIR)/opt/share $(PCRE_IPK_DIR)/opt/include $(PCRE-DEV_IPK_DIR)/opt/
-	mv $(PCRE_IPK_DIR)/opt/lib/pkgconfig $(PCRE-DEV_IPK_DIR)/opt/lib/
-	$(INSTALL) -d $(PCRE_IPK_DIR)/opt/share/doc/pcre
-	mv $(PCRE-DEV_IPK_DIR)/opt/share/doc/pcre/[ACLNR]* $(PCRE_IPK_DIR)/opt/share/doc/pcre/
-	$(INSTALL) -d $(PCRE_IPK_DIR)/opt/share/man/man1
-	mv $(PCRE-DEV_IPK_DIR)/opt/share/man/man1/pcre[gt]* $(PCRE_IPK_DIR)/opt/share/man/man1/
+	$(STRIP_COMMAND) $(PCRE_IPK_DIR)$(TARGET_PREFIX)/bin/pcregrep
+	$(STRIP_COMMAND) $(PCRE_IPK_DIR)$(TARGET_PREFIX)/bin/pcretest
+	$(STRIP_COMMAND) $(PCRE_IPK_DIR)$(TARGET_PREFIX)/lib/*.so
+	rm -f $(PCRE_IPK_DIR)$(TARGET_PREFIX)/lib/*.la
+	$(INSTALL) -d $(PCRE-DEV_IPK_DIR)$(TARGET_PREFIX)/bin
+	mv $(PCRE_IPK_DIR)$(TARGET_PREFIX)/bin/pcre-config $(PCRE-DEV_IPK_DIR)$(TARGET_PREFIX)/bin/
+	$(INSTALL) -d $(PCRE-DEV_IPK_DIR)$(TARGET_PREFIX)/lib
+	mv $(PCRE_IPK_DIR)$(TARGET_PREFIX)/share $(PCRE_IPK_DIR)$(TARGET_PREFIX)/include $(PCRE-DEV_IPK_DIR)$(TARGET_PREFIX)/
+	mv $(PCRE_IPK_DIR)$(TARGET_PREFIX)/lib/pkgconfig $(PCRE-DEV_IPK_DIR)$(TARGET_PREFIX)/lib/
+	$(INSTALL) -d $(PCRE_IPK_DIR)$(TARGET_PREFIX)/share/doc/pcre
+	mv $(PCRE-DEV_IPK_DIR)$(TARGET_PREFIX)/share/doc/pcre/[ACLNR]* $(PCRE_IPK_DIR)$(TARGET_PREFIX)/share/doc/pcre/
+	$(INSTALL) -d $(PCRE_IPK_DIR)$(TARGET_PREFIX)/share/man/man1
+	mv $(PCRE-DEV_IPK_DIR)$(TARGET_PREFIX)/share/man/man1/pcre[gt]* $(PCRE_IPK_DIR)$(TARGET_PREFIX)/share/man/man1/
 	$(MAKE) $(PCRE_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PCRE_IPK_DIR)
 	$(MAKE) $(PCRE-DEV_IPK_DIR)/CONTROL/control

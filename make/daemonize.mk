@@ -40,7 +40,7 @@ DAEMONIZE_IPK_VERSION=2
 
 #
 # DAEMONIZE_CONFFILES should be a list of user-editable files
-#DAEMONIZE_CONFFILES=/opt/etc/daemonize.conf /opt/etc/init.d/SXXdaemonize
+#DAEMONIZE_CONFFILES=$(TARGET_PREFIX)/etc/daemonize.conf $(TARGET_PREFIX)/etc/init.d/SXXdaemonize
 
 #
 # DAEMONIZE_PATCHES should list any patches, in the the order in
@@ -179,24 +179,24 @@ $(DAEMONIZE_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(DAEMONIZE_IPK_DIR)/opt/sbin or $(DAEMONIZE_IPK_DIR)/opt/bin
+# Binaries should be installed into $(DAEMONIZE_IPK_DIR)$(TARGET_PREFIX)/sbin or $(DAEMONIZE_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(DAEMONIZE_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(DAEMONIZE_IPK_DIR)/opt/etc/daemonize/...
-# Documentation files should be installed in $(DAEMONIZE_IPK_DIR)/opt/doc/daemonize/...
-# Daemon startup scripts should be installed in $(DAEMONIZE_IPK_DIR)/opt/etc/init.d/S??daemonize
+# Libraries and include files should be installed into $(DAEMONIZE_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(DAEMONIZE_IPK_DIR)$(TARGET_PREFIX)/etc/daemonize/...
+# Documentation files should be installed in $(DAEMONIZE_IPK_DIR)$(TARGET_PREFIX)/doc/daemonize/...
+# Daemon startup scripts should be installed in $(DAEMONIZE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??daemonize
 #
 # You may need to patch your application to make it use these locations.
 #
 $(DAEMONIZE_IPK): $(DAEMONIZE_BUILD_DIR)/.built
 	rm -rf $(DAEMONIZE_IPK_DIR) $(BUILD_DIR)/daemonize_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(DAEMONIZE_BUILD_DIR) DESTDIR=$(DAEMONIZE_IPK_DIR) install
-	$(STRIP_COMMAND) $(DAEMONIZE_IPK_DIR)/opt/sbin/daemonize
-#	$(INSTALL) -d $(DAEMONIZE_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(DAEMONIZE_SOURCE_DIR)/daemonize.conf $(DAEMONIZE_IPK_DIR)/opt/etc/daemonize.conf
-#	$(INSTALL) -d $(DAEMONIZE_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(DAEMONIZE_SOURCE_DIR)/rc.daemonize $(DAEMONIZE_IPK_DIR)/opt/etc/init.d/SXXdaemonize
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(DAEMONIZE_IPK_DIR)/opt/etc/init.d/SXXdaemonize
+	$(STRIP_COMMAND) $(DAEMONIZE_IPK_DIR)$(TARGET_PREFIX)/sbin/daemonize
+#	$(INSTALL) -d $(DAEMONIZE_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(DAEMONIZE_SOURCE_DIR)/daemonize.conf $(DAEMONIZE_IPK_DIR)$(TARGET_PREFIX)/etc/daemonize.conf
+#	$(INSTALL) -d $(DAEMONIZE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(DAEMONIZE_SOURCE_DIR)/rc.daemonize $(DAEMONIZE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXdaemonize
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(DAEMONIZE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXdaemonize
 	$(MAKE) $(DAEMONIZE_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(DAEMONIZE_SOURCE_DIR)/postinst $(DAEMONIZE_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(DAEMONIZE_IPK_DIR)/CONTROL/postinst

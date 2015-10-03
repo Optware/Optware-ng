@@ -38,7 +38,7 @@
 
 9BASE_IPK_VERSION=1
 
-#9BASE_CONFFILES=/opt/etc/9base.conf /opt/etc/init.d/SXX9base
+#9BASE_CONFFILES=$(TARGET_PREFIX)/etc/9base.conf $(TARGET_PREFIX)/etc/init.d/SXX9base
 
 #9BASE_PATCHES=$(9BASE_SOURCE_DIR)/configure.patch
 
@@ -71,10 +71,10 @@ $(9BASE_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(9BASE_SOURCE) make/
 	if test "$(HOST_BUILD_DIR)/$(9BASE_DIR)" != "$(@D)" ; \
 		then mv $(HOST_BUILD_DIR)/$(9BASE_DIR) $(@D) ; \
 	fi
-	sed -i -e 's|/usr/local/plan9|/opt/lib/9base|' \
+	sed -i -e 's|/usr/local/plan9|$(TARGET_PREFIX)/lib/9base|' \
 		$(@D)/lib9/get9root.c $(@D)/lib9/_p9translate.c
 	$(MAKE) -C $(@D) \
-		PREFIX=/opt/lib/9base \
+		PREFIX=$(TARGET_PREFIX)/lib/9base \
 		SUBDIRS="lib9 yacc" \
 		;
 	touch $@
@@ -83,7 +83,7 @@ $(9BASE_HOST_BUILD_DIR)/.staged: $(9BASE_HOST_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(@D) install \
 		DESTDIR=$(HOST_STAGING_DIR) \
-		PREFIX=/opt/lib/9base \
+		PREFIX=$(TARGET_PREFIX)/lib/9base \
 		SUBDIRS="yacc" \
 		;
 	touch $@
@@ -121,7 +121,7 @@ $(9BASE_BUILD_DIR)/.built: $(9BASE_BUILD_DIR)/.configured
 		LDFLAGS="$(STAGING_LDFLAGS) $(9BASE_LDFLAGS)" \
 		AR="$(TARGET_AR) rc" \
 		STRIP="$(STRIP_COMMAND)" \
-		PREFIX=/opt/lib/9base \
+		PREFIX=$(TARGET_PREFIX)/lib/9base \
 		;
 	touch $@
 
@@ -162,12 +162,12 @@ $(9BASE_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(9BASE_IPK_DIR)/opt/sbin or $(9BASE_IPK_DIR)/opt/bin
+# Binaries should be installed into $(9BASE_IPK_DIR)$(TARGET_PREFIX)/sbin or $(9BASE_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(9BASE_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(9BASE_IPK_DIR)/opt/etc/9base/...
-# Documentation files should be installed in $(9BASE_IPK_DIR)/opt/doc/9base/...
-# Daemon startup scripts should be installed in $(9BASE_IPK_DIR)/opt/etc/init.d/S??9base
+# Libraries and include files should be installed into $(9BASE_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(9BASE_IPK_DIR)$(TARGET_PREFIX)/etc/9base/...
+# Documentation files should be installed in $(9BASE_IPK_DIR)$(TARGET_PREFIX)/doc/9base/...
+# Daemon startup scripts should be installed in $(9BASE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??9base
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -175,15 +175,15 @@ $(9BASE_IPK): $(9BASE_BUILD_DIR)/.built
 	rm -rf $(9BASE_IPK_DIR) $(BUILD_DIR)/9base_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(9BASE_BUILD_DIR) install \
 		DESTDIR=$(9BASE_IPK_DIR) \
-		PREFIX=/opt/lib/9base \
+		PREFIX=$(TARGET_PREFIX)/lib/9base \
 		STRIP="true" \
 		;
-	$(STRIP_COMMAND) $(9BASE_IPK_DIR)/opt/lib/9base/bin/*
-	$(INSTALL) -d $(9BASE_IPK_DIR)/opt/share
-	mv $(9BASE_IPK_DIR)/opt/lib/9base/share/man $(9BASE_IPK_DIR)/opt/share/
-	rmdir $(9BASE_IPK_DIR)/opt/lib/9base/share
+	$(STRIP_COMMAND) $(9BASE_IPK_DIR)$(TARGET_PREFIX)/lib/9base/bin/*
+	$(INSTALL) -d $(9BASE_IPK_DIR)$(TARGET_PREFIX)/share
+	mv $(9BASE_IPK_DIR)$(TARGET_PREFIX)/lib/9base/share/man $(9BASE_IPK_DIR)$(TARGET_PREFIX)/share/
+	rmdir $(9BASE_IPK_DIR)$(TARGET_PREFIX)/lib/9base/share
 	for d in man1; do \
-		cd $(9BASE_IPK_DIR)/opt/share/man/$$d; \
+		cd $(9BASE_IPK_DIR)$(TARGET_PREFIX)/share/man/$$d; \
 		for f in *; do mv $$f 9base-$$f; done; \
 	done
 	$(MAKE) $(9BASE_IPK_DIR)/CONTROL/control

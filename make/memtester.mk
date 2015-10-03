@@ -30,7 +30,7 @@ MEMTESTER_IPK_VERSION=1
 
 #
 # MEMTESTER_CONFFILES should be a list of user-editable files
-# MEMTESTER_CONFFILES=/opt/etc/memtester.conf /opt/etc/init.d/SXXmemtester
+# MEMTESTER_CONFFILES=$(TARGET_PREFIX)/etc/memtester.conf $(TARGET_PREFIX)/etc/init.d/SXXmemtester
 
 #
 # MEMTESTER_PATCHES should list any patches, in the the order in
@@ -173,23 +173,23 @@ $(MEMTESTER_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(MEMTESTER_IPK_DIR)/opt/sbin or $(MEMTESTER_IPK_DIR)/opt/bin
+# Binaries should be installed into $(MEMTESTER_IPK_DIR)$(TARGET_PREFIX)/sbin or $(MEMTESTER_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(MEMTESTER_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(MEMTESTER_IPK_DIR)/opt/etc/memtester/...
-# Documentation files should be installed in $(MEMTESTER_IPK_DIR)/opt/doc/memtester/...
-# Daemon startup scripts should be installed in $(MEMTESTER_IPK_DIR)/opt/etc/init.d/S??memtester
+# Libraries and include files should be installed into $(MEMTESTER_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(MEMTESTER_IPK_DIR)$(TARGET_PREFIX)/etc/memtester/...
+# Documentation files should be installed in $(MEMTESTER_IPK_DIR)$(TARGET_PREFIX)/doc/memtester/...
+# Daemon startup scripts should be installed in $(MEMTESTER_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??memtester
 #
 # You may need to patch your application to make it use these locations.
 #
 $(MEMTESTER_IPK): $(MEMTESTER_BUILD_DIR)/.built
 	rm -rf $(MEMTESTER_IPK_DIR) $(BUILD_DIR)/memtester_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MEMTESTER_BUILD_DIR) INSTALLPATH=$(MEMTESTER_IPK_DIR)$(TARGET_PREFIX) install
-	#$(INSTALL) -d $(MEMTESTER_IPK_DIR)/opt/etc/
-	#$(INSTALL) -m 644 $(MEMTESTER_SOURCE_DIR)/memtester.conf $(MEMTESTER_IPK_DIR)/opt/etc/memtester.conf
-	#$(INSTALL) -d $(MEMTESTER_IPK_DIR)/opt/etc/init.d
-	#$(INSTALL) -m 755 $(MEMTESTER_SOURCE_DIR)/rc.memtester $(MEMTESTER_IPK_DIR)/opt/etc/init.d/SXXmemtester
-	#sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MEMTESTER_IPK_DIR)/opt/etc/init.d/SXXmemtester
+	#$(INSTALL) -d $(MEMTESTER_IPK_DIR)$(TARGET_PREFIX)/etc/
+	#$(INSTALL) -m 644 $(MEMTESTER_SOURCE_DIR)/memtester.conf $(MEMTESTER_IPK_DIR)$(TARGET_PREFIX)/etc/memtester.conf
+	#$(INSTALL) -d $(MEMTESTER_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	#$(INSTALL) -m 755 $(MEMTESTER_SOURCE_DIR)/rc.memtester $(MEMTESTER_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXmemtester
+	#sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MEMTESTER_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXmemtester
 	$(MAKE) $(MEMTESTER_IPK_DIR)/CONTROL/control
 	#$(INSTALL) -m 755 $(MEMTESTER_SOURCE_DIR)/postinst $(MEMTESTER_IPK_DIR)/CONTROL/postinst
 	#sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MEMTESTER_IPK_DIR)/CONTROL/postinst

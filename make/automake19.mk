@@ -107,16 +107,16 @@ $(AUTOMAKE19_IPK_DIR)/CONTROL/control:
 
 $(AUTOMAKE19_IPK): $(AUTOMAKE19_BUILD_DIR)/.built
 	rm -rf $(AUTOMAKE19_IPK_DIR) $(BUILD_DIR)/automake19_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(AUTOMAKE19_IPK_DIR)/opt/bin
-	$(INSTALL) -d $(AUTOMAKE19_IPK_DIR)/opt/info
-	$(INSTALL) -d $(AUTOMAKE19_IPK_DIR)/opt/share/aclocal-1.9
-	$(INSTALL) -d $(AUTOMAKE19_IPK_DIR)/opt/share/automake-1.9/Automake
-	$(INSTALL) -d $(AUTOMAKE19_IPK_DIR)/opt/share/automake-1.9/am
+	$(INSTALL) -d $(AUTOMAKE19_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(INSTALL) -d $(AUTOMAKE19_IPK_DIR)$(TARGET_PREFIX)/info
+	$(INSTALL) -d $(AUTOMAKE19_IPK_DIR)$(TARGET_PREFIX)/share/aclocal-1.9
+	$(INSTALL) -d $(AUTOMAKE19_IPK_DIR)$(TARGET_PREFIX)/share/automake-1.9/Automake
+	$(INSTALL) -d $(AUTOMAKE19_IPK_DIR)$(TARGET_PREFIX)/share/automake-1.9/am
 	$(MAKE) -C $(AUTOMAKE19_BUILD_DIR) DESTDIR=$(AUTOMAKE19_IPK_DIR) install
-	sed -i -e 's|/usr/bin/perl|/opt/bin/perl|g' $(AUTOMAKE19_IPK_DIR)/opt/bin/*
+	sed -i -e 's|/usr/bin/perl|$(TARGET_PREFIX)/bin/perl|g' $(AUTOMAKE19_IPK_DIR)$(TARGET_PREFIX)/bin/*
 	$(MAKE) $(AUTOMAKE19_IPK_DIR)/CONTROL/control
-	rm -f $(AUTOMAKE19_IPK_DIR)/opt/info/dir
-	(cd $(AUTOMAKE19_IPK_DIR)/opt/bin; \
+	rm -f $(AUTOMAKE19_IPK_DIR)$(TARGET_PREFIX)/info/dir
+	(cd $(AUTOMAKE19_IPK_DIR)$(TARGET_PREFIX)/bin; \
 		rm automake aclocal; \
 		ln -s automake-1.9 automake; \
 		ln -s aclocal-1.9 aclocal; \

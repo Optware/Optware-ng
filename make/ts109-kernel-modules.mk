@@ -26,7 +26,7 @@ TS109-KERNEL-MODULES_IPK_VERSION=1
 
 #
 # TS109-KERNEL-MODULES_CONFFILES should be a list of user-editable files
-#TS109-KERNEL-MODULES_CONFFILES=/opt/etc/ts109-kernel-modules.conf /opt/etc/init.d/SXXts109-kernel-modules
+#TS109-KERNEL-MODULES_CONFFILES=$(TARGET_PREFIX)/etc/ts109-kernel-modules.conf $(TARGET_PREFIX)/etc/init.d/SXXts109-kernel-modules
 
 #
 # TS109-KERNEL-MODULES_PATCHES should list any patches, in the the order in
@@ -167,12 +167,12 @@ $(TS109-KERNEL-IMAGE_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(TS109-KERNEL-MODULES_IPK_DIR)/opt/sbin or $(TS109-KERNEL-MODULES_IPK_DIR)/opt/bin
+# Binaries should be installed into $(TS109-KERNEL-MODULES_IPK_DIR)$(TARGET_PREFIX)/sbin or $(TS109-KERNEL-MODULES_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(TS109-KERNEL-MODULES_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(TS109-KERNEL-MODULES_IPK_DIR)/opt/etc/ts109-kernel-modules/...
-# Documentation files should be installed in $(TS109-KERNEL-MODULES_IPK_DIR)/opt/doc/ts109-kernel-modules/...
-# Daemon startup scripts should be installed in $(TS109-KERNEL-MODULES_IPK_DIR)/opt/etc/init.d/S??ts109-kernel-modules
+# Libraries and include files should be installed into $(TS109-KERNEL-MODULES_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(TS109-KERNEL-MODULES_IPK_DIR)$(TARGET_PREFIX)/etc/ts109-kernel-modules/...
+# Documentation files should be installed in $(TS109-KERNEL-MODULES_IPK_DIR)$(TARGET_PREFIX)/doc/ts109-kernel-modules/...
+# Daemon startup scripts should be installed in $(TS109-KERNEL-MODULES_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??ts109-kernel-modules
 #
 # You may need to patch your application to make it use these locations.
 #

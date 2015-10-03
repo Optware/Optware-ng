@@ -35,7 +35,7 @@ TTF_BITSTREAM_VERA_LOCALES=
 
 #
 # TTF_BITSTREAM_VERA_CONFFILES should be a list of user-editable files
-#TTF_BITSTREAM_VERA_CONFFILES=/opt/etc/ttf_bitstream_vera.conf /opt/etc/init.d/SXXttf_bitstream_vera
+#TTF_BITSTREAM_VERA_CONFFILES=$(TARGET_PREFIX)/etc/ttf_bitstream_vera.conf $(TARGET_PREFIX)/etc/init.d/SXXttf_bitstream_vera
 
 #
 # TTF_BITSTREAM_VERA_PATCHES should list any patches, in the the order in
@@ -119,19 +119,19 @@ ttf-bitstream-vera: $(TTF_BITSTREAM_VERA_BUILD_DIR)/.configured
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(TTF_BITSTREAM_VERA_IPK_DIR)/opt/sbin or $(TTF_BITSTREAM_VERA_IPK_DIR)/opt/bin
+# Binaries should be installed into $(TTF_BITSTREAM_VERA_IPK_DIR)$(TARGET_PREFIX)/sbin or $(TTF_BITSTREAM_VERA_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(TTF_BITSTREAM_VERA_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(TTF_BITSTREAM_VERA_IPK_DIR)/opt/etc/ttf_bitstream_vera/...
-# Documentation files should be installed in $(TTF_BITSTREAM_VERA_IPK_DIR)/opt/doc/ttf_bitstream_vera/...
-# Daemon startup scripts should be installed in $(TTF_BITSTREAM_VERA_IPK_DIR)/opt/etc/init.d/S??ttf_bitstream_vera
+# Libraries and include files should be installed into $(TTF_BITSTREAM_VERA_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(TTF_BITSTREAM_VERA_IPK_DIR)$(TARGET_PREFIX)/etc/ttf_bitstream_vera/...
+# Documentation files should be installed in $(TTF_BITSTREAM_VERA_IPK_DIR)$(TARGET_PREFIX)/doc/ttf_bitstream_vera/...
+# Daemon startup scripts should be installed in $(TTF_BITSTREAM_VERA_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??ttf_bitstream_vera
 #
 # You may need to patch your application to make it use these locations.
 #
 $(TTF_BITSTREAM_VERA_IPK): $(TTF_BITSTREAM_VERA_BUILD_DIR)/.configured
 	rm -rf $(TTF_BITSTREAM_VERA_IPK_DIR) $(BUILD_DIR)/ttf-bitstream-vera_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(TTF_BITSTREAM_VERA_IPK_DIR)/opt/share/fonts/bitstream-vera
-	$(INSTALL) -m 644 $(TTF_BITSTREAM_VERA_BUILD_DIR)/*.ttf $(TTF_BITSTREAM_VERA_IPK_DIR)/opt/share/fonts/bitstream-vera
+	$(INSTALL) -d $(TTF_BITSTREAM_VERA_IPK_DIR)$(TARGET_PREFIX)/share/fonts/bitstream-vera
+	$(INSTALL) -m 644 $(TTF_BITSTREAM_VERA_BUILD_DIR)/*.ttf $(TTF_BITSTREAM_VERA_IPK_DIR)$(TARGET_PREFIX)/share/fonts/bitstream-vera
 	$(MAKE) $(TTF_BITSTREAM_VERA_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 644 $(TTF_BITSTREAM_VERA_SOURCE_DIR)/postinst $(TTF_BITSTREAM_VERA_IPK_DIR)/CONTROL/postinst
 	$(INSTALL) -m 644 $(TTF_BITSTREAM_VERA_SOURCE_DIR)/postrm $(TTF_BITSTREAM_VERA_IPK_DIR)/CONTROL/postrm

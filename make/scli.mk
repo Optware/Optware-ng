@@ -40,7 +40,7 @@ SCLI_IPK_VERSION=3
 
 #
 # SCLI_CONFFILES should be a list of user-editable files
-#SCLI_CONFFILES=/opt/etc/scli.conf /opt/etc/init.d/SXXscli
+#SCLI_CONFFILES=$(TARGET_PREFIX)/etc/scli.conf $(TARGET_PREFIX)/etc/init.d/SXXscli
 
 #
 # SCLI_PATCHES should list any patches, in the the order in
@@ -179,24 +179,24 @@ $(SCLI_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(SCLI_IPK_DIR)/opt/sbin or $(SCLI_IPK_DIR)/opt/bin
+# Binaries should be installed into $(SCLI_IPK_DIR)$(TARGET_PREFIX)/sbin or $(SCLI_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(SCLI_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(SCLI_IPK_DIR)/opt/etc/scli/...
-# Documentation files should be installed in $(SCLI_IPK_DIR)/opt/doc/scli/...
-# Daemon startup scripts should be installed in $(SCLI_IPK_DIR)/opt/etc/init.d/S??scli
+# Libraries and include files should be installed into $(SCLI_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(SCLI_IPK_DIR)$(TARGET_PREFIX)/etc/scli/...
+# Documentation files should be installed in $(SCLI_IPK_DIR)$(TARGET_PREFIX)/doc/scli/...
+# Daemon startup scripts should be installed in $(SCLI_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??scli
 #
 # You may need to patch your application to make it use these locations.
 #
 $(SCLI_IPK): $(SCLI_BUILD_DIR)/.built
 	rm -rf $(SCLI_IPK_DIR) $(BUILD_DIR)/scli_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SCLI_BUILD_DIR) DESTDIR=$(SCLI_IPK_DIR) install-strip
-	rm -f $(SCLI_IPK_DIR)/opt/share/info/dir
-#	$(INSTALL) -d $(SCLI_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(SCLI_SOURCE_DIR)/scli.conf $(SCLI_IPK_DIR)/opt/etc/scli.conf
-#	$(INSTALL) -d $(SCLI_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(SCLI_SOURCE_DIR)/rc.scli $(SCLI_IPK_DIR)/opt/etc/init.d/SXXscli
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SCLI_IPK_DIR)/opt/etc/init.d/SXXscli
+	rm -f $(SCLI_IPK_DIR)$(TARGET_PREFIX)/share/info/dir
+#	$(INSTALL) -d $(SCLI_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(SCLI_SOURCE_DIR)/scli.conf $(SCLI_IPK_DIR)$(TARGET_PREFIX)/etc/scli.conf
+#	$(INSTALL) -d $(SCLI_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(SCLI_SOURCE_DIR)/rc.scli $(SCLI_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXscli
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SCLI_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXscli
 	$(MAKE) $(SCLI_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(SCLI_SOURCE_DIR)/postinst $(SCLI_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SCLI_IPK_DIR)/CONTROL/postinst

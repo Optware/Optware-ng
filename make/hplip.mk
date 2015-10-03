@@ -43,10 +43,10 @@ HPLIP_IPK_VERSION=1
 
 #
 # HPLIP_CONFFILES should be a list of user-editable files
-HPLIP_CONFFILES=/opt/etc/hp/hplip.conf \
-		/opt/etc/sane.d/dll.conf \
-		/opt/etc/udev/rules.d/56-hpmud.rules
-#/opt/etc/init.d/SXXhplip
+HPLIP_CONFFILES=$(TARGET_PREFIX)/etc/hp/hplip.conf \
+		$(TARGET_PREFIX)/etc/sane.d/dll.conf \
+		$(TARGET_PREFIX)/etc/udev/rules.d/56-hpmud.rules
+#$(TARGET_PREFIX)/etc/init.d/SXXhplip
 
 #
 # HPLIP_PATCHES should list any patches, in the the order in
@@ -128,7 +128,7 @@ endif
 	if test "$(BUILD_DIR)/$(HPLIP_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(HPLIP_DIR) $(@D) ; \
 	fi
-#	sed -i -e 's|/etc/|/opt&|; /halpredir/s|/usr/share|/opt/share|' $(@D)/Makefile.am ; \
+#	sed -i -e 's|/etc/|$(TARGET_PREFIX)&|; /halpredir/s|/usr/share|$(TARGET_PREFIX)/share|' $(@D)/Makefile.am ; \
 #	cd $(@D) ; touch INSTALL NEWS README AUTHORS ChangeLog
 #	autoreconf -vif $(@D)
 	sed -e "s|-I/usr/local/include||" -i "$(@D)/configure"
@@ -144,21 +144,21 @@ endif
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=$(TARGET_PREFIX) \
-		--sysconfdir=/opt/etc \
+		--sysconfdir=$(TARGET_PREFIX)/etc \
 		--disable-nls \
 		--disable-static \
 		$(HPLIP_CONFIG_ARGS) \
 		--enable-scan-build \
 		--enable-fax-build \
 		--disable-dependency-tracking \
-		--with-cupsbackenddir=/opt/lib/cups/backend \
-		--with-icondir=/opt/share/applications \
-		--with-systraydir=/opt/etc/xdg/autostart \
-		--with-cupsfilterdir=/opt/lib/cups/filter \
+		--with-cupsbackenddir=$(TARGET_PREFIX)/lib/cups/backend \
+		--with-icondir=$(TARGET_PREFIX)/share/applications \
+		--with-systraydir=$(TARGET_PREFIX)/etc/xdg/autostart \
+		--with-cupsfilterdir=$(TARGET_PREFIX)/lib/cups/filter \
 	)
-	sed -i -e 's| /etc| /opt/etc|' -e 's|\$$(DESTDIR)/etc|\$$(DESTDIR)/opt/etc|' -e 's|/var/lib/hp|/opt/var/lib/hp|' -e \
-		's|/usr/share/cups/mime|/opt/share/cups/mime|' -e 's|/usr/share/hal/fdi|/opt/share/hal/fdi|' -e 's|/usr/lib/systemd/system|/opt/lib/systemd/system|' $(@D)/Makefile
-	sed -i -e 's|/etc|/opt/etc|' $(@D)/check.py \
+	sed -i -e 's| /etc| $(TARGET_PREFIX)/etc|' -e 's|\$$(DESTDIR)/etc|\$$(DESTDIR)$(TARGET_PREFIX)/etc|' -e 's|/var/lib/hp|$(TARGET_PREFIX)/var/lib/hp|' -e \
+		's|/usr/share/cups/mime|$(TARGET_PREFIX)/share/cups/mime|' -e 's|/usr/share/hal/fdi|$(TARGET_PREFIX)/share/hal/fdi|' -e 's|/usr/lib/systemd/system|$(TARGET_PREFIX)/lib/systemd/system|' $(@D)/Makefile
+	sed -i -e 's|/etc|$(TARGET_PREFIX)/etc|' $(@D)/check.py \
 					$(@D)/logcapture.py \
 					$(@D)/ui4/devmgr5.py \
 					$(@D)/prnt/cups.py \
@@ -177,16 +177,16 @@ endif
 					$(@D)/prnt/hpijs/hpijs.cpp \
 					$(@D)/prnt/hpcups/HPCupsFilter.cpp \
 					$(@D)/fax/backend/hpfax.py
-	sed -i -e 's|/etc|/opt/etc|g' $(@D)/data/rules/56-hpmud.rules
-	sed -i -e 's|/var/lib/hp|/opt/var/lib/hp|' $(@D)/installer/core_install.py \
+	sed -i -e 's|/etc|$(TARGET_PREFIX)/etc|g' $(@D)/data/rules/56-hpmud.rules
+	sed -i -e 's|/var/lib/hp|$(TARGET_PREFIX)/var/lib/hp|' $(@D)/installer/core_install.py \
 							$(@D)/installer/pluginhandler.py \
 							$(@D)/base/g.py \
 							$(@D)/check.py \
 							$(@D)/common/utils.c \
 							$(@D)/common/utils.h
-	sed -i -e 's|/usr/lib/systemd/system|/opt/lib/systemd/system|' $(@D)/installer/core_install.py
-	sed -i -e 's|filename\.startswith("/opt/etc/")|filename.startswith("/etc/") or filename.startswith("/opt/etc/")|' $(@D)/base/g.py
-	sed -i -e 's|/usr/share/cups/mime|/opt/share/cups/mime|' $(@D)/prnt/cups.py
+	sed -i -e 's|/usr/lib/systemd/system|$(TARGET_PREFIX)/lib/systemd/system|' $(@D)/installer/core_install.py
+	sed -i -e 's|filename\.startswith("$(TARGET_PREFIX)/etc/")|filename.startswith("/etc/") or filename.startswith("$(TARGET_PREFIX)/etc/")|' $(@D)/base/g.py
+	sed -i -e 's|/usr/share/cups/mime|$(TARGET_PREFIX)/share/cups/mime|' $(@D)/prnt/cups.py
 	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
@@ -198,8 +198,8 @@ hplip-unpack: $(HPLIP_BUILD_DIR)/.configured
 $(HPLIP_BUILD_DIR)/.built: $(HPLIP_BUILD_DIR)/.configured
 	rm -f $@
 	$(MAKE) -C $(@D) PYTHONINCLUDEDIR="$(STAGING_INCLUDE_DIR)/python2.5"
-	### use /opt/bin/python2.5
-	sed -i -e 's|^#!.*|#!/opt/bin/python2.5|' `find $(@D) -type f -name "*.py"`
+	### use $(TARGET_PREFIX)/bin/python2.5
+	sed -i -e 's|^#!.*|#!$(TARGET_PREFIX)/bin/python2.5|' `find $(@D) -type f -name "*.py"`
 	touch $@
 
 #
@@ -239,24 +239,24 @@ $(HPLIP_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(HPLIP_IPK_DIR)/opt/sbin or $(HPLIP_IPK_DIR)/opt/bin
+# Binaries should be installed into $(HPLIP_IPK_DIR)$(TARGET_PREFIX)/sbin or $(HPLIP_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(HPLIP_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(HPLIP_IPK_DIR)/opt/etc/hplip/...
-# Documentation files should be installed in $(HPLIP_IPK_DIR)/opt/doc/hplip/...
-# Daemon startup scripts should be installed in $(HPLIP_IPK_DIR)/opt/etc/init.d/S??hplip
+# Libraries and include files should be installed into $(HPLIP_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(HPLIP_IPK_DIR)$(TARGET_PREFIX)/etc/hplip/...
+# Documentation files should be installed in $(HPLIP_IPK_DIR)$(TARGET_PREFIX)/doc/hplip/...
+# Daemon startup scripts should be installed in $(HPLIP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??hplip
 #
 # You may need to patch your application to make it use these locations.
 #
 $(HPLIP_IPK): $(HPLIP_BUILD_DIR)/.built
 	rm -rf $(HPLIP_IPK_DIR) $(BUILD_DIR)/hplip_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(HPLIP_BUILD_DIR) DESTDIR=$(HPLIP_IPK_DIR) install-strip
-	rm -rf $(HPLIP_IPK_DIR)/opt/lib/*.la $(HPLIP_IPK_DIR)/opt/lib/*/*.la
-#	$(INSTALL) -d $(HPLIP_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(HPLIP_SOURCE_DIR)/hplip.conf $(HPLIP_IPK_DIR)/opt/etc/hplip.conf
-#	$(INSTALL) -d $(HPLIP_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(HPLIP_SOURCE_DIR)/rc.hplip $(HPLIP_IPK_DIR)/opt/etc/init.d/SXXhplip
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(HPLIP_IPK_DIR)/opt/etc/init.d/SXXhplip
+	rm -rf $(HPLIP_IPK_DIR)$(TARGET_PREFIX)/lib/*.la $(HPLIP_IPK_DIR)$(TARGET_PREFIX)/lib/*/*.la
+#	$(INSTALL) -d $(HPLIP_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(HPLIP_SOURCE_DIR)/hplip.conf $(HPLIP_IPK_DIR)$(TARGET_PREFIX)/etc/hplip.conf
+#	$(INSTALL) -d $(HPLIP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(HPLIP_SOURCE_DIR)/rc.hplip $(HPLIP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXhplip
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(HPLIP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXhplip
 	$(MAKE) $(HPLIP_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(HPLIP_SOURCE_DIR)/postinst $(HPLIP_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(HPLIP_IPK_DIR)/CONTROL/postinst

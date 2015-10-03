@@ -167,39 +167,39 @@ $(NET-TOOLS_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(NET-TOOLS_IPK_DIR)/opt/sbin or $(NET-TOOLS_IPK_DIR)/opt/bin
+# Binaries should be installed into $(NET-TOOLS_IPK_DIR)$(TARGET_PREFIX)/sbin or $(NET-TOOLS_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(NET-TOOLS_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(NET-TOOLS_IPK_DIR)/opt/etc/net-tools/...
-# Documentation files should be installed in $(NET-TOOLS_IPK_DIR)/opt/doc/net-tools/...
-# Daemon startup scripts should be installed in $(NET-TOOLS_IPK_DIR)/opt/etc/init.d/S??net-tools
+# Libraries and include files should be installed into $(NET-TOOLS_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(NET-TOOLS_IPK_DIR)$(TARGET_PREFIX)/etc/net-tools/...
+# Documentation files should be installed in $(NET-TOOLS_IPK_DIR)$(TARGET_PREFIX)/doc/net-tools/...
+# Daemon startup scripts should be installed in $(NET-TOOLS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??net-tools
 #
 # You may need to patch your application to make it use these locations.
 #
 $(NET-TOOLS_IPK): $(NET-TOOLS_BUILD_DIR)/.built
 	rm -rf $(NET-TOOLS_IPK_DIR) $(BUILD_DIR)/net-tools_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(NET-TOOLS_BUILD_DIR) BASEDIR=$(NET-TOOLS_IPK_DIR)$(TARGET_PREFIX) install
-	$(STRIP_COMMAND) $(NET-TOOLS_IPK_DIR)/opt/bin/*
-	$(STRIP_COMMAND) $(NET-TOOLS_IPK_DIR)/opt/sbin/*
-	$(INSTALL) -d $(NET-TOOLS_IPK_DIR)/opt/etc/
+	$(STRIP_COMMAND) $(NET-TOOLS_IPK_DIR)$(TARGET_PREFIX)/bin/*
+	$(STRIP_COMMAND) $(NET-TOOLS_IPK_DIR)$(TARGET_PREFIX)/sbin/*
+	$(INSTALL) -d $(NET-TOOLS_IPK_DIR)$(TARGET_PREFIX)/etc/
 	$(MAKE) $(NET-TOOLS_IPK_DIR)/CONTROL/control
 	echo "#!/bin/sh" > $(NET-TOOLS_IPK_DIR)/CONTROL/postinst
 	echo "#!/bin/sh" > $(NET-TOOLS_IPK_DIR)/CONTROL/prerm
-	mv $(NET-TOOLS_IPK_DIR)/opt/sbin/ifconfig $(NET-TOOLS_IPK_DIR)/opt/bin/
-	cd $(NET-TOOLS_IPK_DIR)/opt/bin; \
+	mv $(NET-TOOLS_IPK_DIR)$(TARGET_PREFIX)/sbin/ifconfig $(NET-TOOLS_IPK_DIR)$(TARGET_PREFIX)/bin/
+	cd $(NET-TOOLS_IPK_DIR)$(TARGET_PREFIX)/bin; \
 	for f in hostname ifconfig netstat; do \
 	    mv $$f net-tools-$$f; \
-	    echo "update-alternatives --install /opt/bin/$$f $$f /opt/bin/net-tools-$$f 80" \
+	    echo "update-alternatives --install $(TARGET_PREFIX)/bin/$$f $$f $(TARGET_PREFIX)/bin/net-tools-$$f 80" \
 		>> $(NET-TOOLS_IPK_DIR)/CONTROL/postinst; \
-	    echo "update-alternatives --remove $$f /opt/bin/net-tools-$$f" \
+	    echo "update-alternatives --remove $$f $(TARGET_PREFIX)/bin/net-tools-$$f" \
 		>> $(NET-TOOLS_IPK_DIR)/CONTROL/prerm; \
 	done
-	cd $(NET-TOOLS_IPK_DIR)/opt/sbin; \
+	cd $(NET-TOOLS_IPK_DIR)$(TARGET_PREFIX)/sbin; \
 	for f in arp route; do \
 	    mv $$f net-tools-$$f; \
-	    echo "update-alternatives --install /opt/sbin/$$f $$f /opt/sbin/net-tools-$$f 80" \
+	    echo "update-alternatives --install $(TARGET_PREFIX)/sbin/$$f $$f $(TARGET_PREFIX)/sbin/net-tools-$$f 80" \
 		>> $(NET-TOOLS_IPK_DIR)/CONTROL/postinst; \
-	    echo "update-alternatives --remove $$f /opt/sbin/net-tools-$$f" \
+	    echo "update-alternatives --remove $$f $(TARGET_PREFIX)/sbin/net-tools-$$f" \
 		>> $(NET-TOOLS_IPK_DIR)/CONTROL/prerm; \
 	done
 	if test -n "$(UPD-ALT_PREFIX)"; then \

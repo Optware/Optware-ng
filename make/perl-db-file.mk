@@ -48,7 +48,7 @@ $(PERL-DB-FILE_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-DB-FILE_SOURCE) $(PERL-D
 		DB_FILE_LIB=$(STAGING_LIB_DIR) \
 		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		$(PERL_HOSTPERL) Makefile.PL \
-		LD_RUN_PATH=/opt/lib \
+		LD_RUN_PATH=$(TARGET_PREFIX)/lib \
 		PREFIX=$(TARGET_PREFIX) \
 	)
 	touch $(PERL-DB-FILE_BUILD_DIR)/.configured
@@ -62,7 +62,7 @@ $(PERL-DB-FILE_BUILD_DIR)/.built: $(PERL-DB-FILE_BUILD_DIR)/.configured
 		LD=$(TARGET_CC) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
-		LD_RUN_PATH=/opt/lib \
+		LD_RUN_PATH=$(TARGET_PREFIX)/lib \
 		$(PERL_INC) \
 	PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl"
 	touch $(PERL-DB-FILE_BUILD_DIR)/.built
@@ -95,7 +95,7 @@ $(PERL-DB-FILE_IPK): $(PERL-DB-FILE_BUILD_DIR)/.built
 	rm -rf $(PERL-DB-FILE_IPK_DIR) $(BUILD_DIR)/perl-db-file_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PERL-DB-FILE_BUILD_DIR) DESTDIR=$(PERL-DB-FILE_IPK_DIR) install
 	find $(PERL-DB-FILE_IPK_DIR)$(TARGET_PREFIX) -name 'perllocal.pod' -exec rm -f {} \;
-	(cd $(PERL-DB-FILE_IPK_DIR)/opt/lib/perl5 ; \
+	(cd $(PERL-DB-FILE_IPK_DIR)$(TARGET_PREFIX)/lib/perl5 ; \
 		find . -name '*.so' -exec chmod +w {} \; ; \
 		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
 		find . -name '*.so' -exec chmod -w {} \; ; \

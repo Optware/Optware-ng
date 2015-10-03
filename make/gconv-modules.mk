@@ -86,20 +86,20 @@ ifeq ($(LIBC_STYLE),uclibc)
 else
     ifeq ($(OPTWARE_TARGET), $(filter slugosbe slugosle slugos5be slugos5le, $(OPTWARE_TARGET)))
     else
-	$(INSTALL) -d $(GCONV_MODULES_IPK_DIR)/opt/lib/gconv
-	cp $(GCONV_MODULES_LIB_DIR)/* $(GCONV_MODULES_IPK_DIR)/opt/lib/gconv
-	rm -f $(GCONV_MODULES_IPK_DIR)/opt/lib/gconv/EUC-*.so
-	rm -f $(GCONV_MODULES_IPK_DIR)/opt/lib/gconv/ISO-2022-*.so
-	rm -f $(GCONV_MODULES_IPK_DIR)/opt/lib/gconv/JOHAB.so
-	rm -f $(GCONV_MODULES_IPK_DIR)/opt/lib/gconv/UHC.so
-	$(STRIP_COMMAND) $(GCONV_MODULES_IPK_DIR)/opt/lib/gconv/*.so
+	$(INSTALL) -d $(GCONV_MODULES_IPK_DIR)$(TARGET_PREFIX)/lib/gconv
+	cp $(GCONV_MODULES_LIB_DIR)/* $(GCONV_MODULES_IPK_DIR)$(TARGET_PREFIX)/lib/gconv
+	rm -f $(GCONV_MODULES_IPK_DIR)$(TARGET_PREFIX)/lib/gconv/EUC-*.so
+	rm -f $(GCONV_MODULES_IPK_DIR)$(TARGET_PREFIX)/lib/gconv/ISO-2022-*.so
+	rm -f $(GCONV_MODULES_IPK_DIR)$(TARGET_PREFIX)/lib/gconv/JOHAB.so
+	rm -f $(GCONV_MODULES_IPK_DIR)$(TARGET_PREFIX)/lib/gconv/UHC.so
+	$(STRIP_COMMAND) $(GCONV_MODULES_IPK_DIR)$(TARGET_PREFIX)/lib/gconv/*.so
     ifneq ($(OPTWARE_TARGET), fsg3v4)
-	$(INSTALL) -d $(GCONV_MODULES_IPK_DIR)/opt/bin
-	cp $(GCONV_MODULES_ICONV) $(GCONV_MODULES_IPK_DIR)/opt/bin
-	$(STRIP_COMMAND) $(GCONV_MODULES_IPK_DIR)/opt/bin/*
+	$(INSTALL) -d $(GCONV_MODULES_IPK_DIR)$(TARGET_PREFIX)/bin
+	cp $(GCONV_MODULES_ICONV) $(GCONV_MODULES_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(STRIP_COMMAND) $(GCONV_MODULES_IPK_DIR)$(TARGET_PREFIX)/bin/*
     endif
-	$(INSTALL) -d $(GCONV_MODULES_IPK_DIR)/opt/etc/init.d
-	$(INSTALL) -m 755 $(GCONV_MODULES_SOURCE_DIR)/postinst $(GCONV_MODULES_IPK_DIR)/opt/etc/init.d/S05gconv-modules
+	$(INSTALL) -d $(GCONV_MODULES_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(INSTALL) -m 755 $(GCONV_MODULES_SOURCE_DIR)/postinst $(GCONV_MODULES_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S05gconv-modules
 	$(INSTALL) -d $(GCONV_MODULES_IPK_DIR)/CONTROL/
 	$(INSTALL) -m 644 $(GCONV_MODULES_SOURCE_DIR)/postinst $(GCONV_MODULES_IPK_DIR)/CONTROL/postinst
     endif

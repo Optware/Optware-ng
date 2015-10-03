@@ -45,7 +45,7 @@ THTTPD_IPK_VERSION=1
 
 #
 # THTTPD_CONFFILES should be a list of user-editable files
-THTTPD_CONFFILES=/opt/etc/init.d/S80thttpd /opt/etc/thttpd.conf
+THTTPD_CONFFILES=$(TARGET_PREFIX)/etc/init.d/S80thttpd $(TARGET_PREFIX)/etc/thttpd.conf
 
 #
 # THTTPD_PATCHES should list any patches, in the the order in
@@ -121,7 +121,7 @@ $(THTTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(THTTPD_SOURCE) $(THTTPD_PATCHES)
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=$(TARGET_PREFIX) \
-		--mandir=/opt/share/man \
+		--mandir=$(TARGET_PREFIX)/share/man \
 		--disable-nls \
 	)
 	touch $(THTTPD_BUILD_DIR)/.configured
@@ -172,28 +172,28 @@ $(THTTPD_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(THTTPD_IPK_DIR)/opt/sbin or $(THTTPD_IPK_DIR)/opt/bin
+# Binaries should be installed into $(THTTPD_IPK_DIR)$(TARGET_PREFIX)/sbin or $(THTTPD_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(THTTPD_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(THTTPD_IPK_DIR)/opt/etc/thttpd/...
-# Documentation files should be installed in $(THTTPD_IPK_DIR)/opt/doc/thttpd/...
-# Daemon startup scripts should be installed in $(THTTPD_IPK_DIR)/opt/etc/init.d/S??thttpd
+# Libraries and include files should be installed into $(THTTPD_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(THTTPD_IPK_DIR)$(TARGET_PREFIX)/etc/thttpd/...
+# Documentation files should be installed in $(THTTPD_IPK_DIR)$(TARGET_PREFIX)/doc/thttpd/...
+# Daemon startup scripts should be installed in $(THTTPD_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??thttpd
 #
 # You may need to patch your application to make it use these locations.
 #
 $(THTTPD_IPK): $(THTTPD_BUILD_DIR)/.built
 	rm -rf $(THTTPD_IPK_DIR) $(BUILD_DIR)/thttpd_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(THTTPD_BUILD_DIR) DESTDIR=$(THTTPD_IPK_DIR) install
-	chmod +w $(THTTPD_IPK_DIR)/opt/sbin/thttpd && \
-	$(STRIP_COMMAND) $(THTTPD_IPK_DIR)/opt/sbin/thttpd && \
-	chmod -w $(THTTPD_IPK_DIR)/opt/sbin/thttpd && \
-	$(STRIP_COMMAND) $(THTTPD_IPK_DIR)/opt/sbin/makeweb
-	$(STRIP_COMMAND) $(THTTPD_IPK_DIR)/opt/sbin/htpasswd
-	$(STRIP_COMMAND) $(THTTPD_IPK_DIR)/opt/share/www/cgi-bin/*
-	$(INSTALL) -d $(THTTPD_IPK_DIR)/opt/etc/
-	$(INSTALL) -m 644 $(THTTPD_SOURCE_DIR)/thttpd.conf $(THTTPD_IPK_DIR)/opt/etc/thttpd.conf
-	$(INSTALL) -d $(THTTPD_IPK_DIR)/opt/etc/init.d
-	$(INSTALL) -m 755 $(THTTPD_SOURCE_DIR)/rc.thttpd $(THTTPD_IPK_DIR)/opt/etc/init.d/S80thttpd
+	chmod +w $(THTTPD_IPK_DIR)$(TARGET_PREFIX)/sbin/thttpd && \
+	$(STRIP_COMMAND) $(THTTPD_IPK_DIR)$(TARGET_PREFIX)/sbin/thttpd && \
+	chmod -w $(THTTPD_IPK_DIR)$(TARGET_PREFIX)/sbin/thttpd && \
+	$(STRIP_COMMAND) $(THTTPD_IPK_DIR)$(TARGET_PREFIX)/sbin/makeweb
+	$(STRIP_COMMAND) $(THTTPD_IPK_DIR)$(TARGET_PREFIX)/sbin/htpasswd
+	$(STRIP_COMMAND) $(THTTPD_IPK_DIR)$(TARGET_PREFIX)/share/www/cgi-bin/*
+	$(INSTALL) -d $(THTTPD_IPK_DIR)$(TARGET_PREFIX)/etc/
+	$(INSTALL) -m 644 $(THTTPD_SOURCE_DIR)/thttpd.conf $(THTTPD_IPK_DIR)$(TARGET_PREFIX)/etc/thttpd.conf
+	$(INSTALL) -d $(THTTPD_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(INSTALL) -m 755 $(THTTPD_SOURCE_DIR)/rc.thttpd $(THTTPD_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S80thttpd
 	$(MAKE) $(THTTPD_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 755 $(THTTPD_SOURCE_DIR)/postinst $(THTTPD_IPK_DIR)/CONTROL/postinst
 	$(INSTALL) -m 755 $(THTTPD_SOURCE_DIR)/prerm $(THTTPD_IPK_DIR)/CONTROL/prerm

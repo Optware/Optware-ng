@@ -40,7 +40,7 @@ FRIBIDI_IPK_VERSION=1
 
 #
 # FRIBIDI_CONFFILES should be a list of user-editable files
-#FRIBIDI_CONFFILES=/opt/etc/fribidi.conf /opt/etc/init.d/SXXfribidi
+#FRIBIDI_CONFFILES=$(TARGET_PREFIX)/etc/fribidi.conf $(TARGET_PREFIX)/etc/init.d/SXXfribidi
 
 #
 # FRIBIDI_PATCHES should list any patches, in the the order in
@@ -181,23 +181,23 @@ $(FRIBIDI_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(FRIBIDI_IPK_DIR)/opt/sbin or $(FRIBIDI_IPK_DIR)/opt/bin
+# Binaries should be installed into $(FRIBIDI_IPK_DIR)$(TARGET_PREFIX)/sbin or $(FRIBIDI_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(FRIBIDI_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(FRIBIDI_IPK_DIR)/opt/etc/fribidi/...
-# Documentation files should be installed in $(FRIBIDI_IPK_DIR)/opt/doc/fribidi/...
-# Daemon startup scripts should be installed in $(FRIBIDI_IPK_DIR)/opt/etc/init.d/S??fribidi
+# Libraries and include files should be installed into $(FRIBIDI_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(FRIBIDI_IPK_DIR)$(TARGET_PREFIX)/etc/fribidi/...
+# Documentation files should be installed in $(FRIBIDI_IPK_DIR)$(TARGET_PREFIX)/doc/fribidi/...
+# Daemon startup scripts should be installed in $(FRIBIDI_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??fribidi
 #
 # You may need to patch your application to make it use these locations.
 #
 $(FRIBIDI_IPK): $(FRIBIDI_BUILD_DIR)/.built
 	rm -rf $(FRIBIDI_IPK_DIR) $(BUILD_DIR)/fribidi_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(FRIBIDI_BUILD_DIR) DESTDIR=$(FRIBIDI_IPK_DIR) install-strip
-#	$(INSTALL) -d $(FRIBIDI_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(FRIBIDI_SOURCE_DIR)/fribidi.conf $(FRIBIDI_IPK_DIR)/opt/etc/fribidi.conf
-#	$(INSTALL) -d $(FRIBIDI_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(FRIBIDI_SOURCE_DIR)/rc.fribidi $(FRIBIDI_IPK_DIR)/opt/etc/init.d/SXXfribidi
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(FRIBIDI_IPK_DIR)/opt/etc/init.d/SXXfribidi
+#	$(INSTALL) -d $(FRIBIDI_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(FRIBIDI_SOURCE_DIR)/fribidi.conf $(FRIBIDI_IPK_DIR)$(TARGET_PREFIX)/etc/fribidi.conf
+#	$(INSTALL) -d $(FRIBIDI_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(FRIBIDI_SOURCE_DIR)/rc.fribidi $(FRIBIDI_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXfribidi
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(FRIBIDI_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXfribidi
 	$(MAKE) $(FRIBIDI_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(FRIBIDI_SOURCE_DIR)/postinst $(FRIBIDI_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(FRIBIDI_IPK_DIR)/CONTROL/postinst

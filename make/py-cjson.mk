@@ -42,7 +42,7 @@ PY-CJSON_IPK_VERSION=1
 
 #
 # PY-CJSON_CONFFILES should be a list of user-editable files
-#PY-CJSON_CONFFILES=/opt/etc/py-cjson.conf /opt/etc/init.d/SXXpy-cjson
+#PY-CJSON_CONFFILES=$(TARGET_PREFIX)/etc/py-cjson.conf $(TARGET_PREFIX)/etc/init.d/SXXpy-cjson
 
 #
 # PY-CJSON_PATCHES should list any patches, in the the order in
@@ -122,11 +122,11 @@ $(PY-CJSON_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CJSON_SOURCE) $(PY-CJSON_PATCH
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
 	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
-	        echo "rpath=/opt/lib"; \
+	        echo "rpath=$(TARGET_PREFIX)/lib"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python2.4"; \
+		echo "executable=$(TARGET_PREFIX)/bin/python2.4"; \
 		echo "[install]"; \
-		echo "install_scripts=/opt/bin"; \
+		echo "install_scripts=$(TARGET_PREFIX)/bin"; \
 	    ) >> setup.cfg; \
 	)
 	# 2.5
@@ -138,11 +138,11 @@ $(PY-CJSON_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CJSON_SOURCE) $(PY-CJSON_PATCH
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.5"; \
 	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
-	        echo "rpath=/opt/lib"; \
+	        echo "rpath=$(TARGET_PREFIX)/lib"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python2.5"; \
+		echo "executable=$(TARGET_PREFIX)/bin/python2.5"; \
 		echo "[install]"; \
-		echo "install_scripts=/opt/bin"; \
+		echo "install_scripts=$(TARGET_PREFIX)/bin"; \
 	    ) >> setup.cfg; \
 	)
 	# 2.5
@@ -154,11 +154,11 @@ $(PY-CJSON_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CJSON_SOURCE) $(PY-CJSON_PATCH
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.6"; \
 	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
-	        echo "rpath=/opt/lib"; \
+	        echo "rpath=$(TARGET_PREFIX)/lib"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python2.6"; \
+		echo "executable=$(TARGET_PREFIX)/bin/python2.6"; \
 		echo "[install]"; \
-		echo "install_scripts=/opt/bin"; \
+		echo "install_scripts=$(TARGET_PREFIX)/bin"; \
 	    ) >> setup.cfg; \
 	)
 	touch $(PY-CJSON_BUILD_DIR)/.configured
@@ -248,12 +248,12 @@ $(PY26-CJSON_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PY-CJSON_IPK_DIR)/opt/sbin or $(PY-CJSON_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PY-CJSON_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PY-CJSON_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PY-CJSON_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PY-CJSON_IPK_DIR)/opt/etc/py-cjson/...
-# Documentation files should be installed in $(PY-CJSON_IPK_DIR)/opt/doc/py-cjson/...
-# Daemon startup scripts should be installed in $(PY-CJSON_IPK_DIR)/opt/etc/init.d/S??py-cjson
+# Libraries and include files should be installed into $(PY-CJSON_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PY-CJSON_IPK_DIR)$(TARGET_PREFIX)/etc/py-cjson/...
+# Documentation files should be installed in $(PY-CJSON_IPK_DIR)$(TARGET_PREFIX)/doc/py-cjson/...
+# Daemon startup scripts should be installed in $(PY-CJSON_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??py-cjson
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -261,25 +261,25 @@ $(PY24-CJSON_IPK) $(PY25-CJSON_IPK): $(PY-CJSON_BUILD_DIR)/.built
 	# 2.4
 	rm -rf $(PY24-CJSON_IPK_DIR) $(BUILD_DIR)/py-cjson_*_$(TARGET_ARCH).ipk
 	(cd $(PY-CJSON_BUILD_DIR)/2.4; \
-	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(PY24-CJSON_IPK_DIR) --prefix=/opt; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(PY24-CJSON_IPK_DIR) --prefix=$(TARGET_PREFIX); \
 	)
-	$(STRIP_COMMAND) $(PY24-CJSON_IPK_DIR)/opt/lib/python2.4/site-packages/cjson*.so
+	$(STRIP_COMMAND) $(PY24-CJSON_IPK_DIR)$(TARGET_PREFIX)/lib/python2.4/site-packages/cjson*.so
 	$(MAKE) $(PY24-CJSON_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-CJSON_IPK_DIR)
 	# 2.5
 	rm -rf $(PY25-CJSON_IPK_DIR) $(BUILD_DIR)/py25-cjson_*_$(TARGET_ARCH).ipk
 	(cd $(PY-CJSON_BUILD_DIR)/2.5; \
-	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(PY25-CJSON_IPK_DIR) --prefix=/opt; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(PY25-CJSON_IPK_DIR) --prefix=$(TARGET_PREFIX); \
 	)
-	$(STRIP_COMMAND) $(PY25-CJSON_IPK_DIR)/opt/lib/python2.5/site-packages/cjson*.so
+	$(STRIP_COMMAND) $(PY25-CJSON_IPK_DIR)$(TARGET_PREFIX)/lib/python2.5/site-packages/cjson*.so
 	$(MAKE) $(PY25-CJSON_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-CJSON_IPK_DIR)
 	# 2.6
 	rm -rf $(PY26-CJSON_IPK_DIR) $(BUILD_DIR)/py26-cjson_*_$(TARGET_ARCH).ipk
 	(cd $(PY-CJSON_BUILD_DIR)/2.6; \
-	    $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(PY26-CJSON_IPK_DIR) --prefix=/opt; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(PY26-CJSON_IPK_DIR) --prefix=$(TARGET_PREFIX); \
 	)
-	$(STRIP_COMMAND) $(PY26-CJSON_IPK_DIR)/opt/lib/python2.6/site-packages/cjson*.so
+	$(STRIP_COMMAND) $(PY26-CJSON_IPK_DIR)$(TARGET_PREFIX)/lib/python2.6/site-packages/cjson*.so
 	$(MAKE) $(PY26-CJSON_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-CJSON_IPK_DIR)
 

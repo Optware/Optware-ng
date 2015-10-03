@@ -46,7 +46,7 @@ PYTHON25_IPK_VERSION=5
 
 #
 # PYTHON25_CONFFILES should be a list of user-editable files
-#PYTHON25_CONFFILES=/opt/etc/python.conf /opt/etc/init.d/SXXpython
+#PYTHON25_CONFFILES=$(TARGET_PREFIX)/etc/python.conf $(TARGET_PREFIX)/etc/init.d/SXXpython
 
 #
 # If the compilation of the package requires additional
@@ -145,7 +145,7 @@ endif
 	echo "[build_ext]"; \
 	echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/ncurses"; \
 	echo "library-dirs=$(STAGING_LIB_DIR)"; \
-	echo "rpath=/opt/lib") > setup.cfg; \
+	echo "rpath=$(TARGET_PREFIX)/lib") > setup.cfg; \
 	\
 	 $(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PYTHON25_CPPFLAGS)" \
@@ -160,7 +160,7 @@ endif
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=$(TARGET_PREFIX) \
-		--mandir=/opt/man \
+		--mandir=$(TARGET_PREFIX)/man \
 		--enable-shared \
 		--enable-unicode=ucs4 \
 		--with-system-ffi \
@@ -224,37 +224,37 @@ $(PYTHON25_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PYTHON25_IPK_DIR)/opt/sbin or $(PYTHON25_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PYTHON25_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PYTHON25_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PYTHON25_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PYTHON25_IPK_DIR)/opt/etc/python/...
-# Documentation files should be installed in $(PYTHON25_IPK_DIR)/opt/doc/python/...
-# Daemon startup scripts should be installed in $(PYTHON25_IPK_DIR)/opt/etc/init.d/S??python
+# Libraries and include files should be installed into $(PYTHON25_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PYTHON25_IPK_DIR)$(TARGET_PREFIX)/etc/python/...
+# Documentation files should be installed in $(PYTHON25_IPK_DIR)$(TARGET_PREFIX)/doc/python/...
+# Daemon startup scripts should be installed in $(PYTHON25_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??python
 #
 # You may need to patch your application to make it use these locations.
 #
 $(PYTHON25_IPK): $(PYTHON25_BUILD_DIR)/.built
 	rm -rf $(PYTHON25_IPK_DIR) $(BUILD_DIR)/python25_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PYTHON25_BUILD_DIR) DESTDIR=$(PYTHON25_IPK_DIR) install
-	$(STRIP_COMMAND) $(PYTHON25_IPK_DIR)/opt/bin/python$(PYTHON25_VERSION_MAJOR)
-	$(STRIP_COMMAND) $(PYTHON25_IPK_DIR)/opt/lib/python$(PYTHON25_VERSION_MAJOR)/lib-dynload/*.so
-	chmod 755 $(PYTHON25_IPK_DIR)/opt/lib/libpython$(PYTHON25_VERSION_MAJOR).so.1.0
-	$(STRIP_COMMAND) $(PYTHON25_IPK_DIR)/opt/lib/libpython$(PYTHON25_VERSION_MAJOR).so.1.0
-	chmod 555 $(PYTHON25_IPK_DIR)/opt/lib/libpython$(PYTHON25_VERSION_MAJOR).so.1.0
-	rm $(PYTHON25_IPK_DIR)/opt/bin/python
-#	cd $(PYTHON25_IPK_DIR)/opt/bin; ln -s python$(PYTHON25_VERSION_MAJOR) python
+	$(STRIP_COMMAND) $(PYTHON25_IPK_DIR)$(TARGET_PREFIX)/bin/python$(PYTHON25_VERSION_MAJOR)
+	$(STRIP_COMMAND) $(PYTHON25_IPK_DIR)$(TARGET_PREFIX)/lib/python$(PYTHON25_VERSION_MAJOR)/lib-dynload/*.so
+	chmod 755 $(PYTHON25_IPK_DIR)$(TARGET_PREFIX)/lib/libpython$(PYTHON25_VERSION_MAJOR).so.1.0
+	$(STRIP_COMMAND) $(PYTHON25_IPK_DIR)$(TARGET_PREFIX)/lib/libpython$(PYTHON25_VERSION_MAJOR).so.1.0
+	chmod 555 $(PYTHON25_IPK_DIR)$(TARGET_PREFIX)/lib/libpython$(PYTHON25_VERSION_MAJOR).so.1.0
+	rm $(PYTHON25_IPK_DIR)$(TARGET_PREFIX)/bin/python
+#	cd $(PYTHON25_IPK_DIR)$(TARGET_PREFIX)/bin; ln -s python$(PYTHON25_VERSION_MAJOR) python
 	for f in bin/pydoc bin/idle bin/smtpd.py man/man1/python.1; \
-	    do mv $(PYTHON25_IPK_DIR)/opt/$$f $(PYTHON25_IPK_DIR)/opt/`echo $$f | sed -e 's/\(\.\|$$\)/2.5\1/'`; done
-	$(INSTALL) -d $(PYTHON25_IPK_DIR)/opt/local/bin
-	$(INSTALL) -d $(PYTHON25_IPK_DIR)/opt/local/lib/python$(PYTHON25_VERSION_MAJOR)/site-packages
-	sed -i -e 's|$(TARGET_CROSS)|/opt/bin/|g' \
-	       -e 's|$(STAGING_INCLUDE_DIR)|/opt/include|g' \
-	       -e 's|$(STAGING_LIB_DIR)|/opt/lib|g' \
+	    do mv $(PYTHON25_IPK_DIR)$(TARGET_PREFIX)/$$f $(PYTHON25_IPK_DIR)$(TARGET_PREFIX)/`echo $$f | sed -e 's/\(\.\|$$\)/2.5\1/'`; done
+	$(INSTALL) -d $(PYTHON25_IPK_DIR)$(TARGET_PREFIX)/local/bin
+	$(INSTALL) -d $(PYTHON25_IPK_DIR)$(TARGET_PREFIX)/local/lib/python$(PYTHON25_VERSION_MAJOR)/site-packages
+	sed -i -e 's|$(TARGET_CROSS)|$(TARGET_PREFIX)/bin/|g' \
+	       -e 's|$(STAGING_INCLUDE_DIR)|$(TARGET_PREFIX)/include|g' \
+	       -e 's|$(STAGING_LIB_DIR)|$(TARGET_PREFIX)/lib|g' \
 	       -e '/^RUNSHARED=/s|=.*|=|' \
-	       $(PYTHON25_IPK_DIR)/opt/lib/python2.5/config/Makefile
+	       $(PYTHON25_IPK_DIR)$(TARGET_PREFIX)/lib/python2.5/config/Makefile
 ifeq ($(OPTWARE_WRITE_OUTSIDE_OPT_ALLOWED),true)
 #	$(INSTALL) -d $(PYTHON25_IPK_DIR)/usr/bin
-#	ln -s /opt/bin/python $(PYTHON25_IPK_DIR)/usr/bin/python
+#	ln -s $(TARGET_PREFIX)/bin/python $(PYTHON25_IPK_DIR)/usr/bin/python
 endif
 	$(MAKE) $(PYTHON25_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(PYTHON25_SOURCE_DIR)/postinst $(PYTHON25_IPK_DIR)/CONTROL/postinst

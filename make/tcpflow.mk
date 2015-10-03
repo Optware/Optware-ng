@@ -40,7 +40,7 @@ TCPFLOW_IPK_VERSION=3
 
 #
 # TCPFLOW_CONFFILES should be a list of user-editable files
-#TCPFLOW_CONFFILES=/opt/etc/tcpflow.conf /opt/etc/init.d/SXXtcpflow
+#TCPFLOW_CONFFILES=$(TARGET_PREFIX)/etc/tcpflow.conf $(TARGET_PREFIX)/etc/init.d/SXXtcpflow
 
 #
 # TCPFLOW_PATCHES should list any patches, in the the order in
@@ -178,24 +178,24 @@ $(TCPFLOW_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(TCPFLOW_IPK_DIR)/opt/sbin or $(TCPFLOW_IPK_DIR)/opt/bin
+# Binaries should be installed into $(TCPFLOW_IPK_DIR)$(TARGET_PREFIX)/sbin or $(TCPFLOW_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(TCPFLOW_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(TCPFLOW_IPK_DIR)/opt/etc/tcpflow/...
-# Documentation files should be installed in $(TCPFLOW_IPK_DIR)/opt/doc/tcpflow/...
-# Daemon startup scripts should be installed in $(TCPFLOW_IPK_DIR)/opt/etc/init.d/S??tcpflow
+# Libraries and include files should be installed into $(TCPFLOW_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(TCPFLOW_IPK_DIR)$(TARGET_PREFIX)/etc/tcpflow/...
+# Documentation files should be installed in $(TCPFLOW_IPK_DIR)$(TARGET_PREFIX)/doc/tcpflow/...
+# Daemon startup scripts should be installed in $(TCPFLOW_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??tcpflow
 #
 # You may need to patch your application to make it use these locations.
 #
 $(TCPFLOW_IPK): $(TCPFLOW_BUILD_DIR)/.built
 	rm -rf $(TCPFLOW_IPK_DIR) $(BUILD_DIR)/tcpflow_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(TCPFLOW_BUILD_DIR) DESTDIR=$(TCPFLOW_IPK_DIR) install
-	$(STRIP_COMMAND) $(TCPFLOW_IPK_DIR)/opt/bin/tcpflow
-#	$(INSTALL) -d $(TCPFLOW_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(TCPFLOW_SOURCE_DIR)/tcpflow.conf $(TCPFLOW_IPK_DIR)/opt/etc/tcpflow.conf
-#	$(INSTALL) -d $(TCPFLOW_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(TCPFLOW_SOURCE_DIR)/rc.tcpflow $(TCPFLOW_IPK_DIR)/opt/etc/init.d/SXXtcpflow
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(TCPFLOW_IPK_DIR)/opt/etc/init.d/SXXtcpflow
+	$(STRIP_COMMAND) $(TCPFLOW_IPK_DIR)$(TARGET_PREFIX)/bin/tcpflow
+#	$(INSTALL) -d $(TCPFLOW_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(TCPFLOW_SOURCE_DIR)/tcpflow.conf $(TCPFLOW_IPK_DIR)$(TARGET_PREFIX)/etc/tcpflow.conf
+#	$(INSTALL) -d $(TCPFLOW_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(TCPFLOW_SOURCE_DIR)/rc.tcpflow $(TCPFLOW_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXtcpflow
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(TCPFLOW_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXtcpflow
 	$(MAKE) $(TCPFLOW_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(TCPFLOW_SOURCE_DIR)/postinst $(TCPFLOW_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(TCPFLOW_IPK_DIR)/CONTROL/postinst

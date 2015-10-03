@@ -42,7 +42,7 @@ XPDF_IPK_VERSION=1
 
 #
 # XPDF_CONFFILES should be a list of user-editable files
-XPDF_CONFFILES=/opt/etc/xpdfrc
+XPDF_CONFFILES=$(TARGET_PREFIX)/etc/xpdfrc
 
 #
 # XPDF_PATCHES should list any patches, in the the order in
@@ -124,8 +124,8 @@ endif
 	$(XPDF_UNZIP) $(DL_DIR)/$(XPDF_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	#cat $(XPDF_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(XPDF_DIR) -p1
 	mv $(BUILD_DIR)/$(XPDF_DIR) $(@D)
-#	sed fonts root dir to /opt/share
-	sed -i -e 's~/usr/share\|/usr/local/share~/opt/share~g' $(@D)/xpdf/GlobalParams.cc
+#	sed fonts root dir to $(TARGET_PREFIX)/share
+	sed -i -e 's~/usr/share\|/usr/local/share~$(TARGET_PREFIX)/share~g' $(@D)/xpdf/GlobalParams.cc
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		$(XPDF_ENV) \
@@ -205,12 +205,12 @@ $(XPDF_X_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(XPDF_IPK_DIR)/opt/sbin or $(XPDF_IPK_DIR)/opt/bin
+# Binaries should be installed into $(XPDF_IPK_DIR)$(TARGET_PREFIX)/sbin or $(XPDF_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(XPDF_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(XPDF_IPK_DIR)/opt/etc/xpdf/...
-# Documentation files should be installed in $(XPDF_IPK_DIR)/opt/doc/xpdf/...
-# Daemon startup scripts should be installed in $(XPDF_IPK_DIR)/opt/etc/init.d/S??xpdf
+# Libraries and include files should be installed into $(XPDF_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(XPDF_IPK_DIR)$(TARGET_PREFIX)/etc/xpdf/...
+# Documentation files should be installed in $(XPDF_IPK_DIR)$(TARGET_PREFIX)/doc/xpdf/...
+# Daemon startup scripts should be installed in $(XPDF_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??xpdf
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -218,18 +218,18 @@ $(XPDF_IPKS): $(XPDF_BUILD_DIR)/.built
 	rm -rf $(XPDF_IPK_DIR) $(BUILD_DIR)/xpdf_*_$(TARGET_ARCH).ipk \
 		$(XPDF_X_IPK_DIR) $(BUILD_DIR)/xpdf-x_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(XPDF_BUILD_DIR) DESTDIR=$(XPDF_IPK_DIR) install
-	$(STRIP_COMMAND) $(XPDF_IPK_DIR)/opt/bin/*
+	$(STRIP_COMMAND) $(XPDF_IPK_DIR)$(TARGET_PREFIX)/bin/*
 ifeq (x11, $(filter x11, $(PACKAGES)))
-	$(INSTALL) -d $(XPDF_X_IPK_DIR)/opt/bin
-	mv -f $(XPDF_IPK_DIR)/opt/bin/xpdf $(XPDF_IPK_DIR)/opt/bin/pdftoppm \
-							$(XPDF_X_IPK_DIR)/opt/bin/
+	$(INSTALL) -d $(XPDF_X_IPK_DIR)$(TARGET_PREFIX)/bin
+	mv -f $(XPDF_IPK_DIR)$(TARGET_PREFIX)/bin/xpdf $(XPDF_IPK_DIR)$(TARGET_PREFIX)/bin/pdftoppm \
+							$(XPDF_X_IPK_DIR)$(TARGET_PREFIX)/bin/
 	$(MAKE) $(XPDF_X_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XPDF_X_IPK_DIR)
 endif
-	#$(INSTALL) -d $(XPDF_IPK_DIR)/opt/etc/
-	#$(INSTALL) -m 644 $(XPDF_SOURCE_DIR)/xpdf.conf $(XPDF_IPK_DIR)/opt/etc/xpdf.conf
-	#$(INSTALL) -d $(XPDF_IPK_DIR)/opt/etc/init.d
-	#$(INSTALL) -m 755 $(XPDF_SOURCE_DIR)/rc.xpdf $(XPDF_IPK_DIR)/opt/etc/init.d/SXXxpdf
+	#$(INSTALL) -d $(XPDF_IPK_DIR)$(TARGET_PREFIX)/etc/
+	#$(INSTALL) -m 644 $(XPDF_SOURCE_DIR)/xpdf.conf $(XPDF_IPK_DIR)$(TARGET_PREFIX)/etc/xpdf.conf
+	#$(INSTALL) -d $(XPDF_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	#$(INSTALL) -m 755 $(XPDF_SOURCE_DIR)/rc.xpdf $(XPDF_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXxpdf
 	$(MAKE) $(XPDF_IPK_DIR)/CONTROL/control
 	#$(INSTALL) -m 755 $(XPDF_SOURCE_DIR)/postinst $(XPDF_IPK_DIR)/CONTROL/postinst
 	#$(INSTALL) -m 755 $(XPDF_SOURCE_DIR)/prerm $(XPDF_IPK_DIR)/CONTROL/prerm

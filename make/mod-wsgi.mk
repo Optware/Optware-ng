@@ -41,7 +41,7 @@ MOD_WSGI_IPK_VERSION=1
 
 #
 # MOD_WSGI_CONFFILES should be a list of user-editable files
-MOD_WSGI_CONFFILES=/opt/etc/apache2/conf.d/mod_wsgi.conf
+MOD_WSGI_CONFFILES=$(TARGET_PREFIX)/etc/apache2/conf.d/mod_wsgi.conf
 
 #
 # MOD_WSGI_PATCHES should list any patches, in the the order in
@@ -184,29 +184,29 @@ $(MOD_WSGI_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(MOD_WSGI_IPK_DIR)/opt/sbin or $(MOD_WSGI_IPK_DIR)/opt/bin
+# Binaries should be installed into $(MOD_WSGI_IPK_DIR)$(TARGET_PREFIX)/sbin or $(MOD_WSGI_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(MOD_WSGI_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(MOD_WSGI_IPK_DIR)/opt/etc/mod-wsgi/...
-# Documentation files should be installed in $(MOD_WSGI_IPK_DIR)/opt/doc/mod-wsgi/...
-# Daemon startup scripts should be installed in $(MOD_WSGI_IPK_DIR)/opt/etc/init.d/S??mod-wsgi
+# Libraries and include files should be installed into $(MOD_WSGI_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(MOD_WSGI_IPK_DIR)$(TARGET_PREFIX)/etc/mod-wsgi/...
+# Documentation files should be installed in $(MOD_WSGI_IPK_DIR)$(TARGET_PREFIX)/doc/mod-wsgi/...
+# Daemon startup scripts should be installed in $(MOD_WSGI_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??mod-wsgi
 #
 # You may need to patch your application to make it use these locations.
 #
 $(MOD_WSGI_IPK): $(MOD_WSGI_BUILD_DIR)/.built
 	rm -rf $(MOD_WSGI_IPK_DIR) $(BUILD_DIR)/mod-wsgi_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(MOD_WSGI_BUILD_DIR) DESTDIR=$(MOD_WSGI_IPK_DIR) install
-	$(INSTALL) -d $(MOD_WSGI_IPK_DIR)/opt/libexec
+	$(INSTALL) -d $(MOD_WSGI_IPK_DIR)$(TARGET_PREFIX)/libexec
 	cd $(MOD_WSGI_BUILD_DIR); \
-	$(INSTALL) -m 755 $(MOD_WSGI_BUILD_DIR)/src/server/.libs/mod_wsgi.so $(MOD_WSGI_IPK_DIR)/opt/libexec
-	$(STRIP_COMMAND) $(MOD_WSGI_IPK_DIR)/opt/libexec/mod_wsgi.so
-	$(INSTALL) -d $(MOD_WSGI_IPK_DIR)/opt/etc/apache2/conf.d/
-	echo "LoadModule wsgi_module libexec/mod_wsgi.so" > $(MOD_WSGI_IPK_DIR)/opt/etc/apache2/conf.d/mod_wsgi.conf
-#	$(INSTALL) -d $(MOD_WSGI_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(MOD_WSGI_SOURCE_DIR)/mod-wsgi.conf $(MOD_WSGI_IPK_DIR)/opt/etc/mod-wsgi.conf
-#	$(INSTALL) -d $(MOD_WSGI_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(MOD_WSGI_SOURCE_DIR)/rc.mod-wsgi $(MOD_WSGI_IPK_DIR)/opt/etc/init.d/SXXmod-wsgi
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MOD_WSGI_IPK_DIR)/opt/etc/init.d/SXXmod-wsgi
+	$(INSTALL) -m 755 $(MOD_WSGI_BUILD_DIR)/src/server/.libs/mod_wsgi.so $(MOD_WSGI_IPK_DIR)$(TARGET_PREFIX)/libexec
+	$(STRIP_COMMAND) $(MOD_WSGI_IPK_DIR)$(TARGET_PREFIX)/libexec/mod_wsgi.so
+	$(INSTALL) -d $(MOD_WSGI_IPK_DIR)$(TARGET_PREFIX)/etc/apache2/conf.d/
+	echo "LoadModule wsgi_module libexec/mod_wsgi.so" > $(MOD_WSGI_IPK_DIR)$(TARGET_PREFIX)/etc/apache2/conf.d/mod_wsgi.conf
+#	$(INSTALL) -d $(MOD_WSGI_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(MOD_WSGI_SOURCE_DIR)/mod-wsgi.conf $(MOD_WSGI_IPK_DIR)$(TARGET_PREFIX)/etc/mod-wsgi.conf
+#	$(INSTALL) -d $(MOD_WSGI_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(MOD_WSGI_SOURCE_DIR)/rc.mod-wsgi $(MOD_WSGI_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXmod-wsgi
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MOD_WSGI_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXmod-wsgi
 	$(MAKE) $(MOD_WSGI_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(MOD_WSGI_SOURCE_DIR)/postinst $(MOD_WSGI_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MOD_WSGI_IPK_DIR)/CONTROL/postinst

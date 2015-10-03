@@ -46,7 +46,7 @@ ANTINAT_IPK_VERSION=4
 
 #
 # ANTINAT_CONFFILES should be a list of user-editable files
-ANTINAT_CONFFILES=/opt/etc/antinat.xml
+ANTINAT_CONFFILES=$(TARGET_PREFIX)/etc/antinat.xml
 
 #
 # ANTINAT_PATCHES should list any patches, in the the order in
@@ -177,21 +177,21 @@ $(ANTINAT_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(ANTINAT_IPK_DIR)/opt/sbin or $(ANTINAT_IPK_DIR)/opt/bin
+# Binaries should be installed into $(ANTINAT_IPK_DIR)$(TARGET_PREFIX)/sbin or $(ANTINAT_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(ANTINAT_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(ANTINAT_IPK_DIR)/opt/etc/antinat/...
-# Documentation files should be installed in $(ANTINAT_IPK_DIR)/opt/doc/antinat/...
-# Daemon startup scripts should be installed in $(ANTINAT_IPK_DIR)/opt/etc/init.d/S??antinat
+# Libraries and include files should be installed into $(ANTINAT_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(ANTINAT_IPK_DIR)$(TARGET_PREFIX)/etc/antinat/...
+# Documentation files should be installed in $(ANTINAT_IPK_DIR)$(TARGET_PREFIX)/doc/antinat/...
+# Daemon startup scripts should be installed in $(ANTINAT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??antinat
 #
 # You may need to patch your application to make it use these locations.
 #
 $(ANTINAT_IPK): $(ANTINAT_BUILD_DIR)/.built
 	rm -rf $(ANTINAT_IPK_DIR) $(BUILD_DIR)/antinat_*_$(TARGET_ARCH).ipk
 	( cd $(ANTINAT_BUILD_DIR) ; make install prefix=$(ANTINAT_IPK_DIR)$(TARGET_PREFIX) )
-	rm -f $(ANTINAT_IPK_DIR)/opt/lib/libantinat.a
-	$(STRIP_COMMAND) $(ANTINAT_IPK_DIR)/opt/lib/libantinat.so.0.0.0
-	$(STRIP_COMMAND) $(ANTINAT_IPK_DIR)/opt/bin/antinat
+	rm -f $(ANTINAT_IPK_DIR)$(TARGET_PREFIX)/lib/libantinat.a
+	$(STRIP_COMMAND) $(ANTINAT_IPK_DIR)$(TARGET_PREFIX)/lib/libantinat.so.0.0.0
+	$(STRIP_COMMAND) $(ANTINAT_IPK_DIR)$(TARGET_PREFIX)/bin/antinat
 	$(MAKE) $(ANTINAT_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(ANTINAT_SOURCE_DIR)/postinst $(ANTINAT_IPK_DIR)/CONTROL/postinst
 	$(INSTALL) -m 755 $(ANTINAT_SOURCE_DIR)/prerm $(ANTINAT_IPK_DIR)/CONTROL/prerm

@@ -43,7 +43,7 @@ CLUTCH_IPK_VERSION=4
 
 #
 # CLUTCH_CONFFILES should be a list of user-editable files
-CLUTCH_CONFFILES=/opt/etc/clutch.conf /opt/etc/init.d/S88clutch
+CLUTCH_CONFFILES=$(TARGET_PREFIX)/etc/clutch.conf $(TARGET_PREFIX)/etc/init.d/S88clutch
 
 #
 # CLUTCH_PATCHES should list any patches, in the the order in
@@ -180,25 +180,25 @@ $(CLUTCH_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(CLUTCH_IPK_DIR)/opt/sbin or $(CLUTCH_IPK_DIR)/opt/bin
+# Binaries should be installed into $(CLUTCH_IPK_DIR)$(TARGET_PREFIX)/sbin or $(CLUTCH_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(CLUTCH_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(CLUTCH_IPK_DIR)/opt/etc/clutch/...
-# Documentation files should be installed in $(CLUTCH_IPK_DIR)/opt/doc/clutch/...
-# Daemon startup scripts should be installed in $(CLUTCH_IPK_DIR)/opt/etc/init.d/S??clutch
+# Libraries and include files should be installed into $(CLUTCH_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(CLUTCH_IPK_DIR)$(TARGET_PREFIX)/etc/clutch/...
+# Documentation files should be installed in $(CLUTCH_IPK_DIR)$(TARGET_PREFIX)/doc/clutch/...
+# Daemon startup scripts should be installed in $(CLUTCH_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??clutch
 #
 # You may need to patch your application to make it use these locations.
 #
 $(CLUTCH_IPK): $(CLUTCH_BUILD_DIR)/.built
 	rm -rf $(CLUTCH_IPK_DIR) $(BUILD_DIR)/clutch_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(CLUTCH_BUILD_DIR) DESTDIR=$(CLUTCH_IPK_DIR) install-strip
-	$(INSTALL) -d $(CLUTCH_IPK_DIR)/opt/etc/
-	$(INSTALL) -d $(CLUTCH_IPK_DIR)/opt/share/www/lighttpd/clutch
-	cp -rp $(CLUTCH_BUILD_DIR)/* $(CLUTCH_IPK_DIR)/opt/share/www/lighttpd/clutch/
-	$(INSTALL) -m 644 $(CLUTCH_SOURCE_DIR)/clutch.conf $(CLUTCH_IPK_DIR)/opt/etc/clutch.conf
-	$(INSTALL) -d $(CLUTCH_IPK_DIR)/opt/etc/init.d
-	$(INSTALL) -m 755 $(CLUTCH_SOURCE_DIR)/rc.clutch $(CLUTCH_IPK_DIR)/opt/etc/init.d/S88clutch
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(CLUTCH_IPK_DIR)/opt/etc/init.d/SXXclutch
+	$(INSTALL) -d $(CLUTCH_IPK_DIR)$(TARGET_PREFIX)/etc/
+	$(INSTALL) -d $(CLUTCH_IPK_DIR)$(TARGET_PREFIX)/share/www/lighttpd/clutch
+	cp -rp $(CLUTCH_BUILD_DIR)/* $(CLUTCH_IPK_DIR)$(TARGET_PREFIX)/share/www/lighttpd/clutch/
+	$(INSTALL) -m 644 $(CLUTCH_SOURCE_DIR)/clutch.conf $(CLUTCH_IPK_DIR)$(TARGET_PREFIX)/etc/clutch.conf
+	$(INSTALL) -d $(CLUTCH_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(INSTALL) -m 755 $(CLUTCH_SOURCE_DIR)/rc.clutch $(CLUTCH_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S88clutch
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(CLUTCH_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXclutch
 	$(MAKE) $(CLUTCH_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 755 $(CLUTCH_SOURCE_DIR)/postinst $(CLUTCH_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(CLUTCH_IPK_DIR)/CONTROL/postinst

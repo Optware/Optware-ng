@@ -43,7 +43,7 @@ PINENTRY_IPK_VERSION=1
 
 #
 # PINENTRY_CONFFILES should be a list of user-editable files
-#PINENTRY_CONFFILES=/opt/etc/pinentry.conf /opt/etc/init.d/SXXpinentry
+#PINENTRY_CONFFILES=$(TARGET_PREFIX)/etc/pinentry.conf $(TARGET_PREFIX)/etc/init.d/SXXpinentry
 
 #
 # PINENTRY_PATCHES should list any patches, in the the order in
@@ -190,24 +190,24 @@ $(PINENTRY_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PINENTRY_IPK_DIR)/opt/sbin or $(PINENTRY_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PINENTRY_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PINENTRY_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PINENTRY_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PINENTRY_IPK_DIR)/opt/etc/pinentry/...
-# Documentation files should be installed in $(PINENTRY_IPK_DIR)/opt/doc/pinentry/...
-# Daemon startup scripts should be installed in $(PINENTRY_IPK_DIR)/opt/etc/init.d/S??pinentry
+# Libraries and include files should be installed into $(PINENTRY_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PINENTRY_IPK_DIR)$(TARGET_PREFIX)/etc/pinentry/...
+# Documentation files should be installed in $(PINENTRY_IPK_DIR)$(TARGET_PREFIX)/doc/pinentry/...
+# Daemon startup scripts should be installed in $(PINENTRY_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??pinentry
 #
 # You may need to patch your application to make it use these locations.
 #
 $(PINENTRY_IPK): $(PINENTRY_BUILD_DIR)/.built
 	rm -rf $(PINENTRY_IPK_DIR) $(BUILD_DIR)/pinentry_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PINENTRY_BUILD_DIR) DESTDIR=$(PINENTRY_IPK_DIR) install-strip
-	rm -f $(PINENTRY_IPK_DIR)/opt/share/info/dir
-#	$(INSTALL) -d $(PINENTRY_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(PINENTRY_SOURCE_DIR)/pinentry.conf $(PINENTRY_IPK_DIR)/opt/etc/pinentry.conf
-#	$(INSTALL) -d $(PINENTRY_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(PINENTRY_SOURCE_DIR)/rc.pinentry $(PINENTRY_IPK_DIR)/opt/etc/init.d/SXXpinentry
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(PINENTRY_IPK_DIR)/opt/etc/init.d/SXXpinentry
+	rm -f $(PINENTRY_IPK_DIR)$(TARGET_PREFIX)/share/info/dir
+#	$(INSTALL) -d $(PINENTRY_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(PINENTRY_SOURCE_DIR)/pinentry.conf $(PINENTRY_IPK_DIR)$(TARGET_PREFIX)/etc/pinentry.conf
+#	$(INSTALL) -d $(PINENTRY_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(PINENTRY_SOURCE_DIR)/rc.pinentry $(PINENTRY_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXpinentry
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(PINENTRY_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXpinentry
 	$(MAKE) $(PINENTRY_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(PINENTRY_SOURCE_DIR)/postinst $(PINENTRY_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(PINENTRY_IPK_DIR)/CONTROL/postinst

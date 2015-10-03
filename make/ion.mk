@@ -39,7 +39,7 @@ ION_IPK_VERSION=1
 
 #
 # ION_CONFFILES should be a list of user-editable files
-#ION_CONFFILES=/opt/etc/ion.conf /opt/etc/init.d/SXXion
+#ION_CONFFILES=$(TARGET_PREFIX)/etc/ion.conf $(TARGET_PREFIX)/etc/init.d/SXXion
 
 #
 # ION_PATCHES should list any patches, in the the order in
@@ -167,19 +167,19 @@ $(ION_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(ION_IPK_DIR)/opt/sbin or $(ION_IPK_DIR)/opt/bin
+# Binaries should be installed into $(ION_IPK_DIR)$(TARGET_PREFIX)/sbin or $(ION_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(ION_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(ION_IPK_DIR)/opt/etc/ion/...
-# Documentation files should be installed in $(ION_IPK_DIR)/opt/doc/ion/...
-# Daemon startup scripts should be installed in $(ION_IPK_DIR)/opt/etc/init.d/S??ion
+# Libraries and include files should be installed into $(ION_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(ION_IPK_DIR)$(TARGET_PREFIX)/etc/ion/...
+# Documentation files should be installed in $(ION_IPK_DIR)$(TARGET_PREFIX)/doc/ion/...
+# Daemon startup scripts should be installed in $(ION_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??ion
 #
 # You may need to patch your application to make it use these locations.
 #
 $(ION_IPK): $(ION_BUILD_DIR)/.built
 	rm -rf $(ION_IPK_DIR) $(BUILD_DIR)/ion_*_$(TARGET_ARCH).ipk
 	$(TARGET_CONFIGURE_OPTS) \
-	$(MAKE) -C $(ION_BUILD_DIR) prefix=$(ION_IPK_DIR)$(TARGET_PREFIX) LOCALEDIR=$(ION_IPK_DIR)/opt/share/locale install
+	$(MAKE) -C $(ION_BUILD_DIR) prefix=$(ION_IPK_DIR)$(TARGET_PREFIX) LOCALEDIR=$(ION_IPK_DIR)$(TARGET_PREFIX)/share/locale install
 	$(MAKE) $(ION_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ION_IPK_DIR)
 

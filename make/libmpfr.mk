@@ -41,7 +41,7 @@ LIBMPFR_IPK_VERSION=1
 
 #
 # LIBMPFR_CONFFILES should be a list of user-editable files
-#LIBMPFR_CONFFILES=/opt/etc/libmpfr.conf /opt/etc/init.d/SXXlibmpfr
+#LIBMPFR_CONFFILES=$(TARGET_PREFIX)/etc/libmpfr.conf $(TARGET_PREFIX)/etc/init.d/SXXlibmpfr
 
 #
 # LIBMPFR_PATCHES should list any patches, in the the order in
@@ -180,24 +180,24 @@ $(LIBMPFR_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LIBMPFR_IPK_DIR)/opt/sbin or $(LIBMPFR_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LIBMPFR_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LIBMPFR_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LIBMPFR_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LIBMPFR_IPK_DIR)/opt/etc/libmpfr/...
-# Documentation files should be installed in $(LIBMPFR_IPK_DIR)/opt/doc/libmpfr/...
-# Daemon startup scripts should be installed in $(LIBMPFR_IPK_DIR)/opt/etc/init.d/S??libmpfr
+# Libraries and include files should be installed into $(LIBMPFR_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LIBMPFR_IPK_DIR)$(TARGET_PREFIX)/etc/libmpfr/...
+# Documentation files should be installed in $(LIBMPFR_IPK_DIR)$(TARGET_PREFIX)/doc/libmpfr/...
+# Daemon startup scripts should be installed in $(LIBMPFR_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??libmpfr
 #
 # You may need to patch your application to make it use these locations.
 #
 $(LIBMPFR_IPK): $(LIBMPFR_BUILD_DIR)/.built
 	rm -rf $(LIBMPFR_IPK_DIR) $(BUILD_DIR)/libmpfr_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBMPFR_BUILD_DIR) DESTDIR=$(LIBMPFR_IPK_DIR) install-strip
-	$(STRIP_COMMAND) $(LIBMPFR_IPK_DIR)/opt/lib/libmpfr.so.*
-#	$(INSTALL) -d $(LIBMPFR_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(LIBMPFR_SOURCE_DIR)/libmpfr.conf $(LIBMPFR_IPK_DIR)/opt/etc/libmpfr.conf
-#	$(INSTALL) -d $(LIBMPFR_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(LIBMPFR_SOURCE_DIR)/rc.libmpfr $(LIBMPFR_IPK_DIR)/opt/etc/init.d/SXXlibmpfr
-	rm -f $(LIBMPFR_IPK_DIR)/opt/share/info/dir $(LIBMPFR_IPK_DIR)/opt/lib/libmpfr.la
+	$(STRIP_COMMAND) $(LIBMPFR_IPK_DIR)$(TARGET_PREFIX)/lib/libmpfr.so.*
+#	$(INSTALL) -d $(LIBMPFR_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(LIBMPFR_SOURCE_DIR)/libmpfr.conf $(LIBMPFR_IPK_DIR)$(TARGET_PREFIX)/etc/libmpfr.conf
+#	$(INSTALL) -d $(LIBMPFR_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(LIBMPFR_SOURCE_DIR)/rc.libmpfr $(LIBMPFR_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibmpfr
+	rm -f $(LIBMPFR_IPK_DIR)$(TARGET_PREFIX)/share/info/dir $(LIBMPFR_IPK_DIR)$(TARGET_PREFIX)/lib/libmpfr.la
 	$(MAKE) $(LIBMPFR_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(LIBMPFR_SOURCE_DIR)/postinst $(LIBMPFR_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 755 $(LIBMPFR_SOURCE_DIR)/prerm $(LIBMPFR_IPK_DIR)/CONTROL/prerm

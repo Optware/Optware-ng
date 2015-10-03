@@ -41,7 +41,7 @@ DSPAM_IPK_VERSION=1
 
 #
 # DSPAM_CONFFILES should be a list of user-editable files
-DSPAM_CONFFILES=/opt/etc/dspam.conf /opt/etc/init.d/SXXdspam
+DSPAM_CONFFILES=$(TARGET_PREFIX)/etc/dspam.conf $(TARGET_PREFIX)/etc/init.d/SXXdspam
 
 #
 # DSPAM_PATCHES should list any patches, in the the order in
@@ -54,7 +54,7 @@ DSPAM_PATCHES=$(DSPAM_SOURCE_DIR)/dspam-configure-cross.patch
 # compilation or linking flags, then list them here.
 #
 DSPAM_CPPFLAGS ?=
-DSPAM_LDFLAGS=-Wl,-rpath,/opt/lib/dspam
+DSPAM_LDFLAGS=-Wl,-rpath,$(TARGET_PREFIX)/lib/dspam
 ifeq ($(LIBC_STYLE), uclibc)
 DSPAM_LDFLAGS += -lpthread
 endif
@@ -222,12 +222,12 @@ $(DSPAM_MYSQL_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(DSPAM_IPK_DIR)/opt/sbin or $(DSPAM_IPK_DIR)/opt/bin
+# Binaries should be installed into $(DSPAM_IPK_DIR)$(TARGET_PREFIX)/sbin or $(DSPAM_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(DSPAM_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(DSPAM_IPK_DIR)/opt/etc/dspam/...
-# Documentation files should be installed in $(DSPAM_IPK_DIR)/opt/doc/dspam/...
-# Daemon startup scripts should be installed in $(DSPAM_IPK_DIR)/opt/etc/init.d/S??dspam
+# Libraries and include files should be installed into $(DSPAM_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(DSPAM_IPK_DIR)$(TARGET_PREFIX)/etc/dspam/...
+# Documentation files should be installed in $(DSPAM_IPK_DIR)$(TARGET_PREFIX)/doc/dspam/...
+# Daemon startup scripts should be installed in $(DSPAM_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??dspam
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -236,18 +236,18 @@ $(DSPAM_IPK): $(DSPAM_BUILD_DIR)/.built
 	rm -rf $(DSPAM_PGSQL_IPK_DIR) $(BUILD_DIR)/dspam-pgsql_*_$(TARGET_ARCH).ipk
 	rm -rf $(DSPAM_MYSQL_IPK_DIR) $(BUILD_DIR)/dspam-mysql_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(DSPAM_BUILD_DIR) DESTDIR=$(DSPAM_IPK_DIR) install-strip
-#	$(INSTALL) -d $(DSPAM_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(DSPAM_SOURCE_DIR)/dspam.conf $(DSPAM_IPK_DIR)/opt/etc/dspam.conf
-#	$(INSTALL) -d $(DSPAM_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(DSPAM_SOURCE_DIR)/rc.dspam $(DSPAM_IPK_DIR)/opt/etc/init.d/SXXdspam
+#	$(INSTALL) -d $(DSPAM_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(DSPAM_SOURCE_DIR)/dspam.conf $(DSPAM_IPK_DIR)$(TARGET_PREFIX)/etc/dspam.conf
+#	$(INSTALL) -d $(DSPAM_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(DSPAM_SOURCE_DIR)/rc.dspam $(DSPAM_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXdspam
 
 	# Split into the different packages
-	$(INSTALL) -d $(DSPAM_PGSQL_IPK_DIR)/opt/lib/dspam
-	mv $(DSPAM_IPK_DIR)/opt/lib/dspam/libpgsql* $(DSPAM_PGSQL_IPK_DIR)/opt/lib/dspam
+	$(INSTALL) -d $(DSPAM_PGSQL_IPK_DIR)$(TARGET_PREFIX)/lib/dspam
+	mv $(DSPAM_IPK_DIR)$(TARGET_PREFIX)/lib/dspam/libpgsql* $(DSPAM_PGSQL_IPK_DIR)$(TARGET_PREFIX)/lib/dspam
 	$(MAKE) $(DSPAM_PGSQL_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(DSPAM_PGSQL_IPK_DIR)
-	$(INSTALL) -d $(DSPAM_MYSQL_IPK_DIR)/opt/lib/dspam
-	mv $(DSPAM_IPK_DIR)/opt/lib/dspam/libmysql* $(DSPAM_MYSQL_IPK_DIR)/opt/lib/dspam
+	$(INSTALL) -d $(DSPAM_MYSQL_IPK_DIR)$(TARGET_PREFIX)/lib/dspam
+	mv $(DSPAM_IPK_DIR)$(TARGET_PREFIX)/lib/dspam/libmysql* $(DSPAM_MYSQL_IPK_DIR)$(TARGET_PREFIX)/lib/dspam
 	$(MAKE) $(DSPAM_MYSQL_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(DSPAM_MYSQL_IPK_DIR)
 

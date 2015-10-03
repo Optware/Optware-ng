@@ -46,7 +46,7 @@ POPTOP_IPK_VERSION=1
 
 #
 # POPTOP_CONFFILES should be a list of user-editable files
-POPTOP_CONFFILES=/opt/etc/init.d/S20poptop /opt/etc/pptpd.conf /opt/etc/ppp/options.pptpd
+POPTOP_CONFFILES=$(TARGET_PREFIX)/etc/init.d/S20poptop $(TARGET_PREFIX)/etc/pptpd.conf $(TARGET_PREFIX)/etc/ppp/options.pptpd
 
 #
 # POPTOP_PATCHES should list any patches, in the the order in
@@ -122,7 +122,7 @@ $(POPTOP_BUILD_DIR)/.configured: $(DL_DIR)/$(POPTOP_SOURCE)
 		--with-bcrelay \
 	)
 	sed -ie 's|gcc|$(TARGET_CC)|' $(POPTOP_BUILD_DIR)/plugins/Makefile
-	sed -ie 's|/usr/local|/opt|' $(POPTOP_BUILD_DIR)/plugins/Makefile
+	sed -ie 's|/usr/local|$(TARGET_PREFIX)|' $(POPTOP_BUILD_DIR)/plugins/Makefile
 	touch $(POPTOP_BUILD_DIR)/.configured
 
 poptop-unpack: $(POPTOP_BUILD_DIR)/.configured
@@ -172,28 +172,28 @@ $(POPTOP_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(POPTOP_IPK_DIR)/opt/sbin or $(POPTOP_IPK_DIR)/opt/bin
+# Binaries should be installed into $(POPTOP_IPK_DIR)$(TARGET_PREFIX)/sbin or $(POPTOP_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(POPTOP_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(POPTOP_IPK_DIR)/opt/etc/poptop/...
-# Documentation files should be installed in $(POPTOP_IPK_DIR)/opt/doc/poptop/...
-# Daemon startup scripts should be installed in $(POPTOP_IPK_DIR)/opt/etc/init.d/S??poptop
+# Libraries and include files should be installed into $(POPTOP_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(POPTOP_IPK_DIR)$(TARGET_PREFIX)/etc/poptop/...
+# Documentation files should be installed in $(POPTOP_IPK_DIR)$(TARGET_PREFIX)/doc/poptop/...
+# Daemon startup scripts should be installed in $(POPTOP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??poptop
 #
 # You may need to patch your application to make it use these locations.
 #
 $(POPTOP_IPK): $(POPTOP_BUILD_DIR)/.built
 	rm -rf $(POPTOP_IPK_DIR) $(BUILD_DIR)/poptop_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(POPTOP_BUILD_DIR) DESTDIR=$(POPTOP_IPK_DIR) install
-	$(STRIP_COMMAND) $(POPTOP_IPK_DIR)/opt/sbin/bcrelay
-	$(STRIP_COMMAND) $(POPTOP_IPK_DIR)/opt/sbin/pptpd
-	$(STRIP_COMMAND) $(POPTOP_IPK_DIR)/opt/sbin/pptpctrl
-	$(STRIP_COMMAND) $(POPTOP_IPK_DIR)/opt/lib/pptpd/*.so
-	$(INSTALL) -d $(POPTOP_IPK_DIR)/opt/etc/
-	$(INSTALL) -m 644 $(POPTOP_SOURCE_DIR)/pptpd.conf $(POPTOP_IPK_DIR)/opt/etc/pptpd.conf
-	$(INSTALL) -d $(POPTOP_IPK_DIR)/opt/etc/ppp
-	$(INSTALL) -m 644 $(POPTOP_SOURCE_DIR)/options.pptpd $(POPTOP_IPK_DIR)/opt/etc/ppp/options.pptpd
-	$(INSTALL) -d $(POPTOP_IPK_DIR)/opt/etc/init.d
-	$(INSTALL) -m 755 $(POPTOP_SOURCE_DIR)/rc.poptop $(POPTOP_IPK_DIR)/opt/etc/init.d/S20poptop
+	$(STRIP_COMMAND) $(POPTOP_IPK_DIR)$(TARGET_PREFIX)/sbin/bcrelay
+	$(STRIP_COMMAND) $(POPTOP_IPK_DIR)$(TARGET_PREFIX)/sbin/pptpd
+	$(STRIP_COMMAND) $(POPTOP_IPK_DIR)$(TARGET_PREFIX)/sbin/pptpctrl
+	$(STRIP_COMMAND) $(POPTOP_IPK_DIR)$(TARGET_PREFIX)/lib/pptpd/*.so
+	$(INSTALL) -d $(POPTOP_IPK_DIR)$(TARGET_PREFIX)/etc/
+	$(INSTALL) -m 644 $(POPTOP_SOURCE_DIR)/pptpd.conf $(POPTOP_IPK_DIR)$(TARGET_PREFIX)/etc/pptpd.conf
+	$(INSTALL) -d $(POPTOP_IPK_DIR)$(TARGET_PREFIX)/etc/ppp
+	$(INSTALL) -m 644 $(POPTOP_SOURCE_DIR)/options.pptpd $(POPTOP_IPK_DIR)$(TARGET_PREFIX)/etc/ppp/options.pptpd
+	$(INSTALL) -d $(POPTOP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(INSTALL) -m 755 $(POPTOP_SOURCE_DIR)/rc.poptop $(POPTOP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S20poptop
 	$(MAKE) $(POPTOP_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(POPTOP_SOURCE_DIR)/postinst $(POPTOP_IPK_DIR)/CONTROL/postinst
 	$(INSTALL) -m 755 $(POPTOP_SOURCE_DIR)/prerm $(POPTOP_IPK_DIR)/CONTROL/prerm

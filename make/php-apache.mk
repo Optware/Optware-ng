@@ -28,7 +28,7 @@ PHP_APACHE_IPK_VERSION=1
 #
 # PHP_APACHE_CONFFILES should be a list of user-editable files
 #
-PHP_APACHE_CONFFILES=/opt/etc/apache2/conf.d/php.conf
+PHP_APACHE_CONFFILES=$(TARGET_PREFIX)/etc/apache2/conf.d/php.conf
 
 #
 # PHP_APACHE_LOCALES defines which locales get installed
@@ -162,7 +162,7 @@ endif
 		CFLAGS="$(STAGING_CPPFLAGS) $(PHP_CPPFLAGS) $(STAGING_LDFLAGS) $(PHP_LDFLAGS)" \
 		PATH="$(STAGING_DIR)/bin:$$PATH" \
 		PHP_LIBXML_DIR=$(STAGING_PREFIX) \
-		EXTENSION_DIR=/opt/lib/php/extensions \
+		EXTENSION_DIR=$(TARGET_PREFIX)/lib/php/extensions \
 		ac_cv_func_memcmp_working=yes \
 		cv_php_mbstring_stdarg=yes \
 		STAGING_PREFIX="$(STAGING_PREFIX)" \
@@ -172,7 +172,7 @@ endif
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=$(TARGET_PREFIX) \
-		--with-config-file-scan-dir=/opt/etc/php.d \
+		--with-config-file-scan-dir=$(TARGET_PREFIX)/etc/php.d \
 		--with-layout=GNU \
 		--disable-static \
 		--disable-cgi \
@@ -239,7 +239,7 @@ endif
 		-e '/#define HAVE_ATOMIC_H/s|^|//|' $(@D)/main/php_config.h
 
 	sed -i -e 's|\$$(top_builddir)/\$$(SAPI_CLI_PATH)|$(PHP_HOST_CLI)|' \
-		-e 's|-Wl,-rpath,$(STAGING_DIR)/lib|-Wl,-rpath,/opt/lib|g' \
+		-e 's|-Wl,-rpath,$(STAGING_DIR)/lib|-Wl,-rpath,$(TARGET_PREFIX)/lib|g' \
 		-e 's/###      or --detect-prefix//' \
 		-e 's|INTL_SHARED_LIBADD =.*|INTL_SHARED_LIBADD = -L$(STAGING_LIB_DIR) -licuuc -licui18n -licuio|' $(@D)/Makefile
 
@@ -275,22 +275,22 @@ php-apache-stage: $(PHP_APACHE_BUILD_DIR)/.staged
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PHP_APACHE_IPK_DIR)/opt/sbin or $(PHP_APACHE_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PHP_APACHE_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PHP_APACHE_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PHP_APACHE_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PHP_APACHE_IPK_DIR)/opt/etc/php/...
-# Documentation files should be installed in $(PHP_APACHE_IPK_DIR)/opt/doc/php/...
-# Daemon startup scripts should be installed in $(PHP_APACHE_IPK_DIR)/opt/etc/init.d/S??php
+# Libraries and include files should be installed into $(PHP_APACHE_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PHP_APACHE_IPK_DIR)$(TARGET_PREFIX)/etc/php/...
+# Documentation files should be installed in $(PHP_APACHE_IPK_DIR)$(TARGET_PREFIX)/doc/php/...
+# Daemon startup scripts should be installed in $(PHP_APACHE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??php
 #
 # You may need to patch your application to make it use these locations.
 #
 $(PHP_APACHE_IPK): $(PHP_APACHE_BUILD_DIR)/.built
 	rm -rf $(PHP_APACHE_IPK_DIR) $(BUILD_DIR)/php-apache_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(PHP_APACHE_IPK_DIR)/opt/etc/apache2/conf.d
-	$(INSTALL) -m 644 $(PHP_APACHE_SOURCE_DIR)/php.conf $(PHP_APACHE_IPK_DIR)/opt/etc/apache2/conf.d/php.conf
-	$(INSTALL) -d $(PHP_APACHE_IPK_DIR)/opt/libexec
-	$(INSTALL) -m 755 $(PHP_APACHE_BUILD_DIR)/libs/libphp5.so $(PHP_APACHE_IPK_DIR)/opt/libexec/libphp5.so
-	$(STRIP_COMMAND) $(PHP_APACHE_IPK_DIR)/opt/libexec/libphp5.so
+	$(INSTALL) -d $(PHP_APACHE_IPK_DIR)$(TARGET_PREFIX)/etc/apache2/conf.d
+	$(INSTALL) -m 644 $(PHP_APACHE_SOURCE_DIR)/php.conf $(PHP_APACHE_IPK_DIR)$(TARGET_PREFIX)/etc/apache2/conf.d/php.conf
+	$(INSTALL) -d $(PHP_APACHE_IPK_DIR)$(TARGET_PREFIX)/libexec
+	$(INSTALL) -m 755 $(PHP_APACHE_BUILD_DIR)/libs/libphp5.so $(PHP_APACHE_IPK_DIR)$(TARGET_PREFIX)/libexec/libphp5.so
+	$(STRIP_COMMAND) $(PHP_APACHE_IPK_DIR)$(TARGET_PREFIX)/libexec/libphp5.so
 	$(MAKE) $(PHP_APACHE_IPK_DIR)/CONTROL/control
 	echo $(PHP_APACHE_CONFFILES) | sed -e 's/ /\n/g' > $(PHP_APACHE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PHP_APACHE_IPK_DIR)

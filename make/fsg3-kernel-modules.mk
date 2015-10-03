@@ -32,7 +32,7 @@ FSG3-KERNEL-MODULES_IPK_VERSION=4
 
 #
 # FSG3-KERNEL-MODULES_CONFFILES should be a list of user-editable files
-#FSG3-KERNEL-MODULES_CONFFILES=/opt/etc/fsg3-kernel-modules.conf /opt/etc/init.d/SXXfsg3-kernel-modules
+#FSG3-KERNEL-MODULES_CONFFILES=$(TARGET_PREFIX)/etc/fsg3-kernel-modules.conf $(TARGET_PREFIX)/etc/init.d/SXXfsg3-kernel-modules
 
 #
 # FSG3-KERNEL-MODULES_PATCHES should list any patches, in the the order in
@@ -139,12 +139,12 @@ $(FSG3-KERNEL-MODULES_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(FSG3-KERNEL-MODULES_IPK_DIR)/opt/sbin or $(FSG3-KERNEL-MODULES_IPK_DIR)/opt/bin
+# Binaries should be installed into $(FSG3-KERNEL-MODULES_IPK_DIR)$(TARGET_PREFIX)/sbin or $(FSG3-KERNEL-MODULES_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(FSG3-KERNEL-MODULES_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(FSG3-KERNEL-MODULES_IPK_DIR)/opt/etc/fsg3-kernel-modules/...
-# Documentation files should be installed in $(FSG3-KERNEL-MODULES_IPK_DIR)/opt/doc/fsg3-kernel-modules/...
-# Daemon startup scripts should be installed in $(FSG3-KERNEL-MODULES_IPK_DIR)/opt/etc/init.d/S??fsg3-kernel-modules
+# Libraries and include files should be installed into $(FSG3-KERNEL-MODULES_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(FSG3-KERNEL-MODULES_IPK_DIR)$(TARGET_PREFIX)/etc/fsg3-kernel-modules/...
+# Documentation files should be installed in $(FSG3-KERNEL-MODULES_IPK_DIR)$(TARGET_PREFIX)/doc/fsg3-kernel-modules/...
+# Daemon startup scripts should be installed in $(FSG3-KERNEL-MODULES_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??fsg3-kernel-modules
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -155,8 +155,8 @@ $(FSG3-KERNEL-MODULES_BUILD_DIR)/.ipkdone: $(FSG3-KERNEL-MODULES_BUILD_DIR)/.bui
 	$(MAKE) -C $(FSG3-KERNEL-MODULES_BUILD_DIR)/linux-2.4.x $(FSG3-KERNEL-MODULES-FLAGS) \
 		INSTALL_MOD_PATH=$(FSG3-KERNEL-MODULES_IPK_DIR) DEPMOD=true modules_install
 	for m in $(FSG3-KERNEL-MODULES); do \
-	  $(INSTALL) -d $(FSG3-KERNEL-MODULES_IPK_DIR)-$$m/opt/lib/modules; \
-	  $(INSTALL) -m 644 `find $(FSG3-KERNEL-MODULES_IPK_DIR) -name $$m.o` $(FSG3-KERNEL-MODULES_IPK_DIR)-$$m/opt/lib/modules; \
+	  $(INSTALL) -d $(FSG3-KERNEL-MODULES_IPK_DIR)-$$m$(TARGET_PREFIX)/lib/modules; \
+	  $(INSTALL) -m 644 `find $(FSG3-KERNEL-MODULES_IPK_DIR) -name $$m.o` $(FSG3-KERNEL-MODULES_IPK_DIR)-$$m$(TARGET_PREFIX)/lib/modules; \
 	done
 	$(MAKE) $(FSG3-KERNEL-MODULES_IPK_DIR)/CONTROL/control
 	for m in $(FSG3-KERNEL-MODULES); do \

@@ -40,7 +40,7 @@ LIBA52_IPK_VERSION=2
 
 #
 # LIBA52_CONFFILES should be a list of user-editable files
-#LIBA52_CONFFILES=/opt/etc/liba52.conf /opt/etc/init.d/SXXliba52
+#LIBA52_CONFFILES=$(TARGET_PREFIX)/etc/liba52.conf $(TARGET_PREFIX)/etc/init.d/SXXliba52
 
 #
 # LIBA52_PATCHES should list any patches, in the the order in
@@ -177,21 +177,21 @@ $(LIBA52_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LIBA52_IPK_DIR)/opt/sbin or $(LIBA52_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LIBA52_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LIBA52_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LIBA52_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LIBA52_IPK_DIR)/opt/etc/liba52/...
-# Documentation files should be installed in $(LIBA52_IPK_DIR)/opt/doc/liba52/...
-# Daemon startup scripts should be installed in $(LIBA52_IPK_DIR)/opt/etc/init.d/S??liba52
+# Libraries and include files should be installed into $(LIBA52_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LIBA52_IPK_DIR)$(TARGET_PREFIX)/etc/liba52/...
+# Documentation files should be installed in $(LIBA52_IPK_DIR)$(TARGET_PREFIX)/doc/liba52/...
+# Daemon startup scripts should be installed in $(LIBA52_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??liba52
 #
 # You may need to patch your application to make it use these locations.
 #
 $(LIBA52_IPK): $(LIBA52_BUILD_DIR)/.built
 	rm -rf $(LIBA52_IPK_DIR) $(BUILD_DIR)/liba52_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBA52_BUILD_DIR) DESTDIR=$(LIBA52_IPK_DIR) install
-	$(STRIP_COMMAND) $(LIBA52_IPK_DIR)/opt/bin/a52dec \
-		$(LIBA52_IPK_DIR)/opt/bin/extract_a52 \
-		$(LIBA52_IPK_DIR)/opt/lib/liba52.so.[0-9].[0-9].[0-9]
+	$(STRIP_COMMAND) $(LIBA52_IPK_DIR)$(TARGET_PREFIX)/bin/a52dec \
+		$(LIBA52_IPK_DIR)$(TARGET_PREFIX)/bin/extract_a52 \
+		$(LIBA52_IPK_DIR)$(TARGET_PREFIX)/lib/liba52.so.[0-9].[0-9].[0-9]
 	$(MAKE) $(LIBA52_IPK_DIR)/CONTROL/control
 #	echo $(LIBA52_CONFFILES) | sed -e 's/ /\n/g' > $(LIBA52_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBA52_IPK_DIR)

@@ -40,7 +40,7 @@ ESPGS_IPK_VERSION=1
 
 #
 # ESPGS_CONFFILES should be a list of user-editable files
-# ESPGS_CONFFILES=/opt/etc/espgs.conf /opt/etc/init.d/SXXespgs
+# ESPGS_CONFFILES=$(TARGET_PREFIX)/etc/espgs.conf $(TARGET_PREFIX)/etc/init.d/SXXespgs
 
 #
 ## ESPGS_PATCHES should list any patches, in the the order in
@@ -91,7 +91,7 @@ $(ESPGS_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(ESPGS_SOURCE) $(ESP
 	$(ESPGS_UNZIP) $(DL_DIR)/$(ESPGS_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
 	mv $(HOST_BUILD_DIR)/$(ESPGS_DIR) $(ESPGS_HOST_BUILD_DIR)
 	cd $(ESPGS_HOST_BUILD_DIR); \
-		./configure --prefix=/opt
+		./configure --prefix=$(TARGET_PREFIX)
 	mkdir -p $(ESPGS_HOST_BUILD_DIR)/obj
 	$(MAKE) -C $(ESPGS_HOST_BUILD_DIR) ./obj/echogs
 	touch $@
@@ -195,8 +195,8 @@ $(ESPGS_IPK): $(ESPGS_BUILD_DIR)/.built
 		GENARCH_XE=$(ESPGS_BUILD_DIR)/obj/genarch.build \
 		GENCONF_XE=$(ESPGS_BUILD_DIR)/obj/genconf.build \
 		;
-	sed -i -e 's|/usr/share|/opt/share|' $(ESPGS_IPK_DIR)/opt/lib/cups/filter/psto*
-	$(STRIP_COMMAND) $(ESPGS_IPK_DIR)/opt/bin/gs
+	sed -i -e 's|/usr/share|$(TARGET_PREFIX)/share|' $(ESPGS_IPK_DIR)$(TARGET_PREFIX)/lib/cups/filter/psto*
+	$(STRIP_COMMAND) $(ESPGS_IPK_DIR)$(TARGET_PREFIX)/bin/gs
 	$(MAKE) $(ESPGS_IPK_DIR)/CONTROL/control
 	echo $(ESPGS_CONFFILES) | sed -e 's/ /\n/g' > $(ESPGS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ESPGS_IPK_DIR)

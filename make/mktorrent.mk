@@ -40,7 +40,7 @@ MKTORRENT_IPK_VERSION=1
 
 #
 # MKTORRENT_CONFFILES should be a list of user-editable files
-#MKTORRENT_CONFFILES=/opt/etc/mktorrent.conf /opt/etc/init.d/SXXmktorrent
+#MKTORRENT_CONFFILES=$(TARGET_PREFIX)/etc/mktorrent.conf $(TARGET_PREFIX)/etc/init.d/SXXmktorrent
 
 #
 # MKTORRENT_PATCHES should list any patches, in the the order in
@@ -185,12 +185,12 @@ $(MKTORRENT_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(MKTORRENT_IPK_DIR)/opt/sbin or $(MKTORRENT_IPK_DIR)/opt/bin
+# Binaries should be installed into $(MKTORRENT_IPK_DIR)$(TARGET_PREFIX)/sbin or $(MKTORRENT_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(MKTORRENT_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(MKTORRENT_IPK_DIR)/opt/etc/mktorrent/...
-# Documentation files should be installed in $(MKTORRENT_IPK_DIR)/opt/doc/mktorrent/...
-# Daemon startup scripts should be installed in $(MKTORRENT_IPK_DIR)/opt/etc/init.d/S??mktorrent
+# Libraries and include files should be installed into $(MKTORRENT_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(MKTORRENT_IPK_DIR)$(TARGET_PREFIX)/etc/mktorrent/...
+# Documentation files should be installed in $(MKTORRENT_IPK_DIR)$(TARGET_PREFIX)/doc/mktorrent/...
+# Daemon startup scripts should be installed in $(MKTORRENT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??mktorrent
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -202,12 +202,12 @@ $(MKTORRENT_IPK): $(MKTORRENT_BUILD_DIR)/.built
 		PREFIX=$(TARGET_PREFIX) USE_PTHREADS=1 USE_OPENSSL=1 USE_LONG_OPTIONS=1 \
 		USE_LARGE_FILES=1 DEBUG=0 INSTALL=install \
 		-C $(MKTORRENT_BUILD_DIR) DESTDIR=$(MKTORRENT_IPK_DIR) install
-	$(STRIP_COMMAND) $(MKTORRENT_IPK_DIR)/opt/bin/mktorrent
-#	$(INSTALL) -d $(MKTORRENT_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(MKTORRENT_SOURCE_DIR)/mktorrent.conf $(MKTORRENT_IPK_DIR)/opt/etc/mktorrent.conf
-#	$(INSTALL) -d $(MKTORRENT_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(MKTORRENT_SOURCE_DIR)/rc.mktorrent $(MKTORRENT_IPK_DIR)/opt/etc/init.d/SXXmktorrent
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MKTORRENT_IPK_DIR)/opt/etc/init.d/SXXmktorrent
+	$(STRIP_COMMAND) $(MKTORRENT_IPK_DIR)$(TARGET_PREFIX)/bin/mktorrent
+#	$(INSTALL) -d $(MKTORRENT_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(MKTORRENT_SOURCE_DIR)/mktorrent.conf $(MKTORRENT_IPK_DIR)$(TARGET_PREFIX)/etc/mktorrent.conf
+#	$(INSTALL) -d $(MKTORRENT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(MKTORRENT_SOURCE_DIR)/rc.mktorrent $(MKTORRENT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXmktorrent
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MKTORRENT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXmktorrent
 	$(MAKE) $(MKTORRENT_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(MKTORRENT_SOURCE_DIR)/postinst $(MKTORRENT_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MKTORRENT_IPK_DIR)/CONTROL/postinst

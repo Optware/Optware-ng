@@ -40,7 +40,7 @@ CKSFV_IPK_VERSION=1
 
 #
 # CKSFV_CONFFILES should be a list of user-editable files
-#CKSFV_CONFFILES=/opt/etc/cksfv.conf /opt/etc/init.d/SXXcksfv
+#CKSFV_CONFFILES=$(TARGET_PREFIX)/etc/cksfv.conf $(TARGET_PREFIX)/etc/init.d/SXXcksfv
 
 #
 # CKSFV_PATCHES should list any patches, in the the order in
@@ -174,19 +174,19 @@ $(CKSFV_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(CKSFV_IPK_DIR)/opt/sbin or $(CKSFV_IPK_DIR)/opt/bin
+# Binaries should be installed into $(CKSFV_IPK_DIR)$(TARGET_PREFIX)/sbin or $(CKSFV_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(CKSFV_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(CKSFV_IPK_DIR)/opt/etc/cksfv/...
-# Documentation files should be installed in $(CKSFV_IPK_DIR)/opt/doc/cksfv/...
-# Daemon startup scripts should be installed in $(CKSFV_IPK_DIR)/opt/etc/init.d/S??cksfv
+# Libraries and include files should be installed into $(CKSFV_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(CKSFV_IPK_DIR)$(TARGET_PREFIX)/etc/cksfv/...
+# Documentation files should be installed in $(CKSFV_IPK_DIR)$(TARGET_PREFIX)/doc/cksfv/...
+# Daemon startup scripts should be installed in $(CKSFV_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??cksfv
 #
 # You may need to patch your application to make it use these locations.
 #
 $(CKSFV_IPK): $(CKSFV_BUILD_DIR)/.built
 	rm -rf $(CKSFV_IPK_DIR) $(BUILD_DIR)/cksfv_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(CKSFV_BUILD_DIR) DESTDIR=$(CKSFV_IPK_DIR) install
-	$(STRIP_COMMAND) $(CKSFV_IPK_DIR)/opt/bin/cksfv
+	$(STRIP_COMMAND) $(CKSFV_IPK_DIR)$(TARGET_PREFIX)/bin/cksfv
 	$(MAKE) $(CKSFV_IPK_DIR)/CONTROL/control
 	echo $(CKSFV_CONFFILES) | sed -e 's/ /\n/g' > $(CKSFV_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CKSFV_IPK_DIR)

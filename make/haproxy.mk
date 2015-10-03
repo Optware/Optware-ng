@@ -40,7 +40,7 @@ HAPROXY_IPK_VERSION ?= 1
 
 #
 # HAPROXY_CONFFILES should be a list of user-editable files
-#HAPROXY_CONFFILES=/opt/etc/haproxy.conf /opt/etc/init.d/SXXhaproxy
+#HAPROXY_CONFFILES=$(TARGET_PREFIX)/etc/haproxy.conf $(TARGET_PREFIX)/etc/init.d/SXXhaproxy
 
 #
 # HAPROXY_PATCHES should list any patches, in the the order in
@@ -186,24 +186,24 @@ $(HAPROXY_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(HAPROXY_IPK_DIR)/opt/sbin or $(HAPROXY_IPK_DIR)/opt/bin
+# Binaries should be installed into $(HAPROXY_IPK_DIR)$(TARGET_PREFIX)/sbin or $(HAPROXY_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(HAPROXY_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(HAPROXY_IPK_DIR)/opt/etc/haproxy/...
-# Documentation files should be installed in $(HAPROXY_IPK_DIR)/opt/doc/haproxy/...
-# Daemon startup scripts should be installed in $(HAPROXY_IPK_DIR)/opt/etc/init.d/S??haproxy
+# Libraries and include files should be installed into $(HAPROXY_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(HAPROXY_IPK_DIR)$(TARGET_PREFIX)/etc/haproxy/...
+# Documentation files should be installed in $(HAPROXY_IPK_DIR)$(TARGET_PREFIX)/doc/haproxy/...
+# Daemon startup scripts should be installed in $(HAPROXY_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??haproxy
 #
 # You may need to patch your application to make it use these locations.
 #
 $(HAPROXY_IPK): $(HAPROXY_BUILD_DIR)/.built
 	rm -rf $(HAPROXY_IPK_DIR) $(BUILD_DIR)/haproxy_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(HAPROXY_BUILD_DIR) DESTDIR=$(HAPROXY_IPK_DIR) install-strip
-	$(INSTALL) -d $(HAPROXY_IPK_DIR)/opt/sbin/
-	$(INSTALL) -m 755 $(HAPROXY_BUILD_DIR)/haproxy $(HAPROXY_IPK_DIR)/opt/sbin/
-	$(STRIP_COMMAND) $(HAPROXY_IPK_DIR)/opt/sbin/haproxy
-	$(INSTALL) -d $(HAPROXY_IPK_DIR)/opt/share/haproxy/
-	cp -r $(HAPROXY_BUILD_DIR)/doc $(HAPROXY_IPK_DIR)/opt/share/haproxy/
-	cp -r $(HAPROXY_BUILD_DIR)/examples $(HAPROXY_IPK_DIR)/opt/share/haproxy/
+	$(INSTALL) -d $(HAPROXY_IPK_DIR)$(TARGET_PREFIX)/sbin/
+	$(INSTALL) -m 755 $(HAPROXY_BUILD_DIR)/haproxy $(HAPROXY_IPK_DIR)$(TARGET_PREFIX)/sbin/
+	$(STRIP_COMMAND) $(HAPROXY_IPK_DIR)$(TARGET_PREFIX)/sbin/haproxy
+	$(INSTALL) -d $(HAPROXY_IPK_DIR)$(TARGET_PREFIX)/share/haproxy/
+	cp -r $(HAPROXY_BUILD_DIR)/doc $(HAPROXY_IPK_DIR)$(TARGET_PREFIX)/share/haproxy/
+	cp -r $(HAPROXY_BUILD_DIR)/examples $(HAPROXY_IPK_DIR)$(TARGET_PREFIX)/share/haproxy/
 	$(MAKE) $(HAPROXY_IPK_DIR)/CONTROL/control
 	echo $(HAPROXY_CONFFILES) | sed -e 's/ /\n/g' > $(HAPROXY_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(HAPROXY_IPK_DIR)

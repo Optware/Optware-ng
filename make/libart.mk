@@ -46,7 +46,7 @@ LIBART_IPK_VERSION=2
 
 #
 # LIBART_CONFFILES should be a list of user-editable files
-#LIBART_CONFFILES=/opt/etc/libart.conf /opt/etc/init.d/SXXlibart
+#LIBART_CONFFILES=$(TARGET_PREFIX)/etc/libart.conf $(TARGET_PREFIX)/etc/init.d/SXXlibart
 
 #
 # LIBART_PATCHES should list any patches, in the the order in
@@ -150,7 +150,7 @@ $(LIBART_BUILD_DIR)/.staged: $(LIBART_BUILD_DIR)/.built
 	rm -f $(LIBART_BUILD_DIR)/.staged
 	$(MAKE) -C $(LIBART_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	sed -i -e 's|-I$${prefix}/include|-I$(STAGING_INCLUDE_DIR)|' $(STAGING_PREFIX)/bin/libart*-config
-	sed -i -e 's|prefix=/opt|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/libart*.pc
+	sed -i -e 's|prefix=$(TARGET_PREFIX)|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/libart*.pc
 	rm -f $(STAGING_LIB_DIR)/libart_lgpl_2.la
 	touch $(LIBART_BUILD_DIR)/.staged
 
@@ -178,23 +178,23 @@ $(LIBART_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LIBART_IPK_DIR)/opt/sbin or $(LIBART_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LIBART_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LIBART_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LIBART_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LIBART_IPK_DIR)/opt/etc/libart/...
-# Documentation files should be installed in $(LIBART_IPK_DIR)/opt/doc/libart/...
-# Daemon startup scripts should be installed in $(LIBART_IPK_DIR)/opt/etc/init.d/S??libart
+# Libraries and include files should be installed into $(LIBART_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LIBART_IPK_DIR)$(TARGET_PREFIX)/etc/libart/...
+# Documentation files should be installed in $(LIBART_IPK_DIR)$(TARGET_PREFIX)/doc/libart/...
+# Daemon startup scripts should be installed in $(LIBART_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??libart
 #
 # You may need to patch your application to make it use these locations.
 #
 $(LIBART_IPK): $(LIBART_BUILD_DIR)/.built
 	rm -rf $(LIBART_IPK_DIR) $(BUILD_DIR)/libart_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBART_BUILD_DIR) DESTDIR=$(LIBART_IPK_DIR) install-strip
-	$(STRIP_COMMAND) $(LIBART_IPK_DIR)/opt/lib/*.so
-#	$(INSTALL) -d $(LIBART_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(LIBART_SOURCE_DIR)/libart.conf $(LIBART_IPK_DIR)/opt/etc/libart.conf
-#	$(INSTALL) -d $(LIBART_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(LIBART_SOURCE_DIR)/rc.libart $(LIBART_IPK_DIR)/opt/etc/init.d/SXXlibart
+	$(STRIP_COMMAND) $(LIBART_IPK_DIR)$(TARGET_PREFIX)/lib/*.so
+#	$(INSTALL) -d $(LIBART_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(LIBART_SOURCE_DIR)/libart.conf $(LIBART_IPK_DIR)$(TARGET_PREFIX)/etc/libart.conf
+#	$(INSTALL) -d $(LIBART_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(LIBART_SOURCE_DIR)/rc.libart $(LIBART_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibart
 	$(MAKE) $(LIBART_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(LIBART_SOURCE_DIR)/postinst $(LIBART_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 755 $(LIBART_SOURCE_DIR)/prerm $(LIBART_IPK_DIR)/CONTROL/prerm

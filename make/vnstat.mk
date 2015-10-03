@@ -40,7 +40,7 @@ VNSTAT_IPK_VERSION=2
 
 #
 # VNSTAT_CONFFILES should be a list of user-editable files
-VNSTAT_CONFFILES=/opt/etc/cron.d/vnstat /opt/etc/vnstat.conf
+VNSTAT_CONFFILES=$(TARGET_PREFIX)/etc/cron.d/vnstat $(TARGET_PREFIX)/etc/vnstat.conf
 
 #
 # VNSTAT_PATCHES should list any patches, in the the order in
@@ -118,8 +118,8 @@ $(VNSTAT_BUILD_DIR)/.configured: $(DL_DIR)/$(VNSTAT_SOURCE) $(VNSTAT_PATCHES) ma
 		then mv $(BUILD_DIR)/$(VNSTAT_DIR) $(@D) ; \
 	fi
 	( cd $(@D); \
-		sed -i -e 's|/usr|/opt|g;s|/var/|/opt/var/|g' \
-		-e 's|/etc|/opt/etc|g;s|/share/man|/man|g' \
+		sed -i -e 's|/usr|$(TARGET_PREFIX)|g;s|/var/|$(TARGET_PREFIX)/var/|g' \
+		-e 's|/etc|$(TARGET_PREFIX)/etc|g;s|/share/man|/man|g' \
 		-e 's|local/bin|bin|g' \
 		-e 's|install -s|install|' \
 		-e '/^CC/d;/^CFLAGS/d'  \
@@ -178,26 +178,26 @@ $(VNSTAT_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(VNSTAT_IPK_DIR)/opt/sbin or $(VNSTAT_IPK_DIR)/opt/bin
+# Binaries should be installed into $(VNSTAT_IPK_DIR)$(TARGET_PREFIX)/sbin or $(VNSTAT_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(VNSTAT_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(VNSTAT_IPK_DIR)/opt/etc/vnstat/...
-# Documentation files should be installed in $(VNSTAT_IPK_DIR)/opt/doc/vnstat/...
-# Daemon startup scripts should be installed in $(VNSTAT_IPK_DIR)/opt/etc/init.d/S??vnstat
+# Libraries and include files should be installed into $(VNSTAT_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(VNSTAT_IPK_DIR)$(TARGET_PREFIX)/etc/vnstat/...
+# Documentation files should be installed in $(VNSTAT_IPK_DIR)$(TARGET_PREFIX)/doc/vnstat/...
+# Daemon startup scripts should be installed in $(VNSTAT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??vnstat
 #
 # You may need to patch your application to make it use these locations.
 #
 $(VNSTAT_IPK): $(VNSTAT_BUILD_DIR)/.built
 	rm -rf $(VNSTAT_IPK_DIR) $(BUILD_DIR)/vnstat_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(VNSTAT_IPK_DIR)/opt/etc/
+	$(INSTALL) -d $(VNSTAT_IPK_DIR)$(TARGET_PREFIX)/etc/
 	$(MAKE) -C $(VNSTAT_BUILD_DIR) DESTDIR=$(VNSTAT_IPK_DIR) install
-	$(STRIP_COMMAND) $(VNSTAT_IPK_DIR)/opt/bin/vnstat $(VNSTAT_IPK_DIR)/opt/sbin/vnstatd
-	$(INSTALL) -d $(VNSTAT_IPK_DIR)/opt/etc/cron.d
-	$(INSTALL) -m 600 $(<D)/examples/vnstat.cron $(VNSTAT_IPK_DIR)/opt/etc/cron.d/vnstat
-#	$(INSTALL) -m 644 $(VNSTAT_SOURCE_DIR)/vnstat.conf $(VNSTAT_IPK_DIR)/opt/etc/vnstat.conf
-#	$(INSTALL) -d $(VNSTAT_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(VNSTAT_SOURCE_DIR)/rc.vnstat $(VNSTAT_IPK_DIR)/opt/etc/init.d/SXXvnstat
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/opt/etc/init.d/SXXvnstat
+	$(STRIP_COMMAND) $(VNSTAT_IPK_DIR)$(TARGET_PREFIX)/bin/vnstat $(VNSTAT_IPK_DIR)$(TARGET_PREFIX)/sbin/vnstatd
+	$(INSTALL) -d $(VNSTAT_IPK_DIR)$(TARGET_PREFIX)/etc/cron.d
+	$(INSTALL) -m 600 $(<D)/examples/vnstat.cron $(VNSTAT_IPK_DIR)$(TARGET_PREFIX)/etc/cron.d/vnstat
+#	$(INSTALL) -m 644 $(VNSTAT_SOURCE_DIR)/vnstat.conf $(VNSTAT_IPK_DIR)$(TARGET_PREFIX)/etc/vnstat.conf
+#	$(INSTALL) -d $(VNSTAT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(VNSTAT_SOURCE_DIR)/rc.vnstat $(VNSTAT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXvnstat
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXvnstat
 	$(MAKE) $(VNSTAT_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(VNSTAT_SOURCE_DIR)/postinst $(VNSTAT_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/postinst

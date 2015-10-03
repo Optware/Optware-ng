@@ -40,7 +40,7 @@ TESSERACT-OCR_IPK_VERSION=3
 
 #
 # TESSERACT-OCR_CONFFILES should be a list of user-editable files
-#TESSERACT-OCR_CONFFILES=/opt/etc/tesseract-ocr.conf /opt/etc/init.d/SXXtesseract-ocr
+#TESSERACT-OCR_CONFFILES=$(TARGET_PREFIX)/etc/tesseract-ocr.conf $(TARGET_PREFIX)/etc/init.d/SXXtesseract-ocr
 
 #
 # TESSERACT-OCR_PATCHES should list any patches, in the the order in
@@ -233,12 +233,12 @@ $(TESSERACT-OCR_IPK_DIR)-langs/%/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(TESSERACT-OCR_IPK_DIR)/opt/sbin or $(TESSERACT-OCR_IPK_DIR)/opt/bin
+# Binaries should be installed into $(TESSERACT-OCR_IPK_DIR)$(TARGET_PREFIX)/sbin or $(TESSERACT-OCR_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(TESSERACT-OCR_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(TESSERACT-OCR_IPK_DIR)/opt/etc/tesseract-ocr/...
-# Documentation files should be installed in $(TESSERACT-OCR_IPK_DIR)/opt/doc/tesseract-ocr/...
-# Daemon startup scripts should be installed in $(TESSERACT-OCR_IPK_DIR)/opt/etc/init.d/S??tesseract-ocr
+# Libraries and include files should be installed into $(TESSERACT-OCR_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(TESSERACT-OCR_IPK_DIR)$(TARGET_PREFIX)/etc/tesseract-ocr/...
+# Documentation files should be installed in $(TESSERACT-OCR_IPK_DIR)$(TARGET_PREFIX)/doc/tesseract-ocr/...
+# Daemon startup scripts should be installed in $(TESSERACT-OCR_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??tesseract-ocr
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -246,12 +246,12 @@ $(TESSERACT-OCR_IPK) $(TESSERACT-OCR-DEV_IPK): $(TESSERACT-OCR_BUILD_DIR)/.built
 	rm -rf $(TESSERACT-OCR_IPK_DIR) $(BUILD_DIR)/tesseract-ocr*_$(TARGET_ARCH).ipk
 	rm -rf $(TESSERACT-OCR-DEV_IPK_DIR) $(BUILD_DIR)/tesseract-ocr-dev_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(TESSERACT-OCR_BUILD_DIR) DESTDIR=$(TESSERACT-OCR_IPK_DIR) install
-	$(STRIP_COMMAND) $(TESSERACT-OCR_IPK_DIR)/opt/bin/*
-	rm -f $(TESSERACT-OCR_IPK_DIR)/opt/share/tessdata/???.*
+	$(STRIP_COMMAND) $(TESSERACT-OCR_IPK_DIR)$(TARGET_PREFIX)/bin/*
+	rm -f $(TESSERACT-OCR_IPK_DIR)$(TARGET_PREFIX)/share/tessdata/???.*
 	$(MAKE) $(TESSERACT-OCR_IPK_DIR)/CONTROL/control
 	$(MAKE) $(TESSERACT-OCR-DEV_IPK_DIR)/CONTROL/control
-	$(INSTALL) -d $(TESSERACT-OCR-DEV_IPK_DIR)/opt
-	mv $(TESSERACT-OCR_IPK_DIR)/opt/include $(TESSERACT-OCR_IPK_DIR)/opt/lib $(TESSERACT-OCR-DEV_IPK_DIR)/opt/
+	$(INSTALL) -d $(TESSERACT-OCR-DEV_IPK_DIR)$(TARGET_PREFIX)
+	mv $(TESSERACT-OCR_IPK_DIR)$(TARGET_PREFIX)/include $(TESSERACT-OCR_IPK_DIR)$(TARGET_PREFIX)/lib $(TESSERACT-OCR-DEV_IPK_DIR)$(TARGET_PREFIX)/
 #	echo $(TESSERACT-OCR_CONFFILES) | sed -e 's/ /\n/g' > $(TESSERACT-OCR_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TESSERACT-OCR_IPK_DIR)
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TESSERACT-OCR-DEV_IPK_DIR)
@@ -261,15 +261,15 @@ $(TESSERACT-OCR_BUILD_DIR)/.lang-ipks-done: $(TESSERACT-OCR-LANG_TARBALLS) $(TES
 	rm -rf $(TESSERACT-OCR_IPK_DIR)-langs $(BUILD_DIR)/tesseract-ocr-lang-*_*_$(TARGET_ARCH).ipk
 	$(MAKE) $(foreach l,$(TESSERACT-OCR_LANGS),$(TESSERACT-OCR_IPK_DIR)-langs/$(l)/CONTROL/control)
 	for l in $(TESSERACT-OCR_LANGS_200); do \
-		$(INSTALL) -d $(TESSERACT-OCR_IPK_DIR)-langs/$$l/opt/share; \
-		tar -C $(TESSERACT-OCR_IPK_DIR)-langs/$$l/opt/share -xzvf $(DL_DIR)/tesseract-2.00.$$l.tar.gz; \
-		chmod 644 $(TESSERACT-OCR_IPK_DIR)-langs/$$l/opt/share/tessdata/*; \
+		$(INSTALL) -d $(TESSERACT-OCR_IPK_DIR)-langs/$$l$(TARGET_PREFIX)/share; \
+		tar -C $(TESSERACT-OCR_IPK_DIR)-langs/$$l$(TARGET_PREFIX)/share -xzvf $(DL_DIR)/tesseract-2.00.$$l.tar.gz; \
+		chmod 644 $(TESSERACT-OCR_IPK_DIR)-langs/$$l$(TARGET_PREFIX)/share/tessdata/*; \
 		cd $(BUILD_DIR); $(IPKG_BUILD) $(TESSERACT-OCR_IPK_DIR)-langs/$$l; \
 	done
 	for l in $(TESSERACT-OCR_LANGS_201); do \
-		$(INSTALL) -d $(TESSERACT-OCR_IPK_DIR)-langs/$$l/opt/share; \
-		tar -C $(TESSERACT-OCR_IPK_DIR)-langs/$$l/opt/share -xzvf $(DL_DIR)/tesseract-2.01.$$l.tar.gz; \
-		chmod 644 $(TESSERACT-OCR_IPK_DIR)-langs/$$l/opt/share/tessdata/*; \
+		$(INSTALL) -d $(TESSERACT-OCR_IPK_DIR)-langs/$$l$(TARGET_PREFIX)/share; \
+		tar -C $(TESSERACT-OCR_IPK_DIR)-langs/$$l$(TARGET_PREFIX)/share -xzvf $(DL_DIR)/tesseract-2.01.$$l.tar.gz; \
+		chmod 644 $(TESSERACT-OCR_IPK_DIR)-langs/$$l$(TARGET_PREFIX)/share/tessdata/*; \
 		cd $(BUILD_DIR); $(IPKG_BUILD) $(TESSERACT-OCR_IPK_DIR)-langs/$$l; \
 	done
 	touch $@

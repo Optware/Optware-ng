@@ -40,7 +40,7 @@ SYSFSUTILS_IPK_VERSION=1
 
 #
 # SYSFSUTILS_CONFFILES should be a list of user-editable files
-#SYSFSUTILS_CONFFILES=/opt/etc/sysfsutils.conf /opt/etc/init.d/SXXsysfsutils
+#SYSFSUTILS_CONFFILES=$(TARGET_PREFIX)/etc/sysfsutils.conf $(TARGET_PREFIX)/etc/init.d/SXXsysfsutils
 
 #
 # SYSFSUTILS_PATCHES should list any patches, in the the order in
@@ -178,19 +178,19 @@ $(SYSFSUTILS_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(SYSFSUTILS_IPK_DIR)/opt/sbin or $(SYSFSUTILS_IPK_DIR)/opt/bin
+# Binaries should be installed into $(SYSFSUTILS_IPK_DIR)$(TARGET_PREFIX)/sbin or $(SYSFSUTILS_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(SYSFSUTILS_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(SYSFSUTILS_IPK_DIR)/opt/etc/sysfsutils/...
-# Documentation files should be installed in $(SYSFSUTILS_IPK_DIR)/opt/doc/sysfsutils/...
-# Daemon startup scripts should be installed in $(SYSFSUTILS_IPK_DIR)/opt/etc/init.d/S??sysfsutils
+# Libraries and include files should be installed into $(SYSFSUTILS_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(SYSFSUTILS_IPK_DIR)$(TARGET_PREFIX)/etc/sysfsutils/...
+# Documentation files should be installed in $(SYSFSUTILS_IPK_DIR)$(TARGET_PREFIX)/doc/sysfsutils/...
+# Daemon startup scripts should be installed in $(SYSFSUTILS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??sysfsutils
 #
 # You may need to patch your application to make it use these locations.
 #
 $(SYSFSUTILS_IPK): $(SYSFSUTILS_BUILD_DIR)/.built
 	rm -rf $(SYSFSUTILS_IPK_DIR) $(BUILD_DIR)/sysfsutils_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SYSFSUTILS_BUILD_DIR) DESTDIR=$(SYSFSUTILS_IPK_DIR) install-strip
-	rm -f $(SYSFSUTILS_IPK_DIR)/opt/lib/libsysfs*.la
+	rm -f $(SYSFSUTILS_IPK_DIR)$(TARGET_PREFIX)/lib/libsysfs*.la
 	$(MAKE) $(SYSFSUTILS_IPK_DIR)/CONTROL/control
 	echo $(SYSFSUTILS_CONFFILES) | sed -e 's/ /\n/g' > $(SYSFSUTILS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SYSFSUTILS_IPK_DIR)

@@ -35,7 +35,7 @@ $(WU_FTPD_DIR)/.configured: $(DL_DIR)/$(WU_FTPD_SOURCE) $(WU_FTPD_PATCHES)
 		--target=$(GNU_SHORT_TARGET_NAME) \
 		--host=$(GNU_SHORT_TARGET_NAME) \
 		--build=$(GNU_HOST_NAME) \
-		--sysconfdir=/opt/etc
+		--sysconfdir=$(TARGET_PREFIX)/etc
 	touch $(WU_FTPD_DIR)/.configured
 
 wu-ftpd-unpack: $(WU_FTPD_DIR)/.configured
@@ -47,9 +47,9 @@ wu-ftpd: $(WU_FTPD_DIR)/wu-ftpd
 
 $(WU_FTPD_IPK): $(WU_FTPD_DIR)/wu-ftpd
 	$(INSTALL) -d $(WU_FTPD_IPK_DIR)/CONTROL
-	$(INSTALL) -d $(WU_FTPD_IPK_DIR)/opt/sbin $(WU_FTPD_IPK_DIR)/opt/etc/init.d
-	$(STRIP_COMMAND) $(WU_FTPD_DIR)/wu-ftpd -o $(WU_FTPD_IPK_DIR)/opt/sbin/wu-ftpd
-	$(INSTALL) -m 755 $(SOURCE_DIR)/wu-ftpd.rc $(WU_FTPD_IPK_DIR)/opt/etc/init.d/S51wu-ftpd
+	$(INSTALL) -d $(WU_FTPD_IPK_DIR)$(TARGET_PREFIX)/sbin $(WU_FTPD_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(STRIP_COMMAND) $(WU_FTPD_DIR)/wu-ftpd -o $(WU_FTPD_IPK_DIR)$(TARGET_PREFIX)/sbin/wu-ftpd
+	$(INSTALL) -m 755 $(SOURCE_DIR)/wu-ftpd.rc $(WU_FTPD_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S51wu-ftpd
 	$(INSTALL) -m 644 $(SOURCE_DIR)/wu-ftpd.control  $(WU_FTPD_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 644 $(SOURCE_DIR)/wu-ftpd.postinst $(WU_FTPD_IPK_DIR)/CONTROL/postinst
 	$(INSTALL) -m 644 $(SOURCE_DIR)/wu-ftpd.prerm    $(WU_FTPD_IPK_DIR)/CONTROL/prerm

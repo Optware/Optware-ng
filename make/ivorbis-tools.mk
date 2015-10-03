@@ -40,7 +40,7 @@ IVORBIS_TOOLS_IPK_VERSION=8
 
 #
 # IVORBIS-TOOLS_CONFFILES should be a list of user-editable files
-#IVORBIS_TOOLS_CONFFILES=/opt/etc/ivorbis-tools.conf /opt/etc/init.d/SXXivorbis-tools
+#IVORBIS_TOOLS_CONFFILES=$(TARGET_PREFIX)/etc/ivorbis-tools.conf $(TARGET_PREFIX)/etc/init.d/SXXivorbis-tools
 
 #
 # IVORBIS-TOOLS_PATCHES should list any patches, in the the order in
@@ -178,19 +178,19 @@ $(IVORBIS_TOOLS_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(IVORBIS_TOOLS_IPK_DIR)/opt/sbin or $(IVORBIS_TOOLS_IPK_DIR)/opt/bin
+# Binaries should be installed into $(IVORBIS_TOOLS_IPK_DIR)$(TARGET_PREFIX)/sbin or $(IVORBIS_TOOLS_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(IVORBIS_TOOLS_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(IVORBIS_TOOLS_IPK_DIR)/opt/etc/ivorbis-tools/...
-# Documentation files should be installed in $(IVORBIS_TOOLS_IPK_DIR)/opt/doc/ivorbis-tools/...
-# Daemon startup scripts should be installed in $(IVORBIS_TOOLS_IPK_DIR)/opt/etc/init.d/S??ivorbis-tools
+# Libraries and include files should be installed into $(IVORBIS_TOOLS_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(IVORBIS_TOOLS_IPK_DIR)$(TARGET_PREFIX)/etc/ivorbis-tools/...
+# Documentation files should be installed in $(IVORBIS_TOOLS_IPK_DIR)$(TARGET_PREFIX)/doc/ivorbis-tools/...
+# Daemon startup scripts should be installed in $(IVORBIS_TOOLS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??ivorbis-tools
 #
 # You may need to patch your application to make it use these locations.
 #
 $(IVORBIS_TOOLS_IPK): $(IVORBIS_TOOLS_BUILD_DIR)/.built
 	rm -rf $(IVORBIS_TOOLS_IPK_DIR) $(BUILD_DIR)/ivorbis-tools_*_${TARGET_ARCH}.ipk
 	$(MAKE) -C $(IVORBIS_TOOLS_BUILD_DIR) DESTDIR=$(IVORBIS_TOOLS_IPK_DIR) install
-	$(STRIP_COMMAND) $(IVORBIS_TOOLS_IPK_DIR)/opt/bin/*
+	$(STRIP_COMMAND) $(IVORBIS_TOOLS_IPK_DIR)$(TARGET_PREFIX)/bin/*
 	$(MAKE) $(IVORBIS_TOOLS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(IVORBIS_TOOLS_IPK_DIR)
 

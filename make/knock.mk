@@ -22,7 +22,7 @@ KNOCK_IPK_VERSION=6
 
 #
 # KNOCK_CONFFILES should be a list of user-editable files
-KNOCK_CONFFILES=/opt/etc/knockd.conf /opt/etc/init.d/S05knockd
+KNOCK_CONFFILES=$(TARGET_PREFIX)/etc/knockd.conf $(TARGET_PREFIX)/etc/init.d/S05knockd
 
 #
 # KNOCK_PATCHES should list any patches, in the the order in
@@ -108,7 +108,7 @@ $(KNOCK_BUILD_DIR)/.configured: $(DL_DIR)/$(KNOCK_SOURCE) make/knock.mk
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=$(TARGET_PREFIX) \
-		--sysconfdir=/opt/etc \
+		--sysconfdir=$(TARGET_PREFIX)/etc \
 		--disable-nls \
 		--disable-static \
 	)
@@ -159,24 +159,24 @@ $(KNOCK_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(KNOCK_IPK_DIR)/opt/sbin or $(KNOCK_IPK_DIR)/opt/bin
+# Binaries should be installed into $(KNOCK_IPK_DIR)$(TARGET_PREFIX)/sbin or $(KNOCK_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(KNOCK_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(KNOCK_IPK_DIR)/opt/etc/knock/...
-# Documentation files should be installed in $(KNOCK_IPK_DIR)/opt/doc/knock/...
-# Daemon startup scripts should be installed in $(KNOCK_IPK_DIR)/opt/etc/init.d/S??knock
+# Libraries and include files should be installed into $(KNOCK_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(KNOCK_IPK_DIR)$(TARGET_PREFIX)/etc/knock/...
+# Documentation files should be installed in $(KNOCK_IPK_DIR)$(TARGET_PREFIX)/doc/knock/...
+# Daemon startup scripts should be installed in $(KNOCK_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??knock
 #
 # You may need to patch your application to make it use these locations.
 #
 $(KNOCK_IPK): $(KNOCK_BUILD_DIR)/.built
 	rm -rf $(KNOCK_IPK_DIR) $(BUILD_DIR)/knock_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(KNOCK_BUILD_DIR) DESTDIR=$(KNOCK_IPK_DIR) install
-	$(STRIP_COMMAND) $(KNOCK_IPK_DIR)/opt/*bin/*
-	mv $(KNOCK_IPK_DIR)/etc $(KNOCK_IPK_DIR)/opt/
-	$(INSTALL) -d $(KNOCK_IPK_DIR)/opt/etc/init.d
-	$(INSTALL) -m 755 $(KNOCK_SOURCE_DIR)/rc.knockd $(KNOCK_IPK_DIR)/opt/etc/init.d/S05knockd
+	$(STRIP_COMMAND) $(KNOCK_IPK_DIR)$(TARGET_PREFIX)/*bin/*
+	mv $(KNOCK_IPK_DIR)/etc $(KNOCK_IPK_DIR)$(TARGET_PREFIX)/
+	$(INSTALL) -d $(KNOCK_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(INSTALL) -m 755 $(KNOCK_SOURCE_DIR)/rc.knockd $(KNOCK_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S05knockd
 ifneq (nslu2, $(OPTWARE_TARGET))
-	sed -i -e 's/ -i ixp0//' $(KNOCK_IPK_DIR)/opt/etc/init.d/S05knockd
+	sed -i -e 's/ -i ixp0//' $(KNOCK_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S05knockd
 endif
 	$(MAKE) $(KNOCK_IPK_DIR)/CONTROL/control
 	echo $(KNOCK_CONFFILES) | sed -e 's/ /\n/g' > $(KNOCK_IPK_DIR)/CONTROL/conffiles

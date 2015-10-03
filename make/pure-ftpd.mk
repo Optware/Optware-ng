@@ -40,7 +40,7 @@ PURE-FTPD_IPK_VERSION=1
 
 #
 # PURE-FTPD_CONFFILES should be a list of user-editable files
-#PURE-FTPD_CONFFILES=/opt/etc/pure-ftpd.conf /opt/etc/init.d/SXXpure-ftpd
+#PURE-FTPD_CONFFILES=$(TARGET_PREFIX)/etc/pure-ftpd.conf $(TARGET_PREFIX)/etc/init.d/SXXpure-ftpd
 
 #
 # PURE-FTPD_PATCHES should list any patches, in the the order in
@@ -187,23 +187,23 @@ $(PURE-FTPD_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PURE-FTPD_IPK_DIR)/opt/sbin or $(PURE-FTPD_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PURE-FTPD_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PURE-FTPD_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PURE-FTPD_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PURE-FTPD_IPK_DIR)/opt/etc/pure-ftpd/...
-# Documentation files should be installed in $(PURE-FTPD_IPK_DIR)/opt/doc/pure-ftpd/...
-# Daemon startup scripts should be installed in $(PURE-FTPD_IPK_DIR)/opt/etc/init.d/S??pure-ftpd
+# Libraries and include files should be installed into $(PURE-FTPD_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PURE-FTPD_IPK_DIR)$(TARGET_PREFIX)/etc/pure-ftpd/...
+# Documentation files should be installed in $(PURE-FTPD_IPK_DIR)$(TARGET_PREFIX)/doc/pure-ftpd/...
+# Daemon startup scripts should be installed in $(PURE-FTPD_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??pure-ftpd
 #
 # You may need to patch your application to make it use these locations.
 #
 $(PURE-FTPD_IPK): $(PURE-FTPD_BUILD_DIR)/.built
 	rm -rf $(PURE-FTPD_IPK_DIR) $(BUILD_DIR)/pure-ftpd_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PURE-FTPD_BUILD_DIR) DESTDIR=$(PURE-FTPD_IPK_DIR) install-strip
-#	$(INSTALL) -d $(PURE-FTPD_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(PURE-FTPD_SOURCE_DIR)/pure-ftpd.conf $(PURE-FTPD_IPK_DIR)/opt/etc/pure-ftpd.conf
-#	$(INSTALL) -d $(PURE-FTPD_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(PURE-FTPD_SOURCE_DIR)/rc.pure-ftpd $(PURE-FTPD_IPK_DIR)/opt/etc/init.d/SXXpure-ftpd
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(PURE-FTPD_IPK_DIR)/opt/etc/init.d/SXXpure-ftpd
+#	$(INSTALL) -d $(PURE-FTPD_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(PURE-FTPD_SOURCE_DIR)/pure-ftpd.conf $(PURE-FTPD_IPK_DIR)$(TARGET_PREFIX)/etc/pure-ftpd.conf
+#	$(INSTALL) -d $(PURE-FTPD_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(PURE-FTPD_SOURCE_DIR)/rc.pure-ftpd $(PURE-FTPD_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXpure-ftpd
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(PURE-FTPD_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXpure-ftpd
 	$(MAKE) $(PURE-FTPD_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(PURE-FTPD_SOURCE_DIR)/postinst $(PURE-FTPD_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(PURE-FTPD_IPK_DIR)/CONTROL/postinst

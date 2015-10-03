@@ -40,7 +40,7 @@ NGREP_IPK_VERSION=4
 
 #
 # NGREP_CONFFILES should be a list of user-editable files
-#NGREP_CONFFILES=/opt/etc/ngrep.conf /opt/etc/init.d/SXXngrep
+#NGREP_CONFFILES=$(TARGET_PREFIX)/etc/ngrep.conf $(TARGET_PREFIX)/etc/init.d/SXXngrep
 
 #
 # NGREP_PATCHES should list any patches, in the the order in
@@ -182,23 +182,23 @@ $(NGREP_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(NGREP_IPK_DIR)/opt/sbin or $(NGREP_IPK_DIR)/opt/bin
+# Binaries should be installed into $(NGREP_IPK_DIR)$(TARGET_PREFIX)/sbin or $(NGREP_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(NGREP_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(NGREP_IPK_DIR)/opt/etc/ngrep/...
-# Documentation files should be installed in $(NGREP_IPK_DIR)/opt/doc/ngrep/...
-# Daemon startup scripts should be installed in $(NGREP_IPK_DIR)/opt/etc/init.d/S??ngrep
+# Libraries and include files should be installed into $(NGREP_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(NGREP_IPK_DIR)$(TARGET_PREFIX)/etc/ngrep/...
+# Documentation files should be installed in $(NGREP_IPK_DIR)$(TARGET_PREFIX)/doc/ngrep/...
+# Daemon startup scripts should be installed in $(NGREP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??ngrep
 #
 # You may need to patch your application to make it use these locations.
 #
 $(NGREP_IPK): $(NGREP_BUILD_DIR)/.built
 	rm -rf $(NGREP_IPK_DIR) $(BUILD_DIR)/ngrep_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(NGREP_BUILD_DIR) DESTDIR=$(NGREP_IPK_DIR) install
-#	$(INSTALL) -d $(NGREP_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(NGREP_SOURCE_DIR)/ngrep.conf $(NGREP_IPK_DIR)/opt/etc/ngrep.conf
-#	$(INSTALL) -d $(NGREP_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(NGREP_SOURCE_DIR)/rc.ngrep $(NGREP_IPK_DIR)/opt/etc/init.d/SXXngrep
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(NGREP_IPK_DIR)/opt/etc/init.d/SXXngrep
+#	$(INSTALL) -d $(NGREP_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(NGREP_SOURCE_DIR)/ngrep.conf $(NGREP_IPK_DIR)$(TARGET_PREFIX)/etc/ngrep.conf
+#	$(INSTALL) -d $(NGREP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(NGREP_SOURCE_DIR)/rc.ngrep $(NGREP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXngrep
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(NGREP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXngrep
 	$(MAKE) $(NGREP_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(NGREP_SOURCE_DIR)/postinst $(NGREP_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(NGREP_IPK_DIR)/CONTROL/postinst

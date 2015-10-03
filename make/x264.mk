@@ -218,23 +218,23 @@ $(X264_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(X264_IPK_DIR)/opt/sbin or $(X264_IPK_DIR)/opt/bin
+# Binaries should be installed into $(X264_IPK_DIR)$(TARGET_PREFIX)/sbin or $(X264_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(X264_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(X264_IPK_DIR)/opt/etc/x264/...
-# Documentation files should be installed in $(X264_IPK_DIR)/opt/doc/x264/...
-# Daemon startup scripts should be installed in $(X264_IPK_DIR)/opt/etc/init.d/S??x264
+# Libraries and include files should be installed into $(X264_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(X264_IPK_DIR)$(TARGET_PREFIX)/etc/x264/...
+# Documentation files should be installed in $(X264_IPK_DIR)$(TARGET_PREFIX)/doc/x264/...
+# Daemon startup scripts should be installed in $(X264_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??x264
 #
 # You may need to patch your application to make it use these locations.
 #
 $(X264_IPK): $(X264_BUILD_DIR)/.built
 	rm -rf $(X264_IPK_DIR) $(BUILD_DIR)/x264_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(X264_BUILD_DIR) DESTDIR=$(X264_IPK_DIR) install
-	rm -f $(X264_IPK_DIR)/opt/lib/libx264.a
-#	$(INSTALL) -d $(X264_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(X264_SOURCE_DIR)/x264.conf $(X264_IPK_DIR)/opt/etc/x264.conf
-#	$(INSTALL) -d $(X264_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(X264_SOURCE_DIR)/rc.x264 $(X264_IPK_DIR)/opt/etc/init.d/SXXx264
+	rm -f $(X264_IPK_DIR)$(TARGET_PREFIX)/lib/libx264.a
+#	$(INSTALL) -d $(X264_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(X264_SOURCE_DIR)/x264.conf $(X264_IPK_DIR)$(TARGET_PREFIX)/etc/x264.conf
+#	$(INSTALL) -d $(X264_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(X264_SOURCE_DIR)/rc.x264 $(X264_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXx264
 	$(MAKE) $(X264_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(X264_SOURCE_DIR)/postinst $(X264_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 755 $(X264_SOURCE_DIR)/prerm $(X264_IPK_DIR)/CONTROL/prerm

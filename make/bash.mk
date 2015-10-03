@@ -178,26 +178,26 @@ $(BASH_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(BASH_IPK_DIR)/opt/sbin or $(BASH_IPK_DIR)/opt/bin
+# Binaries should be installed into $(BASH_IPK_DIR)$(TARGET_PREFIX)/sbin or $(BASH_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(BASH_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(BASH_IPK_DIR)/opt/etc/bash/...
-# Documentation files should be installed in $(BASH_IPK_DIR)/opt/doc/bash/...
-# Daemon startup scripts should be installed in $(BASH_IPK_DIR)/opt/etc/init.d/S??bash
+# Libraries and include files should be installed into $(BASH_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(BASH_IPK_DIR)$(TARGET_PREFIX)/etc/bash/...
+# Documentation files should be installed in $(BASH_IPK_DIR)$(TARGET_PREFIX)/doc/bash/...
+# Daemon startup scripts should be installed in $(BASH_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??bash
 #
 # You may need to patch your application to make it use these locations.
 #
 $(BASH_IPK): $(BASH_BUILD_DIR)/.built
 	rm -rf $(BASH_IPK_DIR) $(BUILD_DIR)/bash_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(BASH_IPK_DIR)/opt/bin
-	$(STRIP_COMMAND) $(BASH_BUILD_DIR)/bash -o $(BASH_IPK_DIR)/opt/bin/bash
-	$(INSTALL) -d $(BASH_IPK_DIR)/opt/etc 
-	$(INSTALL) -m 644 $(BASH_SOURCE_DIR)/profile $(BASH_IPK_DIR)/opt/etc/profile
+	$(INSTALL) -d $(BASH_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(STRIP_COMMAND) $(BASH_BUILD_DIR)/bash -o $(BASH_IPK_DIR)$(TARGET_PREFIX)/bin/bash
+	$(INSTALL) -d $(BASH_IPK_DIR)$(TARGET_PREFIX)/etc 
+	$(INSTALL) -m 644 $(BASH_SOURCE_DIR)/profile $(BASH_IPK_DIR)$(TARGET_PREFIX)/etc/profile
 ifeq ($(OPTWARE_WRITE_OUTSIDE_OPT_ALLOWED),true)
-	$(INSTALL) -d $(BASH_IPK_DIR)/opt/etc/init.d
-	$(INSTALL) -m 755 $(BASH_SOURCE_DIR)/rc.bash $(BASH_IPK_DIR)/opt/etc/init.d/S05bash
+	$(INSTALL) -d $(BASH_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(INSTALL) -m 755 $(BASH_SOURCE_DIR)/rc.bash $(BASH_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S05bash
 	$(INSTALL) -d $(BASH_IPK_DIR)/bin
-	ln -s /opt/bin/bash $(BASH_IPK_DIR)/bin/bash
+	ln -s $(TARGET_PREFIX)/bin/bash $(BASH_IPK_DIR)/bin/bash
 endif
 	$(MAKE) $(BASH_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BASH_IPK_DIR)

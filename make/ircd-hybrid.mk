@@ -46,7 +46,7 @@ IRCD-HYBRID_IPK_VERSION=1
 
 #
 # IRCD-HYBRID_CONFFILES should be a list of user-editable files
-IRCD-HYBRID_CONFFILES=/opt/etc/ircd.conf /opt/etc/init.d/S98ircd-hybrid
+IRCD-HYBRID_CONFFILES=$(TARGET_PREFIX)/etc/ircd.conf $(TARGET_PREFIX)/etc/init.d/S98ircd-hybrid
 
 #
 # IRCD-HYBRID_PATCHES should list any patches, in the the order in
@@ -190,30 +190,30 @@ $(IRCD-HYBRID_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(IRCD-HYBRID_IPK_DIR)/opt/sbin or $(IRCD-HYBRID_IPK_DIR)/opt/bin
+# Binaries should be installed into $(IRCD-HYBRID_IPK_DIR)$(TARGET_PREFIX)/sbin or $(IRCD-HYBRID_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(IRCD-HYBRID_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(IRCD-HYBRID_IPK_DIR)/opt/etc/ircd-hybrid/...
-# Documentation files should be installed in $(IRCD-HYBRID_IPK_DIR)/opt/doc/ircd-hybrid/...
-# Daemon startup scripts should be installed in $(IRCD-HYBRID_IPK_DIR)/opt/etc/init.d/S??ircd-hybrid
+# Libraries and include files should be installed into $(IRCD-HYBRID_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(IRCD-HYBRID_IPK_DIR)$(TARGET_PREFIX)/etc/ircd-hybrid/...
+# Documentation files should be installed in $(IRCD-HYBRID_IPK_DIR)$(TARGET_PREFIX)/doc/ircd-hybrid/...
+# Daemon startup scripts should be installed in $(IRCD-HYBRID_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??ircd-hybrid
 #
 # You may need to patch your application to make it use these locations.
 #
 $(IRCD-HYBRID_IPK): $(IRCD-HYBRID_BUILD_DIR)/.built
 	rm -rf $(IRCD-HYBRID_IPK_DIR) $(BUILD_DIR)/ircd-hybrid_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(IRCD-HYBRID_BUILD_DIR) DESTDIR=$(IRCD-HYBRID_IPK_DIR) install-strip
-	mv -f $(IRCD-HYBRID_IPK_DIR)/opt/etc/reference.conf $(IRCD-HYBRID_IPK_DIR)/opt/etc/ircd.conf
-	$(INSTALL) -d $(IRCD-HYBRID_IPK_DIR)/opt/etc/init.d
-	$(INSTALL) -m 755 $(IRCD-HYBRID_SOURCE_DIR)/S98ircd-hybrid $(IRCD-HYBRID_IPK_DIR)/opt/etc/init.d/
-#	$(INSTALL) -d $(IRCD-HYBRID_IPK_DIR)/opt/bin
-#	$(STRIP_COMMAND) $(IRCD-HYBRID_BUILD_DIR)/src/ircd -o $(IRCD-HYBRID_IPK_DIR)/opt/bin/ircd
-#	$(INSTALL) -d $(IRCD_HYBRID_IPK_DIR)/opt/doc/ircd-hybrid
-#	$(INSTALL) -m 644 $(IRCD-HYBRID_BUILD_DIR)/etc/simple.conf $(IRCD-HYBRID_IPK_DIR)/opt/doc/ircd-hybrid/simple.conf
-#	$(INSTALL) -d $(IRCD-HYBRID_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(IRCD-HYBRID_SOURCE_DIR)/ircd-hybrid.conf $(IRCD-HYBRID_IPK_DIR)/opt/etc/ircd-hybrid.conf
-#	$(INSTALL) -d $(IRCD-HYBRID_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(IRCD-HYBRID_SOURCE_DIR)/rc.ircd-hybrid $(IRCD-HYBRID_IPK_DIR)/opt/etc/init.d/SXXircd-hybrid
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(IRCD-HYBRID_IPK_DIR)/opt/etc/init.d/SXXircd-hybrid
+	mv -f $(IRCD-HYBRID_IPK_DIR)$(TARGET_PREFIX)/etc/reference.conf $(IRCD-HYBRID_IPK_DIR)$(TARGET_PREFIX)/etc/ircd.conf
+	$(INSTALL) -d $(IRCD-HYBRID_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(INSTALL) -m 755 $(IRCD-HYBRID_SOURCE_DIR)/S98ircd-hybrid $(IRCD-HYBRID_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/
+#	$(INSTALL) -d $(IRCD-HYBRID_IPK_DIR)$(TARGET_PREFIX)/bin
+#	$(STRIP_COMMAND) $(IRCD-HYBRID_BUILD_DIR)/src/ircd -o $(IRCD-HYBRID_IPK_DIR)$(TARGET_PREFIX)/bin/ircd
+#	$(INSTALL) -d $(IRCD_HYBRID_IPK_DIR)$(TARGET_PREFIX)/doc/ircd-hybrid
+#	$(INSTALL) -m 644 $(IRCD-HYBRID_BUILD_DIR)/etc/simple.conf $(IRCD-HYBRID_IPK_DIR)$(TARGET_PREFIX)/doc/ircd-hybrid/simple.conf
+#	$(INSTALL) -d $(IRCD-HYBRID_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(IRCD-HYBRID_SOURCE_DIR)/ircd-hybrid.conf $(IRCD-HYBRID_IPK_DIR)$(TARGET_PREFIX)/etc/ircd-hybrid.conf
+#	$(INSTALL) -d $(IRCD-HYBRID_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(IRCD-HYBRID_SOURCE_DIR)/rc.ircd-hybrid $(IRCD-HYBRID_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXircd-hybrid
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(IRCD-HYBRID_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXircd-hybrid
 	$(MAKE) $(IRCD-HYBRID_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(IRCD-HYBRID_SOURCE_DIR)/postinst $(IRCD-HYBRID_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(IRCD-HYBRID_IPK_DIR)/CONTROL/postinst

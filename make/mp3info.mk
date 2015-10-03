@@ -40,7 +40,7 @@ MP3INFO_IPK_VERSION=1
 
 #
 # MP3INFO_CONFFILES should be a list of user-editable files
-#MP3INFO_CONFFILES=/opt/etc/mp3info.conf /opt/etc/init.d/SXXmp3info
+#MP3INFO_CONFFILES=$(TARGET_PREFIX)/etc/mp3info.conf $(TARGET_PREFIX)/etc/init.d/SXXmp3info
 
 #
 # MP3INFO_PATCHES should list any patches, in the the order in
@@ -183,27 +183,27 @@ $(MP3INFO_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(MP3INFO_IPK_DIR)/opt/sbin or $(MP3INFO_IPK_DIR)/opt/bin
+# Binaries should be installed into $(MP3INFO_IPK_DIR)$(TARGET_PREFIX)/sbin or $(MP3INFO_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(MP3INFO_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(MP3INFO_IPK_DIR)/opt/etc/mp3info/...
-# Documentation files should be installed in $(MP3INFO_IPK_DIR)/opt/doc/mp3info/...
-# Daemon startup scripts should be installed in $(MP3INFO_IPK_DIR)/opt/etc/init.d/S??mp3info
+# Libraries and include files should be installed into $(MP3INFO_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(MP3INFO_IPK_DIR)$(TARGET_PREFIX)/etc/mp3info/...
+# Documentation files should be installed in $(MP3INFO_IPK_DIR)$(TARGET_PREFIX)/doc/mp3info/...
+# Daemon startup scripts should be installed in $(MP3INFO_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??mp3info
 #
 # You may need to patch your application to make it use these locations.
 #
 $(MP3INFO_IPK): $(MP3INFO_BUILD_DIR)/.built
 	rm -rf $(MP3INFO_IPK_DIR) $(BUILD_DIR)/mp3info_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(MP3INFO_IPK_DIR)/opt/bin $(MP3INFO_IPK_DIR)/opt/man/man1
+	$(INSTALL) -d $(MP3INFO_IPK_DIR)$(TARGET_PREFIX)/bin $(MP3INFO_IPK_DIR)$(TARGET_PREFIX)/man/man1
 	$(MAKE) -C $(<D) install-mp3info \
 		prefix=$(MP3INFO_IPK_DIR)$(TARGET_PREFIX) \
 		$(TARGET_CONFIGURE_OPTS) \
 		;
-#	$(INSTALL) -d $(MP3INFO_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(MP3INFO_SOURCE_DIR)/mp3info.conf $(MP3INFO_IPK_DIR)/opt/etc/mp3info.conf
-#	$(INSTALL) -d $(MP3INFO_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(MP3INFO_SOURCE_DIR)/rc.mp3info $(MP3INFO_IPK_DIR)/opt/etc/init.d/SXXmp3info
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MP3INFO_IPK_DIR)/opt/etc/init.d/SXXmp3info
+#	$(INSTALL) -d $(MP3INFO_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(MP3INFO_SOURCE_DIR)/mp3info.conf $(MP3INFO_IPK_DIR)$(TARGET_PREFIX)/etc/mp3info.conf
+#	$(INSTALL) -d $(MP3INFO_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(MP3INFO_SOURCE_DIR)/rc.mp3info $(MP3INFO_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXmp3info
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MP3INFO_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXmp3info
 	$(MAKE) $(MP3INFO_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(MP3INFO_SOURCE_DIR)/postinst $(MP3INFO_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MP3INFO_IPK_DIR)/CONTROL/postinst

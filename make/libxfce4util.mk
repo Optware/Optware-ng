@@ -46,7 +46,7 @@ LIBXFCE4UTIL_IPK_VERSION=1
 
 #
 # LIBXFCE4UTIL_CONFFILES should be a list of user-editable files
-#LIBXFCE4UTIL_CONFFILES=/opt/etc/libxfce4util.conf /opt/etc/init.d/SXXlibxfce4util
+#LIBXFCE4UTIL_CONFFILES=$(TARGET_PREFIX)/etc/libxfce4util.conf $(TARGET_PREFIX)/etc/init.d/SXXlibxfce4util
 
 #
 # LIBXFCE4UTIL_PATCHES should list any patches, in the the order in
@@ -121,7 +121,7 @@ $(LIBXFCE4UTIL_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBXFCE4UTIL_SOURCE) $(LIBXFC
 	if test "$(BUILD_DIR)/$(LIBXFCE4UTIL_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBXFCE4UTIL_DIR) $(@D) ; \
 	fi
-	sed -i -e 's:/usr/share\|/usr/local/share:/opt/share:g' $(@D)/libxfce4util/xfce-resource.c
+	sed -i -e 's:/usr/share\|/usr/local/share:$(TARGET_PREFIX)/share:g' $(@D)/libxfce4util/xfce-resource.c
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBXFCE4UTIL_CPPFLAGS)" \
@@ -188,24 +188,24 @@ $(LIBXFCE4UTIL_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LIBXFCE4UTIL_IPK_DIR)/opt/sbin or $(LIBXFCE4UTIL_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LIBXFCE4UTIL_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LIBXFCE4UTIL_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LIBXFCE4UTIL_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LIBXFCE4UTIL_IPK_DIR)/opt/etc/libxfce4util/...
-# Documentation files should be installed in $(LIBXFCE4UTIL_IPK_DIR)/opt/doc/libxfce4util/...
-# Daemon startup scripts should be installed in $(LIBXFCE4UTIL_IPK_DIR)/opt/etc/init.d/S??libxfce4util
+# Libraries and include files should be installed into $(LIBXFCE4UTIL_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LIBXFCE4UTIL_IPK_DIR)$(TARGET_PREFIX)/etc/libxfce4util/...
+# Documentation files should be installed in $(LIBXFCE4UTIL_IPK_DIR)$(TARGET_PREFIX)/doc/libxfce4util/...
+# Daemon startup scripts should be installed in $(LIBXFCE4UTIL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??libxfce4util
 #
 # You may need to patch your application to make it use these locations.
 #
 $(LIBXFCE4UTIL_IPK): $(LIBXFCE4UTIL_BUILD_DIR)/.built
 	rm -rf $(LIBXFCE4UTIL_IPK_DIR) $(BUILD_DIR)/libxfce4util_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBXFCE4UTIL_BUILD_DIR) DESTDIR=$(LIBXFCE4UTIL_IPK_DIR) install-strip
-	rm -f $(LIBXFCE4UTIL_IPK_DIR)/opt/lib/*.la
-#	$(INSTALL) -d $(LIBXFCE4UTIL_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(LIBXFCE4UTIL_SOURCE_DIR)/libxfce4util.conf $(LIBXFCE4UTIL_IPK_DIR)/opt/etc/libxfce4util.conf
-#	$(INSTALL) -d $(LIBXFCE4UTIL_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(LIBXFCE4UTIL_SOURCE_DIR)/rc.libxfce4util $(LIBXFCE4UTIL_IPK_DIR)/opt/etc/init.d/SXXlibxfce4util
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBXFCE4UTIL_IPK_DIR)/opt/etc/init.d/SXXlibxfce4util
+	rm -f $(LIBXFCE4UTIL_IPK_DIR)$(TARGET_PREFIX)/lib/*.la
+#	$(INSTALL) -d $(LIBXFCE4UTIL_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(LIBXFCE4UTIL_SOURCE_DIR)/libxfce4util.conf $(LIBXFCE4UTIL_IPK_DIR)$(TARGET_PREFIX)/etc/libxfce4util.conf
+#	$(INSTALL) -d $(LIBXFCE4UTIL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(LIBXFCE4UTIL_SOURCE_DIR)/rc.libxfce4util $(LIBXFCE4UTIL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibxfce4util
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBXFCE4UTIL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibxfce4util
 	$(MAKE) $(LIBXFCE4UTIL_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(LIBXFCE4UTIL_SOURCE_DIR)/postinst $(LIBXFCE4UTIL_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBXFCE4UTIL_IPK_DIR)/CONTROL/postinst

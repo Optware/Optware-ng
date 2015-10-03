@@ -41,7 +41,7 @@ PY-FEEDPARSER_IPK_VERSION=1
 
 #
 # PY-FEEDPARSER_CONFFILES should be a list of user-editable files
-#PY-FEEDPARSER_CONFFILES=/opt/etc/py-feedparser.conf /opt/etc/init.d/SXXpy-feedparser
+#PY-FEEDPARSER_CONFFILES=$(TARGET_PREFIX)/etc/py-feedparser.conf $(TARGET_PREFIX)/etc/init.d/SXXpy-feedparser
 
 #
 # PY-FEEDPARSER_PATCHES should list any patches, in the the order in
@@ -116,14 +116,14 @@ $(PY-FEEDPARSER_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-FEEDPARSER_SOURCE) $(PY-F
 #	cat $(PY-FEEDPARSER_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-FEEDPARSER_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-FEEDPARSER_DIR) $(@D)/2.4
 	(echo "[build_scripts]"; \
-         echo "executable=/opt/bin/python2.4") >> $(@D)/2.4/setup.cfg
+         echo "executable=$(TARGET_PREFIX)/bin/python2.4") >> $(@D)/2.4/setup.cfg
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-FEEDPARSER_DIR)
 	$(PY-FEEDPARSER_UNZIP) $(DL_DIR)/$(PY-FEEDPARSER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-FEEDPARSER_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-FEEDPARSER_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-FEEDPARSER_DIR) $(@D)/2.5
 	(echo "[build_scripts]"; \
-         echo "executable=/opt/bin/python2.5") >> $(@D)/2.4/setup.cfg
+         echo "executable=$(TARGET_PREFIX)/bin/python2.5") >> $(@D)/2.4/setup.cfg
 	touch $@
 
 py-feedparser-unpack: $(PY-FEEDPARSER_BUILD_DIR)/.configured
@@ -191,12 +191,12 @@ $(PY25-FEEDPARSER_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PY-FEEDPARSER_IPK_DIR)/opt/sbin or $(PY-FEEDPARSER_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PY-FEEDPARSER_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PY-FEEDPARSER_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PY-FEEDPARSER_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PY-FEEDPARSER_IPK_DIR)/opt/etc/py-feedparser/...
-# Documentation files should be installed in $(PY-FEEDPARSER_IPK_DIR)/opt/doc/py-feedparser/...
-# Daemon startup scripts should be installed in $(PY-FEEDPARSER_IPK_DIR)/opt/etc/init.d/S??py-feedparser
+# Libraries and include files should be installed into $(PY-FEEDPARSER_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PY-FEEDPARSER_IPK_DIR)$(TARGET_PREFIX)/etc/py-feedparser/...
+# Documentation files should be installed in $(PY-FEEDPARSER_IPK_DIR)$(TARGET_PREFIX)/doc/py-feedparser/...
+# Daemon startup scripts should be installed in $(PY-FEEDPARSER_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??py-feedparser
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -205,8 +205,8 @@ $(PY24-FEEDPARSER_IPK): $(PY-FEEDPARSER_BUILD_DIR)/.built
 	cd $(PY-FEEDPARSER_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
-	    --root=$(PY24-FEEDPARSER_IPK_DIR) --prefix=/opt;
-#	for f in $(PY24-FEEDPARSER_IPK_DIR)/opt/bin/*; \
+	    --root=$(PY24-FEEDPARSER_IPK_DIR) --prefix=$(TARGET_PREFIX);
+#	for f in $(PY24-FEEDPARSER_IPK_DIR)$(TARGET_PREFIX)/bin/*; \
 		do mv $$f `echo $$f | sed 's|$$|-2.4|'`; done
 	$(MAKE) $(PY24-FEEDPARSER_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-FEEDPARSER_IPK_DIR)
@@ -216,8 +216,8 @@ $(PY25-FEEDPARSER_IPK): $(PY-FEEDPARSER_BUILD_DIR)/.built
 	cd $(PY-FEEDPARSER_BUILD_DIR)/2.5; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
-	    --root=$(PY25-FEEDPARSER_IPK_DIR) --prefix=/opt;
-#	cd $(PY25-FEEDPARSER_IPK_DIR)/opt/share/feedparser
+	    --root=$(PY25-FEEDPARSER_IPK_DIR) --prefix=$(TARGET_PREFIX);
+#	cd $(PY25-FEEDPARSER_IPK_DIR)$(TARGET_PREFIX)/share/feedparser
 	$(MAKE) $(PY25-FEEDPARSER_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-FEEDPARSER_IPK_DIR)
 

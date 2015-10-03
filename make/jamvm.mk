@@ -36,7 +36,7 @@ JAMVM_CONFLICTS=
 
 #
 # JAMVM_CONFFILES should be a list of user-editable files
-#JAMVM_CONFFILES=/opt/etc/jamvm.conf /opt/etc/init.d/SXXjamvm
+#JAMVM_CONFFILES=$(TARGET_PREFIX)/etc/jamvm.conf $(TARGET_PREFIX)/etc/init.d/SXXjamvm
 
 #
 # JAMVM_PATCHES should list any patches, in the the order in
@@ -168,20 +168,20 @@ $(JAMVM_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(JAMVM_IPK_DIR)/opt/sbin or $(JAMVM_IPK_DIR)/opt/bin
+# Binaries should be installed into $(JAMVM_IPK_DIR)$(TARGET_PREFIX)/sbin or $(JAMVM_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(JAMVM_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(JAMVM_IPK_DIR)/opt/etc/jamvm/...
-# Documentation files should be installed in $(JAMVM_IPK_DIR)/opt/doc/jamvm/...
-# Daemon startup scripts should be installed in $(JAMVM_IPK_DIR)/opt/etc/init.d/S??jamvm
+# Libraries and include files should be installed into $(JAMVM_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(JAMVM_IPK_DIR)$(TARGET_PREFIX)/etc/jamvm/...
+# Documentation files should be installed in $(JAMVM_IPK_DIR)$(TARGET_PREFIX)/doc/jamvm/...
+# Daemon startup scripts should be installed in $(JAMVM_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??jamvm
 #
 # You may need to patch your application to make it use these locations.
 #
 $(JAMVM_IPK): $(JAMVM_BUILD_DIR)/.built
 	rm -rf $(JAMVM_IPK_DIR) $(BUILD_DIR)/jamvm_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(JAMVM_BUILD_DIR) install-strip prefix=$(JAMVM_IPK_DIR)/opt
-	$(INSTALL) -d $(JAMVM_IPK_DIR)/opt/include/jamvm/
-	mv $(JAMVM_IPK_DIR)/opt/include/jni.h $(JAMVM_IPK_DIR)/opt/include/jamvm/jni.h
+	$(MAKE) -C $(JAMVM_BUILD_DIR) install-strip prefix=$(JAMVM_IPK_DIR)$(TARGET_PREFIX)
+	$(INSTALL) -d $(JAMVM_IPK_DIR)$(TARGET_PREFIX)/include/jamvm/
+	mv $(JAMVM_IPK_DIR)$(TARGET_PREFIX)/include/jni.h $(JAMVM_IPK_DIR)$(TARGET_PREFIX)/include/jamvm/jni.h
 	$(MAKE) $(JAMVM_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(JAMVM_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(JAMVM_IPK_DIR)

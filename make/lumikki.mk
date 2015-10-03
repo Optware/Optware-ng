@@ -43,7 +43,7 @@ LUMIKKI_IPK_VERSION=3
 
 #
 # LUMIKKI_CONFFILES should be a list of user-editable files
-#LUMIKKI_CONFFILES=/opt/etc/lumikki.conf /opt/etc/init.d/SXXlumikki
+#LUMIKKI_CONFFILES=$(TARGET_PREFIX)/etc/lumikki.conf $(TARGET_PREFIX)/etc/init.d/SXXlumikki
 
 #
 # LUMIKKI_PATCHES should list any patches, in the the order in
@@ -181,12 +181,12 @@ $(LUMIKKI_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LUMIKKI_IPK_DIR)/opt/sbin or $(LUMIKKI_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LUMIKKI_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LUMIKKI_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LUMIKKI_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LUMIKKI_IPK_DIR)/opt/etc/lumikki/...
-# Documentation files should be installed in $(LUMIKKI_IPK_DIR)/opt/doc/lumikki/...
-# Daemon startup scripts should be installed in $(LUMIKKI_IPK_DIR)/opt/etc/init.d/S??lumikki
+# Libraries and include files should be installed into $(LUMIKKI_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LUMIKKI_IPK_DIR)$(TARGET_PREFIX)/etc/lumikki/...
+# Documentation files should be installed in $(LUMIKKI_IPK_DIR)$(TARGET_PREFIX)/doc/lumikki/...
+# Daemon startup scripts should be installed in $(LUMIKKI_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??lumikki
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -195,10 +195,10 @@ $(LUMIKKI_IPK): $(LUMIKKI_BUILD_DIR)/.built
 	$(MAKE) -C $(LUMIKKI_BUILD_DIR) DESTDIR=$(LUMIKKI_IPK_DIR) \
 		TRUE_DESTDIR=$(TARGET_PREFIX) MANDIR=$(LUMIKKI_IPK_DIR)/man/man1 \
 		DOCDIR=$(LUMIKKI_IPK_DIR)/share/docs install-strip
-	#$(INSTALL) -d $(LUMIKKI_IPK_DIR)/opt/etc/
-	#$(INSTALL) -m 644 $(LUMIKKI_SOURCE_DIR)/lumikki.conf $(LUMIKKI_IPK_DIR)/opt/etc/lumikki.conf
-	#$(INSTALL) -d $(LUMIKKI_IPK_DIR)/opt/etc/init.d
-	#$(INSTALL) -m 755 $(LUMIKKI_SOURCE_DIR)/rc.lumikki $(LUMIKKI_IPK_DIR)/opt/etc/init.d/SXXlumikki
+	#$(INSTALL) -d $(LUMIKKI_IPK_DIR)$(TARGET_PREFIX)/etc/
+	#$(INSTALL) -m 644 $(LUMIKKI_SOURCE_DIR)/lumikki.conf $(LUMIKKI_IPK_DIR)$(TARGET_PREFIX)/etc/lumikki.conf
+	#$(INSTALL) -d $(LUMIKKI_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	#$(INSTALL) -m 755 $(LUMIKKI_SOURCE_DIR)/rc.lumikki $(LUMIKKI_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlumikki
 	$(MAKE) $(LUMIKKI_IPK_DIR)/CONTROL/control
 	#$(INSTALL) -m 755 $(LUMIKKI_SOURCE_DIR)/postinst $(LUMIKKI_IPK_DIR)/CONTROL/postinst
 	#$(INSTALL) -m 755 $(LUMIKKI_SOURCE_DIR)/prerm $(LUMIKKI_IPK_DIR)/CONTROL/prerm

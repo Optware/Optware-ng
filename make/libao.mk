@@ -45,7 +45,7 @@ LIBAO_IPK_VERSION=1
 
 #
 # LIBAO_CONFFILES should be a list of user-editable files
-LIBAO_CONFFILES=#/opt/etc/libao.conf /opt/etc/init.d/SXXlibao
+LIBAO_CONFFILES=#$(TARGET_PREFIX)/etc/libao.conf $(TARGET_PREFIX)/etc/init.d/SXXlibao
 
 #
 # LIBAO_PATCHES should list any patches, in the the order in
@@ -175,24 +175,24 @@ $(LIBAO_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LIBAO_IPK_DIR)/opt/sbin or $(LIBAO_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LIBAO_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LIBAO_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LIBAO_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LIBAO_IPK_DIR)/opt/etc/libao/...
-# Documentation files should be installed in $(LIBAO_IPK_DIR)/opt/doc/libao/...
-# Daemon startup scripts should be installed in $(LIBAO_IPK_DIR)/opt/etc/init.d/S??libao
+# Libraries and include files should be installed into $(LIBAO_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LIBAO_IPK_DIR)$(TARGET_PREFIX)/etc/libao/...
+# Documentation files should be installed in $(LIBAO_IPK_DIR)$(TARGET_PREFIX)/doc/libao/...
+# Daemon startup scripts should be installed in $(LIBAO_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??libao
 #
 # You may need to patch your application to make it use these locations.
 #
 $(LIBAO_IPK): $(LIBAO_BUILD_DIR)/.built
 	rm -rf $(LIBAO_IPK_DIR) $(BUILD_DIR)/libao_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBAO_BUILD_DIR) DESTDIR=$(LIBAO_IPK_DIR) install
-	$(STRIP_COMMAND) $(LIBAO_IPK_DIR)/opt/lib/libao.so.[0-9]*.[0-9]*.[0-9]*
-	$(STRIP_COMMAND) $(LIBAO_IPK_DIR)/opt/lib/ao/plugins-2/*.so
-	#$(INSTALL) -d $(LIBAO_IPK_DIR)/opt/etc/
-	#$(INSTALL) -m 644 $(LIBAO_SOURCE_DIR)/libao.conf $(LIBAO_IPK_DIR)/opt/etc/libao.conf
-	#$(INSTALL) -d $(LIBAO_IPK_DIR)/opt/etc/init.d
-	#$(INSTALL) -m 755 $(LIBAO_SOURCE_DIR)/rc.libao $(LIBAO_IPK_DIR)/opt/etc/init.d/SXXlibao
+	$(STRIP_COMMAND) $(LIBAO_IPK_DIR)$(TARGET_PREFIX)/lib/libao.so.[0-9]*.[0-9]*.[0-9]*
+	$(STRIP_COMMAND) $(LIBAO_IPK_DIR)$(TARGET_PREFIX)/lib/ao/plugins-2/*.so
+	#$(INSTALL) -d $(LIBAO_IPK_DIR)$(TARGET_PREFIX)/etc/
+	#$(INSTALL) -m 644 $(LIBAO_SOURCE_DIR)/libao.conf $(LIBAO_IPK_DIR)$(TARGET_PREFIX)/etc/libao.conf
+	#$(INSTALL) -d $(LIBAO_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	#$(INSTALL) -m 755 $(LIBAO_SOURCE_DIR)/rc.libao $(LIBAO_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibao
 	$(MAKE) $(LIBAO_IPK_DIR)/CONTROL/control
 	#$(INSTALL) -m 755 $(LIBAO_SOURCE_DIR)/postinst $(LIBAO_IPK_DIR)/CONTROL/postinst
 	#$(INSTALL) -m 755 $(LIBAO_SOURCE_DIR)/prerm $(LIBAO_IPK_DIR)/CONTROL/prerm

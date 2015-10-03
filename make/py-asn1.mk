@@ -47,7 +47,7 @@ PY-ASN1_IPK_VERSION=1
 
 #
 # PY-ASN1_CONFFILES should be a list of user-editable files
-#PY-ASN1_CONFFILES=/opt/etc/py-asn1.conf /opt/etc/init.d/SXXpy-asn1
+#PY-ASN1_CONFFILES=$(TARGET_PREFIX)/etc/py-asn1.conf $(TARGET_PREFIX)/etc/init.d/SXXpy-asn1
 
 #
 # PY-ASN1_PATCHES should list any patches, in the the order in
@@ -142,9 +142,9 @@ $(PY-ASN1_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-ASN1_SOURCE) $(DL_DIR)/$(PY-ASN
 	(cd $(@D)/2.4; \
 	    ( \
 		echo "[install]"; \
-		echo "install_scripts = /opt/bin"; \
+		echo "install_scripts = $(TARGET_PREFIX)/bin"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python2.4"; \
+		echo "executable=$(TARGET_PREFIX)/bin/python2.4"; \
 	    ) >> setup.cfg \
 	)
 #	cd $(BUILD_DIR); $(PY-ASN1_UNZIP) $(DL_DIR)/$(PY-ASN1_SOURCE)
@@ -154,9 +154,9 @@ $(PY-ASN1_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-ASN1_SOURCE) $(DL_DIR)/$(PY-ASN
 	(cd $(@D)/2.5; \
 	    ( \
 		echo "[install]"; \
-		echo "install_scripts = /opt/bin"; \
+		echo "install_scripts = $(TARGET_PREFIX)/bin"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python2.5"; \
+		echo "executable=$(TARGET_PREFIX)/bin/python2.5"; \
 	    ) >> setup.cfg \
 	)
 #	cd $(BUILD_DIR); $(PY-ASN1_UNZIP) $(DL_DIR)/$(PY-ASN1_SOURCE)
@@ -166,9 +166,9 @@ $(PY-ASN1_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-ASN1_SOURCE) $(DL_DIR)/$(PY-ASN
 	(cd $(@D)/2.6; \
 	    ( \
 		echo "[install]"; \
-		echo "install_scripts = /opt/bin"; \
+		echo "install_scripts = $(TARGET_PREFIX)/bin"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python2.6"; \
+		echo "executable=$(TARGET_PREFIX)/bin/python2.6"; \
 	    ) >> setup.cfg \
 	)
 #	cd $(BUILD_DIR); $(PY-ASN1_UNZIP) $(DL_DIR)/$(PY-ASN1_SOURCE)
@@ -178,9 +178,9 @@ $(PY-ASN1_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-ASN1_SOURCE) $(DL_DIR)/$(PY-ASN
 	(cd $(@D)/2.7; \
 	    ( \
 		echo "[install]"; \
-		echo "install_scripts = /opt/bin"; \
+		echo "install_scripts = $(TARGET_PREFIX)/bin"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python2.7"; \
+		echo "executable=$(TARGET_PREFIX)/bin/python2.7"; \
 	    ) >> setup.cfg \
 	)
 #	cd $(BUILD_DIR); $(PY-ASN1_UNZIP) $(DL_DIR)/$(PY-ASN1_SOURCE)
@@ -190,9 +190,9 @@ $(PY-ASN1_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-ASN1_SOURCE) $(DL_DIR)/$(PY-ASN
 	(cd $(@D)/3; \
 	    ( \
 		echo "[install]"; \
-		echo "install_scripts = /opt/bin"; \
+		echo "install_scripts = $(TARGET_PREFIX)/bin"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python$(PYTHON3_VERSION_MAJOR)"; \
+		echo "executable=$(TARGET_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR)"; \
 	    ) >> setup.cfg \
 	)
 	touch $@
@@ -223,19 +223,19 @@ $(PY-ASN1_BUILD_DIR)/.staged: $(PY-ASN1_BUILD_DIR)/.built
 	rm -f $@
 	rm -rf $(STAGING_LIB_DIR)/python2.4/site-packages/asn1*
 	(cd $(@D)/2.4; \
-	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(STAGING_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	rm -rf $(STAGING_LIB_DIR)/python2.5/site-packages/pyasn1*
 	(cd $(@D)/2.5; \
-	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(STAGING_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	rm -rf $(STAGING_LIB_DIR)/python2.6/site-packages/pyasn1*
 	(cd $(@D)/2.6; \
-	$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(STAGING_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	rm -rf $(STAGING_LIB_DIR)/python2.7/site-packages/pyasn1*
 	(cd $(@D)/2.7; \
-	$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(STAGING_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	rm -rf $(STAGING_LIB_DIR)/python$(PYTHON3_VERSION_MAJOR)/site-packages/pyasn1*
 	(cd $(@D)/3; \
-	$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(STAGING_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	touch $@
 
 $(PY-ASN1_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(PY-ASN1_SOURCE) $(DL_DIR)/$(PY-ASN1_SOURCE_OLD) make/py-asn1.mk
@@ -255,19 +255,19 @@ $(PY-ASN1_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(PY-ASN1_SOURCE) 
 	mv $(HOST_BUILD_DIR)/$(PY-ASN1_DIR) $(@D)/3
 	(cd $(@D)/2.4; $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build)
 	(cd $(@D)/2.4; \
-	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(HOST_STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	(cd $(@D)/2.5; $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build)
 	(cd $(@D)/2.5; \
-	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(HOST_STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	(cd $(@D)/2.6; $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py build)
 	(cd $(@D)/2.6; \
-	$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(HOST_STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	(cd $(@D)/2.7; $(HOST_STAGING_PREFIX)/bin/python2.7 setup.py build)
 	(cd $(@D)/2.7; \
-	$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(HOST_STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	(cd $(@D)/3; $(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py build)
 	(cd $(@D)/3; \
-	$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(HOST_STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	touch $@
 
 py-asn1-stage: $(PY-ASN1_BUILD_DIR)/.staged
@@ -351,12 +351,12 @@ $(PY3-ASN1_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PY-ASN1_IPK_DIR)/opt/sbin or $(PY-ASN1_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PY-ASN1_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PY-ASN1_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PY-ASN1_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PY-ASN1_IPK_DIR)/opt/etc/py-asn1/...
-# Documentation files should be installed in $(PY-ASN1_IPK_DIR)/opt/doc/py-asn1/...
-# Daemon startup scripts should be installed in $(PY-ASN1_IPK_DIR)/opt/etc/init.d/S??py-asn1
+# Libraries and include files should be installed into $(PY-ASN1_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PY-ASN1_IPK_DIR)$(TARGET_PREFIX)/etc/py-asn1/...
+# Documentation files should be installed in $(PY-ASN1_IPK_DIR)$(TARGET_PREFIX)/doc/py-asn1/...
+# Daemon startup scripts should be installed in $(PY-ASN1_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??py-asn1
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -365,8 +365,8 @@ $(PY24-ASN1_IPK): $(PY-ASN1_BUILD_DIR)/.built
 	rm -rf $(PY24-ASN1_IPK_DIR) $(BUILD_DIR)/py-asn1_*_$(TARGET_ARCH).ipk
 	(cd $(PY-ASN1_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(PY24-ASN1_IPK_DIR) --prefix=/opt)
-	rm -f $(PY24-ASN1_IPK_DIR)/opt/bin/easy_install
+	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(PY24-ASN1_IPK_DIR) --prefix=$(TARGET_PREFIX))
+	rm -f $(PY24-ASN1_IPK_DIR)$(TARGET_PREFIX)/bin/easy_install
 	$(MAKE) $(PY24-ASN1_IPK_DIR)/CONTROL/control
 	echo $(PY-ASN1_CONFFILES) | sed -e 's/ /\n/g' > $(PY24-ASN1_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-ASN1_IPK_DIR)
@@ -376,8 +376,8 @@ $(PY25-ASN1_IPK): $(PY-ASN1_BUILD_DIR)/.built
 	rm -rf $(PY25-ASN1_IPK_DIR) $(BUILD_DIR)/py25-asn1_*_$(TARGET_ARCH).ipk
 	(cd $(PY-ASN1_BUILD_DIR)/2.5; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
-	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(PY25-ASN1_IPK_DIR) --prefix=/opt)
-	rm -f $(PY25-ASN1_IPK_DIR)/opt/bin/easy_install
+	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(PY25-ASN1_IPK_DIR) --prefix=$(TARGET_PREFIX))
+	rm -f $(PY25-ASN1_IPK_DIR)$(TARGET_PREFIX)/bin/easy_install
 	$(MAKE) $(PY25-ASN1_IPK_DIR)/CONTROL/control
 	echo $(PY-ASN1_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-ASN1_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-ASN1_IPK_DIR)
@@ -387,8 +387,8 @@ $(PY26-ASN1_IPK): $(PY-ASN1_BUILD_DIR)/.built
 	rm -rf $(PY26-ASN1_IPK_DIR) $(BUILD_DIR)/py26-asn1_*_$(TARGET_ARCH).ipk
 	(cd $(PY-ASN1_BUILD_DIR)/2.6; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
-	$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(PY26-ASN1_IPK_DIR) --prefix=/opt)
-#	rm -f $(PY26-ASN1_IPK_DIR)/opt/bin/easy_install
+	$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(PY26-ASN1_IPK_DIR) --prefix=$(TARGET_PREFIX))
+#	rm -f $(PY26-ASN1_IPK_DIR)$(TARGET_PREFIX)/bin/easy_install
 	$(MAKE) $(PY26-ASN1_IPK_DIR)/CONTROL/control
 	echo $(PY-ASN1_CONFFILES) | sed -e 's/ /\n/g' > $(PY26-ASN1_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-ASN1_IPK_DIR)
@@ -398,8 +398,8 @@ $(PY27-ASN1_IPK): $(PY-ASN1_BUILD_DIR)/.built
 	rm -rf $(PY27-ASN1_IPK_DIR) $(BUILD_DIR)/py27-asn1_*_$(TARGET_ARCH).ipk
 	(cd $(PY-ASN1_BUILD_DIR)/2.7; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.7/site-packages \
-	$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(PY27-ASN1_IPK_DIR) --prefix=/opt)
-	rm -f $(PY27-ASN1_IPK_DIR)/opt/bin/easy_install
+	$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(PY27-ASN1_IPK_DIR) --prefix=$(TARGET_PREFIX))
+	rm -f $(PY27-ASN1_IPK_DIR)$(TARGET_PREFIX)/bin/easy_install
 	$(MAKE) $(PY27-ASN1_IPK_DIR)/CONTROL/control
 	echo $(PY-ASN1_CONFFILES) | sed -e 's/ /\n/g' > $(PY27-ASN1_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY27-ASN1_IPK_DIR)
@@ -409,8 +409,8 @@ $(PY3-ASN1_IPK): $(PY-ASN1_BUILD_DIR)/.built
 	rm -rf $(PY3-ASN1_IPK_DIR) $(BUILD_DIR)/py3-asn1_*_$(TARGET_ARCH).ipk
 	(cd $(PY-ASN1_BUILD_DIR)/3; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python$(PYTHON3_VERSION_MAJOR)/site-packages \
-	$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(PY3-ASN1_IPK_DIR) --prefix=/opt)
-	rm -f $(PY3-ASN1_IPK_DIR)/opt/bin/easy_install
+	$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(PY3-ASN1_IPK_DIR) --prefix=$(TARGET_PREFIX))
+	rm -f $(PY3-ASN1_IPK_DIR)$(TARGET_PREFIX)/bin/easy_install
 	$(MAKE) $(PY3-ASN1_IPK_DIR)/CONTROL/control
 	echo $(PY-ASN1_CONFFILES) | sed -e 's/ /\n/g' > $(PY3-ASN1_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY3-ASN1_IPK_DIR)

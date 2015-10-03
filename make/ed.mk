@@ -153,19 +153,19 @@ $(ED_IPK_DIR)/CONTROL/control:
 
 # This builds the IPK file.
 #
-# Binaries should be installed into $(ED_IPK_DIR)/opt/sbin or $(ED_IPK_DIR)/opt/bin
+# Binaries should be installed into $(ED_IPK_DIR)$(TARGET_PREFIX)/sbin or $(ED_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(ED_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(ED_IPK_DIR)/opt/etc/ed/...
-# Documentation files should be installed in $(ED_IPK_DIR)/opt/doc/ed/...
-# Daemon startup scripts should be installed in $(ED_IPK_DIR)/opt/etc/init.d/S??ed
+# Libraries and include files should be installed into $(ED_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(ED_IPK_DIR)$(TARGET_PREFIX)/etc/ed/...
+# Documentation files should be installed in $(ED_IPK_DIR)$(TARGET_PREFIX)/doc/ed/...
+# Daemon startup scripts should be installed in $(ED_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??ed
 #
 # You may need to patch your application to make it use these locations.
 #
 $(ED_IPK): $(ED_BUILD_DIR)/.built
 	rm -rf $(ED_IPK_DIR) $(BUILD_DIR)/ed_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(ED_BUILD_DIR) prefix=$(ED_IPK_DIR)$(TARGET_PREFIX) install INSTALL_DATA=:
-	$(STRIP_COMMAND) $(ED_IPK_DIR)/opt/bin/ed
+	$(STRIP_COMMAND) $(ED_IPK_DIR)$(TARGET_PREFIX)/bin/ed
 	$(MAKE) -C $(ED_BUILD_DIR) prefix=$(ED_IPK_DIR)$(TARGET_PREFIX) install-man
 	$(MAKE) $(ED_IPK_DIR)/CONTROL/control
 #	echo $(ED_CONFFILES) | sed -e 's/ /\n/g' > $(ED_IPK_DIR)/CONTROL/conffiles

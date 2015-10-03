@@ -41,7 +41,7 @@ BLUEZ2-LIBS_IPK_VERSION=1
 
 #
 # BLUEZ2-LIBS_CONFFILES should be a list of user-editable files
-#BLUEZ2-LIBS_CONFFILES=/opt/etc/bluez-libs.conf /opt/etc/init.d/SXXbluez-libs
+#BLUEZ2-LIBS_CONFFILES=$(TARGET_PREFIX)/etc/bluez-libs.conf $(TARGET_PREFIX)/etc/init.d/SXXbluez-libs
 
 #
 # BLUEZ2-LIBS_PATCHES should list any patches, in the the order in
@@ -171,19 +171,19 @@ $(BLUEZ2-LIBS_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(BLUEZ2-LIBS_IPK_DIR)/opt/sbin or $(BLUEZ2-LIBS_IPK_DIR)/opt/bin
+# Binaries should be installed into $(BLUEZ2-LIBS_IPK_DIR)$(TARGET_PREFIX)/sbin or $(BLUEZ2-LIBS_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(BLUEZ2-LIBS_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(BLUEZ2-LIBS_IPK_DIR)/opt/etc/bluez-libs/...
-# Documentation files should be installed in $(BLUEZ2-LIBS_IPK_DIR)/opt/doc/bluez-libs/...
-# Daemon startup scripts should be installed in $(BLUEZ2-LIBS_IPK_DIR)/opt/etc/init.d/S??bluez-libs
+# Libraries and include files should be installed into $(BLUEZ2-LIBS_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(BLUEZ2-LIBS_IPK_DIR)$(TARGET_PREFIX)/etc/bluez-libs/...
+# Documentation files should be installed in $(BLUEZ2-LIBS_IPK_DIR)$(TARGET_PREFIX)/doc/bluez-libs/...
+# Daemon startup scripts should be installed in $(BLUEZ2-LIBS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??bluez-libs
 #
 # You may need to patch your application to make it use these locations.
 #
 $(BLUEZ2-LIBS_IPK): $(BLUEZ2-LIBS_BUILD_DIR)/.built
 	rm -rf $(BLUEZ2-LIBS_IPK_DIR) $(BUILD_DIR)/bluez2-libs_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(BLUEZ2-LIBS_BUILD_DIR) DESTDIR=$(BLUEZ2-LIBS_IPK_DIR) install-strip
-	rm -f $(BLUEZ2-LIBS_IPK_DIR)/opt/lib/libbluetooth.la
+	rm -f $(BLUEZ2-LIBS_IPK_DIR)$(TARGET_PREFIX)/lib/libbluetooth.la
 	$(MAKE) $(BLUEZ2-LIBS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BLUEZ2-LIBS_IPK_DIR)
 

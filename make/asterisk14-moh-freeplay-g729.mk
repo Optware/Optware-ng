@@ -41,7 +41,7 @@ ASTERISK14_MOH_FREEPLAY_G729_IPK_VERSION=1
 
 #
 # ASTERISK14_MOH_FREEPLAY_G729_CONFFILES should be a list of user-editable files
-#ASTERISK14_MOH_FREEPLAY_G729_CONFFILES=/opt/etc/asterisk14-moh-freeplay-g729.conf /opt/etc/init.d/SXXasterisk14-moh-freeplay-g729
+#ASTERISK14_MOH_FREEPLAY_G729_CONFFILES=$(TARGET_PREFIX)/etc/asterisk14-moh-freeplay-g729.conf $(TARGET_PREFIX)/etc/init.d/SXXasterisk14-moh-freeplay-g729
 
 #
 # ASTERISK14_MOH_FREEPLAY_G729_PATCHES should list any patches, in the the order in
@@ -162,20 +162,20 @@ $(ASTERISK14_MOH_FREEPLAY_G729_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(ASTERISK14_MOH_FREEPLAY_G729_IPK_DIR)/opt/sbin or $(ASTERISK14_MOH_FREEPLAY_G729_IPK_DIR)/opt/bin
+# Binaries should be installed into $(ASTERISK14_MOH_FREEPLAY_G729_IPK_DIR)$(TARGET_PREFIX)/sbin or $(ASTERISK14_MOH_FREEPLAY_G729_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(ASTERISK14_MOH_FREEPLAY_G729_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(ASTERISK14_MOH_FREEPLAY_G729_IPK_DIR)/opt/etc/asterisk14-moh-freeplay-g729/...
-# Documentation files should be installed in $(ASTERISK14_MOH_FREEPLAY_G729_IPK_DIR)/opt/doc/asterisk14-moh-freeplay-g729/...
-# Daemon startup scripts should be installed in $(ASTERISK14_MOH_FREEPLAY_G729_IPK_DIR)/opt/etc/init.d/S??asterisk14-moh-freeplay-g729
+# Libraries and include files should be installed into $(ASTERISK14_MOH_FREEPLAY_G729_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(ASTERISK14_MOH_FREEPLAY_G729_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk14-moh-freeplay-g729/...
+# Documentation files should be installed in $(ASTERISK14_MOH_FREEPLAY_G729_IPK_DIR)$(TARGET_PREFIX)/doc/asterisk14-moh-freeplay-g729/...
+# Daemon startup scripts should be installed in $(ASTERISK14_MOH_FREEPLAY_G729_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??asterisk14-moh-freeplay-g729
 #
 # You may need to patch your application to make it use these locations.
 #
 $(ASTERISK14_MOH_FREEPLAY_G729_IPK): $(ASTERISK14_MOH_FREEPLAY_G729_BUILD_DIR)/.built
 	rm -rf $(ASTERISK14_MOH_FREEPLAY_G729_IPK_DIR) $(BUILD_DIR)/asterisk14-moh-freeplay-g729_*_$(TARGET_ARCH).ipk
 	$(MAKE) $(ASTERISK14_MOH_FREEPLAY_G729_IPK_DIR)/CONTROL/control
-	$(INSTALL) -d $(ASTERISK14_MOH_FREEPLAY_G729_IPK_DIR)/opt/var/lib/asterisk/moh
-	$(INSTALL) -m 644 $(ASTERISK14_MOH_FREEPLAY_G729_BUILD_DIR)/*g729 $(ASTERISK14_MOH_FREEPLAY_G729_IPK_DIR)/opt/var/lib/asterisk/moh
+	$(INSTALL) -d $(ASTERISK14_MOH_FREEPLAY_G729_IPK_DIR)$(TARGET_PREFIX)/var/lib/asterisk/moh
+	$(INSTALL) -m 644 $(ASTERISK14_MOH_FREEPLAY_G729_BUILD_DIR)/*g729 $(ASTERISK14_MOH_FREEPLAY_G729_IPK_DIR)$(TARGET_PREFIX)/var/lib/asterisk/moh
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ASTERISK14_MOH_FREEPLAY_G729_IPK_DIR)
 
 #

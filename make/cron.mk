@@ -34,7 +34,7 @@ CRON_IPK_VERSION=9
 
 #
 # CRON_CONFFILES should be a list of user-editable files
-CRON_CONFFILES=/opt/etc/crontab /opt/etc/init.d/S10cron
+CRON_CONFFILES=$(TARGET_PREFIX)/etc/crontab $(TARGET_PREFIX)/etc/init.d/S10cron
 
 #
 # CRON_PATCHES should list any patches, in the the order in
@@ -148,37 +148,37 @@ $(CRON_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(CRON_IPK_DIR)/opt/sbin or $(CRON_IPK_DIR)/opt/bin
+# Binaries should be installed into $(CRON_IPK_DIR)$(TARGET_PREFIX)/sbin or $(CRON_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(CRON_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(CRON_IPK_DIR)/opt/etc/cron/...
-# Documentation files should be installed in $(CRON_IPK_DIR)/opt/doc/cron/...
-# Daemon startup scripts should be installed in $(CRON_IPK_DIR)/opt/etc/init.d/S??cron
+# Libraries and include files should be installed into $(CRON_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(CRON_IPK_DIR)$(TARGET_PREFIX)/etc/cron/...
+# Documentation files should be installed in $(CRON_IPK_DIR)$(TARGET_PREFIX)/doc/cron/...
+# Daemon startup scripts should be installed in $(CRON_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??cron
 #
 # You may need to patch your application to make it use these locations.
 #
 $(CRON_IPK): $(CRON_BUILD_DIR)/.built
 	rm -rf $(CRON_IPK_DIR) $(BUILD_DIR)/cron_*_$(TARGET_ARCH).ipk
 # 	Install and strip the two executables
-	$(INSTALL) -d $(CRON_IPK_DIR)/opt/bin
-	$(INSTALL) -m  755 $(CRON_BUILD_DIR)/crontab $(CRON_IPK_DIR)/opt/bin
-	$(STRIP_COMMAND) $(CRON_IPK_DIR)/opt/bin/crontab
-	$(INSTALL) -d $(CRON_IPK_DIR)/opt/sbin
-	$(INSTALL) -m  755 $(CRON_BUILD_DIR)/cron $(CRON_IPK_DIR)/opt/sbin
-	$(STRIP_COMMAND) $(CRON_IPK_DIR)/opt/sbin/cron
+	$(INSTALL) -d $(CRON_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(INSTALL) -m  755 $(CRON_BUILD_DIR)/crontab $(CRON_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(STRIP_COMMAND) $(CRON_IPK_DIR)$(TARGET_PREFIX)/bin/crontab
+	$(INSTALL) -d $(CRON_IPK_DIR)$(TARGET_PREFIX)/sbin
+	$(INSTALL) -m  755 $(CRON_BUILD_DIR)/cron $(CRON_IPK_DIR)$(TARGET_PREFIX)/sbin
+	$(STRIP_COMMAND) $(CRON_IPK_DIR)$(TARGET_PREFIX)/sbin/cron
 # 	Install manuals
-	$(INSTALL) -d $(CRON_IPK_DIR)/opt/man/man1
-	$(INSTALL) -d $(CRON_IPK_DIR)/opt/man/man5
-	$(INSTALL) -d $(CRON_IPK_DIR)/opt/man/man8
-	$(INSTALL) -m 644 $(CRON_BUILD_DIR)/crontab.1 $(CRON_IPK_DIR)/opt/man/man1
-	$(INSTALL) -m 644 $(CRON_BUILD_DIR)/crontab.5 $(CRON_IPK_DIR)/opt/man/man5
-	$(INSTALL) -m 644 $(CRON_BUILD_DIR)/cron.8    $(CRON_IPK_DIR)/opt/man/man8
+	$(INSTALL) -d $(CRON_IPK_DIR)$(TARGET_PREFIX)/man/man1
+	$(INSTALL) -d $(CRON_IPK_DIR)$(TARGET_PREFIX)/man/man5
+	$(INSTALL) -d $(CRON_IPK_DIR)$(TARGET_PREFIX)/man/man8
+	$(INSTALL) -m 644 $(CRON_BUILD_DIR)/crontab.1 $(CRON_IPK_DIR)$(TARGET_PREFIX)/man/man1
+	$(INSTALL) -m 644 $(CRON_BUILD_DIR)/crontab.5 $(CRON_IPK_DIR)$(TARGET_PREFIX)/man/man5
+	$(INSTALL) -m 644 $(CRON_BUILD_DIR)/cron.8    $(CRON_IPK_DIR)$(TARGET_PREFIX)/man/man8
 #	Install default crontab
-	$(INSTALL) -d $(CRON_IPK_DIR)/opt/etc
-	$(INSTALL) -m 600 $(CRON_SOURCE_DIR)/crontab $(CRON_IPK_DIR)/opt/etc/crontab
+	$(INSTALL) -d $(CRON_IPK_DIR)$(TARGET_PREFIX)/etc
+	$(INSTALL) -m 600 $(CRON_SOURCE_DIR)/crontab $(CRON_IPK_DIR)$(TARGET_PREFIX)/etc/crontab
 #	Install daemon startup file
-	$(INSTALL) -d $(CRON_IPK_DIR)/opt/etc/init.d
-	$(INSTALL) -m 755 $(CRON_SOURCE_DIR)/rc.cron $(CRON_IPK_DIR)/opt/etc/init.d/S10cron
+	$(INSTALL) -d $(CRON_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(INSTALL) -m 755 $(CRON_SOURCE_DIR)/rc.cron $(CRON_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S10cron
 	$(MAKE) $(CRON_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 755 $(CRON_SOURCE_DIR)/postinst $(CRON_IPK_DIR)/CONTROL/postinst
 	$(INSTALL) -m 644 $(CRON_SOURCE_DIR)/prerm $(CRON_IPK_DIR)/CONTROL/

@@ -40,7 +40,7 @@ ARPWATCH_IPK_VERSION=3
 
 #
 # ARPWATCH_CONFFILES should be a list of user-editable files
-#ARPWATCH_CONFFILES=/opt/etc/arpwatch.conf /opt/etc/init.d/SXXarpwatch
+#ARPWATCH_CONFFILES=$(TARGET_PREFIX)/etc/arpwatch.conf $(TARGET_PREFIX)/etc/init.d/SXXarpwatch
 
 #
 # ARPWATCH_PATCHES should list any patches, in the the order in
@@ -183,28 +183,28 @@ $(ARPWATCH_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(ARPWATCH_IPK_DIR)/opt/sbin or $(ARPWATCH_IPK_DIR)/opt/bin
+# Binaries should be installed into $(ARPWATCH_IPK_DIR)$(TARGET_PREFIX)/sbin or $(ARPWATCH_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(ARPWATCH_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(ARPWATCH_IPK_DIR)/opt/etc/arpwatch/...
-# Documentation files should be installed in $(ARPWATCH_IPK_DIR)/opt/doc/arpwatch/...
-# Daemon startup scripts should be installed in $(ARPWATCH_IPK_DIR)/opt/etc/init.d/S??arpwatch
+# Libraries and include files should be installed into $(ARPWATCH_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(ARPWATCH_IPK_DIR)$(TARGET_PREFIX)/etc/arpwatch/...
+# Documentation files should be installed in $(ARPWATCH_IPK_DIR)$(TARGET_PREFIX)/doc/arpwatch/...
+# Daemon startup scripts should be installed in $(ARPWATCH_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??arpwatch
 #
 # You may need to patch your application to make it use these locations.
 #
 $(ARPWATCH_IPK): $(ARPWATCH_BUILD_DIR)/.built
 	rm -rf $(ARPWATCH_IPK_DIR) $(BUILD_DIR)/arpwatch_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(ARPWATCH_IPK_DIR)/opt/sbin/
+	$(INSTALL) -d $(ARPWATCH_IPK_DIR)$(TARGET_PREFIX)/sbin/
 	$(MAKE) -C $(ARPWATCH_BUILD_DIR) DESTDIR=$(ARPWATCH_IPK_DIR) install
-	for f in $(ARPWATCH_IPK_DIR)/opt/sbin/*; \
+	for f in $(ARPWATCH_IPK_DIR)$(TARGET_PREFIX)/sbin/*; \
 		do chmod +w $$f; $(STRIP_COMMAND) $$f; chmod -w $$f; done
-	$(INSTALL) -d $(ARPWATCH_IPK_DIR)/opt/man/man8
+	$(INSTALL) -d $(ARPWATCH_IPK_DIR)$(TARGET_PREFIX)/man/man8
 	$(MAKE) -C $(ARPWATCH_BUILD_DIR) DESTDIR=$(ARPWATCH_IPK_DIR) install-man
-#	$(INSTALL) -d $(ARPWATCH_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(ARPWATCH_SOURCE_DIR)/arpwatch.conf $(ARPWATCH_IPK_DIR)/opt/etc/arpwatch.conf
-#	$(INSTALL) -d $(ARPWATCH_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(ARPWATCH_SOURCE_DIR)/rc.arpwatch $(ARPWATCH_IPK_DIR)/opt/etc/init.d/SXXarpwatch
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/opt/etc/init.d/SXXarpwatch
+#	$(INSTALL) -d $(ARPWATCH_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(ARPWATCH_SOURCE_DIR)/arpwatch.conf $(ARPWATCH_IPK_DIR)$(TARGET_PREFIX)/etc/arpwatch.conf
+#	$(INSTALL) -d $(ARPWATCH_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(ARPWATCH_SOURCE_DIR)/rc.arpwatch $(ARPWATCH_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXarpwatch
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXarpwatch
 	$(MAKE) $(ARPWATCH_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(ARPWATCH_SOURCE_DIR)/postinst $(ARPWATCH_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/postinst

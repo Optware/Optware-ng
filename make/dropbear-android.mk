@@ -28,7 +28,7 @@ DROPBEAR_ANDROID_PATCHES=$(DROPBEAR_ANDROID_SOURCE_DIR)/configure.patch \
 		 $(DROPBEAR_ANDROID_SOURCE_DIR)/auth_pubkey_path.patch \
 		 $(DROPBEAR_ANDROID_SOURCE_DIR)/android.patch \
 
-DROPBEAR_ANDROID_CONFFILES=/opt/etc/default/dropbear /opt/etc/init.d/S51dropbear
+DROPBEAR_ANDROID_CONFFILES=$(TARGET_PREFIX)/etc/default/dropbear $(TARGET_PREFIX)/etc/init.d/S51dropbear
 
 DROPBEAR_ANDROID_CPPFLAGS=
 DROPBEAR_ANDROID_LDFLAGS=
@@ -96,16 +96,16 @@ $(DROPBEAR_ANDROID_IPK_DIR)/CONTROL/control:
 
 $(DROPBEAR_ANDROID_IPK): $(DROPBEAR_ANDROID_BUILD_DIR)/.built
 	rm -rf $(DROPBEAR_ANDROID_IPK_DIR) $(BUILD_DIR)/dropbear-android_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(DROPBEAR_ANDROID_IPK_DIR)/opt/sbin $(DROPBEAR_ANDROID_IPK_DIR)/opt/bin
-	$(STRIP_COMMAND) $(DROPBEAR_ANDROID_BUILD_DIR)/dropbearmulti -o $(DROPBEAR_ANDROID_IPK_DIR)/opt/sbin/dropbearmulti
-	cd $(DROPBEAR_ANDROID_IPK_DIR)/opt/sbin && ln -sf dropbearmulti dropbear
-	cd $(DROPBEAR_ANDROID_IPK_DIR)/opt/sbin && ln -sf dropbearmulti dropbearkey
-	cd $(DROPBEAR_ANDROID_IPK_DIR)/opt/sbin && ln -sf dropbearmulti dropbearconvert
-	cd $(DROPBEAR_ANDROID_IPK_DIR)/opt/bin && ln -sf ../sbin/dropbearmulti dbclient
-	$(INSTALL) -d $(DROPBEAR_ANDROID_IPK_DIR)/opt/etc/init.d
-	$(INSTALL) -m 755 $(DROPBEAR_ANDROID_SOURCE_DIR)/rc.dropbear-android $(DROPBEAR_ANDROID_IPK_DIR)/opt/etc/init.d/S51dropbear
-	$(INSTALL) -d $(DROPBEAR_ANDROID_IPK_DIR)/opt/etc/default
-	$(INSTALL) -m 755 $(DROPBEAR_ANDROID_SOURCE_DIR)/dropbear-android.default $(DROPBEAR_ANDROID_IPK_DIR)/opt/etc/default/dropbear
+	$(INSTALL) -d $(DROPBEAR_ANDROID_IPK_DIR)$(TARGET_PREFIX)/sbin $(DROPBEAR_ANDROID_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(STRIP_COMMAND) $(DROPBEAR_ANDROID_BUILD_DIR)/dropbearmulti -o $(DROPBEAR_ANDROID_IPK_DIR)$(TARGET_PREFIX)/sbin/dropbearmulti
+	cd $(DROPBEAR_ANDROID_IPK_DIR)$(TARGET_PREFIX)/sbin && ln -sf dropbearmulti dropbear
+	cd $(DROPBEAR_ANDROID_IPK_DIR)$(TARGET_PREFIX)/sbin && ln -sf dropbearmulti dropbearkey
+	cd $(DROPBEAR_ANDROID_IPK_DIR)$(TARGET_PREFIX)/sbin && ln -sf dropbearmulti dropbearconvert
+	cd $(DROPBEAR_ANDROID_IPK_DIR)$(TARGET_PREFIX)/bin && ln -sf ../sbin/dropbearmulti dbclient
+	$(INSTALL) -d $(DROPBEAR_ANDROID_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(INSTALL) -m 755 $(DROPBEAR_ANDROID_SOURCE_DIR)/rc.dropbear-android $(DROPBEAR_ANDROID_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S51dropbear
+	$(INSTALL) -d $(DROPBEAR_ANDROID_IPK_DIR)$(TARGET_PREFIX)/etc/default
+	$(INSTALL) -m 755 $(DROPBEAR_ANDROID_SOURCE_DIR)/dropbear-android.default $(DROPBEAR_ANDROID_IPK_DIR)$(TARGET_PREFIX)/etc/default/dropbear
 	$(MAKE) $(DROPBEAR_ANDROID_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 644 $(DROPBEAR_ANDROID_SOURCE_DIR)/postinst $(DROPBEAR_ANDROID_IPK_DIR)/CONTROL/postinst
 	$(INSTALL) -m 644 $(DROPBEAR_ANDROID_SOURCE_DIR)/prerm    $(DROPBEAR_ANDROID_IPK_DIR)/CONTROL/prerm

@@ -52,7 +52,7 @@ UDEV_IPK_VERSION=2
 
 #
 # UDEV_CONFFILES should be a list of user-editable files
-UDEV_CONFFILES=/opt/etc/udev/udev.conf
+UDEV_CONFFILES=$(TARGET_PREFIX)/etc/udev/udev.conf
 
 #
 # UDEV_PATCHES should list any patches, in the the order in
@@ -148,7 +148,7 @@ $(UDEV_BUILD_DIR)/.configured: $(DL_DIR)/$(UDEV_SOURCE) $(UDEV_PATCHES) make/ude
 		--disable-nls \
 		--disable-static \
 		--disable-introspection \
-		--with-pci-ids-path=/opt/share/misc/pci.ids \
+		--with-pci-ids-path=$(TARGET_PREFIX)/share/misc/pci.ids \
 	)
 	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
@@ -233,12 +233,12 @@ $(LIBGUDEV_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(UDEV_IPK_DIR)/opt/sbin or $(UDEV_IPK_DIR)/opt/bin
+# Binaries should be installed into $(UDEV_IPK_DIR)$(TARGET_PREFIX)/sbin or $(UDEV_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(UDEV_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(UDEV_IPK_DIR)/opt/etc/udev/...
-# Documentation files should be installed in $(UDEV_IPK_DIR)/opt/doc/udev/...
-# Daemon startup scripts should be installed in $(UDEV_IPK_DIR)/opt/etc/init.d/S??udev
+# Libraries and include files should be installed into $(UDEV_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(UDEV_IPK_DIR)$(TARGET_PREFIX)/etc/udev/...
+# Documentation files should be installed in $(UDEV_IPK_DIR)$(TARGET_PREFIX)/doc/udev/...
+# Daemon startup scripts should be installed in $(UDEV_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??udev
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -247,16 +247,16 @@ $(UDEV_IPK) $(LIBUDEV_IPK) $(LIBGUDEV_IPK): $(UDEV_BUILD_DIR)/.built
 		$(LIBUDEV_IPK_DIR) $(BUILD_DIR)/libudev_*_$(TARGET_ARCH).ipk \
 		$(LIBGUDEV_IPK_DIR) $(BUILD_DIR)/libgudev_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(UDEV_BUILD_DIR) DESTDIR=$(UDEV_IPK_DIR) install-strip
-	rm -f $(UDEV_IPK_DIR)/opt/lib/*.la
-	$(INSTALL) -d $(LIBUDEV_IPK_DIR)$(TARGET_PREFIX) $(LIBGUDEV_IPK_DIR)/opt/lib/pkgconfig
-	mv -f $(UDEV_IPK_DIR)/opt/lib $(LIBUDEV_IPK_DIR)/opt
-	mv -f $(LIBUDEV_IPK_DIR)/opt/lib/libgudev-1.0.* $(LIBGUDEV_IPK_DIR)/opt/lib
-	mv -f $(LIBUDEV_IPK_DIR)/opt/lib/pkgconfig/gudev-1.0.pc $(LIBGUDEV_IPK_DIR)/opt/lib/pkgconfig
-#	$(INSTALL) -d $(UDEV_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(UDEV_SOURCE_DIR)/udev.conf $(UDEV_IPK_DIR)/opt/etc/udev.conf
-#	$(INSTALL) -d $(UDEV_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(UDEV_SOURCE_DIR)/rc.udev $(UDEV_IPK_DIR)/opt/etc/init.d/SXXudev
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(UDEV_IPK_DIR)/opt/etc/init.d/SXXudev
+	rm -f $(UDEV_IPK_DIR)$(TARGET_PREFIX)/lib/*.la
+	$(INSTALL) -d $(LIBUDEV_IPK_DIR)$(TARGET_PREFIX) $(LIBGUDEV_IPK_DIR)$(TARGET_PREFIX)/lib/pkgconfig
+	mv -f $(UDEV_IPK_DIR)$(TARGET_PREFIX)/lib $(LIBUDEV_IPK_DIR)$(TARGET_PREFIX)
+	mv -f $(LIBUDEV_IPK_DIR)$(TARGET_PREFIX)/lib/libgudev-1.0.* $(LIBGUDEV_IPK_DIR)$(TARGET_PREFIX)/lib
+	mv -f $(LIBUDEV_IPK_DIR)$(TARGET_PREFIX)/lib/pkgconfig/gudev-1.0.pc $(LIBGUDEV_IPK_DIR)$(TARGET_PREFIX)/lib/pkgconfig
+#	$(INSTALL) -d $(UDEV_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(UDEV_SOURCE_DIR)/udev.conf $(UDEV_IPK_DIR)$(TARGET_PREFIX)/etc/udev.conf
+#	$(INSTALL) -d $(UDEV_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(UDEV_SOURCE_DIR)/rc.udev $(UDEV_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXudev
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(UDEV_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXudev
 	$(MAKE) $(UDEV_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(UDEV_SOURCE_DIR)/postinst $(UDEV_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(UDEV_IPK_DIR)/CONTROL/postinst

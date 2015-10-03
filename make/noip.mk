@@ -164,22 +164,22 @@ $(NOIP_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(NOIP_IPK_DIR)/opt/sbin or $(NOIP_IPK_DIR)/opt/bin
+# Binaries should be installed into $(NOIP_IPK_DIR)$(TARGET_PREFIX)/sbin or $(NOIP_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(NOIP_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(NOIP_IPK_DIR)/opt/etc/noip/...
-# Documentation files should be installed in $(NOIP_IPK_DIR)/opt/doc/noip/...
-# Daemon startup scripts should be installed in $(NOIP_IPK_DIR)/opt/etc/init.d/S??noip
+# Libraries and include files should be installed into $(NOIP_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(NOIP_IPK_DIR)$(TARGET_PREFIX)/etc/noip/...
+# Documentation files should be installed in $(NOIP_IPK_DIR)$(TARGET_PREFIX)/doc/noip/...
+# Daemon startup scripts should be installed in $(NOIP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??noip
 #
 # You may need to patch your application to make it use these locations.
 #
 $(NOIP_IPK): $(NOIP_BUILD_DIR)/.built
 	rm -rf $(NOIP_IPK_DIR) $(BUILD_DIR)/noip_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(NOIP_IPK_DIR)/opt/bin
-	$(INSTALL) -m 755 $(NOIP_BUILD_DIR)/noip2 $(NOIP_IPK_DIR)/opt/bin
-	$(INSTALL) -d $(NOIP_IPK_DIR)/opt/etc/init.d
-	$(STRIP_COMMAND) $(NOIP_IPK_DIR)/opt/bin/noip2
-#	$(INSTALL) -m 755 $(NOIP_SOURCE_DIR)/rc.noip $(NOIP_IPK_DIR)/opt/etc/init.d/SXXnoip
+	$(INSTALL) -d $(NOIP_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(INSTALL) -m 755 $(NOIP_BUILD_DIR)/noip2 $(NOIP_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(INSTALL) -d $(NOIP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(STRIP_COMMAND) $(NOIP_IPK_DIR)$(TARGET_PREFIX)/bin/noip2
+#	$(INSTALL) -m 755 $(NOIP_SOURCE_DIR)/rc.noip $(NOIP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXnoip
 	$(MAKE) $(NOIP_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(NOIP_SOURCE_DIR)/postinst $(NOIP_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 755 $(NOIP_SOURCE_DIR)/prerm $(NOIP_IPK_DIR)/CONTROL/prerm

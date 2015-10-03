@@ -29,7 +29,7 @@ MODUTILS_IPK_VERSION=2
 
 #
 # MODUTILS_CONFFILES should be a list of user-editable files
-MODUTILS_CONFFILES=/opt/etc/init.d/S01modutils
+MODUTILS_CONFFILES=$(TARGET_PREFIX)/etc/init.d/S01modutils
 
 #
 # MODUTILS_PATCHES should list any patches, in the the order in
@@ -116,7 +116,7 @@ $(MODUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(MODUTILS_SOURCE) $(MODUTILS_PATCH
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=$(TARGET_PREFIX) \
-		--sysconfdir=/opt/etc \
+		--sysconfdir=$(TARGET_PREFIX)/etc \
 		--disable-nls \
 		--disable-static \
 		--disable-strip \
@@ -130,7 +130,7 @@ modutils-unpack: $(MODUTILS_BUILD_DIR)/.configured
 #
 $(MODUTILS_BUILD_DIR)/.built: $(MODUTILS_BUILD_DIR)/.configured
 	rm -f $(MODUTILS_BUILD_DIR)/.built
-	$(MAKE) -C $(MODUTILS_BUILD_DIR) CFLAGS="$(STAGING_CPPFLAGS) $(MODUTILS_CPPFLAGS) -DMODDIR=\\\"/opt/lib/modules\\\""
+	$(MAKE) -C $(MODUTILS_BUILD_DIR) CFLAGS="$(STAGING_CPPFLAGS) $(MODUTILS_CPPFLAGS) -DMODDIR=\\\"$(TARGET_PREFIX)/lib/modules\\\""
 	touch $(MODUTILS_BUILD_DIR)/.built
 
 #
@@ -170,12 +170,12 @@ $(MODUTILS_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(MODUTILS_IPK_DIR)/opt/sbin or $(MODUTILS_IPK_DIR)/opt/bin
+# Binaries should be installed into $(MODUTILS_IPK_DIR)$(TARGET_PREFIX)/sbin or $(MODUTILS_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(MODUTILS_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(MODUTILS_IPK_DIR)/opt/etc/modutils/...
-# Documentation files should be installed in $(MODUTILS_IPK_DIR)/opt/doc/modutils/...
-# Daemon startup scripts should be installed in $(MODUTILS_IPK_DIR)/opt/etc/init.d/S??modutils
+# Libraries and include files should be installed into $(MODUTILS_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(MODUTILS_IPK_DIR)$(TARGET_PREFIX)/etc/modutils/...
+# Documentation files should be installed in $(MODUTILS_IPK_DIR)$(TARGET_PREFIX)/doc/modutils/...
+# Daemon startup scripts should be installed in $(MODUTILS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??modutils
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -183,16 +183,16 @@ $(MODUTILS_IPK): $(MODUTILS_BUILD_DIR)/.built
 	rm -rf $(MODUTILS_IPK_DIR) $(BUILD_DIR)/modutils_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MODUTILS_BUILD_DIR) DESTDIR=$(MODUTILS_IPK_DIR) install
 	# Remove man pages
-	rm -rf $(MODUTILS_IPK_DIR)/opt/man
+	rm -rf $(MODUTILS_IPK_DIR)$(TARGET_PREFIX)/man
 	# Strip binaries
-	$(STRIP_COMMAND) $(MODUTILS_IPK_DIR)/opt/sbin/depmod
-	$(STRIP_COMMAND) $(MODUTILS_IPK_DIR)/opt/sbin/genksyms
-	$(STRIP_COMMAND) $(MODUTILS_IPK_DIR)/opt/sbin/insmod
-	$(STRIP_COMMAND) $(MODUTILS_IPK_DIR)/opt/sbin/modinfo
-	$(INSTALL) -d $(MODUTILS_IPK_DIR)/opt/etc/
-	$(INSTALL) -d $(MODUTILS_IPK_DIR)/opt/etc/init.d
-	$(INSTALL) -d $(MODUTILS_IPK_DIR)/opt/lib/
-	$(INSTALL) -m 755 $(MODUTILS_SOURCE_DIR)/rc.modutils $(MODUTILS_IPK_DIR)/opt/etc/init.d/S01modutils
+	$(STRIP_COMMAND) $(MODUTILS_IPK_DIR)$(TARGET_PREFIX)/sbin/depmod
+	$(STRIP_COMMAND) $(MODUTILS_IPK_DIR)$(TARGET_PREFIX)/sbin/genksyms
+	$(STRIP_COMMAND) $(MODUTILS_IPK_DIR)$(TARGET_PREFIX)/sbin/insmod
+	$(STRIP_COMMAND) $(MODUTILS_IPK_DIR)$(TARGET_PREFIX)/sbin/modinfo
+	$(INSTALL) -d $(MODUTILS_IPK_DIR)$(TARGET_PREFIX)/etc/
+	$(INSTALL) -d $(MODUTILS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(INSTALL) -d $(MODUTILS_IPK_DIR)$(TARGET_PREFIX)/lib/
+	$(INSTALL) -m 755 $(MODUTILS_SOURCE_DIR)/rc.modutils $(MODUTILS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S01modutils
 	$(MAKE) $(MODUTILS_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 755 $(MODUTILS_SOURCE_DIR)/postinst $(MODUTILS_IPK_DIR)/CONTROL/postinst
 	echo $(MODUTILS_CONFFILES) | sed -e 's/ /\n/g' > $(MODUTILS_IPK_DIR)/CONTROL/conffiles

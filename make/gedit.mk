@@ -46,7 +46,7 @@ GEDIT_IPK_VERSION=1
 
 #
 # GEDIT_CONFFILES should be a list of user-editable files
-#GEDIT_CONFFILES=/opt/etc/gedit.conf /opt/etc/init.d/SXXgedit
+#GEDIT_CONFFILES=$(TARGET_PREFIX)/etc/gedit.conf $(TARGET_PREFIX)/etc/init.d/SXXgedit
 
 #
 # GEDIT_PATCHES should list any patches, in the the order in
@@ -59,7 +59,7 @@ GEDIT_IPK_VERSION=1
 # compilation or linking flags, then list them here.
 #
 GEDIT_CPPFLAGS=
-GEDIT_LDFLAGS=-Wl,-rpath,/opt/lib/gedit
+GEDIT_LDFLAGS=-Wl,-rpath,$(TARGET_PREFIX)/lib/gedit
 
 #
 # GEDIT_BUILD_DIR is the directory in which the build is done.
@@ -187,23 +187,23 @@ $(GEDIT_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(GEDIT_IPK_DIR)/opt/sbin or $(GEDIT_IPK_DIR)/opt/bin
+# Binaries should be installed into $(GEDIT_IPK_DIR)$(TARGET_PREFIX)/sbin or $(GEDIT_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(GEDIT_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(GEDIT_IPK_DIR)/opt/etc/gedit/...
-# Documentation files should be installed in $(GEDIT_IPK_DIR)/opt/doc/gedit/...
-# Daemon startup scripts should be installed in $(GEDIT_IPK_DIR)/opt/etc/init.d/S??gedit
+# Libraries and include files should be installed into $(GEDIT_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(GEDIT_IPK_DIR)$(TARGET_PREFIX)/etc/gedit/...
+# Documentation files should be installed in $(GEDIT_IPK_DIR)$(TARGET_PREFIX)/doc/gedit/...
+# Daemon startup scripts should be installed in $(GEDIT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??gedit
 #
 # You may need to patch your application to make it use these locations.
 #
 $(GEDIT_IPK): $(GEDIT_BUILD_DIR)/.built
 	rm -rf $(GEDIT_IPK_DIR) $(BUILD_DIR)/gedit_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GEDIT_BUILD_DIR) DESTDIR=$(GEDIT_IPK_DIR) install-strip
-#	$(INSTALL) -d $(GEDIT_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(GEDIT_SOURCE_DIR)/gedit.conf $(GEDIT_IPK_DIR)/opt/etc/gedit.conf
-#	$(INSTALL) -d $(GEDIT_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(GEDIT_SOURCE_DIR)/rc.gedit $(GEDIT_IPK_DIR)/opt/etc/init.d/SXXgedit
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(GEDIT_IPK_DIR)/opt/etc/init.d/SXXgedit
+#	$(INSTALL) -d $(GEDIT_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(GEDIT_SOURCE_DIR)/gedit.conf $(GEDIT_IPK_DIR)$(TARGET_PREFIX)/etc/gedit.conf
+#	$(INSTALL) -d $(GEDIT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(GEDIT_SOURCE_DIR)/rc.gedit $(GEDIT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXgedit
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(GEDIT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXgedit
 	$(MAKE) $(GEDIT_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(GEDIT_SOURCE_DIR)/postinst $(GEDIT_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(GEDIT_IPK_DIR)/CONTROL/postinst

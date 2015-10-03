@@ -40,7 +40,7 @@ LIBDVDNAV_IPK_VERSION=1
 
 #
 # LIBDVDNAV_CONFFILES should be a list of user-editable files
-#LIBDVDNAV_CONFFILES=/opt/etc/libdvdnav.conf /opt/etc/init.d/SXXlibdvdnav
+#LIBDVDNAV_CONFFILES=$(TARGET_PREFIX)/etc/libdvdnav.conf $(TARGET_PREFIX)/etc/init.d/SXXlibdvdnav
 
 #
 # LIBDVDNAV_PATCHES should list any patches, in the the order in
@@ -181,24 +181,24 @@ $(LIBDVDNAV_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LIBDVDNAV_IPK_DIR)/opt/sbin or $(LIBDVDNAV_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LIBDVDNAV_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LIBDVDNAV_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LIBDVDNAV_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LIBDVDNAV_IPK_DIR)/opt/etc/libdvdnav/...
-# Documentation files should be installed in $(LIBDVDNAV_IPK_DIR)/opt/doc/libdvdnav/...
-# Daemon startup scripts should be installed in $(LIBDVDNAV_IPK_DIR)/opt/etc/init.d/S??libdvdnav
+# Libraries and include files should be installed into $(LIBDVDNAV_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LIBDVDNAV_IPK_DIR)$(TARGET_PREFIX)/etc/libdvdnav/...
+# Documentation files should be installed in $(LIBDVDNAV_IPK_DIR)$(TARGET_PREFIX)/doc/libdvdnav/...
+# Daemon startup scripts should be installed in $(LIBDVDNAV_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??libdvdnav
 #
 # You may need to patch your application to make it use these locations.
 #
 $(LIBDVDNAV_IPK): $(LIBDVDNAV_BUILD_DIR)/.built
 	rm -rf $(LIBDVDNAV_IPK_DIR) $(BUILD_DIR)/libdvdnav_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBDVDNAV_BUILD_DIR) DESTDIR=$(LIBDVDNAV_IPK_DIR) transform="" install-strip
-	rm -f $(LIBDVDNAV_IPK_DIR)/opt/lib/libdvdnav.la
-#	$(INSTALL) -d $(LIBDVDNAV_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(LIBDVDNAV_SOURCE_DIR)/libdvdnav.conf $(LIBDVDNAV_IPK_DIR)/opt/etc/libdvdnav.conf
-#	$(INSTALL) -d $(LIBDVDNAV_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(LIBDVDNAV_SOURCE_DIR)/rc.libdvdnav $(LIBDVDNAV_IPK_DIR)/opt/etc/init.d/SXXlibdvdnav
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBDVDNAV_IPK_DIR)/opt/etc/init.d/SXXlibdvdnav
+	rm -f $(LIBDVDNAV_IPK_DIR)$(TARGET_PREFIX)/lib/libdvdnav.la
+#	$(INSTALL) -d $(LIBDVDNAV_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(LIBDVDNAV_SOURCE_DIR)/libdvdnav.conf $(LIBDVDNAV_IPK_DIR)$(TARGET_PREFIX)/etc/libdvdnav.conf
+#	$(INSTALL) -d $(LIBDVDNAV_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(LIBDVDNAV_SOURCE_DIR)/rc.libdvdnav $(LIBDVDNAV_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibdvdnav
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBDVDNAV_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibdvdnav
 	$(MAKE) $(LIBDVDNAV_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(LIBDVDNAV_SOURCE_DIR)/postinst $(LIBDVDNAV_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBDVDNAV_IPK_DIR)/CONTROL/postinst

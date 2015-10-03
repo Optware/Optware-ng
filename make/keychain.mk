@@ -40,7 +40,7 @@ KEYCHAIN_IPK_VERSION=1
 
 #
 # KEYCHAIN_CONFFILES should be a list of user-editable files
-#KEYCHAIN_CONFFILES=/opt/etc/keychain.conf /opt/etc/init.d/SXXkeychain
+#KEYCHAIN_CONFFILES=$(TARGET_PREFIX)/etc/keychain.conf $(TARGET_PREFIX)/etc/init.d/SXXkeychain
 
 #
 # KEYCHAIN_PATCHES should list any patches, in the the order in
@@ -115,7 +115,7 @@ $(KEYCHAIN_BUILD_DIR)/.configured: $(DL_DIR)/$(KEYCHAIN_SOURCE) $(KEYCHAIN_PATCH
 	if test "$(BUILD_DIR)/$(KEYCHAIN_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(KEYCHAIN_DIR) $(@D) ; \
 	fi
-	sed -i -e 's|PATH="|PATH="/opt/bin:|' $(@D)/keychain.sh
+	sed -i -e 's|PATH="|PATH="$(TARGET_PREFIX)/bin:|' $(@D)/keychain.sh
 #	(cd $(KEYCHAIN_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(KEYCHAIN_CPPFLAGS)" \
@@ -178,22 +178,22 @@ $(KEYCHAIN_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(KEYCHAIN_IPK_DIR)/opt/sbin or $(KEYCHAIN_IPK_DIR)/opt/bin
+# Binaries should be installed into $(KEYCHAIN_IPK_DIR)$(TARGET_PREFIX)/sbin or $(KEYCHAIN_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(KEYCHAIN_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(KEYCHAIN_IPK_DIR)/opt/etc/keychain/...
-# Documentation files should be installed in $(KEYCHAIN_IPK_DIR)/opt/doc/keychain/...
-# Daemon startup scripts should be installed in $(KEYCHAIN_IPK_DIR)/opt/etc/init.d/S??keychain
+# Libraries and include files should be installed into $(KEYCHAIN_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(KEYCHAIN_IPK_DIR)$(TARGET_PREFIX)/etc/keychain/...
+# Documentation files should be installed in $(KEYCHAIN_IPK_DIR)$(TARGET_PREFIX)/doc/keychain/...
+# Daemon startup scripts should be installed in $(KEYCHAIN_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??keychain
 #
 # You may need to patch your application to make it use these locations.
 #
 $(KEYCHAIN_IPK): $(KEYCHAIN_BUILD_DIR)/.built
 	rm -rf $(KEYCHAIN_IPK_DIR) $(BUILD_DIR)/keychain_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(KEYCHAIN_BUILD_DIR) DESTDIR=$(KEYCHAIN_IPK_DIR) install-strip
-	$(INSTALL) -d $(KEYCHAIN_IPK_DIR)/opt/bin/
-	$(INSTALL) $(KEYCHAIN_BUILD_DIR)/keychain $(KEYCHAIN_IPK_DIR)/opt/bin/
-	$(INSTALL) -d $(KEYCHAIN_IPK_DIR)/opt/man/man1/
-	$(INSTALL) $(KEYCHAIN_BUILD_DIR)/keychain.1 $(KEYCHAIN_IPK_DIR)/opt/man/man1/
+	$(INSTALL) -d $(KEYCHAIN_IPK_DIR)$(TARGET_PREFIX)/bin/
+	$(INSTALL) $(KEYCHAIN_BUILD_DIR)/keychain $(KEYCHAIN_IPK_DIR)$(TARGET_PREFIX)/bin/
+	$(INSTALL) -d $(KEYCHAIN_IPK_DIR)$(TARGET_PREFIX)/man/man1/
+	$(INSTALL) $(KEYCHAIN_BUILD_DIR)/keychain.1 $(KEYCHAIN_IPK_DIR)$(TARGET_PREFIX)/man/man1/
 	$(MAKE) $(KEYCHAIN_IPK_DIR)/CONTROL/control
 	echo $(KEYCHAIN_CONFFILES) | sed -e 's/ /\n/g' > $(KEYCHAIN_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(KEYCHAIN_IPK_DIR)

@@ -40,7 +40,7 @@ SOCAT_IPK_VERSION=1
 
 #
 # SOCAT_CONFFILES should be a list of user-editable files
-#SOCAT_CONFFILES=/opt/etc/socat.conf /opt/etc/init.d/SXXsocat
+#SOCAT_CONFFILES=$(TARGET_PREFIX)/etc/socat.conf $(TARGET_PREFIX)/etc/init.d/SXXsocat
 
 #
 # SOCAT_PATCHES should list any patches, in the the order in
@@ -187,23 +187,23 @@ $(SOCAT_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(SOCAT_IPK_DIR)/opt/sbin or $(SOCAT_IPK_DIR)/opt/bin
+# Binaries should be installed into $(SOCAT_IPK_DIR)$(TARGET_PREFIX)/sbin or $(SOCAT_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(SOCAT_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(SOCAT_IPK_DIR)/opt/etc/socat/...
-# Documentation files should be installed in $(SOCAT_IPK_DIR)/opt/doc/socat/...
-# Daemon startup scripts should be installed in $(SOCAT_IPK_DIR)/opt/etc/init.d/S??socat
+# Libraries and include files should be installed into $(SOCAT_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(SOCAT_IPK_DIR)$(TARGET_PREFIX)/etc/socat/...
+# Documentation files should be installed in $(SOCAT_IPK_DIR)$(TARGET_PREFIX)/doc/socat/...
+# Daemon startup scripts should be installed in $(SOCAT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??socat
 #
 # You may need to patch your application to make it use these locations.
 #
 $(SOCAT_IPK): $(SOCAT_BUILD_DIR)/.built
 	rm -rf $(SOCAT_IPK_DIR) $(BUILD_DIR)/socat_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SOCAT_BUILD_DIR) DESTDIR=$(SOCAT_IPK_DIR) install
-	$(STRIP_COMMAND) $(SOCAT_IPK_DIR)/opt/bin/*
-#	$(INSTALL) -d $(SOCAT_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(SOCAT_SOURCE_DIR)/socat.conf $(SOCAT_IPK_DIR)/opt/etc/socat.conf
-#	$(INSTALL) -d $(SOCAT_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(SOCAT_SOURCE_DIR)/rc.socat $(SOCAT_IPK_DIR)/opt/etc/init.d/SXXsocat
+	$(STRIP_COMMAND) $(SOCAT_IPK_DIR)$(TARGET_PREFIX)/bin/*
+#	$(INSTALL) -d $(SOCAT_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(SOCAT_SOURCE_DIR)/socat.conf $(SOCAT_IPK_DIR)$(TARGET_PREFIX)/etc/socat.conf
+#	$(INSTALL) -d $(SOCAT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(SOCAT_SOURCE_DIR)/rc.socat $(SOCAT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXsocat
 	$(MAKE) $(SOCAT_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(SOCAT_SOURCE_DIR)/postinst $(SOCAT_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 755 $(SOCAT_SOURCE_DIR)/prerm $(SOCAT_IPK_DIR)/CONTROL/prerm

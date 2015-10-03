@@ -36,7 +36,7 @@ $(IPCALC_BUILD_DIR)/.configured: $(DL_DIR)/$(IPCALC_SOURCE) $(IPCALC_PATCHES)
 	rm -rf $(BUILD_DIR)/$(IPCALC_DIR) $(IPCALC_BUILD_DIR)
 	$(IPCALC_UNZIP) $(DL_DIR)/$(IPCALC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(IPCALC_DIR) $(IPCALC_BUILD_DIR)
-	sed -i -e 's|^#!/usr/bin/perl|#!/opt/bin/perl|' \
+	sed -i -e 's|^#!/usr/bin/perl|#!$(TARGET_PREFIX)/bin/perl|' \
 		$(IPCALC_BUILD_DIR)/ipcalc $(IPCALC_BUILD_DIR)/ipcalc.cgi
 #	(cd $(IPCALC_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -79,15 +79,15 @@ $(IPCALC_IPK_DIR)/CONTROL/control:
 
 $(IPCALC_IPK): $(IPCALC_BUILD_DIR)/.built
 	rm -rf $(IPCALC_IPK_DIR) $(BUILD_DIR)/ipcalc_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(IPCALC_IPK_DIR)/opt/bin \
-		$(IPCALC_IPK_DIR)/opt/lib/cgi-bin \
-		$(IPCALC_IPK_DIR)/opt/share/doc/ipcalc
-	$(INSTALL) $(IPCALC_BUILD_DIR)/ipcalc $(IPCALC_IPK_DIR)/opt/bin
-	$(INSTALL) $(IPCALC_BUILD_DIR)/ipcalc.cgi $(IPCALC_IPK_DIR)/opt/lib/cgi-bin
+	$(INSTALL) -d $(IPCALC_IPK_DIR)$(TARGET_PREFIX)/bin \
+		$(IPCALC_IPK_DIR)$(TARGET_PREFIX)/lib/cgi-bin \
+		$(IPCALC_IPK_DIR)$(TARGET_PREFIX)/share/doc/ipcalc
+	$(INSTALL) $(IPCALC_BUILD_DIR)/ipcalc $(IPCALC_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(INSTALL) $(IPCALC_BUILD_DIR)/ipcalc.cgi $(IPCALC_IPK_DIR)$(TARGET_PREFIX)/lib/cgi-bin
 	$(INSTALL) $(IPCALC_BUILD_DIR)/contributors \
 		$(IPCALC_BUILD_DIR)/changelog \
 		$(IPCALC_BUILD_DIR)/license \
-		$(IPCALC_IPK_DIR)/opt/share/doc/ipcalc
+		$(IPCALC_IPK_DIR)$(TARGET_PREFIX)/share/doc/ipcalc
 	$(MAKE) $(IPCALC_IPK_DIR)/CONTROL/control
 	echo $(IPCALC_CONFFILES) | sed -e 's/ /\n/g' > $(IPCALC_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(IPCALC_IPK_DIR)

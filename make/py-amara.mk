@@ -41,7 +41,7 @@ PY-AMARA_IPK_VERSION=2
 
 #
 # PY-AMARA_CONFFILES should be a list of user-editable files
-#PY-AMARA_CONFFILES=/opt/etc/py-amara.conf /opt/etc/init.d/SXXpy-amara
+#PY-AMARA_CONFFILES=$(TARGET_PREFIX)/etc/py-amara.conf $(TARGET_PREFIX)/etc/init.d/SXXpy-amara
 
 #
 # PY-AMARA_PATCHES should list any patches, in the the order in
@@ -122,11 +122,11 @@ $(PY-AMARA_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-AMARA_SOURCE) $(PY-AMARA_PATCH
 		echo "[build_ext]"; \
 		echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
 		echo "library-dirs=$(STAGING_LIB_DIR)"; \
-		echo "rpath=/opt/lib"; \
+		echo "rpath=$(TARGET_PREFIX)/lib"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python2.4"; \
+		echo "executable=$(TARGET_PREFIX)/bin/python2.4"; \
 		echo "[install]"; \
-		echo "install_scripts=/opt/bin"; \
+		echo "install_scripts=$(TARGET_PREFIX)/bin"; \
 	    ) > setup.cfg \
 	)
 	# 2.5
@@ -141,11 +141,11 @@ $(PY-AMARA_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-AMARA_SOURCE) $(PY-AMARA_PATCH
 		echo "[build_ext]"; \
 		echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.5"; \
 		echo "library-dirs=$(STAGING_LIB_DIR)"; \
-		echo "rpath=/opt/lib"; \
+		echo "rpath=$(TARGET_PREFIX)/lib"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python2.5"; \
+		echo "executable=$(TARGET_PREFIX)/bin/python2.5"; \
 		echo "[install]"; \
-		echo "install_scripts=/opt/bin"; \
+		echo "install_scripts=$(TARGET_PREFIX)/bin"; \
 	    ) > setup.cfg \
 	)
 	touch $@
@@ -218,12 +218,12 @@ $(PY25-AMARA_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PY-AMARA_IPK_DIR)/opt/sbin or $(PY-AMARA_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PY-AMARA_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PY-AMARA_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PY-AMARA_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PY-AMARA_IPK_DIR)/opt/etc/py-amara/...
-# Documentation files should be installed in $(PY-AMARA_IPK_DIR)/opt/doc/py-amara/...
-# Daemon startup scripts should be installed in $(PY-AMARA_IPK_DIR)/opt/etc/init.d/S??py-amara
+# Libraries and include files should be installed into $(PY-AMARA_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PY-AMARA_IPK_DIR)$(TARGET_PREFIX)/etc/py-amara/...
+# Documentation files should be installed in $(PY-AMARA_IPK_DIR)$(TARGET_PREFIX)/doc/py-amara/...
+# Daemon startup scripts should be installed in $(PY-AMARA_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??py-amara
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -233,10 +233,10 @@ $(PY24-AMARA_IPK): $(PY-AMARA_BUILD_DIR)/.built
 	(cd $(PY-AMARA_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
-	--root=$(PY24-AMARA_IPK_DIR) --prefix=/opt)
-	for f in $(PY24-AMARA_IPK_DIR)/opt/bin/*; \
+	--root=$(PY24-AMARA_IPK_DIR) --prefix=$(TARGET_PREFIX))
+	for f in $(PY24-AMARA_IPK_DIR)$(TARGET_PREFIX)/bin/*; \
 		do mv $$f `echo $$f | sed 's|$$|-2.4|'`; done
-#	$(STRIP_COMMAND) `find $(PY24-AMARA_IPK_DIR)/opt/lib/ -name '*.so'`
+#	$(STRIP_COMMAND) `find $(PY24-AMARA_IPK_DIR)$(TARGET_PREFIX)/lib/ -name '*.so'`
 	$(MAKE) $(PY24-AMARA_IPK_DIR)/CONTROL/control
 #	echo $(PY-AMARA_CONFFILES) | sed -e 's/ /\n/g' > $(PY24-AMARA_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-AMARA_IPK_DIR)
@@ -246,8 +246,8 @@ $(PY25-AMARA_IPK): $(PY-AMARA_BUILD_DIR)/.built
 	(cd $(PY-AMARA_BUILD_DIR)/2.5; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
-	--root=$(PY25-AMARA_IPK_DIR) --prefix=/opt)
-#	$(STRIP_COMMAND) `find $(PY25-AMARA_IPK_DIR)/opt/lib/ -name '*.so'`
+	--root=$(PY25-AMARA_IPK_DIR) --prefix=$(TARGET_PREFIX))
+#	$(STRIP_COMMAND) `find $(PY25-AMARA_IPK_DIR)$(TARGET_PREFIX)/lib/ -name '*.so'`
 	$(MAKE) $(PY25-AMARA_IPK_DIR)/CONTROL/control
 #	echo $(PY-AMARA_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-AMARA_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-AMARA_IPK_DIR)

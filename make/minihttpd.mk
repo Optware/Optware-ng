@@ -41,7 +41,7 @@ MINIHTTPD_IPK_VERSION=2
 
 #
 # MINIHTTPD_CONFFILES should be a list of user-editable files
-MINIHTTPD_CONFFILES=/opt/etc/mini_httpd.conf /opt/etc/init.d/S80mini_httpd
+MINIHTTPD_CONFFILES=$(TARGET_PREFIX)/etc/mini_httpd.conf $(TARGET_PREFIX)/etc/init.d/S80mini_httpd
 
 #
 # MINIHTTPD_PATCHES should list any patches, in the the order in
@@ -179,32 +179,32 @@ $(MINIHTTPD_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(MINIHTTPD_IPK_DIR)/opt/sbin or $(MINIHTTPD_IPK_DIR)/opt/bin
+# Binaries should be installed into $(MINIHTTPD_IPK_DIR)$(TARGET_PREFIX)/sbin or $(MINIHTTPD_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(MINIHTTPD_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(MINIHTTPD_IPK_DIR)/opt/etc/minihttpd/...
-# Documentation files should be installed in $(MINIHTTPD_IPK_DIR)/opt/doc/minihttpd/...
-# Daemon startup scripts should be installed in $(MINIHTTPD_IPK_DIR)/opt/etc/init.d/S??minihttpd
+# Libraries and include files should be installed into $(MINIHTTPD_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(MINIHTTPD_IPK_DIR)$(TARGET_PREFIX)/etc/minihttpd/...
+# Documentation files should be installed in $(MINIHTTPD_IPK_DIR)$(TARGET_PREFIX)/doc/minihttpd/...
+# Daemon startup scripts should be installed in $(MINIHTTPD_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??minihttpd
 #
 # You may need to patch your application to make it use these locations.
 #
 $(MINIHTTPD_IPK): $(MINIHTTPD_BUILD_DIR)/.built
 	rm -rf $(MINIHTTPD_IPK_DIR) $(BUILD_DIR)/minihttpd_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(MINIHTTPD_IPK_DIR)/opt/sbin
-	$(INSTALL) -m 755 $(MINIHTTPD_BUILD_DIR)/mini_httpd $(MINIHTTPD_IPK_DIR)/opt/sbin
-	$(INSTALL) -m 755  $(MINIHTTPD_BUILD_DIR)/scripts/mini_httpd_wrapper $(MINIHTTPD_IPK_DIR)/opt/sbin
-	$(INSTALL) -d $(MINIHTTPD_IPK_DIR)/opt/bin
-	$(INSTALL) -m 755 $(MINIHTTPD_BUILD_DIR)/htpasswd	$(MINIHTTPD_IPK_DIR)/opt/bin/mini_httpd-htpasswd
-	$(STRIP_COMMAND) $(MINIHTTPD_IPK_DIR)/opt/sbin/mini_httpd
-	$(STRIP_COMMAND) $(MINIHTTPD_IPK_DIR)/opt/bin/mini_httpd-htpasswd
-	$(INSTALL) -d $(MINIHTTPD_IPK_DIR)/opt/etc/init.d
-	$(INSTALL) -m 755  $(MINIHTTPD_BUILD_DIR)/scripts/mini_httpd.sh $(MINIHTTPD_IPK_DIR)/opt/etc/init.d/S80mini_httpd
-	$(INSTALL) -d $(MINIHTTPD_IPK_DIR)/opt/share/www/cgi-bin
+	$(INSTALL) -d $(MINIHTTPD_IPK_DIR)$(TARGET_PREFIX)/sbin
+	$(INSTALL) -m 755 $(MINIHTTPD_BUILD_DIR)/mini_httpd $(MINIHTTPD_IPK_DIR)$(TARGET_PREFIX)/sbin
+	$(INSTALL) -m 755  $(MINIHTTPD_BUILD_DIR)/scripts/mini_httpd_wrapper $(MINIHTTPD_IPK_DIR)$(TARGET_PREFIX)/sbin
+	$(INSTALL) -d $(MINIHTTPD_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(INSTALL) -m 755 $(MINIHTTPD_BUILD_DIR)/htpasswd	$(MINIHTTPD_IPK_DIR)$(TARGET_PREFIX)/bin/mini_httpd-htpasswd
+	$(STRIP_COMMAND) $(MINIHTTPD_IPK_DIR)$(TARGET_PREFIX)/sbin/mini_httpd
+	$(STRIP_COMMAND) $(MINIHTTPD_IPK_DIR)$(TARGET_PREFIX)/bin/mini_httpd-htpasswd
+	$(INSTALL) -d $(MINIHTTPD_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(INSTALL) -m 755  $(MINIHTTPD_BUILD_DIR)/scripts/mini_httpd.sh $(MINIHTTPD_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S80mini_httpd
+	$(INSTALL) -d $(MINIHTTPD_IPK_DIR)$(TARGET_PREFIX)/share/www/cgi-bin
 	$(MAKE)	$(MINIHTTPD_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD)		$(MINIHTTPD_IPK_DIR)
-	$(INSTALL) -d $(MINIHTTPD_IPK_DIR)/opt/etc/
-	$(INSTALL) -m 644 $(MINIHTTPD_SOURCE_DIR)/mini_httpd.conf $(MINIHTTPD_IPK_DIR)/opt/etc
-	$(INSTALL) -d $(MINIHTTPD_IPK_DIR)/opt/var/log
+	$(INSTALL) -d $(MINIHTTPD_IPK_DIR)$(TARGET_PREFIX)/etc/
+	$(INSTALL) -m 644 $(MINIHTTPD_SOURCE_DIR)/mini_httpd.conf $(MINIHTTPD_IPK_DIR)$(TARGET_PREFIX)/etc
+	$(INSTALL) -d $(MINIHTTPD_IPK_DIR)$(TARGET_PREFIX)/var/log
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MINIHTTPD_IPK_DIR)
 
 #

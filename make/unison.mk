@@ -43,7 +43,7 @@ UNISON_IPK_VERSION=2
 
 #
 # UNISON_CONFFILES should be a list of user-editable files
-#UNISON_CONFFILES=/opt/etc/unison.conf /opt/etc/init.d/SXXunison
+#UNISON_CONFFILES=$(TARGET_PREFIX)/etc/unison.conf $(TARGET_PREFIX)/etc/init.d/SXXunison
 
 #
 # UNISON_PATCHES should list any patches, in the the order in
@@ -111,7 +111,7 @@ $(UNISON_BUILD_DIR)/.configured: $(DL_DIR)/$(UNISON_SOURCE) $(UNISON_PATCHES)
 	$(UNISON_UNZIP) $(DL_DIR)/$(UNISON_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	#cat $(UNISON_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(UNISON_DIR) -p1
 	mv $(BUILD_DIR)/$(UNISON_DIR) $(@D)
-	sed -i -e 's|-cclib -lutil|& -cclib -Wl,-rpath,/opt/lib|' $(@D)/Makefile.OCaml
+	sed -i -e 's|-cclib -lutil|& -cclib -Wl,-rpath,$(TARGET_PREFIX)/lib|' $(@D)/Makefile.OCaml
 	touch $@
 
 unison-unpack: $(UNISON_BUILD_DIR)/.configured
@@ -163,19 +163,19 @@ $(UNISON_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(UNISON_IPK_DIR)/opt/sbin or $(UNISON_IPK_DIR)/opt/bin
+# Binaries should be installed into $(UNISON_IPK_DIR)$(TARGET_PREFIX)/sbin or $(UNISON_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(UNISON_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(UNISON_IPK_DIR)/opt/etc/unison/...
-# Documentation files should be installed in $(UNISON_IPK_DIR)/opt/doc/unison/...
-# Daemon startup scripts should be installed in $(UNISON_IPK_DIR)/opt/etc/init.d/S??unison
+# Libraries and include files should be installed into $(UNISON_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(UNISON_IPK_DIR)$(TARGET_PREFIX)/etc/unison/...
+# Documentation files should be installed in $(UNISON_IPK_DIR)$(TARGET_PREFIX)/doc/unison/...
+# Daemon startup scripts should be installed in $(UNISON_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??unison
 #
 # You may need to patch your application to make it use these locations.
 #
 $(UNISON_IPK): $(UNISON_BUILD_DIR)/.built
 	rm -rf $(UNISON_IPK_DIR) $(BUILD_DIR)/unison_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(UNISON_IPK_DIR)/opt/bin
-	$(INSTALL) -m 755 $(UNISON_BUILD_DIR)/unison $(UNISON_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(UNISON_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(INSTALL) -m 755 $(UNISON_BUILD_DIR)/unison $(UNISON_IPK_DIR)$(TARGET_PREFIX)/bin
 	$(MAKE) $(UNISON_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(UNISON_IPK_DIR)
 

@@ -44,7 +44,7 @@ MZSCHEME_IPK_VERSION=4
 
 #
 # MZSCHEME_CONFFILES should be a list of user-editable files
-# MZSCHEME_CONFFILES=/opt/etc/mzscheme.conf /opt/etc/init.d/SXXmzscheme
+# MZSCHEME_CONFFILES=$(TARGET_PREFIX)/etc/mzscheme.conf $(TARGET_PREFIX)/etc/init.d/SXXmzscheme
 
 #
 # MZSCHEME_PATCHES should list any patches, in the the order in
@@ -118,7 +118,7 @@ $(MZSCHEME_BUILD_DIR)/.configured: $(DL_DIR)/$(MZSCHEME_SOURCE) $(MZSCHEME_PATCH
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt/lib/plt \
+		--prefix=$(TARGET_PREFIX)/lib/plt \
 		--disable-nls \
 	)
 	touch $(MZSCHEME_BUILD_DIR)/.configured
@@ -168,37 +168,37 @@ $(MZSCHEME_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(MZSCHEME_IPK_DIR)/opt/sbin or $(MZSCHEME_IPK_DIR)/opt/bin
+# Binaries should be installed into $(MZSCHEME_IPK_DIR)$(TARGET_PREFIX)/sbin or $(MZSCHEME_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(MZSCHEME_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(MZSCHEME_IPK_DIR)/opt/etc/mzscheme/...
-# Documentation files should be installed in $(MZSCHEME_IPK_DIR)/opt/doc/mzscheme/...
-# Daemon startup scripts should be installed in $(MZSCHEME_IPK_DIR)/opt/etc/init.d/S??mzscheme
+# Libraries and include files should be installed into $(MZSCHEME_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(MZSCHEME_IPK_DIR)$(TARGET_PREFIX)/etc/mzscheme/...
+# Documentation files should be installed in $(MZSCHEME_IPK_DIR)$(TARGET_PREFIX)/doc/mzscheme/...
+# Daemon startup scripts should be installed in $(MZSCHEME_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??mzscheme
 #
 # You may need to patch your application to make it use these locations.
 #
 $(MZSCHEME_IPK): $(MZSCHEME_BUILD_DIR)/.built
 	rm -rf $(MZSCHEME_IPK_DIR) $(BUILD_DIR)/mzscheme_*_$(TARGET_ARCH).ipk
 	umask 022; PLT_EXTENSION_LIB_PATHS=$(STAGING_PREFIX) \
-            $(MAKE) -C $(MZSCHEME_BUILD_DIR)/src prefix=$(MZSCHEME_IPK_DIR)/opt/lib/plt install
+            $(MAKE) -C $(MZSCHEME_BUILD_DIR)/src prefix=$(MZSCHEME_IPK_DIR)$(TARGET_PREFIX)/lib/plt install
 	sed -i \
-	    -e '/^CC=/s:^.*$$:CC=/opt/bin/gcc:' \
+	    -e '/^CC=/s:^.*$$:CC=$(TARGET_PREFIX)/bin/gcc:' \
 	    -e 's:$(STAGING_DIR)::' \
-	    $(MZSCHEME_IPK_DIR)/opt/lib/plt/lib/buildinfo
+	    $(MZSCHEME_IPK_DIR)$(TARGET_PREFIX)/lib/plt/lib/buildinfo
 	sed -i \
 	    -e 's:$(MZSCHEME_IPK_DIR)::' \
-            `ls $(MZSCHEME_IPK_DIR)/opt/lib/plt/bin/*  | grep -v plt/bin/mzscheme`
-	$(STRIP_COMMAND) $(MZSCHEME_IPK_DIR)/opt/lib/plt/bin/mzscheme
-	$(STRIP_COMMAND) `find $(MZSCHEME_IPK_DIR)/opt/lib/plt -name '*.so'`
-	$(INSTALL) -d $(MZSCHEME_IPK_DIR)/opt/bin/
-	cd $(MZSCHEME_IPK_DIR)/opt/bin/; \
+            `ls $(MZSCHEME_IPK_DIR)$(TARGET_PREFIX)/lib/plt/bin/*  | grep -v plt/bin/mzscheme`
+	$(STRIP_COMMAND) $(MZSCHEME_IPK_DIR)$(TARGET_PREFIX)/lib/plt/bin/mzscheme
+	$(STRIP_COMMAND) `find $(MZSCHEME_IPK_DIR)$(TARGET_PREFIX)/lib/plt -name '*.so'`
+	$(INSTALL) -d $(MZSCHEME_IPK_DIR)$(TARGET_PREFIX)/bin/
+	cd $(MZSCHEME_IPK_DIR)$(TARGET_PREFIX)/bin/; \
             for f in ../lib/plt/bin/*; do ln -s $$f .; done
 	# a hack to work around POSIX tar 100 character limitation
-	cd $(MZSCHEME_IPK_DIR)/opt/lib/plt; \
+	cd $(MZSCHEME_IPK_DIR)$(TARGET_PREFIX)/lib/plt; \
 	    mv collects/web-server/default-web-root .
-	cd $(MZSCHEME_IPK_DIR)/opt/lib/plt/collects/web-server; \
+	cd $(MZSCHEME_IPK_DIR)$(TARGET_PREFIX)/lib/plt/collects/web-server; \
             ln -s ../../default-web-root .
-	umask 111; touch $(MZSCHEME_IPK_DIR)/opt/lib/plt/collects/web-server/default-web-root/log
+	umask 111; touch $(MZSCHEME_IPK_DIR)$(TARGET_PREFIX)/lib/plt/collects/web-server/default-web-root/log
 	$(MAKE) $(MZSCHEME_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MZSCHEME_IPK_DIR)
 

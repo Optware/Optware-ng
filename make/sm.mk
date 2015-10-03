@@ -156,7 +156,7 @@ $(SM_IPK): $(SM_BUILD_DIR)/.built
 	rm -rf $(SM_IPK_DIR) $(BUILD_DIR)/sm_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SM_BUILD_DIR) DESTDIR=$(SM_IPK_DIR) install-strip
 	$(MAKE) $(SM_IPK_DIR)/CONTROL/control
-	rm -f $(SM_IPK_DIR)/opt/lib/*.la
+	rm -f $(SM_IPK_DIR)$(TARGET_PREFIX)/lib/*.la
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SM_IPK_DIR)
 
 #

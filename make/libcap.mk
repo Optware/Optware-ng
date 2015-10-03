@@ -45,7 +45,7 @@ LIBCAP_IPK_VERSION=1
 
 #
 # LIBCAP_CONFFILES should be a list of user-editable files
-#LIBCAP_CONFFILES=/opt/etc/libcap.conf /opt/etc/init.d/SXXlibcap
+#LIBCAP_CONFFILES=$(TARGET_PREFIX)/etc/libcap.conf $(TARGET_PREFIX)/etc/init.d/SXXlibcap
 
 #
 # LIBCAP_PATCHES should list any patches, in the the order in
@@ -145,7 +145,7 @@ $(LIBCAP_BUILD_DIR)/.staged: $(LIBCAP_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(@D)/libcap FAKEROOT=$(STAGING_DIR) prefix=$(TARGET_PREFIX) lib=lib install
 	rm -f $(STAGING_LIB_DIR)/libcap.a
-	sed -i -e 's|/opt|$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/libcap.pc
+	sed -i -e 's|$(TARGET_PREFIX)|$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/libcap.pc
 	touch $@
 
 libcap-stage: $(LIBCAP_BUILD_DIR)/.staged
@@ -171,24 +171,24 @@ $(LIBCAP_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LIBCAP_IPK_DIR)/opt/sbin or $(LIBCAP_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LIBCAP_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LIBCAP_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LIBCAP_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LIBCAP_IPK_DIR)/opt/etc/libcap/...
-# Documentation files should be installed in $(LIBCAP_IPK_DIR)/opt/doc/libcap/...
-# Daemon startup scripts should be installed in $(LIBCAP_IPK_DIR)/opt/etc/init.d/S??libcap
+# Libraries and include files should be installed into $(LIBCAP_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LIBCAP_IPK_DIR)$(TARGET_PREFIX)/etc/libcap/...
+# Documentation files should be installed in $(LIBCAP_IPK_DIR)$(TARGET_PREFIX)/doc/libcap/...
+# Daemon startup scripts should be installed in $(LIBCAP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??libcap
 #
 # You may need to patch your application to make it use these locations.
 #
 $(LIBCAP_IPK): $(LIBCAP_BUILD_DIR)/.built
 	rm -rf $(LIBCAP_IPK_DIR) $(BUILD_DIR)/libcap_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBCAP_BUILD_DIR)/libcap FAKEROOT=$(LIBCAP_IPK_DIR) prefix=$(TARGET_PREFIX) lib=lib install
-	rm -f $(LIBCAP_IPK_DIR)/opt/lib/libcap.a
-	$(STRIP_COMMAND) $(LIBCAP_IPK_DIR)/opt/lib/*.so
-#	$(INSTALL) -d $(LIBCAP_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(LIBCAP_SOURCE_DIR)/libcap.conf $(LIBCAP_IPK_DIR)/opt/etc/libcap.conf
-#	$(INSTALL) -d $(LIBCAP_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(LIBCAP_SOURCE_DIR)/rc.libcap $(LIBCAP_IPK_DIR)/opt/etc/init.d/SXXlibcap
+	rm -f $(LIBCAP_IPK_DIR)$(TARGET_PREFIX)/lib/libcap.a
+	$(STRIP_COMMAND) $(LIBCAP_IPK_DIR)$(TARGET_PREFIX)/lib/*.so
+#	$(INSTALL) -d $(LIBCAP_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(LIBCAP_SOURCE_DIR)/libcap.conf $(LIBCAP_IPK_DIR)$(TARGET_PREFIX)/etc/libcap.conf
+#	$(INSTALL) -d $(LIBCAP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(LIBCAP_SOURCE_DIR)/rc.libcap $(LIBCAP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibcap
 	$(MAKE) $(LIBCAP_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(LIBCAP_SOURCE_DIR)/postinst $(LIBCAP_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 755 $(LIBCAP_SOURCE_DIR)/prerm $(LIBCAP_IPK_DIR)/CONTROL/prerm

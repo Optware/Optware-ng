@@ -46,7 +46,7 @@ ATK-BRIDGE_IPK_VERSION=1
 
 #
 # ATK-BRIDGE_CONFFILES should be a list of user-editable files
-#ATK-BRIDGE_CONFFILES=/opt/etc/atk-bridge.conf /opt/etc/init.d/SXXatk-bridge
+#ATK-BRIDGE_CONFFILES=$(TARGET_PREFIX)/etc/atk-bridge.conf $(TARGET_PREFIX)/etc/init.d/SXXatk-bridge
 
 #
 # ATK-BRIDGE_PATCHES should list any patches, in the the order in
@@ -189,24 +189,24 @@ $(ATK-BRIDGE_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(ATK-BRIDGE_IPK_DIR)/opt/sbin or $(ATK-BRIDGE_IPK_DIR)/opt/bin
+# Binaries should be installed into $(ATK-BRIDGE_IPK_DIR)$(TARGET_PREFIX)/sbin or $(ATK-BRIDGE_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(ATK-BRIDGE_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(ATK-BRIDGE_IPK_DIR)/opt/etc/atk-bridge/...
-# Documentation files should be installed in $(ATK-BRIDGE_IPK_DIR)/opt/doc/atk-bridge/...
-# Daemon startup scripts should be installed in $(ATK-BRIDGE_IPK_DIR)/opt/etc/init.d/S??atk-bridge
+# Libraries and include files should be installed into $(ATK-BRIDGE_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(ATK-BRIDGE_IPK_DIR)$(TARGET_PREFIX)/etc/atk-bridge/...
+# Documentation files should be installed in $(ATK-BRIDGE_IPK_DIR)$(TARGET_PREFIX)/doc/atk-bridge/...
+# Daemon startup scripts should be installed in $(ATK-BRIDGE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??atk-bridge
 #
 # You may need to patch your application to make it use these locations.
 #
 $(ATK-BRIDGE_IPK): $(ATK-BRIDGE_BUILD_DIR)/.built
 	rm -rf $(ATK-BRIDGE_IPK_DIR) $(BUILD_DIR)/atk-bridge_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(ATK-BRIDGE_BUILD_DIR) DESTDIR=$(ATK-BRIDGE_IPK_DIR) install-strip
-	rm -f $(ATK-BRIDGE-CORE_IPK_DIR)/opt/lib/*.la
-#	$(INSTALL) -d $(ATK-BRIDGE_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(ATK-BRIDGE_SOURCE_DIR)/atk-bridge.conf $(ATK-BRIDGE_IPK_DIR)/opt/etc/atk-bridge.conf
-#	$(INSTALL) -d $(ATK-BRIDGE_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(ATK-BRIDGE_SOURCE_DIR)/rc.atk-bridge $(ATK-BRIDGE_IPK_DIR)/opt/etc/init.d/SXXatk-bridge
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(ATK-BRIDGE_IPK_DIR)/opt/etc/init.d/SXXatk-bridge
+	rm -f $(ATK-BRIDGE-CORE_IPK_DIR)$(TARGET_PREFIX)/lib/*.la
+#	$(INSTALL) -d $(ATK-BRIDGE_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(ATK-BRIDGE_SOURCE_DIR)/atk-bridge.conf $(ATK-BRIDGE_IPK_DIR)$(TARGET_PREFIX)/etc/atk-bridge.conf
+#	$(INSTALL) -d $(ATK-BRIDGE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(ATK-BRIDGE_SOURCE_DIR)/rc.atk-bridge $(ATK-BRIDGE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXatk-bridge
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(ATK-BRIDGE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXatk-bridge
 	$(MAKE) $(ATK-BRIDGE_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(ATK-BRIDGE_SOURCE_DIR)/postinst $(ATK-BRIDGE_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(ATK-BRIDGE_IPK_DIR)/CONTROL/postinst

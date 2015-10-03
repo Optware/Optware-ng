@@ -46,7 +46,7 @@ LIBRSYNC_IPK_VERSION=2
 
 #
 # LIBRSYNC_CONFFILES should be a list of user-editable files
-#LIBRSYNC_CONFFILES=/opt/etc/librsync.conf /opt/etc/init.d/SXXlibrsync
+#LIBRSYNC_CONFFILES=$(TARGET_PREFIX)/etc/librsync.conf $(TARGET_PREFIX)/etc/init.d/SXXlibrsync
 
 #
 # LIBRSYNC_PATCHES should list any patches, in the the order in
@@ -180,23 +180,23 @@ $(LIBRSYNC_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LIBRSYNC_IPK_DIR)/opt/sbin or $(LIBRSYNC_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LIBRSYNC_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LIBRSYNC_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LIBRSYNC_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LIBRSYNC_IPK_DIR)/opt/etc/librsync/...
-# Documentation files should be installed in $(LIBRSYNC_IPK_DIR)/opt/doc/librsync/...
-# Daemon startup scripts should be installed in $(LIBRSYNC_IPK_DIR)/opt/etc/init.d/S??librsync
+# Libraries and include files should be installed into $(LIBRSYNC_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LIBRSYNC_IPK_DIR)$(TARGET_PREFIX)/etc/librsync/...
+# Documentation files should be installed in $(LIBRSYNC_IPK_DIR)$(TARGET_PREFIX)/doc/librsync/...
+# Daemon startup scripts should be installed in $(LIBRSYNC_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??librsync
 #
 # You may need to patch your application to make it use these locations.
 #
 $(LIBRSYNC_IPK): $(LIBRSYNC_BUILD_DIR)/.built
 	rm -rf $(LIBRSYNC_IPK_DIR) $(BUILD_DIR)/librsync_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBRSYNC_BUILD_DIR) DESTDIR=$(LIBRSYNC_IPK_DIR) install-strip
-	rm -f $(LIBRSYNC_IPK_DIR)/opt/lib/*.la
-#	$(INSTALL) -d $(LIBRSYNC_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(LIBRSYNC_SOURCE_DIR)/librsync.conf $(LIBRSYNC_IPK_DIR)/opt/etc/librsync.conf
-#	$(INSTALL) -d $(LIBRSYNC_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(LIBRSYNC_SOURCE_DIR)/rc.librsync $(LIBRSYNC_IPK_DIR)/opt/etc/init.d/SXXlibrsync
+	rm -f $(LIBRSYNC_IPK_DIR)$(TARGET_PREFIX)/lib/*.la
+#	$(INSTALL) -d $(LIBRSYNC_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(LIBRSYNC_SOURCE_DIR)/librsync.conf $(LIBRSYNC_IPK_DIR)$(TARGET_PREFIX)/etc/librsync.conf
+#	$(INSTALL) -d $(LIBRSYNC_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(LIBRSYNC_SOURCE_DIR)/rc.librsync $(LIBRSYNC_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibrsync
 	$(MAKE) $(LIBRSYNC_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(LIBRSYNC_SOURCE_DIR)/postinst $(LIBRSYNC_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 755 $(LIBRSYNC_SOURCE_DIR)/prerm $(LIBRSYNC_IPK_DIR)/CONTROL/prerm

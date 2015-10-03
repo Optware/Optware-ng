@@ -40,7 +40,7 @@ SETPWC_IPK_VERSION=1
 
 #
 # SETPWC_CONFFILES should be a list of user-editable files
-#SETPWC_CONFFILES=/opt/etc/setpwc.conf /opt/etc/init.d/SXXsetpwc
+#SETPWC_CONFFILES=$(TARGET_PREFIX)/etc/setpwc.conf $(TARGET_PREFIX)/etc/init.d/SXXsetpwc
 
 #
 # SETPWC_PATCHES should list any patches, in the the order in
@@ -162,22 +162,22 @@ $(SETPWC_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(SETPWC_IPK_DIR)/opt/sbin or $(SETPWC_IPK_DIR)/opt/bin
+# Binaries should be installed into $(SETPWC_IPK_DIR)$(TARGET_PREFIX)/sbin or $(SETPWC_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(SETPWC_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(SETPWC_IPK_DIR)/opt/etc/setpwc/...
-# Documentation files should be installed in $(SETPWC_IPK_DIR)/opt/doc/setpwc/...
-# Daemon startup scripts should be installed in $(SETPWC_IPK_DIR)/opt/etc/init.d/S??setpwc
+# Libraries and include files should be installed into $(SETPWC_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(SETPWC_IPK_DIR)$(TARGET_PREFIX)/etc/setpwc/...
+# Documentation files should be installed in $(SETPWC_IPK_DIR)$(TARGET_PREFIX)/doc/setpwc/...
+# Daemon startup scripts should be installed in $(SETPWC_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??setpwc
 #
 # You may need to patch your application to make it use these locations.
 #
 $(SETPWC_IPK): $(SETPWC_BUILD_DIR)/.built
 	rm -rf $(SETPWC_IPK_DIR) $(BUILD_DIR)/setpwc_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(SETPWC_IPK_DIR)/opt/bin
-	$(INSTALL) -m 755 $(SETPWC_BUILD_DIR)/setpwc $(SETPWC_IPK_DIR)/opt/bin
-	$(STRIP_COMMAND) $(SETPWC_IPK_DIR)/opt/bin/setpwc
-	$(INSTALL) -d $(SETPWC_IPK_DIR)/opt/man/man1
-	$(INSTALL) -m 644 $(SETPWC_BUILD_DIR)/setpwc.1 $(SETPWC_IPK_DIR)/opt/man/man1
+	$(INSTALL) -d $(SETPWC_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(INSTALL) -m 755 $(SETPWC_BUILD_DIR)/setpwc $(SETPWC_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(STRIP_COMMAND) $(SETPWC_IPK_DIR)$(TARGET_PREFIX)/bin/setpwc
+	$(INSTALL) -d $(SETPWC_IPK_DIR)$(TARGET_PREFIX)/man/man1
+	$(INSTALL) -m 644 $(SETPWC_BUILD_DIR)/setpwc.1 $(SETPWC_IPK_DIR)$(TARGET_PREFIX)/man/man1
 	$(MAKE) $(SETPWC_IPK_DIR)/CONTROL/control
 	echo $(SETPWC_CONFFILES) | sed -e 's/ /\n/g' > $(SETPWC_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SETPWC_IPK_DIR)

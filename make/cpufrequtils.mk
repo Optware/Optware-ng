@@ -48,7 +48,7 @@ CPUFREQUTILS_IPK_VERSION=2
 
 #
 # CPUFREQUTILS_CONFFILES should be a list of user-editable files
-#CPUFREQUTILS_CONFFILES=/opt/etc/cpufrequtils.conf /opt/etc/init.d/SXXcpufrequtils
+#CPUFREQUTILS_CONFFILES=$(TARGET_PREFIX)/etc/cpufrequtils.conf $(TARGET_PREFIX)/etc/init.d/SXXcpufrequtils
 
 #
 # CPUFREQUTILS_PATCHES should list any patches, in the the order in
@@ -156,7 +156,7 @@ cpufrequtils: $(CPUFREQUTILS_BUILD_DIR)/.built
 #
 $(CPUFREQUTILS_BUILD_DIR)/.staged: $(CPUFREQUTILS_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) CROSS=${TARGET_CROSS} NLS=false LIBTOOL=$(STAGING_PREFIX)/bin/libtool bindir=/opt/bin includedir=/opt/include libdir=/opt/lib install-lib
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) CROSS=${TARGET_CROSS} NLS=false LIBTOOL=$(STAGING_PREFIX)/bin/libtool bindir=$(TARGET_PREFIX)/bin includedir=$(TARGET_PREFIX)/include libdir=$(TARGET_PREFIX)/lib install-lib
 	touch $@
 
 cpufrequtils-stage: $(CPUFREQUTILS_BUILD_DIR)/.staged
@@ -183,25 +183,25 @@ $(CPUFREQUTILS_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(CPUFREQUTILS_IPK_DIR)/opt/sbin or $(CPUFREQUTILS_IPK_DIR)/opt/bin
+# Binaries should be installed into $(CPUFREQUTILS_IPK_DIR)$(TARGET_PREFIX)/sbin or $(CPUFREQUTILS_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(CPUFREQUTILS_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(CPUFREQUTILS_IPK_DIR)/opt/etc/cpufrequtils/...
-# Documentation files should be installed in $(CPUFREQUTILS_IPK_DIR)/opt/doc/cpufrequtils/...
-# Daemon startup scripts should be installed in $(CPUFREQUTILS_IPK_DIR)/opt/etc/init.d/S??cpufrequtils
+# Libraries and include files should be installed into $(CPUFREQUTILS_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(CPUFREQUTILS_IPK_DIR)$(TARGET_PREFIX)/etc/cpufrequtils/...
+# Documentation files should be installed in $(CPUFREQUTILS_IPK_DIR)$(TARGET_PREFIX)/doc/cpufrequtils/...
+# Daemon startup scripts should be installed in $(CPUFREQUTILS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??cpufrequtils
 #
 # You may need to patch your application to make it use these locations.
 #
 $(CPUFREQUTILS_IPK): $(CPUFREQUTILS_BUILD_DIR)/.built
 	rm -rf $(CPUFREQUTILS_IPK_DIR) $(BUILD_DIR)/cpufrequtils_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(CPUFREQUTILS_BUILD_DIR) DESTDIR=$(CPUFREQUTILS_IPK_DIR) CROSS=${TARGET_CROSS} NLS=false LIBTOOL=$(STAGING_PREFIX)/bin/libtool bindir=/opt/bin libdir=/opt/lib includedir=/opt/include install-lib install-tools
-	rm -f $(CPUFREQUTILS_IPK_DIR)/opt/lib/libcpufreq.a
-	$(STRIP_COMMAND) $(CPUFREQUTILS_IPK_DIR)/opt/lib/libcpufreq.so.0.0.0
-#	$(INSTALL) -d $(CPUFREQUTILS_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(CPUFREQUTILS_SOURCE_DIR)/cpufrequtils.conf $(CPUFREQUTILS_IPK_DIR)/opt/etc/cpufrequtils.conf
-#	$(INSTALL) -d $(CPUFREQUTILS_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(CPUFREQUTILS_SOURCE_DIR)/rc.cpufrequtils $(CPUFREQUTILS_IPK_DIR)/opt/etc/init.d/SXXcpufrequtils
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(CPUFREQUTILS_IPK_DIR)/opt/etc/init.d/SXXcpufrequtils
+	$(MAKE) -C $(CPUFREQUTILS_BUILD_DIR) DESTDIR=$(CPUFREQUTILS_IPK_DIR) CROSS=${TARGET_CROSS} NLS=false LIBTOOL=$(STAGING_PREFIX)/bin/libtool bindir=$(TARGET_PREFIX)/bin libdir=$(TARGET_PREFIX)/lib includedir=$(TARGET_PREFIX)/include install-lib install-tools
+	rm -f $(CPUFREQUTILS_IPK_DIR)$(TARGET_PREFIX)/lib/libcpufreq.a
+	$(STRIP_COMMAND) $(CPUFREQUTILS_IPK_DIR)$(TARGET_PREFIX)/lib/libcpufreq.so.0.0.0
+#	$(INSTALL) -d $(CPUFREQUTILS_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(CPUFREQUTILS_SOURCE_DIR)/cpufrequtils.conf $(CPUFREQUTILS_IPK_DIR)$(TARGET_PREFIX)/etc/cpufrequtils.conf
+#	$(INSTALL) -d $(CPUFREQUTILS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(CPUFREQUTILS_SOURCE_DIR)/rc.cpufrequtils $(CPUFREQUTILS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXcpufrequtils
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(CPUFREQUTILS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXcpufrequtils
 	$(MAKE) $(CPUFREQUTILS_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(CPUFREQUTILS_SOURCE_DIR)/postinst $(CPUFREQUTILS_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(CPUFREQUTILS_IPK_DIR)/CONTROL/postinst

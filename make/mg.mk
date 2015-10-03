@@ -40,7 +40,7 @@ MG_IPK_VERSION=1
 
 #
 # MG_CONFFILES should be a list of user-editable files
-#MG_CONFFILES=/opt/etc/mg.conf /opt/etc/init.d/SXXmg
+#MG_CONFFILES=$(TARGET_PREFIX)/etc/mg.conf $(TARGET_PREFIX)/etc/init.d/SXXmg
 
 #
 # MG_PATCHES should list any patches, in the the order in
@@ -196,12 +196,12 @@ $(MG_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(MG_IPK_DIR)/opt/sbin or $(MG_IPK_DIR)/opt/bin
+# Binaries should be installed into $(MG_IPK_DIR)$(TARGET_PREFIX)/sbin or $(MG_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(MG_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(MG_IPK_DIR)/opt/etc/mg/...
-# Documentation files should be installed in $(MG_IPK_DIR)/opt/doc/mg/...
-# Daemon startup scripts should be installed in $(MG_IPK_DIR)/opt/etc/init.d/S??mg
+# Libraries and include files should be installed into $(MG_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(MG_IPK_DIR)$(TARGET_PREFIX)/etc/mg/...
+# Documentation files should be installed in $(MG_IPK_DIR)$(TARGET_PREFIX)/doc/mg/...
+# Daemon startup scripts should be installed in $(MG_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??mg
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -210,12 +210,12 @@ $(MG_IPK): $(MG_BUILD_DIR)/.built
 	$(MAKE) -C $(MG_BUILD_DIR) install \
 		prefix=$(MG_IPK_DIR)$(TARGET_PREFIX) \
 		;
-	$(STRIP_COMMAND) $(MG_IPK_DIR)/opt/bin/mg
-#	$(INSTALL) -d $(MG_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(MG_SOURCE_DIR)/mg.conf $(MG_IPK_DIR)/opt/etc/mg.conf
-#	$(INSTALL) -d $(MG_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(MG_SOURCE_DIR)/rc.mg $(MG_IPK_DIR)/opt/etc/init.d/SXXmg
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MG_IPK_DIR)/opt/etc/init.d/SXXmg
+	$(STRIP_COMMAND) $(MG_IPK_DIR)$(TARGET_PREFIX)/bin/mg
+#	$(INSTALL) -d $(MG_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(MG_SOURCE_DIR)/mg.conf $(MG_IPK_DIR)$(TARGET_PREFIX)/etc/mg.conf
+#	$(INSTALL) -d $(MG_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(MG_SOURCE_DIR)/rc.mg $(MG_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXmg
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MG_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXmg
 	$(MAKE) $(MG_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(MG_SOURCE_DIR)/postinst $(MG_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MG_IPK_DIR)/CONTROL/postinst

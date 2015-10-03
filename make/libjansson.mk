@@ -40,7 +40,7 @@ LIBJANSSON_IPK_VERSION=1
 
 #
 # LIBJANSSON_CONFFILES should be a list of user-editable files
-#LIBJANSSON_CONFFILES=/opt/etc/libjansson.conf /opt/etc/init.d/SXXlibjansson
+#LIBJANSSON_CONFFILES=$(TARGET_PREFIX)/etc/libjansson.conf $(TARGET_PREFIX)/etc/init.d/SXXlibjansson
 
 #
 # LIBJANSSON_PATCHES should list any patches, in the the order in
@@ -179,25 +179,25 @@ $(LIBJANSSON_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LIBJANSSON_IPK_DIR)/opt/sbin or $(LIBJANSSON_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LIBJANSSON_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LIBJANSSON_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LIBJANSSON_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LIBJANSSON_IPK_DIR)/opt/etc/libjansson/...
-# Documentation files should be installed in $(LIBJANSSON_IPK_DIR)/opt/doc/libjansson/...
-# Daemon startup scripts should be installed in $(LIBJANSSON_IPK_DIR)/opt/etc/init.d/S??libjansson
+# Libraries and include files should be installed into $(LIBJANSSON_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LIBJANSSON_IPK_DIR)$(TARGET_PREFIX)/etc/libjansson/...
+# Documentation files should be installed in $(LIBJANSSON_IPK_DIR)$(TARGET_PREFIX)/doc/libjansson/...
+# Daemon startup scripts should be installed in $(LIBJANSSON_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??libjansson
 #
 # You may need to patch your application to make it use these locations.
 #
 $(LIBJANSSON_IPK): $(LIBJANSSON_BUILD_DIR)/.built
 	rm -rf $(LIBJANSSON_IPK_DIR) $(BUILD_DIR)/libjansson_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBJANSSON_BUILD_DIR) DESTDIR=$(LIBJANSSON_IPK_DIR) install
-	$(STRIP_COMMAND) $(LIBJANSSON_IPK_DIR)/opt/lib/*.so
-	rm -f $(LIBJANSSON_IPK_DIR)/opt/lib/*.la
-#	$(INSTALL) -d $(LIBJANSSON_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(LIBJANSSON_SOURCE_DIR)/libjansson.conf $(LIBJANSSON_IPK_DIR)/opt/etc/libjansson.conf
-#	$(INSTALL) -d $(LIBJANSSON_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(LIBJANSSON_SOURCE_DIR)/rc.libjansson $(LIBJANSSON_IPK_DIR)/opt/etc/init.d/SXXlibjansson
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBJANSSON_IPK_DIR)/opt/etc/init.d/SXXlibjansson
+	$(STRIP_COMMAND) $(LIBJANSSON_IPK_DIR)$(TARGET_PREFIX)/lib/*.so
+	rm -f $(LIBJANSSON_IPK_DIR)$(TARGET_PREFIX)/lib/*.la
+#	$(INSTALL) -d $(LIBJANSSON_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(LIBJANSSON_SOURCE_DIR)/libjansson.conf $(LIBJANSSON_IPK_DIR)$(TARGET_PREFIX)/etc/libjansson.conf
+#	$(INSTALL) -d $(LIBJANSSON_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(LIBJANSSON_SOURCE_DIR)/rc.libjansson $(LIBJANSSON_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibjansson
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBJANSSON_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibjansson
 	$(MAKE) $(LIBJANSSON_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(LIBJANSSON_SOURCE_DIR)/postinst $(LIBJANSSON_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBJANSSON_IPK_DIR)/CONTROL/postinst

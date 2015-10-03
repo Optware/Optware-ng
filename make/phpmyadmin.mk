@@ -34,7 +34,7 @@ PHPMYADMIN_DEPENDS=php-mysql, php-mbstring, mysql
 PHPMYADMIN_SUGGESTS=php-apache, eaccelerator
 PHPMYADMIN_CONFLICTS=
 
-PHPMYADMIN_INSTALL_DIR=/opt/share/www/phpmyadmin
+PHPMYADMIN_INSTALL_DIR=$(TARGET_PREFIX)/share/www/phpmyadmin
 
 #
 # PHPMYADMIN_IPK_VERSION should be incremented when the ipk changes.
@@ -152,12 +152,12 @@ $(PHPMYADMIN_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PHPMYADMIN_IPK_DIR)/opt/sbin or $(PHPMYADMIN_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PHPMYADMIN_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PHPMYADMIN_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PHPMYADMIN_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PHPMYADMIN_IPK_DIR)/opt/etc/phpmyadmin/...
-# Documentation files should be installed in $(PHPMYADMIN_IPK_DIR)/opt/doc/phpmyadmin/...
-# Daemon startup scripts should be installed in $(PHPMYADMIN_IPK_DIR)/opt/etc/init.d/S??phpmyadmin
+# Libraries and include files should be installed into $(PHPMYADMIN_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PHPMYADMIN_IPK_DIR)$(TARGET_PREFIX)/etc/phpmyadmin/...
+# Documentation files should be installed in $(PHPMYADMIN_IPK_DIR)$(TARGET_PREFIX)/doc/phpmyadmin/...
+# Daemon startup scripts should be installed in $(PHPMYADMIN_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??phpmyadmin
 #
 # You may need to patch your application to make it use these locations.
 #

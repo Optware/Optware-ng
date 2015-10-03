@@ -40,7 +40,7 @@ LIBICONV_IPK_VERSION=1
 
 #
 # LIBICONV_CONFFILES should be a list of user-editable files
-#LIBICONV_CONFFILES=/opt/etc/libiconv.conf /opt/etc/init.d/SXXlibiconv
+#LIBICONV_CONFFILES=$(TARGET_PREFIX)/etc/libiconv.conf $(TARGET_PREFIX)/etc/init.d/SXXlibiconv
 
 #
 # LIBICONV_PATCHES should list any patches, in the the order in
@@ -180,27 +180,27 @@ $(LIBICONV_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LIBICONV_IPK_DIR)/opt/sbin or $(LIBICONV_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LIBICONV_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LIBICONV_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LIBICONV_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LIBICONV_IPK_DIR)/opt/etc/libiconv/...
-# Documentation files should be installed in $(LIBICONV_IPK_DIR)/opt/doc/libiconv/...
-# Daemon startup scripts should be installed in $(LIBICONV_IPK_DIR)/opt/etc/init.d/S??libiconv
+# Libraries and include files should be installed into $(LIBICONV_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LIBICONV_IPK_DIR)$(TARGET_PREFIX)/etc/libiconv/...
+# Documentation files should be installed in $(LIBICONV_IPK_DIR)$(TARGET_PREFIX)/doc/libiconv/...
+# Daemon startup scripts should be installed in $(LIBICONV_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??libiconv
 #
 # You may need to patch your application to make it use these locations.
 #
 $(LIBICONV_IPK): $(LIBICONV_BUILD_DIR)/.built
 	rm -rf $(LIBICONV_IPK_DIR) $(BUILD_DIR)/libiconv_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBICONV_BUILD_DIR) DESTDIR=$(LIBICONV_IPK_DIR) install
-	$(STRIP_COMMAND) $(LIBICONV_IPK_DIR)/opt/bin/iconv
-	$(STRIP_COMMAND) $(LIBICONV_IPK_DIR)/opt/lib/libcharset.so.[0-9]*.[0-9]*.[0-9]*
-	$(STRIP_COMMAND) $(LIBICONV_IPK_DIR)/opt/lib/libiconv.so.[0-9]*.[0-9]*.[0-9]*
-	$(STRIP_COMMAND) $(LIBICONV_IPK_DIR)/opt/lib/preloadable_libiconv.so
-#	$(INSTALL) -d $(LIBICONV_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(LIBICONV_SOURCE_DIR)/libiconv.conf $(LIBICONV_IPK_DIR)/opt/etc/libiconv.conf
-#	$(INSTALL) -d $(LIBICONV_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(LIBICONV_SOURCE_DIR)/rc.libiconv $(LIBICONV_IPK_DIR)/opt/etc/init.d/SXXlibiconv
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBICONV_IPK_DIR)/opt/etc/init.d/SXXlibiconv
+	$(STRIP_COMMAND) $(LIBICONV_IPK_DIR)$(TARGET_PREFIX)/bin/iconv
+	$(STRIP_COMMAND) $(LIBICONV_IPK_DIR)$(TARGET_PREFIX)/lib/libcharset.so.[0-9]*.[0-9]*.[0-9]*
+	$(STRIP_COMMAND) $(LIBICONV_IPK_DIR)$(TARGET_PREFIX)/lib/libiconv.so.[0-9]*.[0-9]*.[0-9]*
+	$(STRIP_COMMAND) $(LIBICONV_IPK_DIR)$(TARGET_PREFIX)/lib/preloadable_libiconv.so
+#	$(INSTALL) -d $(LIBICONV_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(LIBICONV_SOURCE_DIR)/libiconv.conf $(LIBICONV_IPK_DIR)$(TARGET_PREFIX)/etc/libiconv.conf
+#	$(INSTALL) -d $(LIBICONV_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(LIBICONV_SOURCE_DIR)/rc.libiconv $(LIBICONV_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibiconv
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBICONV_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibiconv
 	$(MAKE) $(LIBICONV_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(LIBICONV_SOURCE_DIR)/postinst $(LIBICONV_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBICONV_IPK_DIR)/CONTROL/postinst

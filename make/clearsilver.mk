@@ -40,7 +40,7 @@ CLEARSILVER_IPK_VERSION=1
 
 #
 # CLEARSILVER_CONFFILES should be a list of user-editable files
-#CLEARSILVER_CONFFILES=/opt/etc/clearsilver.conf /opt/etc/init.d/SXXclearsilver
+#CLEARSILVER_CONFFILES=$(TARGET_PREFIX)/etc/clearsilver.conf $(TARGET_PREFIX)/etc/init.d/SXXclearsilver
 
 #
 # CLEARSILVER_PATCHES should list any patches, in the the order in
@@ -115,25 +115,25 @@ $(CLEARSILVER_BUILD_DIR)/.configured: $(DL_DIR)/$(CLEARSILVER_SOURCE) $(CLEARSIL
 	fi
 	cp -f $(SOURCE_DIR)/common/config.* $(CLEARSILVER_BUILD_DIR)/
 	cp -a $(CLEARSILVER_BUILD_DIR)/python $(CLEARSILVER_BUILD_DIR)/python2.5
-#	        echo "rpath=/opt/lib";
+#	        echo "rpath=$(TARGET_PREFIX)/lib";
 	(cd $(CLEARSILVER_BUILD_DIR); \
 	    ( \
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
 	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python2.4"; \
+		echo "executable=$(TARGET_PREFIX)/bin/python2.4"; \
 		echo "[install]"; \
-		echo "install_scripts=/opt/bin"; \
+		echo "install_scripts=$(TARGET_PREFIX)/bin"; \
 	    ) > python/setup.cfg; \
 	    ( \
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.5"; \
 	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python2.5"; \
+		echo "executable=$(TARGET_PREFIX)/bin/python2.5"; \
 		echo "[install]"; \
-		echo "install_scripts=/opt/bin"; \
+		echo "install_scripts=$(TARGET_PREFIX)/bin"; \
 	    ) > python2.5/setup.cfg; \
 	)
 	(cd $(CLEARSILVER_BUILD_DIR); \
@@ -145,7 +145,7 @@ $(CLEARSILVER_BUILD_DIR)/.configured: $(DL_DIR)/$(CLEARSILVER_SOURCE) $(CLEARSIL
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(CLEARSILVER_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(CLEARSILVER_LDFLAGS)" \
-		PYTHON_SITE="/opt/lib/python2.4/site-packages" \
+		PYTHON_SITE="$(TARGET_PREFIX)/lib/python2.4/site-packages" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -174,7 +174,7 @@ $(CLEARSILVER_BUILD_DIR)/.built: $(CLEARSILVER_BUILD_DIR)/.configured
 	rm -f $(CLEARSILVER_BUILD_DIR)/.built
 	$(MAKE) -C $(CLEARSILVER_BUILD_DIR)
 	$(MAKE) -C $(CLEARSILVER_BUILD_DIR)/python2.5 \
-		PYTHON_SITE=/opt/lib/python2.5/site-packages
+		PYTHON_SITE=$(TARGET_PREFIX)/lib/python2.5/site-packages
 	touch $(CLEARSILVER_BUILD_DIR)/.built
 
 #
@@ -214,26 +214,26 @@ $(CLEARSILVER_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(CLEARSILVER_IPK_DIR)/opt/sbin or $(CLEARSILVER_IPK_DIR)/opt/bin
+# Binaries should be installed into $(CLEARSILVER_IPK_DIR)$(TARGET_PREFIX)/sbin or $(CLEARSILVER_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(CLEARSILVER_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(CLEARSILVER_IPK_DIR)/opt/etc/clearsilver/...
-# Documentation files should be installed in $(CLEARSILVER_IPK_DIR)/opt/doc/clearsilver/...
-# Daemon startup scripts should be installed in $(CLEARSILVER_IPK_DIR)/opt/etc/init.d/S??clearsilver
+# Libraries and include files should be installed into $(CLEARSILVER_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(CLEARSILVER_IPK_DIR)$(TARGET_PREFIX)/etc/clearsilver/...
+# Documentation files should be installed in $(CLEARSILVER_IPK_DIR)$(TARGET_PREFIX)/doc/clearsilver/...
+# Daemon startup scripts should be installed in $(CLEARSILVER_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??clearsilver
 #
 # You may need to patch your application to make it use these locations.
 #
 $(CLEARSILVER_IPK): $(CLEARSILVER_BUILD_DIR)/.built
 	rm -rf $(CLEARSILVER_IPK_DIR) $(BUILD_DIR)/clearsilver_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(CLEARSILVER_BUILD_DIR) DESTDIR=$(CLEARSILVER_IPK_DIR) install
-	$(STRIP_COMMAND) $(CLEARSILVER_IPK_DIR)/opt/bin/*
+	$(STRIP_COMMAND) $(CLEARSILVER_IPK_DIR)$(TARGET_PREFIX)/bin/*
 	$(MAKE) -C $(CLEARSILVER_BUILD_DIR)/python2.5 DESTDIR=$(CLEARSILVER_IPK_DIR) install \
-		PYTHON_SITE=/opt/lib/python2.5/site-packages
-	$(STRIP_COMMAND) `find $(CLEARSILVER_IPK_DIR)/opt/lib -name '*.so'`
-#	$(INSTALL) -d $(CLEARSILVER_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(CLEARSILVER_SOURCE_DIR)/clearsilver.conf $(CLEARSILVER_IPK_DIR)/opt/etc/clearsilver.conf
-#	$(INSTALL) -d $(CLEARSILVER_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(CLEARSILVER_SOURCE_DIR)/rc.clearsilver $(CLEARSILVER_IPK_DIR)/opt/etc/init.d/SXXclearsilver
+		PYTHON_SITE=$(TARGET_PREFIX)/lib/python2.5/site-packages
+	$(STRIP_COMMAND) `find $(CLEARSILVER_IPK_DIR)$(TARGET_PREFIX)/lib -name '*.so'`
+#	$(INSTALL) -d $(CLEARSILVER_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(CLEARSILVER_SOURCE_DIR)/clearsilver.conf $(CLEARSILVER_IPK_DIR)$(TARGET_PREFIX)/etc/clearsilver.conf
+#	$(INSTALL) -d $(CLEARSILVER_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(CLEARSILVER_SOURCE_DIR)/rc.clearsilver $(CLEARSILVER_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXclearsilver
 	$(MAKE) $(CLEARSILVER_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(CLEARSILVER_SOURCE_DIR)/postinst $(CLEARSILVER_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 755 $(CLEARSILVER_SOURCE_DIR)/prerm $(CLEARSILVER_IPK_DIR)/CONTROL/prerm

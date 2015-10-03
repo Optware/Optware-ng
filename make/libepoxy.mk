@@ -46,7 +46,7 @@ LIBEPOXY_IPK_VERSION=1
 
 #
 # LIBEPOXY_CONFFILES should be a list of user-editable files
-#LIBEPOXY_CONFFILES=/opt/etc/libepoxy.conf /opt/etc/init.d/SXXlibepoxy
+#LIBEPOXY_CONFFILES=$(TARGET_PREFIX)/etc/libepoxy.conf $(TARGET_PREFIX)/etc/init.d/SXXlibepoxy
 
 #
 # LIBEPOXY_PATCHES should list any patches, in the the order in
@@ -188,24 +188,24 @@ $(LIBEPOXY_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LIBEPOXY_IPK_DIR)/opt/sbin or $(LIBEPOXY_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LIBEPOXY_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LIBEPOXY_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LIBEPOXY_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LIBEPOXY_IPK_DIR)/opt/etc/libepoxy/...
-# Documentation files should be installed in $(LIBEPOXY_IPK_DIR)/opt/doc/libepoxy/...
-# Daemon startup scripts should be installed in $(LIBEPOXY_IPK_DIR)/opt/etc/init.d/S??libepoxy
+# Libraries and include files should be installed into $(LIBEPOXY_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LIBEPOXY_IPK_DIR)$(TARGET_PREFIX)/etc/libepoxy/...
+# Documentation files should be installed in $(LIBEPOXY_IPK_DIR)$(TARGET_PREFIX)/doc/libepoxy/...
+# Daemon startup scripts should be installed in $(LIBEPOXY_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??libepoxy
 #
 # You may need to patch your application to make it use these locations.
 #
 $(LIBEPOXY_IPK): $(LIBEPOXY_BUILD_DIR)/.built
 	rm -rf $(LIBEPOXY_IPK_DIR) $(BUILD_DIR)/libepoxy_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBEPOXY_BUILD_DIR) DESTDIR=$(LIBEPOXY_IPK_DIR) install-strip
-	rm -f $(LIBEPOXY_IPK_DIR)/opt/lib/*.la
-#	$(INSTALL) -d $(LIBEPOXY_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(LIBEPOXY_SOURCE_DIR)/libepoxy.conf $(LIBEPOXY_IPK_DIR)/opt/etc/libepoxy.conf
-#	$(INSTALL) -d $(LIBEPOXY_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(LIBEPOXY_SOURCE_DIR)/rc.libepoxy $(LIBEPOXY_IPK_DIR)/opt/etc/init.d/SXXlibepoxy
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBEPOXY_IPK_DIR)/opt/etc/init.d/SXXlibepoxy
+	rm -f $(LIBEPOXY_IPK_DIR)$(TARGET_PREFIX)/lib/*.la
+#	$(INSTALL) -d $(LIBEPOXY_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(LIBEPOXY_SOURCE_DIR)/libepoxy.conf $(LIBEPOXY_IPK_DIR)$(TARGET_PREFIX)/etc/libepoxy.conf
+#	$(INSTALL) -d $(LIBEPOXY_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(LIBEPOXY_SOURCE_DIR)/rc.libepoxy $(LIBEPOXY_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibepoxy
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBEPOXY_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibepoxy
 	$(MAKE) $(LIBEPOXY_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(LIBEPOXY_SOURCE_DIR)/postinst $(LIBEPOXY_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBEPOXY_IPK_DIR)/CONTROL/postinst

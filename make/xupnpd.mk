@@ -41,23 +41,23 @@ XUPNPD_IPK_VERSION=3
 
 #
 # XUPNPD_CONFFILES should be a list of user-editable files
-XUPNPD_CONFFILES=/opt/etc/init.d/S94xupnpd \
-/opt/share/xupnpd/xupnpd.lua \
-/opt/share/xupnpd/playlists/bf.m3u \
-/opt/share/xupnpd/playlists/example/service.m3u \
-/opt/share/xupnpd/playlists/example/butovocom_iptv.m3u \
-/opt/share/xupnpd/playlists/example/example.m3u \
-/opt/share/xupnpd/playlists/example/iskra.m3u \
-/opt/share/xupnpd/playlists/example/mozhay.m3u \
-/opt/share/xupnpd/playlists/ivi_new.m3u \
-/opt/share/xupnpd/playlists/bf3epic.m3u \
-/opt/share/xupnpd/playlists/gametrailers_ps3.m3u \
-/opt/share/xupnpd/playlists/ag_videos.m3u \
-/opt/share/xupnpd/playlists/vimeo_channel_hd.m3u \
-/opt/share/xupnpd/playlists/giantbomb_all.m3u \
-/opt/share/xupnpd/playlists/youtube_channel_top_rated.m3u \
-/opt/share/xupnpd/playlists/vimeo_channel_mtb.m3u \
-/opt/share/xupnpd/playlists/vimeo_channel_hdxs.m3u
+XUPNPD_CONFFILES=$(TARGET_PREFIX)/etc/init.d/S94xupnpd \
+$(TARGET_PREFIX)/share/xupnpd/xupnpd.lua \
+$(TARGET_PREFIX)/share/xupnpd/playlists/bf.m3u \
+$(TARGET_PREFIX)/share/xupnpd/playlists/example/service.m3u \
+$(TARGET_PREFIX)/share/xupnpd/playlists/example/butovocom_iptv.m3u \
+$(TARGET_PREFIX)/share/xupnpd/playlists/example/example.m3u \
+$(TARGET_PREFIX)/share/xupnpd/playlists/example/iskra.m3u \
+$(TARGET_PREFIX)/share/xupnpd/playlists/example/mozhay.m3u \
+$(TARGET_PREFIX)/share/xupnpd/playlists/ivi_new.m3u \
+$(TARGET_PREFIX)/share/xupnpd/playlists/bf3epic.m3u \
+$(TARGET_PREFIX)/share/xupnpd/playlists/gametrailers_ps3.m3u \
+$(TARGET_PREFIX)/share/xupnpd/playlists/ag_videos.m3u \
+$(TARGET_PREFIX)/share/xupnpd/playlists/vimeo_channel_hd.m3u \
+$(TARGET_PREFIX)/share/xupnpd/playlists/giantbomb_all.m3u \
+$(TARGET_PREFIX)/share/xupnpd/playlists/youtube_channel_top_rated.m3u \
+$(TARGET_PREFIX)/share/xupnpd/playlists/vimeo_channel_mtb.m3u \
+$(TARGET_PREFIX)/share/xupnpd/playlists/vimeo_channel_hdxs.m3u
 
 #
 # XUPNPD_PATCHES should list any patches, in the the order in
@@ -140,7 +140,7 @@ $(XUPNPD_BUILD_DIR)/.configured: $(DL_DIR)/$(XUPNPD_SOURCE) $(XUPNPD_PATCHES) \
 		then mv $(BUILD_DIR)/$(XUPNPD_DIR) $(@D) ; \
 	fi
 	mv -f $(@D)/src/* $(@D)
-	sed -i -e 's|/usr/share|/opt/share|g' $(@D)/main.cpp
+	sed -i -e 's|/usr/share|$(TARGET_PREFIX)/share|g' $(@D)/main.cpp
 	cp -f $(XUPNPD_SOURCE_DIR)/xupnpd_youtube.lua -f $(@D)/plugins
 	touch $@
 
@@ -203,32 +203,32 @@ $(XUPNPD_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(XUPNPD_IPK_DIR)/opt/sbin or $(XUPNPD_IPK_DIR)/opt/bin
+# Binaries should be installed into $(XUPNPD_IPK_DIR)$(TARGET_PREFIX)/sbin or $(XUPNPD_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(XUPNPD_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(XUPNPD_IPK_DIR)/opt/etc/xupnpd/...
-# Documentation files should be installed in $(XUPNPD_IPK_DIR)/opt/doc/xupnpd/...
-# Daemon startup scripts should be installed in $(XUPNPD_IPK_DIR)/opt/etc/init.d/S??xupnpd
+# Libraries and include files should be installed into $(XUPNPD_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(XUPNPD_IPK_DIR)$(TARGET_PREFIX)/etc/xupnpd/...
+# Documentation files should be installed in $(XUPNPD_IPK_DIR)$(TARGET_PREFIX)/doc/xupnpd/...
+# Daemon startup scripts should be installed in $(XUPNPD_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??xupnpd
 #
 # You may need to patch your application to make it use these locations.
 #
 $(XUPNPD_IPK): $(XUPNPD_BUILD_DIR)/.built
 	rm -rf $(XUPNPD_IPK_DIR) $(BUILD_DIR)/xupnpd_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(XUPNPD_BUILD_DIR) DESTDIR=$(XUPNPD_IPK_DIR) install-strip
-	$(INSTALL) -d $(XUPNPD_IPK_DIR)/opt/bin $(XUPNPD_IPK_DIR)/opt/etc/init.d \
-		$(XUPNPD_IPK_DIR)/opt/share/xupnpd/ui $(XUPNPD_IPK_DIR)/opt/share/xupnpd/www \
-		$(XUPNPD_IPK_DIR)/opt/share/xupnpd/plugins $(XUPNPD_IPK_DIR)/opt/share/xupnpd/playlists \
-		$(XUPNPD_IPK_DIR)/opt/share/xupnpd/profiles $(XUPNPD_IPK_DIR)/opt/share/xupnpd/localmedia \
-		$(XUPNPD_IPK_DIR)/opt/share/xupnpd/config
-	$(INSTALL) -m 755 $(XUPNPD_BUILD_DIR)/xupnpd $(XUPNPD_IPK_DIR)/opt/bin
-	$(STRIP_COMMAND) $(XUPNPD_IPK_DIR)/opt/bin/xupnpd
-	$(INSTALL) -m 755 $(XUPNPD_SOURCE_DIR)/rc.xupnpd $(XUPNPD_IPK_DIR)/opt/etc/init.d/S94xupnpd
-	cp -f $(XUPNPD_BUILD_DIR)/*.lua $(XUPNPD_IPK_DIR)/opt/share/xupnpd
-	cp -rf $(XUPNPD_BUILD_DIR)/ui/* $(XUPNPD_IPK_DIR)/opt/share/xupnpd/ui
-	cp -rf $(XUPNPD_BUILD_DIR)/www/* $(XUPNPD_IPK_DIR)/opt/share/xupnpd/www
-	cp -rf $(XUPNPD_BUILD_DIR)/plugins/* $(XUPNPD_IPK_DIR)/opt/share/xupnpd/plugins
-	cp -rf $(XUPNPD_BUILD_DIR)/playlists/* $(XUPNPD_IPK_DIR)/opt/share/xupnpd/playlists
-	cp -rf $(XUPNPD_BUILD_DIR)/profiles/* $(XUPNPD_IPK_DIR)/opt/share/xupnpd/profiles
+	$(INSTALL) -d $(XUPNPD_IPK_DIR)$(TARGET_PREFIX)/bin $(XUPNPD_IPK_DIR)$(TARGET_PREFIX)/etc/init.d \
+		$(XUPNPD_IPK_DIR)$(TARGET_PREFIX)/share/xupnpd/ui $(XUPNPD_IPK_DIR)$(TARGET_PREFIX)/share/xupnpd/www \
+		$(XUPNPD_IPK_DIR)$(TARGET_PREFIX)/share/xupnpd/plugins $(XUPNPD_IPK_DIR)$(TARGET_PREFIX)/share/xupnpd/playlists \
+		$(XUPNPD_IPK_DIR)$(TARGET_PREFIX)/share/xupnpd/profiles $(XUPNPD_IPK_DIR)$(TARGET_PREFIX)/share/xupnpd/localmedia \
+		$(XUPNPD_IPK_DIR)$(TARGET_PREFIX)/share/xupnpd/config
+	$(INSTALL) -m 755 $(XUPNPD_BUILD_DIR)/xupnpd $(XUPNPD_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(STRIP_COMMAND) $(XUPNPD_IPK_DIR)$(TARGET_PREFIX)/bin/xupnpd
+	$(INSTALL) -m 755 $(XUPNPD_SOURCE_DIR)/rc.xupnpd $(XUPNPD_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S94xupnpd
+	cp -f $(XUPNPD_BUILD_DIR)/*.lua $(XUPNPD_IPK_DIR)$(TARGET_PREFIX)/share/xupnpd
+	cp -rf $(XUPNPD_BUILD_DIR)/ui/* $(XUPNPD_IPK_DIR)$(TARGET_PREFIX)/share/xupnpd/ui
+	cp -rf $(XUPNPD_BUILD_DIR)/www/* $(XUPNPD_IPK_DIR)$(TARGET_PREFIX)/share/xupnpd/www
+	cp -rf $(XUPNPD_BUILD_DIR)/plugins/* $(XUPNPD_IPK_DIR)$(TARGET_PREFIX)/share/xupnpd/plugins
+	cp -rf $(XUPNPD_BUILD_DIR)/playlists/* $(XUPNPD_IPK_DIR)$(TARGET_PREFIX)/share/xupnpd/playlists
+	cp -rf $(XUPNPD_BUILD_DIR)/profiles/* $(XUPNPD_IPK_DIR)$(TARGET_PREFIX)/share/xupnpd/profiles
 	$(MAKE) $(XUPNPD_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(XUPNPD_SOURCE_DIR)/postinst $(XUPNPD_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XUPNPD_IPK_DIR)/CONTROL/postinst

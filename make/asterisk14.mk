@@ -85,68 +85,68 @@ ASTERISK14_IPK_VERSION=1
 
 #
 # ASTERISK14_CONFFILES should be a list of user-editable files
-#ASTERISK14_CONFFILES=/opt/etc/asterisk14.conf /opt/etc/init.d/SXXasterisk14
+#ASTERISK14_CONFFILES=$(TARGET_PREFIX)/etc/asterisk14.conf $(TARGET_PREFIX)/etc/init.d/SXXasterisk14
 ASTERISK14_CONFFILES=\
-/opt/etc/asterisk/adsi.conf \
-/opt/etc/asterisk/adtranvofr.conf \
-/opt/etc/asterisk/agents.conf \
-/opt/etc/asterisk/alarmreceiver.conf \
-/opt/etc/asterisk/alsa.conf \
-/opt/etc/asterisk/amd.conf \
-/opt/etc/asterisk/asterisk.adsi \
-/opt/etc/asterisk/asterisk.conf \
-/opt/etc/asterisk/cdr.conf \
-/opt/etc/asterisk/cdr_custom.conf \
-/opt/etc/asterisk/cdr_manager.conf \
-/opt/etc/asterisk/cdr_odbc.conf \
-/opt/etc/asterisk/cdr_pgsql.conf \
-/opt/etc/asterisk/cdr_tds.conf \
-/opt/etc/asterisk/codecs.conf \
-/opt/etc/asterisk/dnsmgr.conf \
-/opt/etc/asterisk/dundi.conf \
-/opt/etc/asterisk/enum.conf \
-/opt/etc/asterisk/extconfig.conf \
-/opt/etc/asterisk/extensions.ael \
-/opt/etc/asterisk/extensions.conf \
-/opt/etc/asterisk/features.conf \
-/opt/etc/asterisk/festival.conf \
-/opt/etc/asterisk/followme.conf \
-/opt/etc/asterisk/func_odbc.conf \
-/opt/etc/asterisk/gtalk.conf \
-/opt/etc/asterisk/h323.conf \
-/opt/etc/asterisk/http.conf \
-/opt/etc/asterisk/iax.conf \
-/opt/etc/asterisk/iaxprov.conf \
-/opt/etc/asterisk/indications.conf \
-/opt/etc/asterisk/jabber.conf \
-/opt/etc/asterisk/logger.conf \
-/opt/etc/asterisk/manager.conf \
-/opt/etc/asterisk/meetme.conf \
-/opt/etc/asterisk/mgcp.conf \
-/opt/etc/asterisk/misdn.conf \
-/opt/etc/asterisk/modules.conf \
-/opt/etc/asterisk/musiconhold.conf \
-/opt/etc/asterisk/muted.conf \
-/opt/etc/asterisk/osp.conf \
-/opt/etc/asterisk/oss.conf \
-/opt/etc/asterisk/phone.conf \
-/opt/etc/asterisk/privacy.conf \
-/opt/etc/asterisk/queues.conf \
-/opt/etc/asterisk/res_odbc.conf \
-/opt/etc/asterisk/res_snmp.conf \
-/opt/etc/asterisk/rpt.conf \
-/opt/etc/asterisk/rtp.conf \
-/opt/etc/asterisk/say.conf \
-/opt/etc/asterisk/sip.conf \
-/opt/etc/asterisk/sip_notify.conf \
-/opt/etc/asterisk/skinny.conf \
-/opt/etc/asterisk/sla.conf \
-/opt/etc/asterisk/smdi.conf \
-/opt/etc/asterisk/telcordia-1.adsi \
-/opt/etc/asterisk/udptl.conf \
-/opt/etc/asterisk/users.conf \
-/opt/etc/asterisk/voicemail.conf \
-/opt/etc/asterisk/vpb.conf
+$(TARGET_PREFIX)/etc/asterisk/adsi.conf \
+$(TARGET_PREFIX)/etc/asterisk/adtranvofr.conf \
+$(TARGET_PREFIX)/etc/asterisk/agents.conf \
+$(TARGET_PREFIX)/etc/asterisk/alarmreceiver.conf \
+$(TARGET_PREFIX)/etc/asterisk/alsa.conf \
+$(TARGET_PREFIX)/etc/asterisk/amd.conf \
+$(TARGET_PREFIX)/etc/asterisk/asterisk.adsi \
+$(TARGET_PREFIX)/etc/asterisk/asterisk.conf \
+$(TARGET_PREFIX)/etc/asterisk/cdr.conf \
+$(TARGET_PREFIX)/etc/asterisk/cdr_custom.conf \
+$(TARGET_PREFIX)/etc/asterisk/cdr_manager.conf \
+$(TARGET_PREFIX)/etc/asterisk/cdr_odbc.conf \
+$(TARGET_PREFIX)/etc/asterisk/cdr_pgsql.conf \
+$(TARGET_PREFIX)/etc/asterisk/cdr_tds.conf \
+$(TARGET_PREFIX)/etc/asterisk/codecs.conf \
+$(TARGET_PREFIX)/etc/asterisk/dnsmgr.conf \
+$(TARGET_PREFIX)/etc/asterisk/dundi.conf \
+$(TARGET_PREFIX)/etc/asterisk/enum.conf \
+$(TARGET_PREFIX)/etc/asterisk/extconfig.conf \
+$(TARGET_PREFIX)/etc/asterisk/extensions.ael \
+$(TARGET_PREFIX)/etc/asterisk/extensions.conf \
+$(TARGET_PREFIX)/etc/asterisk/features.conf \
+$(TARGET_PREFIX)/etc/asterisk/festival.conf \
+$(TARGET_PREFIX)/etc/asterisk/followme.conf \
+$(TARGET_PREFIX)/etc/asterisk/func_odbc.conf \
+$(TARGET_PREFIX)/etc/asterisk/gtalk.conf \
+$(TARGET_PREFIX)/etc/asterisk/h323.conf \
+$(TARGET_PREFIX)/etc/asterisk/http.conf \
+$(TARGET_PREFIX)/etc/asterisk/iax.conf \
+$(TARGET_PREFIX)/etc/asterisk/iaxprov.conf \
+$(TARGET_PREFIX)/etc/asterisk/indications.conf \
+$(TARGET_PREFIX)/etc/asterisk/jabber.conf \
+$(TARGET_PREFIX)/etc/asterisk/logger.conf \
+$(TARGET_PREFIX)/etc/asterisk/manager.conf \
+$(TARGET_PREFIX)/etc/asterisk/meetme.conf \
+$(TARGET_PREFIX)/etc/asterisk/mgcp.conf \
+$(TARGET_PREFIX)/etc/asterisk/misdn.conf \
+$(TARGET_PREFIX)/etc/asterisk/modules.conf \
+$(TARGET_PREFIX)/etc/asterisk/musiconhold.conf \
+$(TARGET_PREFIX)/etc/asterisk/muted.conf \
+$(TARGET_PREFIX)/etc/asterisk/osp.conf \
+$(TARGET_PREFIX)/etc/asterisk/oss.conf \
+$(TARGET_PREFIX)/etc/asterisk/phone.conf \
+$(TARGET_PREFIX)/etc/asterisk/privacy.conf \
+$(TARGET_PREFIX)/etc/asterisk/queues.conf \
+$(TARGET_PREFIX)/etc/asterisk/res_odbc.conf \
+$(TARGET_PREFIX)/etc/asterisk/res_snmp.conf \
+$(TARGET_PREFIX)/etc/asterisk/rpt.conf \
+$(TARGET_PREFIX)/etc/asterisk/rtp.conf \
+$(TARGET_PREFIX)/etc/asterisk/say.conf \
+$(TARGET_PREFIX)/etc/asterisk/sip.conf \
+$(TARGET_PREFIX)/etc/asterisk/sip_notify.conf \
+$(TARGET_PREFIX)/etc/asterisk/skinny.conf \
+$(TARGET_PREFIX)/etc/asterisk/sla.conf \
+$(TARGET_PREFIX)/etc/asterisk/smdi.conf \
+$(TARGET_PREFIX)/etc/asterisk/telcordia-1.adsi \
+$(TARGET_PREFIX)/etc/asterisk/udptl.conf \
+$(TARGET_PREFIX)/etc/asterisk/users.conf \
+$(TARGET_PREFIX)/etc/asterisk/voicemail.conf \
+$(TARGET_PREFIX)/etc/asterisk/vpb.conf
 
 
 #
@@ -305,8 +305,8 @@ endif
 		--with-odbc=$(STAGING_PREFIX) \
 		--without-imap \
 		$(ASTERISK14_CONFIGURE_OPTS) \
-		--localstatedir=/opt/var \
-		--sysconfdir=/opt/etc \
+		--localstatedir=$(TARGET_PREFIX)/var \
+		--sysconfdir=$(TARGET_PREFIX)/etc \
 	)
 	touch $@
 
@@ -336,7 +336,7 @@ $(ASTERISK14_BUILD_DIR)/.staged: $(ASTERISK14_BUILD_DIR)/.built
 	NOISY_BUILD=yes \
 	ASTCFLAGS="$(ASTERISK14_CPPFLAGS)" \
 	ASTLDFLAGS="$(STAGING_LDFLAGS) $(ASTERISK14_LDFLAGS)" \
-	$(MAKE) -C $(ASTERISK14_BUILD_DIR) DESTDIR=$(STAGING_DIR) ASTSBINDIR=/opt/sbin install
+	$(MAKE) -C $(ASTERISK14_BUILD_DIR) DESTDIR=$(STAGING_DIR) ASTSBINDIR=$(TARGET_PREFIX)/sbin install
 	touch $(ASTERISK14_BUILD_DIR)/.staged
 
 asterisk14-stage: $(ASTERISK14_BUILD_DIR)/.staged
@@ -363,70 +363,70 @@ $(ASTERISK14_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(ASTERISK14_IPK_DIR)/opt/sbin or $(ASTERISK14_IPK_DIR)/opt/bin
+# Binaries should be installed into $(ASTERISK14_IPK_DIR)$(TARGET_PREFIX)/sbin or $(ASTERISK14_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(ASTERISK14_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(ASTERISK14_IPK_DIR)/opt/etc/asterisk14/...
-# Documentation files should be installed in $(ASTERISK14_IPK_DIR)/opt/doc/asterisk14/...
-# Daemon startup scripts should be installed in $(ASTERISK14_IPK_DIR)/opt/etc/init.d/S??asterisk14
+# Libraries and include files should be installed into $(ASTERISK14_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(ASTERISK14_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk14/...
+# Documentation files should be installed in $(ASTERISK14_IPK_DIR)$(TARGET_PREFIX)/doc/asterisk14/...
+# Daemon startup scripts should be installed in $(ASTERISK14_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??asterisk14
 #
 # You may need to patch your application to make it use these locations.
 #
 $(ASTERISK14_IPK): $(ASTERISK14_BUILD_DIR)/.built
 	rm -rf $(ASTERISK14_IPK_DIR) $(BUILD_DIR)/asterisk14_*_$(TARGET_ARCH).ipk
 	NOISY_BUILD=yes \
-	$(MAKE) -C $(ASTERISK14_BUILD_DIR) DESTDIR=$(ASTERISK14_IPK_DIR) ASTSBINDIR=/opt/sbin install
+	$(MAKE) -C $(ASTERISK14_BUILD_DIR) DESTDIR=$(ASTERISK14_IPK_DIR) ASTSBINDIR=$(TARGET_PREFIX)/sbin install
 	NOISY_BUILD=yes \
 	$(MAKE) -C $(ASTERISK14_BUILD_DIR) DESTDIR=$(ASTERISK14_IPK_DIR) samples
 
-	sed -i -e 's#/var/spool/asterisk#/opt/var/spool/asterisk#g' $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/*
-	sed -i -e 's#/var/lib/asterisk#/opt/var/lib/asterisk#g' $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/*
-	sed -i -e 's#/var/calls#/opt/var/calls#g' $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/*
-	sed -i -e 's#/usr/bin/streamplayer#/opt/sbin/streamplayer#g' $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/*
-	sed -i -e 's#/opt/opt/#/opt/#g' $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/*
+	sed -i -e 's#/var/spool/asterisk#$(TARGET_PREFIX)/var/spool/asterisk#g' $(ASTERISK14_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/*
+	sed -i -e 's#/var/lib/asterisk#$(TARGET_PREFIX)/var/lib/asterisk#g' $(ASTERISK14_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/*
+	sed -i -e 's#/var/calls#$(TARGET_PREFIX)/var/calls#g' $(ASTERISK14_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/*
+	sed -i -e 's#/usr/bin/streamplayer#$(TARGET_PREFIX)/sbin/streamplayer#g' $(ASTERISK14_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/*
+	sed -i -e 's#$(TARGET_PREFIX)$(TARGET_PREFIX)/#$(TARGET_PREFIX)/#g' $(ASTERISK14_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/*
 
-	echo "" >> $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "noload => func_odbc.so" >> $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "" >> $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "noload => chan_alsa.so" >> $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "noload => chan_gtalk.so" >> $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "noload => chan_oss.so" >> $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "" >> $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "noload => codec_ilbc.so" >> $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "noload => codec_lpc10.so" >> $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "noload => codec_speex.so" >> $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "" >> $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "noload => format_ogg_vorbis.so" >> $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "" >> $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "noload => res_config_odbc.so" >> $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "noload => res_jabber.so" >> $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "noload => res_odbc.so" >> $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "noload => res_snmp.so" >> $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "noload => res_smdi.so" >> $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "" >> $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "noload => cdr_odbc.so" >> $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "noload => cdr_radius.so" >> $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "noload => cdr_sqlite.so" >> $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "noload => cdr_tds.so" >> $(ASTERISK14_IPK_DIR)/opt/etc/asterisk/modules.conf
+	echo "" >> $(ASTERISK14_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "noload => func_odbc.so" >> $(ASTERISK14_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "" >> $(ASTERISK14_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "noload => chan_alsa.so" >> $(ASTERISK14_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "noload => chan_gtalk.so" >> $(ASTERISK14_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "noload => chan_oss.so" >> $(ASTERISK14_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "" >> $(ASTERISK14_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "noload => codec_ilbc.so" >> $(ASTERISK14_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "noload => codec_lpc10.so" >> $(ASTERISK14_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "noload => codec_speex.so" >> $(ASTERISK14_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "" >> $(ASTERISK14_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "noload => format_ogg_vorbis.so" >> $(ASTERISK14_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "" >> $(ASTERISK14_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "noload => res_config_odbc.so" >> $(ASTERISK14_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "noload => res_jabber.so" >> $(ASTERISK14_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "noload => res_odbc.so" >> $(ASTERISK14_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "noload => res_snmp.so" >> $(ASTERISK14_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "noload => res_smdi.so" >> $(ASTERISK14_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "" >> $(ASTERISK14_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "noload => cdr_odbc.so" >> $(ASTERISK14_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "noload => cdr_radius.so" >> $(ASTERISK14_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "noload => cdr_sqlite.so" >> $(ASTERISK14_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "noload => cdr_tds.so" >> $(ASTERISK14_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
 
-	cp -r $(ASTERISK14_IPK_DIR)/opt/etc/asterisk $(ASTERISK14_IPK_DIR)/opt/etc/samples
-	mv $(ASTERISK14_IPK_DIR)/opt/etc/samples $(ASTERISK14_IPK_DIR)/opt/etc/asterisk
+	cp -r $(ASTERISK14_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk $(ASTERISK14_IPK_DIR)$(TARGET_PREFIX)/etc/samples
+	mv $(ASTERISK14_IPK_DIR)$(TARGET_PREFIX)/etc/samples $(ASTERISK14_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk
 
 	$(MAKE) $(ASTERISK14_IPK_DIR)/CONTROL/control
 	echo $(ASTERISK14_CONFFILES) | sed -e 's/ /\n/g' > $(ASTERISK14_IPK_DIR)/CONTROL/conffiles
 
-	for filetostrip in $(ASTERISK14_IPK_DIR)/opt/lib/asterisk/modules/*.so ; do \
+	for filetostrip in $(ASTERISK14_IPK_DIR)$(TARGET_PREFIX)/lib/asterisk/modules/*.so ; do \
 		$(STRIP_COMMAND) $$filetostrip; \
 	done
-	for filetostrip in $(ASTERISK14_IPK_DIR)/opt/sbin/aelparse \
-			$(ASTERISK14_IPK_DIR)/opt/sbin/asterisk \
-			$(ASTERISK14_IPK_DIR)/opt/sbin/muted \
-			$(ASTERISK14_IPK_DIR)/opt/sbin/smsq \
-			$(ASTERISK14_IPK_DIR)/opt/sbin/stereorize \
-			$(ASTERISK14_IPK_DIR)/opt/sbin/streamplayer ; do \
+	for filetostrip in $(ASTERISK14_IPK_DIR)$(TARGET_PREFIX)/sbin/aelparse \
+			$(ASTERISK14_IPK_DIR)$(TARGET_PREFIX)/sbin/asterisk \
+			$(ASTERISK14_IPK_DIR)$(TARGET_PREFIX)/sbin/muted \
+			$(ASTERISK14_IPK_DIR)$(TARGET_PREFIX)/sbin/smsq \
+			$(ASTERISK14_IPK_DIR)$(TARGET_PREFIX)/sbin/stereorize \
+			$(ASTERISK14_IPK_DIR)$(TARGET_PREFIX)/sbin/streamplayer ; do \
 		$(STRIP_COMMAND) $$filetostrip; \
 	done
-	for filetostrip in $(ASTERISK14_IPK_DIR)/opt/var/lib/asterisk/agi-bin/*test ; do \
+	for filetostrip in $(ASTERISK14_IPK_DIR)$(TARGET_PREFIX)/var/lib/asterisk/agi-bin/*test ; do \
 		$(STRIP_COMMAND) $$filetostrip; \
 	done
 

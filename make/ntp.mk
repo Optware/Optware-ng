@@ -39,7 +39,7 @@ NTP_CONFLICTS=
 #
 NTP_IPK_VERSION=1
 
-NTP_CONFFILES=/opt/etc/ntp/ntp.conf /opt/etc/init.d/S77ntp
+NTP_CONFFILES=$(TARGET_PREFIX)/etc/ntp/ntp.conf $(TARGET_PREFIX)/etc/init.d/S77ntp
 
 #
 # NTP_PATCHES should list any patches, in the the order in
@@ -124,7 +124,7 @@ $(NTP_BUILD_DIR)/.configured: $(DL_DIR)/$(NTP_SOURCE) $(NTP_PATCHES) make/ntp.mk
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		$(NTP_CONFIGURE_ARGS) \
-		--prefix=/opt\
+		--prefix=$(TARGET_PREFIX)\
 		--with-yielding_select=yes \
 	)
 	$(PATCH_LIBTOOL) $(@D)/libtool
@@ -170,29 +170,29 @@ $(NTP_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(NTP_IPK_DIR)/opt/sbin or $(NTP_IPK_DIR)/opt/bin
+# Binaries should be installed into $(NTP_IPK_DIR)$(TARGET_PREFIX)/sbin or $(NTP_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(NTP_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(NTP_IPK_DIR)/opt/etc/ntp/...
-# Documentation files should be installed in $(NTP_IPK_DIR)/opt/doc/ntp/...
-# Daemon startup scripts should be installed in $(NTP_IPK_DIR)/opt/etc/init.d/S??ntp
+# Libraries and include files should be installed into $(NTP_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(NTP_IPK_DIR)$(TARGET_PREFIX)/etc/ntp/...
+# Documentation files should be installed in $(NTP_IPK_DIR)$(TARGET_PREFIX)/doc/ntp/...
+# Daemon startup scripts should be installed in $(NTP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??ntp
 #
 # You may need to patch your application to make it use these locations.
 #
 $(NTP_IPK): $(NTP_BUILD_DIR)/.built
 	rm -rf $(NTP_IPK_DIR) $(NTP_IPK)
-	$(INSTALL) -d $(NTP_IPK_DIR)/opt/bin
-	$(INSTALL) -d $(NTP_IPK_DIR)/opt/etc/ntp/keys
+	$(INSTALL) -d $(NTP_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(INSTALL) -d $(NTP_IPK_DIR)$(TARGET_PREFIX)/etc/ntp/keys
 	$(INSTALL) -d $(NTP_IPK_DIR)/var/spool/ntp
-	$(STRIP_COMMAND) $(NTP_BUILD_DIR)/ntpd/ntpd -o $(NTP_IPK_DIR)/opt/bin/ntpd
-	$(STRIP_COMMAND) $(NTP_BUILD_DIR)/ntpq/ntpq -o $(NTP_IPK_DIR)/opt/bin/ntpq
-	$(STRIP_COMMAND) $(NTP_BUILD_DIR)/ntpdc/ntpdc -o $(NTP_IPK_DIR)/opt/bin/ntpdc
-	$(STRIP_COMMAND) $(NTP_BUILD_DIR)/util/ntptime -o $(NTP_IPK_DIR)/opt/bin/ntptime
-	$(STRIP_COMMAND) $(NTP_BUILD_DIR)/util/tickadj -o $(NTP_IPK_DIR)/opt/bin/tickadj
-	$(STRIP_COMMAND) $(NTP_BUILD_DIR)/ntpdate/ntpdate -o $(NTP_IPK_DIR)/opt/bin/ntpdate
-	$(INSTALL) -m 644 $(NTP_SOURCE_DIR)/ntp.conf $(NTP_IPK_DIR)/opt/etc/ntp/ntp.conf
-	$(INSTALL) -d $(NTP_IPK_DIR)/opt/etc/init.d
-	$(INSTALL) -m 755 $(NTP_SOURCE_DIR)/rc.ntpd $(NTP_IPK_DIR)/opt/etc/init.d/S77ntp
+	$(STRIP_COMMAND) $(NTP_BUILD_DIR)/ntpd/ntpd -o $(NTP_IPK_DIR)$(TARGET_PREFIX)/bin/ntpd
+	$(STRIP_COMMAND) $(NTP_BUILD_DIR)/ntpq/ntpq -o $(NTP_IPK_DIR)$(TARGET_PREFIX)/bin/ntpq
+	$(STRIP_COMMAND) $(NTP_BUILD_DIR)/ntpdc/ntpdc -o $(NTP_IPK_DIR)$(TARGET_PREFIX)/bin/ntpdc
+	$(STRIP_COMMAND) $(NTP_BUILD_DIR)/util/ntptime -o $(NTP_IPK_DIR)$(TARGET_PREFIX)/bin/ntptime
+	$(STRIP_COMMAND) $(NTP_BUILD_DIR)/util/tickadj -o $(NTP_IPK_DIR)$(TARGET_PREFIX)/bin/tickadj
+	$(STRIP_COMMAND) $(NTP_BUILD_DIR)/ntpdate/ntpdate -o $(NTP_IPK_DIR)$(TARGET_PREFIX)/bin/ntpdate
+	$(INSTALL) -m 644 $(NTP_SOURCE_DIR)/ntp.conf $(NTP_IPK_DIR)$(TARGET_PREFIX)/etc/ntp/ntp.conf
+	$(INSTALL) -d $(NTP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(INSTALL) -m 755 $(NTP_SOURCE_DIR)/rc.ntpd $(NTP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S77ntp
 	$(MAKE) $(NTP_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 644 $(NTP_SOURCE_DIR)/postinst $(NTP_IPK_DIR)/CONTROL/postinst
 	echo $(NTP_CONFFILES) | sed -e 's/ /\n/g' > $(NTP_IPK_DIR)/CONTROL/conffiles

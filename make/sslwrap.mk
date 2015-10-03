@@ -40,7 +40,7 @@ SSLWRAP_IPK_VERSION=1
 
 #
 # SSLWRAP_CONFFILES should be a list of user-editable files
-#SSLWRAP_CONFFILES=/opt/etc/sslwrap.conf /opt/etc/init.d/SXXsslwrap
+#SSLWRAP_CONFFILES=$(TARGET_PREFIX)/etc/sslwrap.conf $(TARGET_PREFIX)/etc/init.d/SXXsslwrap
 
 #
 # SSLWRAP_PATCHES should list any patches, in the the order in
@@ -188,25 +188,25 @@ $(SSLWRAP_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(SSLWRAP_IPK_DIR)/opt/sbin or $(SSLWRAP_IPK_DIR)/opt/bin
+# Binaries should be installed into $(SSLWRAP_IPK_DIR)$(TARGET_PREFIX)/sbin or $(SSLWRAP_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(SSLWRAP_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(SSLWRAP_IPK_DIR)/opt/etc/sslwrap/...
-# Documentation files should be installed in $(SSLWRAP_IPK_DIR)/opt/doc/sslwrap/...
-# Daemon startup scripts should be installed in $(SSLWRAP_IPK_DIR)/opt/etc/init.d/S??sslwrap
+# Libraries and include files should be installed into $(SSLWRAP_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(SSLWRAP_IPK_DIR)$(TARGET_PREFIX)/etc/sslwrap/...
+# Documentation files should be installed in $(SSLWRAP_IPK_DIR)$(TARGET_PREFIX)/doc/sslwrap/...
+# Daemon startup scripts should be installed in $(SSLWRAP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??sslwrap
 #
 # You may need to patch your application to make it use these locations.
 #
 $(SSLWRAP_IPK): $(SSLWRAP_BUILD_DIR)/.built
 	rm -rf $(SSLWRAP_IPK_DIR) $(BUILD_DIR)/sslwrap_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(SSLWRAP_BUILD_DIR) DESTDIR=$(SSLWRAP_IPK_DIR) install-strip
-	$(INSTALL) -d $(SSLWRAP_IPK_DIR)/opt/bin
-	$(INSTALL) -m 755 $(SSLWRAP_BUILD_DIR)/sslwrap $(SSLWRAP_IPK_DIR)/opt/bin/
-	$(STRIP_COMMAND) $(SSLWRAP_IPK_DIR)/opt/bin/sslwrap
-#	$(INSTALL) -m 644 $(SSLWRAP_SOURCE_DIR)/sslwrap.conf $(SSLWRAP_IPK_DIR)/opt/etc/sslwrap.conf
-#	$(INSTALL) -d $(SSLWRAP_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(SSLWRAP_SOURCE_DIR)/rc.sslwrap $(SSLWRAP_IPK_DIR)/opt/etc/init.d/SXXsslwrap
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SSLWRAP_IPK_DIR)/opt/etc/init.d/SXXsslwrap
+	$(INSTALL) -d $(SSLWRAP_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(INSTALL) -m 755 $(SSLWRAP_BUILD_DIR)/sslwrap $(SSLWRAP_IPK_DIR)$(TARGET_PREFIX)/bin/
+	$(STRIP_COMMAND) $(SSLWRAP_IPK_DIR)$(TARGET_PREFIX)/bin/sslwrap
+#	$(INSTALL) -m 644 $(SSLWRAP_SOURCE_DIR)/sslwrap.conf $(SSLWRAP_IPK_DIR)$(TARGET_PREFIX)/etc/sslwrap.conf
+#	$(INSTALL) -d $(SSLWRAP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(SSLWRAP_SOURCE_DIR)/rc.sslwrap $(SSLWRAP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXsslwrap
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SSLWRAP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXsslwrap
 	$(MAKE) $(SSLWRAP_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(SSLWRAP_SOURCE_DIR)/postinst $(SSLWRAP_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SSLWRAP_IPK_DIR)/CONTROL/postinst

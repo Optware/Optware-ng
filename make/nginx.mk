@@ -41,12 +41,12 @@ NGINX_IPK_VERSION?=1
 #
 # NGINX_CONFFILES should be a list of user-editable files
 NGINX_CONFFILES=\
-	/opt/etc/default/nginx \
-	/opt/etc/nginx/fastcgi_params \
-	/opt/etc/nginx/mime.types \
-	/opt/etc/nginx/nginx.conf \
-	/opt/share/nginx/html/index.html \
-	/opt/share/nginx/html/50x.html
+	$(TARGET_PREFIX)/etc/default/nginx \
+	$(TARGET_PREFIX)/etc/nginx/fastcgi_params \
+	$(TARGET_PREFIX)/etc/nginx/mime.types \
+	$(TARGET_PREFIX)/etc/nginx/nginx.conf \
+	$(TARGET_PREFIX)/share/nginx/html/index.html \
+	$(TARGET_PREFIX)/share/nginx/html/50x.html
 
 #
 # NGINX_PATCHES should list any patches, in the the order in
@@ -166,16 +166,16 @@ $(NGINX_BUILD_DIR)/.configured: $(DL_DIR)/$(NGINX_SOURCE) $(NGINX_PATCHES) make/
 	    fi; \
 	    $(NGINX_CONFIGURE_ENV) \
 	    ./configure \
-		--prefix=/opt/share/nginx \
-		--sbin-path=/opt/sbin/nginx \
-		--conf-path=/opt/etc/nginx/nginx.conf \
-		--error-log-path=/opt/var/nginx/log/error.log \
-		--pid-path=/opt/var/nginx/run/nginx.pid \
-		--lock-path=/opt/var/nginx/run/nginx.lock \
-		--http-log-path=/opt/var/nginx/log/access.log \
-		--http-client-body-temp-path=/opt/var/nginx/tmp/client_body_temp \
-		--http-proxy-temp-path=/opt/var/nginx/tmp/proxy_temp \
-		--http-fastcgi-temp-path=/opt/var/nginx/tmp/fastcgi_temp \
+		--prefix=$(TARGET_PREFIX)/share/nginx \
+		--sbin-path=$(TARGET_PREFIX)/sbin/nginx \
+		--conf-path=$(TARGET_PREFIX)/etc/nginx/nginx.conf \
+		--error-log-path=$(TARGET_PREFIX)/var/nginx/log/error.log \
+		--pid-path=$(TARGET_PREFIX)/var/nginx/run/nginx.pid \
+		--lock-path=$(TARGET_PREFIX)/var/nginx/run/nginx.lock \
+		--http-log-path=$(TARGET_PREFIX)/var/nginx/log/access.log \
+		--http-client-body-temp-path=$(TARGET_PREFIX)/var/nginx/tmp/client_body_temp \
+		--http-proxy-temp-path=$(TARGET_PREFIX)/var/nginx/tmp/proxy_temp \
+		--http-fastcgi-temp-path=$(TARGET_PREFIX)/var/nginx/tmp/fastcgi_temp \
                 --with-cc=$(TARGET_CC) \
                 --with-cpp=$(TARGET_CPP) \
                 --with-cc-opt="$(STAGING_CPPFLAGS) $(NGINX_CPPFLAGS)" \
@@ -187,7 +187,7 @@ $(NGINX_BUILD_DIR)/.configured: $(DL_DIR)/$(NGINX_SOURCE) $(NGINX_PATCHES) make/
 	)
 	sed -i.orig \
                 -e 's#conf/conf/nginx.conf#conf#g' \
-                -e '/^CFLAGS/{s| -Werror||;s|-I/opt/include||;}' \
+                -e '/^CFLAGS/{s| -Werror||;s|-I$(TARGET_PREFIX)/include||;}' \
                 $(@D)/objs/Makefile
 ifneq (,$(filter nslu2 cs05q3armel, $(OPTWARE_TARGET)))
 	sed -i -e '/#define NGX_GROUP/s/nogroup/nobody/' $(@D)/objs/ngx_auto_config.h
@@ -244,27 +244,27 @@ $(NGINX_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(NGINX_IPK_DIR)/opt/sbin or $(NGINX_IPK_DIR)/opt/bin
+# Binaries should be installed into $(NGINX_IPK_DIR)$(TARGET_PREFIX)/sbin or $(NGINX_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(NGINX_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(NGINX_IPK_DIR)/opt/etc/nginx/...
-# Documentation files should be installed in $(NGINX_IPK_DIR)/opt/doc/nginx/...
-# Daemon startup scripts should be installed in $(NGINX_IPK_DIR)/opt/etc/init.d/S??nginx
+# Libraries and include files should be installed into $(NGINX_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(NGINX_IPK_DIR)$(TARGET_PREFIX)/etc/nginx/...
+# Documentation files should be installed in $(NGINX_IPK_DIR)$(TARGET_PREFIX)/doc/nginx/...
+# Daemon startup scripts should be installed in $(NGINX_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??nginx
 #
 # You may need to patch your application to make it use these locations.
 #
 $(NGINX_IPK): $(NGINX_BUILD_DIR)/.built
 	rm -rf $(NGINX_IPK_DIR) $(BUILD_DIR)/nginx_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(NGINX_BUILD_DIR) -f objs/Makefile DESTDIR=$(NGINX_IPK_DIR) install
-	sed -i -e "/^[ 	]*listen/s|listen.*80;|listen\t8082;|" $(NGINX_IPK_DIR)/opt/etc/nginx/nginx.conf
-	$(STRIP_COMMAND) $(NGINX_IPK_DIR)/opt/sbin/nginx
-	$(INSTALL) -d $(NGINX_IPK_DIR)/opt/var/nginx/tmp
-	$(INSTALL) -d $(NGINX_IPK_DIR)/opt/share/www
-	ln -s /opt/share/nginx/html $(NGINX_IPK_DIR)/opt/share/www/nginx
-	$(INSTALL) -d $(NGINX_IPK_DIR)/opt/etc/init.d
-	$(INSTALL) -m 755 $(NGINX_SOURCE_DIR)/rc.nginx $(NGINX_IPK_DIR)/opt/etc/init.d/S80nginx
-	$(INSTALL) -d $(NGINX_IPK_DIR)/opt/etc/default
-	$(INSTALL) -m 755 $(NGINX_SOURCE_DIR)/default $(NGINX_IPK_DIR)/opt/etc/default/nginx
+	sed -i -e "/^[ 	]*listen/s|listen.*80;|listen\t8082;|" $(NGINX_IPK_DIR)$(TARGET_PREFIX)/etc/nginx/nginx.conf
+	$(STRIP_COMMAND) $(NGINX_IPK_DIR)$(TARGET_PREFIX)/sbin/nginx
+	$(INSTALL) -d $(NGINX_IPK_DIR)$(TARGET_PREFIX)/var/nginx/tmp
+	$(INSTALL) -d $(NGINX_IPK_DIR)$(TARGET_PREFIX)/share/www
+	ln -s $(TARGET_PREFIX)/share/nginx/html $(NGINX_IPK_DIR)$(TARGET_PREFIX)/share/www/nginx
+	$(INSTALL) -d $(NGINX_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(INSTALL) -m 755 $(NGINX_SOURCE_DIR)/rc.nginx $(NGINX_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S80nginx
+	$(INSTALL) -d $(NGINX_IPK_DIR)$(TARGET_PREFIX)/etc/default
+	$(INSTALL) -m 755 $(NGINX_SOURCE_DIR)/default $(NGINX_IPK_DIR)$(TARGET_PREFIX)/etc/default/nginx
 	$(MAKE) $(NGINX_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 755 $(NGINX_SOURCE_DIR)/postinst $(NGINX_IPK_DIR)/CONTROL/postinst
 	$(INSTALL) -m 755 $(NGINX_SOURCE_DIR)/prerm $(NGINX_IPK_DIR)/CONTROL/prerm

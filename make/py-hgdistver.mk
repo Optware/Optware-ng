@@ -47,7 +47,7 @@ PY-HGDISTVER_IPK_VERSION=1
 
 #
 # PY-HGDISTVER_CONFFILES should be a list of user-editable files
-#PY-HGDISTVER_CONFFILES=/opt/etc/py-hgdistver.conf /opt/etc/init.d/SXXpy-hgdistver
+#PY-HGDISTVER_CONFFILES=$(TARGET_PREFIX)/etc/py-hgdistver.conf $(TARGET_PREFIX)/etc/init.d/SXXpy-hgdistver
 
 #
 # PY-HGDISTVER_PATCHES should list any patches, in the the order in
@@ -142,9 +142,9 @@ $(PY-HGDISTVER_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-HGDISTVER_SOURCE) $(DL_DIR
 	(cd $(@D)/2.4; \
 	    ( \
 		echo "[install]"; \
-		echo "install_scripts = /opt/bin"; \
+		echo "install_scripts = $(TARGET_PREFIX)/bin"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python2.4"; \
+		echo "executable=$(TARGET_PREFIX)/bin/python2.4"; \
 	    ) >> setup.cfg \
 	)
 #	cd $(BUILD_DIR); $(PY-HGDISTVER_UNZIP) $(DL_DIR)/$(PY-HGDISTVER_SOURCE)
@@ -154,9 +154,9 @@ $(PY-HGDISTVER_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-HGDISTVER_SOURCE) $(DL_DIR
 	(cd $(@D)/2.5; \
 	    ( \
 		echo "[install]"; \
-		echo "install_scripts = /opt/bin"; \
+		echo "install_scripts = $(TARGET_PREFIX)/bin"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python2.5"; \
+		echo "executable=$(TARGET_PREFIX)/bin/python2.5"; \
 	    ) >> setup.cfg \
 	)
 #	cd $(BUILD_DIR); $(PY-HGDISTVER_UNZIP) $(DL_DIR)/$(PY-HGDISTVER_SOURCE)
@@ -166,9 +166,9 @@ $(PY-HGDISTVER_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-HGDISTVER_SOURCE) $(DL_DIR
 	(cd $(@D)/2.6; \
 	    ( \
 		echo "[install]"; \
-		echo "install_scripts = /opt/bin"; \
+		echo "install_scripts = $(TARGET_PREFIX)/bin"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python2.6"; \
+		echo "executable=$(TARGET_PREFIX)/bin/python2.6"; \
 	    ) >> setup.cfg \
 	)
 #	cd $(BUILD_DIR); $(PY-HGDISTVER_UNZIP) $(DL_DIR)/$(PY-HGDISTVER_SOURCE)
@@ -178,9 +178,9 @@ $(PY-HGDISTVER_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-HGDISTVER_SOURCE) $(DL_DIR
 	(cd $(@D)/2.7; \
 	    ( \
 		echo "[install]"; \
-		echo "install_scripts = /opt/bin"; \
+		echo "install_scripts = $(TARGET_PREFIX)/bin"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python2.7"; \
+		echo "executable=$(TARGET_PREFIX)/bin/python2.7"; \
 	    ) >> setup.cfg \
 	)
 #	cd $(BUILD_DIR); $(PY-HGDISTVER_UNZIP) $(DL_DIR)/$(PY-HGDISTVER_SOURCE)
@@ -190,9 +190,9 @@ $(PY-HGDISTVER_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-HGDISTVER_SOURCE) $(DL_DIR
 	(cd $(@D)/3; \
 	    ( \
 		echo "[install]"; \
-		echo "install_scripts = /opt/bin"; \
+		echo "install_scripts = $(TARGET_PREFIX)/bin"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python$(PYTHON3_VERSION_MAJOR)"; \
+		echo "executable=$(TARGET_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR)"; \
 	    ) >> setup.cfg \
 	)
 	touch $@
@@ -223,19 +223,19 @@ $(PY-HGDISTVER_BUILD_DIR)/.staged: $(PY-HGDISTVER_BUILD_DIR)/.built
 	rm -f $@
 	rm -rf $(STAGING_LIB_DIR)/python2.4/site-packages/pyhgdistver*
 	(cd $(@D)/2.4; \
-	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(STAGING_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	rm -rf $(STAGING_LIB_DIR)/python2.5/site-packages/pyhgdistver*
 	(cd $(@D)/2.5; \
-	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(STAGING_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	rm -rf $(STAGING_LIB_DIR)/python2.6/site-packages/pyhgdistver*
 	(cd $(@D)/2.6; \
-	$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(STAGING_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	rm -rf $(STAGING_LIB_DIR)/python2.7/site-packages/pyhgdistver*
 	(cd $(@D)/2.7; \
-	$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(STAGING_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	rm -rf $(STAGING_LIB_DIR)/python$(PYTHON3_VERSION_MAJOR)/site-packages/pyhgdistver*
 	(cd $(@D)/3; \
-	$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(STAGING_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	touch $@
 
 $(PY-HGDISTVER_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(PY-HGDISTVER_SOURCE) $(DL_DIR)/$(PY-HGDISTVER_SOURCE_OLD) make/py-hgdistver.mk
@@ -255,19 +255,19 @@ $(PY-HGDISTVER_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(PY-HGDISTVE
 	mv $(HOST_BUILD_DIR)/$(PY-HGDISTVER_DIR) $(@D)/3
 	(cd $(@D)/2.4; $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build)
 	(cd $(@D)/2.4; \
-	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(HOST_STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	(cd $(@D)/2.5; $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build)
 	(cd $(@D)/2.5; \
-	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(HOST_STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	(cd $(@D)/2.6; $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py build)
 	(cd $(@D)/2.6; \
-	$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(HOST_STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	(cd $(@D)/2.7; $(HOST_STAGING_PREFIX)/bin/python2.7 setup.py build)
 	(cd $(@D)/2.7; \
-	$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(HOST_STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	(cd $(@D)/3; $(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py build)
 	(cd $(@D)/3; \
-	$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(HOST_STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	touch $@
 
 py-hgdistver-stage: $(PY-HGDISTVER_BUILD_DIR)/.staged
@@ -351,12 +351,12 @@ $(PY3-HGDISTVER_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PY-HGDISTVER_IPK_DIR)/opt/sbin or $(PY-HGDISTVER_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PY-HGDISTVER_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PY-HGDISTVER_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PY-HGDISTVER_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PY-HGDISTVER_IPK_DIR)/opt/etc/py-hgdistver/...
-# Documentation files should be installed in $(PY-HGDISTVER_IPK_DIR)/opt/doc/py-hgdistver/...
-# Daemon startup scripts should be installed in $(PY-HGDISTVER_IPK_DIR)/opt/etc/init.d/S??py-hgdistver
+# Libraries and include files should be installed into $(PY-HGDISTVER_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PY-HGDISTVER_IPK_DIR)$(TARGET_PREFIX)/etc/py-hgdistver/...
+# Documentation files should be installed in $(PY-HGDISTVER_IPK_DIR)$(TARGET_PREFIX)/doc/py-hgdistver/...
+# Daemon startup scripts should be installed in $(PY-HGDISTVER_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??py-hgdistver
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -365,8 +365,8 @@ $(PY24-HGDISTVER_IPK): $(PY-HGDISTVER_BUILD_DIR)/.built
 	rm -rf $(PY24-HGDISTVER_IPK_DIR) $(BUILD_DIR)/py-hgdistver_*_$(TARGET_ARCH).ipk
 	(cd $(PY-HGDISTVER_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(PY24-HGDISTVER_IPK_DIR) --prefix=/opt)
-	rm -f $(PY24-HGDISTVER_IPK_DIR)/opt/bin/easy_install
+	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(PY24-HGDISTVER_IPK_DIR) --prefix=$(TARGET_PREFIX))
+	rm -f $(PY24-HGDISTVER_IPK_DIR)$(TARGET_PREFIX)/bin/easy_install
 	$(MAKE) $(PY24-HGDISTVER_IPK_DIR)/CONTROL/control
 	echo $(PY-HGDISTVER_CONFFILES) | sed -e 's/ /\n/g' > $(PY24-HGDISTVER_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-HGDISTVER_IPK_DIR)
@@ -376,8 +376,8 @@ $(PY25-HGDISTVER_IPK): $(PY-HGDISTVER_BUILD_DIR)/.built
 	rm -rf $(PY25-HGDISTVER_IPK_DIR) $(BUILD_DIR)/py25-hgdistver_*_$(TARGET_ARCH).ipk
 	(cd $(PY-HGDISTVER_BUILD_DIR)/2.5; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
-	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(PY25-HGDISTVER_IPK_DIR) --prefix=/opt)
-	rm -f $(PY25-HGDISTVER_IPK_DIR)/opt/bin/easy_install
+	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(PY25-HGDISTVER_IPK_DIR) --prefix=$(TARGET_PREFIX))
+	rm -f $(PY25-HGDISTVER_IPK_DIR)$(TARGET_PREFIX)/bin/easy_install
 	$(MAKE) $(PY25-HGDISTVER_IPK_DIR)/CONTROL/control
 	echo $(PY-HGDISTVER_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-HGDISTVER_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-HGDISTVER_IPK_DIR)
@@ -387,8 +387,8 @@ $(PY26-HGDISTVER_IPK): $(PY-HGDISTVER_BUILD_DIR)/.built
 	rm -rf $(PY26-HGDISTVER_IPK_DIR) $(BUILD_DIR)/py26-hgdistver_*_$(TARGET_ARCH).ipk
 	(cd $(PY-HGDISTVER_BUILD_DIR)/2.6; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
-	$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(PY26-HGDISTVER_IPK_DIR) --prefix=/opt)
-#	rm -f $(PY26-HGDISTVER_IPK_DIR)/opt/bin/easy_install
+	$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(PY26-HGDISTVER_IPK_DIR) --prefix=$(TARGET_PREFIX))
+#	rm -f $(PY26-HGDISTVER_IPK_DIR)$(TARGET_PREFIX)/bin/easy_install
 	$(MAKE) $(PY26-HGDISTVER_IPK_DIR)/CONTROL/control
 	echo $(PY-HGDISTVER_CONFFILES) | sed -e 's/ /\n/g' > $(PY26-HGDISTVER_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-HGDISTVER_IPK_DIR)
@@ -398,8 +398,8 @@ $(PY27-HGDISTVER_IPK): $(PY-HGDISTVER_BUILD_DIR)/.built
 	rm -rf $(PY27-HGDISTVER_IPK_DIR) $(BUILD_DIR)/py27-hgdistver_*_$(TARGET_ARCH).ipk
 	(cd $(PY-HGDISTVER_BUILD_DIR)/2.7; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.7/site-packages \
-	$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(PY27-HGDISTVER_IPK_DIR) --prefix=/opt)
-	rm -f $(PY27-HGDISTVER_IPK_DIR)/opt/bin/easy_install
+	$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(PY27-HGDISTVER_IPK_DIR) --prefix=$(TARGET_PREFIX))
+	rm -f $(PY27-HGDISTVER_IPK_DIR)$(TARGET_PREFIX)/bin/easy_install
 	$(MAKE) $(PY27-HGDISTVER_IPK_DIR)/CONTROL/control
 	echo $(PY-HGDISTVER_CONFFILES) | sed -e 's/ /\n/g' > $(PY27-HGDISTVER_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY27-HGDISTVER_IPK_DIR)
@@ -409,8 +409,8 @@ $(PY3-HGDISTVER_IPK): $(PY-HGDISTVER_BUILD_DIR)/.built
 	rm -rf $(PY3-HGDISTVER_IPK_DIR) $(BUILD_DIR)/py3-hgdistver_*_$(TARGET_ARCH).ipk
 	(cd $(PY-HGDISTVER_BUILD_DIR)/3; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python$(PYTHON3_VERSION_MAJOR)/site-packages \
-	$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(PY3-HGDISTVER_IPK_DIR) --prefix=/opt)
-	rm -f $(PY3-HGDISTVER_IPK_DIR)/opt/bin/easy_install
+	$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(PY3-HGDISTVER_IPK_DIR) --prefix=$(TARGET_PREFIX))
+	rm -f $(PY3-HGDISTVER_IPK_DIR)$(TARGET_PREFIX)/bin/easy_install
 	$(MAKE) $(PY3-HGDISTVER_IPK_DIR)/CONTROL/control
 	echo $(PY-HGDISTVER_CONFFILES) | sed -e 's/ /\n/g' > $(PY3-HGDISTVER_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY3-HGDISTVER_IPK_DIR)

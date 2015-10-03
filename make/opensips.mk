@@ -63,8 +63,8 @@ endif
 #
 # OPENSIPS_CONFFILES should be a list of user-editable files
 OPENSIPS_CONFFILES=\
-/opt/etc/opensips/opensips.cfg \
-/opt/etc/opensips/opensipsctlrc
+$(TARGET_PREFIX)/etc/opensips/opensips.cfg \
+$(TARGET_PREFIX)/etc/opensips/opensipsctlrc
 
 #
 # OPENSIPS_PATCHES should list any patches, in the the order in
@@ -268,12 +268,12 @@ $(OPENSIPS_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(OPENSIPS_IPK_DIR)/opt/sbin or $(OPENSIPS_IPK_DIR)/opt/bin
+# Binaries should be installed into $(OPENSIPS_IPK_DIR)$(TARGET_PREFIX)/sbin or $(OPENSIPS_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(OPENSIPS_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(OPENSIPS_IPK_DIR)/opt/etc/opensips/...
-# Documentation files should be installed in $(OPENSIPS_IPK_DIR)/opt/doc/opensips/...
-# Daemon startup scripts should be installed in $(OPENSIPS_IPK_DIR)/opt/etc/init.d/S??opensips
+# Libraries and include files should be installed into $(OPENSIPS_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(OPENSIPS_IPK_DIR)$(TARGET_PREFIX)/etc/opensips/...
+# Documentation files should be installed in $(OPENSIPS_IPK_DIR)$(TARGET_PREFIX)/doc/opensips/...
+# Daemon startup scripts should be installed in $(OPENSIPS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??opensips
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -291,62 +291,62 @@ $(OPENSIPS_IPK): $(OPENSIPS_BUILD_DIR)/.built
 	$(MAKE) $(OPENSIPS_IPK_DIR)/CONTROL/control
 	echo $(OPENSIPS_CONFFILES) | sed -e 's/ /\n/g' > $(OPENSIPS_IPK_DIR)/CONTROL/conffiles
 
-	$(STRIP_COMMAND) $(OPENSIPS_IPK_DIR)/opt/sbin/opensips
-	$(STRIP_COMMAND) $(OPENSIPS_IPK_DIR)/opt/sbin/opensipsunix
-	$(STRIP_COMMAND) $(OPENSIPS_IPK_DIR)/opt/sbin/osipsconfig
+	$(STRIP_COMMAND) $(OPENSIPS_IPK_DIR)$(TARGET_PREFIX)/sbin/opensips
+	$(STRIP_COMMAND) $(OPENSIPS_IPK_DIR)$(TARGET_PREFIX)/sbin/opensipsunix
+	$(STRIP_COMMAND) $(OPENSIPS_IPK_DIR)$(TARGET_PREFIX)/sbin/osipsconfig
 
-	if test -d $(OPENSIPS_IPK_DIR)/opt/lib/opensips ; then \
-		for f in `find $(OPENSIPS_IPK_DIR)/opt/lib/opensips/modules -name '*.so'`; \
+	if test -d $(OPENSIPS_IPK_DIR)$(TARGET_PREFIX)/lib/opensips ; then \
+		for f in `find $(OPENSIPS_IPK_DIR)$(TARGET_PREFIX)/lib/opensips/modules -name '*.so'`; \
 			do $(STRIP_COMMAND) $$f; done; \
 		sed -i -e 's#$(OPENSIPS_IPK_DIR)##g' \
-			$(OPENSIPS_IPK_DIR)/opt/lib/opensips/opensipsctl/opensipsctl.base; \
-		sed -i -e 's#PATH=$$PATH:/opt/sbin/#PATH=$$PATH:/opt/sbin/:/opt/bin/#' \
-			$(OPENSIPS_IPK_DIR)/opt/lib/opensips/opensipsctl/opensipsctl.base; \
+			$(OPENSIPS_IPK_DIR)$(TARGET_PREFIX)/lib/opensips/opensipsctl/opensipsctl.base; \
+		sed -i -e 's#PATH=$$PATH:$(TARGET_PREFIX)/sbin/#PATH=$$PATH:$(TARGET_PREFIX)/sbin/:$(TARGET_PREFIX)/bin/#' \
+			$(OPENSIPS_IPK_DIR)$(TARGET_PREFIX)/lib/opensips/opensipsctl/opensipsctl.base; \
 		sed -i -e 's#$(OPENSIPS_IPK_DIR)##g' \
-			$(OPENSIPS_IPK_DIR)/opt/lib/opensips/opensipsctl/opensipsdbctl.dbtext; \
+			$(OPENSIPS_IPK_DIR)$(TARGET_PREFIX)/lib/opensips/opensipsctl/opensipsdbctl.dbtext; \
 		sed -i -e 's#$(OPENSIPS_IPK_DIR)##g' \
-			$(OPENSIPS_IPK_DIR)/opt/lib/opensips/opensipsctl/opensipsdbctl.base; \
-		sed -i -e 's#PATH=$$PATH:/opt/sbin/#PATH=$$PATH:/opt/sbin/:/opt/bin/#' \
-			$(OPENSIPS_IPK_DIR)/opt/lib/opensips/opensipsctl/opensipsdbctl.base; \
+			$(OPENSIPS_IPK_DIR)$(TARGET_PREFIX)/lib/opensips/opensipsctl/opensipsdbctl.base; \
+		sed -i -e 's#PATH=$$PATH:$(TARGET_PREFIX)/sbin/#PATH=$$PATH:$(TARGET_PREFIX)/sbin/:$(TARGET_PREFIX)/bin/#' \
+			$(OPENSIPS_IPK_DIR)$(TARGET_PREFIX)/lib/opensips/opensipsctl/opensipsdbctl.base; \
 	fi
-	if test -d $(OPENSIPS_IPK_DIR)/opt/lib64/opensips ; then \
-		for f in `find $(OPENSIPS_IPK_DIR)/opt/lib64/opensips/modules -name '*.so'`; \
+	if test -d $(OPENSIPS_IPK_DIR)$(TARGET_PREFIX)/lib64/opensips ; then \
+		for f in `find $(OPENSIPS_IPK_DIR)$(TARGET_PREFIX)/lib64/opensips/modules -name '*.so'`; \
 			do $(STRIP_COMMAND) $$f; done; \
 		sed -i -e 's#$(OPENSIPS_IPK_DIR)##g' \
-			$(OPENSIPS_IPK_DIR)/opt/lib64/opensips/opensipsctl/opensipsctl.base; \
-		sed -i -e 's#PATH=$$PATH:/opt/sbin/#PATH=$$PATH:/opt/sbin/:/opt/bin/#' \
-			$(OPENSIPS_IPK_DIR)/opt/lib64/opensips/opensipsctl/opensipsctl.base; \
+			$(OPENSIPS_IPK_DIR)$(TARGET_PREFIX)/lib64/opensips/opensipsctl/opensipsctl.base; \
+		sed -i -e 's#PATH=$$PATH:$(TARGET_PREFIX)/sbin/#PATH=$$PATH:$(TARGET_PREFIX)/sbin/:$(TARGET_PREFIX)/bin/#' \
+			$(OPENSIPS_IPK_DIR)$(TARGET_PREFIX)/lib64/opensips/opensipsctl/opensipsctl.base; \
 		sed -i -e 's#$(OPENSIPS_IPK_DIR)##g' \
-			$(OPENSIPS_IPK_DIR)/opt/lib64/opensips/opensipsctl/opensipsdbctl.dbtext; \
+			$(OPENSIPS_IPK_DIR)$(TARGET_PREFIX)/lib64/opensips/opensipsctl/opensipsdbctl.dbtext; \
 		sed -i -e 's#$(OPENSIPS_IPK_DIR)##g' \
-			$(OPENSIPS_IPK_DIR)/opt/lib64/opensips/opensipsctl/opensipsdbctl.base; \
-		sed -i -e 's#PATH=$$PATH:/opt/sbin/#PATH=$$PATH:/opt/sbin/:/opt/bin/#' \
-			$(OPENSIPS_IPK_DIR)/opt/lib64/opensips/opensipsctl/opensipsdbctl.base; \
+			$(OPENSIPS_IPK_DIR)$(TARGET_PREFIX)/lib64/opensips/opensipsctl/opensipsdbctl.base; \
+		sed -i -e 's#PATH=$$PATH:$(TARGET_PREFIX)/sbin/#PATH=$$PATH:$(TARGET_PREFIX)/sbin/:$(TARGET_PREFIX)/bin/#' \
+			$(OPENSIPS_IPK_DIR)$(TARGET_PREFIX)/lib64/opensips/opensipsctl/opensipsdbctl.base; \
 	fi
 
-	sed -i -e 's#$(OPENSIPS_IPK_DIR)##g' $(OPENSIPS_IPK_DIR)/opt/sbin/opensipsdbctl
-	sed -i -e 's#PATH=$$PATH:/opt/sbin/#PATH=$$PATH:/opt/sbin/:/opt/bin/#' $(OPENSIPS_IPK_DIR)/opt/sbin/opensipsdbctl
+	sed -i -e 's#$(OPENSIPS_IPK_DIR)##g' $(OPENSIPS_IPK_DIR)$(TARGET_PREFIX)/sbin/opensipsdbctl
+	sed -i -e 's#PATH=$$PATH:$(TARGET_PREFIX)/sbin/#PATH=$$PATH:$(TARGET_PREFIX)/sbin/:$(TARGET_PREFIX)/bin/#' $(OPENSIPS_IPK_DIR)$(TARGET_PREFIX)/sbin/opensipsdbctl
 
-	sed -i -e 's#$(OPENSIPS_IPK_DIR)##g' $(OPENSIPS_IPK_DIR)/opt/sbin/opensipsctl
-	sed -i -e 's#PATH=$$PATH:/opt/sbin/#PATH=$$PATH:/opt/sbin/:/opt/bin/#' $(OPENSIPS_IPK_DIR)/opt/sbin/opensipsctl
+	sed -i -e 's#$(OPENSIPS_IPK_DIR)##g' $(OPENSIPS_IPK_DIR)$(TARGET_PREFIX)/sbin/opensipsctl
+	sed -i -e 's#PATH=$$PATH:$(TARGET_PREFIX)/sbin/#PATH=$$PATH:$(TARGET_PREFIX)/sbin/:$(TARGET_PREFIX)/bin/#' $(OPENSIPS_IPK_DIR)$(TARGET_PREFIX)/sbin/opensipsctl
 
 
 	############################
 	# $(INSTALL)ing example files #
 	############################
-	sed -i -e 's#$(OPENSIPS_IPK_DIR)##g' -e 's#/usr/local#/opt#g' $(OPENSIPS_IPK_DIR)/opt/etc/opensips/opensips.cfg
-	cp -r $(OPENSIPS_BUILD_DIR)/examples $(OPENSIPS_IPK_DIR)/opt/etc/opensips/
-	for f in $(OPENSIPS_IPK_DIR)/opt/etc/opensips/*cfg ; do sed -i -e 's#$(OPENSIPS_IPK_DIR)##g' -e 's#/usr/local#/opt#g' $$f; done
-	cp $(OPENSIPS_IPK_DIR)/opt/etc/opensips/opensips.cfg $(OPENSIPS_IPK_DIR)/opt/etc/opensips/examples
-	cp $(OPENSIPS_IPK_DIR)/opt/etc/opensips/opensipsctlrc $(OPENSIPS_IPK_DIR)/opt/etc/opensips/examples
+	sed -i -e 's#$(OPENSIPS_IPK_DIR)##g' -e 's#/usr/local#$(TARGET_PREFIX)#g' $(OPENSIPS_IPK_DIR)$(TARGET_PREFIX)/etc/opensips/opensips.cfg
+	cp -r $(OPENSIPS_BUILD_DIR)/examples $(OPENSIPS_IPK_DIR)$(TARGET_PREFIX)/etc/opensips/
+	for f in $(OPENSIPS_IPK_DIR)$(TARGET_PREFIX)/etc/opensips/*cfg ; do sed -i -e 's#$(OPENSIPS_IPK_DIR)##g' -e 's#/usr/local#$(TARGET_PREFIX)#g' $$f; done
+	cp $(OPENSIPS_IPK_DIR)$(TARGET_PREFIX)/etc/opensips/opensips.cfg $(OPENSIPS_IPK_DIR)$(TARGET_PREFIX)/etc/opensips/examples
+	cp $(OPENSIPS_IPK_DIR)$(TARGET_PREFIX)/etc/opensips/opensipsctlrc $(OPENSIPS_IPK_DIR)$(TARGET_PREFIX)/etc/opensips/examples
 
 	####################
 	# fixing man files #
 	####################
-	sed -i -e 's#$(OPENSIPS_IPK_DIR)##g' -e 's#/usr/local#/opt#g' $(OPENSIPS_IPK_DIR)/opt/share/man/man8/opensips.8
-	sed -i -e 's#$(OPENSIPS_IPK_DIR)##g' -e 's#/usr/local#/opt#g' $(OPENSIPS_IPK_DIR)/opt/share/man/man8/opensipsunix.8
-	sed -i -e 's#$(OPENSIPS_IPK_DIR)##g' -e 's#/usr/local#/opt#g' $(OPENSIPS_IPK_DIR)/opt/share/man/man5/opensips.cfg.5
-	for f in $(OPENSIPS_IPK_DIR)/opt/share/doc/opensips/README* ; do sed -i -e 's#$(OPENSIPS_IPK_DIR)##g' -e 's#/usr/local#/opt#g' $$f; done
+	sed -i -e 's#$(OPENSIPS_IPK_DIR)##g' -e 's#/usr/local#$(TARGET_PREFIX)#g' $(OPENSIPS_IPK_DIR)$(TARGET_PREFIX)/share/man/man8/opensips.8
+	sed -i -e 's#$(OPENSIPS_IPK_DIR)##g' -e 's#/usr/local#$(TARGET_PREFIX)#g' $(OPENSIPS_IPK_DIR)$(TARGET_PREFIX)/share/man/man8/opensipsunix.8
+	sed -i -e 's#$(OPENSIPS_IPK_DIR)##g' -e 's#/usr/local#$(TARGET_PREFIX)#g' $(OPENSIPS_IPK_DIR)$(TARGET_PREFIX)/share/man/man5/opensips.cfg.5
+	for f in $(OPENSIPS_IPK_DIR)$(TARGET_PREFIX)/share/doc/opensips/README* ; do sed -i -e 's#$(OPENSIPS_IPK_DIR)##g' -e 's#/usr/local#$(TARGET_PREFIX)#g' $$f; done
 	
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(OPENSIPS_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(OPENSIPS_IPK_DIR)

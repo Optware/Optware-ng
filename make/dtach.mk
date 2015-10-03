@@ -40,7 +40,7 @@ DTACH_IPK_VERSION=1
 
 #
 # DTACH_CONFFILES should be a list of user-editable files
-#DTACH_CONFFILES=/opt/etc/dtach.conf /opt/etc/init.d/SXXdtach
+#DTACH_CONFFILES=$(TARGET_PREFIX)/etc/dtach.conf $(TARGET_PREFIX)/etc/init.d/SXXdtach
 
 #
 # DTACH_PATCHES should list any patches, in the the order in
@@ -177,23 +177,23 @@ $(DTACH_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(DTACH_IPK_DIR)/opt/sbin or $(DTACH_IPK_DIR)/opt/bin
+# Binaries should be installed into $(DTACH_IPK_DIR)$(TARGET_PREFIX)/sbin or $(DTACH_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(DTACH_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(DTACH_IPK_DIR)/opt/etc/dtach/...
-# Documentation files should be installed in $(DTACH_IPK_DIR)/opt/doc/dtach/...
-# Daemon startup scripts should be installed in $(DTACH_IPK_DIR)/opt/etc/init.d/S??dtach
+# Libraries and include files should be installed into $(DTACH_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(DTACH_IPK_DIR)$(TARGET_PREFIX)/etc/dtach/...
+# Documentation files should be installed in $(DTACH_IPK_DIR)$(TARGET_PREFIX)/doc/dtach/...
+# Daemon startup scripts should be installed in $(DTACH_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??dtach
 #
 # You may need to patch your application to make it use these locations.
 #
 $(DTACH_IPK): $(DTACH_BUILD_DIR)/.built
 	rm -rf $(DTACH_IPK_DIR) $(BUILD_DIR)/dtach_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(DTACH_BUILD_DIR) DESTDIR=$(DTACH_IPK_DIR) install-strip
-	$(INSTALL) -d $(DTACH_IPK_DIR)/opt/bin
-	$(INSTALL) $(DTACH_BUILD_DIR)/dtach $(DTACH_IPK_DIR)/opt/bin/
-	$(STRIP_COMMAND) $(DTACH_IPK_DIR)/opt/bin/dtach
-	$(INSTALL) -d $(DTACH_IPK_DIR)/opt/share/man/man1
-	$(INSTALL) $(DTACH_BUILD_DIR)/dtach.1 $(DTACH_IPK_DIR)/opt/share/man/man1/
+	$(INSTALL) -d $(DTACH_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(INSTALL) $(DTACH_BUILD_DIR)/dtach $(DTACH_IPK_DIR)$(TARGET_PREFIX)/bin/
+	$(STRIP_COMMAND) $(DTACH_IPK_DIR)$(TARGET_PREFIX)/bin/dtach
+	$(INSTALL) -d $(DTACH_IPK_DIR)$(TARGET_PREFIX)/share/man/man1
+	$(INSTALL) $(DTACH_BUILD_DIR)/dtach.1 $(DTACH_IPK_DIR)$(TARGET_PREFIX)/share/man/man1/
 	$(MAKE) $(DTACH_IPK_DIR)/CONTROL/control
 #	echo $(DTACH_CONFFILES) | sed -e 's/ /\n/g' > $(DTACH_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(DTACH_IPK_DIR)

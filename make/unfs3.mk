@@ -67,9 +67,9 @@ unfs3: $(UNFS3_DIR)/unfsd
 $(UNFS3_IPK): $(UNFS3_DIR)/unfsd
 	rm -rf $(UNFS3_IPK_DIR) $(UNFS3_IPK)
 	$(MAKE) $(UNFS3_IPK_DIR)/CONTROL/control
-	$(INSTALL) -d $(UNFS3_IPK_DIR)/opt/sbin $(UNFS3_IPK_DIR)/opt/etc/init.d
-	$(STRIP_COMMAND) $(UNFS3_DIR)/unfsd -o $(UNFS3_IPK_DIR)/opt/sbin/unfsd
-	$(INSTALL) -m 755 $(SOURCE_DIR)/unfs3.rc $(UNFS3_IPK_DIR)/opt/etc/init.d/S56unfsd
+	$(INSTALL) -d $(UNFS3_IPK_DIR)$(TARGET_PREFIX)/sbin $(UNFS3_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(STRIP_COMMAND) $(UNFS3_DIR)/unfsd -o $(UNFS3_IPK_DIR)$(TARGET_PREFIX)/sbin/unfsd
+	$(INSTALL) -m 755 $(SOURCE_DIR)/unfs3.rc $(UNFS3_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S56unfsd
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(UNFS3_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(UNFS3_IPK_DIR)
 

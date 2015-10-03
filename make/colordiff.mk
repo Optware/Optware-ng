@@ -38,7 +38,7 @@ $(COLORDIFF_BUILD_DIR)/.configured: $(DL_DIR)/$(COLORDIFF_SOURCE) $(COLORDIFF_PA
 	$(COLORDIFF_UNZIP) $(DL_DIR)/$(COLORDIFF_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(COLORDIFF_DIR) $(@D)
 	sed -i -e '/chown/s/^/#/' -e '/cdiff\.1/d' $(@D)/Makefile
-	sed -i -e 's|/etc/colordiffrc|/opt&|' $(@D)/colordiff.1
+	sed -i -e 's|/etc/colordiffrc|$(TARGET_PREFIX)&|' $(@D)/colordiff.1
 #	(cd $(@D) \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
@@ -81,14 +81,14 @@ $(COLORDIFF_IPK_DIR)/CONTROL/control:
 
 $(COLORDIFF_IPK): $(COLORDIFF_BUILD_DIR)/.built
 	rm -rf $(COLORDIFF_IPK_DIR) $(BUILD_DIR)/colordiff_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(COLORDIFF_IPK_DIR)/opt/etc
+	$(INSTALL) -d $(COLORDIFF_IPK_DIR)$(TARGET_PREFIX)/etc
 	$(MAKE) -C $(COLORDIFF_BUILD_DIR) install \
 		DESTDIR=$(COLORDIFF_IPK_DIR) \
-		INSTALL_DIR=/opt/bin \
-		MAN_DIR=/opt/man/man1 \
-		ETC_DIR=/opt/etc \
+		INSTALL_DIR=$(TARGET_PREFIX)/bin \
+		MAN_DIR=$(TARGET_PREFIX)/man/man1 \
+		ETC_DIR=$(TARGET_PREFIX)/etc \
 		;
-	sed -i -e '/^#!/s|/usr/bin/perl|/opt/bin/perl|' $(COLORDIFF_IPK_DIR)/opt/bin/colordiff
+	sed -i -e '/^#!/s|/usr/bin/perl|$(TARGET_PREFIX)/bin/perl|' $(COLORDIFF_IPK_DIR)$(TARGET_PREFIX)/bin/colordiff
 	$(MAKE) $(COLORDIFF_IPK_DIR)/CONTROL/control
 	echo $(COLORDIFF_CONFFILES) | sed -e 's/ /\n/g' > $(COLORDIFF_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(COLORDIFF_IPK_DIR)

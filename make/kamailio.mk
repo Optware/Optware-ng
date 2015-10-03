@@ -51,13 +51,13 @@ KAMAILIO_IPK_VERSION=1
 #
 # KAMAILIO_CONFFILES should be a list of user-editable files
 KAMAILIO_CONFFILES=\
-/opt/etc/kamailio/kamailio.cfg \
-/opt/etc/kamailio/kamctlrc \
-/opt/etc/kamailio/dictionary.kamailio \
-/opt/etc/kamailio/kamailio-selfsigned.key \
-/opt/etc/kamailio/kamailio-selfsigned.pem \
-/opt/etc/kamailio/pi_framework.xml \
-/opt/etc/kamailio/tls.cfg
+$(TARGET_PREFIX)/etc/kamailio/kamailio.cfg \
+$(TARGET_PREFIX)/etc/kamailio/kamctlrc \
+$(TARGET_PREFIX)/etc/kamailio/dictionary.kamailio \
+$(TARGET_PREFIX)/etc/kamailio/kamailio-selfsigned.key \
+$(TARGET_PREFIX)/etc/kamailio/kamailio-selfsigned.pem \
+$(TARGET_PREFIX)/etc/kamailio/pi_framework.xml \
+$(TARGET_PREFIX)/etc/kamailio/tls.cfg
 
 #
 # KAMAILIO_PATCHES should list any patches, in the the order in
@@ -252,12 +252,12 @@ $(KAMAILIO_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(KAMAILIO_IPK_DIR)/opt/sbin or $(KAMAILIO_IPK_DIR)/opt/bin
+# Binaries should be installed into $(KAMAILIO_IPK_DIR)$(TARGET_PREFIX)/sbin or $(KAMAILIO_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(KAMAILIO_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(KAMAILIO_IPK_DIR)/opt/etc/kamailio/...
-# Documentation files should be installed in $(KAMAILIO_IPK_DIR)/opt/doc/kamailio/...
-# Daemon startup scripts should be installed in $(KAMAILIO_IPK_DIR)/opt/etc/init.d/S??kamailio
+# Libraries and include files should be installed into $(KAMAILIO_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(KAMAILIO_IPK_DIR)$(TARGET_PREFIX)/etc/kamailio/...
+# Documentation files should be installed in $(KAMAILIO_IPK_DIR)$(TARGET_PREFIX)/doc/kamailio/...
+# Daemon startup scripts should be installed in $(KAMAILIO_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??kamailio
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -273,42 +273,42 @@ $(KAMAILIO_IPK): $(KAMAILIO_BUILD_DIR)/.built
 	$(MAKE) $(KAMAILIO_IPK_DIR)/CONTROL/control
 	echo $(KAMAILIO_CONFFILES) | sed -e 's/ /\n/g' > $(KAMAILIO_IPK_DIR)/CONTROL/conffiles
 
-	for f in `find $(KAMAILIO_IPK_DIR)/opt/lib/kamailio/modules -name '*.so'`; do $(STRIP_COMMAND) $$f; done
-	for f in `find $(KAMAILIO_IPK_DIR)/opt/lib/kamailio/modules_k -name '*.so'`; do $(STRIP_COMMAND) $$f; done
-	for f in `find $(KAMAILIO_IPK_DIR)/opt/lib/kamailio -name '*.so'`; do $(STRIP_COMMAND) $$f; done
-	$(STRIP_COMMAND) $(KAMAILIO_IPK_DIR)/opt/sbin/kamailio
-	$(STRIP_COMMAND) $(KAMAILIO_IPK_DIR)/opt/sbin/kamcmd
+	for f in `find $(KAMAILIO_IPK_DIR)$(TARGET_PREFIX)/lib/kamailio/modules -name '*.so'`; do $(STRIP_COMMAND) $$f; done
+	for f in `find $(KAMAILIO_IPK_DIR)$(TARGET_PREFIX)/lib/kamailio/modules_k -name '*.so'`; do $(STRIP_COMMAND) $$f; done
+	for f in `find $(KAMAILIO_IPK_DIR)$(TARGET_PREFIX)/lib/kamailio -name '*.so'`; do $(STRIP_COMMAND) $$f; done
+	$(STRIP_COMMAND) $(KAMAILIO_IPK_DIR)$(TARGET_PREFIX)/sbin/kamailio
+	$(STRIP_COMMAND) $(KAMAILIO_IPK_DIR)$(TARGET_PREFIX)/sbin/kamcmd
 
-	sed -i -e 's#$(KAMAILIO_IPK_DIR)##g' $(KAMAILIO_IPK_DIR)/opt/sbin/kamdbctl
-	sed -i -e 's#PATH=$$PATH:/opt/sbin/#PATH=$$PATH:/opt/sbin/:/opt/bin/#' $(KAMAILIO_IPK_DIR)/opt/sbin/kamdbctl
+	sed -i -e 's#$(KAMAILIO_IPK_DIR)##g' $(KAMAILIO_IPK_DIR)$(TARGET_PREFIX)/sbin/kamdbctl
+	sed -i -e 's#PATH=$$PATH:$(TARGET_PREFIX)/sbin/#PATH=$$PATH:$(TARGET_PREFIX)/sbin/:$(TARGET_PREFIX)/bin/#' $(KAMAILIO_IPK_DIR)$(TARGET_PREFIX)/sbin/kamdbctl
 
-	sed -i -e 's#$(KAMAILIO_IPK_DIR)##g' $(KAMAILIO_IPK_DIR)/opt/sbin/kamctl
-	sed -i -e 's#PATH=$$PATH:/opt/sbin/#PATH=$$PATH:/opt/sbin/:/opt/bin/#' $(KAMAILIO_IPK_DIR)/opt/sbin/kamctl
+	sed -i -e 's#$(KAMAILIO_IPK_DIR)##g' $(KAMAILIO_IPK_DIR)$(TARGET_PREFIX)/sbin/kamctl
+	sed -i -e 's#PATH=$$PATH:$(TARGET_PREFIX)/sbin/#PATH=$$PATH:$(TARGET_PREFIX)/sbin/:$(TARGET_PREFIX)/bin/#' $(KAMAILIO_IPK_DIR)$(TARGET_PREFIX)/sbin/kamctl
 
-	sed -i -e 's#$(KAMAILIO_IPK_DIR)##g' $(KAMAILIO_IPK_DIR)/opt/lib/kamailio/kamctl/kamctl.base
-	sed -i -e 's#PATH=$$PATH:/opt/sbin/#PATH=$$PATH:/opt/sbin/:/opt/bin/#' $(KAMAILIO_IPK_DIR)/opt/lib/kamailio/kamctl/kamctl.base
+	sed -i -e 's#$(KAMAILIO_IPK_DIR)##g' $(KAMAILIO_IPK_DIR)$(TARGET_PREFIX)/lib/kamailio/kamctl/kamctl.base
+	sed -i -e 's#PATH=$$PATH:$(TARGET_PREFIX)/sbin/#PATH=$$PATH:$(TARGET_PREFIX)/sbin/:$(TARGET_PREFIX)/bin/#' $(KAMAILIO_IPK_DIR)$(TARGET_PREFIX)/lib/kamailio/kamctl/kamctl.base
 
-	sed -i -e 's#$(KAMAILIO_IPK_DIR)##g' $(KAMAILIO_IPK_DIR)/opt/lib/kamailio/kamctl/kamdbctl.base
-	sed -i -e 's#PATH=$$PATH:/opt/sbin/#PATH=$$PATH:/opt/sbin/:/opt/bin/#' $(KAMAILIO_IPK_DIR)/opt/lib/kamailio/kamctl/kamdbctl.base
+	sed -i -e 's#$(KAMAILIO_IPK_DIR)##g' $(KAMAILIO_IPK_DIR)$(TARGET_PREFIX)/lib/kamailio/kamctl/kamdbctl.base
+	sed -i -e 's#PATH=$$PATH:$(TARGET_PREFIX)/sbin/#PATH=$$PATH:$(TARGET_PREFIX)/sbin/:$(TARGET_PREFIX)/bin/#' $(KAMAILIO_IPK_DIR)$(TARGET_PREFIX)/lib/kamailio/kamctl/kamdbctl.base
 
 	############################
 	# $(INSTALL)ing example files #
 	############################
-	sed -i -e 's#$(KAMAILIO_IPK_DIR)##g' -e 's#/usr/local#/opt#g' $(KAMAILIO_IPK_DIR)/opt/etc/kamailio/kamailio.cfg
-	cp -r $(KAMAILIO_BUILD_DIR)/examples $(KAMAILIO_IPK_DIR)/opt/etc/kamailio/
-	for f in $(KAMAILIO_IPK_DIR)/opt/etc/kamailio/*cfg ; do sed -i -e 's#$(KAMAILIO_IPK_DIR)##g' -e 's#/usr/local#/opt#g' $$f; done
-	cp $(KAMAILIO_IPK_DIR)/opt/etc/kamailio/kamailio.cfg $(KAMAILIO_IPK_DIR)/opt/etc/kamailio/examples
-	cp $(KAMAILIO_IPK_DIR)/opt/etc/kamailio/kamctlrc $(KAMAILIO_IPK_DIR)/opt/etc/kamailio/examples
+	sed -i -e 's#$(KAMAILIO_IPK_DIR)##g' -e 's#/usr/local#$(TARGET_PREFIX)#g' $(KAMAILIO_IPK_DIR)$(TARGET_PREFIX)/etc/kamailio/kamailio.cfg
+	cp -r $(KAMAILIO_BUILD_DIR)/examples $(KAMAILIO_IPK_DIR)$(TARGET_PREFIX)/etc/kamailio/
+	for f in $(KAMAILIO_IPK_DIR)$(TARGET_PREFIX)/etc/kamailio/*cfg ; do sed -i -e 's#$(KAMAILIO_IPK_DIR)##g' -e 's#/usr/local#$(TARGET_PREFIX)#g' $$f; done
+	cp $(KAMAILIO_IPK_DIR)$(TARGET_PREFIX)/etc/kamailio/kamailio.cfg $(KAMAILIO_IPK_DIR)$(TARGET_PREFIX)/etc/kamailio/examples
+	cp $(KAMAILIO_IPK_DIR)$(TARGET_PREFIX)/etc/kamailio/kamctlrc $(KAMAILIO_IPK_DIR)$(TARGET_PREFIX)/etc/kamailio/examples
 
 	####################
 	# fixing man files #
 	####################
-	sed -i -e 's#$(KAMAILIO_IPK_DIR)##g' -e 's#/usr/local#/opt#g' $(KAMAILIO_IPK_DIR)/opt/share/man/man8/kamailio.8
-	sed -i -e 's#$(KAMAILIO_IPK_DIR)##g' -e 's#/usr/local#/opt#g' $(KAMAILIO_IPK_DIR)/opt/share/man/man8/kamctl.8
-	sed -i -e 's#$(KAMAILIO_IPK_DIR)##g' -e 's#/usr/local#/opt#g' $(KAMAILIO_IPK_DIR)/opt/share/man/man8/kamdbctl.8
-	sed -i -e 's#$(KAMAILIO_IPK_DIR)##g' -e 's#/usr/local#/opt#g' $(KAMAILIO_IPK_DIR)/opt/share/man/man5/kamailio.cfg.5
-	for f in $(KAMAILIO_IPK_DIR)/opt/share/doc/kamailio/README* ; do sed -i -e 's#$(KAMAILIO_IPK_DIR)##g' -e 's#/usr/local#/opt#g' $$f; done
-	sed -i -e 's#$(KAMAILIO_IPK_DIR)##g' -e 's#/usr/local#/opt#g' $(KAMAILIO_IPK_DIR)/opt/share/doc/kamailio/INSTALL
+	sed -i -e 's#$(KAMAILIO_IPK_DIR)##g' -e 's#/usr/local#$(TARGET_PREFIX)#g' $(KAMAILIO_IPK_DIR)$(TARGET_PREFIX)/share/man/man8/kamailio.8
+	sed -i -e 's#$(KAMAILIO_IPK_DIR)##g' -e 's#/usr/local#$(TARGET_PREFIX)#g' $(KAMAILIO_IPK_DIR)$(TARGET_PREFIX)/share/man/man8/kamctl.8
+	sed -i -e 's#$(KAMAILIO_IPK_DIR)##g' -e 's#/usr/local#$(TARGET_PREFIX)#g' $(KAMAILIO_IPK_DIR)$(TARGET_PREFIX)/share/man/man8/kamdbctl.8
+	sed -i -e 's#$(KAMAILIO_IPK_DIR)##g' -e 's#/usr/local#$(TARGET_PREFIX)#g' $(KAMAILIO_IPK_DIR)$(TARGET_PREFIX)/share/man/man5/kamailio.cfg.5
+	for f in $(KAMAILIO_IPK_DIR)$(TARGET_PREFIX)/share/doc/kamailio/README* ; do sed -i -e 's#$(KAMAILIO_IPK_DIR)##g' -e 's#/usr/local#$(TARGET_PREFIX)#g' $$f; done
+	sed -i -e 's#$(KAMAILIO_IPK_DIR)##g' -e 's#/usr/local#$(TARGET_PREFIX)#g' $(KAMAILIO_IPK_DIR)$(TARGET_PREFIX)/share/doc/kamailio/INSTALL
 
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(KAMAILIO_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(KAMAILIO_IPK_DIR)

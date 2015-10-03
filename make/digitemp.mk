@@ -31,7 +31,7 @@ DIGITEMP_IPK_VERSION=1
 
 #
 # DIGITEMP_CONFFILES should be a list of user-editable files
-# DIGITEMP_CONFFILES=/opt/etc/digitemp.conf /opt/etc/init.d/SXXdigitemp
+# DIGITEMP_CONFFILES=$(TARGET_PREFIX)/etc/digitemp.conf $(TARGET_PREFIX)/etc/init.d/SXXdigitemp
 
 #
 # DIGITEMP_PATCHES should list any patches, in the the order in
@@ -161,24 +161,24 @@ $(DIGITEMP_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(DIGITEMP_IPK_DIR)/opt/sbin or $(DIGITEMP_IPK_DIR)/opt/bin
+# Binaries should be installed into $(DIGITEMP_IPK_DIR)$(TARGET_PREFIX)/sbin or $(DIGITEMP_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(DIGITEMP_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(DIGITEMP_IPK_DIR)/opt/etc/digitemp/...
-# Documentation files should be installed in $(DIGITEMP_IPK_DIR)/opt/doc/digitemp/...
-# Daemon startup scripts should be installed in $(DIGITEMP_IPK_DIR)/opt/etc/init.d/S??digitemp
+# Libraries and include files should be installed into $(DIGITEMP_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(DIGITEMP_IPK_DIR)$(TARGET_PREFIX)/etc/digitemp/...
+# Documentation files should be installed in $(DIGITEMP_IPK_DIR)$(TARGET_PREFIX)/doc/digitemp/...
+# Daemon startup scripts should be installed in $(DIGITEMP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??digitemp
 #
 # You may need to patch your application to make it use these locations.
 #
 $(DIGITEMP_IPK): $(DIGITEMP_BUILD_DIR)/.built
 	rm -rf $(DIGITEMP_IPK_DIR) $(BUILD_DIR)/digitemp_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(DIGITEMP_IPK_DIR)/opt/bin
-	$(INSTALL) -m 755 $(DIGITEMP_BUILD_DIR)/digitemp_DS9097 $(DIGITEMP_IPK_DIR)/opt/bin
-	$(INSTALL) -m 755 $(DIGITEMP_BUILD_DIR)/digitemp_DS9097U $(DIGITEMP_IPK_DIR)/opt/bin
-	$(INSTALL) -m 755 $(DIGITEMP_BUILD_DIR)/digitemp_DS2490 $(DIGITEMP_IPK_DIR)/opt/bin
-	$(STRIP_COMMAND) $(DIGITEMP_IPK_DIR)/opt/bin/digitemp_DS9097
-	$(STRIP_COMMAND) $(DIGITEMP_IPK_DIR)/opt/bin/digitemp_DS9097U
-	$(STRIP_COMMAND) $(DIGITEMP_IPK_DIR)/opt/bin/digitemp_DS2490
+	$(INSTALL) -d $(DIGITEMP_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(INSTALL) -m 755 $(DIGITEMP_BUILD_DIR)/digitemp_DS9097 $(DIGITEMP_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(INSTALL) -m 755 $(DIGITEMP_BUILD_DIR)/digitemp_DS9097U $(DIGITEMP_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(INSTALL) -m 755 $(DIGITEMP_BUILD_DIR)/digitemp_DS2490 $(DIGITEMP_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(STRIP_COMMAND) $(DIGITEMP_IPK_DIR)$(TARGET_PREFIX)/bin/digitemp_DS9097
+	$(STRIP_COMMAND) $(DIGITEMP_IPK_DIR)$(TARGET_PREFIX)/bin/digitemp_DS9097U
+	$(STRIP_COMMAND) $(DIGITEMP_IPK_DIR)$(TARGET_PREFIX)/bin/digitemp_DS2490
 	$(MAKE) $(DIGITEMP_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(DIGITEMP_IPK_DIR)
 

@@ -162,12 +162,12 @@ $(EVENTLOG_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(EVENTLOG_IPK_DIR)/opt/sbin or $(EVENTLOG_IPK_DIR)/opt/bin
+# Binaries should be installed into $(EVENTLOG_IPK_DIR)$(TARGET_PREFIX)/sbin or $(EVENTLOG_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(EVENTLOG_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(EVENTLOG_IPK_DIR)/opt/etc/eventlog/...
-# Documentation files should be installed in $(EVENTLOG_IPK_DIR)/opt/doc/eventlog/...
-# Daemon startup scripts should be installed in $(EVENTLOG_IPK_DIR)/opt/etc/init.d/S??eventlog
+# Libraries and include files should be installed into $(EVENTLOG_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(EVENTLOG_IPK_DIR)$(TARGET_PREFIX)/etc/eventlog/...
+# Documentation files should be installed in $(EVENTLOG_IPK_DIR)$(TARGET_PREFIX)/doc/eventlog/...
+# Daemon startup scripts should be installed in $(EVENTLOG_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??eventlog
 #
 # You may need to patch your application to make it use these locations.
 #

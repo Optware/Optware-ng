@@ -43,7 +43,7 @@ PLOWSHARE_IPK_VERSION=1
 
 #
 # PLOWSHARE_CONFFILES should be a list of user-editable files
-#PLOWSHARE_CONFFILES=/opt/etc/plowshare.conf /opt/etc/init.d/SXXplowshare
+#PLOWSHARE_CONFFILES=$(TARGET_PREFIX)/etc/plowshare.conf $(TARGET_PREFIX)/etc/init.d/SXXplowshare
 
 #
 # PLOWSHARE_PATCHES should list any patches, in the the order in
@@ -134,9 +134,9 @@ $(PLOWSHARE_BUILD_DIR)/.configured: $(DL_DIR)/$(PLOWSHARE_SOURCE) $(PLOWSHARE_PA
 	if test "$(BUILD_DIR)/$(PLOWSHARE_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(PLOWSHARE_DIR) $(@D) ; \
 	fi
-#	sed -i -e '/^USRDIR=/s|/usr/local|/opt|' $(@D)/setup.sh
+#	sed -i -e '/^USRDIR=/s|/usr/local|$(TARGET_PREFIX)|' $(@D)/setup.sh
 	find $(@D)/src -name '*.sh' | \
-		xargs sed -i -e '1s|#!.*/bash|#!/opt/bin/bash|'
+		xargs sed -i -e '1s|#!.*/bash|#!$(TARGET_PREFIX)/bin/bash|'
 #	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PLOWSHARE_CPPFLAGS)" \
@@ -203,12 +203,12 @@ endif
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PLOWSHARE_IPK_DIR)/opt/sbin or $(PLOWSHARE_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PLOWSHARE_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PLOWSHARE_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PLOWSHARE_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PLOWSHARE_IPK_DIR)/opt/etc/plowshare/...
-# Documentation files should be installed in $(PLOWSHARE_IPK_DIR)/opt/doc/plowshare/...
-# Daemon startup scripts should be installed in $(PLOWSHARE_IPK_DIR)/opt/etc/init.d/S??plowshare
+# Libraries and include files should be installed into $(PLOWSHARE_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PLOWSHARE_IPK_DIR)$(TARGET_PREFIX)/etc/plowshare/...
+# Documentation files should be installed in $(PLOWSHARE_IPK_DIR)$(TARGET_PREFIX)/doc/plowshare/...
+# Daemon startup scripts should be installed in $(PLOWSHARE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??plowshare
 #
 # You may need to patch your application to make it use these locations.
 #

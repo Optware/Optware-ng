@@ -40,7 +40,7 @@ PALANTIR_IPK_VERSION=2
 
 #
 # PALANTIR_CONFFILES should be a list of user-editable files
-PALANTIR_CONFFILES=/opt/etc/palantir.conf
+PALANTIR_CONFFILES=$(TARGET_PREFIX)/etc/palantir.conf
 
 #
 # PALANTIR_PATCHES should list any patches, in the the order in
@@ -178,12 +178,12 @@ $(PALANTIR_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PALANTIR_IPK_DIR)/opt/sbin or $(PALANTIR_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PALANTIR_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PALANTIR_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PALANTIR_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PALANTIR_IPK_DIR)/opt/etc/palantir/...
-# Documentation files should be installed in $(PALANTIR_IPK_DIR)/opt/doc/palantir/...
-# Daemon startup scripts should be installed in $(PALANTIR_IPK_DIR)/opt/etc/init.d/S??palantir
+# Libraries and include files should be installed into $(PALANTIR_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PALANTIR_IPK_DIR)$(TARGET_PREFIX)/etc/palantir/...
+# Documentation files should be installed in $(PALANTIR_IPK_DIR)$(TARGET_PREFIX)/doc/palantir/...
+# Daemon startup scripts should be installed in $(PALANTIR_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??palantir
 #
 # You may need to patch your application to make it use these locations.
 
@@ -191,22 +191,22 @@ $(PALANTIR_IPK_DIR)/CONTROL/control:
 #
 $(PALANTIR_IPK): $(PALANTIR_BUILD_DIR)/.built
 	rm -rf $(PALANTIR_IPK_DIR) $(BUILD_DIR)/palantir_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(PALANTIR_IPK_DIR)/opt/bin
-	$(INSTALL) -m 755 $(PALANTIR_BUILD_DIR)/server/palantir $(PALANTIR_IPK_DIR)/opt/bin
-	$(INSTALL) -m 755 $(PALANTIR_BUILD_DIR)/server/tools/sysfeed $(PALANTIR_IPK_DIR)/opt/bin
-	$(STRIP_COMMAND) $(PALANTIR_IPK_DIR)/opt/bin/palantir
-	$(STRIP_COMMAND) $(PALANTIR_IPK_DIR)/opt/bin/sysfeed
-	$(INSTALL) -d $(PALANTIR_IPK_DIR)/opt/etc/
-	$(INSTALL) -m 644 $(PALANTIR_BUILD_DIR)/server/palantir-mips.conf.sample $(PALANTIR_IPK_DIR)/opt/etc/palantir.conf
-	$(INSTALL) -d $(PALANTIR_IPK_DIR)/opt/share/palantir
-	$(INSTALL) -m 644 $(PALANTIR_BUILD_DIR)/server/pict/unavail.jpg $(PALANTIR_IPK_DIR)/opt/share/palantir
-	mkfifo $(PALANTIR_IPK_DIR)/opt/share/palantir/telmu_pipe
-	$(INSTALL) -d $(PALANTIR_IPK_DIR)/opt/man/man1
-	$(INSTALL) -d $(PALANTIR_IPK_DIR)/opt/man/man5
-	$(INSTALL) -m 644 $(PALANTIR_BUILD_DIR)/server/man/palantir.1 $(PALANTIR_IPK_DIR)/opt/man/man1
-	$(INSTALL) -m 644 $(PALANTIR_BUILD_DIR)/server/man/palantir.conf.5 $(PALANTIR_IPK_DIR)/opt/man/man5
-#	$(INSTALL) -d $(PALANTIR_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(PALANTIR_SOURCE_DIR)/rc.palantir $(PALANTIR_IPK_DIR)/opt/etc/init.d/SXXpalantir
+	$(INSTALL) -d $(PALANTIR_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(INSTALL) -m 755 $(PALANTIR_BUILD_DIR)/server/palantir $(PALANTIR_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(INSTALL) -m 755 $(PALANTIR_BUILD_DIR)/server/tools/sysfeed $(PALANTIR_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(STRIP_COMMAND) $(PALANTIR_IPK_DIR)$(TARGET_PREFIX)/bin/palantir
+	$(STRIP_COMMAND) $(PALANTIR_IPK_DIR)$(TARGET_PREFIX)/bin/sysfeed
+	$(INSTALL) -d $(PALANTIR_IPK_DIR)$(TARGET_PREFIX)/etc/
+	$(INSTALL) -m 644 $(PALANTIR_BUILD_DIR)/server/palantir-mips.conf.sample $(PALANTIR_IPK_DIR)$(TARGET_PREFIX)/etc/palantir.conf
+	$(INSTALL) -d $(PALANTIR_IPK_DIR)$(TARGET_PREFIX)/share/palantir
+	$(INSTALL) -m 644 $(PALANTIR_BUILD_DIR)/server/pict/unavail.jpg $(PALANTIR_IPK_DIR)$(TARGET_PREFIX)/share/palantir
+	mkfifo $(PALANTIR_IPK_DIR)$(TARGET_PREFIX)/share/palantir/telmu_pipe
+	$(INSTALL) -d $(PALANTIR_IPK_DIR)$(TARGET_PREFIX)/man/man1
+	$(INSTALL) -d $(PALANTIR_IPK_DIR)$(TARGET_PREFIX)/man/man5
+	$(INSTALL) -m 644 $(PALANTIR_BUILD_DIR)/server/man/palantir.1 $(PALANTIR_IPK_DIR)$(TARGET_PREFIX)/man/man1
+	$(INSTALL) -m 644 $(PALANTIR_BUILD_DIR)/server/man/palantir.conf.5 $(PALANTIR_IPK_DIR)$(TARGET_PREFIX)/man/man5
+#	$(INSTALL) -d $(PALANTIR_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(PALANTIR_SOURCE_DIR)/rc.palantir $(PALANTIR_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXpalantir
 	$(MAKE) $(PALANTIR_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(PALANTIR_SOURCE_DIR)/postinst $(PALANTIR_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 755 $(PALANTIR_SOURCE_DIR)/prerm $(PALANTIR_IPK_DIR)/CONTROL/prerm

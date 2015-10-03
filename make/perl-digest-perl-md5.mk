@@ -86,7 +86,7 @@ $(PERL-DIGEST-PERL-MD5_IPK): $(PERL-DIGEST-PERL-MD5_BUILD_DIR)/.built
 	rm -rf $(PERL-DIGEST-PERL-MD5_IPK_DIR) $(BUILD_DIR)/perl-digest-perl-md5_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PERL-DIGEST-PERL-MD5_BUILD_DIR) DESTDIR=$(PERL-DIGEST-PERL-MD5_IPK_DIR) install
 	find $(PERL-DIGEST-PERL-MD5_IPK_DIR)$(TARGET_PREFIX) -name 'perllocal.pod' -exec rm -f {} \;
-	(cd $(PERL-DIGEST-PERL-MD5_IPK_DIR)/opt/lib/perl5 ; \
+	(cd $(PERL-DIGEST-PERL-MD5_IPK_DIR)$(TARGET_PREFIX)/lib/perl5 ; \
 		find . -name '*.so' -exec chmod +w {} \; ; \
 		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
 		find . -name '*.so' -exec chmod -w {} \; ; \

@@ -45,7 +45,7 @@ LIBACL_IPK_VERSION=1
 
 #
 # LIBACL_CONFFILES should be a list of user-editable files
-#LIBACL_CONFFILES=/opt/etc/libacl.conf /opt/etc/init.d/SXXlibacl
+#LIBACL_CONFFILES=$(TARGET_PREFIX)/etc/libacl.conf $(TARGET_PREFIX)/etc/init.d/SXXlibacl
 
 #
 # LIBACL_PATCHES should list any patches, in the the order in
@@ -177,24 +177,24 @@ $(LIBACL_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LIBACL_IPK_DIR)/opt/sbin or $(LIBACL_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LIBACL_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LIBACL_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LIBACL_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LIBACL_IPK_DIR)/opt/etc/libacl/...
-# Documentation files should be installed in $(LIBACL_IPK_DIR)/opt/doc/libacl/...
-# Daemon startup scripts should be installed in $(LIBACL_IPK_DIR)/opt/etc/init.d/S??libacl
+# Libraries and include files should be installed into $(LIBACL_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LIBACL_IPK_DIR)$(TARGET_PREFIX)/etc/libacl/...
+# Documentation files should be installed in $(LIBACL_IPK_DIR)$(TARGET_PREFIX)/doc/libacl/...
+# Daemon startup scripts should be installed in $(LIBACL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??libacl
 #
 # You may need to patch your application to make it use these locations.
 #
 $(LIBACL_IPK): $(LIBACL_BUILD_DIR)/.built
 	rm -rf $(LIBACL_IPK_DIR) $(BUILD_DIR)/libacl_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBACL_BUILD_DIR) DIST_ROOT=$(LIBACL_IPK_DIR) install-lib install-dev
-	rm -f $(LIBACL_IPK_DIR)/opt/lib/libacl.la
-	$(STRIP_COMMAND) $(LIBACL_IPK_DIR)/opt/lib/*.so
-#	$(INSTALL) -d $(LIBACL_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(LIBACL_SOURCE_DIR)/libacl.conf $(LIBACL_IPK_DIR)/opt/etc/libacl.conf
-#	$(INSTALL) -d $(LIBACL_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(LIBACL_SOURCE_DIR)/rc.libacl $(LIBACL_IPK_DIR)/opt/etc/init.d/SXXlibacl
+	rm -f $(LIBACL_IPK_DIR)$(TARGET_PREFIX)/lib/libacl.la
+	$(STRIP_COMMAND) $(LIBACL_IPK_DIR)$(TARGET_PREFIX)/lib/*.so
+#	$(INSTALL) -d $(LIBACL_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(LIBACL_SOURCE_DIR)/libacl.conf $(LIBACL_IPK_DIR)$(TARGET_PREFIX)/etc/libacl.conf
+#	$(INSTALL) -d $(LIBACL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(LIBACL_SOURCE_DIR)/rc.libacl $(LIBACL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibacl
 	$(MAKE) $(LIBACL_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(LIBACL_SOURCE_DIR)/postinst $(LIBACL_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 755 $(LIBACL_SOURCE_DIR)/prerm $(LIBACL_IPK_DIR)/CONTROL/prerm

@@ -34,7 +34,7 @@ MEDIAWIKI_DEPENDS=php-mysql, mysql
 MEDIAWIKI_SUGGESTS=php-apache, eaccelerator
 MEDIAWIKI_CONFLICTS=
 
-MEDIAWIKI_INSTALL_DIR=/opt/share/www/mediawiki
+MEDIAWIKI_INSTALL_DIR=$(TARGET_PREFIX)/share/www/mediawiki
 
 #
 # MEDIAWIKI_IPK_VERSION should be incremented when the ipk changes.
@@ -160,12 +160,12 @@ $(MEDIAWIKI_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(MEDIAWIKI_IPK_DIR)/opt/sbin or $(MEDIAWIKI_IPK_DIR)/opt/bin
+# Binaries should be installed into $(MEDIAWIKI_IPK_DIR)$(TARGET_PREFIX)/sbin or $(MEDIAWIKI_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(MEDIAWIKI_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(MEDIAWIKI_IPK_DIR)/opt/etc/mediawiki/...
-# Documentation files should be installed in $(MEDIAWIKI_IPK_DIR)/opt/doc/mediawiki/...
-# Daemon startup scripts should be installed in $(MEDIAWIKI_IPK_DIR)/opt/etc/init.d/S??mediawiki
+# Libraries and include files should be installed into $(MEDIAWIKI_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(MEDIAWIKI_IPK_DIR)$(TARGET_PREFIX)/etc/mediawiki/...
+# Documentation files should be installed in $(MEDIAWIKI_IPK_DIR)$(TARGET_PREFIX)/doc/mediawiki/...
+# Daemon startup scripts should be installed in $(MEDIAWIKI_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??mediawiki
 #
 # You may need to patch your application to make it use these locations.
 #

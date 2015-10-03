@@ -40,7 +40,7 @@ BSDGAMES_IPK_VERSION=2
 
 #
 # BSDGAMES_CONFFILES should be a list of user-editable files
-#BSDGAMES_CONFFILES=/opt/etc/bsdgames.conf /opt/etc/init.d/SXXbsdgames
+#BSDGAMES_CONFFILES=$(TARGET_PREFIX)/etc/bsdgames.conf $(TARGET_PREFIX)/etc/init.d/SXXbsdgames
 
 #
 # BSDGAMES_PATCHES should list any patches, in the the order in
@@ -212,12 +212,12 @@ $(BSDGAMES_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(BSDGAMES_IPK_DIR)/opt/sbin or $(BSDGAMES_IPK_DIR)/opt/bin
+# Binaries should be installed into $(BSDGAMES_IPK_DIR)$(TARGET_PREFIX)/sbin or $(BSDGAMES_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(BSDGAMES_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(BSDGAMES_IPK_DIR)/opt/etc/bsdgames/...
-# Documentation files should be installed in $(BSDGAMES_IPK_DIR)/opt/doc/bsdgames/...
-# Daemon startup scripts should be installed in $(BSDGAMES_IPK_DIR)/opt/etc/init.d/S??bsdgames
+# Libraries and include files should be installed into $(BSDGAMES_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(BSDGAMES_IPK_DIR)$(TARGET_PREFIX)/etc/bsdgames/...
+# Documentation files should be installed in $(BSDGAMES_IPK_DIR)$(TARGET_PREFIX)/doc/bsdgames/...
+# Daemon startup scripts should be installed in $(BSDGAMES_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??bsdgames
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -227,8 +227,8 @@ $(BSDGAMES_IPK): $(BSDGAMES_BUILD_DIR)/.built
 		INSTALL_PREFIX=$(BSDGAMES_IPK_DIR) \
 		;
 	$(STRIP_COMMAND) \
-		$(BSDGAMES_IPK_DIR)/opt/bin/strfile \
-		`ls $(BSDGAMES_IPK_DIR)/opt/games/* | egrep -v '/countmail|/rot13|/wargames|/wtf'`
+		$(BSDGAMES_IPK_DIR)$(TARGET_PREFIX)/bin/strfile \
+		`ls $(BSDGAMES_IPK_DIR)$(TARGET_PREFIX)/games/* | egrep -v '/countmail|/rot13|/wargames|/wtf'`
 	$(MAKE) $(BSDGAMES_IPK_DIR)/CONTROL/control
 	echo $(BSDGAMES_CONFFILES) | sed -e 's/ /\n/g' > $(BSDGAMES_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BSDGAMES_IPK_DIR)

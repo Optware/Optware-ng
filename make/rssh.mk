@@ -40,8 +40,8 @@ RSSH_IPK_VERSION=1
 
 #
 # RSSH_CONFFILES should be a list of user-editable files
-RSSH_CONFFILES=/opt/etc/rssh.conf
-#/opt/etc/init.d/SXXrssh
+RSSH_CONFFILES=$(TARGET_PREFIX)/etc/rssh.conf
+#$(TARGET_PREFIX)/etc/init.d/SXXrssh
 
 #
 # RSSH_PATCHES should list any patches, in the the order in
@@ -131,10 +131,10 @@ $(RSSH_BUILD_DIR)/.configured: $(DL_DIR)/$(RSSH_SOURCE) $(RSSH_PATCHES) make/rss
 		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
-		--with-rsync=/opt/bin/rsync \
-		--with-scp=/opt/bin/scp \
-		--with-cvs=/opt/bin/cvs \
-		--with-sftp-server=/opt/libexec/sftp-server \
+		--with-rsync=$(TARGET_PREFIX)/bin/rsync \
+		--with-scp=$(TARGET_PREFIX)/bin/scp \
+		--with-cvs=$(TARGET_PREFIX)/bin/cvs \
+		--with-sftp-server=$(TARGET_PREFIX)/libexec/sftp-server \
 	)
 #	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
@@ -186,23 +186,23 @@ $(RSSH_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(RSSH_IPK_DIR)/opt/sbin or $(RSSH_IPK_DIR)/opt/bin
+# Binaries should be installed into $(RSSH_IPK_DIR)$(TARGET_PREFIX)/sbin or $(RSSH_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(RSSH_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(RSSH_IPK_DIR)/opt/etc/rssh/...
-# Documentation files should be installed in $(RSSH_IPK_DIR)/opt/doc/rssh/...
-# Daemon startup scripts should be installed in $(RSSH_IPK_DIR)/opt/etc/init.d/S??rssh
+# Libraries and include files should be installed into $(RSSH_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(RSSH_IPK_DIR)$(TARGET_PREFIX)/etc/rssh/...
+# Documentation files should be installed in $(RSSH_IPK_DIR)$(TARGET_PREFIX)/doc/rssh/...
+# Daemon startup scripts should be installed in $(RSSH_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??rssh
 #
 # You may need to patch your application to make it use these locations.
 #
 $(RSSH_IPK): $(RSSH_BUILD_DIR)/.built
 	rm -rf $(RSSH_IPK_DIR) $(BUILD_DIR)/rssh_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(RSSH_BUILD_DIR) DESTDIR=$(RSSH_IPK_DIR) install-strip
-#	$(INSTALL) -d $(RSSH_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(RSSH_SOURCE_DIR)/rssh.conf $(RSSH_IPK_DIR)/opt/etc/rssh.conf
-#	$(INSTALL) -d $(RSSH_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(RSSH_SOURCE_DIR)/rc.rssh $(RSSH_IPK_DIR)/opt/etc/init.d/SXXrssh
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(RSSH_IPK_DIR)/opt/etc/init.d/SXXrssh
+#	$(INSTALL) -d $(RSSH_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(RSSH_SOURCE_DIR)/rssh.conf $(RSSH_IPK_DIR)$(TARGET_PREFIX)/etc/rssh.conf
+#	$(INSTALL) -d $(RSSH_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(RSSH_SOURCE_DIR)/rc.rssh $(RSSH_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXrssh
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(RSSH_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXrssh
 	$(MAKE) $(RSSH_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(RSSH_SOURCE_DIR)/postinst $(RSSH_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(RSSH_IPK_DIR)/CONTROL/postinst

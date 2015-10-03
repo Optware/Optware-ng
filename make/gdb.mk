@@ -51,7 +51,7 @@ endif
 
 #
 # GDB_CONFFILES should be a list of user-editable files
-# GDB_CONFFILES=/opt/etc/gdb.conf /opt/etc/init.d/SXXgdb
+# GDB_CONFFILES=$(TARGET_PREFIX)/etc/gdb.conf $(TARGET_PREFIX)/etc/init.d/SXXgdb
 
 #
 # GDB_PATCHES should list any patches, in the the order in
@@ -211,12 +211,12 @@ $(GDB_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(GDB_IPK_DIR)/opt/sbin or $(GDB_IPK_DIR)/opt/bin
+# Binaries should be installed into $(GDB_IPK_DIR)$(TARGET_PREFIX)/sbin or $(GDB_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(GDB_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(GDB_IPK_DIR)/opt/etc/gdb/...
-# Documentation files should be installed in $(GDB_IPK_DIR)/opt/doc/gdb/...
-# Daemon startup scripts should be installed in $(GDB_IPK_DIR)/opt/etc/init.d/S??gdb
+# Libraries and include files should be installed into $(GDB_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(GDB_IPK_DIR)$(TARGET_PREFIX)/etc/gdb/...
+# Documentation files should be installed in $(GDB_IPK_DIR)$(TARGET_PREFIX)/doc/gdb/...
+# Daemon startup scripts should be installed in $(GDB_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??gdb
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -233,27 +233,27 @@ $(GDB_IPK): $(GDB_BUILD_DIR)/.built
 	ls -la $(GDB_BUILD_DIR)/.built
 	rm -rf $(GDB_IPK_DIR) $(BUILD_DIR)/gdb_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GDB_BUILD_DIR) prefix=$(GDB_IPK_DIR)$(TARGET_PREFIX) install
-	rm -f $(GDB_IPK_DIR)/opt/info/standards.info
-	-$(STRIP_COMMAND) $(GDB_IPK_DIR)/opt/bin/run
+	rm -f $(GDB_IPK_DIR)$(TARGET_PREFIX)/info/standards.info
+	-$(STRIP_COMMAND) $(GDB_IPK_DIR)$(TARGET_PREFIX)/bin/run
 	# rm the following files to avoid conflict with binutils
 	for f in \
-		/opt/include/ansidecl.h \
-		/opt/include/bfd.h \
-		/opt/include/bfdlink.h \
-		/opt/include/dis-asm.h \
-		/opt/include/symcat.h \
-		/opt/info/bfd.info \
-		/opt/share/info/bfd.info \
-		/opt/info/configure.info \
-		/opt/share/info/configure.info \
-		/opt/lib/libbfd.a \
-		/opt/lib/libbfd.la \
-		/opt/lib/libiberty.a \
-		/opt/lib/libopcodes.a \
-		/opt/lib/libopcodes.la \
+		$(TARGET_PREFIX)/include/ansidecl.h \
+		$(TARGET_PREFIX)/include/bfd.h \
+		$(TARGET_PREFIX)/include/bfdlink.h \
+		$(TARGET_PREFIX)/include/dis-asm.h \
+		$(TARGET_PREFIX)/include/symcat.h \
+		$(TARGET_PREFIX)/info/bfd.info \
+		$(TARGET_PREFIX)/share/info/bfd.info \
+		$(TARGET_PREFIX)/info/configure.info \
+		$(TARGET_PREFIX)/share/info/configure.info \
+		$(TARGET_PREFIX)/lib/libbfd.a \
+		$(TARGET_PREFIX)/lib/libbfd.la \
+		$(TARGET_PREFIX)/lib/libiberty.a \
+		$(TARGET_PREFIX)/lib/libopcodes.a \
+		$(TARGET_PREFIX)/lib/libopcodes.la \
 		; \
 	do rm -f $(GDB_IPK_DIR)/$$f; done
-	rm -f $(GDB_IPK_DIR)/opt/share/info/dir
+	rm -f $(GDB_IPK_DIR)$(TARGET_PREFIX)/share/info/dir
 	$(MAKE) $(GDB_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 644 $(GDB_SOURCE_DIR)/postinst $(GDB_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 644 $(GDB_SOURCE_DIR)/prerm $(GDB_IPK_DIR)/CONTROL/prerm

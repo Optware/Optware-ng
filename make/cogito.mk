@@ -156,18 +156,18 @@ $(COGITO_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(COGITO_IPK_DIR)/opt/sbin or $(COGITO_IPK_DIR)/opt/bin
+# Binaries should be installed into $(COGITO_IPK_DIR)$(TARGET_PREFIX)/sbin or $(COGITO_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(COGITO_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(COGITO_IPK_DIR)/opt/etc/cogito/...
-# Documentation files should be installed in $(COGITO_IPK_DIR)/opt/doc/cogito/...
-# Daemon startup scripts should be installed in $(COGITO_IPK_DIR)/opt/etc/init.d/S??cogito
+# Libraries and include files should be installed into $(COGITO_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(COGITO_IPK_DIR)$(TARGET_PREFIX)/etc/cogito/...
+# Documentation files should be installed in $(COGITO_IPK_DIR)$(TARGET_PREFIX)/doc/cogito/...
+# Daemon startup scripts should be installed in $(COGITO_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??cogito
 #
 # You may need to patch your application to make it use these locations.
 #
 $(COGITO_IPK): $(COGITO_BUILD_DIR)/.built
 	rm -rf $(COGITO_IPK_DIR) $(BUILD_DIR)/cogito_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(COGITO_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(COGITO_IPK_DIR)$(TARGET_PREFIX)/bin
 	$(MAKE) -C $(COGITO_BUILD_DIR) DESTDIR=$(COGITO_IPK_DIR) prefix=$(TARGET_PREFIX) install
 	$(MAKE) $(COGITO_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(COGITO_IPK_DIR)

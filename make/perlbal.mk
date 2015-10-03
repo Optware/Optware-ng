@@ -45,7 +45,7 @@ $(PERLBAL_BUILD_DIR)/.configured: $(DL_DIR)/$(PERLBAL_SOURCE) $(PERLBAL_PATCHES)
 		$(PERL_HOSTPERL) Makefile.PL \
 		PREFIX=$(TARGET_PREFIX) \
 	)
-	sed -i -e 's|/etc/|/opt/etc/|' $(@D)/perlbal $(@D)/lib/Perlbal/Plugin/Include.pm
+	sed -i -e 's|/etc/|$(TARGET_PREFIX)/etc/|' $(@D)/perlbal $(@D)/lib/Perlbal/Plugin/Include.pm
 	touch $@
 
 perlbal-unpack: $(PERLBAL_BUILD_DIR)/.configured
@@ -92,7 +92,7 @@ $(PERLBAL_IPK): $(PERLBAL_BUILD_DIR)/.built
 	rm -rf $(PERLBAL_IPK_DIR) $(BUILD_DIR)/perlbal_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PERLBAL_BUILD_DIR) DESTDIR=$(PERLBAL_IPK_DIR) install
 	find $(PERLBAL_IPK_DIR)$(TARGET_PREFIX) -name 'perllocal.pod' -exec rm -f {} \;
-	(cd $(PERLBAL_IPK_DIR)/opt/lib/perl5 ; \
+	(cd $(PERLBAL_IPK_DIR)$(TARGET_PREFIX)/lib/perl5 ; \
 		find . -name '*.so' -exec chmod +w {} \; ; \
 		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
 		find . -name '*.so' -exec chmod -w {} \; ; \

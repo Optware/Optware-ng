@@ -40,7 +40,7 @@ FUSE_EXFAT_IPK_VERSION=1
 
 #
 # FUSE_EXFAT_CONFFILES should be a list of user-editable files
-#FUSE_EXFAT_CONFFILES=/opt/etc/fuse-exfat.conf /opt/etc/init.d/SXXfuse-exfat
+#FUSE_EXFAT_CONFFILES=$(TARGET_PREFIX)/etc/fuse-exfat.conf $(TARGET_PREFIX)/etc/init.d/SXXfuse-exfat
 
 #
 # FUSE_EXFAT_PATCHES should list any patches, in the the order in
@@ -169,27 +169,27 @@ $(FUSE_EXFAT_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(FUSE_EXFAT_IPK_DIR)/opt/sbin or $(FUSE_EXFAT_IPK_DIR)/opt/bin
+# Binaries should be installed into $(FUSE_EXFAT_IPK_DIR)$(TARGET_PREFIX)/sbin or $(FUSE_EXFAT_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(FUSE_EXFAT_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(FUSE_EXFAT_IPK_DIR)/opt/etc/fuse-exfat/...
-# Documentation files should be installed in $(FUSE_EXFAT_IPK_DIR)/opt/doc/fuse-exfat/...
-# Daemon startup scripts should be installed in $(FUSE_EXFAT_IPK_DIR)/opt/etc/init.d/S??fuse-exfat
+# Libraries and include files should be installed into $(FUSE_EXFAT_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(FUSE_EXFAT_IPK_DIR)$(TARGET_PREFIX)/etc/fuse-exfat/...
+# Documentation files should be installed in $(FUSE_EXFAT_IPK_DIR)$(TARGET_PREFIX)/doc/fuse-exfat/...
+# Daemon startup scripts should be installed in $(FUSE_EXFAT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??fuse-exfat
 #
 # You may need to patch your application to make it use these locations.
 #
 $(FUSE_EXFAT_IPK): $(FUSE_EXFAT_BUILD_DIR)/.built
 	rm -rf $(FUSE_EXFAT_IPK_DIR) $(BUILD_DIR)/fuse-exfat_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(FUSE_EXFAT_BUILD_DIR) DESTDIR=$(FUSE_EXFAT_IPK_DIR) install-strip
-	$(INSTALL) -d $(FUSE_EXFAT_IPK_DIR)/opt/sbin
-	$(INSTALL) -m 755 $(FUSE_EXFAT_BUILD_DIR)/fuse/mount.exfat-fuse $(FUSE_EXFAT_IPK_DIR)/opt/sbin
-	$(STRIP_COMMAND) $(FUSE_EXFAT_IPK_DIR)/opt/sbin/mount.exfat-fuse
-	ln -s mount.exfat-fuse $(FUSE_EXFAT_IPK_DIR)/opt/sbin/mount.exfat
-#	$(INSTALL) -d $(FUSE_EXFAT_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(FUSE_EXFAT_SOURCE_DIR)/fuse-exfat.conf $(FUSE_EXFAT_IPK_DIR)/opt/etc/fuse-exfat.conf
-#	$(INSTALL) -d $(FUSE_EXFAT_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(FUSE_EXFAT_SOURCE_DIR)/rc.fuse-exfat $(FUSE_EXFAT_IPK_DIR)/opt/etc/init.d/SXXfuse-exfat
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(FUSE_EXFAT_IPK_DIR)/opt/etc/init.d/SXXfuse-exfat
+	$(INSTALL) -d $(FUSE_EXFAT_IPK_DIR)$(TARGET_PREFIX)/sbin
+	$(INSTALL) -m 755 $(FUSE_EXFAT_BUILD_DIR)/fuse/mount.exfat-fuse $(FUSE_EXFAT_IPK_DIR)$(TARGET_PREFIX)/sbin
+	$(STRIP_COMMAND) $(FUSE_EXFAT_IPK_DIR)$(TARGET_PREFIX)/sbin/mount.exfat-fuse
+	ln -s mount.exfat-fuse $(FUSE_EXFAT_IPK_DIR)$(TARGET_PREFIX)/sbin/mount.exfat
+#	$(INSTALL) -d $(FUSE_EXFAT_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(FUSE_EXFAT_SOURCE_DIR)/fuse-exfat.conf $(FUSE_EXFAT_IPK_DIR)$(TARGET_PREFIX)/etc/fuse-exfat.conf
+#	$(INSTALL) -d $(FUSE_EXFAT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(FUSE_EXFAT_SOURCE_DIR)/rc.fuse-exfat $(FUSE_EXFAT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXfuse-exfat
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(FUSE_EXFAT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXfuse-exfat
 	$(MAKE) $(FUSE_EXFAT_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(FUSE_EXFAT_SOURCE_DIR)/postinst $(FUSE_EXFAT_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(FUSE_EXFAT_IPK_DIR)/CONTROL/postinst

@@ -151,12 +151,12 @@ xtst-stage: $(XTST_BUILD_DIR)/.staged
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(XTST_IPK_DIR)/opt/sbin or $(XTST_IPK_DIR)/opt/bin
+# Binaries should be installed into $(XTST_IPK_DIR)$(TARGET_PREFIX)/sbin or $(XTST_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(XTST_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(XTST_IPK_DIR)/opt/etc/xtst/...
-# Documentation files should be installed in $(XTST_IPK_DIR)/opt/doc/xtst/...
-# Daemon startup scripts should be installed in $(XTST_IPK_DIR)/opt/etc/init.d/S??xtst
+# Libraries and include files should be installed into $(XTST_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(XTST_IPK_DIR)$(TARGET_PREFIX)/etc/xtst/...
+# Documentation files should be installed in $(XTST_IPK_DIR)$(TARGET_PREFIX)/doc/xtst/...
+# Daemon startup scripts should be installed in $(XTST_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??xtst
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -165,7 +165,7 @@ $(XTST_IPK): $(XTST_BUILD_DIR)/.built
 	$(MAKE) -C $(XTST_BUILD_DIR) DESTDIR=$(XTST_IPK_DIR) install-strip
 	$(MAKE) $(XTST_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 644 $(XTST_SOURCE_DIR)/postinst $(XTST_IPK_DIR)/CONTROL/postinst
-	rm -f $(XTST_IPK_DIR)/opt/lib/*.la
+	rm -f $(XTST_IPK_DIR)$(TARGET_PREFIX)/lib/*.la
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XTST_IPK_DIR)
 
 #

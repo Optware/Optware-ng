@@ -40,7 +40,7 @@ LIBMNL_IPK_VERSION=1
 
 #
 # LIBMNL_CONFFILES should be a list of user-editable files
-#LIBMNL_CONFFILES=/opt/etc/libmnl.conf /opt/etc/init.d/SXXlibmnl
+#LIBMNL_CONFFILES=$(TARGET_PREFIX)/etc/libmnl.conf $(TARGET_PREFIX)/etc/init.d/SXXlibmnl
 
 #
 # LIBMNL_PATCHES should list any patches, in the the order in
@@ -179,24 +179,24 @@ $(LIBMNL_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LIBMNL_IPK_DIR)/opt/sbin or $(LIBMNL_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LIBMNL_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LIBMNL_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LIBMNL_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LIBMNL_IPK_DIR)/opt/etc/libmnl/...
-# Documentation files should be installed in $(LIBMNL_IPK_DIR)/opt/doc/libmnl/...
-# Daemon startup scripts should be installed in $(LIBMNL_IPK_DIR)/opt/etc/init.d/S??libmnl
+# Libraries and include files should be installed into $(LIBMNL_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LIBMNL_IPK_DIR)$(TARGET_PREFIX)/etc/libmnl/...
+# Documentation files should be installed in $(LIBMNL_IPK_DIR)$(TARGET_PREFIX)/doc/libmnl/...
+# Daemon startup scripts should be installed in $(LIBMNL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??libmnl
 #
 # You may need to patch your application to make it use these locations.
 #
 $(LIBMNL_IPK): $(LIBMNL_BUILD_DIR)/.built
 	rm -rf $(LIBMNL_IPK_DIR) $(BUILD_DIR)/libmnl_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBMNL_BUILD_DIR) DESTDIR=$(LIBMNL_IPK_DIR) install-strip
-	rm -rf $(LIBMNL_IPK_DIR)/opt/include
-#	$(INSTALL) -d $(LIBMNL_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(LIBMNL_SOURCE_DIR)/libmnl.conf $(LIBMNL_IPK_DIR)/opt/etc/libmnl.conf
-#	$(INSTALL) -d $(LIBMNL_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(LIBMNL_SOURCE_DIR)/rc.libmnl $(LIBMNL_IPK_DIR)/opt/etc/init.d/SXXlibmnl
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBMNL_IPK_DIR)/opt/etc/init.d/SXXlibmnl
+	rm -rf $(LIBMNL_IPK_DIR)$(TARGET_PREFIX)/include
+#	$(INSTALL) -d $(LIBMNL_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(LIBMNL_SOURCE_DIR)/libmnl.conf $(LIBMNL_IPK_DIR)$(TARGET_PREFIX)/etc/libmnl.conf
+#	$(INSTALL) -d $(LIBMNL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(LIBMNL_SOURCE_DIR)/rc.libmnl $(LIBMNL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibmnl
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBMNL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibmnl
 	$(MAKE) $(LIBMNL_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(LIBMNL_SOURCE_DIR)/postinst $(LIBMNL_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBMNL_IPK_DIR)/CONTROL/postinst

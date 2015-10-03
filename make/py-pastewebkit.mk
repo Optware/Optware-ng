@@ -43,7 +43,7 @@ PY-PASTEWEBKIT_IPK_VERSION=4
 
 #
 # PY-PASTEWEBKIT_CONFFILES should be a list of user-editable files
-#PY-PASTEWEBKIT_CONFFILES=/opt/etc/py-pastewebkit.conf /opt/etc/init.d/SXXpy-pastewebkit
+#PY-PASTEWEBKIT_CONFFILES=$(TARGET_PREFIX)/etc/py-pastewebkit.conf $(TARGET_PREFIX)/etc/init.d/SXXpy-pastewebkit
 
 #
 # PY-PASTEWEBKIT_PATCHES should list any patches, in the the order in
@@ -127,9 +127,9 @@ $(PY-PASTEWEBKIT_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PASTEWEBKIT_SOURCE) $(PY
 	(cd $(PY-PASTEWEBKIT_BUILD_DIR)/2.4; \
 	    ( \
 	    echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python2.4"; \
+	    echo "executable=$(TARGET_PREFIX)/bin/python2.4"; \
 	    echo "[install]"; \
-	    echo "install_scripts=/opt/bin"; \
+	    echo "install_scripts=$(TARGET_PREFIX)/bin"; \
 	    ) >> setup.cfg \
 	)
 	# 2.5
@@ -142,9 +142,9 @@ $(PY-PASTEWEBKIT_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PASTEWEBKIT_SOURCE) $(PY
 	(cd $(PY-PASTEWEBKIT_BUILD_DIR)/2.5; \
 	    ( \
 	    echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python2.5"; \
+	    echo "executable=$(TARGET_PREFIX)/bin/python2.5"; \
 	    echo "[install]"; \
-	    echo "install_scripts=/opt/bin"; \
+	    echo "install_scripts=$(TARGET_PREFIX)/bin"; \
 	    ) >> setup.cfg \
 	)
 	# 2.6
@@ -157,9 +157,9 @@ $(PY-PASTEWEBKIT_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PASTEWEBKIT_SOURCE) $(PY
 	(cd $(PY-PASTEWEBKIT_BUILD_DIR)/2.6; \
 	    ( \
 	    echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python2.6"; \
+	    echo "executable=$(TARGET_PREFIX)/bin/python2.6"; \
 	    echo "[install]"; \
-	    echo "install_scripts=/opt/bin"; \
+	    echo "install_scripts=$(TARGET_PREFIX)/bin"; \
 	    ) >> setup.cfg \
 	)
 	# 2.7
@@ -172,9 +172,9 @@ $(PY-PASTEWEBKIT_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PASTEWEBKIT_SOURCE) $(PY
 	(cd $(PY-PASTEWEBKIT_BUILD_DIR)/2.7; \
 	    ( \
 	    echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python2.7"; \
+	    echo "executable=$(TARGET_PREFIX)/bin/python2.7"; \
 	    echo "[install]"; \
-	    echo "install_scripts=/opt/bin"; \
+	    echo "install_scripts=$(TARGET_PREFIX)/bin"; \
 	    ) >> setup.cfg \
 	)
 	touch $@
@@ -278,12 +278,12 @@ $(PY27-PASTEWEBKIT_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PY-PASTEWEBKIT_IPK_DIR)/opt/sbin or $(PY-PASTEWEBKIT_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PY-PASTEWEBKIT_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PY-PASTEWEBKIT_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PY-PASTEWEBKIT_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PY-PASTEWEBKIT_IPK_DIR)/opt/etc/py-pastewebkit/...
-# Documentation files should be installed in $(PY-PASTEWEBKIT_IPK_DIR)/opt/doc/py-pastewebkit/...
-# Daemon startup scripts should be installed in $(PY-PASTEWEBKIT_IPK_DIR)/opt/etc/init.d/S??py-pastewebkit
+# Libraries and include files should be installed into $(PY-PASTEWEBKIT_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PY-PASTEWEBKIT_IPK_DIR)$(TARGET_PREFIX)/etc/py-pastewebkit/...
+# Documentation files should be installed in $(PY-PASTEWEBKIT_IPK_DIR)$(TARGET_PREFIX)/doc/py-pastewebkit/...
+# Daemon startup scripts should be installed in $(PY-PASTEWEBKIT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??py-pastewebkit
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -293,7 +293,7 @@ $(PY24-PASTEWEBKIT_IPK): $(PY-PASTEWEBKIT_BUILD_DIR)/.built
 	(cd $(PY-PASTEWEBKIT_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.4 -c "import setuptools; execfile('setup.py')" install \
-	--root=$(PY24-PASTEWEBKIT_IPK_DIR) --prefix=/opt)
+	--root=$(PY24-PASTEWEBKIT_IPK_DIR) --prefix=$(TARGET_PREFIX))
 	$(MAKE) $(PY24-PASTEWEBKIT_IPK_DIR)/CONTROL/control
 #	echo $(PY-PASTEWEBKIT_CONFFILES) | sed -e 's/ /\n/g' > $(PY24-PASTEWEBKIT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-PASTEWEBKIT_IPK_DIR)
@@ -303,7 +303,7 @@ $(PY25-PASTEWEBKIT_IPK): $(PY-PASTEWEBKIT_BUILD_DIR)/.built
 	(cd $(PY-PASTEWEBKIT_BUILD_DIR)/2.5; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.5 -c "import setuptools; execfile('setup.py')" install \
-	--root=$(PY25-PASTEWEBKIT_IPK_DIR) --prefix=/opt)
+	--root=$(PY25-PASTEWEBKIT_IPK_DIR) --prefix=$(TARGET_PREFIX))
 	$(MAKE) $(PY25-PASTEWEBKIT_IPK_DIR)/CONTROL/control
 #	echo $(PY-PASTEWEBKIT_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-PASTEWEBKIT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-PASTEWEBKIT_IPK_DIR)
@@ -313,7 +313,7 @@ $(PY26-PASTEWEBKIT_IPK): $(PY-PASTEWEBKIT_BUILD_DIR)/.built
 	(cd $(PY-PASTEWEBKIT_BUILD_DIR)/2.6; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.6 -c "import setuptools; execfile('setup.py')" install \
-	--root=$(PY26-PASTEWEBKIT_IPK_DIR) --prefix=/opt)
+	--root=$(PY26-PASTEWEBKIT_IPK_DIR) --prefix=$(TARGET_PREFIX))
 	$(MAKE) $(PY26-PASTEWEBKIT_IPK_DIR)/CONTROL/control
 #	echo $(PY-PASTEWEBKIT_CONFFILES) | sed -e 's/ /\n/g' > $(PY26-PASTEWEBKIT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-PASTEWEBKIT_IPK_DIR)
@@ -323,7 +323,7 @@ $(PY27-PASTEWEBKIT_IPK): $(PY-PASTEWEBKIT_BUILD_DIR)/.built
 	(cd $(PY-PASTEWEBKIT_BUILD_DIR)/2.7; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.7/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.7 -c "import setuptools; execfile('setup.py')" install \
-	--root=$(PY27-PASTEWEBKIT_IPK_DIR) --prefix=/opt)
+	--root=$(PY27-PASTEWEBKIT_IPK_DIR) --prefix=$(TARGET_PREFIX))
 	$(MAKE) $(PY27-PASTEWEBKIT_IPK_DIR)/CONTROL/control
 #	echo $(PY-PASTEWEBKIT_CONFFILES) | sed -e 's/ /\n/g' > $(PY27-PASTEWEBKIT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY27-PASTEWEBKIT_IPK_DIR)

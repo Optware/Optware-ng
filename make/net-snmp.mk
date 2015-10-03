@@ -26,7 +26,7 @@ NET_SNMP_IPK_VERSION=1
 
 #
 # NET_SNMP_CONFFILES should be a list of user-editable files
-NET_SNMP_CONFFILES=/opt/etc/snmpd.conf /opt/etc/init.d/S70net-snmp
+NET_SNMP_CONFFILES=$(TARGET_PREFIX)/etc/snmpd.conf $(TARGET_PREFIX)/etc/init.d/S70net-snmp
 
 #
 # NET_SNMP_PATCHES should list any patches, in the the order in
@@ -122,8 +122,8 @@ $(NET_SNMP_BUILD_DIR)/.configured: $(DL_DIR)/$(NET_SNMP_SOURCE) $(NET_SNMP_PATCH
 		--with-default-snmp-version=3 \
 		--with-sys-contact=root@localhost \
 		--with-sys-location="(Unknown)" \
-		--with-logfile=/opt/var/log/snmpd.log \
-		--with-persistent-directory=/opt/var/net-snmp \
+		--with-logfile=$(TARGET_PREFIX)/var/log/snmpd.log \
+		--with-persistent-directory=$(TARGET_PREFIX)/var/net-snmp \
 	)
 ifeq ($(OPTWARE_TARGET), $(filter syno-x07, $(OPTWARE_TARGET)))
 	sed -i -e 's/#if HAVE_NETINET_IF_ETHER_H/#if 0/' \
@@ -179,25 +179,25 @@ $(NET_SNMP_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(NET_SNMP_IPK_DIR)/opt/sbin or $(NET_SNMP_IPK_DIR)/opt/bin
+# Binaries should be installed into $(NET_SNMP_IPK_DIR)$(TARGET_PREFIX)/sbin or $(NET_SNMP_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(NET_SNMP_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(NET_SNMP_IPK_DIR)/opt/etc/net-snmp/...
-# Documentation files should be installed in $(NET_SNMP_IPK_DIR)/opt/doc/net-snmp/...
-# Daemon startup scripts should be installed in $(NET_SNMP_IPK_DIR)/opt/etc/init.d/S??net-snmp
+# Libraries and include files should be installed into $(NET_SNMP_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(NET_SNMP_IPK_DIR)$(TARGET_PREFIX)/etc/net-snmp/...
+# Documentation files should be installed in $(NET_SNMP_IPK_DIR)$(TARGET_PREFIX)/doc/net-snmp/...
+# Daemon startup scripts should be installed in $(NET_SNMP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??net-snmp
 #
 # You may need to patch your application to make it use these locations.
 #
 $(NET_SNMP_IPK): $(NET_SNMP_BUILD_DIR)/.built
 	rm -rf $(NET_SNMP_IPK_DIR) $(BUILD_DIR)/net-snmp_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(NET_SNMP_BUILD_DIR) INSTALL_PREFIX=$(NET_SNMP_IPK_DIR) install
-	for F in $(NET_SNMP_IPK_DIR)/opt/bin/* ; do (file $$F |fgrep -vq ELF) || $(STRIP_COMMAND) $$F ; done
-	$(STRIP_COMMAND) $(NET_SNMP_IPK_DIR)/opt/sbin/*
-	$(STRIP_COMMAND) $(NET_SNMP_IPK_DIR)/opt/lib/*.so
-	$(INSTALL) -d $(NET_SNMP_IPK_DIR)/opt/etc/
-	$(INSTALL) -m 644 $(NET_SNMP_SOURCE_DIR)/snmpd.conf $(NET_SNMP_IPK_DIR)/opt/etc/snmpd.conf
-	$(INSTALL) -d $(NET_SNMP_IPK_DIR)/opt/etc/init.d
-	$(INSTALL) -m 755 $(NET_SNMP_SOURCE_DIR)/rc.net-snmp $(NET_SNMP_IPK_DIR)/opt/etc/init.d/S70net-snmp
+	for F in $(NET_SNMP_IPK_DIR)$(TARGET_PREFIX)/bin/* ; do (file $$F |fgrep -vq ELF) || $(STRIP_COMMAND) $$F ; done
+	$(STRIP_COMMAND) $(NET_SNMP_IPK_DIR)$(TARGET_PREFIX)/sbin/*
+	$(STRIP_COMMAND) $(NET_SNMP_IPK_DIR)$(TARGET_PREFIX)/lib/*.so
+	$(INSTALL) -d $(NET_SNMP_IPK_DIR)$(TARGET_PREFIX)/etc/
+	$(INSTALL) -m 644 $(NET_SNMP_SOURCE_DIR)/snmpd.conf $(NET_SNMP_IPK_DIR)$(TARGET_PREFIX)/etc/snmpd.conf
+	$(INSTALL) -d $(NET_SNMP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(INSTALL) -m 755 $(NET_SNMP_SOURCE_DIR)/rc.net-snmp $(NET_SNMP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S70net-snmp
 	$(MAKE) $(NET_SNMP_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 755 $(NET_SNMP_SOURCE_DIR)/postinst $(NET_SNMP_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 755 $(NET_SNMP_SOURCE_DIR)/prerm $(NET_SNMP_IPK_DIR)/CONTROL/prerm

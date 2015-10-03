@@ -47,7 +47,7 @@ PY-OPENSSL_IPK_VERSION_OLD=1
 
 #
 # PY-OPENSSL_CONFFILES should be a list of user-editable files
-#PY-OPENSSL_CONFFILES=/opt/etc/py-openssl.conf /opt/etc/init.d/SXXpy-openssl
+#PY-OPENSSL_CONFFILES=$(TARGET_PREFIX)/etc/py-openssl.conf $(TARGET_PREFIX)/etc/init.d/SXXpy-openssl
 
 #
 # PY-OPENSSL_PATCHES should list any patches, in the the order in
@@ -145,11 +145,11 @@ $(PY-OPENSSL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-OPENSSL_SOURCE) $(DL_DIR)/$(
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.5"; \
 	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
-	        echo "rpath=/opt/lib"; \
+	        echo "rpath=$(TARGET_PREFIX)/lib"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python2.5"; \
+		echo "executable=$(TARGET_PREFIX)/bin/python2.5"; \
 		echo "[install]"; \
-		echo "install_scripts=/opt/bin"; \
+		echo "install_scripts=$(TARGET_PREFIX)/bin"; \
 	    ) >> setup.cfg; \
 	)
 	# 2.6
@@ -164,11 +164,11 @@ $(PY-OPENSSL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-OPENSSL_SOURCE) $(DL_DIR)/$(
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.6"; \
 	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
-	        echo "rpath=/opt/lib"; \
+	        echo "rpath=$(TARGET_PREFIX)/lib"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python2.6"; \
+		echo "executable=$(TARGET_PREFIX)/bin/python2.6"; \
 		echo "[install]"; \
-		echo "install_scripts=/opt/bin"; \
+		echo "install_scripts=$(TARGET_PREFIX)/bin"; \
 	    ) >> setup.cfg; \
 	)
 	# 2.7
@@ -183,11 +183,11 @@ $(PY-OPENSSL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-OPENSSL_SOURCE) $(DL_DIR)/$(
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.7"; \
 	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
-	        echo "rpath=/opt/lib"; \
+	        echo "rpath=$(TARGET_PREFIX)/lib"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python2.7"; \
+		echo "executable=$(TARGET_PREFIX)/bin/python2.7"; \
 		echo "[install]"; \
-		echo "install_scripts=/opt/bin"; \
+		echo "install_scripts=$(TARGET_PREFIX)/bin"; \
 	    ) >> setup.cfg; \
 	)
 	# 3
@@ -202,11 +202,11 @@ $(PY-OPENSSL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-OPENSSL_SOURCE) $(DL_DIR)/$(
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python$(PYTHON3_VERSION_MAJOR)m"; \
 	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
-	        echo "rpath=/opt/lib"; \
+	        echo "rpath=$(TARGET_PREFIX)/lib"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python$(PYTHON3_VERSION_MAJOR)"; \
+		echo "executable=$(TARGET_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR)"; \
 		echo "[install]"; \
-		echo "install_scripts=/opt/bin"; \
+		echo "install_scripts=$(TARGET_PREFIX)/bin"; \
 	    ) >> setup.cfg; \
 	)
 	touch $@
@@ -248,16 +248,16 @@ $(PY-OPENSSL_BUILD_DIR)/.staged: $(PY-OPENSSL_BUILD_DIR)/.built
 	rm -f $@
 	(cd $(@D)/2.5; \
 		CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(STAGING_DIR) --prefix=/opt)
+		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	(cd $(@D)/2.6; \
 		CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-		$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(STAGING_DIR) --prefix=/opt)
+		$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	(cd $(@D)/2.7; \
 		CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-		$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(STAGING_DIR) --prefix=/opt)
+		$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	(cd $(@D)/3; \
 		CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-		$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(STAGING_DIR) --prefix=/opt)
+		$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	touch $@
 
 $(PY-OPENSSL_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(PY-OPENSSL_SOURCE) $(DL_DIR)/$(PY-OPENSSL_SOURCE_OLD) make/py-openssl.mk
@@ -305,13 +305,13 @@ $(PY-OPENSSL_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(PY-OPENSSL_SO
 	    ) >> setup.cfg; \
 	)
 	(cd $(@D)/2.5; \
-		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(HOST_STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	(cd $(@D)/2.6; \
-		$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+		$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(HOST_STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	(cd $(@D)/2.7; \
-		$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+		$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(HOST_STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	(cd $(@D)/3; \
-		$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+		$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(HOST_STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	touch $@
 
 py-openssl-stage: $(PY-OPENSSL_BUILD_DIR)/.staged
@@ -381,12 +381,12 @@ $(PY3-OPENSSL_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PY-OPENSSL_IPK_DIR)/opt/sbin or $(PY-OPENSSL_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PY-OPENSSL_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PY-OPENSSL_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PY-OPENSSL_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PY-OPENSSL_IPK_DIR)/opt/etc/py-openssl/...
-# Documentation files should be installed in $(PY-OPENSSL_IPK_DIR)/opt/doc/py-openssl/...
-# Daemon startup scripts should be installed in $(PY-OPENSSL_IPK_DIR)/opt/etc/init.d/S??py-openssl
+# Libraries and include files should be installed into $(PY-OPENSSL_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PY-OPENSSL_IPK_DIR)$(TARGET_PREFIX)/etc/py-openssl/...
+# Documentation files should be installed in $(PY-OPENSSL_IPK_DIR)$(TARGET_PREFIX)/doc/py-openssl/...
+# Daemon startup scripts should be installed in $(PY-OPENSSL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??py-openssl
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -395,33 +395,33 @@ $(PY25-OPENSSL_IPK) $(PY26-OPENSSL_IPK) $(PY27-OPENSSL_IPK) $(PY3-OPENSSL_IPK): 
 	# 2.5
 	rm -rf $(PY25-OPENSSL_IPK_DIR) $(BUILD_DIR)/py25-openssl_*_$(TARGET_ARCH).ipk
 	(cd $(PY-OPENSSL_BUILD_DIR)/2.5; \
-	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(PY25-OPENSSL_IPK_DIR) --prefix=/opt; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(PY25-OPENSSL_IPK_DIR) --prefix=$(TARGET_PREFIX); \
 	)
-#	$(STRIP_COMMAND) $(PY25-OPENSSL_IPK_DIR)/opt/lib/python2.5/site-packages/*/*.so
+#	$(STRIP_COMMAND) $(PY25-OPENSSL_IPK_DIR)$(TARGET_PREFIX)/lib/python2.5/site-packages/*/*.so
 	$(MAKE) $(PY25-OPENSSL_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-OPENSSL_IPK_DIR)
 	# 2.6
 	rm -rf $(PY26-OPENSSL_IPK_DIR) $(BUILD_DIR)/py26-openssl_*_$(TARGET_ARCH).ipk
 	(cd $(PY-OPENSSL_BUILD_DIR)/2.6; \
-	    $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(PY26-OPENSSL_IPK_DIR) --prefix=/opt; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(PY26-OPENSSL_IPK_DIR) --prefix=$(TARGET_PREFIX); \
 	)
-#	$(STRIP_COMMAND) $(PY26-OPENSSL_IPK_DIR)/opt/lib/python2.6/site-packages/*/*.so
+#	$(STRIP_COMMAND) $(PY26-OPENSSL_IPK_DIR)$(TARGET_PREFIX)/lib/python2.6/site-packages/*/*.so
 	$(MAKE) $(PY26-OPENSSL_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-OPENSSL_IPK_DIR)
 	# 2.7
 	rm -rf $(PY27-OPENSSL_IPK_DIR) $(BUILD_DIR)/py27-openssl_*_$(TARGET_ARCH).ipk
 	(cd $(PY-OPENSSL_BUILD_DIR)/2.7; \
-	    $(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(PY27-OPENSSL_IPK_DIR) --prefix=/opt; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(PY27-OPENSSL_IPK_DIR) --prefix=$(TARGET_PREFIX); \
 	)
-#	$(STRIP_COMMAND) $(PY27-OPENSSL_IPK_DIR)/opt/lib/python2.7/site-packages/*/*.so
+#	$(STRIP_COMMAND) $(PY27-OPENSSL_IPK_DIR)$(TARGET_PREFIX)/lib/python2.7/site-packages/*/*.so
 	$(MAKE) $(PY27-OPENSSL_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY27-OPENSSL_IPK_DIR)
 	# 3
 	rm -rf $(PY3-OPENSSL_IPK_DIR) $(BUILD_DIR)/py3-openssl_*_$(TARGET_ARCH).ipk
 	(cd $(PY-OPENSSL_BUILD_DIR)/3; \
-	    $(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(PY3-OPENSSL_IPK_DIR) --prefix=/opt; \
+	    $(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(PY3-OPENSSL_IPK_DIR) --prefix=$(TARGET_PREFIX); \
 	)
-#	$(STRIP_COMMAND) $(PY3-OPENSSL_IPK_DIR)/opt/lib/python$(PYTHON3_VERSION_MAJOR)/site-packages/*/*.so
+#	$(STRIP_COMMAND) $(PY3-OPENSSL_IPK_DIR)$(TARGET_PREFIX)/lib/python$(PYTHON3_VERSION_MAJOR)/site-packages/*/*.so
 	$(MAKE) $(PY3-OPENSSL_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY3-OPENSSL_IPK_DIR)
 

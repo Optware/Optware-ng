@@ -40,7 +40,7 @@ LIBMMS_IPK_VERSION=1
 
 #
 # LIBMMS_CONFFILES should be a list of user-editable files
-#LIBMMS_CONFFILES=/opt/etc/libmms.conf /opt/etc/init.d/SXXlibmms
+#LIBMMS_CONFFILES=$(TARGET_PREFIX)/etc/libmms.conf $(TARGET_PREFIX)/etc/init.d/SXXlibmms
 
 #
 # LIBMMS_PATCHES should list any patches, in the the order in
@@ -180,23 +180,23 @@ $(LIBMMS_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LIBMMS_IPK_DIR)/opt/sbin or $(LIBMMS_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LIBMMS_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LIBMMS_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LIBMMS_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LIBMMS_IPK_DIR)/opt/etc/libmms/...
-# Documentation files should be installed in $(LIBMMS_IPK_DIR)/opt/doc/libmms/...
-# Daemon startup scripts should be installed in $(LIBMMS_IPK_DIR)/opt/etc/init.d/S??libmms
+# Libraries and include files should be installed into $(LIBMMS_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LIBMMS_IPK_DIR)$(TARGET_PREFIX)/etc/libmms/...
+# Documentation files should be installed in $(LIBMMS_IPK_DIR)$(TARGET_PREFIX)/doc/libmms/...
+# Daemon startup scripts should be installed in $(LIBMMS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??libmms
 #
 # You may need to patch your application to make it use these locations.
 #
 $(LIBMMS_IPK): $(LIBMMS_BUILD_DIR)/.built
 	rm -rf $(LIBMMS_IPK_DIR) $(BUILD_DIR)/libmms_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBMMS_BUILD_DIR) DESTDIR=$(LIBMMS_IPK_DIR) install-strip
-#	$(INSTALL) -d $(LIBMMS_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(LIBMMS_SOURCE_DIR)/libmms.conf $(LIBMMS_IPK_DIR)/opt/etc/libmms.conf
-#	$(INSTALL) -d $(LIBMMS_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(LIBMMS_SOURCE_DIR)/rc.libmms $(LIBMMS_IPK_DIR)/opt/etc/init.d/SXXlibmms
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBMMS_IPK_DIR)/opt/etc/init.d/SXXlibmms
+#	$(INSTALL) -d $(LIBMMS_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(LIBMMS_SOURCE_DIR)/libmms.conf $(LIBMMS_IPK_DIR)$(TARGET_PREFIX)/etc/libmms.conf
+#	$(INSTALL) -d $(LIBMMS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(LIBMMS_SOURCE_DIR)/rc.libmms $(LIBMMS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibmms
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBMMS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibmms
 	$(MAKE) $(LIBMMS_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(LIBMMS_SOURCE_DIR)/postinst $(LIBMMS_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBMMS_IPK_DIR)/CONTROL/postinst

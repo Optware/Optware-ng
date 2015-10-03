@@ -162,25 +162,25 @@ $(LIBBT_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LIBBT_IPK_DIR)/opt/sbin or $(LIBBT_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LIBBT_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LIBBT_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LIBBT_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LIBBT_IPK_DIR)/opt/etc/libbt/...
-# Documentation files should be installed in $(LIBBT_IPK_DIR)/opt/doc/libbt/...
-# Daemon startup scripts should be installed in $(LIBBT_IPK_DIR)/opt/etc/init.d/S??libbt
+# Libraries and include files should be installed into $(LIBBT_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LIBBT_IPK_DIR)$(TARGET_PREFIX)/etc/libbt/...
+# Documentation files should be installed in $(LIBBT_IPK_DIR)$(TARGET_PREFIX)/doc/libbt/...
+# Daemon startup scripts should be installed in $(LIBBT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??libbt
 #
 # You may need to patch your application to make it use these locations.
 #
 $(LIBBT_IPK): $(LIBBT_BUILD_DIR)/.built
 	rm -rf $(LIBBT_IPK_DIR) $(BUILD_DIR)/libbt_*_$(TARGET_ARCH).ipk
 	$(MAKE) $(LIBBT_IPK_DIR)/CONTROL/control
-	$(INSTALL) -d $(LIBBT_IPK_DIR)/opt/bin
-	$(INSTALL) -m 755 $(LIBBT_BUILD_DIR)/src/btget $(LIBBT_IPK_DIR)/opt/bin
-	$(INSTALL) -m 755 $(LIBBT_BUILD_DIR)/src/btcheck $(LIBBT_IPK_DIR)/opt/bin
-	$(INSTALL) -m 755 $(LIBBT_BUILD_DIR)/src/btlist $(LIBBT_IPK_DIR)/opt/bin
-	$(STRIP_COMMAND) $(LIBBT_IPK_DIR)/opt/bin/btget
-	$(STRIP_COMMAND) $(LIBBT_IPK_DIR)/opt/bin/btcheck
-	$(STRIP_COMMAND) $(LIBBT_IPK_DIR)/opt/bin/btlist
+	$(INSTALL) -d $(LIBBT_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(INSTALL) -m 755 $(LIBBT_BUILD_DIR)/src/btget $(LIBBT_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(INSTALL) -m 755 $(LIBBT_BUILD_DIR)/src/btcheck $(LIBBT_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(INSTALL) -m 755 $(LIBBT_BUILD_DIR)/src/btlist $(LIBBT_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(STRIP_COMMAND) $(LIBBT_IPK_DIR)$(TARGET_PREFIX)/bin/btget
+	$(STRIP_COMMAND) $(LIBBT_IPK_DIR)$(TARGET_PREFIX)/bin/btcheck
+	$(STRIP_COMMAND) $(LIBBT_IPK_DIR)$(TARGET_PREFIX)/bin/btlist
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBBT_IPK_DIR)
 
 #

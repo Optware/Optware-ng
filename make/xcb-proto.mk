@@ -149,12 +149,12 @@ xcb-proto-stage: $(XCB-PROTO_BUILD_DIR)/.staged
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(XCB-PROTO_IPK_DIR)/opt/sbin or $(XCB-PROTO_IPK_DIR)/opt/bin
+# Binaries should be installed into $(XCB-PROTO_IPK_DIR)$(TARGET_PREFIX)/sbin or $(XCB-PROTO_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(XCB-PROTO_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(XCB-PROTO_IPK_DIR)/opt/etc/xcb-proto/...
-# Documentation files should be installed in $(XCB-PROTO_IPK_DIR)/opt/doc/xcb-proto/...
-# Daemon startup scripts should be installed in $(XCB-PROTO_IPK_DIR)/opt/etc/init.d/S??xcb-proto
+# Libraries and include files should be installed into $(XCB-PROTO_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(XCB-PROTO_IPK_DIR)$(TARGET_PREFIX)/etc/xcb-proto/...
+# Documentation files should be installed in $(XCB-PROTO_IPK_DIR)$(TARGET_PREFIX)/doc/xcb-proto/...
+# Daemon startup scripts should be installed in $(XCB-PROTO_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??xcb-proto
 #
 # You may need to patch your application to make it use these locations.
 #

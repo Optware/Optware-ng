@@ -66,10 +66,10 @@ $(PERL-GD_BUILD_DIR)/.built: $(PERL-GD_BUILD_DIR)/.configured
 	$(MAKE) -C $(PERL-GD_BUILD_DIR) \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
-		LDDLFLAGS="-shared -L$(STAGING_LIB_DIR) -rpath /opt/lib -rpath-link $(STAGING_LIB_DIR)" \
+		LDDLFLAGS="-shared -L$(STAGING_LIB_DIR) -rpath $(TARGET_PREFIX)/lib -rpath-link $(STAGING_LIB_DIR)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		LDLOADLIBS="`$(STAGING_PREFIX)/bin/gdlib-config --libs` -lgd" \
-		LD_RUN_PATH=/opt/lib \
+		LD_RUN_PATH=$(TARGET_PREFIX)/lib \
 		$(PERL_INC) \
 		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl"
 	touch $(PERL-GD_BUILD_DIR)/.built
@@ -102,7 +102,7 @@ $(PERL-GD_IPK): $(PERL-GD_BUILD_DIR)/.built
 	rm -rf $(PERL-GD_IPK_DIR) $(BUILD_DIR)/perl-gd_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PERL-GD_BUILD_DIR) DESTDIR=$(PERL-GD_IPK_DIR) install
 	find $(PERL-GD_IPK_DIR)$(TARGET_PREFIX) -name 'perllocal.pod' -exec rm -f {} \;
-	(cd $(PERL-GD_IPK_DIR)/opt/lib/perl5 ; \
+	(cd $(PERL-GD_IPK_DIR)$(TARGET_PREFIX)/lib/perl5 ; \
 		find . -name '*.so' -exec chmod +w {} \; ; \
 		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
 		find . -name '*.so' -exec chmod -w {} \; ; \

@@ -29,7 +29,7 @@ AMAVISD-NEW_IPK_VERSION=3
 
 #
 # AMAVISD-NEW_CONFFILES should be a list of user-editable files
-AMAVISD-NEW_CONFFILES=/opt/etc/amavisd.conf /opt/etc/init.d/S60amavisd
+AMAVISD-NEW_CONFFILES=$(TARGET_PREFIX)/etc/amavisd.conf $(TARGET_PREFIX)/etc/init.d/S60amavisd
 
 #
 # AMAVISD-NEW_PATCHES should list any patches, in the the order in
@@ -94,9 +94,9 @@ amavisd-new-unpack: $(AMAVISD-NEW_BUILD_DIR)/.configured
 $(AMAVISD-NEW_BUILD_DIR)/.built: $(AMAVISD-NEW_BUILD_DIR)/.configured
 	rm -f $(AMAVISD-NEW_BUILD_DIR)/.built
 	(cd $(AMAVISD-NEW_BUILD_DIR); \
-	  perl -pi -e 's|/usr/bin/perl|/opt/bin/perl|' amavisd; \
-	  perl -pi -e 's|/var/amavis|/opt/var/spool/amavis|' amavisd; \
-	  perl -pi -e 's|/etc/amavisd.conf|/opt/etc/amavisd.conf|' amavisd \
+	  perl -pi -e 's|/usr/bin/perl|$(TARGET_PREFIX)/bin/perl|' amavisd; \
+	  perl -pi -e 's|/var/amavis|$(TARGET_PREFIX)/var/spool/amavis|' amavisd; \
+	  perl -pi -e 's|/etc/amavisd.conf|$(TARGET_PREFIX)/etc/amavisd.conf|' amavisd \
 	)
 	touch $(AMAVISD-NEW_BUILD_DIR)/.built
 
@@ -137,51 +137,51 @@ $(AMAVISD-NEW_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(AMAVISD-NEW_IPK_DIR)/opt/sbin or $(AMAVISD-NEW_IPK_DIR)/opt/bin
+# Binaries should be installed into $(AMAVISD-NEW_IPK_DIR)$(TARGET_PREFIX)/sbin or $(AMAVISD-NEW_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(AMAVISD-NEW_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(AMAVISD-NEW_IPK_DIR)/opt/etc/amavisd-new/...
-# Documentation files should be installed in $(AMAVISD-NEW_IPK_DIR)/opt/doc/amavisd-new/...
-# Daemon startup scripts should be installed in $(AMAVISD-NEW_IPK_DIR)/opt/etc/init.d/S??amavisd-new
+# Libraries and include files should be installed into $(AMAVISD-NEW_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(AMAVISD-NEW_IPK_DIR)$(TARGET_PREFIX)/etc/amavisd-new/...
+# Documentation files should be installed in $(AMAVISD-NEW_IPK_DIR)$(TARGET_PREFIX)/doc/amavisd-new/...
+# Daemon startup scripts should be installed in $(AMAVISD-NEW_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??amavisd-new
 #
 # You may need to patch your application to make it use these locations.
 #
 $(AMAVISD-NEW_IPK): $(AMAVISD-NEW_BUILD_DIR)/.built
 	rm -rf $(AMAVISD-NEW_IPK_DIR) $(BUILD_DIR)/amavisd-new_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(AMAVISD-NEW_IPK_DIR)/opt/sbin/
-	$(INSTALL) -m 755 $(AMAVISD-NEW_BUILD_DIR)/amavisd $(AMAVISD-NEW_IPK_DIR)/opt/sbin/amavisd
-	$(INSTALL) -d $(AMAVISD-NEW_IPK_DIR)/opt/etc/
-	$(INSTALL) -m 644 $(AMAVISD-NEW_SOURCE_DIR)/amavisd.conf $(AMAVISD-NEW_IPK_DIR)/opt/etc/amavisd.conf
+	$(INSTALL) -d $(AMAVISD-NEW_IPK_DIR)$(TARGET_PREFIX)/sbin/
+	$(INSTALL) -m 755 $(AMAVISD-NEW_BUILD_DIR)/amavisd $(AMAVISD-NEW_IPK_DIR)$(TARGET_PREFIX)/sbin/amavisd
+	$(INSTALL) -d $(AMAVISD-NEW_IPK_DIR)$(TARGET_PREFIX)/etc/
+	$(INSTALL) -m 644 $(AMAVISD-NEW_SOURCE_DIR)/amavisd.conf $(AMAVISD-NEW_IPK_DIR)$(TARGET_PREFIX)/etc/amavisd.conf
 	$(INSTALL) -d \
-	  $(AMAVISD-NEW_IPK_DIR)/opt/lib/perl5/site_perl/$(PERL_VERSION)
+	  $(AMAVISD-NEW_IPK_DIR)$(TARGET_PREFIX)/lib/perl5/site_perl/$(PERL_VERSION)
 	$(INSTALL) -m 755 $(AMAVISD-NEW_BUILD_DIR)/JpegTester.pm \
-	  $(AMAVISD-NEW_IPK_DIR)/opt/lib/perl5/site_perl/$(PERL_VERSION)
-	$(INSTALL) -d $(AMAVISD-NEW_IPK_DIR)/opt/etc/init.d
-	$(INSTALL) -d -m 0755 $(AMAVISD-NEW_IPK_DIR)/opt/var/spool
-	$(INSTALL) -d -m 0700 $(AMAVISD-NEW_IPK_DIR)/opt/var/spool/amavis
-	$(INSTALL) -d -m 0700 $(AMAVISD-NEW_IPK_DIR)/opt/var/spool/amavis/db
-	$(INSTALL) -d -m 0700 $(AMAVISD-NEW_IPK_DIR)/opt/var/spool/amavis/virusmails
+	  $(AMAVISD-NEW_IPK_DIR)$(TARGET_PREFIX)/lib/perl5/site_perl/$(PERL_VERSION)
+	$(INSTALL) -d $(AMAVISD-NEW_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(INSTALL) -d -m 0755 $(AMAVISD-NEW_IPK_DIR)$(TARGET_PREFIX)/var/spool
+	$(INSTALL) -d -m 0700 $(AMAVISD-NEW_IPK_DIR)$(TARGET_PREFIX)/var/spool/amavis
+	$(INSTALL) -d -m 0700 $(AMAVISD-NEW_IPK_DIR)$(TARGET_PREFIX)/var/spool/amavis/db
+	$(INSTALL) -d -m 0700 $(AMAVISD-NEW_IPK_DIR)$(TARGET_PREFIX)/var/spool/amavis/virusmails
 
-	$(INSTALL) -m 755 $(AMAVISD-NEW_SOURCE_DIR)/rc.amavisd $(AMAVISD-NEW_IPK_DIR)/opt/etc/init.d/S60amavisd
-	rm -rf $(AMAVISD-NEW_IPK_DIR)/opt/doc/amavisd-new/
-	$(INSTALL) -d -m 755 $(AMAVISD-NEW_IPK_DIR)/opt/doc/amavisd-new/
-	$(INSTALL) -d -m 755 $(AMAVISD-NEW_IPK_DIR)/opt/doc/amavisd-new/helper-prog
-	$(INSTALL) -d -m 755 $(AMAVISD-NEW_IPK_DIR)/opt/doc/amavisd-new/README_FILES
-	$(INSTALL) -d -m 755 $(AMAVISD-NEW_IPK_DIR)/opt/doc/amavisd-new/test-messages
+	$(INSTALL) -m 755 $(AMAVISD-NEW_SOURCE_DIR)/rc.amavisd $(AMAVISD-NEW_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S60amavisd
+	rm -rf $(AMAVISD-NEW_IPK_DIR)$(TARGET_PREFIX)/doc/amavisd-new/
+	$(INSTALL) -d -m 755 $(AMAVISD-NEW_IPK_DIR)$(TARGET_PREFIX)/doc/amavisd-new/
+	$(INSTALL) -d -m 755 $(AMAVISD-NEW_IPK_DIR)$(TARGET_PREFIX)/doc/amavisd-new/helper-prog
+	$(INSTALL) -d -m 755 $(AMAVISD-NEW_IPK_DIR)$(TARGET_PREFIX)/doc/amavisd-new/README_FILES
+	$(INSTALL) -d -m 755 $(AMAVISD-NEW_IPK_DIR)$(TARGET_PREFIX)/doc/amavisd-new/test-messages
 	(cd $(AMAVISD-NEW_BUILD_DIR); \
 	  $(INSTALL) -m 644 amavisd.conf* \
-	    $(AMAVISD-NEW_IPK_DIR)/opt/doc/amavisd-new/; \
-	  $(INSTALL) -m 644 LICENSE $(AMAVISD-NEW_IPK_DIR)/opt/doc/amavisd-new/; \
-	  $(INSTALL) -m 644 MANIFEST $(AMAVISD-NEW_IPK_DIR)/opt/doc/amavisd-new/; \
+	    $(AMAVISD-NEW_IPK_DIR)$(TARGET_PREFIX)/doc/amavisd-new/; \
+	  $(INSTALL) -m 644 LICENSE $(AMAVISD-NEW_IPK_DIR)$(TARGET_PREFIX)/doc/amavisd-new/; \
+	  $(INSTALL) -m 644 MANIFEST $(AMAVISD-NEW_IPK_DIR)$(TARGET_PREFIX)/doc/amavisd-new/; \
 	  $(INSTALL) -m 644 RELEASE_NOTES \
-             $(AMAVISD-NEW_IPK_DIR)/opt/doc/amavisd-new/; \
-	  $(INSTALL) -m 644 TODO $(AMAVISD-NEW_IPK_DIR)/opt/doc/amavisd-new/; \
+             $(AMAVISD-NEW_IPK_DIR)$(TARGET_PREFIX)/doc/amavisd-new/; \
+	  $(INSTALL) -m 644 TODO $(AMAVISD-NEW_IPK_DIR)$(TARGET_PREFIX)/doc/amavisd-new/; \
 	  $(INSTALL) -m 644 helper-progs/* \
-	    $(AMAVISD-NEW_IPK_DIR)/opt/doc/amavisd-new/helper-progs/; \
+	    $(AMAVISD-NEW_IPK_DIR)$(TARGET_PREFIX)/doc/amavisd-new/helper-progs/; \
 	  $(INSTALL) -m 644 README_FILES/* \
-	    $(AMAVISD-NEW_IPK_DIR)/opt/doc/amavisd-new/README_FILES/; \
+	    $(AMAVISD-NEW_IPK_DIR)$(TARGET_PREFIX)/doc/amavisd-new/README_FILES/; \
 	  $(INSTALL) -m 644 test-messages/* \
-	    $(AMAVISD-NEW_IPK_DIR)/opt/doc/amavisd-new/test-messages/; \
+	    $(AMAVISD-NEW_IPK_DIR)$(TARGET_PREFIX)/doc/amavisd-new/test-messages/; \
         )
 	$(MAKE) $(AMAVISD-NEW_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 755 $(AMAVISD-NEW_SOURCE_DIR)/postinst $(AMAVISD-NEW_IPK_DIR)/CONTROL/postinst

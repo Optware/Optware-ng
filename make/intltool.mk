@@ -34,7 +34,7 @@ INTLTOOL_IPK_VERSION=1
 
 #
 # INTLTOOL_CONFFILES should be a list of user-editable files
-#INTLTOOL_CONFFILES=/opt/etc/intltool.conf /opt/etc/init.d/SXXintltool
+#INTLTOOL_CONFFILES=$(TARGET_PREFIX)/etc/intltool.conf $(TARGET_PREFIX)/etc/init.d/SXXintltool
 
 #
 # INTLTOOL_PATCHES should list any patches, in the the order in
@@ -130,10 +130,10 @@ intltool-unpack: $(INTLTOOL_BUILD_DIR)/.configured
 $(INTLTOOL_BUILD_DIR)/.built: $(INTLTOOL_BUILD_DIR)/.configured
 	rm -f $@
 	$(MAKE) -C $(@D)
-	sed -i -e 's|/usr/bin/perl|/opt/bin/perl|g' $(@D)/intltool-extract
-	sed -i -e 's|/usr/bin/perl|/opt/bin/perl|g' $(@D)/intltool-merge
-	sed -i -e 's|/usr/bin/perl|/opt/bin/perl|g' $(@D)/intltool-prepare
-	sed -i -e 's|/usr/bin/perl|/opt/bin/perl|g' $(@D)/intltool-update
+	sed -i -e 's|/usr/bin/perl|$(TARGET_PREFIX)/bin/perl|g' $(@D)/intltool-extract
+	sed -i -e 's|/usr/bin/perl|$(TARGET_PREFIX)/bin/perl|g' $(@D)/intltool-merge
+	sed -i -e 's|/usr/bin/perl|$(TARGET_PREFIX)/bin/perl|g' $(@D)/intltool-prepare
+	sed -i -e 's|/usr/bin/perl|$(TARGET_PREFIX)/bin/perl|g' $(@D)/intltool-update
 	touch $@
 
 #
@@ -174,23 +174,23 @@ $(INTLTOOL_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(INTLTOOL_IPK_DIR)/opt/sbin or $(INTLTOOL_IPK_DIR)/opt/bin
+# Binaries should be installed into $(INTLTOOL_IPK_DIR)$(TARGET_PREFIX)/sbin or $(INTLTOOL_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(INTLTOOL_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(INTLTOOL_IPK_DIR)/opt/etc/intltool/...
-# Documentation files should be installed in $(INTLTOOL_IPK_DIR)/opt/doc/intltool/...
-# Daemon startup scripts should be installed in $(INTLTOOL_IPK_DIR)/opt/etc/init.d/S??intltool
+# Libraries and include files should be installed into $(INTLTOOL_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(INTLTOOL_IPK_DIR)$(TARGET_PREFIX)/etc/intltool/...
+# Documentation files should be installed in $(INTLTOOL_IPK_DIR)$(TARGET_PREFIX)/doc/intltool/...
+# Daemon startup scripts should be installed in $(INTLTOOL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??intltool
 #
 # You may need to patch your application to make it use these locations.
 #
 $(INTLTOOL_IPK): $(INTLTOOL_BUILD_DIR)/.built
 	rm -rf $(INTLTOOL_IPK_DIR) $(BUILD_DIR)/intltool_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(INTLTOOL_BUILD_DIR) DESTDIR=$(INTLTOOL_IPK_DIR) install
-#	$(STRIP_COMMAND) $(INTLTOOL_IPK_DIR)/opt/lib/*.so*
-#	$(INSTALL) -d $(INTLTOOL_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 755 $(INTLTOOL_SOURCE_DIR)/intltool.conf $(INTLTOOL_IPK_DIR)/opt/etc/intltool.conf
-#	$(INSTALL) -d $(INTLTOOL_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(INTLTOOL_SOURCE_DIR)/rc.intltool $(INTLTOOL_IPK_DIR)/opt/etc/init.d/SXXintltool
+#	$(STRIP_COMMAND) $(INTLTOOL_IPK_DIR)$(TARGET_PREFIX)/lib/*.so*
+#	$(INSTALL) -d $(INTLTOOL_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 755 $(INTLTOOL_SOURCE_DIR)/intltool.conf $(INTLTOOL_IPK_DIR)$(TARGET_PREFIX)/etc/intltool.conf
+#	$(INSTALL) -d $(INTLTOOL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(INTLTOOL_SOURCE_DIR)/rc.intltool $(INTLTOOL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXintltool
 	$(MAKE) $(INTLTOOL_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 644 $(INTLTOOL_SOURCE_DIR)/postinst $(INTLTOOL_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 644 $(INTLTOOL_SOURCE_DIR)/prerm $(INTLTOOL_IPK_DIR)/CONTROL/prerm

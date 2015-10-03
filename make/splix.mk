@@ -41,7 +41,7 @@ SPLIX_IPK_VERSION=1
 
 #
 # SPLIX_CONFFILES should be a list of user-editable files
-#SPLIX_CONFFILES=/opt/etc/splix.conf /opt/etc/init.d/SXXsplix
+#SPLIX_CONFFILES=$(TARGET_PREFIX)/etc/splix.conf $(TARGET_PREFIX)/etc/init.d/SXXsplix
 
 #
 # SPLIX_PATCHES should list any patches, in the the order in
@@ -177,12 +177,12 @@ $(SPLIX_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(SPLIX_IPK_DIR)/opt/sbin or $(SPLIX_IPK_DIR)/opt/bin
+# Binaries should be installed into $(SPLIX_IPK_DIR)$(TARGET_PREFIX)/sbin or $(SPLIX_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(SPLIX_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(SPLIX_IPK_DIR)/opt/etc/splix/...
-# Documentation files should be installed in $(SPLIX_IPK_DIR)/opt/doc/splix/...
-# Daemon startup scripts should be installed in $(SPLIX_IPK_DIR)/opt/etc/init.d/S??splix
+# Libraries and include files should be installed into $(SPLIX_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(SPLIX_IPK_DIR)$(TARGET_PREFIX)/etc/splix/...
+# Documentation files should be installed in $(SPLIX_IPK_DIR)$(TARGET_PREFIX)/doc/splix/...
+# Daemon startup scripts should be installed in $(SPLIX_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??splix
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -190,12 +190,12 @@ $(SPLIX_IPK): $(SPLIX_BUILD_DIR)/.built
 	rm -rf $(SPLIX_IPK_DIR) $(BUILD_DIR)/splix_*_$(TARGET_ARCH).ipk
 	PATH=$(STAGING_PREFIX)/bin:$$PATH \
 	$(MAKE) -C $(SPLIX_BUILD_DIR) DESTDIR=$(SPLIX_IPK_DIR) install
-	$(STRIP_COMMAND) $(SPLIX_IPK_DIR)/opt/lib/cups/filter/*
-#	$(INSTALL) -d $(SPLIX_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(SPLIX_SOURCE_DIR)/splix.conf $(SPLIX_IPK_DIR)/opt/etc/splix.conf
-#	$(INSTALL) -d $(SPLIX_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(SPLIX_SOURCE_DIR)/rc.splix $(SPLIX_IPK_DIR)/opt/etc/init.d/SXXsplix
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SPLIX_IPK_DIR)/opt/etc/init.d/SXXsplix
+	$(STRIP_COMMAND) $(SPLIX_IPK_DIR)$(TARGET_PREFIX)/lib/cups/filter/*
+#	$(INSTALL) -d $(SPLIX_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(SPLIX_SOURCE_DIR)/splix.conf $(SPLIX_IPK_DIR)$(TARGET_PREFIX)/etc/splix.conf
+#	$(INSTALL) -d $(SPLIX_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(SPLIX_SOURCE_DIR)/rc.splix $(SPLIX_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXsplix
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SPLIX_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXsplix
 	$(MAKE) $(SPLIX_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(SPLIX_SOURCE_DIR)/postinst $(SPLIX_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SPLIX_IPK_DIR)/CONTROL/postinst

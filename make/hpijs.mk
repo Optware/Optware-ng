@@ -170,23 +170,23 @@ $(HPIJS_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(HPIJS_IPK_DIR)/opt/sbin or $(HPIJS_IPK_DIR)/opt/bin
+# Binaries should be installed into $(HPIJS_IPK_DIR)$(TARGET_PREFIX)/sbin or $(HPIJS_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(HPIJS_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(HPIJS_IPK_DIR)/opt/etc/hpijs/...
-# Documentation files should be installed in $(HPIJS_IPK_DIR)/opt/doc/hpijs/...
-# Daemon startup scripts should be installed in $(HPIJS_IPK_DIR)/opt/etc/init.d/S??hpijs
+# Libraries and include files should be installed into $(HPIJS_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(HPIJS_IPK_DIR)$(TARGET_PREFIX)/etc/hpijs/...
+# Documentation files should be installed in $(HPIJS_IPK_DIR)$(TARGET_PREFIX)/doc/hpijs/...
+# Daemon startup scripts should be installed in $(HPIJS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??hpijs
 #
 # You may need to patch your application to make it use these locations.
 #
 $(HPIJS_IPK): $(HPIJS_BUILD_DIR)/.built
 	rm -rf $(HPIJS_IPK_DIR) $(BUILD_DIR)/hpijs_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(HPIJS_BUILD_DIR) DESTDIR=$(HPIJS_IPK_DIR) install
-	$(STRIP_COMMAND) $(HPIJS_IPK_DIR)/opt/bin/hpijs
-	$(INSTALL) -d $(HPIJS_IPK_DIR)/opt/etc/
-	#$(INSTALL) -m 644 $(HPIJS_SOURCE_DIR)/hpijs.conf $(HPIJS_IPK_DIR)/opt/etc/hpijs.conf
-	$(INSTALL) -d $(HPIJS_IPK_DIR)/opt/etc/init.d
-	#$(INSTALL) -m 755 $(HPIJS_SOURCE_DIR)/rc.hpijs $(HPIJS_IPK_DIR)/opt/etc/init.d/SXXhpijs
+	$(STRIP_COMMAND) $(HPIJS_IPK_DIR)$(TARGET_PREFIX)/bin/hpijs
+	$(INSTALL) -d $(HPIJS_IPK_DIR)$(TARGET_PREFIX)/etc/
+	#$(INSTALL) -m 644 $(HPIJS_SOURCE_DIR)/hpijs.conf $(HPIJS_IPK_DIR)$(TARGET_PREFIX)/etc/hpijs.conf
+	$(INSTALL) -d $(HPIJS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	#$(INSTALL) -m 755 $(HPIJS_SOURCE_DIR)/rc.hpijs $(HPIJS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXhpijs
 	$(MAKE) $(HPIJS_IPK_DIR)/CONTROL/control
 	#$(INSTALL) -m 755 $(HPIJS_SOURCE_DIR)/postinst $(HPIJS_IPK_DIR)/CONTROL/postinst
 	#$(INSTALL) -m 755 $(HPIJS_SOURCE_DIR)/prerm $(HPIJS_IPK_DIR)/CONTROL/prerm

@@ -46,7 +46,7 @@ GSETTINGS-DESKTOP-SCHEMAS_IPK_VERSION=1
 
 #
 # GSETTINGS-DESKTOP-SCHEMAS_CONFFILES should be a list of user-editable files
-#GSETTINGS-DESKTOP-SCHEMAS_CONFFILES=/opt/etc/gsettings-desktop-schemas.conf /opt/etc/init.d/SXXgsettings-desktop-schemas
+#GSETTINGS-DESKTOP-SCHEMAS_CONFFILES=$(TARGET_PREFIX)/etc/gsettings-desktop-schemas.conf $(TARGET_PREFIX)/etc/init.d/SXXgsettings-desktop-schemas
 
 #
 # GSETTINGS-DESKTOP-SCHEMAS_PATCHES should list any patches, in the the order in
@@ -189,25 +189,25 @@ $(GSETTINGS-DESKTOP-SCHEMAS_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(GSETTINGS-DESKTOP-SCHEMAS_IPK_DIR)/opt/sbin or $(GSETTINGS-DESKTOP-SCHEMAS_IPK_DIR)/opt/bin
+# Binaries should be installed into $(GSETTINGS-DESKTOP-SCHEMAS_IPK_DIR)$(TARGET_PREFIX)/sbin or $(GSETTINGS-DESKTOP-SCHEMAS_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(GSETTINGS-DESKTOP-SCHEMAS_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(GSETTINGS-DESKTOP-SCHEMAS_IPK_DIR)/opt/etc/gsettings-desktop-schemas/...
-# Documentation files should be installed in $(GSETTINGS-DESKTOP-SCHEMAS_IPK_DIR)/opt/doc/gsettings-desktop-schemas/...
-# Daemon startup scripts should be installed in $(GSETTINGS-DESKTOP-SCHEMAS_IPK_DIR)/opt/etc/init.d/S??gsettings-desktop-schemas
+# Libraries and include files should be installed into $(GSETTINGS-DESKTOP-SCHEMAS_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(GSETTINGS-DESKTOP-SCHEMAS_IPK_DIR)$(TARGET_PREFIX)/etc/gsettings-desktop-schemas/...
+# Documentation files should be installed in $(GSETTINGS-DESKTOP-SCHEMAS_IPK_DIR)$(TARGET_PREFIX)/doc/gsettings-desktop-schemas/...
+# Daemon startup scripts should be installed in $(GSETTINGS-DESKTOP-SCHEMAS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??gsettings-desktop-schemas
 #
 # You may need to patch your application to make it use these locations.
 #
 $(GSETTINGS-DESKTOP-SCHEMAS_IPK): $(GSETTINGS-DESKTOP-SCHEMAS_BUILD_DIR)/.built
 	rm -rf $(GSETTINGS-DESKTOP-SCHEMAS_IPK_DIR) $(BUILD_DIR)/gsettings-desktop-schemas_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GSETTINGS-DESKTOP-SCHEMAS_BUILD_DIR) DESTDIR=$(GSETTINGS-DESKTOP-SCHEMAS_IPK_DIR) install-strip
-	$(INSTALL) -d $(GSETTINGS-DESKTOP-SCHEMAS_IPK_DIR)/opt/lib
-	mv -f $(addprefix $(GSETTINGS-DESKTOP-SCHEMAS_IPK_DIR)/opt/, share/pkgconfig lib/)
-#	$(INSTALL) -d $(GSETTINGS-DESKTOP-SCHEMAS_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(GSETTINGS-DESKTOP-SCHEMAS_SOURCE_DIR)/gsettings-desktop-schemas.conf $(GSETTINGS-DESKTOP-SCHEMAS_IPK_DIR)/opt/etc/gsettings-desktop-schemas.conf
-#	$(INSTALL) -d $(GSETTINGS-DESKTOP-SCHEMAS_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(GSETTINGS-DESKTOP-SCHEMAS_SOURCE_DIR)/rc.gsettings-desktop-schemas $(GSETTINGS-DESKTOP-SCHEMAS_IPK_DIR)/opt/etc/init.d/SXXgsettings-desktop-schemas
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(GSETTINGS-DESKTOP-SCHEMAS_IPK_DIR)/opt/etc/init.d/SXXgsettings-desktop-schemas
+	$(INSTALL) -d $(GSETTINGS-DESKTOP-SCHEMAS_IPK_DIR)$(TARGET_PREFIX)/lib
+	mv -f $(addprefix $(GSETTINGS-DESKTOP-SCHEMAS_IPK_DIR)$(TARGET_PREFIX)/, share/pkgconfig lib/)
+#	$(INSTALL) -d $(GSETTINGS-DESKTOP-SCHEMAS_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(GSETTINGS-DESKTOP-SCHEMAS_SOURCE_DIR)/gsettings-desktop-schemas.conf $(GSETTINGS-DESKTOP-SCHEMAS_IPK_DIR)$(TARGET_PREFIX)/etc/gsettings-desktop-schemas.conf
+#	$(INSTALL) -d $(GSETTINGS-DESKTOP-SCHEMAS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(GSETTINGS-DESKTOP-SCHEMAS_SOURCE_DIR)/rc.gsettings-desktop-schemas $(GSETTINGS-DESKTOP-SCHEMAS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXgsettings-desktop-schemas
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(GSETTINGS-DESKTOP-SCHEMAS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXgsettings-desktop-schemas
 	$(MAKE) $(GSETTINGS-DESKTOP-SCHEMAS_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 755 $(GSETTINGS-DESKTOP-SCHEMAS_SOURCE_DIR)/postinst $(GSETTINGS-DESKTOP-SCHEMAS_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(GSETTINGS-DESKTOP-SCHEMAS_IPK_DIR)/CONTROL/postinst

@@ -44,7 +44,7 @@ CTAGS_IPK_VERSION=1
 
 #
 # CTAGS_CONFFILES should be a list of user-editable files
-#CTAGS_CONFFILES=/opt/etc/ctags.conf /opt/etc/init.d/SXXctags
+#CTAGS_CONFFILES=$(TARGET_PREFIX)/etc/ctags.conf $(TARGET_PREFIX)/etc/init.d/SXXctags
 
 #
 # CTAGS_PATCHES should list any patches, in the the order in
@@ -166,19 +166,19 @@ $(CTAGS_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(CTAGS_IPK_DIR)/opt/sbin or $(CTAGS_IPK_DIR)/opt/bin
+# Binaries should be installed into $(CTAGS_IPK_DIR)$(TARGET_PREFIX)/sbin or $(CTAGS_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(CTAGS_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(CTAGS_IPK_DIR)/opt/etc/ctags/...
-# Documentation files should be installed in $(CTAGS_IPK_DIR)/opt/doc/ctags/...
-# Daemon startup scripts should be installed in $(CTAGS_IPK_DIR)/opt/etc/init.d/S??ctags
+# Libraries and include files should be installed into $(CTAGS_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(CTAGS_IPK_DIR)$(TARGET_PREFIX)/etc/ctags/...
+# Documentation files should be installed in $(CTAGS_IPK_DIR)$(TARGET_PREFIX)/doc/ctags/...
+# Daemon startup scripts should be installed in $(CTAGS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??ctags
 #
 # You may need to patch your application to make it use these locations.
 #
 $(CTAGS_IPK): $(CTAGS_BUILD_DIR)/.built
 	rm -rf $(CTAGS_IPK_DIR) $(BUILD_DIR)/ctags_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(CTAGS_BUILD_DIR) DESTDIR=$(CTAGS_IPK_DIR) prefix=$(CTAGS_IPK_DIR)$(TARGET_PREFIX) install
-	$(STRIP_COMMAND) $(CTAGS_IPK_DIR)/opt/bin/ctags
+	$(STRIP_COMMAND) $(CTAGS_IPK_DIR)$(TARGET_PREFIX)/bin/ctags
 	$(MAKE) $(CTAGS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CTAGS_IPK_DIR)
 

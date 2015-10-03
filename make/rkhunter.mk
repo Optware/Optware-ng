@@ -46,7 +46,7 @@ RKHUNTER_IPK_VERSION=1
 
 #
 # RKHUNTER_CONFFILES should be a list of user-editable files
-RKHUNTER_CONFFILES=/opt/etc/rkhunter.conf
+RKHUNTER_CONFFILES=$(TARGET_PREFIX)/etc/rkhunter.conf
 
 #
 # RKHUNTER_PATCHES should list any patches, in the the order in
@@ -172,18 +172,18 @@ $(RKHUNTER_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(RKHUNTER_IPK_DIR)/opt/sbin or $(RKHUNTER_IPK_DIR)/opt/bin
+# Binaries should be installed into $(RKHUNTER_IPK_DIR)$(TARGET_PREFIX)/sbin or $(RKHUNTER_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(RKHUNTER_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(RKHUNTER_IPK_DIR)/opt/etc/rkhunter/...
-# Documentation files should be installed in $(RKHUNTER_IPK_DIR)/opt/doc/rkhunter/...
-# Daemon startup scripts should be installed in $(RKHUNTER_IPK_DIR)/opt/etc/init.d/S??rkhunter
+# Libraries and include files should be installed into $(RKHUNTER_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(RKHUNTER_IPK_DIR)$(TARGET_PREFIX)/etc/rkhunter/...
+# Documentation files should be installed in $(RKHUNTER_IPK_DIR)$(TARGET_PREFIX)/doc/rkhunter/...
+# Daemon startup scripts should be installed in $(RKHUNTER_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??rkhunter
 #
 # You may need to patch your application to make it use these locations.
 #
 $(RKHUNTER_IPK): $(RKHUNTER_BUILD_DIR)/.built
 	rm -rf $(RKHUNTER_IPK_DIR) $(BUILD_DIR)/rkhunter_*_$(TARGET_ARCH).ipk
-	mkdir -p $(RKHUNTER_IPK_DIR)/opt
+	mkdir -p $(RKHUNTER_IPK_DIR)$(TARGET_PREFIX)
 	(cd $(RKHUNTER_BUILD_DIR); \
 		./$(INSTALL)er.sh --layout custom $(RKHUNTER_IPK_DIR)$(TARGET_PREFIX) --striproot $(RKHUNTER_IPK_DIR) --install \
 	)

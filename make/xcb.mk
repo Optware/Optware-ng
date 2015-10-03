@@ -149,12 +149,12 @@ xcb-stage: $(XCB_BUILD_DIR)/.staged
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(XCB_IPK_DIR)/opt/sbin or $(XCB_IPK_DIR)/opt/bin
+# Binaries should be installed into $(XCB_IPK_DIR)$(TARGET_PREFIX)/sbin or $(XCB_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(XCB_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(XCB_IPK_DIR)/opt/etc/xcb/...
-# Documentation files should be installed in $(XCB_IPK_DIR)/opt/doc/xcb/...
-# Daemon startup scripts should be installed in $(XCB_IPK_DIR)/opt/etc/init.d/S??xcb
+# Libraries and include files should be installed into $(XCB_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(XCB_IPK_DIR)$(TARGET_PREFIX)/etc/xcb/...
+# Documentation files should be installed in $(XCB_IPK_DIR)$(TARGET_PREFIX)/doc/xcb/...
+# Daemon startup scripts should be installed in $(XCB_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??xcb
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -163,7 +163,7 @@ $(XCB_IPK): $(XCB_BUILD_DIR)/.built
 	$(MAKE) -C $(XCB_BUILD_DIR) DESTDIR=$(XCB_IPK_DIR) install-strip
 	$(MAKE) $(XCB_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 644 $(XCB_SOURCE_DIR)/postinst $(XCB_IPK_DIR)/CONTROL/postinst
-	rm -f $(XCB_IPK_DIR)/opt/lib/*.la
+	rm -f $(XCB_IPK_DIR)$(TARGET_PREFIX)/lib/*.la
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XCB_IPK_DIR)
 
 #

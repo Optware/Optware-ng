@@ -40,7 +40,7 @@ SLANG1_IPK_VERSION=1
 
 #
 # SLANG1_CONFFILES should be a list of user-editable files
-#SLANG1_CONFFILES=/opt/etc/slang1.conf /opt/etc/init.d/SXXslang1
+#SLANG1_CONFFILES=$(TARGET_PREFIX)/etc/slang1.conf $(TARGET_PREFIX)/etc/init.d/SXXslang1
 
 #
 # SLANG1_PATCHES should list any patches, in the the order in
@@ -183,12 +183,12 @@ $(SLANG1_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(SLANG1_IPK_DIR)/opt/sbin or $(SLANG1_IPK_DIR)/opt/bin
+# Binaries should be installed into $(SLANG1_IPK_DIR)$(TARGET_PREFIX)/sbin or $(SLANG1_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(SLANG1_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(SLANG1_IPK_DIR)/opt/etc/slang1/...
-# Documentation files should be installed in $(SLANG1_IPK_DIR)/opt/doc/slang1/...
-# Daemon startup scripts should be installed in $(SLANG1_IPK_DIR)/opt/etc/init.d/S??slang1
+# Libraries and include files should be installed into $(SLANG1_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(SLANG1_IPK_DIR)$(TARGET_PREFIX)/etc/slang1/...
+# Documentation files should be installed in $(SLANG1_IPK_DIR)$(TARGET_PREFIX)/doc/slang1/...
+# Daemon startup scripts should be installed in $(SLANG1_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??slang1
 #
 # You may need to patch your application to make it use these locations.
 #

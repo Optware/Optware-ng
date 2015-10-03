@@ -43,7 +43,7 @@ SPANDSP_IPK_VERSION=1
 
 #
 # SPANDSP_CONFFILES should be a list of user-editable files
-#SPANDSP_CONFFILES=/opt/etc/spandsp.conf /opt/etc/init.d/SXXspandsp
+#SPANDSP_CONFFILES=$(TARGET_PREFIX)/etc/spandsp.conf $(TARGET_PREFIX)/etc/init.d/SXXspandsp
 
 #
 # SPANDSP_PATCHES should list any patches, in the the order in
@@ -184,12 +184,12 @@ $(SPANDSP_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(SPANDSP_IPK_DIR)/opt/sbin or $(SPANDSP_IPK_DIR)/opt/bin
+# Binaries should be installed into $(SPANDSP_IPK_DIR)$(TARGET_PREFIX)/sbin or $(SPANDSP_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(SPANDSP_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(SPANDSP_IPK_DIR)/opt/etc/spandsp/...
-# Documentation files should be installed in $(SPANDSP_IPK_DIR)/opt/doc/spandsp/...
-# Daemon startup scripts should be installed in $(SPANDSP_IPK_DIR)/opt/etc/init.d/S??spandsp
+# Libraries and include files should be installed into $(SPANDSP_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(SPANDSP_IPK_DIR)$(TARGET_PREFIX)/etc/spandsp/...
+# Documentation files should be installed in $(SPANDSP_IPK_DIR)$(TARGET_PREFIX)/doc/spandsp/...
+# Daemon startup scripts should be installed in $(SPANDSP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??spandsp
 #
 # You may need to patch your application to make it use these locations.
 #

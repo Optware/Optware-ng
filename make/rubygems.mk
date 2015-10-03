@@ -45,7 +45,7 @@ RUBYGEMS_IPK_VERSION=1
 
 #
 # RUBYGEMS_CONFFILES should be a list of user-editable files
-#RUBYGEMS_CONFFILES=/opt/etc/rubygems.conf /opt/etc/init.d/SXXrubygems
+#RUBYGEMS_CONFFILES=$(TARGET_PREFIX)/etc/rubygems.conf $(TARGET_PREFIX)/etc/init.d/SXXrubygems
 
 #
 # RUBYGEMS_PATCHES should list any patches, in the the order in
@@ -172,12 +172,12 @@ $(RUBYGEMS_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(RUBYGEMS_IPK_DIR)/opt/sbin or $(RUBYGEMS_IPK_DIR)/opt/bin
+# Binaries should be installed into $(RUBYGEMS_IPK_DIR)$(TARGET_PREFIX)/sbin or $(RUBYGEMS_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(RUBYGEMS_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(RUBYGEMS_IPK_DIR)/opt/etc/rubygems/...
-# Documentation files should be installed in $(RUBYGEMS_IPK_DIR)/opt/doc/rubygems/...
-# Daemon startup scripts should be installed in $(RUBYGEMS_IPK_DIR)/opt/etc/init.d/S??rubygems
+# Libraries and include files should be installed into $(RUBYGEMS_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(RUBYGEMS_IPK_DIR)$(TARGET_PREFIX)/etc/rubygems/...
+# Documentation files should be installed in $(RUBYGEMS_IPK_DIR)$(TARGET_PREFIX)/doc/rubygems/...
+# Daemon startup scripts should be installed in $(RUBYGEMS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??rubygems
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -188,17 +188,17 @@ $(RUBYGEMS_IPK): $(RUBYGEMS_BUILD_DIR)/.built
 	$(MAKE) ruby-host-stage
 	rm -rf $(RUBYGEMS_IPK_DIR) $(BUILD_DIR)/rubygems_*_$(TARGET_ARCH).ipk
 	$(RUBY_HOST_RUBY) -C $(RUBYGEMS_BUILD_DIR) setup.rb all \
-		--prefix=$(RUBYGEMS_IPK_DIR)/opt
-	sed -i -e '0,/^#!/s|^#!.*|#!/opt/bin/ruby|' $(RUBYGEMS_IPK_DIR)/opt/bin/gem
-	mv -f $(RUBYGEMS_IPK_DIR)/opt/bin/gem $(RUBYGEMS_IPK_DIR)/opt/bin/rubygems-gem
+		--prefix=$(RUBYGEMS_IPK_DIR)$(TARGET_PREFIX)
+	sed -i -e '0,/^#!/s|^#!.*|#!$(TARGET_PREFIX)/bin/ruby|' $(RUBYGEMS_IPK_DIR)$(TARGET_PREFIX)/bin/gem
+	mv -f $(RUBYGEMS_IPK_DIR)$(TARGET_PREFIX)/bin/gem $(RUBYGEMS_IPK_DIR)$(TARGET_PREFIX)/bin/rubygems-gem
 ifeq (wl500g, $(OPTWARE_TARGET))
-	$(INSTALL) -d $(RUBYGEMS_IPK_DIR)/opt/share/doc/rubygems
-	cp -R $(RUBYGEMS_BUILD_DIR)/doc/* $(RUBYGEMS_IPK_DIR)/opt/share/doc/rubygems
+	$(INSTALL) -d $(RUBYGEMS_IPK_DIR)$(TARGET_PREFIX)/share/doc/rubygems
+	cp -R $(RUBYGEMS_BUILD_DIR)/doc/* $(RUBYGEMS_IPK_DIR)$(TARGET_PREFIX)/share/doc/rubygems
 endif
 	$(MAKE) $(RUBYGEMS_IPK_DIR)/CONTROL/control
-	echo "#!/bin/sh\n/opt/bin/update-alternatives --install '/opt/bin/gem' 'gem' /opt/bin/rubygems-gem 40" > \
+	echo "#!/bin/sh\n$(TARGET_PREFIX)/bin/update-alternatives --install '$(TARGET_PREFIX)/bin/gem' 'gem' $(TARGET_PREFIX)/bin/rubygems-gem 40" > \
 		$(RUBYGEMS_IPK_DIR)/CONTROL/postinst
-	echo "#!/bin/sh\n/opt/bin/update-alternatives --remove 'gem' /opt/bin/rubygems-gem" > \
+	echo "#!/bin/sh\n$(TARGET_PREFIX)/bin/update-alternatives --remove 'gem' $(TARGET_PREFIX)/bin/rubygems-gem" > \
 		$(RUBYGEMS_IPK_DIR)/CONTROL/prerm
 	chmod 755 $(RUBYGEMS_IPK_DIR)/CONTROL/postinst
 	chmod 755 $(RUBYGEMS_IPK_DIR)/CONTROL/prerm

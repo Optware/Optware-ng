@@ -85,7 +85,7 @@ $(PERL-PADWALKER_IPK): $(PERL-PADWALKER_BUILD_DIR)/.built
 	rm -rf $(PERL-PADWALKER_IPK_DIR) $(BUILD_DIR)/perl-padwalker_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PERL-PADWALKER_BUILD_DIR) DESTDIR=$(PERL-PADWALKER_IPK_DIR) install
 	find $(PERL-PADWALKER_IPK_DIR)$(TARGET_PREFIX) -name 'perllocal.pod' -exec rm -f {} \;
-	(cd $(PERL-PADWALKER_IPK_DIR)/opt/lib/perl5 ; \
+	(cd $(PERL-PADWALKER_IPK_DIR)$(TARGET_PREFIX)/lib/perl5 ; \
 		find . -name '*.so' -exec chmod +w {} \; ; \
 		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
 		find . -name '*.so' -exec chmod -w {} \; ; \

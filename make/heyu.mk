@@ -41,7 +41,7 @@ HEYU_IPK_VERSION=1
 
 #
 # HEYU_CONFFILES should be a list of user-editable files
-HEYU_CONFFILES=/opt/etc/init.d/S99heyu #/opt/etc/heyu/x10.conf /opt/etc/heyu/x10.sched
+HEYU_CONFFILES=$(TARGET_PREFIX)/etc/init.d/S99heyu #$(TARGET_PREFIX)/etc/heyu/x10.conf $(TARGET_PREFIX)/etc/heyu/x10.sched
 
 #
 # HEYU_PATCHES should list any patches, in the the order in
@@ -139,7 +139,7 @@ $(HEYU_BUILD_DIR)/.built: $(HEYU_BUILD_DIR)/.configured
 	rm -f $@
 	$(MAKE) -C $(@D) \
 		CC=$(TARGET_CC) LD=$(TARGET_LD) \
-		CFLAGS="$(STAGING_CPPFLAGS) -I$(@D) \$$(DFLAGS) -DLOCKDIR=\\\"/opt/var/run/heyu\\\" -DSYSBASEDIR=\\\"/opt/etc/heyu\\\" -DSPOOLDIR=\\\"/opt/var/spool/heyu\\\" " \
+		CFLAGS="$(STAGING_CPPFLAGS) -I$(@D) \$$(DFLAGS) -DLOCKDIR=\\\"$(TARGET_PREFIX)/var/run/heyu\\\" -DSYSBASEDIR=\\\"$(TARGET_PREFIX)/etc/heyu\\\" -DSPOOLDIR=\\\"$(TARGET_PREFIX)/var/spool/heyu\\\" " \
 		LDFLAGS="$(STAGING_LDFLAGS)"
 	touch $@
 
@@ -180,31 +180,31 @@ $(HEYU_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(HEYU_IPK_DIR)/opt/sbin or $(HEYU_IPK_DIR)/opt/bin
+# Binaries should be installed into $(HEYU_IPK_DIR)$(TARGET_PREFIX)/sbin or $(HEYU_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(HEYU_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(HEYU_IPK_DIR)/opt/etc/heyu/...
-# Documentation files should be installed in $(HEYU_IPK_DIR)/opt/doc/heyu/...
-# Daemon startup scripts should be installed in $(HEYU_IPK_DIR)/opt/etc/init.d/S??heyu
+# Libraries and include files should be installed into $(HEYU_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(HEYU_IPK_DIR)$(TARGET_PREFIX)/etc/heyu/...
+# Documentation files should be installed in $(HEYU_IPK_DIR)$(TARGET_PREFIX)/doc/heyu/...
+# Daemon startup scripts should be installed in $(HEYU_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??heyu
 #
 # You may need to patch your application to make it use these locations.
 #
 $(HEYU_IPK): $(HEYU_BUILD_DIR)/.built
 	rm -rf $(HEYU_IPK_DIR) $(BUILD_DIR)/heyu_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(HEYU_IPK_DIR)/opt/bin
-	$(INSTALL) -d $(HEYU_IPK_DIR)/opt/man/man1
-	$(INSTALL) -d $(HEYU_IPK_DIR)/opt/man/man5
-	$(INSTALL) -d -m0777 $(HEYU_IPK_DIR)/opt/etc/heyu
-	$(INSTALL) -d -m1777 $(HEYU_IPK_DIR)/opt/var/spool/heyu
-	$(INSTALL) -d -m0777 $(HEYU_IPK_DIR)/opt/var/run/heyu
-	$(INSTALL) -m0644 $(HEYU_BUILD_DIR)/x10config.sample $(HEYU_IPK_DIR)/opt/etc/heyu/x10.conf.sample
-	$(INSTALL) -m0644 $(HEYU_BUILD_DIR)/x10.sched.sample $(HEYU_IPK_DIR)/opt/etc/heyu/
-	$(INSTALL) -m0755 $(HEYU_BUILD_DIR)/heyu $(HEYU_IPK_DIR)/opt/bin
-	$(TARGET_STRIP) $(HEYU_IPK_DIR)/opt/bin/heyu
-	$(INSTALL) -m0644 $(HEYU_BUILD_DIR)/*.1 $(HEYU_IPK_DIR)/opt/man/man1/
-	$(INSTALL) -m0644 $(HEYU_BUILD_DIR)/*.5 $(HEYU_IPK_DIR)/opt/man/man5/
-	$(INSTALL) -d $(HEYU_IPK_DIR)/opt/etc/init.d
-	$(INSTALL) -m 755 $(HEYU_SOURCE_DIR)/rc.heyu $(HEYU_IPK_DIR)/opt/etc/init.d/S99heyu
+	$(INSTALL) -d $(HEYU_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(INSTALL) -d $(HEYU_IPK_DIR)$(TARGET_PREFIX)/man/man1
+	$(INSTALL) -d $(HEYU_IPK_DIR)$(TARGET_PREFIX)/man/man5
+	$(INSTALL) -d -m0777 $(HEYU_IPK_DIR)$(TARGET_PREFIX)/etc/heyu
+	$(INSTALL) -d -m1777 $(HEYU_IPK_DIR)$(TARGET_PREFIX)/var/spool/heyu
+	$(INSTALL) -d -m0777 $(HEYU_IPK_DIR)$(TARGET_PREFIX)/var/run/heyu
+	$(INSTALL) -m0644 $(HEYU_BUILD_DIR)/x10config.sample $(HEYU_IPK_DIR)$(TARGET_PREFIX)/etc/heyu/x10.conf.sample
+	$(INSTALL) -m0644 $(HEYU_BUILD_DIR)/x10.sched.sample $(HEYU_IPK_DIR)$(TARGET_PREFIX)/etc/heyu/
+	$(INSTALL) -m0755 $(HEYU_BUILD_DIR)/heyu $(HEYU_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(TARGET_STRIP) $(HEYU_IPK_DIR)$(TARGET_PREFIX)/bin/heyu
+	$(INSTALL) -m0644 $(HEYU_BUILD_DIR)/*.1 $(HEYU_IPK_DIR)$(TARGET_PREFIX)/man/man1/
+	$(INSTALL) -m0644 $(HEYU_BUILD_DIR)/*.5 $(HEYU_IPK_DIR)$(TARGET_PREFIX)/man/man5/
+	$(INSTALL) -d $(HEYU_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(INSTALL) -m 755 $(HEYU_SOURCE_DIR)/rc.heyu $(HEYU_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S99heyu
 	$(MAKE) $(HEYU_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 755 $(HEYU_SOURCE_DIR)/postinst $(HEYU_IPK_DIR)/CONTROL/postinst
 	$(INSTALL) -m 755 $(HEYU_SOURCE_DIR)/prerm $(HEYU_IPK_DIR)/CONTROL/prerm

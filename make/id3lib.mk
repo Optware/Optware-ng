@@ -48,7 +48,7 @@ ID3LIB_IPK_VERSION=4
 
 #
 # ID3LIB_CONFFILES should be a list of user-editable files
-#ID3LIB_CONFFILES=/opt/etc/id3lib.conf /opt/etc/init.d/SXXid3lib
+#ID3LIB_CONFFILES=$(TARGET_PREFIX)/etc/id3lib.conf $(TARGET_PREFIX)/etc/init.d/SXXid3lib
 
 #
 # ID3LIB_PATCHES should list any patches, in the the order in
@@ -204,22 +204,22 @@ $(ID3LIB_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(ID3LIB_IPK_DIR)/opt/sbin or $(ID3LIB_IPK_DIR)/opt/bin
+# Binaries should be installed into $(ID3LIB_IPK_DIR)$(TARGET_PREFIX)/sbin or $(ID3LIB_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(ID3LIB_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(ID3LIB_IPK_DIR)/opt/etc/id3lib/...
-# Documentation files should be installed in $(ID3LIB_IPK_DIR)/opt/doc/id3lib/...
-# Daemon startup scripts should be installed in $(ID3LIB_IPK_DIR)/opt/etc/init.d/S??id3lib
+# Libraries and include files should be installed into $(ID3LIB_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(ID3LIB_IPK_DIR)$(TARGET_PREFIX)/etc/id3lib/...
+# Documentation files should be installed in $(ID3LIB_IPK_DIR)$(TARGET_PREFIX)/doc/id3lib/...
+# Daemon startup scripts should be installed in $(ID3LIB_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??id3lib
 #
 # You may need to patch your application to make it use these locations.
 #
 $(ID3LIB_IPK): $(ID3LIB_BUILD_DIR)/.built
 	rm -rf $(ID3LIB_IPK_DIR) $(BUILD_DIR)/id3lib_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(ID3LIB_BUILD_DIR) DESTDIR=$(ID3LIB_IPK_DIR) install-strip
-#	$(INSTALL) -d $(ID3LIB_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(ID3LIB_SOURCE_DIR)/id3lib.conf $(ID3LIB_IPK_DIR)/opt/etc/id3lib.conf
-#	$(INSTALL) -d $(ID3LIB_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(ID3LIB_SOURCE_DIR)/rc.id3lib $(ID3LIB_IPK_DIR)/opt/etc/init.d/SXXid3lib
+#	$(INSTALL) -d $(ID3LIB_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(ID3LIB_SOURCE_DIR)/id3lib.conf $(ID3LIB_IPK_DIR)$(TARGET_PREFIX)/etc/id3lib.conf
+#	$(INSTALL) -d $(ID3LIB_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(ID3LIB_SOURCE_DIR)/rc.id3lib $(ID3LIB_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXid3lib
 	$(MAKE) $(ID3LIB_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(ID3LIB_SOURCE_DIR)/postinst $(ID3LIB_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 755 $(ID3LIB_SOURCE_DIR)/prerm $(ID3LIB_IPK_DIR)/CONTROL/prerm

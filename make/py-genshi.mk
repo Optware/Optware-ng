@@ -41,7 +41,7 @@ PY-GENSHI_IPK_VERSION=1
 
 #
 # PY-GENSHI_CONFFILES should be a list of user-editable files
-#PY-GENSHI_CONFFILES=/opt/etc/py-genshi.conf /opt/etc/init.d/SXXpy-genshi
+#PY-GENSHI_CONFFILES=$(TARGET_PREFIX)/etc/py-genshi.conf $(TARGET_PREFIX)/etc/init.d/SXXpy-genshi
 
 #
 # PY-GENSHI_PATCHES should list any patches, in the the order in
@@ -121,9 +121,9 @@ $(PY-GENSHI_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-GENSHI_SOURCE) $(PY-GENSHI_PA
 	    echo "[build_ext]"; \
 	    echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.5"; \
 	    echo "library-dirs=$(STAGING_LIB_DIR)"; \
-	    echo "rpath=/opt/lib"; \
+	    echo "rpath=$(TARGET_PREFIX)/lib"; \
 	    echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python2.5") >> setup.cfg \
+	    echo "executable=$(TARGET_PREFIX)/bin/python2.5") >> setup.cfg \
 	)
 #	2.6
 	$(PY-GENSHI_UNZIP) $(DL_DIR)/$(PY-GENSHI_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -136,9 +136,9 @@ $(PY-GENSHI_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-GENSHI_SOURCE) $(PY-GENSHI_PA
 	    echo "[build_ext]"; \
 	    echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.6"; \
 	    echo "library-dirs=$(STAGING_LIB_DIR)"; \
-	    echo "rpath=/opt/lib"; \
+	    echo "rpath=$(TARGET_PREFIX)/lib"; \
 	    echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python2.6") >> setup.cfg \
+	    echo "executable=$(TARGET_PREFIX)/bin/python2.6") >> setup.cfg \
 	)
 	touch $@
 
@@ -209,12 +209,12 @@ $(PY26-GENSHI_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PY25-GENSHI_IPK_DIR)/opt/sbin or $(PY25-GENSHI_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PY25-GENSHI_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PY25-GENSHI_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PY25-GENSHI_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PY25-GENSHI_IPK_DIR)/opt/etc/py-genshi/...
-# Documentation files should be installed in $(PY25-GENSHI_IPK_DIR)/opt/doc/py-genshi/...
-# Daemon startup scripts should be installed in $(PY25-GENSHI_IPK_DIR)/opt/etc/init.d/S??py-genshi
+# Libraries and include files should be installed into $(PY25-GENSHI_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PY25-GENSHI_IPK_DIR)$(TARGET_PREFIX)/etc/py-genshi/...
+# Documentation files should be installed in $(PY25-GENSHI_IPK_DIR)$(TARGET_PREFIX)/doc/py-genshi/...
+# Daemon startup scripts should be installed in $(PY25-GENSHI_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??py-genshi
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -223,8 +223,8 @@ $(PY25-GENSHI_IPK): $(PY-GENSHI_BUILD_DIR)/.built
 	rm -rf $(PY25-GENSHI_IPK_DIR) $(BUILD_DIR)/py25-genshi_*_$(TARGET_ARCH).ipk
 	(cd $(PY-GENSHI_BUILD_DIR)/2.5; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
-	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(PY25-GENSHI_IPK_DIR) --prefix=/opt)
-	(cd $(PY25-GENSHI_IPK_DIR)/opt/lib/python2.5/site-packages; \
+	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(PY25-GENSHI_IPK_DIR) --prefix=$(TARGET_PREFIX))
+	(cd $(PY25-GENSHI_IPK_DIR)$(TARGET_PREFIX)/lib/python2.5/site-packages; \
 		find . -name '*.so' -exec chmod +w {} \; ; \
 		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
 		find . -name '*.so' -exec chmod -w {} \; ; \
@@ -237,8 +237,8 @@ $(PY26-GENSHI_IPK): $(PY-GENSHI_BUILD_DIR)/.built
 	rm -rf $(PY26-GENSHI_IPK_DIR) $(BUILD_DIR)/py26-genshi_*_$(TARGET_ARCH).ipk
 	(cd $(PY-GENSHI_BUILD_DIR)/2.6; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
-	$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(PY26-GENSHI_IPK_DIR) --prefix=/opt)
-	(cd $(PY26-GENSHI_IPK_DIR)/opt/lib/python2.6/site-packages; \
+	$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(PY26-GENSHI_IPK_DIR) --prefix=$(TARGET_PREFIX))
+	(cd $(PY26-GENSHI_IPK_DIR)$(TARGET_PREFIX)/lib/python2.6/site-packages; \
 		find . -name '*.so' -exec chmod +w {} \; ; \
 		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
 		find . -name '*.so' -exec chmod -w {} \; ; \

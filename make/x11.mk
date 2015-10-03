@@ -158,12 +158,12 @@ x11-stage: $(X11_BUILD_DIR)/.staged
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(X11_IPK_DIR)/opt/sbin or $(X11_IPK_DIR)/opt/bin
+# Binaries should be installed into $(X11_IPK_DIR)$(TARGET_PREFIX)/sbin or $(X11_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(X11_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(X11_IPK_DIR)/opt/etc/x11/...
-# Documentation files should be installed in $(X11_IPK_DIR)/opt/doc/x11/...
-# Daemon startup scripts should be installed in $(X11_IPK_DIR)/opt/etc/init.d/S??x11
+# Libraries and include files should be installed into $(X11_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(X11_IPK_DIR)$(TARGET_PREFIX)/etc/x11/...
+# Documentation files should be installed in $(X11_IPK_DIR)$(TARGET_PREFIX)/doc/x11/...
+# Daemon startup scripts should be installed in $(X11_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??x11
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -172,7 +172,7 @@ $(X11_IPK): $(X11_BUILD_DIR)/.built
 	$(MAKE) -C $(X11_BUILD_DIR) DESTDIR=$(X11_IPK_DIR) install-strip
 	$(MAKE) $(X11_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 644 $(X11_SOURCE_DIR)/postinst $(X11_IPK_DIR)/CONTROL/postinst
-	rm -f $(X11_IPK_DIR)/opt/lib/*.la
+	rm -f $(X11_IPK_DIR)$(TARGET_PREFIX)/lib/*.la
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(X11_IPK_DIR)
 
 #

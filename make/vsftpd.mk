@@ -42,7 +42,7 @@ VSFTPD_IPK_VERSION=2
 
 
 # VSFTPD_CONFFILES should be a list of user-editable files
-VSFTPD_CONFFILES=/opt/etc/vsftpd.conf
+VSFTPD_CONFFILES=$(TARGET_PREFIX)/etc/vsftpd.conf
 
 #
 # VSFTPD_PATCHES should list any patches, in the the order in
@@ -118,7 +118,7 @@ endif
 		cat $(VSFTPD_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(VSFTPD_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(VSFTPD_DIR) $(@D)
-	sed -i -e '/VSFTP_DEFAULT_CONFIG/s|/etc/vsftpd.conf|/opt&|' $(@D)/defs.h
+	sed -i -e '/VSFTP_DEFAULT_CONFIG/s|/etc/vsftpd.conf|$(TARGET_PREFIX)&|' $(@D)/defs.h
 	sed -i -e 's|$$(CC) -c|& $$(CPPFLAGS)|' $(@D)/Makefile
 ifneq (0.9.7,$(OPENSSL_LIB_VERSION))
 	sed -i -e '/VSF_BUILD_SSL/s|#undef|#define|' $(@D)/builddefs.h
@@ -191,25 +191,25 @@ $(VSFTPD_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(VSFTPD_IPK_DIR)/opt/sbin or $(VSFTPD_IPK_DIR)/opt/bin
+# Binaries should be installed into $(VSFTPD_IPK_DIR)$(TARGET_PREFIX)/sbin or $(VSFTPD_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(VSFTPD_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(VSFTPD_IPK_DIR)/opt/etc/vsftpd/...
-# Documentation files should be installed in $(VSFTPD_IPK_DIR)/opt/doc/vsftpd/...
-# Daemon startup scripts should be installed in $(VSFTPD_IPK_DIR)/opt/etc/init.d/S??vsftpd
+# Libraries and include files should be installed into $(VSFTPD_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(VSFTPD_IPK_DIR)$(TARGET_PREFIX)/etc/vsftpd/...
+# Documentation files should be installed in $(VSFTPD_IPK_DIR)$(TARGET_PREFIX)/doc/vsftpd/...
+# Daemon startup scripts should be installed in $(VSFTPD_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??vsftpd
 #
 # You may need to patch your application to make it use these locations.
 #
 $(VSFTPD_IPK): $(VSFTPD_BUILD_DIR)/.built
 	rm -rf $(VSFTPD_IPK_DIR) $(BUILD_DIR)/vsftpd_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(VSFTPD_IPK_DIR)/opt/sbin
-	$(STRIP_COMMAND) $(VSFTPD_BUILD_DIR)/vsftpd -o $(VSFTPD_IPK_DIR)/opt/sbin/vsftpd
-	$(INSTALL) -d $(VSFTPD_IPK_DIR)/opt/etc
-	$(INSTALL) -m 644 $(VSFTPD_SOURCE_DIR)/vsftpd.conf $(VSFTPD_IPK_DIR)/opt/etc/vsftpd.conf
-	$(INSTALL) -d $(VSFTPD_IPK_DIR)/opt/share/man/man5
-	$(INSTALL) -m 644 $(VSFTPD_BUILD_DIR)/vsftpd.conf.5 $(VSFTPD_IPK_DIR)/opt/share/man/man5
-	$(INSTALL) -d $(VSFTPD_IPK_DIR)/opt/share/man/man8
-	$(INSTALL) -m 644 $(VSFTPD_BUILD_DIR)/vsftpd.8 $(VSFTPD_IPK_DIR)/opt/share/man/man8
+	$(INSTALL) -d $(VSFTPD_IPK_DIR)$(TARGET_PREFIX)/sbin
+	$(STRIP_COMMAND) $(VSFTPD_BUILD_DIR)/vsftpd -o $(VSFTPD_IPK_DIR)$(TARGET_PREFIX)/sbin/vsftpd
+	$(INSTALL) -d $(VSFTPD_IPK_DIR)$(TARGET_PREFIX)/etc
+	$(INSTALL) -m 644 $(VSFTPD_SOURCE_DIR)/vsftpd.conf $(VSFTPD_IPK_DIR)$(TARGET_PREFIX)/etc/vsftpd.conf
+	$(INSTALL) -d $(VSFTPD_IPK_DIR)$(TARGET_PREFIX)/share/man/man5
+	$(INSTALL) -m 644 $(VSFTPD_BUILD_DIR)/vsftpd.conf.5 $(VSFTPD_IPK_DIR)$(TARGET_PREFIX)/share/man/man5
+	$(INSTALL) -d $(VSFTPD_IPK_DIR)$(TARGET_PREFIX)/share/man/man8
+	$(INSTALL) -m 644 $(VSFTPD_BUILD_DIR)/vsftpd.8 $(VSFTPD_IPK_DIR)$(TARGET_PREFIX)/share/man/man8
 	$(MAKE) $(VSFTPD_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 644 $(VSFTPD_SOURCE_DIR)/postinst $(VSFTPD_IPK_DIR)/CONTROL/postinst
 	echo $(VSFTPD_CONFFILES) | sed -e 's/ /\n/g' > $(VSFTPD_IPK_DIR)/CONTROL/conffiles

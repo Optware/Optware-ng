@@ -137,21 +137,21 @@ $(CVS_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(CVS_IPK_DIR)/opt/sbin or $(CVS_IPK_DIR)/opt/bin
+# Binaries should be installed into $(CVS_IPK_DIR)$(TARGET_PREFIX)/sbin or $(CVS_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(CVS_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(CVS_IPK_DIR)/opt/etc/ushare/...
-# Documentation files should be installed in $(CVS_IPK_DIR)/opt/doc/ushare/...
-# Daemon startup scripts should be installed in $(CVS_IPK_DIR)/opt/etc/init.d/S??ushare
+# Libraries and include files should be installed into $(CVS_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(CVS_IPK_DIR)$(TARGET_PREFIX)/etc/ushare/...
+# Documentation files should be installed in $(CVS_IPK_DIR)$(TARGET_PREFIX)/doc/ushare/...
+# Daemon startup scripts should be installed in $(CVS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??ushare
 #
 # You may need to patch your application to make it use these locations.
 #
 $(CVS_IPK): $(CVS_BUILD_DIR)/.built
 	rm -rf $(CVS_IPK_DIR) $(BUILD_DIR)/ushare_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(CVS_BUILD_DIR) DESTDIR=$(CVS_IPK_DIR) install-strip
-	rm -f $(CVS_IPK_DIR)/opt/share/info/dir
-#	$(STRIP_COMMAND) $(CVS_BUILD_DIR)/src/cvs -o $(CVS_IPK_DIR)/opt/bin/cvs
-	$(INSTALL) -d $(CVS_IPK_DIR)/opt/bin/
+	rm -f $(CVS_IPK_DIR)$(TARGET_PREFIX)/share/info/dir
+#	$(STRIP_COMMAND) $(CVS_BUILD_DIR)/src/cvs -o $(CVS_IPK_DIR)$(TARGET_PREFIX)/bin/cvs
+	$(INSTALL) -d $(CVS_IPK_DIR)$(TARGET_PREFIX)/bin/
 	$(MAKE) $(CVS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CVS_IPK_DIR)
 

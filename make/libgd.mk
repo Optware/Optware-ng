@@ -35,7 +35,7 @@ LIBGD_LOCALES=
 
 #
 # LIBGD_CONFFILES should be a list of user-editable files
-#LIBGD_CONFFILES=/opt/etc/libgd.conf /opt/etc/init.d/SXXlibgd
+#LIBGD_CONFFILES=$(TARGET_PREFIX)/etc/libgd.conf $(TARGET_PREFIX)/etc/init.d/SXXlibgd
 
 #
 # LIBGD_PATCHES should list any patches, in the the order in
@@ -167,7 +167,7 @@ $(LIBGD_BUILD_DIR)/.staged: $(LIBGD_BUILD_DIR)/.built
 		DESTDIR=$(STAGING_DIR) transform=''
 	rm -rf $(STAGING_LIB_DIR)/libgd.la
 	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' \
-	       -e 's| -L/opt/lib||g' $(STAGING_PREFIX)/bin/gdlib-config
+	       -e 's| -L$(TARGET_PREFIX)/lib||g' $(STAGING_PREFIX)/bin/gdlib-config
 	touch $@
 
 libgd-stage: $(LIBGD_BUILD_DIR)/.staged
@@ -175,19 +175,19 @@ libgd-stage: $(LIBGD_BUILD_DIR)/.staged
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LIBGD_IPK_DIR)/opt/sbin or $(LIBGD_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LIBGD_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LIBGD_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LIBGD_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LIBGD_IPK_DIR)/opt/etc/libgd/...
-# Documentation files should be installed in $(LIBGD_IPK_DIR)/opt/doc/libgd/...
-# Daemon startup scripts should be installed in $(LIBGD_IPK_DIR)/opt/etc/init.d/S??libgd
+# Libraries and include files should be installed into $(LIBGD_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LIBGD_IPK_DIR)$(TARGET_PREFIX)/etc/libgd/...
+# Documentation files should be installed in $(LIBGD_IPK_DIR)$(TARGET_PREFIX)/doc/libgd/...
+# Daemon startup scripts should be installed in $(LIBGD_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??libgd
 #
 # You may need to patch your application to make it use these locations.
 #
 $(LIBGD_IPK): $(LIBGD_BUILD_DIR)/.built
 	rm -rf $(LIBGD_IPK_DIR) $(BUILD_DIR)/libgd_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBGD_BUILD_DIR) DESTDIR=$(LIBGD_IPK_DIR) install-strip transform=''
-	rm -f $(LIBGD_IPK_DIR)/opt/lib/*.la
+	rm -f $(LIBGD_IPK_DIR)$(TARGET_PREFIX)/lib/*.la
 	$(MAKE) $(LIBGD_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBGD_IPK_DIR)
 

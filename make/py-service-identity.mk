@@ -42,7 +42,7 @@ PY-SERVICE-IDENTITY_IPK_VERSION=1
 
 #
 # PY-SERVICE-IDENTITY_CONFFILES should be a list of user-editable files
-#PY-SERVICE-IDENTITY_CONFFILES=/opt/etc/py-service-identity.conf /opt/etc/init.d/SXXpy-service-identity
+#PY-SERVICE-IDENTITY_CONFFILES=$(TARGET_PREFIX)/etc/py-service-identity.conf $(TARGET_PREFIX)/etc/init.d/SXXpy-service-identity
 
 #
 # PY-SERVICE-IDENTITY_PATCHES should list any patches, in the the order in
@@ -124,9 +124,9 @@ $(PY-SERVICE-IDENTITY_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SERVICE-IDENTITY_SO
 	(cd $(@D)/2.6; \
 	    ( \
 		echo "[install]"; \
-		echo "install_scripts = /opt/bin"; \
+		echo "install_scripts = $(TARGET_PREFIX)/bin"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python2.6"; \
+		echo "executable=$(TARGET_PREFIX)/bin/python2.6"; \
 	    ) >> setup.cfg \
 	)
 #	cd $(BUILD_DIR); $(PY-SERVICE-IDENTITY_UNZIP) $(DL_DIR)/$(PY-SERVICE-IDENTITY_SOURCE)
@@ -136,9 +136,9 @@ $(PY-SERVICE-IDENTITY_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SERVICE-IDENTITY_SO
 	(cd $(@D)/2.7; \
 	    ( \
 		echo "[install]"; \
-		echo "install_scripts = /opt/bin"; \
+		echo "install_scripts = $(TARGET_PREFIX)/bin"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python2.7"; \
+		echo "executable=$(TARGET_PREFIX)/bin/python2.7"; \
 	    ) >> setup.cfg \
 	)
 #	cd $(BUILD_DIR); $(PY-SERVICE-IDENTITY_UNZIP) $(DL_DIR)/$(PY-SERVICE-IDENTITY_SOURCE)
@@ -148,9 +148,9 @@ $(PY-SERVICE-IDENTITY_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SERVICE-IDENTITY_SO
 	(cd $(@D)/3; \
 	    ( \
 		echo "[install]"; \
-		echo "install_scripts = /opt/bin"; \
+		echo "install_scripts = $(TARGET_PREFIX)/bin"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python$(PYTHON3_VERSION_MAJOR)"; \
+		echo "executable=$(TARGET_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR)"; \
 	    ) >> setup.cfg \
 	)
 	touch $@
@@ -179,13 +179,13 @@ $(PY-SERVICE-IDENTITY_BUILD_DIR)/.staged: $(PY-SERVICE-IDENTITY_BUILD_DIR)/.buil
 	rm -f $@
 	rm -rf $(STAGING_LIB_DIR)/python2.6/site-packages/service-identity*
 	(cd $(@D)/2.6; \
-	$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(STAGING_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	rm -rf $(STAGING_LIB_DIR)/python2.7/site-packages/service-identity*
 	(cd $(@D)/2.7; \
-	$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(STAGING_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	rm -rf $(STAGING_LIB_DIR)/python$(PYTHON3_VERSION_MAJOR)/site-packages/service-identity*
 	(cd $(@D)/3; \
-	$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(STAGING_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	touch $@
 
 $(PY-SERVICE-IDENTITY_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(PY-SERVICE-IDENTITY_SOURCE) make/py-service-identity.mk
@@ -201,13 +201,13 @@ $(PY-SERVICE-IDENTITY_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(PY-S
 	mv $(HOST_BUILD_DIR)/$(PY-SERVICE-IDENTITY_DIR) $(@D)/3
 	(cd $(@D)/2.6; $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py build)
 	(cd $(@D)/2.6; \
-	$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(HOST_STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	(cd $(@D)/2.7; $(HOST_STAGING_PREFIX)/bin/python2.7 setup.py build)
 	(cd $(@D)/2.7; \
-	$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(HOST_STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	(cd $(@D)/3; $(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py build)
 	(cd $(@D)/3; \
-	$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(HOST_STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	touch $@
 
 py-service-identity-stage: $(PY-SERVICE-IDENTITY_BUILD_DIR)/.staged
@@ -263,12 +263,12 @@ $(PY3-SERVICE-IDENTITY_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PY-SERVICE-IDENTITY_IPK_DIR)/opt/sbin or $(PY-SERVICE-IDENTITY_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PY-SERVICE-IDENTITY_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PY-SERVICE-IDENTITY_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PY-SERVICE-IDENTITY_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PY-SERVICE-IDENTITY_IPK_DIR)/opt/etc/py-service-identity/...
-# Documentation files should be installed in $(PY-SERVICE-IDENTITY_IPK_DIR)/opt/doc/py-service-identity/...
-# Daemon startup scripts should be installed in $(PY-SERVICE-IDENTITY_IPK_DIR)/opt/etc/init.d/S??py-service-identity
+# Libraries and include files should be installed into $(PY-SERVICE-IDENTITY_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PY-SERVICE-IDENTITY_IPK_DIR)$(TARGET_PREFIX)/etc/py-service-identity/...
+# Documentation files should be installed in $(PY-SERVICE-IDENTITY_IPK_DIR)$(TARGET_PREFIX)/doc/py-service-identity/...
+# Daemon startup scripts should be installed in $(PY-SERVICE-IDENTITY_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??py-service-identity
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -277,8 +277,8 @@ $(PY26-SERVICE-IDENTITY_IPK): $(PY-SERVICE-IDENTITY_BUILD_DIR)/.built
 	rm -rf $(PY26-SERVICE-IDENTITY_IPK_DIR) $(BUILD_DIR)/py26-service-identity_*_$(TARGET_ARCH).ipk
 	(cd $(PY-SERVICE-IDENTITY_BUILD_DIR)/2.6; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
-	$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(PY26-SERVICE-IDENTITY_IPK_DIR) --prefix=/opt)
-#	rm -f $(PY26-SERVICE-IDENTITY_IPK_DIR)/opt/bin/easy_install
+	$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(PY26-SERVICE-IDENTITY_IPK_DIR) --prefix=$(TARGET_PREFIX))
+#	rm -f $(PY26-SERVICE-IDENTITY_IPK_DIR)$(TARGET_PREFIX)/bin/easy_install
 	$(MAKE) $(PY26-SERVICE-IDENTITY_IPK_DIR)/CONTROL/control
 	echo $(PY-SERVICE-IDENTITY_CONFFILES) | sed -e 's/ /\n/g' > $(PY26-SERVICE-IDENTITY_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-SERVICE-IDENTITY_IPK_DIR)
@@ -288,8 +288,8 @@ $(PY27-SERVICE-IDENTITY_IPK): $(PY-SERVICE-IDENTITY_BUILD_DIR)/.built
 	rm -rf $(PY27-SERVICE-IDENTITY_IPK_DIR) $(BUILD_DIR)/py27-service-identity_*_$(TARGET_ARCH).ipk
 	(cd $(PY-SERVICE-IDENTITY_BUILD_DIR)/2.7; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.7/site-packages \
-	$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(PY27-SERVICE-IDENTITY_IPK_DIR) --prefix=/opt)
-	rm -f $(PY27-SERVICE-IDENTITY_IPK_DIR)/opt/bin/easy_install
+	$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(PY27-SERVICE-IDENTITY_IPK_DIR) --prefix=$(TARGET_PREFIX))
+	rm -f $(PY27-SERVICE-IDENTITY_IPK_DIR)$(TARGET_PREFIX)/bin/easy_install
 	$(MAKE) $(PY27-SERVICE-IDENTITY_IPK_DIR)/CONTROL/control
 	echo $(PY-SERVICE-IDENTITY_CONFFILES) | sed -e 's/ /\n/g' > $(PY27-SERVICE-IDENTITY_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY27-SERVICE-IDENTITY_IPK_DIR)
@@ -299,8 +299,8 @@ $(PY3-SERVICE-IDENTITY_IPK): $(PY-SERVICE-IDENTITY_BUILD_DIR)/.built
 	rm -rf $(PY3-SERVICE-IDENTITY_IPK_DIR) $(BUILD_DIR)/py3-service-identity_*_$(TARGET_ARCH).ipk
 	(cd $(PY-SERVICE-IDENTITY_BUILD_DIR)/3; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python$(PYTHON3_VERSION_MAJOR)/site-packages \
-	$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(PY3-SERVICE-IDENTITY_IPK_DIR) --prefix=/opt)
-	rm -f $(PY3-SERVICE-IDENTITY_IPK_DIR)/opt/bin/easy_install
+	$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(PY3-SERVICE-IDENTITY_IPK_DIR) --prefix=$(TARGET_PREFIX))
+	rm -f $(PY3-SERVICE-IDENTITY_IPK_DIR)$(TARGET_PREFIX)/bin/easy_install
 	$(MAKE) $(PY3-SERVICE-IDENTITY_IPK_DIR)/CONTROL/control
 	echo $(PY-SERVICE-IDENTITY_CONFFILES) | sed -e 's/ /\n/g' > $(PY3-SERVICE-IDENTITY_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY3-SERVICE-IDENTITY_IPK_DIR)

@@ -57,7 +57,7 @@ TRANSMISSION_IPK_VERSION=2
 
 #
 # TRANSMISSION_CONFFILES should be a list of user-editable files
-TRANSMISSION_CONFFILES=/opt/etc/transmission-daemon/settings.json /opt/etc/init.d/S95transmission
+TRANSMISSION_CONFFILES=$(TARGET_PREFIX)/etc/transmission-daemon/settings.json $(TARGET_PREFIX)/etc/init.d/S95transmission
 
 TRANSMISSION_PATCHES = $(TRANSMISSION_SOURCE_DIR)/int64_switch.patch \
 
@@ -221,8 +221,8 @@ endif
 	if test "$(BUILD_DIR)/$(TRANSMISSION_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(TRANSMISSION_DIR) $(@D) ; \
 	fi
-#	use '/opt/etc' instead of $HOME/.config as default transmission home
-	sed -i -e 's|return home;|return "/opt/etc";|' -e 's/".config"/""/' \
+#	use '$(TARGET_PREFIX)/etc' instead of $HOME/.config as default transmission home
+	sed -i -e 's|return home;|return "$(TARGET_PREFIX)/etc";|' -e 's/".config"/""/' \
 		$(@D)/libtransmission/platform.c
 ifdef TRANSMISSION_SVN_REV
 	if test -x "$(@D)/autogen.sh"; \
@@ -253,7 +253,7 @@ endif
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=$(TARGET_PREFIX) \
-		--datadir=/opt/share \
+		--datadir=$(TARGET_PREFIX)/share \
 		$(TRANSMISSION_CONFIGURE_ARGS) \
 	)
 	$(PATCH_LIBTOOL) $(@D)/libtool
@@ -392,12 +392,12 @@ endif
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(TRANSMISSION_IPK_DIR)/opt/sbin or $(TRANSMISSION_IPK_DIR)/opt/bin
+# Binaries should be installed into $(TRANSMISSION_IPK_DIR)$(TARGET_PREFIX)/sbin or $(TRANSMISSION_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(TRANSMISSION_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(TRANSMISSION_IPK_DIR)/opt/etc/transmission/...
-# Documentation files should be installed in $(TRANSMISSION_IPK_DIR)/opt/doc/transmission/...
-# Daemon startup scripts should be installed in $(TRANSMISSION_IPK_DIR)/opt/etc/init.d/S??transmission
+# Libraries and include files should be installed into $(TRANSMISSION_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(TRANSMISSION_IPK_DIR)$(TARGET_PREFIX)/etc/transmission/...
+# Documentation files should be installed in $(TRANSMISSION_IPK_DIR)$(TARGET_PREFIX)/doc/transmission/...
+# Daemon startup scripts should be installed in $(TRANSMISSION_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??transmission
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -409,21 +409,21 @@ $(TRANSMISSION_IPKS): $(TRANSMISSION_BUILD_DIR)/.built
 endif
 	rm -rf $(TRANSMISSION_IPK_DIR) $(BUILD_DIR)/transmission_*_$(TARGET_ARCH).ipk \
 		$(TRANSMISSION_GTK_IPK_DIR) $(BUILD_DIR)/transmission-gtk_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(TRANSMISSION_IPK_DIR)/opt
+	$(INSTALL) -d $(TRANSMISSION_IPK_DIR)$(TARGET_PREFIX)
 	$(MAKE) -C $(TRANSMISSION_BUILD_DIR) DESTDIR=$(TRANSMISSION_IPK_DIR) install-strip
-	$(INSTALL) -d $(TRANSMISSION_IPK_DIR)/opt/etc/init.d $(TRANSMISSION_IPK_DIR)/opt/etc/transmission-daemon
-	$(INSTALL) -m 755 $(TRANSMISSION_SOURCE_DIR)/rc.transmission $(TRANSMISSION_IPK_DIR)/opt/etc/init.d/S95transmission
-	$(INSTALL) -m 644 $(TRANSMISSION_SOURCE_DIR)/settings.json $(TRANSMISSION_IPK_DIR)/opt/etc/transmission-daemon/
-	$(INSTALL) -d $(TRANSMISSION_IPK_DIR)/opt/share/doc/transmission
-	$(INSTALL) -m 666 $(TRANSMISSION_BUILD_DIR)/[CNR]*  $(TRANSMISSION_IPK_DIR)/opt/share/doc/transmission
-	$(INSTALL) -d $(TRANSMISSION_IPK_DIR)/opt/var/log
-	$(INSTALL) -d $(TRANSMISSION_IPK_DIR)/opt/var/run
+	$(INSTALL) -d $(TRANSMISSION_IPK_DIR)$(TARGET_PREFIX)/etc/init.d $(TRANSMISSION_IPK_DIR)$(TARGET_PREFIX)/etc/transmission-daemon
+	$(INSTALL) -m 755 $(TRANSMISSION_SOURCE_DIR)/rc.transmission $(TRANSMISSION_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S95transmission
+	$(INSTALL) -m 644 $(TRANSMISSION_SOURCE_DIR)/settings.json $(TRANSMISSION_IPK_DIR)$(TARGET_PREFIX)/etc/transmission-daemon/
+	$(INSTALL) -d $(TRANSMISSION_IPK_DIR)$(TARGET_PREFIX)/share/doc/transmission
+	$(INSTALL) -m 666 $(TRANSMISSION_BUILD_DIR)/[CNR]*  $(TRANSMISSION_IPK_DIR)$(TARGET_PREFIX)/share/doc/transmission
+	$(INSTALL) -d $(TRANSMISSION_IPK_DIR)$(TARGET_PREFIX)/var/log
+	$(INSTALL) -d $(TRANSMISSION_IPK_DIR)$(TARGET_PREFIX)/var/run
 ifeq (gtk, $(filter gtk, $(PACKAGES)))
-	$(INSTALL) -d $(TRANSMISSION_GTK_IPK_DIR)/opt/bin $(TRANSMISSION_GTK_IPK_DIR)/opt/share/man/man1
-	mv -f $(TRANSMISSION_IPK_DIR)/opt/bin/transmission-gtk $(TRANSMISSION_GTK_IPK_DIR)/opt/bin/
-	mv -f $(addprefix $(TRANSMISSION_IPK_DIR)/opt/share/, applications icons pixmaps) \
-		$(TRANSMISSION_GTK_IPK_DIR)/opt/share/
-	mv -f $(TRANSMISSION_IPK_DIR)/opt/share/man/man1/transmission-gtk.1 $(TRANSMISSION_GTK_IPK_DIR)/opt/share/man/man1/
+	$(INSTALL) -d $(TRANSMISSION_GTK_IPK_DIR)$(TARGET_PREFIX)/bin $(TRANSMISSION_GTK_IPK_DIR)$(TARGET_PREFIX)/share/man/man1
+	mv -f $(TRANSMISSION_IPK_DIR)$(TARGET_PREFIX)/bin/transmission-gtk $(TRANSMISSION_GTK_IPK_DIR)$(TARGET_PREFIX)/bin/
+	mv -f $(addprefix $(TRANSMISSION_IPK_DIR)$(TARGET_PREFIX)/share/, applications icons pixmaps) \
+		$(TRANSMISSION_GTK_IPK_DIR)$(TARGET_PREFIX)/share/
+	mv -f $(TRANSMISSION_IPK_DIR)$(TARGET_PREFIX)/share/man/man1/transmission-gtk.1 $(TRANSMISSION_GTK_IPK_DIR)$(TARGET_PREFIX)/share/man/man1/
 	$(MAKE) $(TRANSMISSION_GTK_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TRANSMISSION_GTK_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(TRANSMISSION_GTK_IPK_DIR)

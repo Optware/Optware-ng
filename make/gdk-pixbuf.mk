@@ -35,7 +35,7 @@ GDK-PIXBUF_LOCALES=
 
 #
 # GDK-PIXBUF_CONFFILES should be a list of user-editable files
-#GDK-PIXBUF_CONFFILES=/opt/etc/gdk-pixbuf.conf /opt/etc/init.d/SXXgdk-pixbuf
+#GDK-PIXBUF_CONFFILES=$(TARGET_PREFIX)/etc/gdk-pixbuf.conf $(TARGET_PREFIX)/etc/init.d/SXXgdk-pixbuf
 
 #
 # GDK-PIXBUF_PATCHES should list any patches, in the the order in
@@ -156,7 +156,7 @@ $(GDK-PIXBUF_BUILD_DIR)/.staged: $(GDK-PIXBUF_BUILD_DIR)/.built
 	$(MAKE) -C $(@D) install-strip prefix=$(STAGING_PREFIX)
 	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/gdk-pixbuf-2.0.pc \
 							$(STAGING_LIB_DIR)/pkgconfig/gdk-pixbuf-xlib-2.0.pc
-	sed -i -e 's|^gdk_pixbuf_binarydir=\$${exec_prefix}|gdk_pixbuf_binarydir=/opt|' $(STAGING_LIB_DIR)/pkgconfig/gdk-pixbuf-2.0.pc
+	sed -i -e 's|^gdk_pixbuf_binarydir=\$${exec_prefix}|gdk_pixbuf_binarydir=$(TARGET_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/gdk-pixbuf-2.0.pc
 	rm -f $(STAGING_LIB_DIR)/libgdk_pixbuf-2.0.la $(STAGING_LIB_DIR)/libgdk_pixbuf_xlib-2.0.la \
 		$(STAGING_LIB_DIR)/gdk-pixbuf-2.0/2.10.0/loaders/*.la
 	touch $@
@@ -166,23 +166,23 @@ gdk-pixbuf-stage: $(GDK-PIXBUF_BUILD_DIR)/.staged
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(GDK-PIXBUF_IPK_DIR)/opt/sbin or $(GDK-PIXBUF_IPK_DIR)/opt/bin
+# Binaries should be installed into $(GDK-PIXBUF_IPK_DIR)$(TARGET_PREFIX)/sbin or $(GDK-PIXBUF_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(GDK-PIXBUF_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(GDK-PIXBUF_IPK_DIR)/opt/etc/gdk-pixbuf/...
-# Documentation files should be installed in $(GDK-PIXBUF_IPK_DIR)/opt/doc/gdk-pixbuf/...
-# Daemon startup scripts should be installed in $(GDK-PIXBUF_IPK_DIR)/opt/etc/init.d/S??gdk-pixbuf
+# Libraries and include files should be installed into $(GDK-PIXBUF_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(GDK-PIXBUF_IPK_DIR)$(TARGET_PREFIX)/etc/gdk-pixbuf/...
+# Documentation files should be installed in $(GDK-PIXBUF_IPK_DIR)$(TARGET_PREFIX)/doc/gdk-pixbuf/...
+# Daemon startup scripts should be installed in $(GDK-PIXBUF_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??gdk-pixbuf
 #
 # You may need to patch your application to make it use these locations.
 #
 $(GDK-PIXBUF_IPK): $(GDK-PIXBUF_BUILD_DIR)/.built
 	rm -rf $(GDK-PIXBUF_IPK_DIR) $(BUILD_DIR)/gdk-pixbuf_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GDK-PIXBUF_BUILD_DIR) DESTDIR=$(GDK-PIXBUF_IPK_DIR) install-strip
-	$(INSTALL) -d $(GDK-PIXBUF_IPK_DIR)/opt/share/gir-1.0
+	$(INSTALL) -d $(GDK-PIXBUF_IPK_DIR)$(TARGET_PREFIX)/share/gir-1.0
 	$(INSTALL) -m 644 $(GDK-PIXBUF_SOURCE_DIR)/$(GDK-PIXBUF_VERSION)/GdkPixbuf-2.0.gir \
-		$(GDK-PIXBUF_IPK_DIR)/opt/share/gir-1.0/GdkPixbuf-2.0.gir
+		$(GDK-PIXBUF_IPK_DIR)$(TARGET_PREFIX)/share/gir-1.0/GdkPixbuf-2.0.gir
 	find $(GDK-PIXBUF_IPK_DIR) -type f -name *.la -exec rm -f {} \;
-	rm -rf $(GDK-PIXBUF_IPK_DIR)/opt/share/gtk-doc
+	rm -rf $(GDK-PIXBUF_IPK_DIR)$(TARGET_PREFIX)/share/gtk-doc
 	$(MAKE) $(GDK-PIXBUF_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 755 $(GDK-PIXBUF_SOURCE_DIR)/postinst $(GDK-PIXBUF_IPK_DIR)/CONTROL/postinst
 	$(INSTALL) -m 755 $(GDK-PIXBUF_SOURCE_DIR)/prerm $(GDK-PIXBUF_IPK_DIR)/CONTROL/prerm

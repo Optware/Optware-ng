@@ -48,8 +48,8 @@ SAMBA36_ADDITIONAL_CODEPAGES=CP866
 
 #
 # SAMBA36_CONFFILES should be a list of user-editable files
-SAMBA36_CONFFILES=/opt/etc/init.d/S08samba
-SAMBA36-SWAT_CONFFILES=/opt/etc/xinetd.d/swat
+SAMBA36_CONFFILES=$(TARGET_PREFIX)/etc/init.d/S08samba
+SAMBA36-SWAT_CONFFILES=$(TARGET_PREFIX)/etc/xinetd.d/swat
 
 #
 # SAMBA36_PATCHES should list any patches, in the the order in
@@ -87,7 +87,7 @@ SAMBA36-SWAT_IPK=$(BUILD_DIR)/samba36-swat_$(SAMBA36_VERSION)-$(SAMBA36_IPK_VERS
 
 SAMBA36_BUILD_DIR_SRC=$(SAMBA36_BUILD_DIR)/source3
 
-SAMBA36_INST_DIR=/opt
+SAMBA36_INST_DIR=$(TARGET_PREFIX)
 SAMBA36_EXEC_PREFIX=$(SAMBA36_INST_DIR)
 SAMBA36_BIN_DIR=$(SAMBA36_INST_DIR)/bin
 SAMBA36_SBIN_DIR=$(SAMBA36_INST_DIR)/sbin
@@ -346,12 +346,12 @@ $(SAMBA36-SWAT_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(SAMBA36_IPK_DIR)/opt/sbin or $(SAMBA36_IPK_DIR)/opt/bin
+# Binaries should be installed into $(SAMBA36_IPK_DIR)$(TARGET_PREFIX)/sbin or $(SAMBA36_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(SAMBA36_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(SAMBA36_IPK_DIR)/opt/etc/samba/...
-# Documentation files should be installed in $(SAMBA36_IPK_DIR)/opt/doc/samba/...
-# Daemon startup scripts should be installed in $(SAMBA36_IPK_DIR)/opt/etc/init.d/S??samba
+# Libraries and include files should be installed into $(SAMBA36_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(SAMBA36_IPK_DIR)$(TARGET_PREFIX)/etc/samba/...
+# Documentation files should be installed in $(SAMBA36_IPK_DIR)$(TARGET_PREFIX)/doc/samba/...
+# Daemon startup scripts should be installed in $(SAMBA36_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??samba
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -361,26 +361,26 @@ $(SAMBA36_IPK) $(SAMBA36-DEV_IPK) $(SAMBA36-SWAT_IPK): $(SAMBA36_BUILD_DIR)/.bui
 	rm -rf $(SAMBA36-SWAT_IPK_DIR) $(BUILD_DIR)/samba36-swat_*_$(TARGET_ARCH).ipk
 	# samba3
 	$(MAKE) -C $(SAMBA36_BUILD_DIR)/source3/ DESTDIR=$(SAMBA36_IPK_DIR) install
-	$(STRIP_COMMAND) `ls $(SAMBA36_IPK_DIR)/opt/sbin/* | egrep -v 'mount.smbfs'`
-	$(STRIP_COMMAND) `ls $(SAMBA36_IPK_DIR)/opt/bin/* | egrep -v 'findsmb|smbtar'`
+	$(STRIP_COMMAND) `ls $(SAMBA36_IPK_DIR)$(TARGET_PREFIX)/sbin/* | egrep -v 'mount.smbfs'`
+	$(STRIP_COMMAND) `ls $(SAMBA36_IPK_DIR)$(TARGET_PREFIX)/bin/* | egrep -v 'findsmb|smbtar'`
 	cd $(SAMBA36_BUILD_DIR)/source3/bin/; for f in lib*.so.[01]; \
-		do cp -a $$f $(SAMBA36_IPK_DIR)/opt/lib/$$f; done
-	$(STRIP_COMMAND) `find $(SAMBA36_IPK_DIR)/opt/lib -name '*.so'`
-	$(INSTALL) -d $(SAMBA36_IPK_DIR)/opt/etc/init.d
-	$(INSTALL) -m 755 $(SAMBA36_SOURCE_DIR)/rc.samba $(SAMBA36_IPK_DIR)/opt/etc/init.d/S08samba
+		do cp -a $$f $(SAMBA36_IPK_DIR)$(TARGET_PREFIX)/lib/$$f; done
+	$(STRIP_COMMAND) `find $(SAMBA36_IPK_DIR)$(TARGET_PREFIX)/lib -name '*.so'`
+	$(INSTALL) -d $(SAMBA36_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(INSTALL) -m 755 $(SAMBA36_SOURCE_DIR)/rc.samba $(SAMBA36_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S08samba
 	$(MAKE) $(SAMBA36_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 644 $(SAMBA36_SOURCE_DIR)/postinst $(SAMBA36_IPK_DIR)/CONTROL/postinst
 	$(INSTALL) -m 644 $(SAMBA36_SOURCE_DIR)/preinst $(SAMBA36_IPK_DIR)/CONTROL/preinst
 	echo $(SAMBA36_CONFFILES) | sed -e 's/ /\n/g' > $(SAMBA36_IPK_DIR)/CONTROL/conffiles
 	# samba3-dev
-	$(INSTALL) -d $(SAMBA36-DEV_IPK_DIR)/opt
-	mv $(SAMBA36_IPK_DIR)/opt/include $(SAMBA36-DEV_IPK_DIR)/opt/
+	$(INSTALL) -d $(SAMBA36-DEV_IPK_DIR)$(TARGET_PREFIX)
+	mv $(SAMBA36_IPK_DIR)$(TARGET_PREFIX)/include $(SAMBA36-DEV_IPK_DIR)$(TARGET_PREFIX)/
 	# samba3-swat
-	$(INSTALL) -d $(SAMBA36-SWAT_IPK_DIR)/opt/share $(SAMBA36-SWAT_IPK_DIR)/opt/sbin
-	mv $(SAMBA36_IPK_DIR)/opt/share/swat $(SAMBA36-SWAT_IPK_DIR)/opt/share/
-	mv $(SAMBA36_IPK_DIR)/opt/sbin/swat $(SAMBA36-SWAT_IPK_DIR)/opt/sbin/
-	$(INSTALL) -d $(SAMBA36-SWAT_IPK_DIR)/opt/etc/xinetd.d
-	$(INSTALL) -m 755 $(SAMBA36_SOURCE_DIR)/swat $(SAMBA36-SWAT_IPK_DIR)/opt/etc/xinetd.d/swat
+	$(INSTALL) -d $(SAMBA36-SWAT_IPK_DIR)$(TARGET_PREFIX)/share $(SAMBA36-SWAT_IPK_DIR)$(TARGET_PREFIX)/sbin
+	mv $(SAMBA36_IPK_DIR)$(TARGET_PREFIX)/share/swat $(SAMBA36-SWAT_IPK_DIR)$(TARGET_PREFIX)/share/
+	mv $(SAMBA36_IPK_DIR)$(TARGET_PREFIX)/sbin/swat $(SAMBA36-SWAT_IPK_DIR)$(TARGET_PREFIX)/sbin/
+	$(INSTALL) -d $(SAMBA36-SWAT_IPK_DIR)$(TARGET_PREFIX)/etc/xinetd.d
+	$(INSTALL) -m 755 $(SAMBA36_SOURCE_DIR)/swat $(SAMBA36-SWAT_IPK_DIR)$(TARGET_PREFIX)/etc/xinetd.d/swat
 	# building ipk's
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SAMBA36_IPK_DIR)
 	$(MAKE) $(SAMBA36-DEV_IPK_DIR)/CONTROL/control

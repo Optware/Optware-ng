@@ -40,7 +40,7 @@ RECODE_IPK_VERSION=3
 
 #
 # RECODE_CONFFILES should be a list of user-editable files
-#RECODE_CONFFILES=/opt/etc/recode.conf /opt/etc/init.d/SXXrecode
+#RECODE_CONFFILES=$(TARGET_PREFIX)/etc/recode.conf $(TARGET_PREFIX)/etc/init.d/SXXrecode
 
 #
 # RECODE_PATCHES should list any patches, in the the order in
@@ -197,24 +197,24 @@ $(RECODE_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(RECODE_IPK_DIR)/opt/sbin or $(RECODE_IPK_DIR)/opt/bin
+# Binaries should be installed into $(RECODE_IPK_DIR)$(TARGET_PREFIX)/sbin or $(RECODE_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(RECODE_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(RECODE_IPK_DIR)/opt/etc/recode/...
-# Documentation files should be installed in $(RECODE_IPK_DIR)/opt/doc/recode/...
-# Daemon startup scripts should be installed in $(RECODE_IPK_DIR)/opt/etc/init.d/S??recode
+# Libraries and include files should be installed into $(RECODE_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(RECODE_IPK_DIR)$(TARGET_PREFIX)/etc/recode/...
+# Documentation files should be installed in $(RECODE_IPK_DIR)$(TARGET_PREFIX)/doc/recode/...
+# Daemon startup scripts should be installed in $(RECODE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??recode
 #
 # You may need to patch your application to make it use these locations.
 #
 $(RECODE_IPK): $(RECODE_BUILD_DIR)/.built
 	rm -rf $(RECODE_IPK_DIR) $(BUILD_DIR)/recode_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(RECODE_BUILD_DIR) DESTDIR=$(RECODE_IPK_DIR) install
-	rm -f $(RECODE_IPK_DIR)/opt/share/info/dir
-	$(STRIP_COMMAND) $(RECODE_IPK_DIR)/opt/bin/recode $(RECODE_IPK_DIR)/opt/lib/librecode.so.*.*.*
-#	$(INSTALL) -d $(RECODE_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(RECODE_SOURCE_DIR)/recode.conf $(RECODE_IPK_DIR)/opt/etc/recode.conf
-#	$(INSTALL) -d $(RECODE_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(RECODE_SOURCE_DIR)/rc.recode $(RECODE_IPK_DIR)/opt/etc/init.d/SXXrecode
+	rm -f $(RECODE_IPK_DIR)$(TARGET_PREFIX)/share/info/dir
+	$(STRIP_COMMAND) $(RECODE_IPK_DIR)$(TARGET_PREFIX)/bin/recode $(RECODE_IPK_DIR)$(TARGET_PREFIX)/lib/librecode.so.*.*.*
+#	$(INSTALL) -d $(RECODE_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(RECODE_SOURCE_DIR)/recode.conf $(RECODE_IPK_DIR)$(TARGET_PREFIX)/etc/recode.conf
+#	$(INSTALL) -d $(RECODE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(RECODE_SOURCE_DIR)/rc.recode $(RECODE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXrecode
 	$(MAKE) $(RECODE_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(RECODE_SOURCE_DIR)/postinst $(RECODE_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 755 $(RECODE_SOURCE_DIR)/prerm $(RECODE_IPK_DIR)/CONTROL/prerm

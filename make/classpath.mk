@@ -38,7 +38,7 @@ CLASSPATH_IPK_VERSION=2
 
 #
 # CLASSPATH_CONFFILES should be a list of user-editable files
-#CLASSPATH_CONFFILES=/opt/etc/classpath.conf /opt/etc/init.d/SXXclasspath
+#CLASSPATH_CONFFILES=$(TARGET_PREFIX)/etc/classpath.conf $(TARGET_PREFIX)/etc/init.d/SXXclasspath
 
 #
 # CLASSPATH_PATCHES should list any patches, in the the order in
@@ -192,19 +192,19 @@ $(CLASSPATH_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(CLASSPATH_IPK_DIR)/opt/sbin or $(CLASSPATH_IPK_DIR)/opt/bin
+# Binaries should be installed into $(CLASSPATH_IPK_DIR)$(TARGET_PREFIX)/sbin or $(CLASSPATH_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(CLASSPATH_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(CLASSPATH_IPK_DIR)/opt/etc/classpath/...
-# Documentation files should be installed in $(CLASSPATH_IPK_DIR)/opt/doc/classpath/...
-# Daemon startup scripts should be installed in $(CLASSPATH_IPK_DIR)/opt/etc/init.d/S??classpath
+# Libraries and include files should be installed into $(CLASSPATH_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(CLASSPATH_IPK_DIR)$(TARGET_PREFIX)/etc/classpath/...
+# Documentation files should be installed in $(CLASSPATH_IPK_DIR)$(TARGET_PREFIX)/doc/classpath/...
+# Daemon startup scripts should be installed in $(CLASSPATH_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??classpath
 #
 # You may need to patch your application to make it use these locations.
 #
 $(CLASSPATH_IPK): $(CLASSPATH_BUILD_DIR)/.built
 	rm -rf $(CLASSPATH_IPK_DIR) $(BUILD_DIR)/classpath_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(CLASSPATH_BUILD_DIR) install-strip transform="" prefix=$(CLASSPATH_IPK_DIR)/opt
-	rm -f $(CLASSPATH_IPK_DIR)/opt/share/info/dir
+	$(MAKE) -C $(CLASSPATH_BUILD_DIR) install-strip transform="" prefix=$(CLASSPATH_IPK_DIR)$(TARGET_PREFIX)
+	rm -f $(CLASSPATH_IPK_DIR)$(TARGET_PREFIX)/share/info/dir
 	$(MAKE) $(CLASSPATH_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CLASSPATH_IPK_DIR)
 

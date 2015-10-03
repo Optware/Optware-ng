@@ -40,7 +40,7 @@ CORKSCREW_IPK_VERSION=1
 
 #
 # CORKSCREW_CONFFILES should be a list of user-editable files
-#CORKSCREW_CONFFILES=/opt/etc/corkscrew.conf /opt/etc/init.d/SXXcorkscrew
+#CORKSCREW_CONFFILES=$(TARGET_PREFIX)/etc/corkscrew.conf $(TARGET_PREFIX)/etc/init.d/SXXcorkscrew
 
 #
 # CORKSCREW_PATCHES should list any patches, in the the order in
@@ -177,21 +177,21 @@ $(CORKSCREW_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(CORKSCREW_IPK_DIR)/opt/sbin or $(CORKSCREW_IPK_DIR)/opt/bin
+# Binaries should be installed into $(CORKSCREW_IPK_DIR)$(TARGET_PREFIX)/sbin or $(CORKSCREW_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(CORKSCREW_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(CORKSCREW_IPK_DIR)/opt/etc/corkscrew/...
-# Documentation files should be installed in $(CORKSCREW_IPK_DIR)/opt/doc/corkscrew/...
-# Daemon startup scripts should be installed in $(CORKSCREW_IPK_DIR)/opt/etc/init.d/S??corkscrew
+# Libraries and include files should be installed into $(CORKSCREW_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(CORKSCREW_IPK_DIR)$(TARGET_PREFIX)/etc/corkscrew/...
+# Documentation files should be installed in $(CORKSCREW_IPK_DIR)$(TARGET_PREFIX)/doc/corkscrew/...
+# Daemon startup scripts should be installed in $(CORKSCREW_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??corkscrew
 #
 # You may need to patch your application to make it use these locations.
 #
 $(CORKSCREW_IPK): $(CORKSCREW_BUILD_DIR)/.built
 	rm -rf $(CORKSCREW_IPK_DIR) $(BUILD_DIR)/corkscrew_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(CORKSCREW_BUILD_DIR) DESTDIR=$(CORKSCREW_IPK_DIR) install
-	$(STRIP_COMMAND) $(CORKSCREW_IPK_DIR)/opt/bin/corkscrew
-	$(INSTALL) -d $(CORKSCREW_IPK_DIR)/opt/share/doc/corkscrew
-	$(INSTALL) $(CORKSCREW_BUILD_DIR)/[ACINRT]* $(CORKSCREW_IPK_DIR)/opt/share/doc/corkscrew
+	$(STRIP_COMMAND) $(CORKSCREW_IPK_DIR)$(TARGET_PREFIX)/bin/corkscrew
+	$(INSTALL) -d $(CORKSCREW_IPK_DIR)$(TARGET_PREFIX)/share/doc/corkscrew
+	$(INSTALL) $(CORKSCREW_BUILD_DIR)/[ACINRT]* $(CORKSCREW_IPK_DIR)$(TARGET_PREFIX)/share/doc/corkscrew
 	$(MAKE) $(CORKSCREW_IPK_DIR)/CONTROL/control
 	echo $(CORKSCREW_CONFFILES) | sed -e 's/ /\n/g' > $(CORKSCREW_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CORKSCREW_IPK_DIR)

@@ -70,13 +70,13 @@ $(VDR_MEDIAMVP_IPK_DIR)/CONTROL/control:
 $(VDR_MEDIAMVP_IPK): $(VDR_MEDIAMVP_DIR)/.built
 	rm -rf $(VDR_MEDIAMVP_IPK_DIR) $(BUILD_DIR)/vdr-mediavp_*_$(TARGET_ARCH).ipk
 	-mkdir -p $(VDR_MEDIAMVP_IPK_DIR)	
-	mkdir -p $(VDR_MEDIAMVP_IPK_DIR)/opt/sbin
-	mkdir -p $(VDR_MEDIAMVP_IPK_DIR)/opt/etc/mediamvp
-	mkdir -p $(VDR_MEDIAMVP_IPK_DIR)/opt/etc/init.d
-	$(STRIP_COMMAND) $(VDR_MEDIAMVP_DIR)/console/mediamvp -o $(VDR_MEDIAMVP_IPK_DIR)/opt/sbin/mediamvp
-	$(INSTALL) -m 644 $(SOURCE_DIR)/vdr-mediamvp.conf $(VDR_MEDIAMVP_IPK_DIR)/opt/etc/mediamvp/mediamvp.conf
-	$(INSTALL) -m 644 $(SOURCE_DIR)/vdr-mediamvp.radio $(VDR_MEDIAMVP_IPK_DIR)/opt/etc/mediamvp/mediamvp.radio
-	$(INSTALL) -m 755 $(SOURCE_DIR)/vdr-mediamvp.rc $(VDR_MEDIAMVP_IPK_DIR)/opt/etc/init.d/S60mediamvp
+	mkdir -p $(VDR_MEDIAMVP_IPK_DIR)$(TARGET_PREFIX)/sbin
+	mkdir -p $(VDR_MEDIAMVP_IPK_DIR)$(TARGET_PREFIX)/etc/mediamvp
+	mkdir -p $(VDR_MEDIAMVP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(STRIP_COMMAND) $(VDR_MEDIAMVP_DIR)/console/mediamvp -o $(VDR_MEDIAMVP_IPK_DIR)$(TARGET_PREFIX)/sbin/mediamvp
+	$(INSTALL) -m 644 $(SOURCE_DIR)/vdr-mediamvp.conf $(VDR_MEDIAMVP_IPK_DIR)$(TARGET_PREFIX)/etc/mediamvp/mediamvp.conf
+	$(INSTALL) -m 644 $(SOURCE_DIR)/vdr-mediamvp.radio $(VDR_MEDIAMVP_IPK_DIR)$(TARGET_PREFIX)/etc/mediamvp/mediamvp.radio
+	$(INSTALL) -m 755 $(SOURCE_DIR)/vdr-mediamvp.rc $(VDR_MEDIAMVP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S60mediamvp
 	$(MAKE) $(VDR_MEDIAMVP_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(VDR_MEDIAMVP_IPK_DIR)
 

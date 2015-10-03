@@ -92,7 +92,7 @@ $(PERL-VERSION_IPK): $(PERL-VERSION_BUILD_DIR)/.built
 		./Build --prefix $(PERL-VERSION_IPK_DIR)$(TARGET_PREFIX) install \
 	)
 	find $(PERL-VERSION_IPK_DIR)$(TARGET_PREFIX) -name 'perllocal.pod' -exec rm -f {} \;
-	(cd $(PERL-VERSION_IPK_DIR)/opt/lib/perl5 ; \
+	(cd $(PERL-VERSION_IPK_DIR)$(TARGET_PREFIX)/lib/perl5 ; \
 		find . -name '*.so' -exec chmod +w {} \; ; \
 		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
 		find . -name '*.so' -exec chmod -w {} \; ; \

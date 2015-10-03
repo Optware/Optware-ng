@@ -35,7 +35,7 @@ PANGO_LOCALES=
 
 #
 # PANGO_CONFFILES should be a list of user-editable files
-#PANGO_CONFFILES=/opt/etc/pango.conf /opt/etc/init.d/SXXpango
+#PANGO_CONFFILES=$(TARGET_PREFIX)/etc/pango.conf $(TARGET_PREFIX)/etc/init.d/SXXpango
 
 #
 # PANGO_PATCHES should list any patches, in the the order in
@@ -182,12 +182,12 @@ pango-stage: $(PANGO_BUILD_DIR)/.staged
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PANGO_IPK_DIR)/opt/sbin or $(PANGO_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PANGO_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PANGO_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PANGO_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PANGO_IPK_DIR)/opt/etc/pango/...
-# Documentation files should be installed in $(PANGO_IPK_DIR)/opt/doc/pango/...
-# Daemon startup scripts should be installed in $(PANGO_IPK_DIR)/opt/etc/init.d/S??pango
+# Libraries and include files should be installed into $(PANGO_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PANGO_IPK_DIR)$(TARGET_PREFIX)/etc/pango/...
+# Documentation files should be installed in $(PANGO_IPK_DIR)$(TARGET_PREFIX)/doc/pango/...
+# Daemon startup scripts should be installed in $(PANGO_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??pango
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -195,7 +195,7 @@ $(PANGO_IPK): $(PANGO_BUILD_DIR)/.built
 	rm -rf $(PANGO_IPK_DIR) $(BUILD_DIR)/pango_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PANGO_BUILD_DIR) DESTDIR=$(PANGO_IPK_DIR) install-strip
 	find $(PANGO_IPK_DIR) -type f -name '*.la' -exec rm -f {} \;
-	rm -rf $(PANGO_IPK_DIR)/opt/share/gtk-doc
+	rm -rf $(PANGO_IPK_DIR)$(TARGET_PREFIX)/share/gtk-doc
 	$(MAKE) $(PANGO_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 644 $(PANGO_SOURCE_DIR)/postinst $(PANGO_IPK_DIR)/CONTROL/postinst
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PANGO_IPK_DIR)

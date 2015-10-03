@@ -41,7 +41,7 @@ PY-ROUNDUP_IPK_VERSION=1
 
 #
 # PY-ROUNDUP_CONFFILES should be a list of user-editable files
-#PY-ROUNDUP_CONFFILES=/opt/etc/py-roundup.conf /opt/etc/init.d/SXXpy-roundup
+#PY-ROUNDUP_CONFFILES=$(TARGET_PREFIX)/etc/py-roundup.conf $(TARGET_PREFIX)/etc/init.d/SXXpy-roundup
 
 #
 # PY-ROUNDUP_PATCHES should list any patches, in the the order in
@@ -124,9 +124,9 @@ $(PY-ROUNDUP_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-ROUNDUP_SOURCE) $(PY-ROUNDUP
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.5"; \
 	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
-	        echo "rpath=/opt/lib"; \
+	        echo "rpath=$(TARGET_PREFIX)/lib"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python2.5" \
+		echo "executable=$(TARGET_PREFIX)/bin/python2.5" \
 	    ) >> setup.cfg; \
 	)
 	# 2.6
@@ -140,9 +140,9 @@ $(PY-ROUNDUP_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-ROUNDUP_SOURCE) $(PY-ROUNDUP
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.6"; \
 	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
-	        echo "rpath=/opt/lib"; \
+	        echo "rpath=$(TARGET_PREFIX)/lib"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python2.6" \
+		echo "executable=$(TARGET_PREFIX)/bin/python2.6" \
 	    ) >> setup.cfg; \
 	)
 	touch $@
@@ -228,43 +228,43 @@ $(PY26-ROUNDUP_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PY-ROUNDUP_IPK_DIR)/opt/sbin or $(PY-ROUNDUP_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PY-ROUNDUP_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PY-ROUNDUP_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PY-ROUNDUP_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PY-ROUNDUP_IPK_DIR)/opt/etc/py-roundup/...
-# Documentation files should be installed in $(PY-ROUNDUP_IPK_DIR)/opt/doc/py-roundup/...
-# Daemon startup scripts should be installed in $(PY-ROUNDUP_IPK_DIR)/opt/etc/init.d/S??py-roundup
+# Libraries and include files should be installed into $(PY-ROUNDUP_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PY-ROUNDUP_IPK_DIR)$(TARGET_PREFIX)/etc/py-roundup/...
+# Documentation files should be installed in $(PY-ROUNDUP_IPK_DIR)$(TARGET_PREFIX)/doc/py-roundup/...
+# Daemon startup scripts should be installed in $(PY-ROUNDUP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??py-roundup
 #
 # You may need to patch your application to make it use these locations.
 #
 $(PY25-ROUNDUP_IPK): $(PY-ROUNDUP_BUILD_DIR)/.built
 	rm -rf $(BUILD_DIR)/py*-roundup_*_$(TARGET_ARCH).ipk
 	rm -rf $(PY25-ROUNDUP_IPK_DIR) $(BUILD_DIR)/py25-roundup_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(PY25-ROUNDUP_IPK_DIR)/opt/man $(PY25-ROUNDUP_IPK_DIR)/opt/share
+	$(INSTALL) -d $(PY25-ROUNDUP_IPK_DIR)$(TARGET_PREFIX)/man $(PY25-ROUNDUP_IPK_DIR)$(TARGET_PREFIX)/share
 	(cd $(PY-ROUNDUP_BUILD_DIR)/2.5; \
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
-	    --root=$(PY25-ROUNDUP_IPK_DIR) --prefix=/opt)
-	sed -i -e '1s|^#!.*|#! /opt/bin/python2.5|' $(PY25-ROUNDUP_IPK_DIR)/opt/bin/*
-#	$(STRIP_COMMAND) `find $(PY25-ROUNDUP_IPK_DIR)/opt/lib/python2.5/site-packages -name '*.so'`
-	rm -rf $(PY25-ROUNDUP_IPK_DIR)/opt/man $(PY25-ROUNDUP_IPK_DIR)/opt/share
+	    --root=$(PY25-ROUNDUP_IPK_DIR) --prefix=$(TARGET_PREFIX))
+	sed -i -e '1s|^#!.*|#! $(TARGET_PREFIX)/bin/python2.5|' $(PY25-ROUNDUP_IPK_DIR)$(TARGET_PREFIX)/bin/*
+#	$(STRIP_COMMAND) `find $(PY25-ROUNDUP_IPK_DIR)$(TARGET_PREFIX)/lib/python2.5/site-packages -name '*.so'`
+	rm -rf $(PY25-ROUNDUP_IPK_DIR)$(TARGET_PREFIX)/man $(PY25-ROUNDUP_IPK_DIR)$(TARGET_PREFIX)/share
 	$(MAKE) $(PY25-ROUNDUP_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-ROUNDUP_IPK_DIR)
 
 $(PY26-ROUNDUP_IPK) $(PY-ROUNDUP-COMMON_IPK): $(PY-ROUNDUP_BUILD_DIR)/.built
 	rm -rf $(PY-ROUNDUP-COMMON_IPK_DIR) $(BUILD_DIR)/py-roundup-common_*_$(TARGET_ARCH).ipk
 	rm -rf $(PY26-ROUNDUP_IPK_DIR) $(BUILD_DIR)/py26-roundup_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(PY26-ROUNDUP_IPK_DIR)/opt/man $(PY26-ROUNDUP_IPK_DIR)/opt/share
+	$(INSTALL) -d $(PY26-ROUNDUP_IPK_DIR)$(TARGET_PREFIX)/man $(PY26-ROUNDUP_IPK_DIR)$(TARGET_PREFIX)/share
 	(cd $(PY-ROUNDUP_BUILD_DIR)/2.6; \
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install \
-	    --root=$(PY26-ROUNDUP_IPK_DIR) --prefix=/opt)
-	sed -i -e '1s|^#!.*|#! /opt/bin/python2.6|' $(PY26-ROUNDUP_IPK_DIR)/opt/bin/*
-	for f in $(PY26-ROUNDUP_IPK_DIR)/opt/bin/*; \
+	    --root=$(PY26-ROUNDUP_IPK_DIR) --prefix=$(TARGET_PREFIX))
+	sed -i -e '1s|^#!.*|#! $(TARGET_PREFIX)/bin/python2.6|' $(PY26-ROUNDUP_IPK_DIR)$(TARGET_PREFIX)/bin/*
+	for f in $(PY26-ROUNDUP_IPK_DIR)$(TARGET_PREFIX)/bin/*; \
 		do mv $$f `echo $$f | sed 's|$$|-2.6|'`; done
-#	$(STRIP_COMMAND) `find $(PY26-ROUNDUP_IPK_DIR)/opt/lib/python2.6/site-packages -name '*.so'`
-	mkdir -p $(PY-ROUNDUP-COMMON_IPK_DIR)/opt
-	mv $(PY26-ROUNDUP_IPK_DIR)/opt/share $(PY26-ROUNDUP_IPK_DIR)/opt/man $(PY-ROUNDUP-COMMON_IPK_DIR)/opt/
+#	$(STRIP_COMMAND) `find $(PY26-ROUNDUP_IPK_DIR)$(TARGET_PREFIX)/lib/python2.6/site-packages -name '*.so'`
+	mkdir -p $(PY-ROUNDUP-COMMON_IPK_DIR)$(TARGET_PREFIX)
+	mv $(PY26-ROUNDUP_IPK_DIR)$(TARGET_PREFIX)/share $(PY26-ROUNDUP_IPK_DIR)$(TARGET_PREFIX)/man $(PY-ROUNDUP-COMMON_IPK_DIR)$(TARGET_PREFIX)/
 	$(MAKE) $(PY-ROUNDUP-COMMON_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-ROUNDUP-COMMON_IPK_DIR)
 	$(MAKE) $(PY26-ROUNDUP_IPK_DIR)/CONTROL/control

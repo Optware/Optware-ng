@@ -148,19 +148,19 @@ xorg-macros-stage: $(XORG-MACROS_BUILD_DIR)/.staged
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(XORG-MACROS_IPK_DIR)/opt/sbin or $(XORG-MACROS_IPK_DIR)/opt/bin
+# Binaries should be installed into $(XORG-MACROS_IPK_DIR)$(TARGET_PREFIX)/sbin or $(XORG-MACROS_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(XORG-MACROS_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(XORG-MACROS_IPK_DIR)/opt/etc/xorg-macros/...
-# Documentation files should be installed in $(XORG-MACROS_IPK_DIR)/opt/doc/xorg-macros/...
-# Daemon startup scripts should be installed in $(XORG-MACROS_IPK_DIR)/opt/etc/init.d/S??xorg-macros
+# Libraries and include files should be installed into $(XORG-MACROS_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(XORG-MACROS_IPK_DIR)$(TARGET_PREFIX)/etc/xorg-macros/...
+# Documentation files should be installed in $(XORG-MACROS_IPK_DIR)$(TARGET_PREFIX)/doc/xorg-macros/...
+# Daemon startup scripts should be installed in $(XORG-MACROS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??xorg-macros
 #
 # You may need to patch your application to make it use these locations.
 #
 $(XORG-MACROS_IPK): $(XORG-MACROS_BUILD_DIR)/.built
 	rm -rf $(XORG-MACROS_IPK_DIR) $(BUILD_DIR)/xorg-macros_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(XORG-MACROS_BUILD_DIR) DESTDIR=$(XORG-MACROS_IPK_DIR) install
-	mv -f $(XORG-MACROS_IPK_DIR)/opt/share/pkgconfig $(XORG-MACROS_IPK_DIR)/opt/lib
+	mv -f $(XORG-MACROS_IPK_DIR)$(TARGET_PREFIX)/share/pkgconfig $(XORG-MACROS_IPK_DIR)$(TARGET_PREFIX)/lib
 	$(MAKE) $(XORG-MACROS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XORG-MACROS_IPK_DIR)
 

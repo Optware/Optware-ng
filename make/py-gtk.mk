@@ -53,7 +53,7 @@ PY-GTK_IPK_VERSION=1
 
 #
 # PY-GTK_CONFFILES should be a list of user-editable files
-#PY-GTK_CONFFILES=/opt/etc/py-gtk.conf /opt/etc/init.d/SXXpy-gtk
+#PY-GTK_CONFFILES=$(TARGET_PREFIX)/etc/py-gtk.conf $(TARGET_PREFIX)/etc/init.d/SXXpy-gtk
 
 #
 # PY-GTK_PATCHES should list any patches, in the the order in
@@ -147,8 +147,8 @@ $(PY-GTK_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-GTK_SOURCE) $(PY-GTK_PATCHES) ma
 		CPPFLAGS="$(STAGING_CPPFLAGS) -I$(STAGING_INCLUDE_DIR)/python2.6 $(PY-GTK_CPPFLAGS)" \
 		LDFLAGS="$(PY-GTK_LDFLAGS) $(STAGING_LDFLAGS)" \
 		PYTHON=$(HOST_STAGING_PREFIX)/bin/python2.6 \
-		am_cv_python_pythondir=/opt/lib/python2.6/site-packages \
-		am_cv_python_pyexecdir=/opt/lib/python2.6/site-packages \
+		am_cv_python_pythondir=$(TARGET_PREFIX)/lib/python2.6/site-packages \
+		am_cv_python_pyexecdir=$(TARGET_PREFIX)/lib/python2.6/site-packages \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
 		./configure \
@@ -169,8 +169,8 @@ $(PY-GTK_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-GTK_SOURCE) $(PY-GTK_PATCHES) ma
 		CPPFLAGS="$(STAGING_CPPFLAGS) -I$(STAGING_INCLUDE_DIR)/python2.7 $(PY-GTK_CPPFLAGS)" \
 		LDFLAGS="$(PY-GTK_LDFLAGS) $(STAGING_LDFLAGS)" \
 		PYTHON=$(HOST_STAGING_PREFIX)/bin/python2.7 \
-		am_cv_python_pythondir=/opt/lib/python2.7/site-packages \
-		am_cv_python_pyexecdir=/opt/lib/python2.7/site-packages \
+		am_cv_python_pythondir=$(TARGET_PREFIX)/lib/python2.7/site-packages \
+		am_cv_python_pyexecdir=$(TARGET_PREFIX)/lib/python2.7/site-packages \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
 		./configure \
@@ -268,12 +268,12 @@ $(PY-GTK_DEV_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PY-GTK_IPK_DIR)/opt/sbin or $(PY-GTK_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PY-GTK_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PY-GTK_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PY-GTK_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PY-GTK_IPK_DIR)/opt/etc/py-gtk/...
-# Documentation files should be installed in $(PY-GTK_IPK_DIR)/opt/doc/py-gtk/...
-# Daemon startup scripts should be installed in $(PY-GTK_IPK_DIR)/opt/etc/init.d/S??py-gtk
+# Libraries and include files should be installed into $(PY-GTK_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PY-GTK_IPK_DIR)$(TARGET_PREFIX)/etc/py-gtk/...
+# Documentation files should be installed in $(PY-GTK_IPK_DIR)$(TARGET_PREFIX)/doc/py-gtk/...
+# Daemon startup scripts should be installed in $(PY-GTK_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??py-gtk
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -281,14 +281,14 @@ $(PY26-GTK_IPK) $(PY-GTK_DEV_IPK): $(PY-GTK_BUILD_DIR)/.built
 	rm -rf $(PY26-GTK_IPK_DIR) $(BUILD_DIR)/py26-gtk_*_$(TARGET_ARCH).ipk \
 		$(PY-GTK_DEV_IPK_DIR) $(BUILD_DIR)/py-gtk-dev_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PY-GTK_BUILD_DIR)/2.6 DESTDIR=$(PY26-GTK_IPK_DIR) install-strip
-	$(INSTALL) -d $(PY-GTK_DEV_IPK_DIR)/opt/lib
-	mv -f $(PY26-GTK_IPK_DIR)/opt/bin $(PY-GTK_DEV_IPK_DIR)/opt/
-	rm -f $(PY-GTK_DEV_IPK_DIR)/opt/bin/pygtk-demo
-	$(INSTALL) -m 755 $(PY-GTK_SOURCE_DIR)/pygtk-demo $(PY-GTK_DEV_IPK_DIR)/opt/bin/pygtk-demo
-	mv -f $(PY26-GTK_IPK_DIR)/opt/include $(PY-GTK_DEV_IPK_DIR)/opt/
-	mv -f $(PY26-GTK_IPK_DIR)/opt/share $(PY-GTK_DEV_IPK_DIR)/opt/
-	mv -f $(PY26-GTK_IPK_DIR)/opt/lib/pkgconfig $(PY26-GTK_IPK_DIR)/opt/lib/pygtk \
-							$(PY-GTK_DEV_IPK_DIR)/opt/lib/
+	$(INSTALL) -d $(PY-GTK_DEV_IPK_DIR)$(TARGET_PREFIX)/lib
+	mv -f $(PY26-GTK_IPK_DIR)$(TARGET_PREFIX)/bin $(PY-GTK_DEV_IPK_DIR)$(TARGET_PREFIX)/
+	rm -f $(PY-GTK_DEV_IPK_DIR)$(TARGET_PREFIX)/bin/pygtk-demo
+	$(INSTALL) -m 755 $(PY-GTK_SOURCE_DIR)/pygtk-demo $(PY-GTK_DEV_IPK_DIR)$(TARGET_PREFIX)/bin/pygtk-demo
+	mv -f $(PY26-GTK_IPK_DIR)$(TARGET_PREFIX)/include $(PY-GTK_DEV_IPK_DIR)$(TARGET_PREFIX)/
+	mv -f $(PY26-GTK_IPK_DIR)$(TARGET_PREFIX)/share $(PY-GTK_DEV_IPK_DIR)$(TARGET_PREFIX)/
+	mv -f $(PY26-GTK_IPK_DIR)$(TARGET_PREFIX)/lib/pkgconfig $(PY26-GTK_IPK_DIR)$(TARGET_PREFIX)/lib/pygtk \
+							$(PY-GTK_DEV_IPK_DIR)$(TARGET_PREFIX)/lib/
 	$(MAKE) $(PY26-GTK_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-GTK_IPK_DIR)
 	$(MAKE) $(PY-GTK_DEV_IPK_DIR)/CONTROL/control
@@ -297,7 +297,7 @@ $(PY26-GTK_IPK) $(PY-GTK_DEV_IPK): $(PY-GTK_BUILD_DIR)/.built
 $(PY27-GTK_IPK): $(PY-GTK_BUILD_DIR)/.built
 	rm -rf $(PY27-GTK_IPK_DIR) $(BUILD_DIR)/py27-gtk_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PY-GTK_BUILD_DIR)/2.7 DESTDIR=$(PY27-GTK_IPK_DIR) install-strip
-	rm -rf $(addprefix $(PY27-GTK_IPK_DIR)/opt/, include lib/pkgconfig share bin)
+	rm -rf $(addprefix $(PY27-GTK_IPK_DIR)$(TARGET_PREFIX)/, include lib/pkgconfig share bin)
 	$(MAKE) $(PY27-GTK_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY27-GTK_IPK_DIR)
 

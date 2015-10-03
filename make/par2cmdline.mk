@@ -103,10 +103,10 @@ $(PAR2_IPK_DIR)/CONTROL/control:
 
 $(PAR2_IPK): $(PAR2_BUILD_DIR)/.built
 	rm -rf $(PAR2_IPK_DIR) $(BUILD_DIR)/par2cmdline_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(PAR2_IPK_DIR)/opt/bin
-	$(INSTALL) -m 755 $(PAR2_BUILD_DIR)/par2 $(PAR2_IPK_DIR)/opt/bin
-	$(STRIP_COMMAND) $(PAR2_IPK_DIR)/opt/bin/par2
-	cd $(PAR2_IPK_DIR)/opt/bin; ln -s par2 par2create; ln -s par2 par2repair; ln -s par2 par2verify
+	$(INSTALL) -d $(PAR2_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(INSTALL) -m 755 $(PAR2_BUILD_DIR)/par2 $(PAR2_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(STRIP_COMMAND) $(PAR2_IPK_DIR)$(TARGET_PREFIX)/bin/par2
+	cd $(PAR2_IPK_DIR)$(TARGET_PREFIX)/bin; ln -s par2 par2create; ln -s par2 par2repair; ln -s par2 par2verify
 	$(MAKE) $(PAR2_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PAR2_IPK_DIR)
 

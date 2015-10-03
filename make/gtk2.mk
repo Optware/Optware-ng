@@ -42,7 +42,7 @@ GTK2_LOCALES=
 
 #
 # GTK2_CONFFILES should be a list of user-editable files
-#GTK2_CONFFILES=/opt/etc/gtk2.conf /opt/etc/init.d/SXXgtk2
+#GTK2_CONFFILES=$(TARGET_PREFIX)/etc/gtk2.conf $(TARGET_PREFIX)/etc/init.d/SXXgtk2
 
 #
 # GTK2_PATCHES should list any patches, in the the order in
@@ -231,12 +231,12 @@ gtk2-stage: $(GTK2_BUILD_DIR)/.staged
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(GTK2_IPK_DIR)/opt/sbin or $(GTK2_IPK_DIR)/opt/bin
+# Binaries should be installed into $(GTK2_IPK_DIR)$(TARGET_PREFIX)/sbin or $(GTK2_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(GTK2_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(GTK2_IPK_DIR)/opt/etc/gtk2/...
-# Documentation files should be installed in $(GTK2_IPK_DIR)/opt/doc/gtk2/...
-# Daemon startup scripts should be installed in $(GTK2_IPK_DIR)/opt/etc/init.d/S??gtk2
+# Libraries and include files should be installed into $(GTK2_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(GTK2_IPK_DIR)$(TARGET_PREFIX)/etc/gtk2/...
+# Documentation files should be installed in $(GTK2_IPK_DIR)$(TARGET_PREFIX)/doc/gtk2/...
+# Daemon startup scripts should be installed in $(GTK2_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??gtk2
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -246,23 +246,23 @@ $(GTK2_IPK) $(GTK2_DOC_IPK) $(GTK2_PRINT_IPK): $(GTK2_BUILD_DIR)/.built
 		$(BUILD_DIR)/gtk2-doc_*_$(TARGET_ARCH).ipk \
 		$(BUILD_DIR)/gtk2-print_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GTK2_BUILD_DIR) DESTDIR=$(GTK2_IPK_DIR) install-strip
-	$(INSTALL) -d $(GTK2_IPK_DIR)/opt/etc/gtk-2.0
+	$(INSTALL) -d $(GTK2_IPK_DIR)$(TARGET_PREFIX)/etc/gtk-2.0
 	### make gtk2-doc-ipk
-	$(INSTALL) -d $(GTK2_DOC_IPK_DIR)/opt/share
-	mv -f $(GTK2_IPK_DIR)/opt/share/gtk-doc $(GTK2_DOC_IPK_DIR)/opt/share/
+	$(INSTALL) -d $(GTK2_DOC_IPK_DIR)$(TARGET_PREFIX)/share
+	mv -f $(GTK2_IPK_DIR)$(TARGET_PREFIX)/share/gtk-doc $(GTK2_DOC_IPK_DIR)$(TARGET_PREFIX)/share/
 	$(MAKE) $(GTK2_DOC_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GTK2_DOC_IPK_DIR)
 	### make gtk2-print-ipk
 	find $(GTK2_IPK_DIR) -type f -name *.la -exec rm -f {} \;
-	$(INSTALL) -d $(GTK2_PRINT_IPK_DIR)/opt/include \
-		$(GTK2_PRINT_IPK_DIR)/opt/lib/gtk-2.0/2.10.0 \
-		$(GTK2_PRINT_IPK_DIR)/opt/lib/pkgconfig
-	mv -f $(GTK2_IPK_DIR)/opt/include/gtk-unix-print-2.0 \
-		$(GTK2_PRINT_IPK_DIR)/opt/include/
-	mv -f $(GTK2_IPK_DIR)/opt/lib/gtk-2.0/2.10.0/printbackends \
-		$(GTK2_PRINT_IPK_DIR)/opt/lib/gtk-2.0/2.10.0/
-	mv -f $(GTK2_IPK_DIR)/opt/lib/pkgconfig/gtk+-unix-print-2.0.pc \
-		$(GTK2_PRINT_IPK_DIR)/opt/lib/pkgconfig/
+	$(INSTALL) -d $(GTK2_PRINT_IPK_DIR)$(TARGET_PREFIX)/include \
+		$(GTK2_PRINT_IPK_DIR)$(TARGET_PREFIX)/lib/gtk-2.0/2.10.0 \
+		$(GTK2_PRINT_IPK_DIR)$(TARGET_PREFIX)/lib/pkgconfig
+	mv -f $(GTK2_IPK_DIR)$(TARGET_PREFIX)/include/gtk-unix-print-2.0 \
+		$(GTK2_PRINT_IPK_DIR)$(TARGET_PREFIX)/include/
+	mv -f $(GTK2_IPK_DIR)$(TARGET_PREFIX)/lib/gtk-2.0/2.10.0/printbackends \
+		$(GTK2_PRINT_IPK_DIR)$(TARGET_PREFIX)/lib/gtk-2.0/2.10.0/
+	mv -f $(GTK2_IPK_DIR)$(TARGET_PREFIX)/lib/pkgconfig/gtk+-unix-print-2.0.pc \
+		$(GTK2_PRINT_IPK_DIR)$(TARGET_PREFIX)/lib/pkgconfig/
 	$(MAKE) $(GTK2_PRINT_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GTK2_PRINT_IPK_DIR)
 	### make gtk2-ipk

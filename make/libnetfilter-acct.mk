@@ -40,7 +40,7 @@ LIBNETFILTER_ACCT_IPK_VERSION=1
 
 #
 # LIBNETFILTER_ACCT_CONFFILES should be a list of user-editable files
-#LIBNETFILTER_ACCT_CONFFILES=/opt/etc/libnetfilter-acct.conf /opt/etc/init.d/SXXlibnetfilter-acct
+#LIBNETFILTER_ACCT_CONFFILES=$(TARGET_PREFIX)/etc/libnetfilter-acct.conf $(TARGET_PREFIX)/etc/init.d/SXXlibnetfilter-acct
 
 #
 # LIBNETFILTER_ACCT_PATCHES should list any patches, in the the order in
@@ -181,24 +181,24 @@ $(LIBNETFILTER_ACCT_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LIBNETFILTER_ACCT_IPK_DIR)/opt/sbin or $(LIBNETFILTER_ACCT_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LIBNETFILTER_ACCT_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LIBNETFILTER_ACCT_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LIBNETFILTER_ACCT_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LIBNETFILTER_ACCT_IPK_DIR)/opt/etc/libnetfilter-acct/...
-# Documentation files should be installed in $(LIBNETFILTER_ACCT_IPK_DIR)/opt/doc/libnetfilter-acct/...
-# Daemon startup scripts should be installed in $(LIBNETFILTER_ACCT_IPK_DIR)/opt/etc/init.d/S??libnetfilter-acct
+# Libraries and include files should be installed into $(LIBNETFILTER_ACCT_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LIBNETFILTER_ACCT_IPK_DIR)$(TARGET_PREFIX)/etc/libnetfilter-acct/...
+# Documentation files should be installed in $(LIBNETFILTER_ACCT_IPK_DIR)$(TARGET_PREFIX)/doc/libnetfilter-acct/...
+# Daemon startup scripts should be installed in $(LIBNETFILTER_ACCT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??libnetfilter-acct
 #
 # You may need to patch your application to make it use these locations.
 #
 $(LIBNETFILTER_ACCT_IPK): $(LIBNETFILTER_ACCT_BUILD_DIR)/.built
 	rm -rf $(LIBNETFILTER_ACCT_IPK_DIR) $(BUILD_DIR)/libnetfilter-acct_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBNETFILTER_ACCT_BUILD_DIR) DESTDIR=$(LIBNETFILTER_ACCT_IPK_DIR) install-strip
-	rm -rf $(LIBNETFILTER_ACCT_IPK_DIR)/opt/include
-#	$(INSTALL) -d $(LIBNETFILTER_ACCT_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(LIBNETFILTER_ACCT_SOURCE_DIR)/libnetfilter-acct.conf $(LIBNETFILTER_ACCT_IPK_DIR)/opt/etc/libnetfilter-acct.conf
-#	$(INSTALL) -d $(LIBNETFILTER_ACCT_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(LIBNETFILTER_ACCT_SOURCE_DIR)/rc.libnetfilter-acct $(LIBNETFILTER_ACCT_IPK_DIR)/opt/etc/init.d/SXXlibnetfilter-acct
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBNETFILTER_ACCT_IPK_DIR)/opt/etc/init.d/SXXlibnetfilter-acct
+	rm -rf $(LIBNETFILTER_ACCT_IPK_DIR)$(TARGET_PREFIX)/include
+#	$(INSTALL) -d $(LIBNETFILTER_ACCT_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(LIBNETFILTER_ACCT_SOURCE_DIR)/libnetfilter-acct.conf $(LIBNETFILTER_ACCT_IPK_DIR)$(TARGET_PREFIX)/etc/libnetfilter-acct.conf
+#	$(INSTALL) -d $(LIBNETFILTER_ACCT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(LIBNETFILTER_ACCT_SOURCE_DIR)/rc.libnetfilter-acct $(LIBNETFILTER_ACCT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibnetfilter-acct
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBNETFILTER_ACCT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibnetfilter-acct
 	$(MAKE) $(LIBNETFILTER_ACCT_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(LIBNETFILTER_ACCT_SOURCE_DIR)/postinst $(LIBNETFILTER_ACCT_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBNETFILTER_ACCT_IPK_DIR)/CONTROL/postinst

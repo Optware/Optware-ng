@@ -40,7 +40,7 @@ COLLECTD_IPK_VERSION=1
 
 #
 # COLLECTD_CONFFILES should be a list of user-editable files
-COLLECTD_CONFFILES=/opt/etc/collectd.conf /opt/etc/init.d/S70collectd
+COLLECTD_CONFFILES=$(TARGET_PREFIX)/etc/collectd.conf $(TARGET_PREFIX)/etc/init.d/S70collectd
 
 #
 # COLLECTD_PATCHES should list any patches, in the the order in
@@ -189,22 +189,22 @@ $(COLLECTD_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(COLLECTD_IPK_DIR)/opt/sbin or $(COLLECTD_IPK_DIR)/opt/bin
+# Binaries should be installed into $(COLLECTD_IPK_DIR)$(TARGET_PREFIX)/sbin or $(COLLECTD_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(COLLECTD_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(COLLECTD_IPK_DIR)/opt/etc/collectd/...
-# Documentation files should be installed in $(COLLECTD_IPK_DIR)/opt/doc/collectd/...
-# Daemon startup scripts should be installed in $(COLLECTD_IPK_DIR)/opt/etc/init.d/S??collectd
+# Libraries and include files should be installed into $(COLLECTD_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(COLLECTD_IPK_DIR)$(TARGET_PREFIX)/etc/collectd/...
+# Documentation files should be installed in $(COLLECTD_IPK_DIR)$(TARGET_PREFIX)/doc/collectd/...
+# Daemon startup scripts should be installed in $(COLLECTD_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??collectd
 #
 # You may need to patch your application to make it use these locations.
 #
 $(COLLECTD_IPK): $(COLLECTD_BUILD_DIR)/.built
 	rm -rf $(COLLECTD_IPK_DIR) $(BUILD_DIR)/collectd_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(COLLECTD_BUILD_DIR) DESTDIR=$(COLLECTD_IPK_DIR) install-strip
-	$(INSTALL) -d $(COLLECTD_IPK_DIR)/opt/etc/
-	$(INSTALL) -m 644 $(COLLECTD_SOURCE_DIR)/collectd.conf $(COLLECTD_IPK_DIR)/opt/etc/collectd.conf
-	$(INSTALL) -d $(COLLECTD_IPK_DIR)/opt/etc/init.d
-	$(INSTALL) -m 755 $(COLLECTD_SOURCE_DIR)/rc.collectd $(COLLECTD_IPK_DIR)/opt/etc/init.d/S70collectd
+	$(INSTALL) -d $(COLLECTD_IPK_DIR)$(TARGET_PREFIX)/etc/
+	$(INSTALL) -m 644 $(COLLECTD_SOURCE_DIR)/collectd.conf $(COLLECTD_IPK_DIR)$(TARGET_PREFIX)/etc/collectd.conf
+	$(INSTALL) -d $(COLLECTD_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(INSTALL) -m 755 $(COLLECTD_SOURCE_DIR)/rc.collectd $(COLLECTD_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S70collectd
 	$(MAKE) $(COLLECTD_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 755 $(COLLECTD_SOURCE_DIR)/postinst $(COLLECTD_IPK_DIR)/CONTROL/postinst
 	echo $(COLLECTD_CONFFILES) | sed -e 's/ /\n/g' > $(COLLECTD_IPK_DIR)/CONTROL/conffiles

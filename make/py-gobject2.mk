@@ -55,7 +55,7 @@ PY-GOBJECT2_IPK_VERSION=1
 
 #
 # PY-GOBJECT2_CONFFILES should be a list of user-editable files
-#PY-GOBJECT2_CONFFILES=/opt/etc/py-gobject2.conf /opt/etc/init.d/SXXpy-gobject2
+#PY-GOBJECT2_CONFFILES=$(TARGET_PREFIX)/etc/py-gobject2.conf $(TARGET_PREFIX)/etc/init.d/SXXpy-gobject2
 
 #
 # PY-GOBJECT2_PATCHES should list any patches, in the the order in
@@ -160,8 +160,8 @@ $(PY-GOBJECT2_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-GOBJECT2_SOURCE) $(PY-GOBJE
 		CPPFLAGS="$(STAGING_CPPFLAGS) -I$(STAGING_INCLUDE_DIR)/python2.6 $(PY-GOBJECT2_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(PY-GOBJECT2_LDFLAGS)" \
 		PYTHON=$(HOST_STAGING_PREFIX)/bin/python2.6 \
-		am_cv_python_pythondir=/opt/lib/python2.6/site-packages \
-		am_cv_python_pyexecdir=/opt/lib/python2.6/site-packages \
+		am_cv_python_pythondir=$(TARGET_PREFIX)/lib/python2.6/site-packages \
+		am_cv_python_pyexecdir=$(TARGET_PREFIX)/lib/python2.6/site-packages \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
 		./configure \
@@ -181,8 +181,8 @@ $(PY-GOBJECT2_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-GOBJECT2_SOURCE) $(PY-GOBJE
 		CPPFLAGS="$(STAGING_CPPFLAGS) -I$(STAGING_INCLUDE_DIR)/python2.7 $(PY-GOBJECT2_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(PY-GOBJECT2_LDFLAGS)" \
 		PYTHON=$(HOST_STAGING_PREFIX)/bin/python2.7 \
-		am_cv_python_pythondir=/opt/lib/python2.7/site-packages \
-		am_cv_python_pyexecdir=/opt/lib/python2.7/site-packages \
+		am_cv_python_pythondir=$(TARGET_PREFIX)/lib/python2.7/site-packages \
+		am_cv_python_pyexecdir=$(TARGET_PREFIX)/lib/python2.7/site-packages \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
 		./configure \
@@ -203,8 +203,8 @@ $(PY-GOBJECT2_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-GOBJECT2_SOURCE) $(PY-GOBJE
 		CPPFLAGS="$(STAGING_CPPFLAGS) -I$(STAGING_INCLUDE_DIR)/python$(PYTHON3_VERSION_MAJOR)m $(PY-GOBJECT2_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(PY-GOBJECT2_LDFLAGS)" \
 		PYTHON=$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) \
-		am_cv_python_pythondir=/opt/lib/python$(PYTHON3_VERSION_MAJOR)/site-packages \
-		am_cv_python_pyexecdir=/opt/lib/python$(PYTHON3_VERSION_MAJOR)/site-packages \
+		am_cv_python_pythondir=$(TARGET_PREFIX)/lib/python$(PYTHON3_VERSION_MAJOR)/site-packages \
+		am_cv_python_pyexecdir=$(TARGET_PREFIX)/lib/python$(PYTHON3_VERSION_MAJOR)/site-packages \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
 		./configure \
@@ -246,7 +246,7 @@ $(PY-GOBJECT2_BUILD_DIR)/.staged: $(PY-GOBJECT2_BUILD_DIR)/.built
 	$(MAKE) -C $(@D)/2.6 DESTDIR=$(STAGING_DIR) install
 	$(MAKE) -C $(@D)/2.7 DESTDIR=$(STAGING_DIR) install
 	$(MAKE) -C $(@D)/3 DESTDIR=$(STAGING_DIR) install
-	sed -i -e '/^prefix=/s|=.*|=$(STAGING_PREFIX)|' -e 's|=/opt/|=$(STAGING_PREFIX)/|' \
+	sed -i -e '/^prefix=/s|=.*|=$(STAGING_PREFIX)|' -e 's|=$(TARGET_PREFIX)/|=$(STAGING_PREFIX)/|' \
 		$(STAGING_LIB_DIR)/pkgconfig/pygobject-2.0.pc
 	touch $@
 
@@ -319,12 +319,12 @@ $(PY-GOBJECT2_DEV_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PY-GOBJECT2_IPK_DIR)/opt/sbin or $(PY-GOBJECT2_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PY-GOBJECT2_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PY-GOBJECT2_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PY-GOBJECT2_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PY-GOBJECT2_IPK_DIR)/opt/etc/py-gobject2/...
-# Documentation files should be installed in $(PY-GOBJECT2_IPK_DIR)/opt/doc/py-gobject2/...
-# Daemon startup scripts should be installed in $(PY-GOBJECT2_IPK_DIR)/opt/etc/init.d/S??py-gobject2
+# Libraries and include files should be installed into $(PY-GOBJECT2_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PY-GOBJECT2_IPK_DIR)$(TARGET_PREFIX)/etc/py-gobject2/...
+# Documentation files should be installed in $(PY-GOBJECT2_IPK_DIR)$(TARGET_PREFIX)/doc/py-gobject2/...
+# Daemon startup scripts should be installed in $(PY-GOBJECT2_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??py-gobject2
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -332,12 +332,12 @@ $(PY26-GOBJECT2_IPK) $(PY-GOBJECT2_DEV_IPK): $(PY-GOBJECT2_BUILD_DIR)/.built
 	rm -rf $(PY26-GOBJECT2_IPK_DIR) $(BUILD_DIR)/py26-gobject2_*_$(TARGET_ARCH).ipk \
 		$(PY-GOBJECT2_DEV_IPK_DIR) $(BUILD_DIR)/py-gobject2-dev_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PY-GOBJECT2_BUILD_DIR)/2.6 DESTDIR=$(PY26-GOBJECT2_IPK_DIR) install-strip
-	$(INSTALL) -d $(PY-GOBJECT2_DEV_IPK_DIR)/opt/lib $(PY-GOBJECT2_DEV_IPK_DIR)/opt/bin
-	$(INSTALL) -m 755 $(PY-GOBJECT2_SOURCE_DIR)/pygobject-codegen-2.0 $(PY-GOBJECT2_DEV_IPK_DIR)/opt/bin/
-	rm -rf $(PY26-GOBJECT2_IPK_DIR)/opt/bin
-	mv -f $(PY26-GOBJECT2_IPK_DIR)/opt/include $(PY-GOBJECT2_DEV_IPK_DIR)/opt/
-	mv -f $(PY26-GOBJECT2_IPK_DIR)/opt/share $(PY-GOBJECT2_DEV_IPK_DIR)/opt/
-	mv -f $(PY26-GOBJECT2_IPK_DIR)/opt/lib/pkgconfig $(PY-GOBJECT2_DEV_IPK_DIR)/opt/lib/
+	$(INSTALL) -d $(PY-GOBJECT2_DEV_IPK_DIR)$(TARGET_PREFIX)/lib $(PY-GOBJECT2_DEV_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(INSTALL) -m 755 $(PY-GOBJECT2_SOURCE_DIR)/pygobject-codegen-2.0 $(PY-GOBJECT2_DEV_IPK_DIR)$(TARGET_PREFIX)/bin/
+	rm -rf $(PY26-GOBJECT2_IPK_DIR)$(TARGET_PREFIX)/bin
+	mv -f $(PY26-GOBJECT2_IPK_DIR)$(TARGET_PREFIX)/include $(PY-GOBJECT2_DEV_IPK_DIR)$(TARGET_PREFIX)/
+	mv -f $(PY26-GOBJECT2_IPK_DIR)$(TARGET_PREFIX)/share $(PY-GOBJECT2_DEV_IPK_DIR)$(TARGET_PREFIX)/
+	mv -f $(PY26-GOBJECT2_IPK_DIR)$(TARGET_PREFIX)/lib/pkgconfig $(PY-GOBJECT2_DEV_IPK_DIR)$(TARGET_PREFIX)/lib/
 	$(MAKE) $(PY26-GOBJECT2_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-GOBJECT2_IPK_DIR)
 	$(MAKE) $(PY-GOBJECT2_DEV_IPK_DIR)/CONTROL/control
@@ -346,14 +346,14 @@ $(PY26-GOBJECT2_IPK) $(PY-GOBJECT2_DEV_IPK): $(PY-GOBJECT2_BUILD_DIR)/.built
 $(PY27-GOBJECT2_IPK): $(PY-GOBJECT2_BUILD_DIR)/.built
 	rm -rf $(PY27-GOBJECT2_IPK_DIR) $(BUILD_DIR)/py27-gobject2_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PY-GOBJECT2_BUILD_DIR)/2.7 DESTDIR=$(PY27-GOBJECT2_IPK_DIR) install-strip
-	rm -rf $(addprefix $(PY27-GOBJECT2_IPK_DIR)/opt/, include lib/pkgconfig share bin)
+	rm -rf $(addprefix $(PY27-GOBJECT2_IPK_DIR)$(TARGET_PREFIX)/, include lib/pkgconfig share bin)
 	$(MAKE) $(PY27-GOBJECT2_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY27-GOBJECT2_IPK_DIR)
 
 $(PY3-GOBJECT2_IPK): $(PY-GOBJECT2_BUILD_DIR)/.built
 	rm -rf $(PY3-GOBJECT2_IPK_DIR) $(BUILD_DIR)/py3-gobject2_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PY-GOBJECT2_BUILD_DIR)/3 DESTDIR=$(PY3-GOBJECT2_IPK_DIR) install-strip
-	rm -rf $(addprefix $(PY3-GOBJECT2_IPK_DIR)/opt/, include lib/pkgconfig share bin)
+	rm -rf $(addprefix $(PY3-GOBJECT2_IPK_DIR)$(TARGET_PREFIX)/, include lib/pkgconfig share bin)
 	$(MAKE) $(PY3-GOBJECT2_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY3-GOBJECT2_IPK_DIR)
 

@@ -40,7 +40,7 @@ LIBMATROSKA_IPK_VERSION=1
 
 #
 # LIBMATROSKA_CONFFILES should be a list of user-editable files
-#LIBMATROSKA_CONFFILES=/opt/etc/libmatroska.conf /opt/etc/init.d/SXXlibmatroska
+#LIBMATROSKA_CONFFILES=$(TARGET_PREFIX)/etc/libmatroska.conf $(TARGET_PREFIX)/etc/init.d/SXXlibmatroska
 
 #
 # LIBMATROSKA_PATCHES should list any patches, in the the order in
@@ -145,7 +145,7 @@ $(LIBMATROSKA_BUILD_DIR)/.built: $(LIBMATROSKA_BUILD_DIR)/.configured
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBMATROSKA_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBMATROSKA_LDFLAGS)" \
-		prefix=/opt
+		prefix=$(TARGET_PREFIX)
 	$(MAKE) -C $(@D)
 	touch $@
 
@@ -191,12 +191,12 @@ $(LIBMATROSKA_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LIBMATROSKA_IPK_DIR)/opt/sbin or $(LIBMATROSKA_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LIBMATROSKA_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LIBMATROSKA_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LIBMATROSKA_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LIBMATROSKA_IPK_DIR)/opt/etc/libmatroska/...
-# Documentation files should be installed in $(LIBMATROSKA_IPK_DIR)/opt/doc/libmatroska/...
-# Daemon startup scripts should be installed in $(LIBMATROSKA_IPK_DIR)/opt/etc/init.d/S??libmatroska
+# Libraries and include files should be installed into $(LIBMATROSKA_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LIBMATROSKA_IPK_DIR)$(TARGET_PREFIX)/etc/libmatroska/...
+# Documentation files should be installed in $(LIBMATROSKA_IPK_DIR)$(TARGET_PREFIX)/doc/libmatroska/...
+# Daemon startup scripts should be installed in $(LIBMATROSKA_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??libmatroska
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -204,10 +204,10 @@ $(LIBMATROSKA_IPK): $(LIBMATROSKA_BUILD_DIR)/.built
 	rm -rf $(LIBMATROSKA_IPK_DIR) $(BUILD_DIR)/libmatroska_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(LIBMATROSKA_BUILD_DIR)/make/linux install_sharedlib \
 		DESTDIR=$(LIBMATROSKA_IPK_DIR) \
-		prefix=$(LIBMATROSKA_IPK_DIR)/opt
+		prefix=$(LIBMATROSKA_IPK_DIR)$(TARGET_PREFIX)
 	$(MAKE) -C $(LIBMATROSKA_BUILD_DIR) install DESTDIR=$(LIBMATROSKA_IPK_DIR)
-	rm -f $(LIBMATROSKA_IPK_DIR)/opt/lib/libmatroska.la
-	$(STRIP_COMMAND) $(LIBMATROSKA_IPK_DIR)/opt/lib/libmatroska.so.*
+	rm -f $(LIBMATROSKA_IPK_DIR)$(TARGET_PREFIX)/lib/libmatroska.la
+	$(STRIP_COMMAND) $(LIBMATROSKA_IPK_DIR)$(TARGET_PREFIX)/lib/libmatroska.so.*
 	$(MAKE) $(LIBMATROSKA_IPK_DIR)/CONTROL/control
 	echo $(LIBMATROSKA_CONFFILES) | sed -e 's/ /\n/g' > $(LIBMATROSKA_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBMATROSKA_IPK_DIR)

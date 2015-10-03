@@ -172,12 +172,12 @@ $(ELINKS_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(ELINKS_IPK_DIR)/opt/sbin or $(ELINKS_IPK_DIR)/opt/bin
+# Binaries should be installed into $(ELINKS_IPK_DIR)$(TARGET_PREFIX)/sbin or $(ELINKS_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(ELINKS_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(ELINKS_IPK_DIR)/opt/etc/elinks/...
-# Documentation files should be installed in $(ELINKS_IPK_DIR)/opt/doc/elinks/...
-# Daemon startup scripts should be installed in $(ELINKS_IPK_DIR)/opt/etc/init.d/S??elinks
+# Libraries and include files should be installed into $(ELINKS_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(ELINKS_IPK_DIR)$(TARGET_PREFIX)/etc/elinks/...
+# Documentation files should be installed in $(ELINKS_IPK_DIR)$(TARGET_PREFIX)/doc/elinks/...
+# Daemon startup scripts should be installed in $(ELINKS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??elinks
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -186,7 +186,7 @@ $(ELINKS_IPK): $(ELINKS_BUILD_DIR)/.built
 	$(TARGET_CONFIGURE_OPTS) \
 	$(MAKE) -C $(ELINKS_BUILD_DIR) DESTDIR=$(ELINKS_IPK_DIR) \
 		$(ELINKS_VERBOSE) install
-	$(STRIP_COMMAND) $(ELINKS_IPK_DIR)/opt/bin/elinks
+	$(STRIP_COMMAND) $(ELINKS_IPK_DIR)$(TARGET_PREFIX)/bin/elinks
 	$(MAKE) $(ELINKS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ELINKS_IPK_DIR)
 

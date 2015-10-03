@@ -41,7 +41,7 @@ PY-PGSQL_IPK_VERSION=2
 
 #
 # PY-PGSQL_CONFFILES should be a list of user-editable files
-#PY-PGSQL_CONFFILES=/opt/etc/py-pgsql.conf /opt/etc/init.d/SXXpy-pgsql
+#PY-PGSQL_CONFFILES=$(TARGET_PREFIX)/etc/py-pgsql.conf $(TARGET_PREFIX)/etc/init.d/SXXpy-pgsql
 
 #
 # PY-PGSQL_PATCHES should list any patches, in the the order in
@@ -119,9 +119,9 @@ $(PY-PGSQL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PGSQL_SOURCE) $(PY-PGSQL_PATCH
 		echo "[build_ext]"; \
 	        echo "include_dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
 	        echo "library_dirs=$(STAGING_LIB_DIR)"; \
-	        echo "rpath=/opt/lib"; \
+	        echo "rpath=$(TARGET_PREFIX)/lib"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python2.4"; \
+		echo "executable=$(TARGET_PREFIX)/bin/python2.4"; \
 	    ) >> setup.cfg; \
 	    sed -i -e '/include_dirs/d' -e '/library_dirs/d' setup.py; \
 	)
@@ -135,9 +135,9 @@ $(PY-PGSQL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PGSQL_SOURCE) $(PY-PGSQL_PATCH
 		echo "[build_ext]"; \
 	        echo "include_dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.5"; \
 	        echo "library_dirs=$(STAGING_LIB_DIR)"; \
-	        echo "rpath=/opt/lib"; \
+	        echo "rpath=$(TARGET_PREFIX)/lib"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python2.5"; \
+		echo "executable=$(TARGET_PREFIX)/bin/python2.5"; \
 	    ) >> setup.cfg; \
 	    sed -i -e '/include_dirs/d' -e '/library_dirs/d' setup.py; \
 	)
@@ -210,12 +210,12 @@ $(PY25-PGSQL_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PY-PGSQL_IPK_DIR)/opt/sbin or $(PY-PGSQL_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PY-PGSQL_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PY-PGSQL_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PY-PGSQL_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PY-PGSQL_IPK_DIR)/opt/etc/py-pgsql/...
-# Documentation files should be installed in $(PY-PGSQL_IPK_DIR)/opt/doc/py-pgsql/...
-# Daemon startup scripts should be installed in $(PY-PGSQL_IPK_DIR)/opt/etc/init.d/S??py-pgsql
+# Libraries and include files should be installed into $(PY-PGSQL_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PY-PGSQL_IPK_DIR)$(TARGET_PREFIX)/etc/py-pgsql/...
+# Documentation files should be installed in $(PY-PGSQL_IPK_DIR)$(TARGET_PREFIX)/doc/py-pgsql/...
+# Daemon startup scripts should be installed in $(PY-PGSQL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??py-pgsql
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -223,9 +223,9 @@ $(PY24-PGSQL_IPK): $(PY-PGSQL_BUILD_DIR)/.built
 	rm -rf $(PY24-PGSQL_IPK_DIR) $(BUILD_DIR)/py-pgsql_*_$(TARGET_ARCH).ipk
 	(cd $(PY-PGSQL_BUILD_DIR)/2.4; \
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
-	    --root=$(PY24-PGSQL_IPK_DIR) --prefix=/opt; \
+	    --root=$(PY24-PGSQL_IPK_DIR) --prefix=$(TARGET_PREFIX); \
 	)
-	$(STRIP_COMMAND) `find $(PY24-PGSQL_IPK_DIR)/opt/lib -name '*.so'`
+	$(STRIP_COMMAND) `find $(PY24-PGSQL_IPK_DIR)$(TARGET_PREFIX)/lib -name '*.so'`
 	$(MAKE) $(PY24-PGSQL_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-PGSQL_IPK_DIR)
 
@@ -233,9 +233,9 @@ $(PY25-PGSQL_IPK): $(PY-PGSQL_BUILD_DIR)/.built
 	rm -rf $(PY25-PGSQL_IPK_DIR) $(BUILD_DIR)/py25-pgsql_*_$(TARGET_ARCH).ipk
 	(cd $(PY-PGSQL_BUILD_DIR)/2.5; \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
-	    --root=$(PY25-PGSQL_IPK_DIR) --prefix=/opt; \
+	    --root=$(PY25-PGSQL_IPK_DIR) --prefix=$(TARGET_PREFIX); \
 	)
-	$(STRIP_COMMAND) `find $(PY25-PGSQL_IPK_DIR)/opt/lib -name '*.so'`
+	$(STRIP_COMMAND) `find $(PY25-PGSQL_IPK_DIR)$(TARGET_PREFIX)/lib -name '*.so'`
 	$(MAKE) $(PY25-PGSQL_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-PGSQL_IPK_DIR)
 

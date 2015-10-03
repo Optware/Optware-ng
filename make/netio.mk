@@ -151,21 +151,21 @@ $(NETIO_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(NETIO_IPK_DIR)/opt/sbin or $(NETIO_IPK_DIR)/opt/bin
+# Binaries should be installed into $(NETIO_IPK_DIR)$(TARGET_PREFIX)/sbin or $(NETIO_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(NETIO_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(NETIO_IPK_DIR)/opt/etc/netio/...
-# Documentation files should be installed in $(NETIO_IPK_DIR)/opt/doc/netio/...
-# Daemon startup scripts should be installed in $(NETIO_IPK_DIR)/opt/etc/init.d/S??netio
+# Libraries and include files should be installed into $(NETIO_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(NETIO_IPK_DIR)$(TARGET_PREFIX)/etc/netio/...
+# Documentation files should be installed in $(NETIO_IPK_DIR)$(TARGET_PREFIX)/doc/netio/...
+# Daemon startup scripts should be installed in $(NETIO_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??netio
 #
 # You may need to patch your application to make it use these locations.
 #
 $(NETIO_IPK): $(NETIO_BUILD_DIR)/.built
 	rm -rf $(NETIO_IPK_DIR) $(BUILD_DIR)/netio_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(NETIO_IPK_DIR)/opt/bin
-	$(INSTALL) -m 755 $(NETIO_BUILD_DIR)/netio $(NETIO_IPK_DIR)/opt/bin/netio
+	$(INSTALL) -d $(NETIO_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(INSTALL) -m 755 $(NETIO_BUILD_DIR)/netio $(NETIO_IPK_DIR)$(TARGET_PREFIX)/bin/netio
 	$(MAKE) $(NETIO_IPK_DIR)/CONTROL/control
-	$(STRIP_COMMAND) $(NETIO_IPK_DIR)/opt/bin/netio
+	$(STRIP_COMMAND) $(NETIO_IPK_DIR)$(TARGET_PREFIX)/bin/netio
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NETIO_IPK_DIR)
 
 #

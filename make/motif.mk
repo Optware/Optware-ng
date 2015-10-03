@@ -46,7 +46,7 @@ MOTIF_IPK_VERSION=1
 
 #
 # MOTIF_CONFFILES should be a list of user-editable files
-#MOTIF_CONFFILES=/opt/etc/motif.conf /opt/etc/init.d/SXXmotif
+#MOTIF_CONFFILES=$(TARGET_PREFIX)/etc/motif.conf $(TARGET_PREFIX)/etc/init.d/SXXmotif
 
 #
 # MOTIF_PATCHES should list any patches, in the the order in
@@ -138,7 +138,7 @@ $(MOTIF_BUILD_DIR)/.configured: $(DL_DIR)/$(MOTIF_SOURCE) $(MOTIF_PATCHES) make/
 		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
-		--x-libraries=/opt/lib \
+		--x-libraries=$(TARGET_PREFIX)/lib \
 		--enable-xft \
 		--enable-jpeg \
 		--enable-png \
@@ -211,24 +211,24 @@ $(MOTIF_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(MOTIF_IPK_DIR)/opt/sbin or $(MOTIF_IPK_DIR)/opt/bin
+# Binaries should be installed into $(MOTIF_IPK_DIR)$(TARGET_PREFIX)/sbin or $(MOTIF_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(MOTIF_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(MOTIF_IPK_DIR)/opt/etc/motif/...
-# Documentation files should be installed in $(MOTIF_IPK_DIR)/opt/doc/motif/...
-# Daemon startup scripts should be installed in $(MOTIF_IPK_DIR)/opt/etc/init.d/S??motif
+# Libraries and include files should be installed into $(MOTIF_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(MOTIF_IPK_DIR)$(TARGET_PREFIX)/etc/motif/...
+# Documentation files should be installed in $(MOTIF_IPK_DIR)$(TARGET_PREFIX)/doc/motif/...
+# Daemon startup scripts should be installed in $(MOTIF_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??motif
 #
 # You may need to patch your application to make it use these locations.
 #
 $(MOTIF_IPK): $(MOTIF_BUILD_DIR)/.built
 	rm -rf $(MOTIF_IPK_DIR) $(BUILD_DIR)/motif_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MOTIF_BUILD_DIR) DESTDIR=$(MOTIF_IPK_DIR) install-strip program_transform_name='s&^&&'
-	rm -f $(MOTIF_IPK_DIR)/opt/lib/*.la
-#	$(INSTALL) -d $(MOTIF_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(MOTIF_SOURCE_DIR)/motif.conf $(MOTIF_IPK_DIR)/opt/etc/motif.conf
-#	$(INSTALL) -d $(MOTIF_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(MOTIF_SOURCE_DIR)/rc.motif $(MOTIF_IPK_DIR)/opt/etc/init.d/SXXmotif
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MOTIF_IPK_DIR)/opt/etc/init.d/SXXmotif
+	rm -f $(MOTIF_IPK_DIR)$(TARGET_PREFIX)/lib/*.la
+#	$(INSTALL) -d $(MOTIF_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(MOTIF_SOURCE_DIR)/motif.conf $(MOTIF_IPK_DIR)$(TARGET_PREFIX)/etc/motif.conf
+#	$(INSTALL) -d $(MOTIF_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(MOTIF_SOURCE_DIR)/rc.motif $(MOTIF_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXmotif
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MOTIF_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXmotif
 	$(MAKE) $(MOTIF_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(MOTIF_SOURCE_DIR)/postinst $(MOTIF_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MOTIF_IPK_DIR)/CONTROL/postinst

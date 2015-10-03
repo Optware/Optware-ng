@@ -47,7 +47,7 @@ HUGS_IPK_VERSION=1
 
 #
 # HUGS_CONFFILES should be a list of user-editable files
-#HUGS_CONFFILES=/opt/etc/hugs.conf /opt/etc/init.d/SXXhugs
+#HUGS_CONFFILES=$(TARGET_PREFIX)/etc/hugs.conf $(TARGET_PREFIX)/etc/init.d/SXXhugs
 
 #
 # HUGS_PATCHES should list any patches, in the the order in
@@ -173,12 +173,12 @@ $(HUGS_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(HUGS_IPK_DIR)/opt/sbin or $(HUGS_IPK_DIR)/opt/bin
+# Binaries should be installed into $(HUGS_IPK_DIR)$(TARGET_PREFIX)/sbin or $(HUGS_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(HUGS_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(HUGS_IPK_DIR)/opt/etc/hugs/...
-# Documentation files should be installed in $(HUGS_IPK_DIR)/opt/doc/hugs/...
-# Daemon startup scripts should be installed in $(HUGS_IPK_DIR)/opt/etc/init.d/S??hugs
+# Libraries and include files should be installed into $(HUGS_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(HUGS_IPK_DIR)$(TARGET_PREFIX)/etc/hugs/...
+# Documentation files should be installed in $(HUGS_IPK_DIR)$(TARGET_PREFIX)/doc/hugs/...
+# Daemon startup scripts should be installed in $(HUGS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??hugs
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -186,9 +186,9 @@ $(HUGS_IPK): $(HUGS_BUILD_DIR)/.built
 	rm -rf $(HUGS_IPK_DIR) $(BUILD_DIR)/hugs_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(HUGS_BUILD_DIR) DESTDIR=$(HUGS_IPK_DIR) install
 	for f in \
-        	$(HUGS_IPK_DIR)/opt/bin/ffihugs \
-        	$(HUGS_IPK_DIR)/opt/bin/runhugs \
-                `find $(HUGS_IPK_DIR)/opt/lib/hugs/packages -name '*.so'`; \
+        	$(HUGS_IPK_DIR)$(TARGET_PREFIX)/bin/ffihugs \
+        	$(HUGS_IPK_DIR)$(TARGET_PREFIX)/bin/runhugs \
+                `find $(HUGS_IPK_DIR)$(TARGET_PREFIX)/lib/hugs/packages -name '*.so'`; \
             do $(STRIP_COMMAND) $$f; done
 	$(MAKE) $(HUGS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(HUGS_IPK_DIR)

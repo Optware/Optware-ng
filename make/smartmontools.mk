@@ -33,7 +33,7 @@ SMARTMONTOOLS_IPK_VERSION=3
 
 #
 # SMARTMONTOOLS_CONFFILES should be a list of user-editable files
-SMARTMONTOOLS_CONFFILES=/opt/etc/smartd.conf /opt/etc/init.d/S20smartmontools
+SMARTMONTOOLS_CONFFILES=$(TARGET_PREFIX)/etc/smartd.conf $(TARGET_PREFIX)/etc/init.d/S20smartmontools
 
 #
 # SMARTMONTOOLS_PATCHES should list any patches, in the the order in
@@ -169,11 +169,11 @@ $(SMARTMONTOOLS_IPK_DIR)/CONTROL/control:
 $(SMARTMONTOOLS_IPK): $(SMARTMONTOOLS_BUILD_DIR)/.built
 	rm -rf $(SMARTMONTOOLS_IPK_DIR) $(BUILD_DIR)/smartmontools_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SMARTMONTOOLS_BUILD_DIR) DESTDIR=$(SMARTMONTOOLS_IPK_DIR) install-strip
-	$(INSTALL) -d $(SMARTMONTOOLS_IPK_DIR)/opt/etc/init.d
-	rm -rf $(SMARTMONTOOLS_IPK_DIR)/opt/etc/rc.d
-	rm -rf $(SMARTMONTOOLS_IPK_DIR)/opt/man
-	rm -rf $(SMARTMONTOOLS_IPK_DIR)/opt/share
-	$(INSTALL) -m 755 $(SMARTMONTOOLS_SOURCE_DIR)/rc.smartmontools $(SMARTMONTOOLS_IPK_DIR)/opt/etc/init.d/S20smartmontools
+	$(INSTALL) -d $(SMARTMONTOOLS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	rm -rf $(SMARTMONTOOLS_IPK_DIR)$(TARGET_PREFIX)/etc/rc.d
+	rm -rf $(SMARTMONTOOLS_IPK_DIR)$(TARGET_PREFIX)/man
+	rm -rf $(SMARTMONTOOLS_IPK_DIR)$(TARGET_PREFIX)/share
+	$(INSTALL) -m 755 $(SMARTMONTOOLS_SOURCE_DIR)/rc.smartmontools $(SMARTMONTOOLS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S20smartmontools
 	$(MAKE) $(SMARTMONTOOLS_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 755 $(SMARTMONTOOLS_SOURCE_DIR)/postinst $(SMARTMONTOOLS_IPK_DIR)/CONTROL/postinst
 	$(INSTALL) -m 755 $(SMARTMONTOOLS_SOURCE_DIR)/prerm $(SMARTMONTOOLS_IPK_DIR)/CONTROL/prerm

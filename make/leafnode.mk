@@ -40,7 +40,7 @@ LEAFNODE_IPK_VERSION=2
 
 #
 # LEAFNODE_CONFFILES should be a list of user-editable files
-#LEAFNODE_CONFFILES=/opt/etc/leafnode.conf /opt/etc/init.d/SXXleafnode
+#LEAFNODE_CONFFILES=$(TARGET_PREFIX)/etc/leafnode.conf $(TARGET_PREFIX)/etc/init.d/SXXleafnode
 
 #
 # LEAFNODE_PATCHES should list any patches, in the the order in
@@ -179,12 +179,12 @@ $(LEAFNODE_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LEAFNODE_IPK_DIR)/opt/sbin or $(LEAFNODE_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LEAFNODE_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LEAFNODE_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LEAFNODE_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LEAFNODE_IPK_DIR)/opt/etc/leafnode/...
-# Documentation files should be installed in $(LEAFNODE_IPK_DIR)/opt/doc/leafnode/...
-# Daemon startup scripts should be installed in $(LEAFNODE_IPK_DIR)/opt/etc/init.d/S??leafnode
+# Libraries and include files should be installed into $(LEAFNODE_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LEAFNODE_IPK_DIR)$(TARGET_PREFIX)/etc/leafnode/...
+# Documentation files should be installed in $(LEAFNODE_IPK_DIR)$(TARGET_PREFIX)/doc/leafnode/...
+# Daemon startup scripts should be installed in $(LEAFNODE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??leafnode
 #
 # You may need to patch your application to make it use these locations.
 #

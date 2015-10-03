@@ -40,7 +40,7 @@ CONFUSE_IPK_VERSION=2
 
 #
 # CONFUSE_CONFFILES should be a list of user-editable files
-#CONFUSE_CONFFILES=/opt/etc/confuse.conf /opt/etc/init.d/SXXconfuse
+#CONFUSE_CONFFILES=$(TARGET_PREFIX)/etc/confuse.conf $(TARGET_PREFIX)/etc/init.d/SXXconfuse
 
 #
 # CONFUSE_PATCHES should list any patches, in the the order in
@@ -178,23 +178,23 @@ $(CONFUSE_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(CONFUSE_IPK_DIR)/opt/sbin or $(CONFUSE_IPK_DIR)/opt/bin
+# Binaries should be installed into $(CONFUSE_IPK_DIR)$(TARGET_PREFIX)/sbin or $(CONFUSE_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(CONFUSE_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(CONFUSE_IPK_DIR)/opt/etc/confuse/...
-# Documentation files should be installed in $(CONFUSE_IPK_DIR)/opt/doc/confuse/...
-# Daemon startup scripts should be installed in $(CONFUSE_IPK_DIR)/opt/etc/init.d/S??confuse
+# Libraries and include files should be installed into $(CONFUSE_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(CONFUSE_IPK_DIR)$(TARGET_PREFIX)/etc/confuse/...
+# Documentation files should be installed in $(CONFUSE_IPK_DIR)$(TARGET_PREFIX)/doc/confuse/...
+# Daemon startup scripts should be installed in $(CONFUSE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??confuse
 #
 # You may need to patch your application to make it use these locations.
 #
 $(CONFUSE_IPK): $(CONFUSE_BUILD_DIR)/.built
 	rm -rf $(CONFUSE_IPK_DIR) $(BUILD_DIR)/confuse_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(CONFUSE_BUILD_DIR) DESTDIR=$(CONFUSE_IPK_DIR) install-strip
-#	$(INSTALL) -d $(CONFUSE_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(CONFUSE_SOURCE_DIR)/confuse.conf $(CONFUSE_IPK_DIR)/opt/etc/confuse.conf
-#	$(INSTALL) -d $(CONFUSE_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(CONFUSE_SOURCE_DIR)/rc.confuse $(CONFUSE_IPK_DIR)/opt/etc/init.d/SXXconfuse
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(CONFUSE_IPK_DIR)/opt/etc/init.d/SXXconfuse
+#	$(INSTALL) -d $(CONFUSE_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(CONFUSE_SOURCE_DIR)/confuse.conf $(CONFUSE_IPK_DIR)$(TARGET_PREFIX)/etc/confuse.conf
+#	$(INSTALL) -d $(CONFUSE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(CONFUSE_SOURCE_DIR)/rc.confuse $(CONFUSE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXconfuse
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(CONFUSE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXconfuse
 	$(MAKE) $(CONFUSE_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(CONFUSE_SOURCE_DIR)/postinst $(CONFUSE_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(CONFUSE_IPK_DIR)/CONTROL/postinst

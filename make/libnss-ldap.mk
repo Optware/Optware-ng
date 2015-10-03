@@ -24,7 +24,7 @@ LIBNSS-LDAP_IPK_VERSION=2
 
 #
 # LIBNSS-LDAP_CONFFILES should be a list of user-editable files
-LIBNSS-LDAP_CONFFILES=/opt/etc/libnss-ldap.conf /opt/etc/ldap.secret
+LIBNSS-LDAP_CONFFILES=$(TARGET_PREFIX)/etc/libnss-ldap.conf $(TARGET_PREFIX)/etc/ldap.secret
 
 #
 # If the compilation of the package requires additional
@@ -60,12 +60,12 @@ $(LIBNSS-LDAP_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBNSS-LDAP_SOURCE)
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=$(TARGET_PREFIX) \
-		--sysconfdir=/opt/etc \
-		--bindir=/opt/bin \
-		--sbindir=/opt/sbin \
+		--sysconfdir=$(TARGET_PREFIX)/etc \
+		--bindir=$(TARGET_PREFIX)/bin \
+		--sbindir=$(TARGET_PREFIX)/sbin \
 		--disable-nls \
-		--with-ldap-conf-file=/opt/etc/libnss-ldap.conf \
-		--with-ldap-secret-file=/opt/etc/ldap.secret \
+		--with-ldap-conf-file=$(TARGET_PREFIX)/etc/libnss-ldap.conf \
+		--with-ldap-secret-file=$(TARGET_PREFIX)/etc/ldap.secret \
 	)
 	touch $(LIBNSS-LDAP_BUILD_DIR)/.configured
 
@@ -105,8 +105,8 @@ $(LIBNSS-LDAP_IPK_DIR)/CONTROL/control:
 $(LIBNSS-LDAP_IPK): $(LIBNSS-LDAP_BUILD_DIR)/.built
 	rm -rf $(LIBNSS-LDAP_IPK_DIR) $(BUILD_DIR)/libnss-ldap_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBNSS-LDAP_BUILD_DIR) DESTDIR=$(LIBNSS-LDAP_IPK_DIR) install
-	$(INSTALL) -d $(LIBNSS-LDAP_IPK_DIR)/opt/etc/
-	$(INSTALL) -m 600 $(LIBNSS-LDAP_BUILD_DIR)/ldap.secret $(LIBNSS-LDAP_IPK_DIR)/opt/etc/ldap.secret
+	$(INSTALL) -d $(LIBNSS-LDAP_IPK_DIR)$(TARGET_PREFIX)/etc/
+	$(INSTALL) -m 600 $(LIBNSS-LDAP_BUILD_DIR)/ldap.secret $(LIBNSS-LDAP_IPK_DIR)$(TARGET_PREFIX)/etc/ldap.secret
 	$(MAKE) $(LIBNSS-LDAP_IPK_DIR)/CONTROL/control
 	echo $(LIBNSS-LDAP_CONFFILES) | sed -e 's/ /\n/g' > $(LIBNSS-LDAP_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBNSS-LDAP_IPK_DIR)

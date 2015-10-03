@@ -40,7 +40,7 @@ LIBELF_IPK_VERSION=1
 
 #
 # LIBELF_CONFFILES should be a list of user-editable files
-#LIBELF_CONFFILES=/opt/etc/libelf.conf /opt/etc/init.d/SXXlibelf
+#LIBELF_CONFFILES=$(TARGET_PREFIX)/etc/libelf.conf $(TARGET_PREFIX)/etc/init.d/SXXlibelf
 
 #
 # LIBELF_PATCHES should list any patches, in the the order in
@@ -154,7 +154,7 @@ libelf: $(LIBELF_BUILD_DIR)/.built
 $(LIBELF_BUILD_DIR)/.staged: $(LIBELF_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(@D) prefix=$(STAGING_PREFIX) install
-	sed -i -e '/^prefix=/s|=/opt|=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/libelf.pc
+	sed -i -e '/^prefix=/s|=$(TARGET_PREFIX)|=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/libelf.pc
 	touch $@
 
 libelf-stage: $(LIBELF_BUILD_DIR)/.staged
@@ -181,24 +181,24 @@ $(LIBELF_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LIBELF_IPK_DIR)/opt/sbin or $(LIBELF_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LIBELF_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LIBELF_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LIBELF_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LIBELF_IPK_DIR)/opt/etc/libelf/...
-# Documentation files should be installed in $(LIBELF_IPK_DIR)/opt/doc/libelf/...
-# Daemon startup scripts should be installed in $(LIBELF_IPK_DIR)/opt/etc/init.d/S??libelf
+# Libraries and include files should be installed into $(LIBELF_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LIBELF_IPK_DIR)$(TARGET_PREFIX)/etc/libelf/...
+# Documentation files should be installed in $(LIBELF_IPK_DIR)$(TARGET_PREFIX)/doc/libelf/...
+# Daemon startup scripts should be installed in $(LIBELF_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??libelf
 #
 # You may need to patch your application to make it use these locations.
 #
 $(LIBELF_IPK): $(LIBELF_BUILD_DIR)/.built
 	rm -rf $(LIBELF_IPK_DIR) $(BUILD_DIR)/libelf_*_$(TARGET_ARCH).ipk
-#	$(INSTALL) -d $(LIBELF_IPK_DIR)/opt
+#	$(INSTALL) -d $(LIBELF_IPK_DIR)$(TARGET_PREFIX)
 	$(MAKE) -C $(LIBELF_BUILD_DIR) prefix=$(LIBELF_IPK_DIR)$(TARGET_PREFIX) install
-#	$(INSTALL) -d $(LIBELF_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(LIBELF_SOURCE_DIR)/libelf.conf $(LIBELF_IPK_DIR)/opt/etc/libelf.conf
-#	$(INSTALL) -d $(LIBELF_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(LIBELF_SOURCE_DIR)/rc.libelf $(LIBELF_IPK_DIR)/opt/etc/init.d/SXXlibelf
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBELF_IPK_DIR)/opt/etc/init.d/SXXlibelf
+#	$(INSTALL) -d $(LIBELF_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(LIBELF_SOURCE_DIR)/libelf.conf $(LIBELF_IPK_DIR)$(TARGET_PREFIX)/etc/libelf.conf
+#	$(INSTALL) -d $(LIBELF_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(LIBELF_SOURCE_DIR)/rc.libelf $(LIBELF_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibelf
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBELF_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibelf
 	$(MAKE) $(LIBELF_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(LIBELF_SOURCE_DIR)/postinst $(LIBELF_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBELF_IPK_DIR)/CONTROL/postinst

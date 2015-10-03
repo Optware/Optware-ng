@@ -40,7 +40,7 @@ ERL-YAWS_IPK_VERSION=2
 
 #
 # ERL-YAWS_CONFFILES should be a list of user-editable files
-ERL-YAWS_CONFFILES=/opt/etc/yaws/yaws.conf /opt/etc/yaws/yaws-cert.pem /opt/etc/yaws/yaws-key.pem
+ERL-YAWS_CONFFILES=$(TARGET_PREFIX)/etc/yaws/yaws.conf $(TARGET_PREFIX)/etc/yaws/yaws-cert.pem $(TARGET_PREFIX)/etc/yaws/yaws-key.pem
 
 #
 # ERL-YAWS_PATCHES should list any patches, in the the order in
@@ -190,29 +190,29 @@ $(ERL-YAWS_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(ERL-YAWS_IPK_DIR)/opt/sbin or $(ERL-YAWS_IPK_DIR)/opt/bin
+# Binaries should be installed into $(ERL-YAWS_IPK_DIR)$(TARGET_PREFIX)/sbin or $(ERL-YAWS_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(ERL-YAWS_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(ERL-YAWS_IPK_DIR)/opt/etc/erl-yaws/...
-# Documentation files should be installed in $(ERL-YAWS_IPK_DIR)/opt/doc/erl-yaws/...
-# Daemon startup scripts should be installed in $(ERL-YAWS_IPK_DIR)/opt/etc/init.d/S??erl-yaws
+# Libraries and include files should be installed into $(ERL-YAWS_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(ERL-YAWS_IPK_DIR)$(TARGET_PREFIX)/etc/erl-yaws/...
+# Documentation files should be installed in $(ERL-YAWS_IPK_DIR)$(TARGET_PREFIX)/doc/erl-yaws/...
+# Daemon startup scripts should be installed in $(ERL-YAWS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??erl-yaws
 #
 # You may need to patch your application to make it use these locations.
 #
 $(ERL-YAWS_IPK): $(ERL-YAWS_BUILD_DIR)/.built
 	rm -rf $(ERL-YAWS_IPK_DIR) $(BUILD_DIR)/erl-yaws_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(ERL-YAWS_BUILD_DIR) DESTDIR=$(ERL-YAWS_IPK_DIR) install
-	$(STRIP_COMMAND) $(ERL-YAWS_IPK_DIR)/opt/lib/yaws/priv/lib/*.so
-	mv $(ERL-YAWS_IPK_DIR)/opt/etc/init.d/yaws $(ERL-YAWS_IPK_DIR)/opt/share/doc/$(ERL-YAWS_DIR)/sample-init.d-yaws
+	$(STRIP_COMMAND) $(ERL-YAWS_IPK_DIR)$(TARGET_PREFIX)/lib/yaws/priv/lib/*.so
+	mv $(ERL-YAWS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/yaws $(ERL-YAWS_IPK_DIR)$(TARGET_PREFIX)/share/doc/$(ERL-YAWS_DIR)/sample-init.d-yaws
 	sed -i \
-	    -e 's|^erl=.*|erl="/opt/lib/erlang/bin/erl"|' \
-	    -e 's|^run_erl=.*|run_erl="/opt/lib/erlang/bin/run_erl"|' \
-	    -e 's|^to_erl=.*|to_erl="/opt/lib/erlang/bin/to_erl"|' \
-	    $(ERL-YAWS_IPK_DIR)/opt/bin/yaws
+	    -e 's|^erl=.*|erl="$(TARGET_PREFIX)/lib/erlang/bin/erl"|' \
+	    -e 's|^run_erl=.*|run_erl="$(TARGET_PREFIX)/lib/erlang/bin/run_erl"|' \
+	    -e 's|^to_erl=.*|to_erl="$(TARGET_PREFIX)/lib/erlang/bin/to_erl"|' \
+	    $(ERL-YAWS_IPK_DIR)$(TARGET_PREFIX)/bin/yaws
 	sed -i \
 	    -e '/^<server localhost/,$$s/^/#/' \
 	    -e 's/<server.*>/<server localhost>/' \
-	    $(ERL-YAWS_IPK_DIR)/opt/etc/yaws/yaws.conf
+	    $(ERL-YAWS_IPK_DIR)$(TARGET_PREFIX)/etc/yaws/yaws.conf
 	$(MAKE) $(ERL-YAWS_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(ERL-YAWS_SOURCE_DIR)/postinst $(ERL-YAWS_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 755 $(ERL-YAWS_SOURCE_DIR)/prerm $(ERL-YAWS_IPK_DIR)/CONTROL/prerm

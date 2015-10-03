@@ -40,7 +40,7 @@ GNU_HTTPTUNNEL_IPK_VERSION=1
 
 #
 # GNU_HTTPTUNNEL_CONFFILES should be a list of user-editable files
-#GNU_HTTPTUNNEL_CONFFILES=/opt/etc/gnu-httptunnel.conf /opt/etc/init.d/SXXgnu-httptunnel
+#GNU_HTTPTUNNEL_CONFFILES=$(TARGET_PREFIX)/etc/gnu-httptunnel.conf $(TARGET_PREFIX)/etc/init.d/SXXgnu-httptunnel
 
 #
 # GNU_HTTPTUNNEL_PATCHES should list any patches, in the the order in
@@ -177,24 +177,24 @@ $(GNU_HTTPTUNNEL_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(GNU_HTTPTUNNEL_IPK_DIR)/opt/sbin or $(GNU_HTTPTUNNEL_IPK_DIR)/opt/bin
+# Binaries should be installed into $(GNU_HTTPTUNNEL_IPK_DIR)$(TARGET_PREFIX)/sbin or $(GNU_HTTPTUNNEL_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(GNU_HTTPTUNNEL_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(GNU_HTTPTUNNEL_IPK_DIR)/opt/etc/gnu-httptunnel/...
-# Documentation files should be installed in $(GNU_HTTPTUNNEL_IPK_DIR)/opt/doc/gnu-httptunnel/...
-# Daemon startup scripts should be installed in $(GNU_HTTPTUNNEL_IPK_DIR)/opt/etc/init.d/S??gnu-httptunnel
+# Libraries and include files should be installed into $(GNU_HTTPTUNNEL_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(GNU_HTTPTUNNEL_IPK_DIR)$(TARGET_PREFIX)/etc/gnu-httptunnel/...
+# Documentation files should be installed in $(GNU_HTTPTUNNEL_IPK_DIR)$(TARGET_PREFIX)/doc/gnu-httptunnel/...
+# Daemon startup scripts should be installed in $(GNU_HTTPTUNNEL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??gnu-httptunnel
 #
 # You may need to patch your application to make it use these locations.
 #
 $(GNU_HTTPTUNNEL_IPK): $(GNU_HTTPTUNNEL_BUILD_DIR)/.built
 	rm -rf $(GNU_HTTPTUNNEL_IPK_DIR) $(BUILD_DIR)/gnu-httptunnel_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GNU_HTTPTUNNEL_BUILD_DIR) DESTDIR=$(GNU_HTTPTUNNEL_IPK_DIR) install
-	$(STRIP_COMMAND) $(GNU_HTTPTUNNEL_IPK_DIR)/opt/bin/ht*
-#	$(INSTALL) -d $(GNU_HTTPTUNNEL_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(GNU_HTTPTUNNEL_SOURCE_DIR)/gnu-httptunnel.conf $(GNU_HTTPTUNNEL_IPK_DIR)/opt/etc/gnu-httptunnel.conf
-#	$(INSTALL) -d $(GNU_HTTPTUNNEL_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(GNU_HTTPTUNNEL_SOURCE_DIR)/rc.gnu-httptunnel $(GNU_HTTPTUNNEL_IPK_DIR)/opt/etc/init.d/SXXgnu-httptunnel
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(GNU_HTTPTUNNEL_IPK_DIR)/opt/etc/init.d/SXXgnu-httptunnel
+	$(STRIP_COMMAND) $(GNU_HTTPTUNNEL_IPK_DIR)$(TARGET_PREFIX)/bin/ht*
+#	$(INSTALL) -d $(GNU_HTTPTUNNEL_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(GNU_HTTPTUNNEL_SOURCE_DIR)/gnu-httptunnel.conf $(GNU_HTTPTUNNEL_IPK_DIR)$(TARGET_PREFIX)/etc/gnu-httptunnel.conf
+#	$(INSTALL) -d $(GNU_HTTPTUNNEL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(GNU_HTTPTUNNEL_SOURCE_DIR)/rc.gnu-httptunnel $(GNU_HTTPTUNNEL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXgnu-httptunnel
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(GNU_HTTPTUNNEL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXgnu-httptunnel
 	$(MAKE) $(GNU_HTTPTUNNEL_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(GNU_HTTPTUNNEL_SOURCE_DIR)/postinst $(GNU_HTTPTUNNEL_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(GNU_HTTPTUNNEL_IPK_DIR)/CONTROL/postinst

@@ -30,7 +30,7 @@ TFTP_HPA_IPK_VERSION=1
 
 #
 # TFTP_HPA_CONFFILES should be a list of user-editable files
-TFTP_HPA_CONFFILES=/opt/etc/xinetd.d/tftp
+TFTP_HPA_CONFFILES=$(TARGET_PREFIX)/etc/xinetd.d/tftp
 
 #
 # TFTP_HPA_PATCHES should list any patches, in the the order in
@@ -164,13 +164,13 @@ $(TFTP_HPA_IPK_DIR)/CONTROL/control:
 $(TFTP_HPA_IPK): $(TFTP_HPA_BUILD_DIR)/.built
 	rm -rf $(TFTP_HPA_IPK_DIR) $(BUILD_DIR)/tftp-hpa_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(TFTP_HPA_BUILD_DIR) INSTALLROOT=$(TFTP_HPA_IPK_DIR) install
-	mv $(TFTP_HPA_IPK_DIR)/man $(TFTP_HPA_IPK_DIR)/opt/
-	$(INSTALL) -d $(TFTP_HPA_IPK_DIR)/opt/etc/xinetd.d
-	$(INSTALL) -d $(TFTP_HPA_IPK_DIR)/opt/tftpboot
-	$(INSTALL) -m 644 $(TFTP_HPA_BUILD_DIR)/tftp-xinetd $(TFTP_HPA_IPK_DIR)/opt/etc/xinetd.d/tftp
+	mv $(TFTP_HPA_IPK_DIR)/man $(TFTP_HPA_IPK_DIR)$(TARGET_PREFIX)/
+	$(INSTALL) -d $(TFTP_HPA_IPK_DIR)$(TARGET_PREFIX)/etc/xinetd.d
+	$(INSTALL) -d $(TFTP_HPA_IPK_DIR)$(TARGET_PREFIX)/tftpboot
+	$(INSTALL) -m 644 $(TFTP_HPA_BUILD_DIR)/tftp-xinetd $(TFTP_HPA_IPK_DIR)$(TARGET_PREFIX)/etc/xinetd.d/tftp
 	$(MAKE) $(TFTP_HPA_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 755 $(TFTP_HPA_SOURCE_DIR)/postinst $(TFTP_HPA_IPK_DIR)/CONTROL/postinst
-	$(STRIP_COMMAND) $(TFTP_HPA_IPK_DIR)/opt/sbin/* $(TFTP_HPA_IPK_DIR)/opt/bin/*
+	$(STRIP_COMMAND) $(TFTP_HPA_IPK_DIR)$(TARGET_PREFIX)/sbin/* $(TFTP_HPA_IPK_DIR)$(TARGET_PREFIX)/bin/*
 	echo $(TFTP_HPA_CONFFILES) | sed -e 's/ /\n/g' > $(TFTP_HPA_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TFTP_HPA_IPK_DIR)
 

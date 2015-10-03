@@ -43,7 +43,7 @@ CLIPS_IPK_VERSION=3
 
 #
 # CLIPS_CONFFILES should be a list of user-editable files
-#CLIPS_CONFFILES=/opt/etc/clips.conf /opt/etc/init.d/SXXclips
+#CLIPS_CONFFILES=$(TARGET_PREFIX)/etc/clips.conf $(TARGET_PREFIX)/etc/init.d/SXXclips
 
 #
 # CLIPS_PATCHES should list any patches, in the the order in
@@ -120,7 +120,7 @@ $(CLIPS_BUILD_DIR)/.configured: $(DL_DIR)/$(CLIPS_SOURCE) $(DL_DIR)/$(CLIPS_SOUR
 		cat $(CLIPS_PATCHES) | $(PATCH) -bd $(@D) -p0; \
 	fi
 	sed -i -e '/soname/s/libclips.so/&.6/' $(@D)/clipssrc/Makefile
-	sed -i -e '/HELP_DEFAULT/s|clips.hlp|/opt/share/doc/clips/&|' $(@D)/clipssrc/setup.h
+	sed -i -e '/HELP_DEFAULT/s|clips.hlp|$(TARGET_PREFIX)/share/doc/clips/&|' $(@D)/clipssrc/setup.h
 	touch $@
 
 clips-unpack: $(CLIPS_BUILD_DIR)/.configured
@@ -188,12 +188,12 @@ $(CLIPS-DEV_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(CLIPS_IPK_DIR)/opt/sbin or $(CLIPS_IPK_DIR)/opt/bin
+# Binaries should be installed into $(CLIPS_IPK_DIR)$(TARGET_PREFIX)/sbin or $(CLIPS_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(CLIPS_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(CLIPS_IPK_DIR)/opt/etc/clips/...
-# Documentation files should be installed in $(CLIPS_IPK_DIR)/opt/doc/clips/...
-# Daemon startup scripts should be installed in $(CLIPS_IPK_DIR)/opt/etc/init.d/S??clips
+# Libraries and include files should be installed into $(CLIPS_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(CLIPS_IPK_DIR)$(TARGET_PREFIX)/etc/clips/...
+# Documentation files should be installed in $(CLIPS_IPK_DIR)$(TARGET_PREFIX)/doc/clips/...
+# Daemon startup scripts should be installed in $(CLIPS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??clips
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -201,17 +201,17 @@ $(CLIPS_IPK) $(CLIPS-DEV_IPK): $(CLIPS_BUILD_DIR)/.built
 	rm -rf $(CLIPS_IPK_DIR) $(BUILD_DIR)/clips_*_$(TARGET_ARCH).ipk
 	$(TARGET_CONFIGURE_OPTS) \
 	$(MAKE) -C $(CLIPS_BUILD_DIR)/clipssrc DESTDIR=$(CLIPS_IPK_DIR) install
-	cd $(CLIPS_IPK_DIR)/opt/lib && \
+	cd $(CLIPS_IPK_DIR)$(TARGET_PREFIX)/lib && \
 	mv libclips.so libclips.so.$(CLIPS_VERSION) && \
 	ln -s libclips.so.$(CLIPS_VERSION) libclips.so.6 && \
 	ln -s libclips.so.6 libclips.so
-	$(INSTALL) -d $(CLIPS_IPK_DIR)/opt/share/doc/clips
-	$(INSTALL) $(CLIPS_BUILD_DIR)/clips.hlp $(CLIPS_IPK_DIR)/opt/share/doc/clips/
+	$(INSTALL) -d $(CLIPS_IPK_DIR)$(TARGET_PREFIX)/share/doc/clips
+	$(INSTALL) $(CLIPS_BUILD_DIR)/clips.hlp $(CLIPS_IPK_DIR)$(TARGET_PREFIX)/share/doc/clips/
 	$(MAKE) $(CLIPS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CLIPS_IPK_DIR)
 	# header files
-	$(INSTALL) -d $(CLIPS-DEV_IPK_DIR)/opt/include/clips
-	$(INSTALL) $(CLIPS_BUILD_DIR)/clipssrc/*.h $(CLIPS-DEV_IPK_DIR)/opt/include/clips/
+	$(INSTALL) -d $(CLIPS-DEV_IPK_DIR)$(TARGET_PREFIX)/include/clips
+	$(INSTALL) $(CLIPS_BUILD_DIR)/clipssrc/*.h $(CLIPS-DEV_IPK_DIR)$(TARGET_PREFIX)/include/clips/
 	$(MAKE) $(CLIPS-DEV_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CLIPS-DEV_IPK_DIR)
 

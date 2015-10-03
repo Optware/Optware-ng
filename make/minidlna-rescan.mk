@@ -46,7 +46,7 @@ MINIDLNA_RESCAN_IPK_VERSION=2
 
 #
 # MINIDLNA_RESCAN_CONFFILES should be a list of user-editable files
-MINIDLNA_RESCAN_CONFFILES=/opt/etc/minidlna.conf /opt/etc/init.d/S98minidlna
+MINIDLNA_RESCAN_CONFFILES=$(TARGET_PREFIX)/etc/minidlna.conf $(TARGET_PREFIX)/etc/init.d/S98minidlna
 
 #
 # MINIDLNA_RESCAN_PATCHES should list any patches, in the the order in
@@ -156,10 +156,10 @@ endif
 	if ! $(TARGET_CC) -E sources/common/test_sendfile.c >/dev/null 2>&1; then \
 		sed -i -e 's/-D_FILE_OFFSET_BITS=64 //' $(@D)/nothumbs/Makefile; \
 	fi
-	sed -i -e 's|-rpath -Wl,[^ \t]*|-rpath -Wl,/opt/lib|g' $(@D)/nothumbs/Makefile
+	sed -i -e 's|-rpath -Wl,[^ \t]*|-rpath -Wl,$(TARGET_PREFIX)/lib|g' $(@D)/nothumbs/Makefile
 	sed -i.orig \
-		 -e 's|/etc/|/opt&|' \
-		 -e 's|/usr/|/opt/|' \
+		 -e 's|/etc/|$(TARGET_PREFIX)&|' \
+		 -e 's|/usr/|$(TARGET_PREFIX)/|' \
 		$(@D)/nothumbs/minidlna.c
 	### configure version with thumbnails
 	sed -i -e '/^AM_SILENT_RULES/s/^/dnl /' $(@D)/thumbs/configure.ac
@@ -182,10 +182,10 @@ endif
 	if ! $(TARGET_CC) -E sources/common/test_sendfile.c >/dev/null 2>&1; then \
 		sed -i -e 's/-D_FILE_OFFSET_BITS=64 //' $(@D)/thumbs/Makefile; \
 	fi
-	sed -i -e 's|-rpath -Wl,[^ \t]*|-rpath -Wl,/opt/lib|g' $(@D)/thumbs/Makefile
+	sed -i -e 's|-rpath -Wl,[^ \t]*|-rpath -Wl,$(TARGET_PREFIX)/lib|g' $(@D)/thumbs/Makefile
 	sed -i.orig \
-		 -e 's|/etc/|/opt&|' \
-		 -e 's|/usr/|/opt/|' \
+		 -e 's|/etc/|$(TARGET_PREFIX)&|' \
+		 -e 's|/usr/|$(TARGET_PREFIX)/|' \
 		$(@D)/thumbs/minidlna.c
 	touch $@
 
@@ -268,12 +268,12 @@ endif
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(MINIDLNA_RESCAN_IPK_DIR)/opt/sbin or $(MINIDLNA_RESCAN_IPK_DIR)/opt/bin
+# Binaries should be installed into $(MINIDLNA_RESCAN_IPK_DIR)$(TARGET_PREFIX)/sbin or $(MINIDLNA_RESCAN_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(MINIDLNA_RESCAN_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(MINIDLNA_RESCAN_IPK_DIR)/opt/etc/minidlna-rescan/...
-# Documentation files should be installed in $(MINIDLNA_RESCAN_IPK_DIR)/opt/doc/minidlna-rescan/...
-# Daemon startup scripts should be installed in $(MINIDLNA_RESCAN_IPK_DIR)/opt/etc/init.d/S??minidlna-rescan
+# Libraries and include files should be installed into $(MINIDLNA_RESCAN_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(MINIDLNA_RESCAN_IPK_DIR)$(TARGET_PREFIX)/etc/minidlna-rescan/...
+# Documentation files should be installed in $(MINIDLNA_RESCAN_IPK_DIR)$(TARGET_PREFIX)/doc/minidlna-rescan/...
+# Daemon startup scripts should be installed in $(MINIDLNA_RESCAN_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??minidlna-rescan
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -283,12 +283,12 @@ $(MINIDLNA_RESCAN_IPK): $(MINIDLNA_RESCAN_BUILD_DIR)/.built
 		DESTDIR=$(MINIDLNA_RESCAN_IPK_DIR) \
 		PREFIX=$(MINIDLNA_RESCAN_IPK_DIR) \
 		INSTALLPREFIX=$(MINIDLNA_RESCAN_IPK_DIR)$(TARGET_PREFIX) \
-		ETCINSTALLDIR=$(MINIDLNA_RESCAN_IPK_DIR)/opt/etc \
+		ETCINSTALLDIR=$(MINIDLNA_RESCAN_IPK_DIR)$(TARGET_PREFIX)/etc \
 		;
-	$(STRIP_COMMAND) $(MINIDLNA_RESCAN_IPK_DIR)/opt/sbin/*
-	$(INSTALL) -d $(MINIDLNA_RESCAN_IPK_DIR)/opt/etc/init.d $(MINIDLNA_RESCAN_IPK_DIR)/opt/etc/minidlna-rescan
-	$(INSTALL) -m 644 $(MINIDLNA_RESCAN_SOURCE_DIR)/minidlna.conf $(MINIDLNA_RESCAN_IPK_DIR)/opt/etc/minidlna.conf
-	$(INSTALL) -m 755 $(MINIDLNA_RESCAN_SOURCE_DIR)/rc.minidlna-rescan $(MINIDLNA_RESCAN_IPK_DIR)/opt/etc/init.d/S98minidlna
+	$(STRIP_COMMAND) $(MINIDLNA_RESCAN_IPK_DIR)$(TARGET_PREFIX)/sbin/*
+	$(INSTALL) -d $(MINIDLNA_RESCAN_IPK_DIR)$(TARGET_PREFIX)/etc/init.d $(MINIDLNA_RESCAN_IPK_DIR)$(TARGET_PREFIX)/etc/minidlna-rescan
+	$(INSTALL) -m 644 $(MINIDLNA_RESCAN_SOURCE_DIR)/minidlna.conf $(MINIDLNA_RESCAN_IPK_DIR)$(TARGET_PREFIX)/etc/minidlna.conf
+	$(INSTALL) -m 755 $(MINIDLNA_RESCAN_SOURCE_DIR)/rc.minidlna-rescan $(MINIDLNA_RESCAN_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S98minidlna
 	$(MAKE) $(MINIDLNA_RESCAN_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(MINIDLNA_RESCAN_SOURCE_DIR)/postinst $(MINIDLNA_RESCAN_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 755 $(MINIDLNA_RESCAN_SOURCE_DIR)/prerm $(MINIDLNA_RESCAN_IPK_DIR)/CONTROL/prerm
@@ -301,12 +301,12 @@ $(MINIDLNA_RESCAN_THUMBNAIL_IPK): $(MINIDLNA_RESCAN_BUILD_DIR)/.built
 		DESTDIR=$(MINIDLNA_RESCAN_THUMBNAIL_IPK_DIR) \
 		PREFIX=$(MINIDLNA_RESCAN_THUMBNAIL_IPK_DIR) \
 		INSTALLPREFIX=$(MINIDLNA_RESCAN_THUMBNAIL_IPK_DIR)$(TARGET_PREFIX) \
-		ETCINSTALLDIR=$(MINIDLNA_RESCAN_THUMBNAIL_IPK_DIR)/opt/etc \
+		ETCINSTALLDIR=$(MINIDLNA_RESCAN_THUMBNAIL_IPK_DIR)$(TARGET_PREFIX)/etc \
 		;
-	$(STRIP_COMMAND) $(MINIDLNA_RESCAN_THUMBNAIL_IPK_DIR)/opt/sbin/*
-	$(INSTALL) -d $(MINIDLNA_RESCAN_THUMBNAIL_IPK_DIR)/opt/etc/init.d
-	$(INSTALL) -m 644 $(MINIDLNA_RESCAN_SOURCE_DIR)/minidlna.thumbs.conf $(MINIDLNA_RESCAN_THUMBNAIL_IPK_DIR)/opt/etc/minidlna.conf
-	$(INSTALL) -m 755 $(MINIDLNA_RESCAN_SOURCE_DIR)/rc.minidlna-rescan $(MINIDLNA_RESCAN_THUMBNAIL_IPK_DIR)/opt/etc/init.d/S98minidlna
+	$(STRIP_COMMAND) $(MINIDLNA_RESCAN_THUMBNAIL_IPK_DIR)$(TARGET_PREFIX)/sbin/*
+	$(INSTALL) -d $(MINIDLNA_RESCAN_THUMBNAIL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(INSTALL) -m 644 $(MINIDLNA_RESCAN_SOURCE_DIR)/minidlna.thumbs.conf $(MINIDLNA_RESCAN_THUMBNAIL_IPK_DIR)$(TARGET_PREFIX)/etc/minidlna.conf
+	$(INSTALL) -m 755 $(MINIDLNA_RESCAN_SOURCE_DIR)/rc.minidlna-rescan $(MINIDLNA_RESCAN_THUMBNAIL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S98minidlna
 	$(MAKE) $(MINIDLNA_RESCAN_THUMBNAIL_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(MINIDLNA_RESCAN_SOURCE_DIR)/postinst $(MINIDLNA_RESCAN_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 755 $(MINIDLNA_RESCAN_SOURCE_DIR)/prerm $(MINIDLNA_RESCAN_IPK_DIR)/CONTROL/prerm

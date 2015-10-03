@@ -41,7 +41,7 @@ PICOCOM_IPK_VERSION=1
 
 #
 # PICOCOM_CONFFILES should be a list of user-editable files
-#PICOCOM_CONFFILES=/opt/etc/picocom.conf /opt/etc/init.d/SXXpicocom
+#PICOCOM_CONFFILES=$(TARGET_PREFIX)/etc/picocom.conf $(TARGET_PREFIX)/etc/init.d/SXXpicocom
 
 #
 # PICOCOM_PATCHES should list any patches, in the the order in
@@ -53,7 +53,7 @@ PICOCOM_IPK_VERSION=1
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-PICOCOM_CPPFLAGS=-DVERSION_STR=\\\"$(PICOCOM_VERSION)\\\" -DUUCP_LOCK_DIR=\\\"/opt/var/lock\\\"
+PICOCOM_CPPFLAGS=-DVERSION_STR=\\\"$(PICOCOM_VERSION)\\\" -DUUCP_LOCK_DIR=\\\"$(TARGET_PREFIX)/var/lock\\\"
 ifneq (, $(filter -DPATH_MAX=4096, $(STAGING_CPPFLAGS)))
 PICOCOM_CPPFLAGS+= -D_POSIX_PATH_MAX=4096
 endif
@@ -183,29 +183,29 @@ $(PICOCOM_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PICOCOM_IPK_DIR)/opt/sbin or $(PICOCOM_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PICOCOM_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PICOCOM_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PICOCOM_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PICOCOM_IPK_DIR)/opt/etc/picocom/...
-# Documentation files should be installed in $(PICOCOM_IPK_DIR)/opt/doc/picocom/...
-# Daemon startup scripts should be installed in $(PICOCOM_IPK_DIR)/opt/etc/init.d/S??picocom
+# Libraries and include files should be installed into $(PICOCOM_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PICOCOM_IPK_DIR)$(TARGET_PREFIX)/etc/picocom/...
+# Documentation files should be installed in $(PICOCOM_IPK_DIR)$(TARGET_PREFIX)/doc/picocom/...
+# Daemon startup scripts should be installed in $(PICOCOM_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??picocom
 #
 # You may need to patch your application to make it use these locations.
 #
 $(PICOCOM_IPK): $(PICOCOM_BUILD_DIR)/.built
 	rm -rf $(PICOCOM_IPK_DIR) $(BUILD_DIR)/picocom_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(PICOCOM_BUILD_DIR) DESTDIR=$(PICOCOM_IPK_DIR) install-strip
-	$(INSTALL) -d $(PICOCOM_IPK_DIR)/opt/bin $(PICOCOM_IPK_DIR)/opt/share/doc/picocom $(PICOCOM_IPK_DIR)/opt/share/man/man8
-	$(INSTALL) -m 755 $(PICOCOM_BUILD_DIR)/picocom $(PICOCOM_IPK_DIR)/opt/bin/
-	$(STRIP_COMMAND) $(PICOCOM_IPK_DIR)/opt/bin/picocom
-	$(INSTALL) -m 755 $(PICOCOM_BUILD_DIR)/pc* $(PICOCOM_IPK_DIR)/opt/bin/
-	$(INSTALL) -m 644 $(PICOCOM_BUILD_DIR)/picocom.8 $(PICOCOM_IPK_DIR)/opt/share/man/man8/
+	$(INSTALL) -d $(PICOCOM_IPK_DIR)$(TARGET_PREFIX)/bin $(PICOCOM_IPK_DIR)$(TARGET_PREFIX)/share/doc/picocom $(PICOCOM_IPK_DIR)$(TARGET_PREFIX)/share/man/man8
+	$(INSTALL) -m 755 $(PICOCOM_BUILD_DIR)/picocom $(PICOCOM_IPK_DIR)$(TARGET_PREFIX)/bin/
+	$(STRIP_COMMAND) $(PICOCOM_IPK_DIR)$(TARGET_PREFIX)/bin/picocom
+	$(INSTALL) -m 755 $(PICOCOM_BUILD_DIR)/pc* $(PICOCOM_IPK_DIR)$(TARGET_PREFIX)/bin/
+	$(INSTALL) -m 644 $(PICOCOM_BUILD_DIR)/picocom.8 $(PICOCOM_IPK_DIR)$(TARGET_PREFIX)/share/man/man8/
 	$(INSTALL) -m 644 $(PICOCOM_BUILD_DIR)/picocom.8.html $(PICOCOM_BUILD_DIR)/picocom.8.ps \
-		$(PICOCOM_IPK_DIR)/opt/share/doc/picocom/
-#	$(INSTALL) -m 644 $(PICOCOM_SOURCE_DIR)/picocom.conf $(PICOCOM_IPK_DIR)/opt/etc/picocom.conf
-#	$(INSTALL) -d $(PICOCOM_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(PICOCOM_SOURCE_DIR)/rc.picocom $(PICOCOM_IPK_DIR)/opt/etc/init.d/SXXpicocom
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/opt/etc/init.d/SXXpicocom
+		$(PICOCOM_IPK_DIR)$(TARGET_PREFIX)/share/doc/picocom/
+#	$(INSTALL) -m 644 $(PICOCOM_SOURCE_DIR)/picocom.conf $(PICOCOM_IPK_DIR)$(TARGET_PREFIX)/etc/picocom.conf
+#	$(INSTALL) -d $(PICOCOM_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(PICOCOM_SOURCE_DIR)/rc.picocom $(PICOCOM_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXpicocom
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXpicocom
 	$(MAKE) $(PICOCOM_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(PICOCOM_SOURCE_DIR)/postinst $(PICOCOM_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/postinst

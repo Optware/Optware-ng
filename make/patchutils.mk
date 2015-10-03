@@ -40,7 +40,7 @@ PATCHUTILS_IPK_VERSION=1
 
 #
 # PATCHUTILS_CONFFILES should be a list of user-editable files
-#PATCHUTILS_CONFFILES=/opt/etc/patchutils.conf /opt/etc/init.d/SXXpatchutils
+#PATCHUTILS_CONFFILES=$(TARGET_PREFIX)/etc/patchutils.conf $(TARGET_PREFIX)/etc/init.d/SXXpatchutils
 
 #
 # PATCHUTILS_PATCHES should list any patches, in the the order in
@@ -177,12 +177,12 @@ $(PATCHUTILS_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PATCHUTILS_IPK_DIR)/opt/sbin or $(PATCHUTILS_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PATCHUTILS_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PATCHUTILS_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PATCHUTILS_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PATCHUTILS_IPK_DIR)/opt/etc/patchutils/...
-# Documentation files should be installed in $(PATCHUTILS_IPK_DIR)/opt/doc/patchutils/...
-# Daemon startup scripts should be installed in $(PATCHUTILS_IPK_DIR)/opt/etc/init.d/S??patchutils
+# Libraries and include files should be installed into $(PATCHUTILS_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PATCHUTILS_IPK_DIR)$(TARGET_PREFIX)/etc/patchutils/...
+# Documentation files should be installed in $(PATCHUTILS_IPK_DIR)$(TARGET_PREFIX)/doc/patchutils/...
+# Daemon startup scripts should be installed in $(PATCHUTILS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??patchutils
 #
 # You may need to patch your application to make it use these locations.
 #

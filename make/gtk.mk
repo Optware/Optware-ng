@@ -44,7 +44,7 @@ GTK_LOCALES=
 
 #
 # GTK_CONFFILES should be a list of user-editable files
-#GTK_CONFFILES=/opt/etc/gtk.conf /opt/etc/init.d/SXXgtk
+#GTK_CONFFILES=$(TARGET_PREFIX)/etc/gtk.conf $(TARGET_PREFIX)/etc/init.d/SXXgtk
 
 #
 # GTK_PATCHES should list any patches, in the the order in
@@ -227,7 +227,7 @@ $(GTK_BUILD_DIR)/.staged: $(GTK_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(GTK_BUILD_DIR) install prefix=$(STAGING_PREFIX)
 	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' \
-		-e 's|-I/opt/include|-I$(STAGING_INCLUDE_DIR)|g' \
+		-e 's|-I$(TARGET_PREFIX)/include|-I$(STAGING_INCLUDE_DIR)|g' \
 		$(STAGING_LIB_DIR)/pkgconfig/g[dt]k*.pc \
 		$(STAGING_LIB_DIR)/pkgconfig/gail-*.pc
 	rm -f $(addprefix $(STAGING_LIB_DIR)/, libgailutil-3.la libgdk-3.la libgtk-3.la)
@@ -239,12 +239,12 @@ gtk-stage: $(GTK_BUILD_DIR)/.staged
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(GTK_IPK_DIR)/opt/sbin or $(GTK_IPK_DIR)/opt/bin
+# Binaries should be installed into $(GTK_IPK_DIR)$(TARGET_PREFIX)/sbin or $(GTK_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(GTK_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(GTK_IPK_DIR)/opt/etc/gtk/...
-# Documentation files should be installed in $(GTK_IPK_DIR)/opt/doc/gtk/...
-# Daemon startup scripts should be installed in $(GTK_IPK_DIR)/opt/etc/init.d/S??gtk
+# Libraries and include files should be installed into $(GTK_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(GTK_IPK_DIR)$(TARGET_PREFIX)/etc/gtk/...
+# Documentation files should be installed in $(GTK_IPK_DIR)$(TARGET_PREFIX)/doc/gtk/...
+# Daemon startup scripts should be installed in $(GTK_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??gtk
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -255,21 +255,21 @@ $(GTK_IPK) $(GTK_DOC_IPK) $(GTK_PRINT_IPK): $(GTK_BUILD_DIR)/.built
 		$(BUILD_DIR)/gtk-print_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GTK_BUILD_DIR) DESTDIR=$(GTK_IPK_DIR) install-strip
 	### make gtk-doc-ipk
-	$(INSTALL) -d $(GTK_DOC_IPK_DIR)/opt/share
-	mv -f $(GTK_IPK_DIR)/opt/share/gtk-doc $(GTK_DOC_IPK_DIR)/opt/share/
+	$(INSTALL) -d $(GTK_DOC_IPK_DIR)$(TARGET_PREFIX)/share
+	mv -f $(GTK_IPK_DIR)$(TARGET_PREFIX)/share/gtk-doc $(GTK_DOC_IPK_DIR)$(TARGET_PREFIX)/share/
 	$(MAKE) $(GTK_DOC_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GTK_DOC_IPK_DIR)
 	### make gtk-print-ipk
 	find $(GTK_IPK_DIR) -type f -name *.la -exec rm -f {} \;
-	$(INSTALL) -d $(GTK_PRINT_IPK_DIR)/opt/include/gtk-3.0 \
-		$(GTK_PRINT_IPK_DIR)/opt/lib/gtk-3.0/3.0.0 \
-		$(GTK_PRINT_IPK_DIR)/opt/lib/pkgconfig
-	mv -f $(GTK_IPK_DIR)/opt/include/gtk-3.0/unix-print \
-		$(GTK_PRINT_IPK_DIR)/opt/include/gtk-3.0/
-	mv -f $(GTK_IPK_DIR)/opt/lib/gtk-3.0/3.0.0/printbackends \
-		$(GTK_PRINT_IPK_DIR)/opt/lib/gtk-3.0/3.0.0/
-	mv -f $(GTK_IPK_DIR)/opt/lib/pkgconfig/gtk+-unix-print-3.0.pc \
-		$(GTK_PRINT_IPK_DIR)/opt/lib/pkgconfig/
+	$(INSTALL) -d $(GTK_PRINT_IPK_DIR)$(TARGET_PREFIX)/include/gtk-3.0 \
+		$(GTK_PRINT_IPK_DIR)$(TARGET_PREFIX)/lib/gtk-3.0/3.0.0 \
+		$(GTK_PRINT_IPK_DIR)$(TARGET_PREFIX)/lib/pkgconfig
+	mv -f $(GTK_IPK_DIR)$(TARGET_PREFIX)/include/gtk-3.0/unix-print \
+		$(GTK_PRINT_IPK_DIR)$(TARGET_PREFIX)/include/gtk-3.0/
+	mv -f $(GTK_IPK_DIR)$(TARGET_PREFIX)/lib/gtk-3.0/3.0.0/printbackends \
+		$(GTK_PRINT_IPK_DIR)$(TARGET_PREFIX)/lib/gtk-3.0/3.0.0/
+	mv -f $(GTK_IPK_DIR)$(TARGET_PREFIX)/lib/pkgconfig/gtk+-unix-print-3.0.pc \
+		$(GTK_PRINT_IPK_DIR)$(TARGET_PREFIX)/lib/pkgconfig/
 	$(MAKE) $(GTK_PRINT_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GTK_PRINT_IPK_DIR)
 	### make gtk-ipk

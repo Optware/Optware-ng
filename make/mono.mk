@@ -40,7 +40,7 @@ MONO_IPK_VERSION=1
 
 #
 # MONO_CONFFILES should be a list of user-editable files
-#MONO_CONFFILES=/opt/etc/mono.conf /opt/etc/init.d/SXXmono
+#MONO_CONFFILES=$(TARGET_PREFIX)/etc/mono.conf $(TARGET_PREFIX)/etc/init.d/SXXmono
 
 #
 # MONO_PATCHES should list any patches, in the the order in
@@ -220,12 +220,12 @@ $(MONO_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(MONO_IPK_DIR)/opt/sbin or $(MONO_IPK_DIR)/opt/bin
+# Binaries should be installed into $(MONO_IPK_DIR)$(TARGET_PREFIX)/sbin or $(MONO_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(MONO_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(MONO_IPK_DIR)/opt/etc/mono/...
-# Documentation files should be installed in $(MONO_IPK_DIR)/opt/doc/mono/...
-# Daemon startup scripts should be installed in $(MONO_IPK_DIR)/opt/etc/init.d/S??mono
+# Libraries and include files should be installed into $(MONO_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(MONO_IPK_DIR)$(TARGET_PREFIX)/etc/mono/...
+# Documentation files should be installed in $(MONO_IPK_DIR)$(TARGET_PREFIX)/doc/mono/...
+# Daemon startup scripts should be installed in $(MONO_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??mono
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -236,9 +236,9 @@ ifneq ($(HOSTCC), $(TARGET_CC))
 endif
 	$(MAKE) -C $(MONO_BUILD_DIR) DESTDIR=$(MONO_IPK_DIR) transform='' install-strip
 ifneq ($(HOSTCC), $(TARGET_CC))
-	rm -f $(MONO_IPK_DIR)/opt/bin/jay
+	rm -f $(MONO_IPK_DIR)$(TARGET_PREFIX)/bin/jay
 endif
-	cd $(MONO_IPK_DIR)/opt/lib/mono && \
+	cd $(MONO_IPK_DIR)$(TARGET_PREFIX)/lib/mono && \
 	tar --remove-files -cvzf long-symlinks.tar.gz \
 		`find . -type l -ls | awk '{ if (length($$13) > 100) { print $$11}}'`
 	$(MAKE) $(MONO_IPK_DIR)/CONTROL/control

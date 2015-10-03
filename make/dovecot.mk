@@ -48,9 +48,9 @@ DOVECOT_IPK_VERSION=2
 #
 # DOVECOT_CONFFILES should be a list of user-editable files
 DOVECOT_CONFFILES= \
-	/opt/etc/dovecot/dovecot.conf \
-	/opt/etc/dovecot/dovecot-openssl.cnf \
-	/opt/etc/init.d/S90dovecot
+	$(TARGET_PREFIX)/etc/dovecot/dovecot.conf \
+	$(TARGET_PREFIX)/etc/dovecot/dovecot-openssl.cnf \
+	$(TARGET_PREFIX)/etc/init.d/S90dovecot
 
 #
 # DOVECOT_PATCHES should list any patches, in the the order in
@@ -153,9 +153,9 @@ $(DOVECOT_BUILD_DIR)/.configured: $(DL_DIR)/$(DOVECOT_SOURCE) $(DOVECOT_PATCHES)
 		--without-gssapi \
 		--without-pam \
 		--with-notify=dnotify \
-		--sysconfdir=/opt/etc/dovecot \
-		--localstatedir=/opt/var \
-		--with-ssldir=/opt/etc/dovecot \
+		--sysconfdir=$(TARGET_PREFIX)/etc/dovecot \
+		--localstatedir=$(TARGET_PREFIX)/var \
+		--with-ssldir=$(TARGET_PREFIX)/etc/dovecot \
 		--without-sql-drivers \
 		--with-ioloop=poll; \
 	)
@@ -224,38 +224,38 @@ $(DOVECOT_DOC_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(DOVECOT_IPK_DIR)/opt/sbin or $(DOVECOT_IPK_DIR)/opt/bin
+# Binaries should be installed into $(DOVECOT_IPK_DIR)$(TARGET_PREFIX)/sbin or $(DOVECOT_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(DOVECOT_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(DOVECOT_IPK_DIR)/opt/etc/dovecot/...
-# Documentation files should be installed in $(DOVECOT_IPK_DIR)/opt/doc/dovecot/...
-# Daemon startup scripts should be installed in $(DOVECOT_IPK_DIR)/opt/etc/init.d/S??dovecot
+# Libraries and include files should be installed into $(DOVECOT_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(DOVECOT_IPK_DIR)$(TARGET_PREFIX)/etc/dovecot/...
+# Documentation files should be installed in $(DOVECOT_IPK_DIR)$(TARGET_PREFIX)/doc/dovecot/...
+# Daemon startup scripts should be installed in $(DOVECOT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??dovecot
 #
 # You may need to patch your application to make it use these locations.
 #
 $(DOVECOT_IPK): $(DOVECOT_BUILD_DIR)/.built
 	rm -rf $(DOVECOT_IPK_DIR) $(BUILD_DIR)/dovecot_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(DOVECOT_BUILD_DIR) DESTDIR=$(DOVECOT_IPK_DIR) install-strip
-	$(INSTALL) -d $(DOVECOT_IPK_DIR)/opt/etc/dovecot
-	$(INSTALL) -m 644 $(DOVECOT_SOURCE_DIR)/dovecot.conf $(DOVECOT_IPK_DIR)/opt/etc/dovecot/
-	$(INSTALL) -m 644 $(DOVECOT_BUILD_DIR)/doc/dovecot-openssl.cnf $(DOVECOT_IPK_DIR)/opt/etc/dovecot/
-	$(INSTALL) -m 755 $(DOVECOT_BUILD_DIR)/doc/mkcert.sh $(DOVECOT_IPK_DIR)/opt/etc/dovecot/
-	$(INSTALL) -m 700 -d $(DOVECOT_IPK_DIR)/opt/var/run/dovecot
-	$(INSTALL) -d $(DOVECOT_IPK_DIR)/opt/etc/init.d
-	$(INSTALL) -m 755 $(DOVECOT_SOURCE_DIR)/rc.dovecot $(DOVECOT_IPK_DIR)/opt/etc/init.d/S90dovecot
+	$(INSTALL) -d $(DOVECOT_IPK_DIR)$(TARGET_PREFIX)/etc/dovecot
+	$(INSTALL) -m 644 $(DOVECOT_SOURCE_DIR)/dovecot.conf $(DOVECOT_IPK_DIR)$(TARGET_PREFIX)/etc/dovecot/
+	$(INSTALL) -m 644 $(DOVECOT_BUILD_DIR)/doc/dovecot-openssl.cnf $(DOVECOT_IPK_DIR)$(TARGET_PREFIX)/etc/dovecot/
+	$(INSTALL) -m 755 $(DOVECOT_BUILD_DIR)/doc/mkcert.sh $(DOVECOT_IPK_DIR)$(TARGET_PREFIX)/etc/dovecot/
+	$(INSTALL) -m 700 -d $(DOVECOT_IPK_DIR)$(TARGET_PREFIX)/var/run/dovecot
+	$(INSTALL) -d $(DOVECOT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(INSTALL) -m 755 $(DOVECOT_SOURCE_DIR)/rc.dovecot $(DOVECOT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S90dovecot
 	$(MAKE) $(DOVECOT_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 755 $(DOVECOT_SOURCE_DIR)/postinst $(DOVECOT_IPK_DIR)/CONTROL/postinst
 	$(INSTALL) -m 755 $(DOVECOT_SOURCE_DIR)/prerm $(DOVECOT_IPK_DIR)/CONTROL/prerm
 	echo $(DOVECOT_CONFFILES) | sed -e 's/ /\n/g' > $(DOVECOT_IPK_DIR)/CONTROL/conffiles
-	rm -rf $(DOVECOT_IPK_DIR)/opt/share/doc/dovecot
+	rm -rf $(DOVECOT_IPK_DIR)$(TARGET_PREFIX)/share/doc/dovecot
 	echo $(DOVECOT_CONFFILES) | sed -e 's/ /\n/g' > $(DOVECOT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(DOVECOT_IPK_DIR)
 
 $(DOVECOT_DOC_IPK): $(DOVECOT_BUILD_DIR)/.built
 	rm -rf $(DOVECOT_DOC_IPK_DIR) $(BUILD_DIR)/dovecot-doc_*_$(TARGET_ARCH).ipk
-	mkdir -p $(DOVECOT_DOC_IPK_DIR)/opt/share/doc/dovecot
+	mkdir -p $(DOVECOT_DOC_IPK_DIR)$(TARGET_PREFIX)/share/doc/dovecot
 	$(MAKE) $(DOVECOT_DOC_IPK_DIR)/CONTROL/control
-	cp -r $(DOVECOT_BUILD_DIR)/doc/ $(DOVECOT_DOC_IPK_DIR)/opt/share/doc/dovecot
+	cp -r $(DOVECOT_BUILD_DIR)/doc/ $(DOVECOT_DOC_IPK_DIR)$(TARGET_PREFIX)/share/doc/dovecot
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(DOVECOT_DOC_IPK_DIR)
 
 #

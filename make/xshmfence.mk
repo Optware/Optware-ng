@@ -150,12 +150,12 @@ xshmfence-stage: $(XSHMFENCE_BUILD_DIR)/.staged
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(XSHMFENCE_IPK_DIR)/opt/sbin or $(XSHMFENCE_IPK_DIR)/opt/bin
+# Binaries should be installed into $(XSHMFENCE_IPK_DIR)$(TARGET_PREFIX)/sbin or $(XSHMFENCE_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(XSHMFENCE_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(XSHMFENCE_IPK_DIR)/opt/etc/xshmfence/...
-# Documentation files should be installed in $(XSHMFENCE_IPK_DIR)/opt/doc/xshmfence/...
-# Daemon startup scripts should be installed in $(XSHMFENCE_IPK_DIR)/opt/etc/init.d/S??xshmfence
+# Libraries and include files should be installed into $(XSHMFENCE_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(XSHMFENCE_IPK_DIR)$(TARGET_PREFIX)/etc/xshmfence/...
+# Documentation files should be installed in $(XSHMFENCE_IPK_DIR)$(TARGET_PREFIX)/doc/xshmfence/...
+# Daemon startup scripts should be installed in $(XSHMFENCE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??xshmfence
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -164,7 +164,7 @@ $(XSHMFENCE_IPK): $(XSHMFENCE_BUILD_DIR)/.built
 	$(MAKE) -C $(XSHMFENCE_BUILD_DIR) DESTDIR=$(XSHMFENCE_IPK_DIR) install-strip
 	$(MAKE) $(XSHMFENCE_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 644 $(XSHMFENCE_SOURCE_DIR)/postinst $(XSHMFENCE_IPK_DIR)/CONTROL/postinst
-	rm -f $(XSHMFENCE_IPK_DIR)/opt/lib/*.la
+	rm -f $(XSHMFENCE_IPK_DIR)$(TARGET_PREFIX)/lib/*.la
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XSHMFENCE_IPK_DIR)
 
 #

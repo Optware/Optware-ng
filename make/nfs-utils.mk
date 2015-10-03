@@ -153,29 +153,29 @@ $(NFS-UTILS_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(NFS-UTILS_IPK_DIR)/opt/sbin or $(NFS-UTILS_IPK_DIR)/opt/bin
+# Binaries should be installed into $(NFS-UTILS_IPK_DIR)$(TARGET_PREFIX)/sbin or $(NFS-UTILS_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(NFS-UTILS_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(NFS-UTILS_IPK_DIR)/opt/etc/nfs-utils/...
-# Documentation files should be installed in $(NFS-UTILS_IPK_DIR)/opt/doc/nfs-utils/...
-# Daemon startup scripts should be installed in $(NFS-UTILS_IPK_DIR)/opt/etc/init.d/S??nfs-utils
+# Libraries and include files should be installed into $(NFS-UTILS_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(NFS-UTILS_IPK_DIR)$(TARGET_PREFIX)/etc/nfs-utils/...
+# Documentation files should be installed in $(NFS-UTILS_IPK_DIR)$(TARGET_PREFIX)/doc/nfs-utils/...
+# Daemon startup scripts should be installed in $(NFS-UTILS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??nfs-utils
 #
 # You may need to patch your application to make it use these locations.
 #
 $(NFS-UTILS_IPK): $(NFS-UTILS_BUILD_DIR)/.built
 	rm -rf $(NFS-UTILS_IPK_DIR) $(BUILD_DIR)/nfs-utils_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(NFS-UTILS_IPK_DIR)/opt/sbin
-	$(STRIP_COMMAND) $(NFS-UTILS_BUILD_DIR)/utils/nfsd/nfsd -o $(NFS-UTILS_IPK_DIR)/opt/sbin/nfsd
-	$(STRIP_COMMAND) $(NFS-UTILS_BUILD_DIR)/utils/mountd/mountd -o $(NFS-UTILS_IPK_DIR)/opt/sbin/mountd
-	$(STRIP_COMMAND) $(NFS-UTILS_BUILD_DIR)/utils/mount/mount.nfs -o $(NFS-UTILS_IPK_DIR)/opt/sbin/mount.nfs
-	$(STRIP_COMMAND) $(NFS-UTILS_BUILD_DIR)/utils/statd/statd -o $(NFS-UTILS_IPK_DIR)/opt/sbin/statd
-	$(STRIP_COMMAND) $(NFS-UTILS_BUILD_DIR)/utils/exportfs/exportfs -o $(NFS-UTILS_IPK_DIR)/opt/sbin/exportfs
-	$(STRIP_COMMAND) $(NFS-UTILS_BUILD_DIR)/utils/showmount/showmount -o $(NFS-UTILS_IPK_DIR)/opt/sbin/showmount
-	$(STRIP_COMMAND) $(NFS-UTILS_BUILD_DIR)/utils/nfsstat/nfsstat -o $(NFS-UTILS_IPK_DIR)/opt/sbin/nfsstat
-	$(INSTALL) -d $(NFS-UTILS_IPK_DIR)/opt/doc/nfs-utils
-	$(INSTALL) -m 644 $(NFS-UTILS_SOURCE_DIR)/exports $(NFS-UTILS_IPK_DIR)/opt/doc/nfs-utils/exports
-	$(INSTALL) -d $(NFS-UTILS_IPK_DIR)/opt/etc/init.d
-	$(INSTALL) -m 755 $(NFS-UTILS_SOURCE_DIR)/rc.nfs-utils $(NFS-UTILS_IPK_DIR)/opt/etc/init.d/S56nfs-utils
+	$(INSTALL) -d $(NFS-UTILS_IPK_DIR)$(TARGET_PREFIX)/sbin
+	$(STRIP_COMMAND) $(NFS-UTILS_BUILD_DIR)/utils/nfsd/nfsd -o $(NFS-UTILS_IPK_DIR)$(TARGET_PREFIX)/sbin/nfsd
+	$(STRIP_COMMAND) $(NFS-UTILS_BUILD_DIR)/utils/mountd/mountd -o $(NFS-UTILS_IPK_DIR)$(TARGET_PREFIX)/sbin/mountd
+	$(STRIP_COMMAND) $(NFS-UTILS_BUILD_DIR)/utils/mount/mount.nfs -o $(NFS-UTILS_IPK_DIR)$(TARGET_PREFIX)/sbin/mount.nfs
+	$(STRIP_COMMAND) $(NFS-UTILS_BUILD_DIR)/utils/statd/statd -o $(NFS-UTILS_IPK_DIR)$(TARGET_PREFIX)/sbin/statd
+	$(STRIP_COMMAND) $(NFS-UTILS_BUILD_DIR)/utils/exportfs/exportfs -o $(NFS-UTILS_IPK_DIR)$(TARGET_PREFIX)/sbin/exportfs
+	$(STRIP_COMMAND) $(NFS-UTILS_BUILD_DIR)/utils/showmount/showmount -o $(NFS-UTILS_IPK_DIR)$(TARGET_PREFIX)/sbin/showmount
+	$(STRIP_COMMAND) $(NFS-UTILS_BUILD_DIR)/utils/nfsstat/nfsstat -o $(NFS-UTILS_IPK_DIR)$(TARGET_PREFIX)/sbin/nfsstat
+	$(INSTALL) -d $(NFS-UTILS_IPK_DIR)$(TARGET_PREFIX)/doc/nfs-utils
+	$(INSTALL) -m 644 $(NFS-UTILS_SOURCE_DIR)/exports $(NFS-UTILS_IPK_DIR)$(TARGET_PREFIX)/doc/nfs-utils/exports
+	$(INSTALL) -d $(NFS-UTILS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(INSTALL) -m 755 $(NFS-UTILS_SOURCE_DIR)/rc.nfs-utils $(NFS-UTILS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S56nfs-utils
 	$(MAKE) $(NFS-UTILS_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 644 $(NFS-UTILS_SOURCE_DIR)/postinst $(NFS-UTILS_IPK_DIR)/CONTROL/postinst
 	$(INSTALL) -m 644 $(NFS-UTILS_SOURCE_DIR)/prerm $(NFS-UTILS_IPK_DIR)/CONTROL/prerm

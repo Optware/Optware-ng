@@ -168,19 +168,19 @@ $(SQLITE2_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(SQLITE2_IPK_DIR)/opt/sbin or $(SQLITE2_IPK_DIR)/opt/bin
+# Binaries should be installed into $(SQLITE2_IPK_DIR)$(TARGET_PREFIX)/sbin or $(SQLITE2_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(SQLITE2_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(SQLITE2_IPK_DIR)/opt/etc/sqlite2/...
-# Documentation files should be installed in $(SQLITE2_IPK_DIR)/opt/doc/sqlite2/...
-# Daemon startup scripts should be installed in $(SQLITE2_IPK_DIR)/opt/etc/init.d/S??sqlite2
+# Libraries and include files should be installed into $(SQLITE2_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(SQLITE2_IPK_DIR)$(TARGET_PREFIX)/etc/sqlite2/...
+# Documentation files should be installed in $(SQLITE2_IPK_DIR)$(TARGET_PREFIX)/doc/sqlite2/...
+# Daemon startup scripts should be installed in $(SQLITE2_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??sqlite2
 #
 # You may need to patch your application to make it use these locations.
 #
 $(SQLITE2_IPK): $(SQLITE2_BUILD_DIR)/.built
 	rm -rf $(SQLITE2_IPK_DIR) $(BUILD_DIR)/sqlite2_*_${TARGET_ARCH}.ipk
 	$(MAKE) -C $(SQLITE2_BUILD_DIR) DESTDIR=$(SQLITE2_IPK_DIR) install
-	$(STRIP_COMMAND) $(SQLITE2_IPK_DIR)/opt/bin/sqlite $(SQLITE2_IPK_DIR)/opt/lib/libsqlite.so.*.*.*
+	$(STRIP_COMMAND) $(SQLITE2_IPK_DIR)$(TARGET_PREFIX)/bin/sqlite $(SQLITE2_IPK_DIR)$(TARGET_PREFIX)/lib/libsqlite.so.*.*.*
 	$(MAKE) $(SQLITE2_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SQLITE2_IPK_DIR)
 

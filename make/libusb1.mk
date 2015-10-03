@@ -172,19 +172,19 @@ $(LIBUSB1_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LIBUSB1_IPK_DIR)/opt/sbin or $(LIBUSB1_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LIBUSB1_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LIBUSB1_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LIBUSB1_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LIBUSB1_IPK_DIR)/opt/etc/libusb1/...
-# Documentation files should be installed in $(LIBUSB1_IPK_DIR)/opt/doc/libusb1/...
-# Daemon startup scripts should be installed in $(LIBUSB1_IPK_DIR)/opt/etc/init.d/S??libusb1
+# Libraries and include files should be installed into $(LIBUSB1_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LIBUSB1_IPK_DIR)$(TARGET_PREFIX)/etc/libusb1/...
+# Documentation files should be installed in $(LIBUSB1_IPK_DIR)$(TARGET_PREFIX)/doc/libusb1/...
+# Daemon startup scripts should be installed in $(LIBUSB1_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??libusb1
 #
 # You may need to patch your application to make it use these locations.
 #
 $(LIBUSB1_IPK): $(LIBUSB1_BUILD_DIR)/.built
 	rm -rf $(LIBUSB1_IPK_DIR) $(LIBUSB1_IPK)
 	$(MAKE) -C $(LIBUSB1_BUILD_DIR) DESTDIR=$(LIBUSB1_IPK_DIR) install-strip
-	rm -rf $(LIBUSB1_IPK_DIR)/opt/lib/*.la $(LIBUSB1_IPK_DIR)/opt/lib/*.a
+	rm -rf $(LIBUSB1_IPK_DIR)$(TARGET_PREFIX)/lib/*.la $(LIBUSB1_IPK_DIR)$(TARGET_PREFIX)/lib/*.a
 	$(MAKE) $(LIBUSB1_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBUSB1_IPK_DIR)
 

@@ -45,7 +45,7 @@ ATTR_IPK_VERSION=1
 
 #
 # ATTR_CONFFILES should be a list of user-editable files
-#ATTR_CONFFILES=/opt/etc/attr.conf /opt/etc/init.d/SXXattr
+#ATTR_CONFFILES=$(TARGET_PREFIX)/etc/attr.conf $(TARGET_PREFIX)/etc/init.d/SXXattr
 
 #
 # ATTR_PATCHES should list any patches, in the the order in
@@ -176,24 +176,24 @@ $(ATTR_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(ATTR_IPK_DIR)/opt/sbin or $(ATTR_IPK_DIR)/opt/bin
+# Binaries should be installed into $(ATTR_IPK_DIR)$(TARGET_PREFIX)/sbin or $(ATTR_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(ATTR_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(ATTR_IPK_DIR)/opt/etc/attr/...
-# Documentation files should be installed in $(ATTR_IPK_DIR)/opt/doc/attr/...
-# Daemon startup scripts should be installed in $(ATTR_IPK_DIR)/opt/etc/init.d/S??attr
+# Libraries and include files should be installed into $(ATTR_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(ATTR_IPK_DIR)$(TARGET_PREFIX)/etc/attr/...
+# Documentation files should be installed in $(ATTR_IPK_DIR)$(TARGET_PREFIX)/doc/attr/...
+# Daemon startup scripts should be installed in $(ATTR_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??attr
 #
 # You may need to patch your application to make it use these locations.
 #
 $(ATTR_IPK): $(ATTR_BUILD_DIR)/.built
 	rm -rf $(ATTR_IPK_DIR) $(BUILD_DIR)/attr_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(ATTR_BUILD_DIR) DIST_ROOT=$(ATTR_IPK_DIR) install-lib install-dev
-	$(STRIP_COMMAND) $(ATTR_IPK_DIR)/opt/lib/*.so $(ATTR_IPK_DIR)/opt/bin/*
-	rm -f $(ATTR_IPK_DIR)/opt/lib/libattr.la
-#	$(INSTALL) -d $(ATTR_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(ATTR_SOURCE_DIR)/attr.conf $(ATTR_IPK_DIR)/opt/etc/attr.conf
-#	$(INSTALL) -d $(ATTR_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(ATTR_SOURCE_DIR)/rc.attr $(ATTR_IPK_DIR)/opt/etc/init.d/SXXattr
+	$(STRIP_COMMAND) $(ATTR_IPK_DIR)$(TARGET_PREFIX)/lib/*.so $(ATTR_IPK_DIR)$(TARGET_PREFIX)/bin/*
+	rm -f $(ATTR_IPK_DIR)$(TARGET_PREFIX)/lib/libattr.la
+#	$(INSTALL) -d $(ATTR_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(ATTR_SOURCE_DIR)/attr.conf $(ATTR_IPK_DIR)$(TARGET_PREFIX)/etc/attr.conf
+#	$(INSTALL) -d $(ATTR_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(ATTR_SOURCE_DIR)/rc.attr $(ATTR_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXattr
 	$(MAKE) $(ATTR_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(ATTR_SOURCE_DIR)/postinst $(ATTR_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 755 $(ATTR_SOURCE_DIR)/prerm $(ATTR_IPK_DIR)/CONTROL/prerm

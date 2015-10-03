@@ -40,7 +40,7 @@ SIPCALC_IPK_VERSION=1
 
 #
 # SIPCALC_CONFFILES should be a list of user-editable files
-#SIPCALC_CONFFILES=/opt/etc/sipcalc.conf /opt/etc/init.d/SXXsipcalc
+#SIPCALC_CONFFILES=$(TARGET_PREFIX)/etc/sipcalc.conf $(TARGET_PREFIX)/etc/init.d/SXXsipcalc
 
 #
 # SIPCALC_PATCHES should list any patches, in the the order in
@@ -177,19 +177,19 @@ $(SIPCALC_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(SIPCALC_IPK_DIR)/opt/sbin or $(SIPCALC_IPK_DIR)/opt/bin
+# Binaries should be installed into $(SIPCALC_IPK_DIR)$(TARGET_PREFIX)/sbin or $(SIPCALC_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(SIPCALC_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(SIPCALC_IPK_DIR)/opt/etc/sipcalc/...
-# Documentation files should be installed in $(SIPCALC_IPK_DIR)/opt/doc/sipcalc/...
-# Daemon startup scripts should be installed in $(SIPCALC_IPK_DIR)/opt/etc/init.d/S??sipcalc
+# Libraries and include files should be installed into $(SIPCALC_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(SIPCALC_IPK_DIR)$(TARGET_PREFIX)/etc/sipcalc/...
+# Documentation files should be installed in $(SIPCALC_IPK_DIR)$(TARGET_PREFIX)/doc/sipcalc/...
+# Daemon startup scripts should be installed in $(SIPCALC_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??sipcalc
 #
 # You may need to patch your application to make it use these locations.
 #
 $(SIPCALC_IPK): $(SIPCALC_BUILD_DIR)/.built
 	rm -rf $(SIPCALC_IPK_DIR) $(BUILD_DIR)/sipcalc_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SIPCALC_BUILD_DIR) DESTDIR=$(SIPCALC_IPK_DIR) install
-	$(STRIP_COMMAND) $(SIPCALC_IPK_DIR)/opt/bin/sipcalc
+	$(STRIP_COMMAND) $(SIPCALC_IPK_DIR)$(TARGET_PREFIX)/bin/sipcalc
 	$(MAKE) $(SIPCALC_IPK_DIR)/CONTROL/control
 	echo $(SIPCALC_CONFFILES) | sed -e 's/ /\n/g' > $(SIPCALC_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SIPCALC_IPK_DIR)

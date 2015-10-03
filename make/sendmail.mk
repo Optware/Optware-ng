@@ -25,12 +25,12 @@ SENDMAIL_IPK_VERSION=3
 #
 # SENDMAIL_CONFFILES should be a list of user-editable files
 SENDMAIL_CONFFILES=\
-	/opt/etc/mail/aliases \
-	/opt/etc/mail/local-host-names \
-	/opt/etc/mail/helpfile \
-	/opt/etc/mail/relay-domains \
-	/opt/etc/mail/sendmail.cf \
-	/opt/etc/init.d/S69sendmail
+	$(TARGET_PREFIX)/etc/mail/aliases \
+	$(TARGET_PREFIX)/etc/mail/local-host-names \
+	$(TARGET_PREFIX)/etc/mail/helpfile \
+	$(TARGET_PREFIX)/etc/mail/relay-domains \
+	$(TARGET_PREFIX)/etc/mail/sendmail.cf \
+	$(TARGET_PREFIX)/etc/init.d/S69sendmail
 
 #
 # SENDMAIL_PATCHES should list any patches, in the the order in
@@ -104,7 +104,7 @@ $(SENDMAIL_BUILD_DIR)/.configured: $(DL_DIR)/$(SENDMAIL_SOURCE) $(SENDMAIL_PATCH
 		then mv $(BUILD_DIR)/$(SENDMAIL_DIR) $(SENDMAIL_BUILD_DIR) ; \
 	fi
 	sed -i -e '/APPENDDEF/s/-ldb/&-$(LIBDB_LIB_VERSION)/' $(@D)/devtools/Site/site.config.m4
-	sed -i -e 's|".*/spool/mail"|"/opt/var/spool/mail"|' $(@D)/include/*/*.h
+	sed -i -e 's|".*/spool/mail"|"$(TARGET_PREFIX)/var/spool/mail"|' $(@D)/include/*/*.h
 	touch $(SENDMAIL_BUILD_DIR)/.configured
 
 sendmail-unpack: $(SENDMAIL_BUILD_DIR)/.configured
@@ -116,8 +116,8 @@ $(SENDMAIL_BUILD_DIR)/.built: $(SENDMAIL_BUILD_DIR)/.configured
 	rm -f $(SENDMAIL_BUILD_DIR)/.built
 	$(MAKE) -C $(SENDMAIL_BUILD_DIR) \
 		CC=$(TARGET_CC)	CCLINK=$(TARGET_CC) \
-	CCOPTS="-D_PATH_SENDMAILCF=\\\"/opt/etc/mail/sendmail.cf\\\" -I$(STAGING_INCLUDE_DIR) $(SENDMAIL_CPPFLAGS)" \
-		LIBDIRS="-L$(STAGING_LIB_DIR) -Wl,--rpath=/opt/lib"
+	CCOPTS="-D_PATH_SENDMAILCF=\\\"$(TARGET_PREFIX)/etc/mail/sendmail.cf\\\" -I$(STAGING_INCLUDE_DIR) $(SENDMAIL_CPPFLAGS)" \
+		LIBDIRS="-L$(STAGING_LIB_DIR) -Wl,--rpath=$(TARGET_PREFIX)/lib"
 	touch $(SENDMAIL_BUILD_DIR)/.built
 
 #
@@ -157,24 +157,24 @@ $(SENDMAIL_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(SENDMAIL_IPK_DIR)/opt/sbin or $(SENDMAIL_IPK_DIR)/opt/bin
+# Binaries should be installed into $(SENDMAIL_IPK_DIR)$(TARGET_PREFIX)/sbin or $(SENDMAIL_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(SENDMAIL_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(SENDMAIL_IPK_DIR)/opt/etc/sendmail/...
-# Documentation files should be installed in $(SENDMAIL_IPK_DIR)/opt/doc/sendmail/...
-# Daemon startup scripts should be installed in $(SENDMAIL_IPK_DIR)/opt/etc/init.d/S??sendmail
+# Libraries and include files should be installed into $(SENDMAIL_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(SENDMAIL_IPK_DIR)$(TARGET_PREFIX)/etc/sendmail/...
+# Documentation files should be installed in $(SENDMAIL_IPK_DIR)$(TARGET_PREFIX)/doc/sendmail/...
+# Daemon startup scripts should be installed in $(SENDMAIL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??sendmail
 #
 # You may need to patch your application to make it use these locations.
 #
 $(SENDMAIL_IPK): $(SENDMAIL_BUILD_DIR)/.built
 	rm -rf $(SENDMAIL_IPK_DIR) $(BUILD_DIR)/sendmail_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(SENDMAIL_IPK_DIR)/opt/etc/mail
-	$(INSTALL) -d $(SENDMAIL_IPK_DIR)/opt/bin
-	$(INSTALL) -d $(SENDMAIL_IPK_DIR)/opt/sbin
-	$(INSTALL) -d $(SENDMAIL_IPK_DIR)/opt/share
-	$(INSTALL) -d $(SENDMAIL_IPK_DIR)/opt/man/man1 $(SENDMAIL_IPK_DIR)/opt/man/man5 $(SENDMAIL_IPK_DIR)/opt/man/man8
-	$(INSTALL) -d $(SENDMAIL_IPK_DIR)/opt/var/spool/mqueue
-	$(INSTALL) -d $(SENDMAIL_IPK_DIR)/opt/var/spool/mail
+	$(INSTALL) -d $(SENDMAIL_IPK_DIR)$(TARGET_PREFIX)/etc/mail
+	$(INSTALL) -d $(SENDMAIL_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(INSTALL) -d $(SENDMAIL_IPK_DIR)$(TARGET_PREFIX)/sbin
+	$(INSTALL) -d $(SENDMAIL_IPK_DIR)$(TARGET_PREFIX)/share
+	$(INSTALL) -d $(SENDMAIL_IPK_DIR)$(TARGET_PREFIX)/man/man1 $(SENDMAIL_IPK_DIR)$(TARGET_PREFIX)/man/man5 $(SENDMAIL_IPK_DIR)$(TARGET_PREFIX)/man/man8
+	$(INSTALL) -d $(SENDMAIL_IPK_DIR)$(TARGET_PREFIX)/var/spool/mqueue
+	$(INSTALL) -d $(SENDMAIL_IPK_DIR)$(TARGET_PREFIX)/var/spool/mail
 	$(MAKE) -C $(SENDMAIL_BUILD_DIR) DESTDIR=$(SENDMAIL_IPK_DIR) \
 		UBINGRP=$(LOGNAME) UBINOWN=$(LOGNAME) \
 		SBINGRP=$(LOGNAME) SBINOWN=$(LOGNAME) \
@@ -183,24 +183,24 @@ $(SENDMAIL_IPK): $(SENDMAIL_BUILD_DIR)/.built
 		MANOWN=$(LOGNAME) MANGRP=$(LOGNAME) \
 		CFGRP=$(LOGNAME)   CFOWN=$(LOGNAME) \
 		MSPQOWN=$(LOGNAME) \
-		MAILDIR=/opt/etc/mail \
+		MAILDIR=$(TARGET_PREFIX)/etc/mail \
 		$(INSTALL)
-	mv -f $(SENDMAIL_IPK_DIR)/opt/man $(SENDMAIL_IPK_DIR)/opt/share/
+	mv -f $(SENDMAIL_IPK_DIR)$(TARGET_PREFIX)/man $(SENDMAIL_IPK_DIR)$(TARGET_PREFIX)/share/
 	$(MAKE) -C $(SENDMAIL_BUILD_DIR)/cf/cf DESTDIR=$(SENDMAIL_IPK_DIR) \
 		CFGRP=$(LOGNAME)   CFOWN=$(LOGNAME) \
-		MAILDIR=/opt/etc/mail \
+		MAILDIR=$(TARGET_PREFIX)/etc/mail \
 		CF=generic-linux install-sendmail-cf
-	for i in $(SENDMAIL_IPK_DIR)/opt/sbin/* $(SENDMAIL_IPK_DIR)/opt/bin/vacation; do chmod u+w $$i; $(STRIP_COMMAND) $$i; chmod a-w $$i; done
+	for i in $(SENDMAIL_IPK_DIR)$(TARGET_PREFIX)/sbin/* $(SENDMAIL_IPK_DIR)$(TARGET_PREFIX)/bin/vacation; do chmod u+w $$i; $(STRIP_COMMAND) $$i; chmod a-w $$i; done
 	( umask 022;\
 	echo "# local-host-names - include all aliases for your machine here."\
-        > $(SENDMAIL_IPK_DIR)/opt/etc/mail/local-host-names;\
+        > $(SENDMAIL_IPK_DIR)$(TARGET_PREFIX)/etc/mail/local-host-names;\
 	echo "# relay-domains - include all hosts you want to relay mail for."\
-	> $(SENDMAIL_IPK_DIR)/opt/etc/mail/relay-domains ;\
+	> $(SENDMAIL_IPK_DIR)$(TARGET_PREFIX)/etc/mail/relay-domains ;\
 	echo "# aliases - define mail aliases here." \
-	> $(SENDMAIL_IPK_DIR)/opt/etc/mail/aliases )
-	$(INSTALL) -d $(SENDMAIL_IPK_DIR)/opt/etc/
-	$(INSTALL) -d $(SENDMAIL_IPK_DIR)/opt/etc/init.d
-	$(INSTALL) -m 755 $(SENDMAIL_SOURCE_DIR)/rc.sendmail $(SENDMAIL_IPK_DIR)/opt/etc/init.d/S69sendmail
+	> $(SENDMAIL_IPK_DIR)$(TARGET_PREFIX)/etc/mail/aliases )
+	$(INSTALL) -d $(SENDMAIL_IPK_DIR)$(TARGET_PREFIX)/etc/
+	$(INSTALL) -d $(SENDMAIL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(INSTALL) -m 755 $(SENDMAIL_SOURCE_DIR)/rc.sendmail $(SENDMAIL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S69sendmail
 	$(MAKE) $(SENDMAIL_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 755 $(SENDMAIL_SOURCE_DIR)/postinst $(SENDMAIL_IPK_DIR)/CONTROL/postinst
 	echo $(SENDMAIL_CONFFILES) | sed -e 's/ /\n/g' > $(SENDMAIL_IPK_DIR)/CONTROL/conffiles

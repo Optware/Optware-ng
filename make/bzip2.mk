@@ -94,25 +94,25 @@ $(BZIP2_IPK_DIR)/CONTROL/control:
 
 $(BZIP2_IPK): $(BZIP2_BUILD_DIR)/.built
 	rm -rf $(BZIP2_IPK_DIR) $(BUILD_DIR)/bzip2_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(BZIP2_IPK_DIR)/opt/bin
-	$(STRIP_COMMAND) $(BZIP2_BUILD_DIR)/bzip2 -o $(BZIP2_IPK_DIR)/opt/bin/bzip2-bzip2
-	$(STRIP_COMMAND) $(BZIP2_BUILD_DIR)/bzip2recover -o $(BZIP2_IPK_DIR)/opt/bin/bzip2recover
-	$(INSTALL) -d $(BZIP2_IPK_DIR)/opt/include
-	$(INSTALL) -m 644 $(BZIP2_BUILD_DIR)/bzlib.h $(BZIP2_IPK_DIR)/opt/include
-	$(INSTALL) -d $(BZIP2_IPK_DIR)/opt/lib
-	$(INSTALL) -m 644 $(BZIP2_BUILD_DIR)/libbz2.so.$(BZIP2_LIB_VERSION) $(BZIP2_IPK_DIR)/opt/lib
-	cd $(BZIP2_IPK_DIR)/opt/lib && ln -fs libbz2.so.$(BZIP2_LIB_VERSION) libbz2.so.1.0
-	cd $(BZIP2_IPK_DIR)/opt/lib && ln -fs libbz2.so.1.0 libbz2.so
-	$(STRIP_COMMAND) $(BZIP2_IPK_DIR)/opt/lib/libbz2.so.$(BZIP2_LIB_VERSION)
-	$(INSTALL) -d $(BZIP2_IPK_DIR)/opt/doc/bzip2
-	$(INSTALL) -m 644 $(BZIP2_BUILD_DIR)/manual*.html $(BZIP2_IPK_DIR)/opt/doc/bzip2
-	cd $(BZIP2_IPK_DIR)/opt/bin && ln -fs bzip2 bzcat
+	$(INSTALL) -d $(BZIP2_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(STRIP_COMMAND) $(BZIP2_BUILD_DIR)/bzip2 -o $(BZIP2_IPK_DIR)$(TARGET_PREFIX)/bin/bzip2-bzip2
+	$(STRIP_COMMAND) $(BZIP2_BUILD_DIR)/bzip2recover -o $(BZIP2_IPK_DIR)$(TARGET_PREFIX)/bin/bzip2recover
+	$(INSTALL) -d $(BZIP2_IPK_DIR)$(TARGET_PREFIX)/include
+	$(INSTALL) -m 644 $(BZIP2_BUILD_DIR)/bzlib.h $(BZIP2_IPK_DIR)$(TARGET_PREFIX)/include
+	$(INSTALL) -d $(BZIP2_IPK_DIR)$(TARGET_PREFIX)/lib
+	$(INSTALL) -m 644 $(BZIP2_BUILD_DIR)/libbz2.so.$(BZIP2_LIB_VERSION) $(BZIP2_IPK_DIR)$(TARGET_PREFIX)/lib
+	cd $(BZIP2_IPK_DIR)$(TARGET_PREFIX)/lib && ln -fs libbz2.so.$(BZIP2_LIB_VERSION) libbz2.so.1.0
+	cd $(BZIP2_IPK_DIR)$(TARGET_PREFIX)/lib && ln -fs libbz2.so.1.0 libbz2.so
+	$(STRIP_COMMAND) $(BZIP2_IPK_DIR)$(TARGET_PREFIX)/lib/libbz2.so.$(BZIP2_LIB_VERSION)
+	$(INSTALL) -d $(BZIP2_IPK_DIR)$(TARGET_PREFIX)/doc/bzip2
+	$(INSTALL) -m 644 $(BZIP2_BUILD_DIR)/manual*.html $(BZIP2_IPK_DIR)$(TARGET_PREFIX)/doc/bzip2
+	cd $(BZIP2_IPK_DIR)$(TARGET_PREFIX)/bin && ln -fs bzip2 bzcat
 	$(MAKE) $(BZIP2_IPK_DIR)/CONTROL/control
 	(echo "#!/bin/sh"; \
-	 echo "update-alternatives --install /opt/bin/bzip2 bzip2 /opt/bin/bzip2-bzip2 80" \
+	 echo "update-alternatives --install $(TARGET_PREFIX)/bin/bzip2 bzip2 $(TARGET_PREFIX)/bin/bzip2-bzip2 80" \
 	) > $(BZIP2_IPK_DIR)/CONTROL/postinst
 	(echo "#!/bin/sh"; \
-	 echo "update-alternatives --remove bzip2 /opt/bin/bzip2-bzip2" \
+	 echo "update-alternatives --remove bzip2 $(TARGET_PREFIX)/bin/bzip2-bzip2" \
 	) > $(BZIP2_IPK_DIR)/CONTROL/prerm
 	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

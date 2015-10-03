@@ -40,7 +40,7 @@ BRIDGE-UTILS_IPK_VERSION=1
 
 #
 # BRIDGE-UTILS_CONFFILES should be a list of user-editable files
-#BRIDGE-UTILS_CONFFILES=/opt/etc/bridge-utils.conf /opt/etc/init.d/SXXbridge-utils
+#BRIDGE-UTILS_CONFFILES=$(TARGET_PREFIX)/etc/bridge-utils.conf $(TARGET_PREFIX)/etc/init.d/SXXbridge-utils
 
 #
 # BRIDGE-UTILS_PATCHES should list any patches, in the the order in
@@ -178,12 +178,12 @@ $(BRIDGE-UTILS_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(BRIDGE-UTILS_IPK_DIR)/opt/sbin or $(BRIDGE-UTILS_IPK_DIR)/opt/bin
+# Binaries should be installed into $(BRIDGE-UTILS_IPK_DIR)$(TARGET_PREFIX)/sbin or $(BRIDGE-UTILS_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(BRIDGE-UTILS_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(BRIDGE-UTILS_IPK_DIR)/opt/etc/bridge-utils/...
-# Documentation files should be installed in $(BRIDGE-UTILS_IPK_DIR)/opt/doc/bridge-utils/...
-# Daemon startup scripts should be installed in $(BRIDGE-UTILS_IPK_DIR)/opt/etc/init.d/S??bridge-utils
+# Libraries and include files should be installed into $(BRIDGE-UTILS_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(BRIDGE-UTILS_IPK_DIR)$(TARGET_PREFIX)/etc/bridge-utils/...
+# Documentation files should be installed in $(BRIDGE-UTILS_IPK_DIR)$(TARGET_PREFIX)/doc/bridge-utils/...
+# Daemon startup scripts should be installed in $(BRIDGE-UTILS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??bridge-utils
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -191,7 +191,7 @@ $(BRIDGE-UTILS_IPK): $(BRIDGE-UTILS_BUILD_DIR)/.built
 	rm -rf $(BRIDGE-UTILS_IPK_DIR) $(BUILD_DIR)/bridge-utils_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(BRIDGE-UTILS_BUILD_DIR) install \
 		DESTDIR=$(BRIDGE-UTILS_IPK_DIR) SUBDIRS="brctl doc"
-	$(STRIP_COMMAND) $(BRIDGE-UTILS_IPK_DIR)/opt/sbin/brctl
+	$(STRIP_COMMAND) $(BRIDGE-UTILS_IPK_DIR)$(TARGET_PREFIX)/sbin/brctl
 	$(MAKE) $(BRIDGE-UTILS_IPK_DIR)/CONTROL/control
 	echo $(BRIDGE-UTILS_CONFFILES) | sed -e 's/ /\n/g' > $(BRIDGE-UTILS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BRIDGE-UTILS_IPK_DIR)

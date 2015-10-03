@@ -40,7 +40,7 @@ ZSH_IPK_VERSION=1
 
 #
 # ZSH_CONFFILES should be a list of user-editable files
-#ZSH_CONFFILES=/opt/etc/zsh.conf /opt/etc/init.d/SXXzsh
+#ZSH_CONFFILES=$(TARGET_PREFIX)/etc/zsh.conf $(TARGET_PREFIX)/etc/init.d/SXXzsh
 
 #
 # ZSH_PATCHES should list any patches, in the the order in
@@ -182,25 +182,25 @@ $(ZSH_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(ZSH_IPK_DIR)/opt/sbin or $(ZSH_IPK_DIR)/opt/bin
+# Binaries should be installed into $(ZSH_IPK_DIR)$(TARGET_PREFIX)/sbin or $(ZSH_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(ZSH_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(ZSH_IPK_DIR)/opt/etc/zsh/...
-# Documentation files should be installed in $(ZSH_IPK_DIR)/opt/doc/zsh/...
-# Daemon startup scripts should be installed in $(ZSH_IPK_DIR)/opt/etc/init.d/S??zsh
+# Libraries and include files should be installed into $(ZSH_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(ZSH_IPK_DIR)$(TARGET_PREFIX)/etc/zsh/...
+# Documentation files should be installed in $(ZSH_IPK_DIR)$(TARGET_PREFIX)/doc/zsh/...
+# Daemon startup scripts should be installed in $(ZSH_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??zsh
 #
 # You may need to patch your application to make it use these locations.
 #
 $(ZSH_IPK): $(ZSH_BUILD_DIR)/.built
 	rm -rf $(ZSH_IPK_DIR) $(BUILD_DIR)/zsh_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(ZSH_BUILD_DIR) DESTDIR=$(ZSH_IPK_DIR) install
-	rm -f $(ZSH_IPK_DIR)/opt/bin/zsh-[0-9]*
-	$(STRIP_COMMAND) $(ZSH_IPK_DIR)/opt/bin/zsh
-	$(INSTALL) -d $(ZSH_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(ZSH_SOURCE_DIR)/zsh.conf $(ZSH_IPK_DIR)/opt/etc/zsh.conf
-#	$(INSTALL) -d $(ZSH_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(ZSH_SOURCE_DIR)/rc.zsh $(ZSH_IPK_DIR)/opt/etc/init.d/SXXzsh
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/opt/etc/init.d/SXXzsh
+	rm -f $(ZSH_IPK_DIR)$(TARGET_PREFIX)/bin/zsh-[0-9]*
+	$(STRIP_COMMAND) $(ZSH_IPK_DIR)$(TARGET_PREFIX)/bin/zsh
+	$(INSTALL) -d $(ZSH_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(ZSH_SOURCE_DIR)/zsh.conf $(ZSH_IPK_DIR)$(TARGET_PREFIX)/etc/zsh.conf
+#	$(INSTALL) -d $(ZSH_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(ZSH_SOURCE_DIR)/rc.zsh $(ZSH_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXzsh
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXzsh
 	$(MAKE) $(ZSH_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(ZSH_SOURCE_DIR)/postinst $(ZSH_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/postinst

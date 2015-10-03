@@ -150,12 +150,12 @@ xdamage-stage: $(XDAMAGE_BUILD_DIR)/.staged
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(XDAMAGE_IPK_DIR)/opt/sbin or $(XDAMAGE_IPK_DIR)/opt/bin
+# Binaries should be installed into $(XDAMAGE_IPK_DIR)$(TARGET_PREFIX)/sbin or $(XDAMAGE_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(XDAMAGE_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(XDAMAGE_IPK_DIR)/opt/etc/xdamage/...
-# Documentation files should be installed in $(XDAMAGE_IPK_DIR)/opt/doc/xdamage/...
-# Daemon startup scripts should be installed in $(XDAMAGE_IPK_DIR)/opt/etc/init.d/S??xdamage
+# Libraries and include files should be installed into $(XDAMAGE_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(XDAMAGE_IPK_DIR)$(TARGET_PREFIX)/etc/xdamage/...
+# Documentation files should be installed in $(XDAMAGE_IPK_DIR)$(TARGET_PREFIX)/doc/xdamage/...
+# Daemon startup scripts should be installed in $(XDAMAGE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??xdamage
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -164,7 +164,7 @@ $(XDAMAGE_IPK): $(XDAMAGE_BUILD_DIR)/.built
 	$(MAKE) -C $(XDAMAGE_BUILD_DIR) DESTDIR=$(XDAMAGE_IPK_DIR) install-strip
 	$(MAKE) $(XDAMAGE_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 644 $(XDAMAGE_SOURCE_DIR)/postinst $(XDAMAGE_IPK_DIR)/CONTROL/postinst
-	rm -f $(XDAMAGE_IPK_DIR)/opt/lib/*.la
+	rm -f $(XDAMAGE_IPK_DIR)$(TARGET_PREFIX)/lib/*.la
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XDAMAGE_IPK_DIR)
 
 #

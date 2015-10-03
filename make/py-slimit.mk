@@ -41,7 +41,7 @@ PY-SLIMIT_IPK_VERSION=1
 
 #
 # PY-SLIMIT_CONFFILES should be a list of user-editable files
-#PY-SLIMIT_CONFFILES=/opt/etc/py-slimit.conf /opt/etc/init.d/SXXpy-slimit
+#PY-SLIMIT_CONFFILES=$(TARGET_PREFIX)/etc/py-slimit.conf $(TARGET_PREFIX)/etc/init.d/SXXpy-slimit
 
 #
 # PY-SLIMIT_PATCHES should list any patches, in the the order in
@@ -120,9 +120,9 @@ $(PY-SLIMIT_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SLIMIT_SOURCE) $(PY-SLIMIT_PA
 	(cd $(@D)/2.7; \
 	    ( \
 	    echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python2.7"; \
+	    echo "executable=$(TARGET_PREFIX)/bin/python2.7"; \
 	    echo "[install]"; \
-	    echo "install_scripts=/opt/bin"; \
+	    echo "install_scripts=$(TARGET_PREFIX)/bin"; \
 	    ) > setup.cfg \
 	)
 	# 3
@@ -136,9 +136,9 @@ $(PY-SLIMIT_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SLIMIT_SOURCE) $(PY-SLIMIT_PA
 	(cd $(@D)/3; \
 	    ( \
 	    echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python$(PYTHON3_VERSION_MAJOR)"; \
+	    echo "executable=$(TARGET_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR)"; \
 	    echo "[install]"; \
-	    echo "install_scripts=/opt/bin"; \
+	    echo "install_scripts=$(TARGET_PREFIX)/bin"; \
 	    ) > setup.cfg \
 	)
 	touch $@
@@ -181,7 +181,7 @@ $(PY-SLIMIT_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(PY-SLIMIT_SOUR
 	    echo "[build_scripts]"; \
 	    echo "executable=$(HOST_STAGING_PREFIX)/bin/python2.7"; \
 	    echo "[install]"; \
-	    echo "install_scripts=/opt/bin"; \
+	    echo "install_scripts=$(TARGET_PREFIX)/bin"; \
 	    ) >> setup.cfg; \
 	)
 	$(PY-SLIMIT_UNZIP) $(DL_DIR)/$(PY-SLIMIT_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
@@ -192,13 +192,13 @@ $(PY-SLIMIT_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(PY-SLIMIT_SOUR
 	    echo "[build_scripts]"; \
 	    echo "executable=$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR)"; \
 	    echo "[install]"; \
-	    echo "install_scripts=/opt/bin"; \
+	    echo "install_scripts=$(TARGET_PREFIX)/bin"; \
 	    ) >> setup.cfg; \
 	)
 	(cd $(@D)/2.7; \
-		$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+		$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(HOST_STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	(cd $(@D)/3; \
-		$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+		$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(HOST_STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	touch $@
 
 py-slimit-host-stage: $(PY-SLIMIT_HOST_BUILD_DIR)/.staged
@@ -240,19 +240,19 @@ $(PY3-SLIMIT_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PY-SLIMIT_IPK_DIR)/opt/sbin or $(PY-SLIMIT_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PY-SLIMIT_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PY-SLIMIT_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PY-SLIMIT_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PY-SLIMIT_IPK_DIR)/opt/etc/py-slimit/...
-# Documentation files should be installed in $(PY-SLIMIT_IPK_DIR)/opt/doc/py-slimit/...
-# Daemon startup scripts should be installed in $(PY-SLIMIT_IPK_DIR)/opt/etc/init.d/S??py-slimit
+# Libraries and include files should be installed into $(PY-SLIMIT_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PY-SLIMIT_IPK_DIR)$(TARGET_PREFIX)/etc/py-slimit/...
+# Documentation files should be installed in $(PY-SLIMIT_IPK_DIR)$(TARGET_PREFIX)/doc/py-slimit/...
+# Daemon startup scripts should be installed in $(PY-SLIMIT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??py-slimit
 #
 # You may need to patch your application to make it use these locations.
 #
 $(PY27-SLIMIT_IPK): $(PY-SLIMIT_BUILD_DIR)/.built
 	rm -rf $(PY27-SLIMIT_IPK_DIR) $(BUILD_DIR)/py27-slimit_*_$(TARGET_ARCH).ipk
 	(cd $(PY-SLIMIT_BUILD_DIR)/2.7; \
-	$(HOST_STAGING_PREFIX)/bin/python2.7 -c "import setuptools; execfile('setup.py')" install --root=$(PY27-SLIMIT_IPK_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python2.7 -c "import setuptools; execfile('setup.py')" install --root=$(PY27-SLIMIT_IPK_DIR) --prefix=$(TARGET_PREFIX))
 	$(MAKE) $(PY27-SLIMIT_IPK_DIR)/CONTROL/control
 #	echo $(PY-SLIMIT_CONFFILES) | sed -e 's/ /\n/g' > $(PY27-SLIMIT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY27-SLIMIT_IPK_DIR)
@@ -260,7 +260,7 @@ $(PY27-SLIMIT_IPK): $(PY-SLIMIT_BUILD_DIR)/.built
 $(PY3-SLIMIT_IPK): $(PY-SLIMIT_BUILD_DIR)/.built
 	rm -rf $(PY3-SLIMIT_IPK_DIR) $(BUILD_DIR)/py3-slimit_*_$(TARGET_ARCH).ipk
 	(cd $(PY-SLIMIT_BUILD_DIR)/3; \
-	$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(PY3-SLIMIT_IPK_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(PY3-SLIMIT_IPK_DIR) --prefix=$(TARGET_PREFIX))
 	$(MAKE) $(PY3-SLIMIT_IPK_DIR)/CONTROL/control
 #	echo $(PY-SLIMIT_CONFFILES) | sed -e 's/ /\n/g' > $(PY3-SLIMIT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY3-SLIMIT_IPK_DIR)

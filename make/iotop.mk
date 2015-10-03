@@ -46,7 +46,7 @@ IOTOP_IPK_VERSION=1
 
 #
 # IOTOP_CONFFILES should be a list of user-editable files
-#IOTOP_CONFFILES=/opt/etc/iotop.conf /opt/etc/init.d/SXXiotop
+#IOTOP_CONFFILES=$(TARGET_PREFIX)/etc/iotop.conf $(TARGET_PREFIX)/etc/init.d/SXXiotop
 
 #
 # IOTOP_PATCHES should list any patches, in the the order in
@@ -122,9 +122,9 @@ $(IOTOP_BUILD_DIR)/.configured: $(DL_DIR)/$(IOTOP_SOURCE) $(IOTOP_PATCHES) make/
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.6"; \
 	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
-	        echo "rpath=/opt/lib"; \
+	        echo "rpath=$(TARGET_PREFIX)/lib"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python2.6" \
+		echo "executable=$(TARGET_PREFIX)/bin/python2.6" \
 	    ) >> setup.cfg; \
 	)
 	touch $@
@@ -179,12 +179,12 @@ $(IOTOP_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(IOTOP_IPK_DIR)/opt/sbin or $(IOTOP_IPK_DIR)/opt/bin
+# Binaries should be installed into $(IOTOP_IPK_DIR)$(TARGET_PREFIX)/sbin or $(IOTOP_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(IOTOP_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(IOTOP_IPK_DIR)/opt/etc/iotop/...
-# Documentation files should be installed in $(IOTOP_IPK_DIR)/opt/doc/iotop/...
-# Daemon startup scripts should be installed in $(IOTOP_IPK_DIR)/opt/etc/init.d/S??iotop
+# Libraries and include files should be installed into $(IOTOP_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(IOTOP_IPK_DIR)$(TARGET_PREFIX)/etc/iotop/...
+# Documentation files should be installed in $(IOTOP_IPK_DIR)$(TARGET_PREFIX)/doc/iotop/...
+# Daemon startup scripts should be installed in $(IOTOP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??iotop
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -193,8 +193,8 @@ $(IOTOP_IPK): $(IOTOP_BUILD_DIR)/.built
 	cd $(IOTOP_BUILD_DIR); \
 	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
 	    $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install \
-	    --root=$(IOTOP_IPK_DIR) --prefix=/opt
-#	$(STRIP_COMMAND) `find $(IOTOP_IPK_DIR)/opt/lib/python2.6/site-packages -name '*.so'`
+	    --root=$(IOTOP_IPK_DIR) --prefix=$(TARGET_PREFIX)
+#	$(STRIP_COMMAND) `find $(IOTOP_IPK_DIR)$(TARGET_PREFIX)/lib/python2.6/site-packages -name '*.so'`
 	$(MAKE) $(IOTOP_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(IOTOP_IPK_DIR)
 

@@ -47,7 +47,7 @@ LUNASERVICE_IPK_VERSION=1
 
 #
 # LUNASERVICE_CONFFILES should be a list of user-editable files
-#LUNASERVICE_CONFFILES=/opt/etc/lunaservice.conf /opt/etc/init.d/SXXlunaservice
+#LUNASERVICE_CONFFILES=$(TARGET_PREFIX)/etc/lunaservice.conf $(TARGET_PREFIX)/etc/init.d/SXXlunaservice
 
 #
 # LUNASERVICE_PATCHES should list any patches, in the the order in
@@ -178,21 +178,21 @@ $(LUNASERVICE_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LUNASERVICE_IPK_DIR)/opt/sbin or $(LUNASERVICE_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LUNASERVICE_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LUNASERVICE_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LUNASERVICE_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LUNASERVICE_IPK_DIR)/opt/etc/lunaservice/...
-# Documentation files should be installed in $(LUNASERVICE_IPK_DIR)/opt/doc/lunaservice/...
-# Daemon startup scripts should be installed in $(LUNASERVICE_IPK_DIR)/opt/etc/init.d/S??lunaservice
+# Libraries and include files should be installed into $(LUNASERVICE_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LUNASERVICE_IPK_DIR)$(TARGET_PREFIX)/etc/lunaservice/...
+# Documentation files should be installed in $(LUNASERVICE_IPK_DIR)$(TARGET_PREFIX)/doc/lunaservice/...
+# Daemon startup scripts should be installed in $(LUNASERVICE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??lunaservice
 #
 # You may need to patch your application to make it use these locations.
 #
 $(LUNASERVICE_IPK): $(LUNASERVICE_BUILD_DIR)/.built
 	rm -rf $(LUNASERVICE_IPK_DIR) $(BUILD_DIR)/lunaservice_*_$(TARGET_ARCH).ipk
-	mkdir -p $(LUNASERVICE_IPK_DIR)/opt/include $(LUNASERVICE_IPK_DIR)/opt/lib
-	$(INSTALL) -m 644 $(LUNASERVICE_BUILD_DIR)/lunaservice.h $(LUNASERVICE_IPK_DIR)/opt/include/
-	$(INSTALL) -m 644 $(LUNASERVICE_BUILD_DIR)/lunaservice-errors.h $(LUNASERVICE_IPK_DIR)/opt/include/
-	$(INSTALL) -m 644 $(LUNASERVICE_BUILD_DIR)/liblunaservice.so $(LUNASERVICE_IPK_DIR)/opt/lib/
+	mkdir -p $(LUNASERVICE_IPK_DIR)$(TARGET_PREFIX)/include $(LUNASERVICE_IPK_DIR)$(TARGET_PREFIX)/lib
+	$(INSTALL) -m 644 $(LUNASERVICE_BUILD_DIR)/lunaservice.h $(LUNASERVICE_IPK_DIR)$(TARGET_PREFIX)/include/
+	$(INSTALL) -m 644 $(LUNASERVICE_BUILD_DIR)/lunaservice-errors.h $(LUNASERVICE_IPK_DIR)$(TARGET_PREFIX)/include/
+	$(INSTALL) -m 644 $(LUNASERVICE_BUILD_DIR)/liblunaservice.so $(LUNASERVICE_IPK_DIR)$(TARGET_PREFIX)/lib/
 	$(MAKE) $(LUNASERVICE_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LUNASERVICE_IPK_DIR)
 

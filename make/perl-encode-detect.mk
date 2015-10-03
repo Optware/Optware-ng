@@ -96,7 +96,7 @@ $(PERL-ENCODE-DETECT_IPK): $(PERL-ENCODE-DETECT_BUILD_DIR)/.built
 		./Build --prefix $(PERL-ENCODE-DETECT_IPK_DIR)$(TARGET_PREFIX) install \
 	)
 	find $(PERL-ENCODE-DETECT_IPK_DIR)$(TARGET_PREFIX) -name 'perllocal.pod' -exec rm -f {} \;
-	(cd $(PERL-ENCODE-DETECT_IPK_DIR)/opt/lib/perl5 ; \
+	(cd $(PERL-ENCODE-DETECT_IPK_DIR)$(TARGET_PREFIX)/lib/perl5 ; \
 		find . -name '*.so' -exec chmod +w {} \; ; \
 		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
 		find . -name '*.so' -exec chmod -w {} \; ; \

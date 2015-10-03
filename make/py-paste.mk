@@ -48,7 +48,7 @@ PY-PASTE_IPK_VERSION=1
 
 #
 # PY-PASTE_CONFFILES should be a list of user-editable files
-#PY-PASTE_CONFFILES=/opt/etc/py-paste.conf /opt/etc/init.d/SXXpy-paste
+#PY-PASTE_CONFFILES=$(TARGET_PREFIX)/etc/py-paste.conf $(TARGET_PREFIX)/etc/init.d/SXXpy-paste
 
 #
 # PY-PASTE_PATCHES should list any patches, in the the order in
@@ -137,7 +137,7 @@ endif
         fi
 	mv $(BUILD_DIR)/$(PY-PASTE_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
-	    (echo "[build_scripts]"; echo "executable=/opt/bin/python2.5") >> setup.cfg \
+	    (echo "[build_scripts]"; echo "executable=$(TARGET_PREFIX)/bin/python2.5") >> setup.cfg \
 	)
 	# 2.6
 	rm -rf $(BUILD_DIR)/$(PY-PASTE_DIR)
@@ -153,7 +153,7 @@ endif
         fi
 	mv $(BUILD_DIR)/$(PY-PASTE_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
-	    (echo "[build_scripts]"; echo "executable=/opt/bin/python2.6") >> setup.cfg \
+	    (echo "[build_scripts]"; echo "executable=$(TARGET_PREFIX)/bin/python2.6") >> setup.cfg \
 	)
 	# 2.7
 	rm -rf $(BUILD_DIR)/$(PY-PASTE_DIR)
@@ -169,7 +169,7 @@ endif
         fi
 	mv $(BUILD_DIR)/$(PY-PASTE_DIR) $(@D)/2.7
 	(cd $(@D)/2.7; \
-	    (echo "[build_scripts]"; echo "executable=/opt/bin/python2.7") >> setup.cfg \
+	    (echo "[build_scripts]"; echo "executable=$(TARGET_PREFIX)/bin/python2.7") >> setup.cfg \
 	)
 	touch $@
 
@@ -204,15 +204,15 @@ $(PY-PASTE_BUILD_DIR)/.staged: $(PY-PASTE_BUILD_DIR)/.built
 	(cd $(@D)/2.5; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
-		--root=$(STAGING_DIR) --prefix=/opt)
+		--root=$(STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	(cd $(@D)/2.6; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install \
-		--root=$(STAGING_DIR) --prefix=/opt)
+		--root=$(STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	(cd $(@D)/2.7; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.7/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install \
-		--root=$(STAGING_DIR) --prefix=/opt)
+		--root=$(STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	touch $@
 
 $(PY-PASTE_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(PY-PASTE_SOURCE) make/py-paste.mk
@@ -229,16 +229,16 @@ $(PY-PASTE_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(PY-PASTE_SOURCE
 	mv $(HOST_BUILD_DIR)/$(PY-PASTE_DIR) $(@D)/2.7
 	(cd $(@D)/2.4; $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build)
 	(cd $(@D)/2.4; \
-	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(HOST_STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	(cd $(@D)/2.5; $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build)
 	(cd $(@D)/2.5; \
-	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(HOST_STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	(cd $(@D)/2.6; $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py build)
 	(cd $(@D)/2.6; \
-	$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(HOST_STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	(cd $(@D)/2.7; $(HOST_STAGING_PREFIX)/bin/python2.7 setup.py build)
 	(cd $(@D)/2.7; \
-	$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(HOST_STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	touch $@
 
 py-paste-stage: $(PY-PASTE_BUILD_DIR)/.staged
@@ -294,12 +294,12 @@ $(PY27-PASTE_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PY-PASTE_IPK_DIR)/opt/sbin or $(PY-PASTE_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PY-PASTE_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PY-PASTE_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PY-PASTE_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PY-PASTE_IPK_DIR)/opt/etc/py-paste/...
-# Documentation files should be installed in $(PY-PASTE_IPK_DIR)/opt/doc/py-paste/...
-# Daemon startup scripts should be installed in $(PY-PASTE_IPK_DIR)/opt/etc/init.d/S??py-paste
+# Libraries and include files should be installed into $(PY-PASTE_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PY-PASTE_IPK_DIR)$(TARGET_PREFIX)/etc/py-paste/...
+# Documentation files should be installed in $(PY-PASTE_IPK_DIR)$(TARGET_PREFIX)/doc/py-paste/...
+# Daemon startup scripts should be installed in $(PY-PASTE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??py-paste
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -309,7 +309,7 @@ $(PY25-PASTE_IPK): $(PY-PASTE_BUILD_DIR)/.built
 	(cd $(PY-PASTE_BUILD_DIR)/2.5; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
-		--root=$(PY25-PASTE_IPK_DIR) --prefix=/opt)
+		--root=$(PY25-PASTE_IPK_DIR) --prefix=$(TARGET_PREFIX))
 	$(MAKE) $(PY25-PASTE_IPK_DIR)/CONTROL/control
 #	echo $(PY-PASTE_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-PASTE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-PASTE_IPK_DIR)
@@ -319,7 +319,7 @@ $(PY26-PASTE_IPK): $(PY-PASTE_BUILD_DIR)/.built
 	(cd $(PY-PASTE_BUILD_DIR)/2.6; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install \
-		--root=$(PY26-PASTE_IPK_DIR) --prefix=/opt)
+		--root=$(PY26-PASTE_IPK_DIR) --prefix=$(TARGET_PREFIX))
 	$(MAKE) $(PY26-PASTE_IPK_DIR)/CONTROL/control
 #	echo $(PY-PASTE_CONFFILES) | sed -e 's/ /\n/g' > $(PY26-PASTE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-PASTE_IPK_DIR)
@@ -329,7 +329,7 @@ $(PY27-PASTE_IPK): $(PY-PASTE_BUILD_DIR)/.built
 	(cd $(PY-PASTE_BUILD_DIR)/2.7; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.7/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install \
-		--root=$(PY27-PASTE_IPK_DIR) --prefix=/opt)
+		--root=$(PY27-PASTE_IPK_DIR) --prefix=$(TARGET_PREFIX))
 	$(MAKE) $(PY27-PASTE_IPK_DIR)/CONTROL/control
 #	echo $(PY-PASTE_CONFFILES) | sed -e 's/ /\n/g' > $(PY27-PASTE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY27-PASTE_IPK_DIR)

@@ -40,7 +40,7 @@ CALCURSE_IPK_VERSION=1
 
 #
 # CALCURSE_CONFFILES should be a list of user-editable files
-#CALCURSE_CONFFILES=/opt/etc/calcurse.conf /opt/etc/init.d/SXXcalcurse
+#CALCURSE_CONFFILES=$(TARGET_PREFIX)/etc/calcurse.conf $(TARGET_PREFIX)/etc/init.d/SXXcalcurse
 
 #
 # CALCURSE_PATCHES should list any patches, in the the order in
@@ -184,12 +184,12 @@ $(CALCURSE_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(CALCURSE_IPK_DIR)/opt/sbin or $(CALCURSE_IPK_DIR)/opt/bin
+# Binaries should be installed into $(CALCURSE_IPK_DIR)$(TARGET_PREFIX)/sbin or $(CALCURSE_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(CALCURSE_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(CALCURSE_IPK_DIR)/opt/etc/calcurse/...
-# Documentation files should be installed in $(CALCURSE_IPK_DIR)/opt/doc/calcurse/...
-# Daemon startup scripts should be installed in $(CALCURSE_IPK_DIR)/opt/etc/init.d/S??calcurse
+# Libraries and include files should be installed into $(CALCURSE_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(CALCURSE_IPK_DIR)$(TARGET_PREFIX)/etc/calcurse/...
+# Documentation files should be installed in $(CALCURSE_IPK_DIR)$(TARGET_PREFIX)/doc/calcurse/...
+# Daemon startup scripts should be installed in $(CALCURSE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??calcurse
 #
 # You may need to patch your application to make it use these locations.
 #

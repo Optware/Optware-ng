@@ -69,12 +69,12 @@ $(IPKG_WEB_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(IPKG_WEB_IPK_DIR)/opt/sbin or $(IPKG_WEB_IPK_DIR)/opt/bin
+# Binaries should be installed into $(IPKG_WEB_IPK_DIR)$(TARGET_PREFIX)/sbin or $(IPKG_WEB_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(IPKG_WEB_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(IPKG_WEB_IPK_DIR)/opt/etc/ipkg-web/...
-# Documentation files should be installed in $(IPKG_WEB_IPK_DIR)/opt/doc/ipkg-web/...
-# Daemon startup scripts should be installed in $(IPKG_WEB_IPK_DIR)/opt/etc/init.d/S??ipkg-web
+# Libraries and include files should be installed into $(IPKG_WEB_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(IPKG_WEB_IPK_DIR)$(TARGET_PREFIX)/etc/ipkg-web/...
+# Documentation files should be installed in $(IPKG_WEB_IPK_DIR)$(TARGET_PREFIX)/doc/ipkg-web/...
+# Daemon startup scripts should be installed in $(IPKG_WEB_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??ipkg-web
 #
 # You may need to patch your application to make it use these locations.
 #

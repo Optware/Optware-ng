@@ -40,7 +40,7 @@ PY-HTCONSOLE_IPK_VERSION=1
 
 #
 # PY-HTCONSOLE_CONFFILES should be a list of user-editable files
-#PY-HTCONSOLE_CONFFILES=/opt/etc/py-htconsole.conf /opt/etc/init.d/SXXpy-htconsole
+#PY-HTCONSOLE_CONFFILES=$(TARGET_PREFIX)/etc/py-htconsole.conf $(TARGET_PREFIX)/etc/init.d/SXXpy-htconsole
 
 #
 # PY-HTCONSOLE_PATCHES should list any patches, in the the order in
@@ -106,7 +106,7 @@ $(PY-HTCONSOLE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-HTCONSOLE_SOURCE) $(PY-HTC
 	mv $(BUILD_DIR)/$(PY-HTCONSOLE_DIR) $(PY-HTCONSOLE_BUILD_DIR)
 	(cd $(PY-HTCONSOLE_BUILD_DIR); \
 	    (echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python") >> setup.cfg \
+	    echo "executable=$(TARGET_PREFIX)/bin/python") >> setup.cfg \
 	)
 	touch $(PY-HTCONSOLE_BUILD_DIR)/.configured
 
@@ -158,12 +158,12 @@ $(PY-HTCONSOLE_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PY-HTCONSOLE_IPK_DIR)/opt/sbin or $(PY-HTCONSOLE_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PY-HTCONSOLE_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PY-HTCONSOLE_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PY-HTCONSOLE_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PY-HTCONSOLE_IPK_DIR)/opt/etc/py-htconsole/...
-# Documentation files should be installed in $(PY-HTCONSOLE_IPK_DIR)/opt/doc/py-htconsole/...
-# Daemon startup scripts should be installed in $(PY-HTCONSOLE_IPK_DIR)/opt/etc/init.d/S??py-htconsole
+# Libraries and include files should be installed into $(PY-HTCONSOLE_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PY-HTCONSOLE_IPK_DIR)$(TARGET_PREFIX)/etc/py-htconsole/...
+# Documentation files should be installed in $(PY-HTCONSOLE_IPK_DIR)$(TARGET_PREFIX)/doc/py-htconsole/...
+# Daemon startup scripts should be installed in $(PY-HTCONSOLE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??py-htconsole
 #
 # You may need to patch your application to make it use these locations.
 #

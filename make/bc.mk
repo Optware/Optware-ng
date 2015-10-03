@@ -44,7 +44,7 @@ BC_IPK_VERSION=2
 
 #
 # BC_CONFFILES should be a list of user-editable files
-#BC_CONFFILES=/opt/etc/bc.conf /opt/etc/init.d/SXXbc
+#BC_CONFFILES=$(TARGET_PREFIX)/etc/bc.conf $(TARGET_PREFIX)/etc/init.d/SXXbc
 
 #
 # BC_PATCHES should list any patches, in the the order in
@@ -167,19 +167,19 @@ $(BC_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(BC_IPK_DIR)/opt/sbin or $(BC_IPK_DIR)/opt/bin
+# Binaries should be installed into $(BC_IPK_DIR)$(TARGET_PREFIX)/sbin or $(BC_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(BC_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(BC_IPK_DIR)/opt/etc/bc/...
-# Documentation files should be installed in $(BC_IPK_DIR)/opt/doc/bc/...
-# Daemon startup scripts should be installed in $(BC_IPK_DIR)/opt/etc/init.d/S??bc
+# Libraries and include files should be installed into $(BC_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(BC_IPK_DIR)$(TARGET_PREFIX)/etc/bc/...
+# Documentation files should be installed in $(BC_IPK_DIR)$(TARGET_PREFIX)/doc/bc/...
+# Daemon startup scripts should be installed in $(BC_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??bc
 #
 # You may need to patch your application to make it use these locations.
 #
 $(BC_IPK): $(BC_BUILD_DIR)/.built
 	rm -rf $(BC_IPK_DIR) $(BUILD_DIR)/bc_*_$(TARGET_ARCH).ipk
 	umask 0022; $(MAKE) -C $(BC_BUILD_DIR) DESTDIR=$(BC_IPK_DIR) install
-	rm -f $(BC_IPK_DIR)/opt/info/dir
+	rm -f $(BC_IPK_DIR)$(TARGET_PREFIX)/info/dir
 	$(MAKE) $(BC_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BC_IPK_DIR)
 

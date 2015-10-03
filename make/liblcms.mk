@@ -40,7 +40,7 @@ LIBLCMS_IPK_VERSION=1
 
 #
 # LIBLCMS_CONFFILES should be a list of user-editable files
-#LIBLCMS_CONFFILES=/opt/etc/liblcms.conf /opt/etc/init.d/SXXliblcms
+#LIBLCMS_CONFFILES=$(TARGET_PREFIX)/etc/liblcms.conf $(TARGET_PREFIX)/etc/init.d/SXXliblcms
 
 #
 # LIBLCMS_PATCHES should list any patches, in the the order in
@@ -177,22 +177,22 @@ $(LIBLCMS_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LIBLCMS_IPK_DIR)/opt/sbin or $(LIBLCMS_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LIBLCMS_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LIBLCMS_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LIBLCMS_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LIBLCMS_IPK_DIR)/opt/etc/liblcms/...
-# Documentation files should be installed in $(LIBLCMS_IPK_DIR)/opt/doc/liblcms/...
-# Daemon startup scripts should be installed in $(LIBLCMS_IPK_DIR)/opt/etc/init.d/S??liblcms
+# Libraries and include files should be installed into $(LIBLCMS_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LIBLCMS_IPK_DIR)$(TARGET_PREFIX)/etc/liblcms/...
+# Documentation files should be installed in $(LIBLCMS_IPK_DIR)$(TARGET_PREFIX)/doc/liblcms/...
+# Daemon startup scripts should be installed in $(LIBLCMS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??liblcms
 #
 # You may need to patch your application to make it use these locations.
 #
 $(LIBLCMS_IPK): $(LIBLCMS_BUILD_DIR)/.built
 	rm -rf $(LIBLCMS_IPK_DIR) $(BUILD_DIR)/liblcms_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBLCMS_BUILD_DIR) DESTDIR=$(LIBLCMS_IPK_DIR) install-strip
-#	$(INSTALL) -d $(LIBLCMS_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(LIBLCMS_SOURCE_DIR)/liblcms.conf $(LIBLCMS_IPK_DIR)/opt/etc/liblcms.conf
-#	$(INSTALL) -d $(LIBLCMS_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(LIBLCMS_SOURCE_DIR)/rc.liblcms $(LIBLCMS_IPK_DIR)/opt/etc/init.d/SXXliblcms
+#	$(INSTALL) -d $(LIBLCMS_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(LIBLCMS_SOURCE_DIR)/liblcms.conf $(LIBLCMS_IPK_DIR)$(TARGET_PREFIX)/etc/liblcms.conf
+#	$(INSTALL) -d $(LIBLCMS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(LIBLCMS_SOURCE_DIR)/rc.liblcms $(LIBLCMS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXliblcms
 	$(MAKE) $(LIBLCMS_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(LIBLCMS_SOURCE_DIR)/postinst $(LIBLCMS_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 755 $(LIBLCMS_SOURCE_DIR)/prerm $(LIBLCMS_IPK_DIR)/CONTROL/prerm

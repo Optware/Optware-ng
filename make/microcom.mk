@@ -40,7 +40,7 @@ MICROCOM_IPK_VERSION=1
 
 #
 # MICROCOM_CONFFILES should be a list of user-editable files
-#MICROCOM_CONFFILES=/opt/etc/microcom.conf /opt/etc/init.d/SXXmicrocom
+#MICROCOM_CONFFILES=$(TARGET_PREFIX)/etc/microcom.conf $(TARGET_PREFIX)/etc/init.d/SXXmicrocom
 
 #
 # MICROCOM_PATCHES should list any patches, in the the order in
@@ -178,23 +178,23 @@ $(MICROCOM_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(MICROCOM_IPK_DIR)/opt/sbin or $(MICROCOM_IPK_DIR)/opt/bin
+# Binaries should be installed into $(MICROCOM_IPK_DIR)$(TARGET_PREFIX)/sbin or $(MICROCOM_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(MICROCOM_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(MICROCOM_IPK_DIR)/opt/etc/microcom/...
-# Documentation files should be installed in $(MICROCOM_IPK_DIR)/opt/doc/microcom/...
-# Daemon startup scripts should be installed in $(MICROCOM_IPK_DIR)/opt/etc/init.d/S??microcom
+# Libraries and include files should be installed into $(MICROCOM_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(MICROCOM_IPK_DIR)$(TARGET_PREFIX)/etc/microcom/...
+# Documentation files should be installed in $(MICROCOM_IPK_DIR)$(TARGET_PREFIX)/doc/microcom/...
+# Daemon startup scripts should be installed in $(MICROCOM_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??microcom
 #
 # You may need to patch your application to make it use these locations.
 #
 $(MICROCOM_IPK): $(MICROCOM_BUILD_DIR)/.built
 	rm -rf $(MICROCOM_IPK_DIR) $(BUILD_DIR)/microcom_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(MICROCOM_BUILD_DIR) DESTDIR=$(MICROCOM_IPK_DIR) install-strip
-	$(INSTALL) -d $(MICROCOM_IPK_DIR)/opt/bin
-	$(INSTALL) $(MICROCOM_BUILD_DIR)/microcom $(MICROCOM_IPK_DIR)/opt/bin
-	$(STRIP_COMMAND) $(MICROCOM_IPK_DIR)/opt/bin/microcom
-#	$(INSTALL) -d $(MICROCOM_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(MICROCOM_SOURCE_DIR)/microcom.conf $(MICROCOM_IPK_DIR)/opt/etc/microcom.conf
+	$(INSTALL) -d $(MICROCOM_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(INSTALL) $(MICROCOM_BUILD_DIR)/microcom $(MICROCOM_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(STRIP_COMMAND) $(MICROCOM_IPK_DIR)$(TARGET_PREFIX)/bin/microcom
+#	$(INSTALL) -d $(MICROCOM_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(MICROCOM_SOURCE_DIR)/microcom.conf $(MICROCOM_IPK_DIR)$(TARGET_PREFIX)/etc/microcom.conf
 	$(MAKE) $(MICROCOM_IPK_DIR)/CONTROL/control
 #	echo $(MICROCOM_CONFFILES) | sed -e 's/ /\n/g' > $(MICROCOM_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MICROCOM_IPK_DIR)

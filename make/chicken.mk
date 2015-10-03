@@ -40,7 +40,7 @@ CHICKEN_IPK_VERSION=1
 
 #
 # CHICKEN_CONFFILES should be a list of user-editable files
-#CHICKEN_CONFFILES=/opt/etc/chicken.conf /opt/etc/init.d/SXXchicken
+#CHICKEN_CONFFILES=$(TARGET_PREFIX)/etc/chicken.conf $(TARGET_PREFIX)/etc/init.d/SXXchicken
 
 #
 # CHICKEN_PATCHES should list any patches, in the the order in
@@ -177,23 +177,23 @@ $(CHICKEN_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(CHICKEN_IPK_DIR)/opt/sbin or $(CHICKEN_IPK_DIR)/opt/bin
+# Binaries should be installed into $(CHICKEN_IPK_DIR)$(TARGET_PREFIX)/sbin or $(CHICKEN_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(CHICKEN_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(CHICKEN_IPK_DIR)/opt/etc/chicken/...
-# Documentation files should be installed in $(CHICKEN_IPK_DIR)/opt/doc/chicken/...
-# Daemon startup scripts should be installed in $(CHICKEN_IPK_DIR)/opt/etc/init.d/S??chicken
+# Libraries and include files should be installed into $(CHICKEN_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(CHICKEN_IPK_DIR)$(TARGET_PREFIX)/etc/chicken/...
+# Documentation files should be installed in $(CHICKEN_IPK_DIR)$(TARGET_PREFIX)/doc/chicken/...
+# Daemon startup scripts should be installed in $(CHICKEN_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??chicken
 #
 # You may need to patch your application to make it use these locations.
 #
 $(CHICKEN_IPK): $(CHICKEN_BUILD_DIR)/.built
 	rm -rf $(CHICKEN_IPK_DIR) $(BUILD_DIR)/chicken_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(CHICKEN_BUILD_DIR) DESTDIR=$(CHICKEN_IPK_DIR) install-strip
-#	$(INSTALL) -d $(CHICKEN_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(CHICKEN_SOURCE_DIR)/chicken.conf $(CHICKEN_IPK_DIR)/opt/etc/chicken.conf
-#	$(INSTALL) -d $(CHICKEN_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(CHICKEN_SOURCE_DIR)/rc.chicken $(CHICKEN_IPK_DIR)/opt/etc/init.d/SXXchicken
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(CHICKEN_IPK_DIR)/opt/etc/init.d/SXXchicken
+#	$(INSTALL) -d $(CHICKEN_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(CHICKEN_SOURCE_DIR)/chicken.conf $(CHICKEN_IPK_DIR)$(TARGET_PREFIX)/etc/chicken.conf
+#	$(INSTALL) -d $(CHICKEN_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(CHICKEN_SOURCE_DIR)/rc.chicken $(CHICKEN_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXchicken
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(CHICKEN_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXchicken
 	$(MAKE) $(CHICKEN_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(CHICKEN_SOURCE_DIR)/postinst $(CHICKEN_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(CHICKEN_IPK_DIR)/CONTROL/postinst

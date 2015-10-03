@@ -171,20 +171,20 @@ $(EXTRACT-XISO_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(EXTRACT-XISO_IPK_DIR)/opt/sbin or $(EXTRACT-XISO_IPK_DIR)/opt/bin
+# Binaries should be installed into $(EXTRACT-XISO_IPK_DIR)$(TARGET_PREFIX)/sbin or $(EXTRACT-XISO_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(EXTRACT-XISO_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(EXTRACT-XISO_IPK_DIR)/opt/etc/extract-xiso/...
-# Documentation files should be installed in $(EXTRACT-XISO_IPK_DIR)/opt/doc/extract-xiso/...
-# Daemon startup scripts should be installed in $(EXTRACT-XISO_IPK_DIR)/opt/etc/init.d/S??extract-xiso
+# Libraries and include files should be installed into $(EXTRACT-XISO_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(EXTRACT-XISO_IPK_DIR)$(TARGET_PREFIX)/etc/extract-xiso/...
+# Documentation files should be installed in $(EXTRACT-XISO_IPK_DIR)$(TARGET_PREFIX)/doc/extract-xiso/...
+# Daemon startup scripts should be installed in $(EXTRACT-XISO_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??extract-xiso
 #
 # You may need to patch your application to make it use these locations.
 #
 $(EXTRACT-XISO_IPK): $(EXTRACT-XISO_BUILD_DIR)/.built
 	rm -rf $(EXTRACT-XISO_IPK_DIR) $(BUILD_DIR)/extract-xiso_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(EXTRACT-XISO_IPK_DIR)/opt/bin/
-	$(INSTALL) -m 755 $(EXTRACT-XISO_BUILD_DIR)/extract-xiso $(EXTRACT-XISO_IPK_DIR)/opt/bin/
-	$(STRIP_COMMAND) $(EXTRACT-XISO_BUILD_DIR)/extract-xiso -o $(EXTRACT-XISO_IPK_DIR)/opt/bin/extract-xiso
+	$(INSTALL) -d $(EXTRACT-XISO_IPK_DIR)$(TARGET_PREFIX)/bin/
+	$(INSTALL) -m 755 $(EXTRACT-XISO_BUILD_DIR)/extract-xiso $(EXTRACT-XISO_IPK_DIR)$(TARGET_PREFIX)/bin/
+	$(STRIP_COMMAND) $(EXTRACT-XISO_BUILD_DIR)/extract-xiso -o $(EXTRACT-XISO_IPK_DIR)$(TARGET_PREFIX)/bin/extract-xiso
 	$(MAKE) $(EXTRACT-XISO_IPK_DIR)/CONTROL/control
 	echo $(EXTRACT-XISO_CONFFILES) | sed -e 's/ /\n/g' > $(EXTRACT-XISO_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(EXTRACT-XISO_IPK_DIR)

@@ -48,8 +48,8 @@ LCD4LINUX_CONFLICTS=
 LCD4LINUX_IPK_VERSION=1
 
 #
-# LCD4LINUX_CONFFILES should be a list of user-editable files /opt/etc/init.d/SXXlcd4linux
-LCD4LINUX_CONFFILES=/opt/etc/lcd4linux.conf 
+# LCD4LINUX_CONFFILES should be a list of user-editable files $(TARGET_PREFIX)/etc/init.d/SXXlcd4linux
+LCD4LINUX_CONFFILES=$(TARGET_PREFIX)/etc/lcd4linux.conf 
 
 #
 # LCD4LINUX_PATCHES should list any patches, in the the order in
@@ -203,23 +203,23 @@ $(LCD4LINUX_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LCD4LINUX_IPK_DIR)/opt/sbin or $(LCD4LINUX_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LCD4LINUX_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LCD4LINUX_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LCD4LINUX_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LCD4LINUX_IPK_DIR)/opt/etc/lcd4linux/...
-# Documentation files should be installed in $(LCD4LINUX_IPK_DIR)/opt/doc/lcd4linux/...
-# Daemon startup scripts should be installed in $(LCD4LINUX_IPK_DIR)/opt/etc/init.d/S??lcd4linux
+# Libraries and include files should be installed into $(LCD4LINUX_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LCD4LINUX_IPK_DIR)$(TARGET_PREFIX)/etc/lcd4linux/...
+# Documentation files should be installed in $(LCD4LINUX_IPK_DIR)$(TARGET_PREFIX)/doc/lcd4linux/...
+# Daemon startup scripts should be installed in $(LCD4LINUX_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??lcd4linux
 #
 # You may need to patch your application to make it use these locations.
 #
 $(LCD4LINUX_IPK): $(LCD4LINUX_BUILD_DIR)/.built
 	rm -rf $(LCD4LINUX_IPK_DIR) $(BUILD_DIR)/lcd4linux_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LCD4LINUX_BUILD_DIR) DESTDIR=$(LCD4LINUX_IPK_DIR) install-strip
-	$(INSTALL) -d $(LCD4LINUX_IPK_DIR)/opt/etc/
-	$(INSTALL) -m 644 $(LCD4LINUX_SOURCE_DIR)/lcd4linux.conf $(LCD4LINUX_IPK_DIR)/opt/etc/lcd4linux.conf
-#	$(INSTALL) -d $(LCD4LINUX_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(LCD4LINUX_SOURCE_DIR)/rc.lcd4linux $(LCD4LINUX_IPK_DIR)/opt/etc/init.d/SXXlcd4linux
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LCD4LINUX_IPK_DIR)/opt/etc/init.d/SXXlcd4linux
+	$(INSTALL) -d $(LCD4LINUX_IPK_DIR)$(TARGET_PREFIX)/etc/
+	$(INSTALL) -m 644 $(LCD4LINUX_SOURCE_DIR)/lcd4linux.conf $(LCD4LINUX_IPK_DIR)$(TARGET_PREFIX)/etc/lcd4linux.conf
+#	$(INSTALL) -d $(LCD4LINUX_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(LCD4LINUX_SOURCE_DIR)/rc.lcd4linux $(LCD4LINUX_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlcd4linux
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LCD4LINUX_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlcd4linux
 	$(MAKE) $(LCD4LINUX_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(LCD4LINUX_SOURCE_DIR)/postinst $(LCD4LINUX_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LCD4LINUX_IPK_DIR)/CONTROL/postinst

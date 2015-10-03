@@ -39,7 +39,7 @@ LIBOGG_IPK_VERSION=1
 
 #
 # LIBOGG_CONFFILES should be a list of user-editable files
-#LIBOGG_CONFFILES=/opt/etc/libogg.conf /opt/etc/init.d/SXXlibogg
+#LIBOGG_CONFFILES=$(TARGET_PREFIX)/etc/libogg.conf $(TARGET_PREFIX)/etc/init.d/SXXlibogg
 
 #
 # LIBOGG_PATCHES should list any patches, in the the order in
@@ -142,7 +142,7 @@ libogg: $(LIBOGG_BUILD_DIR)/.built
 $(LIBOGG_BUILD_DIR)/.staged: $(LIBOGG_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
-	sed -i -e 's|prefix=/opt|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/ogg.pc
+	sed -i -e 's|prefix=$(TARGET_PREFIX)|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/ogg.pc
 	rm -f $(STAGING_LIB_DIR)/libogg.la $(STAGING_LIB_DIR)/libogg.a
 	touch $@
 
@@ -167,19 +167,19 @@ $(LIBOGG_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LIBOGG_IPK_DIR)/opt/sbin or $(LIBOGG_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LIBOGG_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LIBOGG_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LIBOGG_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LIBOGG_IPK_DIR)/opt/etc/libogg/...
-# Documentation files should be installed in $(LIBOGG_IPK_DIR)/opt/doc/libogg/...
-# Daemon startup scripts should be installed in $(LIBOGG_IPK_DIR)/opt/etc/init.d/S??libogg
+# Libraries and include files should be installed into $(LIBOGG_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LIBOGG_IPK_DIR)$(TARGET_PREFIX)/etc/libogg/...
+# Documentation files should be installed in $(LIBOGG_IPK_DIR)$(TARGET_PREFIX)/doc/libogg/...
+# Daemon startup scripts should be installed in $(LIBOGG_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??libogg
 #
 # You may need to patch your application to make it use these locations.
 #
 $(LIBOGG_IPK): $(LIBOGG_BUILD_DIR)/.built
 	rm -rf $(LIBOGG_IPK_DIR) $(BUILD_DIR)/libogg_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBOGG_BUILD_DIR) DESTDIR=$(LIBOGG_IPK_DIR) install-strip
-	rm -f $(LIBOGG_IPK_DIR)/opt/lib/libogg.a
+	rm -f $(LIBOGG_IPK_DIR)$(TARGET_PREFIX)/lib/libogg.a
 	$(MAKE) $(LIBOGG_IPK_DIR)/CONTROL/control
 	echo $(LIBOGG_CONFFILES) | sed -e 's/ /\n/g' > $(LIBOGG_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBOGG_IPK_DIR)

@@ -40,7 +40,7 @@ PROCMAIL_IPK_VERSION=4
 
 #
 # PROCMAIL_CONFFILES should be a list of user-editable files
-#PROCMAIL_CONFFILES=/opt/etc/procmail.conf /opt/etc/init.d/SXXprocmail
+#PROCMAIL_CONFFILES=$(TARGET_PREFIX)/etc/procmail.conf $(TARGET_PREFIX)/etc/init.d/SXXprocmail
 
 #
 # PROCMAIL_PATCHES should list any patches, in the the order in
@@ -164,12 +164,12 @@ $(PROCMAIL_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PROCMAIL_IPK_DIR)/opt/sbin or $(PROCMAIL_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PROCMAIL_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PROCMAIL_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PROCMAIL_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PROCMAIL_IPK_DIR)/opt/etc/procmail/...
-# Documentation files should be installed in $(PROCMAIL_IPK_DIR)/opt/doc/procmail/...
-# Daemon startup scripts should be installed in $(PROCMAIL_IPK_DIR)/opt/etc/init.d/S??procmail
+# Libraries and include files should be installed into $(PROCMAIL_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PROCMAIL_IPK_DIR)$(TARGET_PREFIX)/etc/procmail/...
+# Documentation files should be installed in $(PROCMAIL_IPK_DIR)$(TARGET_PREFIX)/doc/procmail/...
+# Daemon startup scripts should be installed in $(PROCMAIL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??procmail
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -184,10 +184,10 @@ $(PROCMAIL_IPK): $(PROCMAIL_BUILD_DIR)/.built
 		LDFLAGS="$(STAGING_LDFLAGS) $(PROCMAIL_LDFLAGS)" \
 		INSTALL=install \
 		MKDIRS="install -d"
-	#$(INSTALL) -d $(PROCMAIL_IPK_DIR)/opt/etc/
-	#$(INSTALL) -m 644 $(PROCMAIL_SOURCE_DIR)/procmail.conf $(PROCMAIL_IPK_DIR)/opt/etc/procmail.conf
-	#$(INSTALL) -d $(PROCMAIL_IPK_DIR)/opt/etc/init.d
-	#$(INSTALL) -m 755 $(PROCMAIL_SOURCE_DIR)/rc.procmail $(PROCMAIL_IPK_DIR)/opt/etc/init.d/SXXprocmail
+	#$(INSTALL) -d $(PROCMAIL_IPK_DIR)$(TARGET_PREFIX)/etc/
+	#$(INSTALL) -m 644 $(PROCMAIL_SOURCE_DIR)/procmail.conf $(PROCMAIL_IPK_DIR)$(TARGET_PREFIX)/etc/procmail.conf
+	#$(INSTALL) -d $(PROCMAIL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	#$(INSTALL) -m 755 $(PROCMAIL_SOURCE_DIR)/rc.procmail $(PROCMAIL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXprocmail
 	$(MAKE) $(PROCMAIL_IPK_DIR)/CONTROL/control
 	#$(INSTALL) -m 755 $(PROCMAIL_SOURCE_DIR)/postinst $(PROCMAIL_IPK_DIR)/CONTROL/postinst
 	#$(INSTALL) -m 755 $(PROCMAIL_SOURCE_DIR)/prerm $(PROCMAIL_IPK_DIR)/CONTROL/prerm

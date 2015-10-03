@@ -40,7 +40,7 @@ DISCOUNT_IPK_VERSION=1
 
 #
 # DISCOUNT_CONFFILES should be a list of user-editable files
-#DISCOUNT_CONFFILES=/opt/etc/discount.conf /opt/etc/init.d/SXXdiscount
+#DISCOUNT_CONFFILES=$(TARGET_PREFIX)/etc/discount.conf $(TARGET_PREFIX)/etc/init.d/SXXdiscount
 
 #
 # DISCOUNT_PATCHES should list any patches, in the the order in
@@ -122,11 +122,11 @@ $(DISCOUNT_BUILD_DIR)/.configured: $(DL_DIR)/$(DISCOUNT_SOURCE) $(DISCOUNT_PATCH
 		LDFLAGS="$(STAGING_LDFLAGS) $(DISCOUNT_LDFLAGS)" \
 		./configure.sh \
 		--prefix=$(TARGET_PREFIX) \
-		--confdir=/opt/etc \
+		--confdir=$(TARGET_PREFIX)/etc \
 		--enable-all-features \
 	)
 	sed -i -e 's:@DWORD@:unsigned long:g' $(@D)/mkdio.h
-	sed -i -e '/PATH_SED/{s:".*":"/opt/bin/sed"\n#define DWORD unsigned long:}' $(@D)/config.h
+	sed -i -e '/PATH_SED/{s:".*":"$(TARGET_PREFIX)/bin/sed"\n#define DWORD unsigned long:}' $(@D)/config.h
 #	$(PATCH_LIBTOOL) $(@D)/libtool
 #		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -188,20 +188,20 @@ $(DISCOUNT_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(DISCOUNT_IPK_DIR)/opt/sbin or $(DISCOUNT_IPK_DIR)/opt/bin
+# Binaries should be installed into $(DISCOUNT_IPK_DIR)$(TARGET_PREFIX)/sbin or $(DISCOUNT_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(DISCOUNT_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(DISCOUNT_IPK_DIR)/opt/etc/discount/...
-# Documentation files should be installed in $(DISCOUNT_IPK_DIR)/opt/doc/discount/...
-# Daemon startup scripts should be installed in $(DISCOUNT_IPK_DIR)/opt/etc/init.d/S??discount
+# Libraries and include files should be installed into $(DISCOUNT_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(DISCOUNT_IPK_DIR)$(TARGET_PREFIX)/etc/discount/...
+# Documentation files should be installed in $(DISCOUNT_IPK_DIR)$(TARGET_PREFIX)/doc/discount/...
+# Daemon startup scripts should be installed in $(DISCOUNT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??discount
 #
 # You may need to patch your application to make it use these locations.
 #
 $(DISCOUNT_IPK): $(DISCOUNT_BUILD_DIR)/.built
 	rm -rf $(DISCOUNT_IPK_DIR) $(BUILD_DIR)/discount_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(DISCOUNT_IPK_DIR)/opt/bin $(DISCOUNT_IPK_DIR)/opt/include $(DISCOUNT_IPK_DIR)/opt/lib
+	$(INSTALL) -d $(DISCOUNT_IPK_DIR)$(TARGET_PREFIX)/bin $(DISCOUNT_IPK_DIR)$(TARGET_PREFIX)/include $(DISCOUNT_IPK_DIR)$(TARGET_PREFIX)/lib
 	$(MAKE) -C $(DISCOUNT_BUILD_DIR) DESTDIR=$(DISCOUNT_IPK_DIR) install.everything
-	$(STRIP_COMMAND) $(DISCOUNT_IPK_DIR)/opt/bin/*
+	$(STRIP_COMMAND) $(DISCOUNT_IPK_DIR)$(TARGET_PREFIX)/bin/*
 	$(MAKE) $(DISCOUNT_IPK_DIR)/CONTROL/control
 	echo $(DISCOUNT_CONFFILES) | sed -e 's/ /\n/g' > $(DISCOUNT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(DISCOUNT_IPK_DIR)

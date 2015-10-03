@@ -40,7 +40,7 @@ MOREUTILS_IPK_VERSION=1
 
 #
 # MOREUTILS_CONFFILES should be a list of user-editable files
-#MOREUTILS_CONFFILES=/opt/etc/moreutils.conf /opt/etc/init.d/SXXmoreutils
+#MOREUTILS_CONFFILES=$(TARGET_PREFIX)/etc/moreutils.conf $(TARGET_PREFIX)/etc/init.d/SXXmoreutils
 
 #
 # MOREUTILS_PATCHES should list any patches, in the the order in
@@ -163,12 +163,12 @@ $(MOREUTILS_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(MOREUTILS_IPK_DIR)/opt/sbin or $(MOREUTILS_IPK_DIR)/opt/bin
+# Binaries should be installed into $(MOREUTILS_IPK_DIR)$(TARGET_PREFIX)/sbin or $(MOREUTILS_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(MOREUTILS_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(MOREUTILS_IPK_DIR)/opt/etc/moreutils/...
-# Documentation files should be installed in $(MOREUTILS_IPK_DIR)/opt/doc/moreutils/...
-# Daemon startup scripts should be installed in $(MOREUTILS_IPK_DIR)/opt/etc/init.d/S??moreutils
+# Libraries and include files should be installed into $(MOREUTILS_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(MOREUTILS_IPK_DIR)$(TARGET_PREFIX)/etc/moreutils/...
+# Documentation files should be installed in $(MOREUTILS_IPK_DIR)$(TARGET_PREFIX)/doc/moreutils/...
+# Daemon startup scripts should be installed in $(MOREUTILS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??moreutils
 #
 # You may need to patch your application to make it use these locations.
 #

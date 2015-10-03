@@ -83,7 +83,7 @@ $(PERL-TEXT-DIFF_IPK): $(PERL-TEXT-DIFF_BUILD_DIR)/.built
 	rm -rf $(PERL-TEXT-DIFF_IPK_DIR) $(BUILD_DIR)/perl-text-diff_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PERL-TEXT-DIFF_BUILD_DIR) DESTDIR=$(PERL-TEXT-DIFF_IPK_DIR) install
 	find $(PERL-TEXT-DIFF_IPK_DIR)$(TARGET_PREFIX) -name 'perllocal.pod' -exec rm -f {} \;
-	(cd $(PERL-TEXT-DIFF_IPK_DIR)/opt/lib/perl5 ; \
+	(cd $(PERL-TEXT-DIFF_IPK_DIR)$(TARGET_PREFIX)/lib/perl5 ; \
 		find . -name '*.so' -exec chmod +w {} \; ; \
 		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
 		find . -name '*.so' -exec chmod -w {} \; ; \

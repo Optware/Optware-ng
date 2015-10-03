@@ -40,7 +40,7 @@ CACAO_IPK_VERSION=1
 
 #
 # CACAO_CONFFILES should be a list of user-editable files
-#CACAO_CONFFILES=/opt/etc/cacao.conf /opt/etc/init.d/SXXcacao
+#CACAO_CONFFILES=$(TARGET_PREFIX)/etc/cacao.conf $(TARGET_PREFIX)/etc/init.d/SXXcacao
 
 #
 # CACAO_PATCHES should list any patches, in the the order in
@@ -220,12 +220,12 @@ $(CACAO_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(CACAO_IPK_DIR)/opt/sbin or $(CACAO_IPK_DIR)/opt/bin
+# Binaries should be installed into $(CACAO_IPK_DIR)$(TARGET_PREFIX)/sbin or $(CACAO_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(CACAO_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(CACAO_IPK_DIR)/opt/etc/cacao/...
-# Documentation files should be installed in $(CACAO_IPK_DIR)/opt/doc/cacao/...
-# Daemon startup scripts should be installed in $(CACAO_IPK_DIR)/opt/etc/init.d/S??cacao
+# Libraries and include files should be installed into $(CACAO_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(CACAO_IPK_DIR)$(TARGET_PREFIX)/etc/cacao/...
+# Documentation files should be installed in $(CACAO_IPK_DIR)$(TARGET_PREFIX)/doc/cacao/...
+# Daemon startup scripts should be installed in $(CACAO_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??cacao
 #
 # You may need to patch your application to make it use these locations.
 #

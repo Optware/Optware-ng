@@ -134,7 +134,7 @@ $(CASTGET_BUILD_DIR)/.configured: $(DL_DIR)/$(CASTGET_SOURCE) $(CASTGET_PATCHES)
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=$(TARGET_PREFIX) \
-		--mandir=/opt/man \
+		--mandir=$(TARGET_PREFIX)/man \
 		--disable-nls \
 		--disable-static \
 	)
@@ -188,20 +188,20 @@ $(CASTGET_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(CASTGET_IPK_DIR)/opt/sbin or $(CASTGET_IPK_DIR)/opt/bin
+# Binaries should be installed into $(CASTGET_IPK_DIR)$(TARGET_PREFIX)/sbin or $(CASTGET_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(CASTGET_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(CASTGET_IPK_DIR)/opt/etc/castget/...
-# Documentation files should be installed in $(CASTGET_IPK_DIR)/opt/doc/castget/...
-# Daemon startup scripts should be installed in $(CASTGET_IPK_DIR)/opt/etc/init.d/S??castget
+# Libraries and include files should be installed into $(CASTGET_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(CASTGET_IPK_DIR)$(TARGET_PREFIX)/etc/castget/...
+# Documentation files should be installed in $(CASTGET_IPK_DIR)$(TARGET_PREFIX)/doc/castget/...
+# Daemon startup scripts should be installed in $(CASTGET_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??castget
 #
 # You may need to patch your application to make it use these locations.
 #
 $(CASTGET_IPK): $(CASTGET_BUILD_DIR)/.built
 	rm -rf $(CASTGET_IPK_DIR) $(BUILD_DIR)/castget_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(CASTGET_BUILD_DIR) DESTDIR=$(CASTGET_IPK_DIR) install-strip
-	$(INSTALL) -d $(CASTGET_IPK_DIR)/opt/doc/castget
-	$(INSTALL) -m 644 $(CASTGET_BUILD_DIR)/castgetrc.example $(CASTGET_IPK_DIR)/opt/doc/castget
+	$(INSTALL) -d $(CASTGET_IPK_DIR)$(TARGET_PREFIX)/doc/castget
+	$(INSTALL) -m 644 $(CASTGET_BUILD_DIR)/castgetrc.example $(CASTGET_IPK_DIR)$(TARGET_PREFIX)/doc/castget
 	$(MAKE) $(CASTGET_IPK_DIR)/CONTROL/control
 	#$(INSTALL) -m 755 $(CASTGET_SOURCE_DIR)/postinst $(CASTGET_IPK_DIR)/CONTROL/postinst
 	#sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(CASTGET_IPK_DIR)/CONTROL/postinst

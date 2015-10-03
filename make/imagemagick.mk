@@ -192,48 +192,48 @@ $(IMAGEMAGICK_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(IMAGEMAGICK_IPK_DIR)/opt/sbin or $(IMAGEMAGICK_IPK_DIR)/opt/bin
+# Binaries should be installed into $(IMAGEMAGICK_IPK_DIR)$(TARGET_PREFIX)/sbin or $(IMAGEMAGICK_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(IMAGEMAGICK_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(IMAGEMAGICK_IPK_DIR)/opt/etc/imagemagick/...
-# Documentation files should be installed in $(IMAGEMAGICK_IPK_DIR)/opt/doc/imagemagick/...
-# Daemon startup scripts should be installed in $(IMAGEMAGICK_IPK_DIR)/opt/etc/init.d/S??imagemagick
+# Libraries and include files should be installed into $(IMAGEMAGICK_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(IMAGEMAGICK_IPK_DIR)$(TARGET_PREFIX)/etc/imagemagick/...
+# Documentation files should be installed in $(IMAGEMAGICK_IPK_DIR)$(TARGET_PREFIX)/doc/imagemagick/...
+# Daemon startup scripts should be installed in $(IMAGEMAGICK_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??imagemagick
 #
 # You may need to patch your application to make it use these locations.
 #
 $(IMAGEMAGICK_IPK): $(IMAGEMAGICK_BUILD_DIR)/.built
 	rm -rf $(IMAGEMAGICK_IPK_DIR) $(BUILD_DIR)/imagemagick_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(IMAGEMAGICK_BUILD_DIR) DESTDIR=$(IMAGEMAGICK_IPK_DIR) transform='' install-am
-	rm -f $(IMAGEMAGICK_IPK_DIR)/opt/bin/*
-	rm -f $(IMAGEMAGICK_IPK_DIR)/opt/lib/libltdl*
-#	rm -f $(IMAGEMAGICK_IPK_DIR)/opt/lib/*.la
-	find $(IMAGEMAGICK_IPK_DIR)/opt/lib/ \
+	rm -f $(IMAGEMAGICK_IPK_DIR)$(TARGET_PREFIX)/bin/*
+	rm -f $(IMAGEMAGICK_IPK_DIR)$(TARGET_PREFIX)/lib/libltdl*
+#	rm -f $(IMAGEMAGICK_IPK_DIR)$(TARGET_PREFIX)/lib/*.la
+	find $(IMAGEMAGICK_IPK_DIR)$(TARGET_PREFIX)/lib/ \
 		-name '*.a' \
 		-exec rm -f {} \;
-#	find $(IMAGEMAGICK_IPK_DIR)/opt/lib/ \
+#	find $(IMAGEMAGICK_IPK_DIR)$(TARGET_PREFIX)/lib/ \
 		-name '*.la' \
 		-exec rm -f {} \;
-	find $(IMAGEMAGICK_IPK_DIR)/opt/lib/ \
+	find $(IMAGEMAGICK_IPK_DIR)$(TARGET_PREFIX)/lib/ \
 		-name '*.so' \
 		-exec chmod +w {} \; \
 		-exec $(STRIP_COMMAND) {} \; \
 		-exec chmod -w {} \;
-	for f in $(IMAGEMAGICK_IPK_DIR)/opt/lib/*.so.*; \
+	for f in $(IMAGEMAGICK_IPK_DIR)$(TARGET_PREFIX)/lib/*.so.*; \
 		do \
 		exec chmod +w $$f; \
 		$(STRIP_COMMAND) $$f; \
 		exec chmod +w $$f; \
 		done
-	cp $(IMAGEMAGICK_BUILD_DIR)/Magick++/bin/Magick++-config $(IMAGEMAGICK_IPK_DIR)/opt/bin
-	cp $(IMAGEMAGICK_BUILD_DIR)/magick/Magick-config $(IMAGEMAGICK_IPK_DIR)/opt/bin
-	cp $(IMAGEMAGICK_BUILD_DIR)/wand/Wand-config $(IMAGEMAGICK_IPK_DIR)/opt/bin
+	cp $(IMAGEMAGICK_BUILD_DIR)/Magick++/bin/Magick++-config $(IMAGEMAGICK_IPK_DIR)$(TARGET_PREFIX)/bin
+	cp $(IMAGEMAGICK_BUILD_DIR)/magick/Magick-config $(IMAGEMAGICK_IPK_DIR)$(TARGET_PREFIX)/bin
+	cp $(IMAGEMAGICK_BUILD_DIR)/wand/Wand-config $(IMAGEMAGICK_IPK_DIR)$(TARGET_PREFIX)/bin
 	for f in `ls $(IMAGEMAGICK_BUILD_DIR)/utilities/.libs`; \
 		do \
-		$(STRIP_COMMAND) $(IMAGEMAGICK_BUILD_DIR)/utilities/.libs/$$f -o $(IMAGEMAGICK_IPK_DIR)/opt/bin/$$f; \
-		$(STRIP_COMMAND) $(IMAGEMAGICK_IPK_DIR)/opt/bin/$$f; \
+		$(STRIP_COMMAND) $(IMAGEMAGICK_BUILD_DIR)/utilities/.libs/$$f -o $(IMAGEMAGICK_IPK_DIR)$(TARGET_PREFIX)/bin/$$f; \
+		$(STRIP_COMMAND) $(IMAGEMAGICK_IPK_DIR)$(TARGET_PREFIX)/bin/$$f; \
 		done
-	rm -rf $(IMAGEMAGICK_IPK_DIR)/opt/share/ImageMagick-$(IMAGEMAGICK_VER)/www
-	rm -rf $(IMAGEMAGICK_IPK_DIR)/opt/share/ImageMagick-$(IMAGEMAGICK_VER)/images
+	rm -rf $(IMAGEMAGICK_IPK_DIR)$(TARGET_PREFIX)/share/ImageMagick-$(IMAGEMAGICK_VER)/www
+	rm -rf $(IMAGEMAGICK_IPK_DIR)$(TARGET_PREFIX)/share/ImageMagick-$(IMAGEMAGICK_VER)/images
 	$(MAKE) $(IMAGEMAGICK_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(IMAGEMAGICK_IPK_DIR)
 

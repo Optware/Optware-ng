@@ -142,27 +142,27 @@ $(CPIO_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(CPIO_IPK_DIR)/opt/sbin or $(CPIO_IPK_DIR)/opt/bin
+# Binaries should be installed into $(CPIO_IPK_DIR)$(TARGET_PREFIX)/sbin or $(CPIO_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(CPIO_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(CPIO_IPK_DIR)/opt/etc/cpio/...
-# Documentation files should be installed in $(CPIO_IPK_DIR)/opt/doc/cpio/...
-# Daemon startup scripts should be installed in $(CPIO_IPK_DIR)/opt/etc/init.d/S??cpio
+# Libraries and include files should be installed into $(CPIO_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(CPIO_IPK_DIR)$(TARGET_PREFIX)/etc/cpio/...
+# Documentation files should be installed in $(CPIO_IPK_DIR)$(TARGET_PREFIX)/doc/cpio/...
+# Daemon startup scripts should be installed in $(CPIO_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??cpio
 #
 # You may need to patch your application to make it use these locations.
 #
 $(CPIO_IPK): $(CPIO_BUILD_DIR)/.built
 	rm -rf $(CPIO_IPK_DIR) $(BUILD_DIR)/cpio_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(CPIO_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(CPIO_IPK_DIR)$(TARGET_PREFIX)/bin
 	$(MAKE) -C $(CPIO_BUILD_DIR) DESTDIR=$(CPIO_IPK_DIR) install-strip
-	rm -f $(CPIO_IPK_DIR)/opt/share/info/dir
-	mv $(CPIO_IPK_DIR)/opt/bin/cpio $(CPIO_IPK_DIR)/opt/bin/cpio-cpio
+	rm -f $(CPIO_IPK_DIR)$(TARGET_PREFIX)/share/info/dir
+	mv $(CPIO_IPK_DIR)$(TARGET_PREFIX)/bin/cpio $(CPIO_IPK_DIR)$(TARGET_PREFIX)/bin/cpio-cpio
 	$(MAKE) $(CPIO_IPK_DIR)/CONTROL/control
 	(echo "#!/bin/sh"; \
-	 echo "update-alternatives --install /opt/bin/cpio cpio /opt/bin/cpio-cpio 80"; \
+	 echo "update-alternatives --install $(TARGET_PREFIX)/bin/cpio cpio $(TARGET_PREFIX)/bin/cpio-cpio 80"; \
 	) > $(CPIO_IPK_DIR)/CONTROL/postinst
 	(echo "#!/bin/sh"; \
-	 echo "update-alternatives --remove cpio /opt/bin/cpio-cpio"; \
+	 echo "update-alternatives --remove cpio $(TARGET_PREFIX)/bin/cpio-cpio"; \
 	) > $(CPIO_IPK_DIR)/CONTROL/prerm
 	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

@@ -44,7 +44,7 @@ TCSH_IPK_VERSION=1
 
 #
 # TCSH_CONFFILES should be a list of user-editable files
-#TCSH_CONFFILES=/opt/etc/tcsh.conf /opt/etc/init.d/SXXtcsh
+#TCSH_CONFFILES=$(TARGET_PREFIX)/etc/tcsh.conf $(TARGET_PREFIX)/etc/init.d/SXXtcsh
 
 #
 # TCSH_PATCHES should list any patches, in the the order in
@@ -190,19 +190,19 @@ $(TCSH_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(TCSH_IPK_DIR)/opt/sbin or $(TCSH_IPK_DIR)/opt/bin
+# Binaries should be installed into $(TCSH_IPK_DIR)$(TARGET_PREFIX)/sbin or $(TCSH_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(TCSH_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(TCSH_IPK_DIR)/opt/etc/tcsh/...
-# Documentation files should be installed in $(TCSH_IPK_DIR)/opt/doc/tcsh/...
-# Daemon startup scripts should be installed in $(TCSH_IPK_DIR)/opt/etc/init.d/S??tcsh
+# Libraries and include files should be installed into $(TCSH_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(TCSH_IPK_DIR)$(TARGET_PREFIX)/etc/tcsh/...
+# Documentation files should be installed in $(TCSH_IPK_DIR)$(TARGET_PREFIX)/doc/tcsh/...
+# Daemon startup scripts should be installed in $(TCSH_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??tcsh
 #
 # You may need to patch your application to make it use these locations.
 #
 $(TCSH_IPK): $(TCSH_BUILD_DIR)/.built
 	rm -rf $(TCSH_IPK_DIR) $(BUILD_DIR)/tcsh_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(TCSH_BUILD_DIR) DESTDIR=$(TCSH_IPK_DIR) install install.man
-	$(STRIP_COMMAND) $(TCSH_IPK_DIR)/opt/bin/tcsh
+	$(STRIP_COMMAND) $(TCSH_IPK_DIR)$(TARGET_PREFIX)/bin/tcsh
 	$(MAKE) $(TCSH_IPK_DIR)/CONTROL/control
 	echo $(TCSH_CONFFILES) | sed -e 's/ /\n/g' > $(TCSH_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TCSH_IPK_DIR)

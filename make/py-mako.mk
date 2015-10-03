@@ -46,7 +46,7 @@ PY-MAKO_CONFLICTS=
 
 #
 # PY-MAKO_CONFFILES should be a list of user-editable files
-#PY-MAKO_CONFFILES=/opt/etc/py-mako.conf /opt/etc/init.d/SXXpy-mako
+#PY-MAKO_CONFFILES=$(TARGET_PREFIX)/etc/py-mako.conf $(TARGET_PREFIX)/etc/init.d/SXXpy-mako
 
 #
 # PY-MAKO_PATCHES should list any patches, in the the order in
@@ -134,7 +134,7 @@ $(PY-MAKO_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MAKO_SOURCE) $(DL_DIR)/$(PY-MAK
         fi
 	mv $(BUILD_DIR)/$(PY-MAKO_DIR_OLD) $(@D)/2.5
 	(cd $(@D)/2.5; \
-	    (echo "[build_scripts]"; echo "executable=/opt/bin/python2.5") >> setup.cfg \
+	    (echo "[build_scripts]"; echo "executable=$(TARGET_PREFIX)/bin/python2.5") >> setup.cfg \
 	)
 	# 2.6
 	rm -rf $(BUILD_DIR)/$(PY-MAKO_DIR)
@@ -144,7 +144,7 @@ $(PY-MAKO_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MAKO_SOURCE) $(DL_DIR)/$(PY-MAK
         fi
 	mv $(BUILD_DIR)/$(PY-MAKO_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
-	    (echo "[build_scripts]"; echo "executable=/opt/bin/python2.6") >> setup.cfg \
+	    (echo "[build_scripts]"; echo "executable=$(TARGET_PREFIX)/bin/python2.6") >> setup.cfg \
 	)
 	# 2.7
 	rm -rf $(BUILD_DIR)/$(PY-MAKO_DIR)
@@ -154,7 +154,7 @@ $(PY-MAKO_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MAKO_SOURCE) $(DL_DIR)/$(PY-MAK
         fi
 	mv $(BUILD_DIR)/$(PY-MAKO_DIR) $(@D)/2.7
 	(cd $(@D)/2.7; \
-	    (echo "[build_scripts]"; echo "executable=/opt/bin/python2.7") >> setup.cfg \
+	    (echo "[build_scripts]"; echo "executable=$(TARGET_PREFIX)/bin/python2.7") >> setup.cfg \
 	)
 	# 3
 	rm -rf $(BUILD_DIR)/$(PY-MAKO_DIR)
@@ -164,7 +164,7 @@ $(PY-MAKO_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MAKO_SOURCE) $(DL_DIR)/$(PY-MAK
         fi
 	mv $(BUILD_DIR)/$(PY-MAKO_DIR) $(@D)/3
 	(cd $(@D)/3; \
-	    (echo "[build_scripts]"; echo "executable=/opt/bin/python$(PYTHON3_VERSION_MAJOR)") >> setup.cfg \
+	    (echo "[build_scripts]"; echo "executable=$(TARGET_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR)") >> setup.cfg \
 	)
 	touch $@
 
@@ -247,13 +247,13 @@ $(PY-MAKO_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(PY-MAKO_SOURCE) 
 	    ) >> setup.cfg; \
 	)
 	(cd $(@D)/2.5; \
-		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(HOST_STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	(cd $(@D)/2.6; \
-		$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+		$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(HOST_STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	(cd $(@D)/2.7; \
-		$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+		$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(HOST_STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	(cd $(@D)/3; \
-		$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+		$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(HOST_STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	touch $@
 
 py-mako-host-stage: $(PY-MAKO_HOST_BUILD_DIR)/.staged
@@ -323,12 +323,12 @@ $(PY3-MAKO_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PY-MAKO_IPK_DIR)/opt/sbin or $(PY-MAKO_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PY-MAKO_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PY-MAKO_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PY-MAKO_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PY-MAKO_IPK_DIR)/opt/etc/py-mako/...
-# Documentation files should be installed in $(PY-MAKO_IPK_DIR)/opt/doc/py-mako/...
-# Daemon startup scripts should be installed in $(PY-MAKO_IPK_DIR)/opt/etc/init.d/S??py-mako
+# Libraries and include files should be installed into $(PY-MAKO_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PY-MAKO_IPK_DIR)$(TARGET_PREFIX)/etc/py-mako/...
+# Documentation files should be installed in $(PY-MAKO_IPK_DIR)$(TARGET_PREFIX)/doc/py-mako/...
+# Daemon startup scripts should be installed in $(PY-MAKO_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??py-mako
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -338,8 +338,8 @@ $(PY25-MAKO_IPK): $(PY-MAKO_BUILD_DIR)/.built
 	(cd $(PY-MAKO_BUILD_DIR)/2.5; \
 	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
-	    --root=$(PY25-MAKO_IPK_DIR) --prefix=/opt)
-	for f in $(PY25-MAKO_IPK_DIR)/opt/bin/*; \
+	    --root=$(PY25-MAKO_IPK_DIR) --prefix=$(TARGET_PREFIX))
+	for f in $(PY25-MAKO_IPK_DIR)$(TARGET_PREFIX)/bin/*; \
 		do mv $$f `echo $$f | sed 's|$$|-py2.5|'`; done
 	$(MAKE) $(PY25-MAKO_IPK_DIR)/CONTROL/control
 #	echo $(PY-MAKO_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-MAKO_IPK_DIR)/CONTROL/conffiles
@@ -350,7 +350,7 @@ $(PY26-MAKO_IPK): $(PY-MAKO_BUILD_DIR)/.built
 	(cd $(PY-MAKO_BUILD_DIR)/2.6; \
 	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
 	    $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install \
-	    --root=$(PY26-MAKO_IPK_DIR) --prefix=/opt)
+	    --root=$(PY26-MAKO_IPK_DIR) --prefix=$(TARGET_PREFIX))
 	$(MAKE) $(PY26-MAKO_IPK_DIR)/CONTROL/control
 #	echo $(PY-MAKO_CONFFILES) | sed -e 's/ /\n/g' > $(PY26-MAKO_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-MAKO_IPK_DIR)
@@ -360,7 +360,7 @@ $(PY27-MAKO_IPK): $(PY-MAKO_BUILD_DIR)/.built
 	(cd $(PY-MAKO_BUILD_DIR)/2.7; \
 	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.7/site-packages \
 	    $(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install \
-	    --root=$(PY27-MAKO_IPK_DIR) --prefix=/opt)
+	    --root=$(PY27-MAKO_IPK_DIR) --prefix=$(TARGET_PREFIX))
 	$(MAKE) $(PY27-MAKO_IPK_DIR)/CONTROL/control
 #	echo $(PY-MAKO_CONFFILES) | sed -e 's/ /\n/g' > $(PY27-MAKO_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY27-MAKO_IPK_DIR)
@@ -370,7 +370,7 @@ $(PY3-MAKO_IPK): $(PY-MAKO_BUILD_DIR)/.built
 	(cd $(PY-MAKO_BUILD_DIR)/2.6; \
 	    PYTHONPATH=$(STAGING_LIB_DIR)/python$(PYTHON3_VERSION_MAJOR)/site-packages \
 	    $(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install \
-	    --root=$(PY26-MAKO_IPK_DIR) --prefix=/opt)
+	    --root=$(PY26-MAKO_IPK_DIR) --prefix=$(TARGET_PREFIX))
 	$(MAKE) $(PY3-MAKO_IPK_DIR)/CONTROL/control
 #	echo $(PY-MAKO_CONFFILES) | sed -e 's/ /\n/g' > $(PY26-MAKO_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY3-MAKO_IPK_DIR)

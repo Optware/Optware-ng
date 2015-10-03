@@ -149,12 +149,12 @@ xfixesproto-stage: $(XFIXESPROTO_BUILD_DIR)/.staged
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(XFIXESPROTO_IPK_DIR)/opt/sbin or $(XFIXESPROTO_IPK_DIR)/opt/bin
+# Binaries should be installed into $(XFIXESPROTO_IPK_DIR)$(TARGET_PREFIX)/sbin or $(XFIXESPROTO_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(XFIXESPROTO_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(XFIXESPROTO_IPK_DIR)/opt/etc/xfixesproto/...
-# Documentation files should be installed in $(XFIXESPROTO_IPK_DIR)/opt/doc/xfixesproto/...
-# Daemon startup scripts should be installed in $(XFIXESPROTO_IPK_DIR)/opt/etc/init.d/S??xfixesproto
+# Libraries and include files should be installed into $(XFIXESPROTO_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(XFIXESPROTO_IPK_DIR)$(TARGET_PREFIX)/etc/xfixesproto/...
+# Documentation files should be installed in $(XFIXESPROTO_IPK_DIR)$(TARGET_PREFIX)/doc/xfixesproto/...
+# Daemon startup scripts should be installed in $(XFIXESPROTO_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??xfixesproto
 #
 # You may need to patch your application to make it use these locations.
 #

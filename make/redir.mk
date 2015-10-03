@@ -40,7 +40,7 @@ REDIR_IPK_VERSION=1
 
 #
 # REDIR_CONFFILES should be a list of user-editable files
-#REDIR_CONFFILES=/opt/etc/redir.conf /opt/etc/init.d/SXXredir
+#REDIR_CONFFILES=$(TARGET_PREFIX)/etc/redir.conf $(TARGET_PREFIX)/etc/init.d/SXXredir
 
 #
 # REDIR_PATCHES should list any patches, in the the order in
@@ -181,24 +181,24 @@ $(REDIR_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(REDIR_IPK_DIR)/opt/sbin or $(REDIR_IPK_DIR)/opt/bin
+# Binaries should be installed into $(REDIR_IPK_DIR)$(TARGET_PREFIX)/sbin or $(REDIR_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(REDIR_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(REDIR_IPK_DIR)/opt/etc/redir/...
-# Documentation files should be installed in $(REDIR_IPK_DIR)/opt/doc/redir/...
-# Daemon startup scripts should be installed in $(REDIR_IPK_DIR)/opt/etc/init.d/S??redir
+# Libraries and include files should be installed into $(REDIR_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(REDIR_IPK_DIR)$(TARGET_PREFIX)/etc/redir/...
+# Documentation files should be installed in $(REDIR_IPK_DIR)$(TARGET_PREFIX)/doc/redir/...
+# Daemon startup scripts should be installed in $(REDIR_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??redir
 #
 # You may need to patch your application to make it use these locations.
 #
 $(REDIR_IPK): $(REDIR_BUILD_DIR)/.built
 	rm -rf $(REDIR_IPK_DIR) $(BUILD_DIR)/redir_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(REDIR_BUILD_DIR) DESTDIR=$(REDIR_IPK_DIR) install-strip
-	$(INSTALL) -d $(REDIR_IPK_DIR)/opt/bin
-	$(STRIP_COMMAND) $(REDIR_BUILD_DIR)/redir -o $(REDIR_IPK_DIR)/opt/bin/redir
-	$(INSTALL) -d $(REDIR_IPK_DIR)/opt/share/man/man1
-	$(INSTALL) -m 644 $(REDIR_BUILD_DIR)/redir.man $(REDIR_IPK_DIR)/opt/share/man/man1/
-	$(INSTALL) -d $(REDIR_IPK_DIR)/opt/share/doc/redir
-	$(INSTALL) -m644 $(REDIR_BUILD_DIR)/[CR]* $(REDIR_BUILD_DIR)/transproxy.txt $(REDIR_IPK_DIR)/opt/share/doc/redir
+	$(INSTALL) -d $(REDIR_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(STRIP_COMMAND) $(REDIR_BUILD_DIR)/redir -o $(REDIR_IPK_DIR)$(TARGET_PREFIX)/bin/redir
+	$(INSTALL) -d $(REDIR_IPK_DIR)$(TARGET_PREFIX)/share/man/man1
+	$(INSTALL) -m 644 $(REDIR_BUILD_DIR)/redir.man $(REDIR_IPK_DIR)$(TARGET_PREFIX)/share/man/man1/
+	$(INSTALL) -d $(REDIR_IPK_DIR)$(TARGET_PREFIX)/share/doc/redir
+	$(INSTALL) -m644 $(REDIR_BUILD_DIR)/[CR]* $(REDIR_BUILD_DIR)/transproxy.txt $(REDIR_IPK_DIR)$(TARGET_PREFIX)/share/doc/redir
 	$(MAKE) $(REDIR_IPK_DIR)/CONTROL/control
 	echo $(REDIR_CONFFILES) | sed -e 's/ /\n/g' > $(REDIR_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(REDIR_IPK_DIR)

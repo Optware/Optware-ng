@@ -41,7 +41,7 @@ STGIT_IPK_VERSION=1
 
 #
 # STGIT_CONFFILES should be a list of user-editable files
-#STGIT_CONFFILES=/opt/etc/stgit.conf /opt/etc/init.d/SXXstgit
+#STGIT_CONFFILES=$(TARGET_PREFIX)/etc/stgit.conf $(TARGET_PREFIX)/etc/init.d/SXXstgit
 
 #
 # STGIT_PATCHES should list any patches, in the the order in
@@ -121,9 +121,9 @@ $(STGIT_BUILD_DIR)/.configured: $(DL_DIR)/$(STGIT_SOURCE) $(STGIT_PATCHES) make/
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.5"; \
 	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
-	        echo "rpath=/opt/lib"; \
+	        echo "rpath=$(TARGET_PREFIX)/lib"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python2.5" \
+		echo "executable=$(TARGET_PREFIX)/bin/python2.5" \
 	    ) > setup.cfg; \
 	)
 	touch $@
@@ -135,7 +135,7 @@ stgit-unpack: $(STGIT_BUILD_DIR)/.configured
 #
 $(STGIT_BUILD_DIR)/.built: $(STGIT_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(@D) PYTHON=$(HOST_STAGING_PREFIX)/bin/python2.5 prefix=/opt
+	$(MAKE) -C $(@D) PYTHON=$(HOST_STAGING_PREFIX)/bin/python2.5 prefix=$(TARGET_PREFIX)
 	touch $@
 
 #
@@ -175,12 +175,12 @@ $(STGIT_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(STGIT_IPK_DIR)/opt/sbin or $(STGIT_IPK_DIR)/opt/bin
+# Binaries should be installed into $(STGIT_IPK_DIR)$(TARGET_PREFIX)/sbin or $(STGIT_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(STGIT_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(STGIT_IPK_DIR)/opt/etc/stgit/...
-# Documentation files should be installed in $(STGIT_IPK_DIR)/opt/doc/stgit/...
-# Daemon startup scripts should be installed in $(STGIT_IPK_DIR)/opt/etc/init.d/S??stgit
+# Libraries and include files should be installed into $(STGIT_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(STGIT_IPK_DIR)$(TARGET_PREFIX)/etc/stgit/...
+# Documentation files should be installed in $(STGIT_IPK_DIR)$(TARGET_PREFIX)/doc/stgit/...
+# Daemon startup scripts should be installed in $(STGIT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??stgit
 #
 # You may need to patch your application to make it use these locations.
 #

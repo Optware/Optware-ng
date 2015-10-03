@@ -124,8 +124,8 @@ $(SYSSTAT_BUILD_DIR)/.configured: $(DL_DIR)/$(SYSSTAT_SOURCE) $(SYSSTAT_PATCHES)
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=$(TARGET_PREFIX) \
-		--sysconfdir=/opt/etc \
-		--localstatedir=/opt/var \
+		--sysconfdir=$(TARGET_PREFIX)/etc \
+		--localstatedir=$(TARGET_PREFIX)/var \
 		--disable-nls \
 		--disable-static \
 		)
@@ -139,10 +139,10 @@ sysstat-unpack: $(SYSSTAT_BUILD_DIR)/.configured
 $(SYSSTAT_BUILD_DIR)/.built: $(SYSSTAT_BUILD_DIR)/.configured
 	rm -f $@
 	$(MAKE) -C $(@D) \
-		RC_DIR=/opt/etc \
-		SYSCONFIG_DIR=/opt/etc/sysconfig \
-		INIT_DIR=/opt/etc/init.d \
-		SA_DIR=/opt/var/log/sa \
+		RC_DIR=$(TARGET_PREFIX)/etc \
+		SYSCONFIG_DIR=$(TARGET_PREFIX)/etc/sysconfig \
+		INIT_DIR=$(TARGET_PREFIX)/etc/init.d \
+		SA_DIR=$(TARGET_PREFIX)/var/log/sa \
 		;
 	touch $@
 
@@ -183,12 +183,12 @@ $(SYSSTAT_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(SYSSTAT_IPK_DIR)/opt/sbin or $(SYSSTAT_IPK_DIR)/opt/bin
+# Binaries should be installed into $(SYSSTAT_IPK_DIR)$(TARGET_PREFIX)/sbin or $(SYSSTAT_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(SYSSTAT_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(SYSSTAT_IPK_DIR)/opt/etc/sysstat/...
-# Documentation files should be installed in $(SYSSTAT_IPK_DIR)/opt/doc/sysstat/...
-# Daemon startup scripts should be installed in $(SYSSTAT_IPK_DIR)/opt/etc/init.d/S??sysstat
+# Libraries and include files should be installed into $(SYSSTAT_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(SYSSTAT_IPK_DIR)$(TARGET_PREFIX)/etc/sysstat/...
+# Documentation files should be installed in $(SYSSTAT_IPK_DIR)$(TARGET_PREFIX)/doc/sysstat/...
+# Daemon startup scripts should be installed in $(SYSSTAT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??sysstat
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -197,16 +197,16 @@ $(SYSSTAT_IPK): $(SYSSTAT_BUILD_DIR)/.built
 	$(MAKE) -C $(SYSSTAT_BUILD_DIR) install \
 		DESTDIR=$(SYSSTAT_IPK_DIR) \
 		IGNORE_MAN_GROUP=y \
-		RC_DIR=/opt/etc \
-		SYSCONFIG_DIR=/opt/etc/sysconfig \
-		INIT_DIR=/opt/etc/init.d \
-		SA_DIR=/opt/var/log/sa \
+		RC_DIR=$(TARGET_PREFIX)/etc \
+		SYSCONFIG_DIR=$(TARGET_PREFIX)/etc/sysconfig \
+		INIT_DIR=$(TARGET_PREFIX)/etc/init.d \
+		SA_DIR=$(TARGET_PREFIX)/var/log/sa \
 		;
-#	$(INSTALL) -d $(SYSSTAT_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(SYSSTAT_SOURCE_DIR)/sysstat.conf $(SYSSTAT_IPK_DIR)/opt/etc/sysstat.conf
-	$(INSTALL) -d $(SYSSTAT_IPK_DIR)/opt/etc/init.d
-	$(INSTALL) -m 755 $(SYSSTAT_SOURCE_DIR)/rc.sysstat $(SYSSTAT_IPK_DIR)/opt/etc/init.d/S99sysstat
-	$(INSTALL) -m 644 $(SYSSTAT_SOURCE_DIR)/sysstat.crond $(SYSSTAT_IPK_DIR)/opt/share/doc/sysstat-$(SYSSTAT_VERSION)/sysstat.crond
+#	$(INSTALL) -d $(SYSSTAT_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(SYSSTAT_SOURCE_DIR)/sysstat.conf $(SYSSTAT_IPK_DIR)$(TARGET_PREFIX)/etc/sysstat.conf
+	$(INSTALL) -d $(SYSSTAT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(INSTALL) -m 755 $(SYSSTAT_SOURCE_DIR)/rc.sysstat $(SYSSTAT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S99sysstat
+	$(INSTALL) -m 644 $(SYSSTAT_SOURCE_DIR)/sysstat.crond $(SYSSTAT_IPK_DIR)$(TARGET_PREFIX)/share/doc/sysstat-$(SYSSTAT_VERSION)/sysstat.crond
 	$(MAKE) $(SYSSTAT_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 755 $(SYSSTAT_SOURCE_DIR)/postinst $(SYSSTAT_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 755 $(SYSSTAT_SOURCE_DIR)/prerm $(SYSSTAT_IPK_DIR)/CONTROL/prerm

@@ -40,7 +40,7 @@ LIBINKLEVEL_IPK_VERSION=1
 
 #
 # LIBINKLEVEL_CONFFILES should be a list of user-editable files
-#LIBINKLEVEL_CONFFILES=/opt/etc/libinklevel.conf /opt/etc/init.d/SXXlibinklevel
+#LIBINKLEVEL_CONFFILES=$(TARGET_PREFIX)/etc/libinklevel.conf $(TARGET_PREFIX)/etc/init.d/SXXlibinklevel
 
 #
 # LIBINKLEVEL_PATCHES should list any patches, in the the order in
@@ -154,7 +154,7 @@ libinklevel: $(LIBINKLEVEL_BUILD_DIR)/.built
 $(LIBINKLEVEL_BUILD_DIR)/.staged: $(LIBINKLEVEL_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(@D) install \
-		DESTDIR=$(STAGING_DIR) PREFIX=/opt
+		DESTDIR=$(STAGING_DIR) PREFIX=$(TARGET_PREFIX)
 	rm -f $(STAGING_LIB_DIR)/libinklevel.la
 	touch $@
 
@@ -182,25 +182,25 @@ $(LIBINKLEVEL_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LIBINKLEVEL_IPK_DIR)/opt/sbin or $(LIBINKLEVEL_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LIBINKLEVEL_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LIBINKLEVEL_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LIBINKLEVEL_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LIBINKLEVEL_IPK_DIR)/opt/etc/libinklevel/...
-# Documentation files should be installed in $(LIBINKLEVEL_IPK_DIR)/opt/doc/libinklevel/...
-# Daemon startup scripts should be installed in $(LIBINKLEVEL_IPK_DIR)/opt/etc/init.d/S??libinklevel
+# Libraries and include files should be installed into $(LIBINKLEVEL_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LIBINKLEVEL_IPK_DIR)$(TARGET_PREFIX)/etc/libinklevel/...
+# Documentation files should be installed in $(LIBINKLEVEL_IPK_DIR)$(TARGET_PREFIX)/doc/libinklevel/...
+# Daemon startup scripts should be installed in $(LIBINKLEVEL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??libinklevel
 #
 # You may need to patch your application to make it use these locations.
 #
 $(LIBINKLEVEL_IPK): $(LIBINKLEVEL_BUILD_DIR)/.built
 	rm -rf $(LIBINKLEVEL_IPK_DIR) $(BUILD_DIR)/libinklevel_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBINKLEVEL_BUILD_DIR) install \
-		DESTDIR=$(LIBINKLEVEL_IPK_DIR) PREFIX=/opt
-	$(STRIP_COMMAND) $(LIBINKLEVEL_IPK_DIR)/opt/lib/libinklevel.so
-#	$(INSTALL) -d $(LIBINKLEVEL_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(LIBINKLEVEL_SOURCE_DIR)/libinklevel.conf $(LIBINKLEVEL_IPK_DIR)/opt/etc/libinklevel.conf
-#	$(INSTALL) -d $(LIBINKLEVEL_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(LIBINKLEVEL_SOURCE_DIR)/rc.libinklevel $(LIBINKLEVEL_IPK_DIR)/opt/etc/init.d/SXXlibinklevel
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBINKLEVEL_IPK_DIR)/opt/etc/init.d/SXXlibinklevel
+		DESTDIR=$(LIBINKLEVEL_IPK_DIR) PREFIX=$(TARGET_PREFIX)
+	$(STRIP_COMMAND) $(LIBINKLEVEL_IPK_DIR)$(TARGET_PREFIX)/lib/libinklevel.so
+#	$(INSTALL) -d $(LIBINKLEVEL_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(LIBINKLEVEL_SOURCE_DIR)/libinklevel.conf $(LIBINKLEVEL_IPK_DIR)$(TARGET_PREFIX)/etc/libinklevel.conf
+#	$(INSTALL) -d $(LIBINKLEVEL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(LIBINKLEVEL_SOURCE_DIR)/rc.libinklevel $(LIBINKLEVEL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibinklevel
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBINKLEVEL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibinklevel
 	$(MAKE) $(LIBINKLEVEL_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(LIBINKLEVEL_SOURCE_DIR)/postinst $(LIBINKLEVEL_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBINKLEVEL_IPK_DIR)/CONTROL/postinst

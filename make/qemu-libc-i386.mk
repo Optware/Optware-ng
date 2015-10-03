@@ -146,8 +146,8 @@ $(QEMU_LIBC_I386_IPK_DIR)/CONTROL/postinst:
 	@$(INSTALL) -d $(QEMU_LIBC_I386_IPK_DIR)/CONTROL
 	@rm -f $@
 	@echo "#!/bin/sh" >>$@
-	@echo "mkdir -p /opt/$(QEMU_LIBC_I386_TARGET)/etc" >>$@
-	@echo "test -e /opt/$(QEMU_LIBC_I386_TARGET)/etc/ld.so.cache || /opt/bin/qemu-i386 /opt/$(QEMU_LIBC_I386_TARGET)/sbin/ldconfig -C /opt/$(QEMU_LIBC_I386_TARGET)/etc/ld.so.cache" >>$@
+	@echo "mkdir -p $(TARGET_PREFIX)/$(QEMU_LIBC_I386_TARGET)/etc" >>$@
+	@echo "test -e $(TARGET_PREFIX)/$(QEMU_LIBC_I386_TARGET)/etc/ld.so.cache || $(TARGET_PREFIX)/bin/qemu-i386 $(TARGET_PREFIX)/$(QEMU_LIBC_I386_TARGET)/sbin/ldconfig -C $(TARGET_PREFIX)/$(QEMU_LIBC_I386_TARGET)/etc/ld.so.cache" >>$@
 
 #
 # This builds the IPK file.
@@ -156,26 +156,26 @@ $(QEMU_LIBC_I386_IPK): $(QEMU_LIBC_I386_BUILD_DIR)/.built
 	rm -rf $(QEMU_LIBC_I386_IPK_DIR) $(BUILD_DIR)/qemu-libc-i386_*_$(TARGET_ARCH).ipk
 	$(MAKE) $(QEMU_LIBC_I386_IPK_DIR)/CONTROL/control
 	$(MAKE) $(QEMU_LIBC_I386_IPK_DIR)/CONTROL/postinst
-	mkdir -p $(QEMU_LIBC_I386_IPK_DIR)/opt/$(QEMU_LIBC_I386_TARGET)/lib
+	mkdir -p $(QEMU_LIBC_I386_IPK_DIR)$(TARGET_PREFIX)/$(QEMU_LIBC_I386_TARGET)/lib
 	cp -a $(QEMU_LIBC_I386_PREFIX)/$(QEMU_LIBC_I386_TARGET)/lib/*.so.* \
 		$(QEMU_LIBC_I386_PREFIX)/$(QEMU_LIBC_I386_TARGET)/lib/*.so \
-		$(QEMU_LIBC_I386_IPK_DIR)/opt/$(QEMU_LIBC_I386_TARGET)/lib
-	rm -rf $(QEMU_LIBC_I386_IPK_DIR)/opt/$(QEMU_LIBC_I386_TARGET)/lib/*.dir
-	( cd $(QEMU_LIBC_I386_IPK_DIR)/opt/$(QEMU_LIBC_I386_TARGET)/lib ; \
+		$(QEMU_LIBC_I386_IPK_DIR)$(TARGET_PREFIX)/$(QEMU_LIBC_I386_TARGET)/lib
+	rm -rf $(QEMU_LIBC_I386_IPK_DIR)$(TARGET_PREFIX)/$(QEMU_LIBC_I386_TARGET)/lib/*.dir
+	( cd $(QEMU_LIBC_I386_IPK_DIR)$(TARGET_PREFIX)/$(QEMU_LIBC_I386_TARGET)/lib ; \
 		for F in *.so *.so.* ; \
 		do if test -x $$F ; then \
 		$(QEMU_LIBC_I386_PREFIX)/bin/$(QEMU_LIBC_I386_TARGET)-strip \
 			$$F ; \
 		fi ; done ; \
 	)
-	mkdir -p $(QEMU_LIBC_I386_IPK_DIR)/opt/$(QEMU_LIBC_I386_TARGET)/sbin
+	mkdir -p $(QEMU_LIBC_I386_IPK_DIR)$(TARGET_PREFIX)/$(QEMU_LIBC_I386_TARGET)/sbin
 	$(QEMU_LIBC_I386_PREFIX)/bin/$(QEMU_LIBC_I386_TARGET)-strip \
 		$(QEMU_LIBC_I386_PREFIX)/$(QEMU_LIBC_I386_TARGET)/sbin/ldconfig \
-		-o $(QEMU_LIBC_I386_IPK_DIR)/opt/$(QEMU_LIBC_I386_TARGET)/sbin/ldconfig
-	mkdir -p $(QEMU_LIBC_I386_IPK_DIR)/opt/lib/gnemul
+		-o $(QEMU_LIBC_I386_IPK_DIR)$(TARGET_PREFIX)/$(QEMU_LIBC_I386_TARGET)/sbin/ldconfig
+	mkdir -p $(QEMU_LIBC_I386_IPK_DIR)$(TARGET_PREFIX)/lib/gnemul
 	ln -s ../../$(QEMU_LIBC_I386_TARGET) \
-		$(QEMU_LIBC_I386_IPK_DIR)/opt/lib/gnemul/qemu-i386
-	chmod a+rX -R $(QEMU_LIBC_I386_IPK_DIR)/opt
+		$(QEMU_LIBC_I386_IPK_DIR)$(TARGET_PREFIX)/lib/gnemul/qemu-i386
+	chmod a+rX -R $(QEMU_LIBC_I386_IPK_DIR)$(TARGET_PREFIX)
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(QEMU_LIBC_I386_IPK_DIR)
 
 #

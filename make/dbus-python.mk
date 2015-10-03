@@ -41,7 +41,7 @@ DBUS-PYTHON_IPK_VERSION=2
 
 #
 # DBUS-PYTHON_CONFFILES should be a list of user-editable files
-#DBUS-PYTHON_CONFFILES=/opt/etc/dbus-python.conf /opt/etc/init.d/SXXdbus-python
+#DBUS-PYTHON_CONFFILES=$(TARGET_PREFIX)/etc/dbus-python.conf $(TARGET_PREFIX)/etc/init.d/SXXdbus-python
 
 #
 # DBUS-PYTHON_PATCHES should list any patches, in the the order in
@@ -221,26 +221,26 @@ $(PY26-DBUS-PYTHON_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(DBUS-PYTHON_IPK_DIR)/opt/sbin or $(DBUS-PYTHON_IPK_DIR)/opt/bin
+# Binaries should be installed into $(DBUS-PYTHON_IPK_DIR)$(TARGET_PREFIX)/sbin or $(DBUS-PYTHON_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(DBUS-PYTHON_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(DBUS-PYTHON_IPK_DIR)/opt/etc/dbus-python/...
-# Documentation files should be installed in $(DBUS-PYTHON_IPK_DIR)/opt/doc/dbus-python/...
-# Daemon startup scripts should be installed in $(DBUS-PYTHON_IPK_DIR)/opt/etc/init.d/S??dbus-python
+# Libraries and include files should be installed into $(DBUS-PYTHON_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(DBUS-PYTHON_IPK_DIR)$(TARGET_PREFIX)/etc/dbus-python/...
+# Documentation files should be installed in $(DBUS-PYTHON_IPK_DIR)$(TARGET_PREFIX)/doc/dbus-python/...
+# Daemon startup scripts should be installed in $(DBUS-PYTHON_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??dbus-python
 #
 # You may need to patch your application to make it use these locations.
 #
 $(PY25-DBUS-PYTHON_IPK): $(DBUS-PYTHON_BUILD_DIR)/.built
 	rm -rf $(PY25-DBUS-PYTHON_IPK_DIR) $(BUILD_DIR)/py25-dbus-python_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(DBUS-PYTHON_BUILD_DIR)/2.5 DESTDIR=$(PY25-DBUS-PYTHON_IPK_DIR) install-strip
-#	$(STRIP_COMMAND) $(PY25-DBUS-PYTHON_IPK_DIR)/opt/lib/python2.5/site-packages/dbus-python/*.so
+#	$(STRIP_COMMAND) $(PY25-DBUS-PYTHON_IPK_DIR)$(TARGET_PREFIX)/lib/python2.5/site-packages/dbus-python/*.so
 	$(MAKE) $(PY25-DBUS-PYTHON_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-DBUS-PYTHON_IPK_DIR)
 
 $(PY26-DBUS-PYTHON_IPK): $(DBUS-PYTHON_BUILD_DIR)/.built
 	rm -rf $(PY26-DBUS-PYTHON_IPK_DIR) $(BUILD_DIR)/py26-dbus-python_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(DBUS-PYTHON_BUILD_DIR)/2.6 DESTDIR=$(PY26-DBUS-PYTHON_IPK_DIR) install-strip
-#	$(STRIP_COMMAND) $(PY26-DBUS-PYTHON_IPK_DIR)/opt/lib/python2.6/site-packages/dbus-python/*.so
+#	$(STRIP_COMMAND) $(PY26-DBUS-PYTHON_IPK_DIR)$(TARGET_PREFIX)/lib/python2.6/site-packages/dbus-python/*.so
 	$(MAKE) $(PY26-DBUS-PYTHON_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-DBUS-PYTHON_IPK_DIR)
 

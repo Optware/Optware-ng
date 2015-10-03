@@ -40,7 +40,7 @@ MINI_SENDMAIL_IPK_VERSION=1
 
 #
 # MINI_SENDMAIL_CONFFILES should be a list of user-editable files
-#MINI_SENDMAIL_CONFFILES=/opt/etc/mini-sendmail.conf /opt/etc/init.d/SXXmini-sendmail
+#MINI_SENDMAIL_CONFFILES=$(TARGET_PREFIX)/etc/mini-sendmail.conf $(TARGET_PREFIX)/etc/init.d/SXXmini-sendmail
 
 #
 # MINI_SENDMAIL_PATCHES should list any patches, in the the order in
@@ -116,8 +116,8 @@ $(MINI_SENDMAIL_BUILD_DIR)/.configured: $(DL_DIR)/$(MINI_SENDMAIL_SOURCE) $(MINI
 		then mv $(BUILD_DIR)/$(MINI_SENDMAIL_DIR) $(@D) ; \
 	fi
 	sed -i -e '/^CC\|^LDFLAGS\|^CFLAGS/d' \
-		-e 's|^BINDIR.*|BINDIR=$$(DESTDIR)/opt/bin|' \
-		-e 's|^MANDIR.*|MANDIR=$$(DESTDIR)/opt/man|' \
+		-e 's|^BINDIR.*|BINDIR=$$(DESTDIR)$(TARGET_PREFIX)/bin|' \
+		-e 's|^MANDIR.*|MANDIR=$$(DESTDIR)$(TARGET_PREFIX)/man|' \
 		$(MINI_SENDMAIL_BUILD_DIR)/Makefile	
 	touch $@
 
@@ -171,25 +171,25 @@ $(MINI_SENDMAIL_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(MINI_SENDMAIL_IPK_DIR)/opt/sbin or $(MINI_SENDMAIL_IPK_DIR)/opt/bin
+# Binaries should be installed into $(MINI_SENDMAIL_IPK_DIR)$(TARGET_PREFIX)/sbin or $(MINI_SENDMAIL_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(MINI_SENDMAIL_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(MINI_SENDMAIL_IPK_DIR)/opt/etc/mini-sendmail/...
-# Documentation files should be installed in $(MINI_SENDMAIL_IPK_DIR)/opt/doc/mini-sendmail/...
-# Daemon startup scripts should be installed in $(MINI_SENDMAIL_IPK_DIR)/opt/etc/init.d/S??mini-sendmail
+# Libraries and include files should be installed into $(MINI_SENDMAIL_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(MINI_SENDMAIL_IPK_DIR)$(TARGET_PREFIX)/etc/mini-sendmail/...
+# Documentation files should be installed in $(MINI_SENDMAIL_IPK_DIR)$(TARGET_PREFIX)/doc/mini-sendmail/...
+# Daemon startup scripts should be installed in $(MINI_SENDMAIL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??mini-sendmail
 #
 # You may need to patch your application to make it use these locations.
 #
 $(MINI_SENDMAIL_IPK): $(MINI_SENDMAIL_BUILD_DIR)/.built
 	rm -rf $(MINI_SENDMAIL_IPK_DIR) $(BUILD_DIR)/mini-sendmail_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(MINI_SENDMAIL_IPK_DIR)/opt/bin
-	$(INSTALL) -d $(MINI_SENDMAIL_IPK_DIR)/opt/man/man8
+	$(INSTALL) -d $(MINI_SENDMAIL_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(INSTALL) -d $(MINI_SENDMAIL_IPK_DIR)$(TARGET_PREFIX)/man/man8
 	$(MAKE) -C $(MINI_SENDMAIL_BUILD_DIR) DESTDIR=$(MINI_SENDMAIL_IPK_DIR) install
-	$(TARGET_STRIP) $(MINI_SENDMAIL_IPK_DIR)/opt/bin/mini_sendmail
-#	$(INSTALL) -m 644 $(MINI_SENDMAIL_SOURCE_DIR)/mini-sendmail.conf $(MINI_SENDMAIL_IPK_DIR)/opt/etc/mini-sendmail.conf
-#	$(INSTALL) -d $(MINI_SENDMAIL_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(MINI_SENDMAIL_SOURCE_DIR)/rc.mini-sendmail $(MINI_SENDMAIL_IPK_DIR)/opt/etc/init.d/SXXmini-sendmail
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MINI_SENDMAIL_IPK_DIR)/opt/etc/init.d/SXXmini-sendmail
+	$(TARGET_STRIP) $(MINI_SENDMAIL_IPK_DIR)$(TARGET_PREFIX)/bin/mini_sendmail
+#	$(INSTALL) -m 644 $(MINI_SENDMAIL_SOURCE_DIR)/mini-sendmail.conf $(MINI_SENDMAIL_IPK_DIR)$(TARGET_PREFIX)/etc/mini-sendmail.conf
+#	$(INSTALL) -d $(MINI_SENDMAIL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(MINI_SENDMAIL_SOURCE_DIR)/rc.mini-sendmail $(MINI_SENDMAIL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXmini-sendmail
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MINI_SENDMAIL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXmini-sendmail
 	$(MAKE) $(MINI_SENDMAIL_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(MINI_SENDMAIL_SOURCE_DIR)/postinst $(MINI_SENDMAIL_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MINI_SENDMAIL_IPK_DIR)/CONTROL/postinst

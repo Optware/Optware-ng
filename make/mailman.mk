@@ -45,7 +45,7 @@ MAILMAN_IPK_VERSION=1
 
 #
 # MAILMAN_CONFFILES should be a list of user-editable files
-#MAILMAN_CONFFILES=/opt/etc/mailman.conf /opt/etc/init.d/SXXmailman
+#MAILMAN_CONFFILES=$(TARGET_PREFIX)/etc/mailman.conf $(TARGET_PREFIX)/etc/init.d/SXXmailman
 
 #
 # MAILMAN_PATCHES should list any patches, in the the order in
@@ -124,8 +124,8 @@ $(MAILMAN_BUILD_DIR)/.configured: $(DL_DIR)/$(MAILMAN_SOURCE) $(MAILMAN_PATCHES)
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt/lib/mailman \
-		--with-var-prefix=/opt/var/mailman \
+		--prefix=$(TARGET_PREFIX)/lib/mailman \
+		--with-var-prefix=$(TARGET_PREFIX)/var/mailman \
 		--with-python=$(HOST_STAGING_PREFIX)/bin/python2.5 \
 		--with-username=root \
 		--with-groupname=root \
@@ -133,7 +133,7 @@ $(MAILMAN_BUILD_DIR)/.configured: $(DL_DIR)/$(MAILMAN_SOURCE) $(MAILMAN_PATCHES)
 		--disable-nls \
 		; \
 	)
-	find $(@D)/build -type f | xargs sed -i -e 's:^#!.*:#! /opt/bin/python:'
+	find $(@D)/build -type f | xargs sed -i -e 's:^#!.*:#! $(TARGET_PREFIX)/bin/python:'
 	touch $@
 
 mailman-unpack: $(MAILMAN_BUILD_DIR)/.configured
@@ -190,12 +190,12 @@ $(MAILMAN_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(MAILMAN_IPK_DIR)/opt/sbin or $(MAILMAN_IPK_DIR)/opt/bin
+# Binaries should be installed into $(MAILMAN_IPK_DIR)$(TARGET_PREFIX)/sbin or $(MAILMAN_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(MAILMAN_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(MAILMAN_IPK_DIR)/opt/etc/mailman/...
-# Documentation files should be installed in $(MAILMAN_IPK_DIR)/opt/doc/mailman/...
-# Daemon startup scripts should be installed in $(MAILMAN_IPK_DIR)/opt/etc/init.d/S??mailman
+# Libraries and include files should be installed into $(MAILMAN_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(MAILMAN_IPK_DIR)$(TARGET_PREFIX)/etc/mailman/...
+# Documentation files should be installed in $(MAILMAN_IPK_DIR)$(TARGET_PREFIX)/doc/mailman/...
+# Daemon startup scripts should be installed in $(MAILMAN_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??mailman
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -206,13 +206,13 @@ $(MAILMAN_IPK): $(MAILMAN_BUILD_DIR)/.built
 	LDFLAGS="$(STAGING_LDFLAGS) $(MAILMAN_LDFLAGS)" \
 	LDSHARED='$(TARGET_CC) -shared' \
 	$(MAKE) -C $(MAILMAN_BUILD_DIR) DESTDIR=$(MAILMAN_IPK_DIR) install
-	$(STRIP_COMMAND) $(MAILMAN_IPK_DIR)/opt/lib/mailman/cgi-bin/*
-	$(STRIP_COMMAND) $(MAILMAN_IPK_DIR)/opt/lib/mailman/mail/mailman
-	$(STRIP_COMMAND) `find $(MAILMAN_IPK_DIR)/opt/lib/mailman/ -name '*.so'`
-#	$(INSTALL) -d $(MAILMAN_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(MAILMAN_SOURCE_DIR)/mailman.conf $(MAILMAN_IPK_DIR)/opt/etc/mailman.conf
-#	$(INSTALL) -d $(MAILMAN_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(MAILMAN_SOURCE_DIR)/rc.mailman $(MAILMAN_IPK_DIR)/opt/etc/init.d/SXXmailman
+	$(STRIP_COMMAND) $(MAILMAN_IPK_DIR)$(TARGET_PREFIX)/lib/mailman/cgi-bin/*
+	$(STRIP_COMMAND) $(MAILMAN_IPK_DIR)$(TARGET_PREFIX)/lib/mailman/mail/mailman
+	$(STRIP_COMMAND) `find $(MAILMAN_IPK_DIR)$(TARGET_PREFIX)/lib/mailman/ -name '*.so'`
+#	$(INSTALL) -d $(MAILMAN_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(MAILMAN_SOURCE_DIR)/mailman.conf $(MAILMAN_IPK_DIR)$(TARGET_PREFIX)/etc/mailman.conf
+#	$(INSTALL) -d $(MAILMAN_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(MAILMAN_SOURCE_DIR)/rc.mailman $(MAILMAN_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXmailman
 	$(MAKE) $(MAILMAN_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(MAILMAN_SOURCE_DIR)/postinst $(MAILMAN_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 755 $(MAILMAN_SOURCE_DIR)/prerm $(MAILMAN_IPK_DIR)/CONTROL/prerm

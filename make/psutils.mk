@@ -109,7 +109,7 @@ $(PSUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(PSUTILS_SOURCE) $(PSUTILS_PATCHES)
 	#mv $(BUILD_DIR)/$(PSUTILS_DIR) $(PSUTILS_BUILD_DIR)
 	(cd $(PSUTILS_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
-		INCLUDEDIR=/opt/share/psutils \
+		INCLUDEDIR=$(TARGET_PREFIX)/share/psutils \
 		$(MAKE) -e -f Makefile.unix \
 	)
 	#$(PATCH_LIBTOOL) $(PSUTILS_BUILD_DIR)/libtool
@@ -164,31 +164,31 @@ $(PSUTILS_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PSUTILS_IPK_DIR)/opt/sbin or $(PSUTILS_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PSUTILS_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PSUTILS_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PSUTILS_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PSUTILS_IPK_DIR)/opt/etc/psutils/...
-# Documentation files should be installed in $(PSUTILS_IPK_DIR)/opt/doc/psutils/...
-# Daemon startup scripts should be installed in $(PSUTILS_IPK_DIR)/opt/etc/init.d/S??psutils
+# Libraries and include files should be installed into $(PSUTILS_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PSUTILS_IPK_DIR)$(TARGET_PREFIX)/etc/psutils/...
+# Documentation files should be installed in $(PSUTILS_IPK_DIR)$(TARGET_PREFIX)/doc/psutils/...
+# Daemon startup scripts should be installed in $(PSUTILS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??psutils
 #
 # You may need to patch your application to make it use these locations.
 #
 $(PSUTILS_IPK): $(PSUTILS_BUILD_DIR)/.built
 	rm -rf $(PSUTILS_IPK_DIR) $(BUILD_DIR)/psutils_*_$(TARGET_ARCH).ipk
-	mkdir -p $(PSUTILS_IPK_DIR)/opt/bin $(PSUTILS_IPK_DIR)/opt/share/man/man1 \
-		$(PSUTILS_IPK_DIR)/opt/share/psutils
-	BINDIR=$(PSUTILS_IPK_DIR)/opt/bin \
-		INCLUDEDIR=$(PSUTILS_IPK_DIR)/opt/share/psutils \
-		MANDIR=$(PSUTILS_IPK_DIR)/opt/share/man/man1/ \
+	mkdir -p $(PSUTILS_IPK_DIR)$(TARGET_PREFIX)/bin $(PSUTILS_IPK_DIR)$(TARGET_PREFIX)/share/man/man1 \
+		$(PSUTILS_IPK_DIR)$(TARGET_PREFIX)/share/psutils
+	BINDIR=$(PSUTILS_IPK_DIR)$(TARGET_PREFIX)/bin \
+		INCLUDEDIR=$(PSUTILS_IPK_DIR)$(TARGET_PREFIX)/share/psutils \
+		MANDIR=$(PSUTILS_IPK_DIR)$(TARGET_PREFIX)/share/man/man1/ \
 		$(MAKE) -C $(PSUTILS_BUILD_DIR) -e -f $(PSUTILS_BUILD_DIR)/Makefile.unix install
-	$(STRIP_COMMAND) $(PSUTILS_IPK_DIR)/opt/bin/psbook  \
-		$(PSUTILS_IPK_DIR)/opt/bin/psselect \
-		$(PSUTILS_IPK_DIR)/opt/bin/pstops \
-		$(PSUTILS_IPK_DIR)/opt/bin/epsffit \
-		$(PSUTILS_IPK_DIR)/opt/bin/psnup \
-		$(PSUTILS_IPK_DIR)/opt/bin/psresize 
+	$(STRIP_COMMAND) $(PSUTILS_IPK_DIR)$(TARGET_PREFIX)/bin/psbook  \
+		$(PSUTILS_IPK_DIR)$(TARGET_PREFIX)/bin/psselect \
+		$(PSUTILS_IPK_DIR)$(TARGET_PREFIX)/bin/pstops \
+		$(PSUTILS_IPK_DIR)$(TARGET_PREFIX)/bin/epsffit \
+		$(PSUTILS_IPK_DIR)$(TARGET_PREFIX)/bin/psnup \
+		$(PSUTILS_IPK_DIR)$(TARGET_PREFIX)/bin/psresize 
 
-	#$(INSTALL) -m 755 $(PSUTILS_SOURCE_DIR)/rc.psutils $(PSUTILS_IPK_DIR)/opt/etc/init.d/SXXpsutils
+	#$(INSTALL) -m 755 $(PSUTILS_SOURCE_DIR)/rc.psutils $(PSUTILS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXpsutils
 	$(MAKE) $(PSUTILS_IPK_DIR)/CONTROL/control
 	#$(INSTALL) -m 755 $(PSUTILS_SOURCE_DIR)/postinst $(PSUTILS_IPK_DIR)/CONTROL/postinst
 	#$(INSTALL) -m 755 $(PSUTILS_SOURCE_DIR)/prerm $(PSUTILS_IPK_DIR)/CONTROL/prerm

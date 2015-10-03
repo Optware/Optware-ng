@@ -42,7 +42,7 @@ MINI-SNMPD_IPK_VERSION=1
 
 #
 # MINI-SNMPD_CONFFILES should be a list of user-editable files
-#MINI-SNMPD_CONFFILES=/opt/etc/mini-snmpd.conf /opt/etc/init.d/SXXmini-snmpd
+#MINI-SNMPD_CONFFILES=$(TARGET_PREFIX)/etc/mini-snmpd.conf $(TARGET_PREFIX)/etc/init.d/SXXmini-snmpd
 
 #
 # MINI-SNMPD_PATCHES should list any patches, in the the order in
@@ -176,19 +176,19 @@ $(MINI-SNMPD_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(MINI-SNMPD_IPK_DIR)/opt/sbin or $(MINI-SNMPD_IPK_DIR)/opt/bin
+# Binaries should be installed into $(MINI-SNMPD_IPK_DIR)$(TARGET_PREFIX)/sbin or $(MINI-SNMPD_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(MINI-SNMPD_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(MINI-SNMPD_IPK_DIR)/opt/etc/mini-snmpd/...
-# Documentation files should be installed in $(MINI-SNMPD_IPK_DIR)/opt/doc/mini-snmpd/...
-# Daemon startup scripts should be installed in $(MINI-SNMPD_IPK_DIR)/opt/etc/init.d/S??mini-snmpd
+# Libraries and include files should be installed into $(MINI-SNMPD_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(MINI-SNMPD_IPK_DIR)$(TARGET_PREFIX)/etc/mini-snmpd/...
+# Documentation files should be installed in $(MINI-SNMPD_IPK_DIR)$(TARGET_PREFIX)/doc/mini-snmpd/...
+# Daemon startup scripts should be installed in $(MINI-SNMPD_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??mini-snmpd
 #
 # You may need to patch your application to make it use these locations.
 #
 $(MINI-SNMPD_IPK): $(MINI-SNMPD_BUILD_DIR)/.built
 	rm -rf $(MINI-SNMPD_IPK_DIR) $(BUILD_DIR)/mini-snmpd_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MINI-SNMPD_BUILD_DIR) INSTALL_ROOT=$(MINI-SNMPD_IPK_DIR)$(TARGET_PREFIX) install
-	$(STRIP_COMMAND) $(MINI-SNMPD_IPK_DIR)/opt/sbin/*
+	$(STRIP_COMMAND) $(MINI-SNMPD_IPK_DIR)$(TARGET_PREFIX)/sbin/*
 	$(MAKE) $(MINI-SNMPD_IPK_DIR)/CONTROL/control
 	echo $(MINI-SNMPD_CONFFILES) | sed -e 's/ /\n/g' > $(MINI-SNMPD_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MINI-SNMPD_IPK_DIR)

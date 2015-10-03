@@ -46,7 +46,7 @@ GTKSOURCEVIEW2_IPK_VERSION=1
 
 #
 # GTKSOURCEVIEW2_CONFFILES should be a list of user-editable files
-#GTKSOURCEVIEW2_CONFFILES=/opt/etc/gtksourceview2.conf /opt/etc/init.d/SXXgtksourceview2
+#GTKSOURCEVIEW2_CONFFILES=$(TARGET_PREFIX)/etc/gtksourceview2.conf $(TARGET_PREFIX)/etc/init.d/SXXgtksourceview2
 
 #
 # GTKSOURCEVIEW2_PATCHES should list any patches, in the the order in
@@ -188,24 +188,24 @@ $(GTKSOURCEVIEW2_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(GTKSOURCEVIEW2_IPK_DIR)/opt/sbin or $(GTKSOURCEVIEW2_IPK_DIR)/opt/bin
+# Binaries should be installed into $(GTKSOURCEVIEW2_IPK_DIR)$(TARGET_PREFIX)/sbin or $(GTKSOURCEVIEW2_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(GTKSOURCEVIEW2_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(GTKSOURCEVIEW2_IPK_DIR)/opt/etc/gtksourceview2/...
-# Documentation files should be installed in $(GTKSOURCEVIEW2_IPK_DIR)/opt/doc/gtksourceview2/...
-# Daemon startup scripts should be installed in $(GTKSOURCEVIEW2_IPK_DIR)/opt/etc/init.d/S??gtksourceview2
+# Libraries and include files should be installed into $(GTKSOURCEVIEW2_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(GTKSOURCEVIEW2_IPK_DIR)$(TARGET_PREFIX)/etc/gtksourceview2/...
+# Documentation files should be installed in $(GTKSOURCEVIEW2_IPK_DIR)$(TARGET_PREFIX)/doc/gtksourceview2/...
+# Daemon startup scripts should be installed in $(GTKSOURCEVIEW2_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??gtksourceview2
 #
 # You may need to patch your application to make it use these locations.
 #
 $(GTKSOURCEVIEW2_IPK): $(GTKSOURCEVIEW2_BUILD_DIR)/.built
 	rm -rf $(GTKSOURCEVIEW2_IPK_DIR) $(BUILD_DIR)/gtksourceview2_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GTKSOURCEVIEW2_BUILD_DIR) DESTDIR=$(GTKSOURCEVIEW2_IPK_DIR) install-strip
-	rm -f $(GTKSOURCEVIEW2_IPK_DIR)/opt/lib/*.la
-#	$(INSTALL) -d $(GTKSOURCEVIEW2_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(GTKSOURCEVIEW2_SOURCE_DIR)/gtksourceview2.conf $(GTKSOURCEVIEW2_IPK_DIR)/opt/etc/gtksourceview2.conf
-#	$(INSTALL) -d $(GTKSOURCEVIEW2_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(GTKSOURCEVIEW2_SOURCE_DIR)/rc.gtksourceview2 $(GTKSOURCEVIEW2_IPK_DIR)/opt/etc/init.d/SXXgtksourceview2
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(GTKSOURCEVIEW2_IPK_DIR)/opt/etc/init.d/SXXgtksourceview2
+	rm -f $(GTKSOURCEVIEW2_IPK_DIR)$(TARGET_PREFIX)/lib/*.la
+#	$(INSTALL) -d $(GTKSOURCEVIEW2_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(GTKSOURCEVIEW2_SOURCE_DIR)/gtksourceview2.conf $(GTKSOURCEVIEW2_IPK_DIR)$(TARGET_PREFIX)/etc/gtksourceview2.conf
+#	$(INSTALL) -d $(GTKSOURCEVIEW2_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(GTKSOURCEVIEW2_SOURCE_DIR)/rc.gtksourceview2 $(GTKSOURCEVIEW2_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXgtksourceview2
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(GTKSOURCEVIEW2_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXgtksourceview2
 	$(MAKE) $(GTKSOURCEVIEW2_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(GTKSOURCEVIEW2_SOURCE_DIR)/postinst $(GTKSOURCEVIEW2_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(GTKSOURCEVIEW2_IPK_DIR)/CONTROL/postinst

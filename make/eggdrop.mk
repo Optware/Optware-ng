@@ -46,7 +46,7 @@ EGGDROP_IPK_VERSION=1
 
 #
 # EGGDROP_CONFFILES should be a list of user-editable files
-EGGDROP_CONFFILES=/opt/etc/eggdrop.conf /opt/etc/init.d/S50eggdrop
+EGGDROP_CONFFILES=$(TARGET_PREFIX)/etc/eggdrop.conf $(TARGET_PREFIX)/etc/init.d/S50eggdrop
 
 #
 # EGGDROP_PATCHES should list any patches, in the the order in
@@ -120,7 +120,7 @@ $(EGGDROP_BUILD_DIR)/.configured: $(DL_DIR)/$(EGGDROP_SOURCE) $(EGGDROP_PATCHES)
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt/share/eggdrop \
+		--prefix=$(TARGET_PREFIX)/share/eggdrop \
 		--disable-nls \
 		--with-tclinc=$(STAGING_INCLUDE_DIR)/tcl.h \
 		--with-tcllib=$(STAGING_LIB_DIR)/libtcl.so \
@@ -166,25 +166,25 @@ $(EGGDROP_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(EGGDROP_IPK_DIR)/opt/sbin or $(EGGDROP_IPK_DIR)/opt/bin
+# Binaries should be installed into $(EGGDROP_IPK_DIR)$(TARGET_PREFIX)/sbin or $(EGGDROP_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(EGGDROP_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(EGGDROP_IPK_DIR)/opt/etc/eggdrop/...
-# Documentation files should be installed in $(EGGDROP_IPK_DIR)/opt/doc/eggdrop/...
-# Daemon startup scripts should be installed in $(EGGDROP_IPK_DIR)/opt/etc/init.d/S??eggdrop
+# Libraries and include files should be installed into $(EGGDROP_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(EGGDROP_IPK_DIR)$(TARGET_PREFIX)/etc/eggdrop/...
+# Documentation files should be installed in $(EGGDROP_IPK_DIR)$(TARGET_PREFIX)/doc/eggdrop/...
+# Daemon startup scripts should be installed in $(EGGDROP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??eggdrop
 #
 # You may need to patch your application to make it use these locations.
 #
 $(EGGDROP_IPK): $(EGGDROP_BUILD_DIR)/.built
 	rm -rf $(EGGDROP_IPK_DIR) $(BUILD_DIR)/eggdrop_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(EGGDROP_BUILD_DIR) DEST=$(EGGDROP_IPK_DIR)/opt/share/eggdrop install
-	$(STRIP_COMMAND) $(EGGDROP_IPK_DIR)/opt/share/eggdrop/eggdrop-$(EGGDROP_VERSION)
-	$(STRIP_COMMAND) $(EGGDROP_IPK_DIR)/opt/share/eggdrop/modules-$(EGGDROP_VERSION)/*.so
-	mv $(EGGDROP_IPK_DIR)/opt/share/eggdrop/eggdrop.conf $(EGGDROP_IPK_DIR)/opt/share/eggdrop/eggdrop-orig.conf
+	$(MAKE) -C $(EGGDROP_BUILD_DIR) DEST=$(EGGDROP_IPK_DIR)$(TARGET_PREFIX)/share/eggdrop install
+	$(STRIP_COMMAND) $(EGGDROP_IPK_DIR)$(TARGET_PREFIX)/share/eggdrop/eggdrop-$(EGGDROP_VERSION)
+	$(STRIP_COMMAND) $(EGGDROP_IPK_DIR)$(TARGET_PREFIX)/share/eggdrop/modules-$(EGGDROP_VERSION)/*.so
+	mv $(EGGDROP_IPK_DIR)$(TARGET_PREFIX)/share/eggdrop/eggdrop.conf $(EGGDROP_IPK_DIR)$(TARGET_PREFIX)/share/eggdrop/eggdrop-orig.conf
 	$(MAKE) $(EGGDROP_IPK_DIR)/CONTROL/control
-	$(INSTALL) -d $(EGGDROP_IPK_DIR)/opt/etc/init.d
-	$(INSTALL) -m 755 $(EGGDROP_SOURCE_DIR)/rc.eggdrop $(EGGDROP_IPK_DIR)/opt/etc/init.d/S50eggdrop
-	$(INSTALL) -m 644 $(EGGDROP_BUILD_DIR)/eggdrop.conf $(EGGDROP_IPK_DIR)/opt/etc/
+	$(INSTALL) -d $(EGGDROP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(INSTALL) -m 755 $(EGGDROP_SOURCE_DIR)/rc.eggdrop $(EGGDROP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S50eggdrop
+	$(INSTALL) -m 644 $(EGGDROP_BUILD_DIR)/eggdrop.conf $(EGGDROP_IPK_DIR)$(TARGET_PREFIX)/etc/
 	$(INSTALL) -m 755 $(EGGDROP_SOURCE_DIR)/postinst $(EGGDROP_IPK_DIR)/CONTROL/postinst
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(EGGDROP_IPK_DIR)
 

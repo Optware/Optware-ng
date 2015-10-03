@@ -45,7 +45,7 @@ W3M_IPK_VERSION=2
 
 #
 # W3M_CONFFILES should be a list of user-editable files
-#W3M_CONFFILES=/opt/etc/w3m.conf /opt/etc/init.d/SXXw3m
+#W3M_CONFFILES=$(TARGET_PREFIX)/etc/w3m.conf $(TARGET_PREFIX)/etc/init.d/SXXw3m
 
 #
 # W3M_PATCHES should list any patches, in the the order in
@@ -158,12 +158,12 @@ else
 	@echo "=============================== host w3m configure ======================="
 	cd $(@D)/hostbuild; \
 		ac_cv_sizeof_long_long=8 \
-		CPPFLAGS="-I$(W3M_LIBGC_HOSTBUILD_DIR)/opt/include" \
-		LDFLAGS="-L$(W3M_LIBGC_HOSTBUILD_DIR)/opt/lib -pthread" \
+		CPPFLAGS="-I$(W3M_LIBGC_HOSTBUILD_DIR)$(TARGET_PREFIX)/include" \
+		LDFLAGS="-L$(W3M_LIBGC_HOSTBUILD_DIR)$(TARGET_PREFIX)/lib -pthread" \
 		../configure \
 		--disable-image \
 		--without-ssl \
-		--with-gc=$(W3M_LIBGC_HOSTBUILD_DIR)/opt
+		--with-gc=$(W3M_LIBGC_HOSTBUILD_DIR)$(TARGET_PREFIX)
 	@echo "=============================== host w3m mktable =========================="
 	$(MAKE) -C $(@D)/hostbuild mktable CROSS_COMPILATION=no
 	cp $(@D)/hostbuild/mktable $(@D)
@@ -201,7 +201,7 @@ ifeq ($(HOSTCC), $(TARGET_CC))
 	    $(MAKE) -C $(@D) CROSS_COMPILATION=no
 else
 	@echo "=============================== cross w3m build ============================"
-	LD_LIBRARY_PATH=$(W3M_LIBGC_HOSTBUILD_DIR)/opt/lib \
+	LD_LIBRARY_PATH=$(W3M_LIBGC_HOSTBUILD_DIR)$(TARGET_PREFIX)/lib \
 	$(MAKE) -C $(@D) CROSS_COMPILATION=yes
 endif
 	touch $@
@@ -242,25 +242,25 @@ $(W3M_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(W3M_IPK_DIR)/opt/sbin or $(W3M_IPK_DIR)/opt/bin
+# Binaries should be installed into $(W3M_IPK_DIR)$(TARGET_PREFIX)/sbin or $(W3M_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(W3M_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(W3M_IPK_DIR)/opt/etc/w3m/...
-# Documentation files should be installed in $(W3M_IPK_DIR)/opt/doc/w3m/...
-# Daemon startup scripts should be installed in $(W3M_IPK_DIR)/opt/etc/init.d/S??w3m
+# Libraries and include files should be installed into $(W3M_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(W3M_IPK_DIR)$(TARGET_PREFIX)/etc/w3m/...
+# Documentation files should be installed in $(W3M_IPK_DIR)$(TARGET_PREFIX)/doc/w3m/...
+# Daemon startup scripts should be installed in $(W3M_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??w3m
 #
 # You may need to patch your application to make it use these locations.
 #
 $(W3M_IPK): $(W3M_BUILD_DIR)/.built
 	rm -rf $(W3M_IPK_DIR) $(BUILD_DIR)/w3m_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(W3M_BUILD_DIR) DESTDIR=$(W3M_IPK_DIR) install
-	$(STRIP_COMMAND) $(W3M_IPK_DIR)/opt/bin/w3m
-	$(STRIP_COMMAND) $(W3M_IPK_DIR)/opt/libexec/w3m/inflate
-	$(STRIP_COMMAND) $(W3M_IPK_DIR)/opt/libexec/w3m/cgi-bin/w3mbookmark $(W3M_IPK_DIR)/opt/libexec/w3m/cgi-bin/w3mhelperpanel
-#	$(INSTALL) -d $(W3M_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(W3M_SOURCE_DIR)/w3m.conf $(W3M_IPK_DIR)/opt/etc/w3m.conf
-#	$(INSTALL) -d $(W3M_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(W3M_SOURCE_DIR)/rc.w3m $(W3M_IPK_DIR)/opt/etc/init.d/SXXw3m
+	$(STRIP_COMMAND) $(W3M_IPK_DIR)$(TARGET_PREFIX)/bin/w3m
+	$(STRIP_COMMAND) $(W3M_IPK_DIR)$(TARGET_PREFIX)/libexec/w3m/inflate
+	$(STRIP_COMMAND) $(W3M_IPK_DIR)$(TARGET_PREFIX)/libexec/w3m/cgi-bin/w3mbookmark $(W3M_IPK_DIR)$(TARGET_PREFIX)/libexec/w3m/cgi-bin/w3mhelperpanel
+#	$(INSTALL) -d $(W3M_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(W3M_SOURCE_DIR)/w3m.conf $(W3M_IPK_DIR)$(TARGET_PREFIX)/etc/w3m.conf
+#	$(INSTALL) -d $(W3M_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(W3M_SOURCE_DIR)/rc.w3m $(W3M_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXw3m
 	$(MAKE) $(W3M_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(W3M_SOURCE_DIR)/postinst $(W3M_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 755 $(W3M_SOURCE_DIR)/prerm $(W3M_IPK_DIR)/CONTROL/prerm

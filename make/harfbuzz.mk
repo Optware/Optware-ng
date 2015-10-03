@@ -46,7 +46,7 @@ HARFBUZZ_IPK_VERSION=1
 
 #
 # HARFBUZZ_CONFFILES should be a list of user-editable files
-#HARFBUZZ_CONFFILES=/opt/etc/harfbuzz.conf /opt/etc/init.d/SXXharfbuzz
+#HARFBUZZ_CONFFILES=$(TARGET_PREFIX)/etc/harfbuzz.conf $(TARGET_PREFIX)/etc/init.d/SXXharfbuzz
 
 #
 # HARFBUZZ_PATCHES should list any patches, in the the order in
@@ -161,7 +161,7 @@ $(HARFBUZZ_BUILD_DIR)/.staged: $(HARFBUZZ_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	rm -f $(STAGING_LIB_DIR)/libharfbuzz.la
-	sed -ie 's|=/opt|=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/harfbuzz.pc
+	sed -ie 's|=$(TARGET_PREFIX)|=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/harfbuzz.pc
 	touch $@
 
 harfbuzz-stage: $(HARFBUZZ_BUILD_DIR)/.staged
@@ -188,23 +188,23 @@ $(HARFBUZZ_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(HARFBUZZ_IPK_DIR)/opt/sbin or $(HARFBUZZ_IPK_DIR)/opt/bin
+# Binaries should be installed into $(HARFBUZZ_IPK_DIR)$(TARGET_PREFIX)/sbin or $(HARFBUZZ_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(HARFBUZZ_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(HARFBUZZ_IPK_DIR)/opt/etc/harfbuzz/...
-# Documentation files should be installed in $(HARFBUZZ_IPK_DIR)/opt/doc/harfbuzz/...
-# Daemon startup scripts should be installed in $(HARFBUZZ_IPK_DIR)/opt/etc/init.d/S??harfbuzz
+# Libraries and include files should be installed into $(HARFBUZZ_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(HARFBUZZ_IPK_DIR)$(TARGET_PREFIX)/etc/harfbuzz/...
+# Documentation files should be installed in $(HARFBUZZ_IPK_DIR)$(TARGET_PREFIX)/doc/harfbuzz/...
+# Daemon startup scripts should be installed in $(HARFBUZZ_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??harfbuzz
 #
 # You may need to patch your application to make it use these locations.
 #
 $(HARFBUZZ_IPK): $(HARFBUZZ_BUILD_DIR)/.built
 	rm -rf $(HARFBUZZ_IPK_DIR) $(BUILD_DIR)/harfbuzz_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(HARFBUZZ_BUILD_DIR) DESTDIR=$(HARFBUZZ_IPK_DIR) install-strip
-#	$(INSTALL) -d $(HARFBUZZ_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(HARFBUZZ_SOURCE_DIR)/harfbuzz.conf $(HARFBUZZ_IPK_DIR)/opt/etc/harfbuzz.conf
-#	$(INSTALL) -d $(HARFBUZZ_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(HARFBUZZ_SOURCE_DIR)/rc.harfbuzz $(HARFBUZZ_IPK_DIR)/opt/etc/init.d/SXXharfbuzz
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(HARFBUZZ_IPK_DIR)/opt/etc/init.d/SXXharfbuzz
+#	$(INSTALL) -d $(HARFBUZZ_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(HARFBUZZ_SOURCE_DIR)/harfbuzz.conf $(HARFBUZZ_IPK_DIR)$(TARGET_PREFIX)/etc/harfbuzz.conf
+#	$(INSTALL) -d $(HARFBUZZ_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(HARFBUZZ_SOURCE_DIR)/rc.harfbuzz $(HARFBUZZ_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXharfbuzz
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(HARFBUZZ_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXharfbuzz
 	$(MAKE) $(HARFBUZZ_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(HARFBUZZ_SOURCE_DIR)/postinst $(HARFBUZZ_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(HARFBUZZ_IPK_DIR)/CONTROL/postinst

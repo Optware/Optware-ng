@@ -40,7 +40,7 @@ DIFFSTAT_IPK_VERSION=1
 
 #
 # DIFFSTAT_CONFFILES should be a list of user-editable files
-#DIFFSTAT_CONFFILES=/opt/etc/diffstat.conf /opt/etc/init.d/SXXdiffstat
+#DIFFSTAT_CONFFILES=$(TARGET_PREFIX)/etc/diffstat.conf $(TARGET_PREFIX)/etc/init.d/SXXdiffstat
 
 #
 # DIFFSTAT_PATCHES should list any patches, in the the order in
@@ -177,24 +177,24 @@ $(DIFFSTAT_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(DIFFSTAT_IPK_DIR)/opt/sbin or $(DIFFSTAT_IPK_DIR)/opt/bin
+# Binaries should be installed into $(DIFFSTAT_IPK_DIR)$(TARGET_PREFIX)/sbin or $(DIFFSTAT_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(DIFFSTAT_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(DIFFSTAT_IPK_DIR)/opt/etc/diffstat/...
-# Documentation files should be installed in $(DIFFSTAT_IPK_DIR)/opt/doc/diffstat/...
-# Daemon startup scripts should be installed in $(DIFFSTAT_IPK_DIR)/opt/etc/init.d/S??diffstat
+# Libraries and include files should be installed into $(DIFFSTAT_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(DIFFSTAT_IPK_DIR)$(TARGET_PREFIX)/etc/diffstat/...
+# Documentation files should be installed in $(DIFFSTAT_IPK_DIR)$(TARGET_PREFIX)/doc/diffstat/...
+# Daemon startup scripts should be installed in $(DIFFSTAT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??diffstat
 #
 # You may need to patch your application to make it use these locations.
 #
 $(DIFFSTAT_IPK): $(DIFFSTAT_BUILD_DIR)/.built
 	rm -rf $(DIFFSTAT_IPK_DIR) $(BUILD_DIR)/diffstat_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(DIFFSTAT_BUILD_DIR) DESTDIR=$(DIFFSTAT_IPK_DIR) install
-	$(STRIP_COMMAND) $(DIFFSTAT_IPK_DIR)/opt/bin/diffstat
-#	$(INSTALL) -d $(DIFFSTAT_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(DIFFSTAT_SOURCE_DIR)/diffstat.conf $(DIFFSTAT_IPK_DIR)/opt/etc/diffstat.conf
-#	$(INSTALL) -d $(DIFFSTAT_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(DIFFSTAT_SOURCE_DIR)/rc.diffstat $(DIFFSTAT_IPK_DIR)/opt/etc/init.d/SXXdiffstat
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(DIFFSTAT_IPK_DIR)/opt/etc/init.d/SXXdiffstat
+	$(STRIP_COMMAND) $(DIFFSTAT_IPK_DIR)$(TARGET_PREFIX)/bin/diffstat
+#	$(INSTALL) -d $(DIFFSTAT_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(DIFFSTAT_SOURCE_DIR)/diffstat.conf $(DIFFSTAT_IPK_DIR)$(TARGET_PREFIX)/etc/diffstat.conf
+#	$(INSTALL) -d $(DIFFSTAT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(DIFFSTAT_SOURCE_DIR)/rc.diffstat $(DIFFSTAT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXdiffstat
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(DIFFSTAT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXdiffstat
 	$(MAKE) $(DIFFSTAT_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(DIFFSTAT_SOURCE_DIR)/postinst $(DIFFSTAT_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(DIFFSTAT_IPK_DIR)/CONTROL/postinst

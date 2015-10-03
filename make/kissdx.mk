@@ -46,7 +46,7 @@ KISSDX_IPK_VERSION=3
 
 #
 # KISSDX_CONFFILES should be a list of user-editable files
-KISSDX_CONFFILES=/opt/etc/kissdx.conf /opt/etc/init.d/S83kissdx
+KISSDX_CONFFILES=$(TARGET_PREFIX)/etc/kissdx.conf $(TARGET_PREFIX)/etc/init.d/S83kissdx
 
 #
 # KISSDX_PATCHES should list any patches, in the the order in
@@ -136,10 +136,10 @@ endif
 	rm -f $(KISSDX_BUILD_DIR)/Makefile
 	mv $(KISSDX_BUILD_DIR)/Makefile-Unslung $(KISSDX_BUILD_DIR)/Makefile
 	sed -i "s#CFLAGS = #CFLAGS = ${STAGING_CPPFLAGS} ${KISSDX_CPPFLAGS} #" $(KISSDX_BUILD_DIR)/Makefile
-	sed -i "s#-L/opt/lib#${STAGING_LDFLAGS} ${KISSDX_LDFLAGS}#" $(KISSDX_BUILD_DIR)/Makefile
-	sed -i "s#$(DESTDIR)/usr/sbin/#${STAGING_DIR}/opt/bin/#g" $(KISSDX_BUILD_DIR)/Makefile
-	sed -i "s#$(DESTDIR)/etc/#${STAGING_DIR}/opt/etc/#g" $(KISSDX_BUILD_DIR)/Makefile
-	sed -i "s#$(DESTDIR)/usr/share/man/#${STAGING_DIR}/opt/man/#g" $(KISSDX_BUILD_DIR)/Makefile
+	sed -i "s#-L$(TARGET_PREFIX)/lib#${STAGING_LDFLAGS} ${KISSDX_LDFLAGS}#" $(KISSDX_BUILD_DIR)/Makefile
+	sed -i "s#$(DESTDIR)/usr/sbin/#${STAGING_DIR}$(TARGET_PREFIX)/bin/#g" $(KISSDX_BUILD_DIR)/Makefile
+	sed -i "s#$(DESTDIR)/etc/#${STAGING_DIR}$(TARGET_PREFIX)/etc/#g" $(KISSDX_BUILD_DIR)/Makefile
+	sed -i "s#$(DESTDIR)/usr/share/man/#${STAGING_DIR}$(TARGET_PREFIX)/man/#g" $(KISSDX_BUILD_DIR)/Makefile
 	sed -i "s#-S .old ##g" $(KISSDX_BUILD_DIR)/Makefile
 	touch $(KISSDX_BUILD_DIR)/.configured
 
@@ -181,27 +181,27 @@ $(KISSDX_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(KISSDX_IPK_DIR)/opt/sbin or $(KISSDX_IPK_DIR)/opt/bin
+# Binaries should be installed into $(KISSDX_IPK_DIR)$(TARGET_PREFIX)/sbin or $(KISSDX_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(KISSDX_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(KISSDX_IPK_DIR)/opt/etc/kissdx/...
-# Documentation files should be installed in $(KISSDX_IPK_DIR)/opt/doc/kissdx/...
-# Daemon startup scripts should be installed in $(KISSDX_IPK_DIR)/opt/etc/init.d/S??kissdx
+# Libraries and include files should be installed into $(KISSDX_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(KISSDX_IPK_DIR)$(TARGET_PREFIX)/etc/kissdx/...
+# Documentation files should be installed in $(KISSDX_IPK_DIR)$(TARGET_PREFIX)/doc/kissdx/...
+# Daemon startup scripts should be installed in $(KISSDX_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??kissdx
 #
 # You may need to patch your application to make it use these locations.
 #
 $(KISSDX_IPK): $(KISSDX_BUILD_DIR)/.built
 	rm -rf $(KISSDX_IPK_DIR) $(BUILD_DIR)/kissdx_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(KISSDX_BUILD_DIR) DESTDIR=$(KISSDX_IPK_DIR)
-	$(INSTALL) -d $(KISSDX_IPK_DIR)/opt/bin/
-	$(INSTALL) -m 755 $(KISSDX_BUILD_DIR)/kissdx $(KISSDX_IPK_DIR)/opt/bin/kissdx
-	$(INSTALL) -d $(KISSDX_IPK_DIR)/opt/etc/
-	$(INSTALL) -m 644 $(KISSDX_BUILD_DIR)/kissdx.conf $(KISSDX_IPK_DIR)/opt/etc/kissdx.conf
-	$(INSTALL) -d $(KISSDX_IPK_DIR)/opt/etc/init.d
-	$(INSTALL) -m 755 $(KISSDX_SOURCE_DIR)/rc.kissdx $(KISSDX_IPK_DIR)/opt/etc/init.d/S83kissdx
-	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(KISSDX_IPK_DIR)/opt/etc/init.d/S83kissdx
-	$(INSTALL) -d $(KISSDX_IPK_DIR)/opt/man/man1/
-	$(INSTALL) -m 644 $(KISSDX_BUILD_DIR)/kissdx.1 $(KISSDX_IPK_DIR)/opt/man/man1/kissdx.1
+	$(INSTALL) -d $(KISSDX_IPK_DIR)$(TARGET_PREFIX)/bin/
+	$(INSTALL) -m 755 $(KISSDX_BUILD_DIR)/kissdx $(KISSDX_IPK_DIR)$(TARGET_PREFIX)/bin/kissdx
+	$(INSTALL) -d $(KISSDX_IPK_DIR)$(TARGET_PREFIX)/etc/
+	$(INSTALL) -m 644 $(KISSDX_BUILD_DIR)/kissdx.conf $(KISSDX_IPK_DIR)$(TARGET_PREFIX)/etc/kissdx.conf
+	$(INSTALL) -d $(KISSDX_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(INSTALL) -m 755 $(KISSDX_SOURCE_DIR)/rc.kissdx $(KISSDX_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S83kissdx
+	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(KISSDX_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S83kissdx
+	$(INSTALL) -d $(KISSDX_IPK_DIR)$(TARGET_PREFIX)/man/man1/
+	$(INSTALL) -m 644 $(KISSDX_BUILD_DIR)/kissdx.1 $(KISSDX_IPK_DIR)$(TARGET_PREFIX)/man/man1/kissdx.1
 	$(MAKE) $(KISSDX_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 755 $(KISSDX_SOURCE_DIR)/postinst $(KISSDX_IPK_DIR)/CONTROL/postinst
 	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(KISSDX_IPK_DIR)/CONTROL/postinst

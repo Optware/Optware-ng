@@ -36,7 +36,7 @@ GIFTOPENFT_IPK_VERSION=1
 
 #
 # GIFTOPENFT_CONFFILES should be a list of user-editable files
-GIFTOPENFT_CONFFILES=/opt/etc/gift-openft.conf /opt/etc/init.d/SXXgift-openft
+GIFTOPENFT_CONFFILES=$(TARGET_PREFIX)/etc/gift-openft.conf $(TARGET_PREFIX)/etc/init.d/SXXgift-openft
 
 #
 # GIFTOPENFT_PATCHES should list any patches, in the the order in
@@ -168,23 +168,23 @@ $(GIFTOPENFT_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(GIFTOPENFT_IPK_DIR)/opt/sbin or $(GIFTOPENFT_IPK_DIR)/opt/bin
+# Binaries should be installed into $(GIFTOPENFT_IPK_DIR)$(TARGET_PREFIX)/sbin or $(GIFTOPENFT_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(GIFTOPENFT_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(GIFTOPENFT_IPK_DIR)/opt/etc/gift-openft/...
-# Documentation files should be installed in $(GIFTOPENFT_IPK_DIR)/opt/doc/gift-openft/...
-# Daemon startup scripts should be installed in $(GIFTOPENFT_IPK_DIR)/opt/etc/init.d/S??gift-openft
+# Libraries and include files should be installed into $(GIFTOPENFT_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(GIFTOPENFT_IPK_DIR)$(TARGET_PREFIX)/etc/gift-openft/...
+# Documentation files should be installed in $(GIFTOPENFT_IPK_DIR)$(TARGET_PREFIX)/doc/gift-openft/...
+# Daemon startup scripts should be installed in $(GIFTOPENFT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??gift-openft
 #
 # You may need to patch your application to make it use these locations.
 #
 $(GIFTOPENFT_IPK): $(GIFTOPENFT_BUILD_DIR)/.built
 	rm -rf $(GIFTOPENFT_IPK_DIR) $(BUILD_DIR)/gift-openft_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(GIFTOPENFT_IPK_DIR)/opt/lib/giFT
-	$(STRIP_COMMAND) $(GIFTOPENFT_BUILD_DIR)/src/.libs/libOpenFT.so -o $(GIFTOPENFT_IPK_DIR)/opt/lib/giFT/libOpenFT.so
-	$(INSTALL) -m 644 $(GIFTOPENFT_BUILD_DIR)/src/.libs/libOpenFT.la $(GIFTOPENFT_IPK_DIR)/opt/lib/giFT/libOpenFT.la
-	$(INSTALL) -d $(GIFTOPENFT_IPK_DIR)/opt/share/giFT/OpenFT
-	$(INSTALL) -m 644 $(GIFTOPENFT_BUILD_DIR)/etc/OpenFT.conf.template $(GIFTOPENFT_IPK_DIR)/opt/share/giFT/OpenFT/OpenFT.conf.template
-	$(INSTALL) -m 644 $(GIFTOPENFT_BUILD_DIR)/data/nodes $(GIFTOPENFT_IPK_DIR)/opt/share/giFT/OpenFT/nodes
+	$(INSTALL) -d $(GIFTOPENFT_IPK_DIR)$(TARGET_PREFIX)/lib/giFT
+	$(STRIP_COMMAND) $(GIFTOPENFT_BUILD_DIR)/src/.libs/libOpenFT.so -o $(GIFTOPENFT_IPK_DIR)$(TARGET_PREFIX)/lib/giFT/libOpenFT.so
+	$(INSTALL) -m 644 $(GIFTOPENFT_BUILD_DIR)/src/.libs/libOpenFT.la $(GIFTOPENFT_IPK_DIR)$(TARGET_PREFIX)/lib/giFT/libOpenFT.la
+	$(INSTALL) -d $(GIFTOPENFT_IPK_DIR)$(TARGET_PREFIX)/share/giFT/OpenFT
+	$(INSTALL) -m 644 $(GIFTOPENFT_BUILD_DIR)/etc/OpenFT.conf.template $(GIFTOPENFT_IPK_DIR)$(TARGET_PREFIX)/share/giFT/OpenFT/OpenFT.conf.template
+	$(INSTALL) -m 644 $(GIFTOPENFT_BUILD_DIR)/data/nodes $(GIFTOPENFT_IPK_DIR)$(TARGET_PREFIX)/share/giFT/OpenFT/nodes
 	$(INSTALL) -d $(GIFTOPENFT_IPK_DIR)/CONTROL
 	$(MAKE) $(GIFTOPENFT_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GIFTOPENFT_IPK_DIR)

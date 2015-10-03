@@ -38,7 +38,7 @@ GETTEXT_IPK_VERSION=1
 
 #
 # GETTEXT_CONFFILES should be a list of user-editable files
-#GETTEXT_CONFFILES=/opt/etc/gettext.conf /opt/etc/init.d/SXXgettext
+#GETTEXT_CONFFILES=$(TARGET_PREFIX)/etc/gettext.conf $(TARGET_PREFIX)/etc/init.d/SXXgettext
 
 #
 # GETTEXT_PATCHES should list any patches, in the the order in
@@ -223,30 +223,30 @@ $(GETTEXT_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(GETTEXT_IPK_DIR)/opt/sbin or $(GETTEXT_IPK_DIR)/opt/bin
+# Binaries should be installed into $(GETTEXT_IPK_DIR)$(TARGET_PREFIX)/sbin or $(GETTEXT_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(GETTEXT_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(GETTEXT_IPK_DIR)/opt/etc/gettext/...
-# Documentation files should be installed in $(GETTEXT_IPK_DIR)/opt/doc/gettext/...
-# Daemon startup scripts should be installed in $(GETTEXT_IPK_DIR)/opt/etc/init.d/S??gettext
+# Libraries and include files should be installed into $(GETTEXT_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(GETTEXT_IPK_DIR)$(TARGET_PREFIX)/etc/gettext/...
+# Documentation files should be installed in $(GETTEXT_IPK_DIR)$(TARGET_PREFIX)/doc/gettext/...
+# Daemon startup scripts should be installed in $(GETTEXT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??gettext
 #
 # You may need to patch your application to make it use these locations.
 #
 $(GETTEXT_IPK): $(GETTEXT_BUILD_DIR)/.built
 	rm -rf $(GETTEXT_IPK_DIR) $(BUILD_DIR)/gettext_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GETTEXT_BUILD_DIR) DESTDIR=$(GETTEXT_IPK_DIR) install
-	rm -f $(GETTEXT_IPK_DIR)/opt/share/info/dir
-	if [ ! -f $(GETTEXT_IPK_DIR)/opt/lib/libintl.so ]; then \
-		cp -af $(GETTEXT_BUILD_DIR)/gettext-tools/intl/.libs/*.so* $(GETTEXT_IPK_DIR)/opt/lib; \
-		if [ ! -f $(GETTEXT_IPK_DIR)/opt/lib/libintl.so ]; then \
-			ln -s libgnuintl.so $(GETTEXT_IPK_DIR)/opt/lib/libintl.so; \
+	rm -f $(GETTEXT_IPK_DIR)$(TARGET_PREFIX)/share/info/dir
+	if [ ! -f $(GETTEXT_IPK_DIR)$(TARGET_PREFIX)/lib/libintl.so ]; then \
+		cp -af $(GETTEXT_BUILD_DIR)/gettext-tools/intl/.libs/*.so* $(GETTEXT_IPK_DIR)$(TARGET_PREFIX)/lib; \
+		if [ ! -f $(GETTEXT_IPK_DIR)$(TARGET_PREFIX)/lib/libintl.so ]; then \
+			ln -s libgnuintl.so $(GETTEXT_IPK_DIR)$(TARGET_PREFIX)/lib/libintl.so; \
 		fi; \
 	fi
-	$(STRIP_COMMAND) $(GETTEXT_IPK_DIR)/opt/lib/*.so*
-#	$(INSTALL) -d $(GETTEXT_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 755 $(GETTEXT_SOURCE_DIR)/gettext.conf $(GETTEXT_IPK_DIR)/opt/etc/gettext.conf
-#	$(INSTALL) -d $(GETTEXT_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(GETTEXT_SOURCE_DIR)/rc.gettext $(GETTEXT_IPK_DIR)/opt/etc/init.d/SXXgettext
+	$(STRIP_COMMAND) $(GETTEXT_IPK_DIR)$(TARGET_PREFIX)/lib/*.so*
+#	$(INSTALL) -d $(GETTEXT_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 755 $(GETTEXT_SOURCE_DIR)/gettext.conf $(GETTEXT_IPK_DIR)$(TARGET_PREFIX)/etc/gettext.conf
+#	$(INSTALL) -d $(GETTEXT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(GETTEXT_SOURCE_DIR)/rc.gettext $(GETTEXT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXgettext
 	$(MAKE) $(GETTEXT_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 644 $(GETTEXT_SOURCE_DIR)/postinst $(GETTEXT_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 644 $(GETTEXT_SOURCE_DIR)/prerm $(GETTEXT_IPK_DIR)/CONTROL/prerm

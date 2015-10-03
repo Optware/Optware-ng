@@ -26,7 +26,7 @@ FSG3V4-KERNEL-MODULES_IPK_VERSION=5
 
 #
 # FSG3V4-KERNEL-MODULES_CONFFILES should be a list of user-editable files
-#FSG3V4-KERNEL-MODULES_CONFFILES=/opt/etc/fsg3v4-kernel-modules.conf /opt/etc/init.d/SXXfsg3v4-kernel-modules
+#FSG3V4-KERNEL-MODULES_CONFFILES=$(TARGET_PREFIX)/etc/fsg3v4-kernel-modules.conf $(TARGET_PREFIX)/etc/init.d/SXXfsg3v4-kernel-modules
 
 #
 # FSG3V4-KERNEL-MODULES_PATCHES should list any patches, in the the order in
@@ -166,12 +166,12 @@ $(FSG3V4-KERNEL-IMAGE_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(FSG3V4-KERNEL-MODULES_IPK_DIR)/opt/sbin or $(FSG3V4-KERNEL-MODULES_IPK_DIR)/opt/bin
+# Binaries should be installed into $(FSG3V4-KERNEL-MODULES_IPK_DIR)$(TARGET_PREFIX)/sbin or $(FSG3V4-KERNEL-MODULES_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(FSG3V4-KERNEL-MODULES_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(FSG3V4-KERNEL-MODULES_IPK_DIR)/opt/etc/fsg3v4-kernel-modules/...
-# Documentation files should be installed in $(FSG3V4-KERNEL-MODULES_IPK_DIR)/opt/doc/fsg3v4-kernel-modules/...
-# Daemon startup scripts should be installed in $(FSG3V4-KERNEL-MODULES_IPK_DIR)/opt/etc/init.d/S??fsg3v4-kernel-modules
+# Libraries and include files should be installed into $(FSG3V4-KERNEL-MODULES_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(FSG3V4-KERNEL-MODULES_IPK_DIR)$(TARGET_PREFIX)/etc/fsg3v4-kernel-modules/...
+# Documentation files should be installed in $(FSG3V4-KERNEL-MODULES_IPK_DIR)$(TARGET_PREFIX)/doc/fsg3v4-kernel-modules/...
+# Daemon startup scripts should be installed in $(FSG3V4-KERNEL-MODULES_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??fsg3v4-kernel-modules
 #
 # You may need to patch your application to make it use these locations.
 #

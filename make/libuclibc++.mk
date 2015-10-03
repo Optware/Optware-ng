@@ -52,7 +52,7 @@ LIBUCLIBC++_IPK_VERSION=9
 
 #
 # LIBUCLIBC++_CONFFILES should be a list of user-editable files
-#LIBUCLIBC++_CONFFILES=/opt/etc/libuclibc++.conf /opt/etc/init.d/SXXlibuclibc++
+#LIBUCLIBC++_CONFFILES=$(TARGET_PREFIX)/etc/libuclibc++.conf $(TARGET_PREFIX)/etc/init.d/SXXlibuclibc++
 
 #
 # LIBUCLIBC++_PATCHES should list any patches, in the the order in
@@ -236,20 +236,20 @@ $(LIBUCLIBC++_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LIBUCLIBC++_IPK_DIR)/opt/sbin or $(LIBUCLIBC++_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LIBUCLIBC++_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LIBUCLIBC++_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LIBUCLIBC++_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LIBUCLIBC++_IPK_DIR)/opt/etc/libuclibc++/...
-# Documentation files should be installed in $(LIBUCLIBC++_IPK_DIR)/opt/doc/libuclibc++/...
-# Daemon startup scripts should be installed in $(LIBUCLIBC++_IPK_DIR)/opt/etc/init.d/S??libuclibc++
+# Libraries and include files should be installed into $(LIBUCLIBC++_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LIBUCLIBC++_IPK_DIR)$(TARGET_PREFIX)/etc/libuclibc++/...
+# Documentation files should be installed in $(LIBUCLIBC++_IPK_DIR)$(TARGET_PREFIX)/doc/libuclibc++/...
+# Daemon startup scripts should be installed in $(LIBUCLIBC++_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??libuclibc++
 #
 # You may need to patch your application to make it use these locations.
 #
 $(LIBUCLIBC++_IPK): $(LIBUCLIBC++_BUILD_DIR)/.built
 	rm -rf $(LIBUCLIBC++_IPK_DIR) $(BUILD_DIR)/libuclibc++_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(LIBUCLIBC++_IPK_DIR)/opt
+	$(INSTALL) -d $(LIBUCLIBC++_IPK_DIR)$(TARGET_PREFIX)
 	$(MAKE) -C $(LIBUCLIBC++_BUILD_DIR)/src DESTDIR=$(LIBUCLIBC++_IPK_DIR)$(TARGET_PREFIX) install
-	$(STRIP_COMMAND) $(LIBUCLIBC++_IPK_DIR)/opt/lib/*.so
+	$(STRIP_COMMAND) $(LIBUCLIBC++_IPK_DIR)$(TARGET_PREFIX)/lib/*.so
 	$(MAKE) $(LIBUCLIBC++_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(LIBUCLIBC++_SOURCE_DIR)/postinst $(LIBUCLIBC++_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 755 $(LIBUCLIBC++_SOURCE_DIR)/prerm $(LIBUCLIBC++_IPK_DIR)/CONTROL/prerm
@@ -279,7 +279,7 @@ libuclibc++-dirclean:
 # Toolchain instalation and deinstalation for wl500g only
 #
 libuclibc++-install:
-	$(MAKE) -C $(LIBUCLIBC++_BUILD_DIR) DESTDIR=/opt/brcm/$(CROSS_CONFIGURATION) install	
+	$(MAKE) -C $(LIBUCLIBC++_BUILD_DIR) DESTDIR=$(TARGET_PREFIX)/brcm/$(CROSS_CONFIGURATION) install	
 
 libuclibc++-deinstall:
 	ln -sf mipsel-uclibc-gcc $(TARGET_CROSS)g++

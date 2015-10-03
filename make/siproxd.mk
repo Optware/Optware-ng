@@ -47,7 +47,7 @@ SIPROXD_IPK_VERSION=1
 
 #
 # SIPROXD_CONFFILES should be a list of user-editable files
-SIPROXD_CONFFILES=/opt/etc/init.d/S98siproxd
+SIPROXD_CONFFILES=$(TARGET_PREFIX)/etc/init.d/S98siproxd
 
 #
 # SIPROXD_PATCHES should list any patches, in the the order in
@@ -173,22 +173,22 @@ $(SIPROXD_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(SIPROXD_IPK_DIR)/opt/sbin or $(SIPROXD_IPK_DIR)/opt/bin
+# Binaries should be installed into $(SIPROXD_IPK_DIR)$(TARGET_PREFIX)/sbin or $(SIPROXD_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(SIPROXD_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(SIPROXD_IPK_DIR)/opt/etc/siproxd/...
-# Documentation files should be installed in $(SIPROXD_IPK_DIR)/opt/doc/siproxd/...
-# Daemon startup scripts should be installed in $(SIPROXD_IPK_DIR)/opt/etc/init.d/S??siproxd
+# Libraries and include files should be installed into $(SIPROXD_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(SIPROXD_IPK_DIR)$(TARGET_PREFIX)/etc/siproxd/...
+# Documentation files should be installed in $(SIPROXD_IPK_DIR)$(TARGET_PREFIX)/doc/siproxd/...
+# Daemon startup scripts should be installed in $(SIPROXD_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??siproxd
 #
 # You may need to patch your application to make it use these locations.
 #
 $(SIPROXD_IPK): $(SIPROXD_BUILD_DIR)/.built
 	rm -rf $(SIPROXD_IPK_DIR) $(BUILD_DIR)/siproxd_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SIPROXD_BUILD_DIR) DESTDIR=$(SIPROXD_IPK_DIR) install-strip
-#	$(INSTALL) -d $(SIPROXD_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(SIPROXD_SOURCE_DIR)/siproxd.conf $(SIPROXD_IPK_DIR)/opt/etc/siproxd.conf
-	$(INSTALL) -d $(SIPROXD_IPK_DIR)/opt/etc/init.d
-	$(INSTALL) -m 755 $(SIPROXD_SOURCE_DIR)/rc.siproxd $(SIPROXD_IPK_DIR)/opt/etc/init.d/S98siproxd
+#	$(INSTALL) -d $(SIPROXD_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(SIPROXD_SOURCE_DIR)/siproxd.conf $(SIPROXD_IPK_DIR)$(TARGET_PREFIX)/etc/siproxd.conf
+	$(INSTALL) -d $(SIPROXD_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(INSTALL) -m 755 $(SIPROXD_SOURCE_DIR)/rc.siproxd $(SIPROXD_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S98siproxd
 	$(MAKE) $(SIPROXD_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 755 $(SIPROXD_SOURCE_DIR)/postinst $(SIPROXD_IPK_DIR)/CONTROL/postinst
 	$(INSTALL) -m 755 $(SIPROXD_SOURCE_DIR)/prerm $(SIPROXD_IPK_DIR)/CONTROL/prerm

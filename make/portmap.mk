@@ -163,21 +163,21 @@ $(PORTMAP_IPK_DIR)/CONTROL/control:
 
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PORTMAP_IPK_DIR)/opt/sbin or $(PORTMAP_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PORTMAP_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PORTMAP_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PORTMAP_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PORTMAP_IPK_DIR)/opt/etc/portmap/...
-# Documentation files should be installed in $(PORTMAP_IPK_DIR)/opt/doc/portmap/...
-# Daemon startup scripts should be installed in $(PORTMAP_IPK_DIR)/opt/etc/init.d/S??portmap
+# Libraries and include files should be installed into $(PORTMAP_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PORTMAP_IPK_DIR)$(TARGET_PREFIX)/etc/portmap/...
+# Documentation files should be installed in $(PORTMAP_IPK_DIR)$(TARGET_PREFIX)/doc/portmap/...
+# Daemon startup scripts should be installed in $(PORTMAP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??portmap
 #
 # You may need to patch your application to make it use these locations.
 #
 $(PORTMAP_IPK): $(PORTMAP_BUILD_DIR)/.built
 	rm -rf $(PORTMAP_IPK_DIR) $(BUILD_DIR)/portmap_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(PORTMAP_IPK_DIR)/opt/sbin
-	$(STRIP_COMMAND) $(PORTMAP_BUILD_DIR)/portmap -o $(PORTMAP_IPK_DIR)/opt/sbin/portmap
-	$(INSTALL) -d $(PORTMAP_IPK_DIR)/opt/etc/init.d
-	$(INSTALL) -m 755 $(PORTMAP_SOURCE_DIR)/rc.portmap $(PORTMAP_IPK_DIR)/opt/etc/init.d/S55portmap
+	$(INSTALL) -d $(PORTMAP_IPK_DIR)$(TARGET_PREFIX)/sbin
+	$(STRIP_COMMAND) $(PORTMAP_BUILD_DIR)/portmap -o $(PORTMAP_IPK_DIR)$(TARGET_PREFIX)/sbin/portmap
+	$(INSTALL) -d $(PORTMAP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(INSTALL) -m 755 $(PORTMAP_SOURCE_DIR)/rc.portmap $(PORTMAP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S55portmap
 	$(MAKE) $(PORTMAP_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 644 $(PORTMAP_SOURCE_DIR)/postinst $(PORTMAP_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 644 $(PORTMAP_SOURCE_DIR)/prerm $(PORTMAP_IPK_DIR)/CONTROL/prerm

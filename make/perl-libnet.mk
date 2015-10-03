@@ -19,7 +19,7 @@ PERL-LIBNET_CONFLICTS=
 
 PERL-LIBNET_IPK_VERSION=1
 
-PERL-LIBNET_CONFFILES=/opt/lib/perl5/$(PERL_VERSION)/Net/libnet.cfg
+PERL-LIBNET_CONFFILES=$(TARGET_PREFIX)/lib/perl5/$(PERL_VERSION)/Net/libnet.cfg
 
 PERL-LIBNET_BUILD_DIR=$(BUILD_DIR)/perl-libnet
 PERL-LIBNET_SOURCE_DIR=$(SOURCE_DIR)/perl-libnet
@@ -89,7 +89,7 @@ $(PERL-LIBNET_IPK): $(PERL-LIBNET_BUILD_DIR)/.built
 	rm -rf $(PERL-LIBNET_IPK_DIR) $(BUILD_DIR)/perl-libnet_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PERL-LIBNET_BUILD_DIR) DESTDIR=$(PERL-LIBNET_IPK_DIR) install
 	find $(PERL-LIBNET_IPK_DIR)$(TARGET_PREFIX) -name 'perllocal.pod' -exec rm -f {} \;
-	(cd $(PERL-LIBNET_IPK_DIR)/opt/lib/perl5 ; \
+	(cd $(PERL-LIBNET_IPK_DIR)$(TARGET_PREFIX)/lib/perl5 ; \
 		find . -name '*.so' -exec chmod +w {} \; ; \
 		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
 		find . -name '*.so' -exec chmod -w {} \; ; \

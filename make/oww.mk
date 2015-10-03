@@ -47,7 +47,7 @@ OWW_IPK_VERSION=1
 
 #
 # OWW_CONFFILES should be a list of user-editable files
-#OWW_CONFFILES=/opt/etc/oww.conf /opt/etc/init.d/SXXoww
+#OWW_CONFFILES=$(TARGET_PREFIX)/etc/oww.conf $(TARGET_PREFIX)/etc/init.d/SXXoww
 
 #
 # OWW_PATCHES should list any patches, in the the order in
@@ -178,22 +178,22 @@ $(OWW_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(OWW_IPK_DIR)/opt/sbin or $(OWW_IPK_DIR)/opt/bin
+# Binaries should be installed into $(OWW_IPK_DIR)$(TARGET_PREFIX)/sbin or $(OWW_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(OWW_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(OWW_IPK_DIR)/opt/etc/oww/...
-# Documentation files should be installed in $(OWW_IPK_DIR)/opt/doc/oww/...
-# Daemon startup scripts should be installed in $(OWW_IPK_DIR)/opt/etc/init.d/S??oww
+# Libraries and include files should be installed into $(OWW_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(OWW_IPK_DIR)$(TARGET_PREFIX)/etc/oww/...
+# Documentation files should be installed in $(OWW_IPK_DIR)$(TARGET_PREFIX)/doc/oww/...
+# Daemon startup scripts should be installed in $(OWW_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??oww
 #
 # You may need to patch your application to make it use these locations.
 #
 $(OWW_IPK): $(OWW_BUILD_DIR)/.built
 	rm -rf $(OWW_IPK_DIR) $(BUILD_DIR)/oww_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(OWW_BUILD_DIR) DESTDIR=$(OWW_IPK_DIR) install-strip
-#	$(INSTALL) -d $(OWW_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(OWW_SOURCE_DIR)/oww.conf $(OWW_IPK_DIR)/opt/etc/oww.conf
-	$(INSTALL) -d $(OWW_IPK_DIR)/opt/etc/init.d
-	$(INSTALL) -m 755 $(OWW_SOURCE_DIR)/rc.oww $(OWW_IPK_DIR)/opt/etc/init.d/S80oww
+#	$(INSTALL) -d $(OWW_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(OWW_SOURCE_DIR)/oww.conf $(OWW_IPK_DIR)$(TARGET_PREFIX)/etc/oww.conf
+	$(INSTALL) -d $(OWW_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(INSTALL) -m 755 $(OWW_SOURCE_DIR)/rc.oww $(OWW_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S80oww
 	$(MAKE) $(OWW_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 755 $(OWW_SOURCE_DIR)/postinst $(OWW_IPK_DIR)/CONTROL/postinst
 	$(INSTALL) -m 755 $(OWW_SOURCE_DIR)/prerm $(OWW_IPK_DIR)/CONTROL/prerm

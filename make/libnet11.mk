@@ -40,7 +40,7 @@ LIBNET11_IPK_VERSION=1
 
 #
 # LIBNET11_CONFFILES should be a list of user-editable files
-#LIBNET11_CONFFILES=/opt/etc/libnet11.conf /opt/etc/init.d/SXXlibnet11
+#LIBNET11_CONFFILES=$(TARGET_PREFIX)/etc/libnet11.conf $(TARGET_PREFIX)/etc/init.d/SXXlibnet11
 
 #
 # LIBNET11_PATCHES should list any patches, in the the order in
@@ -170,8 +170,8 @@ $(LIBNET11_BUILD_DIR)/.staged: $(LIBNET11_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(LIBNET11_BUILD_DIR) install \
 		DESTDIR=$(STAGING_DIR) \
-		libdir="/opt/lib/libnet11" \
-		includedir="/opt/include/libnet11" \
+		libdir="$(TARGET_PREFIX)/lib/libnet11" \
+		includedir="$(TARGET_PREFIX)/include/libnet11" \
 		;
 	touch $@
 
@@ -199,12 +199,12 @@ $(LIBNET11_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LIBNET11_IPK_DIR)/opt/sbin or $(LIBNET11_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LIBNET11_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LIBNET11_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LIBNET11_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LIBNET11_IPK_DIR)/opt/etc/libnet11/...
-# Documentation files should be installed in $(LIBNET11_IPK_DIR)/opt/doc/libnet11/...
-# Daemon startup scripts should be installed in $(LIBNET11_IPK_DIR)/opt/etc/init.d/S??libnet11
+# Libraries and include files should be installed into $(LIBNET11_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LIBNET11_IPK_DIR)$(TARGET_PREFIX)/etc/libnet11/...
+# Documentation files should be installed in $(LIBNET11_IPK_DIR)$(TARGET_PREFIX)/doc/libnet11/...
+# Daemon startup scripts should be installed in $(LIBNET11_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??libnet11
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -212,8 +212,8 @@ $(LIBNET11_IPK): $(LIBNET11_BUILD_DIR)/.built
 	rm -rf $(LIBNET11_IPK_DIR) $(BUILD_DIR)/libnet11_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBNET11_BUILD_DIR) install-strip \
 		DESTDIR=$(LIBNET11_IPK_DIR) \
-		libdir="/opt/lib/libnet11" \
-		includedir="/opt/include/libnet11" \
+		libdir="$(TARGET_PREFIX)/lib/libnet11" \
+		includedir="$(TARGET_PREFIX)/include/libnet11" \
 		;
 	$(MAKE) $(LIBNET11_IPK_DIR)/CONTROL/control
 	echo $(LIBNET11_CONFFILES) | sed -e 's/ /\n/g' > $(LIBNET11_IPK_DIR)/CONTROL/conffiles

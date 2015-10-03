@@ -40,8 +40,8 @@ APCUPSD_IPK_VERSION=1
 
 #
 # APCUPSD_CONFFILES should be a list of user-editable files
-APCUPSD_CONFFILES=/opt/etc/apcupsd/apcupsd.conf
-#/opt/etc/init.d/SXXapcupsd
+APCUPSD_CONFFILES=$(TARGET_PREFIX)/etc/apcupsd/apcupsd.conf
+#$(TARGET_PREFIX)/etc/init.d/SXXapcupsd
 
 #
 # APCUPSD_PATCHES should list any patches, in the the order in
@@ -122,7 +122,7 @@ $(APCUPSD_BUILD_DIR)/.configured: $(DL_DIR)/$(APCUPSD_SOURCE) $(APCUPSD_PATCHES)
 		then mv $(BUILD_DIR)/$(APCUPSD_DIR) $(@D) ; \
 	fi
 	cp -f $(SOURCE_DIR)/common/config.* $(@D)/autoconf/
-	sed -i -e 's|prefix=NONE|prefix=/opt|; s|/usr/share/hal/|/opt/share/hal/|' $(@D)/configure
+	sed -i -e 's|prefix=NONE|prefix=$(TARGET_PREFIX)|; s|/usr/share/hal/|$(TARGET_PREFIX)/share/hal/|' $(@D)/configure
 	sed -i -e 's/strchr/&2/' $(@D)/include/astring.h
 	sed -i -e 's/astring::strchr/&2/' $(@D)/src/lib/astring.cpp
 	(cd $(@D); \
@@ -139,16 +139,16 @@ $(APCUPSD_BUILD_DIR)/.configured: $(DL_DIR)/$(APCUPSD_SOURCE) $(APCUPSD_PATCHES)
 		--target=$(GNU_TARGET_NAME) \
 		--with-distname=unknown \
 		--prefix=$(TARGET_PREFIX) \
-		--sbindir=/opt/sbin \
-		--sysconfdir=/opt/etc/apcupsd \
-		--mandir=/opt/share/man \
-		--with-nologin=/opt/etc/apcupsd \
-		--with-pid-dir=/opt/var/run \
-		--with-log-dir=/opt/var/log \
-		--with-lock-dir=/opt/var/lock \
+		--sbindir=$(TARGET_PREFIX)/sbin \
+		--sysconfdir=$(TARGET_PREFIX)/etc/apcupsd \
+		--mandir=$(TARGET_PREFIX)/share/man \
+		--with-nologin=$(TARGET_PREFIX)/etc/apcupsd \
+		--with-pid-dir=$(TARGET_PREFIX)/var/run \
+		--with-log-dir=$(TARGET_PREFIX)/var/log \
+		--with-lock-dir=$(TARGET_PREFIX)/var/lock \
 		--enable-usb \
 		--enable-cgi \
-		--with-cgi-bin=/opt/share/www/cgi-bin \
+		--with-cgi-bin=$(TARGET_PREFIX)/share/www/cgi-bin \
 		--without-libwrap \
 		--without-x \
 		--disable-nls \
@@ -220,12 +220,12 @@ $(APCUPSD-CGI_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(APCUPSD_IPK_DIR)/opt/sbin or $(APCUPSD_IPK_DIR)/opt/bin
+# Binaries should be installed into $(APCUPSD_IPK_DIR)$(TARGET_PREFIX)/sbin or $(APCUPSD_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(APCUPSD_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(APCUPSD_IPK_DIR)/opt/etc/apcupsd/...
-# Documentation files should be installed in $(APCUPSD_IPK_DIR)/opt/doc/apcupsd/...
-# Daemon startup scripts should be installed in $(APCUPSD_IPK_DIR)/opt/etc/init.d/S??apcupsd
+# Libraries and include files should be installed into $(APCUPSD_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(APCUPSD_IPK_DIR)$(TARGET_PREFIX)/etc/apcupsd/...
+# Documentation files should be installed in $(APCUPSD_IPK_DIR)$(TARGET_PREFIX)/doc/apcupsd/...
+# Daemon startup scripts should be installed in $(APCUPSD_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??apcupsd
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -233,10 +233,10 @@ $(APCUPSD_IPK) $(APCUPSD-CGI_IPK): $(APCUPSD_BUILD_DIR)/.built
 	rm -rf $(APCUPSD_IPK_DIR) $(BUILD_DIR)/apcupsd_*_$(TARGET_ARCH).ipk
 	rm -rf $(APCUPSD-CGI_IPK_DIR) $(BUILD_DIR)/apcupsd-cgi_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(APCUPSD_BUILD_DIR) DESTDIR=$(APCUPSD_IPK_DIR) install
-	$(STRIP_COMMAND) $(APCUPSD_IPK_DIR)/opt/sbin/* $(APCUPSD_IPK_DIR)/opt/share/www/cgi-bin/*
-	$(INSTALL) -d $(APCUPSD-CGI_IPK_DIR)/opt/share $(APCUPSD-CGI_IPK_DIR)/opt/etc/apcupsd
-	mv $(APCUPSD_IPK_DIR)/opt/share/www $(APCUPSD-CGI_IPK_DIR)/opt/share/
-	mv $(APCUPSD_IPK_DIR)/opt/etc/apcupsd/*.css $(APCUPSD-CGI_IPK_DIR)/opt/etc/apcupsd/
+	$(STRIP_COMMAND) $(APCUPSD_IPK_DIR)$(TARGET_PREFIX)/sbin/* $(APCUPSD_IPK_DIR)$(TARGET_PREFIX)/share/www/cgi-bin/*
+	$(INSTALL) -d $(APCUPSD-CGI_IPK_DIR)$(TARGET_PREFIX)/share $(APCUPSD-CGI_IPK_DIR)$(TARGET_PREFIX)/etc/apcupsd
+	mv $(APCUPSD_IPK_DIR)$(TARGET_PREFIX)/share/www $(APCUPSD-CGI_IPK_DIR)$(TARGET_PREFIX)/share/
+	mv $(APCUPSD_IPK_DIR)$(TARGET_PREFIX)/etc/apcupsd/*.css $(APCUPSD-CGI_IPK_DIR)$(TARGET_PREFIX)/etc/apcupsd/
 	$(MAKE) $(APCUPSD_IPK_DIR)/CONTROL/control
 	echo $(APCUPSD_CONFFILES) | sed -e 's/ /\n/g' > $(APCUPSD_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(APCUPSD_IPK_DIR)

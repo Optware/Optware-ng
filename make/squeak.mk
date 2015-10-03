@@ -43,7 +43,7 @@ SQUEAK_IPK_VERSION=1
 
 #
 # SQUEAK_CONFFILES should be a list of user-editable files
-#SQUEAK_CONFFILES=/opt/etc/squeak.conf /opt/etc/init.d/SXXsqueak
+#SQUEAK_CONFFILES=$(TARGET_PREFIX)/etc/squeak.conf $(TARGET_PREFIX)/etc/init.d/SXXsqueak
 
 #
 # SQUEAK_PATCHES should list any patches, in the the order in
@@ -221,25 +221,25 @@ $(SQUEAK_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(SQUEAK_IPK_DIR)/opt/sbin or $(SQUEAK_IPK_DIR)/opt/bin
+# Binaries should be installed into $(SQUEAK_IPK_DIR)$(TARGET_PREFIX)/sbin or $(SQUEAK_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(SQUEAK_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(SQUEAK_IPK_DIR)/opt/etc/squeak/...
-# Documentation files should be installed in $(SQUEAK_IPK_DIR)/opt/doc/squeak/...
-# Daemon startup scripts should be installed in $(SQUEAK_IPK_DIR)/opt/etc/init.d/S??squeak
+# Libraries and include files should be installed into $(SQUEAK_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(SQUEAK_IPK_DIR)$(TARGET_PREFIX)/etc/squeak/...
+# Documentation files should be installed in $(SQUEAK_IPK_DIR)$(TARGET_PREFIX)/doc/squeak/...
+# Daemon startup scripts should be installed in $(SQUEAK_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??squeak
 #
 # You may need to patch your application to make it use these locations.
 #
 $(SQUEAK_IPK): $(SQUEAK_BUILD_DIR)/.built
 	rm -rf $(SQUEAK_IPK_DIR) $(BUILD_DIR)/squeak_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SQUEAK_BUILD_DIR)/bld ROOT=$(SQUEAK_IPK_DIR) install
-	$(STRIP_COMMAND) $(SQUEAK_IPK_DIR)/opt/lib/squeak/$(SQUEAK_VERSION_MAJOR_MINOR)-$(SQUEAK_VERSION_PATCH)/*
-#	$(INSTALL) -m 755 $(SQUEAK_BUILD_DIR)/bld/inisqueak  $(SQUEAK_IPK_DIR)/opt/bin/
-	$(SQUEAK_UNZIP) $(DL_DIR)/$(SQUEAK_IMG_SRC).gz > $(SQUEAK_IPK_DIR)/opt/lib/squeak/$(SQUEAK_IMG_SRC)
-#	$(INSTALL) -d $(SQUEAK_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(SQUEAK_SOURCE_DIR)/squeak.conf $(SQUEAK_IPK_DIR)/opt/etc/squeak.conf
-#	$(INSTALL) -d $(SQUEAK_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(SQUEAK_SOURCE_DIR)/rc.squeak $(SQUEAK_IPK_DIR)/opt/etc/init.d/SXXsqueak
+	$(STRIP_COMMAND) $(SQUEAK_IPK_DIR)$(TARGET_PREFIX)/lib/squeak/$(SQUEAK_VERSION_MAJOR_MINOR)-$(SQUEAK_VERSION_PATCH)/*
+#	$(INSTALL) -m 755 $(SQUEAK_BUILD_DIR)/bld/inisqueak  $(SQUEAK_IPK_DIR)$(TARGET_PREFIX)/bin/
+	$(SQUEAK_UNZIP) $(DL_DIR)/$(SQUEAK_IMG_SRC).gz > $(SQUEAK_IPK_DIR)$(TARGET_PREFIX)/lib/squeak/$(SQUEAK_IMG_SRC)
+#	$(INSTALL) -d $(SQUEAK_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(SQUEAK_SOURCE_DIR)/squeak.conf $(SQUEAK_IPK_DIR)$(TARGET_PREFIX)/etc/squeak.conf
+#	$(INSTALL) -d $(SQUEAK_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(SQUEAK_SOURCE_DIR)/rc.squeak $(SQUEAK_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXsqueak
 	$(MAKE) $(SQUEAK_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 755 $(SQUEAK_SOURCE_DIR)/postinst $(SQUEAK_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 755 $(SQUEAK_SOURCE_DIR)/prerm $(SQUEAK_IPK_DIR)/CONTROL/prerm

@@ -41,7 +41,7 @@ PY-KID_IPK_VERSION=2
 
 #
 # PY-KID_CONFFILES should be a list of user-editable files
-#PY-KID_CONFFILES=/opt/etc/py-kid.conf /opt/etc/init.d/SXXpy-kid
+#PY-KID_CONFFILES=$(TARGET_PREFIX)/etc/py-kid.conf $(TARGET_PREFIX)/etc/init.d/SXXpy-kid
 
 #
 # PY-KID_PATCHES should list any patches, in the the order in
@@ -119,9 +119,9 @@ $(PY-KID_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-KID_SOURCE) $(PY-KID_PATCHES)
 	(cd $(PY-KID_BUILD_DIR)/2.4; \
 	    ( \
 	    echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python2.4"; \
+	    echo "executable=$(TARGET_PREFIX)/bin/python2.4"; \
 	    echo "[install]"; \
-	    echo "install_scripts=/opt/bin"; \
+	    echo "install_scripts=$(TARGET_PREFIX)/bin"; \
 	    ) >> setup.cfg \
 	)
 	# 2.5
@@ -133,9 +133,9 @@ $(PY-KID_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-KID_SOURCE) $(PY-KID_PATCHES)
 	(cd $(PY-KID_BUILD_DIR)/2.5; \
 	    ( \
 	    echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python2.5"; \
+	    echo "executable=$(TARGET_PREFIX)/bin/python2.5"; \
 	    echo "[install]"; \
-	    echo "install_scripts=/opt/bin"; \
+	    echo "install_scripts=$(TARGET_PREFIX)/bin"; \
 	    ) >> setup.cfg \
 	)
 	touch $@
@@ -205,12 +205,12 @@ $(PY25-KID_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PY-KID_IPK_DIR)/opt/sbin or $(PY-KID_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PY-KID_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PY-KID_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PY-KID_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PY-KID_IPK_DIR)/opt/etc/py-kid/...
-# Documentation files should be installed in $(PY-KID_IPK_DIR)/opt/doc/py-kid/...
-# Daemon startup scripts should be installed in $(PY-KID_IPK_DIR)/opt/etc/init.d/S??py-kid
+# Libraries and include files should be installed into $(PY-KID_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PY-KID_IPK_DIR)$(TARGET_PREFIX)/etc/py-kid/...
+# Documentation files should be installed in $(PY-KID_IPK_DIR)$(TARGET_PREFIX)/doc/py-kid/...
+# Daemon startup scripts should be installed in $(PY-KID_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??py-kid
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -221,8 +221,8 @@ $(PY24-KID_IPK) $(PY25-KID_IPK): $(PY-KID_BUILD_DIR)/.built
 	rm -rf $(BUILD_DIR)/py-kid_*_$(TARGET_ARCH).ipk
 	(cd $(PY-KID_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(PY24-KID_IPK_DIR) --prefix=/opt)
-	for f in $(PY24-KID_IPK_DIR)/opt/*bin/*; \
+	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(PY24-KID_IPK_DIR) --prefix=$(TARGET_PREFIX))
+	for f in $(PY24-KID_IPK_DIR)$(TARGET_PREFIX)/*bin/*; \
             do mv $$f `echo $$f | sed 's|$$|-2.4|'`; done
 	$(MAKE) $(PY24-KID_IPK_DIR)/CONTROL/control
 #	echo $(PY-KID_CONFFILES) | sed -e 's/ /\n/g' > $(PY-KID_IPK_DIR)/CONTROL/conffiles
@@ -232,7 +232,7 @@ $(PY24-KID_IPK) $(PY25-KID_IPK): $(PY-KID_BUILD_DIR)/.built
 	rm -rf $(BUILD_DIR)/py25-kid_*_$(TARGET_ARCH).ipk
 	(cd $(PY-KID_BUILD_DIR)/2.5; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
-	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(PY25-KID_IPK_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(PY25-KID_IPK_DIR) --prefix=$(TARGET_PREFIX))
 	$(MAKE) $(PY25-KID_IPK_DIR)/CONTROL/control
 #	echo $(PY-KID_CONFFILES) | sed -e 's/ /\n/g' > $(PY-KID_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-KID_IPK_DIR)

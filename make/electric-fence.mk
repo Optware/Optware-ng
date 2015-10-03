@@ -41,7 +41,7 @@ ELECTRIC_FENCE_IPK_VERSION=1
 
 #
 # ELECTRIC_FENCE_CONFFILES should be a list of user-editable files
-# ELECTRIC_FENCE_CONFFILES=/opt/etc/electric-fence.conf /opt/etc/init.d/SXXelectric-fence
+# ELECTRIC_FENCE_CONFFILES=$(TARGET_PREFIX)/etc/electric-fence.conf $(TARGET_PREFIX)/etc/init.d/SXXelectric-fence
 
 #
 # ELECTRIC_FENCE_PATCHES should list any patches, in the the order in
@@ -176,24 +176,24 @@ $(ELECTRIC_FENCE_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(ELECTRIC_FENCE_IPK_DIR)/opt/sbin or $(ELECTRIC_FENCE_IPK_DIR)/opt/bin
+# Binaries should be installed into $(ELECTRIC_FENCE_IPK_DIR)$(TARGET_PREFIX)/sbin or $(ELECTRIC_FENCE_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(ELECTRIC_FENCE_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(ELECTRIC_FENCE_IPK_DIR)/opt/etc/electric-fence/...
-# Documentation files should be installed in $(ELECTRIC_FENCE_IPK_DIR)/opt/doc/electric-fence/...
-# Daemon startup scripts should be installed in $(ELECTRIC_FENCE_IPK_DIR)/opt/etc/init.d/S??electric-fence
+# Libraries and include files should be installed into $(ELECTRIC_FENCE_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(ELECTRIC_FENCE_IPK_DIR)$(TARGET_PREFIX)/etc/electric-fence/...
+# Documentation files should be installed in $(ELECTRIC_FENCE_IPK_DIR)$(TARGET_PREFIX)/doc/electric-fence/...
+# Daemon startup scripts should be installed in $(ELECTRIC_FENCE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??electric-fence
 #
 # You may need to patch your application to make it use these locations.
 #
 $(ELECTRIC_FENCE_IPK): $(ELECTRIC_FENCE_BUILD_DIR)/.built
 	rm -rf $(ELECTRIC_FENCE_IPK_DIR) $(BUILD_DIR)/electric-fence_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(ELECTRIC_FENCE_IPK_DIR)/opt/bin
-	$(INSTALL) -m 755 $(ELECTRIC_FENCE_BUILD_DIR)/eftest $(ELECTRIC_FENCE_IPK_DIR)/opt/bin
-	$(INSTALL) -m 755 $(ELECTRIC_FENCE_BUILD_DIR)/tstheap $(ELECTRIC_FENCE_IPK_DIR)/opt/bin
-	$(INSTALL) -d $(ELECTRIC_FENCE_IPK_DIR)/opt/lib
-	$(INSTALL) -m 644 $(ELECTRIC_FENCE_BUILD_DIR)/libefence.a  $(ELECTRIC_FENCE_IPK_DIR)/opt/lib/
-	$(INSTALL) -d $(ELECTRIC_FENCE_IPK_DIR)/opt/man/man3
-	$(INSTALL) -m 644 $(ELECTRIC_FENCE_BUILD_DIR)/libefence.3 $(ELECTRIC_FENCE_IPK_DIR)/opt/man/man3
+	$(INSTALL) -d $(ELECTRIC_FENCE_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(INSTALL) -m 755 $(ELECTRIC_FENCE_BUILD_DIR)/eftest $(ELECTRIC_FENCE_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(INSTALL) -m 755 $(ELECTRIC_FENCE_BUILD_DIR)/tstheap $(ELECTRIC_FENCE_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(INSTALL) -d $(ELECTRIC_FENCE_IPK_DIR)$(TARGET_PREFIX)/lib
+	$(INSTALL) -m 644 $(ELECTRIC_FENCE_BUILD_DIR)/libefence.a  $(ELECTRIC_FENCE_IPK_DIR)$(TARGET_PREFIX)/lib/
+	$(INSTALL) -d $(ELECTRIC_FENCE_IPK_DIR)$(TARGET_PREFIX)/man/man3
+	$(INSTALL) -m 644 $(ELECTRIC_FENCE_BUILD_DIR)/libefence.3 $(ELECTRIC_FENCE_IPK_DIR)$(TARGET_PREFIX)/man/man3
 	$(MAKE) $(ELECTRIC_FENCE_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 755 $(ELECTRIC_FENCE_SOURCE_DIR)/postinst $(ELECTRIC_FENCE_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 755 $(ELECTRIC_FENCE_SOURCE_DIR)/prerm $(ELECTRIC_FENCE_IPK_DIR)/CONTROL/prerm

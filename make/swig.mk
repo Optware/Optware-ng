@@ -40,7 +40,7 @@ SWIG_IPK_VERSION=1
 
 #
 # SWIG_CONFFILES should be a list of user-editable files
-#SWIG_CONFFILES=/opt/etc/swig.conf /opt/etc/init.d/SXXswig
+#SWIG_CONFFILES=$(TARGET_PREFIX)/etc/swig.conf $(TARGET_PREFIX)/etc/init.d/SXXswig
 
 #
 # SWIG_PATCHES should list any patches, in the the order in
@@ -211,19 +211,19 @@ $(SWIG_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(SWIG_IPK_DIR)/opt/sbin or $(SWIG_IPK_DIR)/opt/bin
+# Binaries should be installed into $(SWIG_IPK_DIR)$(TARGET_PREFIX)/sbin or $(SWIG_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(SWIG_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(SWIG_IPK_DIR)/opt/etc/swig/...
-# Documentation files should be installed in $(SWIG_IPK_DIR)/opt/doc/swig/...
-# Daemon startup scripts should be installed in $(SWIG_IPK_DIR)/opt/etc/init.d/S??swig
+# Libraries and include files should be installed into $(SWIG_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(SWIG_IPK_DIR)$(TARGET_PREFIX)/etc/swig/...
+# Documentation files should be installed in $(SWIG_IPK_DIR)$(TARGET_PREFIX)/doc/swig/...
+# Daemon startup scripts should be installed in $(SWIG_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??swig
 #
 # You may need to patch your application to make it use these locations.
 #
 $(SWIG_IPK): $(SWIG_BUILD_DIR)/.built
 	rm -rf $(SWIG_IPK_DIR) $(BUILD_DIR)/swig_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SWIG_BUILD_DIR) DESTDIR=$(SWIG_IPK_DIR) install
-	$(STRIP_COMMAND) $(SWIG_IPK_DIR)/opt/bin/*swig
+	$(STRIP_COMMAND) $(SWIG_IPK_DIR)$(TARGET_PREFIX)/bin/*swig
 	$(MAKE) $(SWIG_IPK_DIR)/CONTROL/control
 	echo $(SWIG_CONFFILES) | sed -e 's/ /\n/g' > $(SWIG_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SWIG_IPK_DIR)

@@ -40,7 +40,7 @@ LIBIEEE1284_IPK_VERSION=1
 
 #
 # LIBIEEE1284_CONFFILES should be a list of user-editable files
-#LIBIEEE1284_CONFFILES=/opt/etc/libieee1284.conf /opt/etc/init.d/SXXlibieee1284
+#LIBIEEE1284_CONFFILES=$(TARGET_PREFIX)/etc/libieee1284.conf $(TARGET_PREFIX)/etc/init.d/SXXlibieee1284
 
 #
 # LIBIEEE1284_PATCHES should list any patches, in the the order in
@@ -179,23 +179,23 @@ $(LIBIEEE1284_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LIBIEEE1284_IPK_DIR)/opt/sbin or $(LIBIEEE1284_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LIBIEEE1284_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LIBIEEE1284_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LIBIEEE1284_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LIBIEEE1284_IPK_DIR)/opt/etc/libieee1284/...
-# Documentation files should be installed in $(LIBIEEE1284_IPK_DIR)/opt/doc/libieee1284/...
-# Daemon startup scripts should be installed in $(LIBIEEE1284_IPK_DIR)/opt/etc/init.d/S??libieee1284
+# Libraries and include files should be installed into $(LIBIEEE1284_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LIBIEEE1284_IPK_DIR)$(TARGET_PREFIX)/etc/libieee1284/...
+# Documentation files should be installed in $(LIBIEEE1284_IPK_DIR)$(TARGET_PREFIX)/doc/libieee1284/...
+# Daemon startup scripts should be installed in $(LIBIEEE1284_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??libieee1284
 #
 # You may need to patch your application to make it use these locations.
 #
 $(LIBIEEE1284_IPK): $(LIBIEEE1284_BUILD_DIR)/.built
 	rm -rf $(LIBIEEE1284_IPK_DIR) $(BUILD_DIR)/libieee1284_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBIEEE1284_BUILD_DIR) DESTDIR=$(LIBIEEE1284_IPK_DIR) install-strip
-#	$(INSTALL) -d $(LIBIEEE1284_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(LIBIEEE1284_SOURCE_DIR)/libieee1284.conf $(LIBIEEE1284_IPK_DIR)/opt/etc/libieee1284.conf
-#	$(INSTALL) -d $(LIBIEEE1284_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(LIBIEEE1284_SOURCE_DIR)/rc.libieee1284 $(LIBIEEE1284_IPK_DIR)/opt/etc/init.d/SXXlibieee1284
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBIEEE1284_IPK_DIR)/opt/etc/init.d/SXXlibieee1284
+#	$(INSTALL) -d $(LIBIEEE1284_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(LIBIEEE1284_SOURCE_DIR)/libieee1284.conf $(LIBIEEE1284_IPK_DIR)$(TARGET_PREFIX)/etc/libieee1284.conf
+#	$(INSTALL) -d $(LIBIEEE1284_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(LIBIEEE1284_SOURCE_DIR)/rc.libieee1284 $(LIBIEEE1284_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibieee1284
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBIEEE1284_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibieee1284
 	$(MAKE) $(LIBIEEE1284_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(LIBIEEE1284_SOURCE_DIR)/postinst $(LIBIEEE1284_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBIEEE1284_IPK_DIR)/CONTROL/postinst

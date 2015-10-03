@@ -46,7 +46,7 @@ FBCAT_IPK_VERSION=1
 
 #
 # FBCAT_CONFFILES should be a list of user-editable files
-#FBCAT_CONFFILES=/opt/etc/fbcat.conf /opt/etc/init.d/SXXfbcat
+#FBCAT_CONFFILES=$(TARGET_PREFIX)/etc/fbcat.conf $(TARGET_PREFIX)/etc/init.d/SXXfbcat
 
 #
 # FBCAT_PATCHES should list any patches, in the the order in
@@ -160,20 +160,20 @@ $(FBCAT_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(FBCAT_IPK_DIR)/opt/sbin or $(FBCAT_IPK_DIR)/opt/bin
+# Binaries should be installed into $(FBCAT_IPK_DIR)$(TARGET_PREFIX)/sbin or $(FBCAT_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(FBCAT_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(FBCAT_IPK_DIR)/opt/etc/fbcat/...
-# Documentation files should be installed in $(FBCAT_IPK_DIR)/opt/doc/fbcat/...
-# Daemon startup scripts should be installed in $(FBCAT_IPK_DIR)/opt/etc/init.d/S??fbcat
+# Libraries and include files should be installed into $(FBCAT_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(FBCAT_IPK_DIR)$(TARGET_PREFIX)/etc/fbcat/...
+# Documentation files should be installed in $(FBCAT_IPK_DIR)$(TARGET_PREFIX)/doc/fbcat/...
+# Daemon startup scripts should be installed in $(FBCAT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??fbcat
 #
 # You may need to patch your application to make it use these locations.
 #
 $(FBCAT_IPK): $(FBCAT_BUILD_DIR)/.built
 	rm -rf $(FBCAT_IPK_DIR) $(BUILD_DIR)/fbcat_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(FBCAT_IPK_DIR)/opt/bin/
-	$(INSTALL) -m 755 $(FBCAT_BUILD_DIR)/fbcat $(FBCAT_IPK_DIR)/opt/bin/
-	$(INSTALL) -m 755 $(FBCAT_BUILD_DIR)/fbgrab $(FBCAT_IPK_DIR)/opt/bin/
+	$(INSTALL) -d $(FBCAT_IPK_DIR)$(TARGET_PREFIX)/bin/
+	$(INSTALL) -m 755 $(FBCAT_BUILD_DIR)/fbcat $(FBCAT_IPK_DIR)$(TARGET_PREFIX)/bin/
+	$(INSTALL) -m 755 $(FBCAT_BUILD_DIR)/fbgrab $(FBCAT_IPK_DIR)$(TARGET_PREFIX)/bin/
 	$(MAKE) $(FBCAT_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(FBCAT_IPK_DIR)
 

@@ -46,7 +46,7 @@ LIBTASN1_IPK_VERSION=1
 
 #
 # LIBTASN1_CONFFILES should be a list of user-editable files
-LIBTASN1_CONFFILES=#/opt/etc/libtasn1.conf /opt/etc/init.d/SXXlibtasn1
+LIBTASN1_CONFFILES=#$(TARGET_PREFIX)/etc/libtasn1.conf $(TARGET_PREFIX)/etc/init.d/SXXlibtasn1
 
 #
 # LIBTASN1_PATCHES should list any patches, in the the order in
@@ -177,24 +177,24 @@ $(LIBTASN1_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LIBTASN1_IPK_DIR)/opt/sbin or $(LIBTASN1_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LIBTASN1_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LIBTASN1_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LIBTASN1_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LIBTASN1_IPK_DIR)/opt/etc/libtasn1/...
-# Documentation files should be installed in $(LIBTASN1_IPK_DIR)/opt/doc/libtasn1/...
-# Daemon startup scripts should be installed in $(LIBTASN1_IPK_DIR)/opt/etc/init.d/S??libtasn1
+# Libraries and include files should be installed into $(LIBTASN1_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LIBTASN1_IPK_DIR)$(TARGET_PREFIX)/etc/libtasn1/...
+# Documentation files should be installed in $(LIBTASN1_IPK_DIR)$(TARGET_PREFIX)/doc/libtasn1/...
+# Daemon startup scripts should be installed in $(LIBTASN1_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??libtasn1
 #
 # You may need to patch your application to make it use these locations.
 #
 $(LIBTASN1_IPK): $(LIBTASN1_BUILD_DIR)/.built
 	rm -rf $(LIBTASN1_IPK_DIR) $(BUILD_DIR)/libtasn1_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBTASN1_BUILD_DIR) DESTDIR=$(LIBTASN1_IPK_DIR) install-strip
-#	rm -r $(LIBTASN1_IPK_DIR)/opt/info
-	#$(INSTALL) -d $(LIBTASN1_IPK_DIR)/opt/etc/
-	#$(INSTALL) -m 644 $(LIBTASN1_SOURCE_DIR)/libtasn1.conf $(LIBTASN1_IPK_DIR)/opt/etc/libtasn1.conf
-	#$(INSTALL) -d $(LIBTASN1_IPK_DIR)/opt/etc/init.d
-	#$(INSTALL) -m 755 $(LIBTASN1_SOURCE_DIR)/rc.libtasn1 $(LIBTASN1_IPK_DIR)/opt/etc/init.d/SXXlibtasn1
-	rm -f $(LIBTASN1_IPK_DIR)/opt/share/info/dir
+#	rm -r $(LIBTASN1_IPK_DIR)$(TARGET_PREFIX)/info
+	#$(INSTALL) -d $(LIBTASN1_IPK_DIR)$(TARGET_PREFIX)/etc/
+	#$(INSTALL) -m 644 $(LIBTASN1_SOURCE_DIR)/libtasn1.conf $(LIBTASN1_IPK_DIR)$(TARGET_PREFIX)/etc/libtasn1.conf
+	#$(INSTALL) -d $(LIBTASN1_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	#$(INSTALL) -m 755 $(LIBTASN1_SOURCE_DIR)/rc.libtasn1 $(LIBTASN1_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibtasn1
+	rm -f $(LIBTASN1_IPK_DIR)$(TARGET_PREFIX)/share/info/dir
 	$(MAKE) $(LIBTASN1_IPK_DIR)/CONTROL/control
 	#$(INSTALL) -m 755 $(LIBTASN1_SOURCE_DIR)/postinst $(LIBTASN1_IPK_DIR)/CONTROL/postinst
 	#$(INSTALL) -m 755 $(LIBTASN1_SOURCE_DIR)/prerm $(LIBTASN1_IPK_DIR)/CONTROL/prerm

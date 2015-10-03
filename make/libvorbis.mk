@@ -39,7 +39,7 @@ LIBVORBIS_IPK_VERSION=1
 
 #
 # LIBVORBIS_CONFFILES should be a list of user-editable files
-#LIBVORBIS_CONFFILES=/opt/etc/libvorbis.conf /opt/etc/init.d/SXXlibvorbis
+#LIBVORBIS_CONFFILES=$(TARGET_PREFIX)/etc/libvorbis.conf $(TARGET_PREFIX)/etc/init.d/SXXlibvorbis
 
 #
 # LIBVORBIS_PATCHES should list any patches, in the the order in
@@ -164,7 +164,7 @@ libvorbis: $(LIBVORBIS_BUILD_DIR)/.built
 $(LIBVORBIS_BUILD_DIR)/.staged: $(LIBVORBIS_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
-	sed -i -e 's|prefix=/opt|prefix=$(STAGING_PREFIX)|' \
+	sed -i -e 's|prefix=$(TARGET_PREFIX)|prefix=$(STAGING_PREFIX)|' \
 		$(STAGING_LIB_DIR)/pkgconfig/vorbisenc.pc \
 		$(STAGING_LIB_DIR)/pkgconfig/vorbisfile.pc \
 		$(STAGING_LIB_DIR)/pkgconfig/vorbis.pc
@@ -194,19 +194,19 @@ $(LIBVORBIS_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LIBVORBIS_IPK_DIR)/opt/sbin or $(LIBVORBIS_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LIBVORBIS_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LIBVORBIS_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LIBVORBIS_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LIBVORBIS_IPK_DIR)/opt/etc/libvorbis/...
-# Documentation files should be installed in $(LIBVORBIS_IPK_DIR)/opt/doc/libvorbis/...
-# Daemon startup scripts should be installed in $(LIBVORBIS_IPK_DIR)/opt/etc/init.d/S??libvorbis
+# Libraries and include files should be installed into $(LIBVORBIS_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LIBVORBIS_IPK_DIR)$(TARGET_PREFIX)/etc/libvorbis/...
+# Documentation files should be installed in $(LIBVORBIS_IPK_DIR)$(TARGET_PREFIX)/doc/libvorbis/...
+# Daemon startup scripts should be installed in $(LIBVORBIS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??libvorbis
 #
 # You may need to patch your application to make it use these locations.
 #
 $(LIBVORBIS_IPK): $(LIBVORBIS_BUILD_DIR)/.built
 	rm -rf $(LIBVORBIS_IPK_DIR) $(BUILD_DIR)/libvorbis_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBVORBIS_BUILD_DIR) DESTDIR=$(LIBVORBIS_IPK_DIR) install-strip
-	rm $(LIBVORBIS_IPK_DIR)/opt/lib/libvorbis*.la
+	rm $(LIBVORBIS_IPK_DIR)$(TARGET_PREFIX)/lib/libvorbis*.la
 	$(MAKE) $(LIBVORBIS_IPK_DIR)/CONTROL/control
 	echo $(LIBVORBIS_CONFFILES) | sed -e 's/ /\n/g' > $(LIBVORBIS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBVORBIS_IPK_DIR)

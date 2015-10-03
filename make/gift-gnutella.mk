@@ -37,7 +37,7 @@ GIFTGNUTELLA_IPK_VERSION=1
 
 #
 # GIFTGNUTELLA_CONFFILES should be a list of user-editable files
-GIFTGNUTELLA_CONFFILES=/opt/etc/gift-gnutella.conf /opt/etc/init.d/SXXgift-gnutella
+GIFTGNUTELLA_CONFFILES=$(TARGET_PREFIX)/etc/gift-gnutella.conf $(TARGET_PREFIX)/etc/init.d/SXXgift-gnutella
 
 #
 # GIFTGNUTELLA_PATCHES should list any patches, in the the order in
@@ -171,24 +171,24 @@ $(GIFTGNUTELLA_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(GIFTGNUTELLA_IPK_DIR)/opt/sbin or $(GIFTGNUTELLA_IPK_DIR)/opt/bin
+# Binaries should be installed into $(GIFTGNUTELLA_IPK_DIR)$(TARGET_PREFIX)/sbin or $(GIFTGNUTELLA_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(GIFTGNUTELLA_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(GIFTGNUTELLA_IPK_DIR)/opt/etc/gift-gnutella/...
-# Documentation files should be installed in $(GIFTGNUTELLA_IPK_DIR)/opt/doc/gift-gnutella/...
-# Daemon startup scripts should be installed in $(GIFTGNUTELLA_IPK_DIR)/opt/etc/init.d/S??gift-gnutella
+# Libraries and include files should be installed into $(GIFTGNUTELLA_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(GIFTGNUTELLA_IPK_DIR)$(TARGET_PREFIX)/etc/gift-gnutella/...
+# Documentation files should be installed in $(GIFTGNUTELLA_IPK_DIR)$(TARGET_PREFIX)/doc/gift-gnutella/...
+# Daemon startup scripts should be installed in $(GIFTGNUTELLA_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??gift-gnutella
 #
 # You may need to patch your application to make it use these locations.
 #
 $(GIFTGNUTELLA_IPK): $(GIFTGNUTELLA_BUILD_DIR)/.built
 	rm -rf $(GIFTGNUTELLA_IPK_DIR) $(BUILD_DIR)/gift-gnutella_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(GIFTGNUTELLA_IPK_DIR)/opt/lib/giFT
-	$(STRIP_COMMAND) $(GIFTGNUTELLA_BUILD_DIR)/src/.libs/libGnutella.so -o $(GIFTGNUTELLA_IPK_DIR)/opt/lib/giFT/libGnutella.so
-	$(INSTALL) -m 644 $(GIFTGNUTELLA_BUILD_DIR)/src/.libs/libGnutella.la $(GIFTGNUTELLA_IPK_DIR)/opt/lib/giFT/libGnutella.la
-	$(INSTALL) -d $(GIFTGNUTELLA_IPK_DIR)/opt/share/giFT/Gnutella
-	$(INSTALL) -m 644 $(GIFTGNUTELLA_BUILD_DIR)/data/Gnutella.conf.template $(GIFTGNUTELLA_IPK_DIR)/opt/share/giFT/Gnutella/Gnutella.conf.template
-	$(INSTALL) -m 644 $(GIFTGNUTELLA_BUILD_DIR)/data/hostiles.txt $(GIFTGNUTELLA_IPK_DIR)/opt/share/giFT/Gnutella/hostiles.txt
-	$(INSTALL) -m 644 $(GIFTGNUTELLA_BUILD_DIR)/data/gwebcaches $(GIFTGNUTELLA_IPK_DIR)/opt/share/giFT/Gnutella/gwebcaches
+	$(INSTALL) -d $(GIFTGNUTELLA_IPK_DIR)$(TARGET_PREFIX)/lib/giFT
+	$(STRIP_COMMAND) $(GIFTGNUTELLA_BUILD_DIR)/src/.libs/libGnutella.so -o $(GIFTGNUTELLA_IPK_DIR)$(TARGET_PREFIX)/lib/giFT/libGnutella.so
+	$(INSTALL) -m 644 $(GIFTGNUTELLA_BUILD_DIR)/src/.libs/libGnutella.la $(GIFTGNUTELLA_IPK_DIR)$(TARGET_PREFIX)/lib/giFT/libGnutella.la
+	$(INSTALL) -d $(GIFTGNUTELLA_IPK_DIR)$(TARGET_PREFIX)/share/giFT/Gnutella
+	$(INSTALL) -m 644 $(GIFTGNUTELLA_BUILD_DIR)/data/Gnutella.conf.template $(GIFTGNUTELLA_IPK_DIR)$(TARGET_PREFIX)/share/giFT/Gnutella/Gnutella.conf.template
+	$(INSTALL) -m 644 $(GIFTGNUTELLA_BUILD_DIR)/data/hostiles.txt $(GIFTGNUTELLA_IPK_DIR)$(TARGET_PREFIX)/share/giFT/Gnutella/hostiles.txt
+	$(INSTALL) -m 644 $(GIFTGNUTELLA_BUILD_DIR)/data/gwebcaches $(GIFTGNUTELLA_IPK_DIR)$(TARGET_PREFIX)/share/giFT/Gnutella/gwebcaches
 	$(INSTALL) -d $(GIFTGNUTELLA_IPK_DIR)/CONTROL
 	$(MAKE) $(GIFTGNUTELLA_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GIFTGNUTELLA_IPK_DIR)

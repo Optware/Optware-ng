@@ -41,7 +41,7 @@ PY-APSW_IPK_VERSION=2
 
 #
 # PY-APSW_CONFFILES should be a list of user-editable files
-#PY-APSW_CONFFILES=/opt/etc/py-apsw.conf /opt/etc/init.d/SXXpy-apsw
+#PY-APSW_CONFFILES=$(TARGET_PREFIX)/etc/py-apsw.conf $(TARGET_PREFIX)/etc/init.d/SXXpy-apsw
 
 #
 # PY-APSW_PATCHES should list any patches, in the the order in
@@ -119,11 +119,11 @@ $(PY-APSW_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-APSW_SOURCE) $(PY-APSW_PATCHES)
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
 	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
-	        echo "rpath=/opt/lib"; \
+	        echo "rpath=$(TARGET_PREFIX)/lib"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python2.4"; \
+		echo "executable=$(TARGET_PREFIX)/bin/python2.4"; \
 		echo "[install]"; \
-		echo "install_scripts=/opt/bin"; \
+		echo "install_scripts=$(TARGET_PREFIX)/bin"; \
 	    ) > setup.cfg; \
 	)
 	# 2.5
@@ -136,11 +136,11 @@ $(PY-APSW_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-APSW_SOURCE) $(PY-APSW_PATCHES)
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.5"; \
 	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
-	        echo "rpath=/opt/lib"; \
+	        echo "rpath=$(TARGET_PREFIX)/lib"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python2.5"; \
+		echo "executable=$(TARGET_PREFIX)/bin/python2.5"; \
 		echo "[install]"; \
-		echo "install_scripts=/opt/bin"; \
+		echo "install_scripts=$(TARGET_PREFIX)/bin"; \
 	    ) > setup.cfg; \
 	)
 	touch $(PY-APSW_BUILD_DIR)/.configured
@@ -212,12 +212,12 @@ $(PY25-APSW_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PY-APSW_IPK_DIR)/opt/sbin or $(PY-APSW_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PY-APSW_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PY-APSW_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PY-APSW_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PY-APSW_IPK_DIR)/opt/etc/py-apsw/...
-# Documentation files should be installed in $(PY-APSW_IPK_DIR)/opt/doc/py-apsw/...
-# Daemon startup scripts should be installed in $(PY-APSW_IPK_DIR)/opt/etc/init.d/S??py-apsw
+# Libraries and include files should be installed into $(PY-APSW_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PY-APSW_IPK_DIR)$(TARGET_PREFIX)/etc/py-apsw/...
+# Documentation files should be installed in $(PY-APSW_IPK_DIR)$(TARGET_PREFIX)/doc/py-apsw/...
+# Daemon startup scripts should be installed in $(PY-APSW_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??py-apsw
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -225,9 +225,9 @@ $(PY24-APSW_IPK): $(PY-APSW_BUILD_DIR)/.built
 	rm -rf $(PY24-APSW_IPK_DIR) $(BUILD_DIR)/py-apsw_*_$(TARGET_ARCH).ipk
 	(cd $(PY-APSW_BUILD_DIR)/2.4; \
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
-	    --root=$(PY24-APSW_IPK_DIR) --prefix=/opt; \
+	    --root=$(PY24-APSW_IPK_DIR) --prefix=$(TARGET_PREFIX); \
 	)
-	$(STRIP_COMMAND) $(PY24-APSW_IPK_DIR)/opt/lib/python2.4/site-packages/apsw.so
+	$(STRIP_COMMAND) $(PY24-APSW_IPK_DIR)$(TARGET_PREFIX)/lib/python2.4/site-packages/apsw.so
 	$(MAKE) $(PY24-APSW_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-APSW_IPK_DIR)
 
@@ -235,9 +235,9 @@ $(PY25-APSW_IPK): $(PY-APSW_BUILD_DIR)/.built
 	rm -rf $(PY25-APSW_IPK_DIR) $(BUILD_DIR)/py25-apsw_*_$(TARGET_ARCH).ipk
 	(cd $(PY-APSW_BUILD_DIR)/2.5; \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
-	    --root=$(PY25-APSW_IPK_DIR) --prefix=/opt; \
+	    --root=$(PY25-APSW_IPK_DIR) --prefix=$(TARGET_PREFIX); \
 	)
-	$(STRIP_COMMAND) $(PY25-APSW_IPK_DIR)/opt/lib/python2.5/site-packages/apsw.so
+	$(STRIP_COMMAND) $(PY25-APSW_IPK_DIR)$(TARGET_PREFIX)/lib/python2.5/site-packages/apsw.so
 	$(MAKE) $(PY25-APSW_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-APSW_IPK_DIR)
 

@@ -119,14 +119,14 @@ $(ZOO_IPK_DIR)/CONTROL/control:
 
 $(ZOO_IPK): $(ZOO_BUILD_DIR)/.built
 	rm -rf $(ZOO_IPK_DIR) $(BUILD_DIR)/zoo_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(ZOO_IPK_DIR)/opt/bin
-	$(INSTALL) -m 755 $(ZOO_BUILD_DIR)/zoo $(ZOO_IPK_DIR)/opt/bin
-	$(STRIP_COMMAND) $(ZOO_IPK_DIR)/opt/bin/zoo
-	$(INSTALL) -m 755 $(ZOO_BUILD_DIR)/fiz $(ZOO_IPK_DIR)/opt/bin
-	$(STRIP_COMMAND) $(ZOO_IPK_DIR)/opt/bin/fiz
-	$(INSTALL) -d $(ZOO_IPK_DIR)/opt/share/man/man1
-	$(INSTALL) -m 644 $(ZOO_BUILD_DIR)/fiz.1  $(ZOO_IPK_DIR)/opt/share/man/man1
-	$(INSTALL) -m 644 $(ZOO_BUILD_DIR)/zoo.1  $(ZOO_IPK_DIR)/opt/share/man/man1
+	$(INSTALL) -d $(ZOO_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(INSTALL) -m 755 $(ZOO_BUILD_DIR)/zoo $(ZOO_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(STRIP_COMMAND) $(ZOO_IPK_DIR)$(TARGET_PREFIX)/bin/zoo
+	$(INSTALL) -m 755 $(ZOO_BUILD_DIR)/fiz $(ZOO_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(STRIP_COMMAND) $(ZOO_IPK_DIR)$(TARGET_PREFIX)/bin/fiz
+	$(INSTALL) -d $(ZOO_IPK_DIR)$(TARGET_PREFIX)/share/man/man1
+	$(INSTALL) -m 644 $(ZOO_BUILD_DIR)/fiz.1  $(ZOO_IPK_DIR)$(TARGET_PREFIX)/share/man/man1
+	$(INSTALL) -m 644 $(ZOO_BUILD_DIR)/zoo.1  $(ZOO_IPK_DIR)$(TARGET_PREFIX)/share/man/man1
 	$(MAKE) $(ZOO_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ZOO_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(ZOO_IPK_DIR)

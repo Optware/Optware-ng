@@ -40,7 +40,7 @@ MULTITAIL_IPK_VERSION=1
 
 #
 # MULTITAIL_CONFFILES should be a list of user-editable files
-MULTITAIL_CONFFILES=/opt/etc/multitail.conf
+MULTITAIL_CONFFILES=$(TARGET_PREFIX)/etc/multitail.conf
 
 #
 # MULTITAIL_PATCHES should list any patches, in the the order in
@@ -148,7 +148,7 @@ $(MULTITAIL_BUILD_DIR)/.built: $(MULTITAIL_BUILD_DIR)/.configured
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MULTITAIL_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MULTITAIL_LDFLAGS)" \
-		CONFIG_FILE=/opt/etc/multitail.conf
+		CONFIG_FILE=$(TARGET_PREFIX)/etc/multitail.conf
 	touch $@
 
 #
@@ -188,24 +188,24 @@ $(MULTITAIL_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(MULTITAIL_IPK_DIR)/opt/sbin or $(MULTITAIL_IPK_DIR)/opt/bin
+# Binaries should be installed into $(MULTITAIL_IPK_DIR)$(TARGET_PREFIX)/sbin or $(MULTITAIL_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(MULTITAIL_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(MULTITAIL_IPK_DIR)/opt/etc/multitail/...
-# Documentation files should be installed in $(MULTITAIL_IPK_DIR)/opt/doc/multitail/...
-# Daemon startup scripts should be installed in $(MULTITAIL_IPK_DIR)/opt/etc/init.d/S??multitail
+# Libraries and include files should be installed into $(MULTITAIL_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(MULTITAIL_IPK_DIR)$(TARGET_PREFIX)/etc/multitail/...
+# Documentation files should be installed in $(MULTITAIL_IPK_DIR)$(TARGET_PREFIX)/doc/multitail/...
+# Daemon startup scripts should be installed in $(MULTITAIL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??multitail
 #
 # You may need to patch your application to make it use these locations.
 #
 $(MULTITAIL_IPK): $(MULTITAIL_BUILD_DIR)/.built
 	rm -rf $(MULTITAIL_IPK_DIR) $(BUILD_DIR)/multitail_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(MULTITAIL_IPK_DIR)/opt/bin
-	$(INSTALL) -m 755 $(MULTITAIL_BUILD_DIR)/multitail $(MULTITAIL_IPK_DIR)/opt/bin/
-	$(STRIP_COMMAND) $(MULTITAIL_IPK_DIR)/opt/bin/multitail
-	$(INSTALL) -d $(MULTITAIL_IPK_DIR)/opt/etc
-	$(INSTALL) -m 644 $(MULTITAIL_BUILD_DIR)/multitail.conf $(MULTITAIL_IPK_DIR)/opt/etc/
-	$(INSTALL) -d $(MULTITAIL_IPK_DIR)/opt/man/man1
-	$(INSTALL) -m 644 $(MULTITAIL_BUILD_DIR)/multitail.1 $(MULTITAIL_IPK_DIR)/opt/man/man1/
+	$(INSTALL) -d $(MULTITAIL_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(INSTALL) -m 755 $(MULTITAIL_BUILD_DIR)/multitail $(MULTITAIL_IPK_DIR)$(TARGET_PREFIX)/bin/
+	$(STRIP_COMMAND) $(MULTITAIL_IPK_DIR)$(TARGET_PREFIX)/bin/multitail
+	$(INSTALL) -d $(MULTITAIL_IPK_DIR)$(TARGET_PREFIX)/etc
+	$(INSTALL) -m 644 $(MULTITAIL_BUILD_DIR)/multitail.conf $(MULTITAIL_IPK_DIR)$(TARGET_PREFIX)/etc/
+	$(INSTALL) -d $(MULTITAIL_IPK_DIR)$(TARGET_PREFIX)/man/man1
+	$(INSTALL) -m 644 $(MULTITAIL_BUILD_DIR)/multitail.1 $(MULTITAIL_IPK_DIR)$(TARGET_PREFIX)/man/man1/
 	$(MAKE) $(MULTITAIL_IPK_DIR)/CONTROL/control
 	echo $(MULTITAIL_CONFFILES) | sed -e 's/ /\n/g' > $(MULTITAIL_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MULTITAIL_IPK_DIR)

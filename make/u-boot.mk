@@ -18,7 +18,7 @@ U-BOOT_CONFLICTS=
 
 U-BOOT_IPK_VERSION=1
 
-#U-BOOT_CONFFILES=/opt/etc/u-boot.conf /opt/etc/init.d/SXXu-boot
+#U-BOOT_CONFFILES=$(TARGET_PREFIX)/etc/u-boot.conf $(TARGET_PREFIX)/etc/init.d/SXXu-boot
 
 #U-BOOT_PATCHES=$(U-BOOT_SOURCE_DIR)/configure.patch
 

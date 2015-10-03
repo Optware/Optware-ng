@@ -189,19 +189,19 @@ $(LIBTOOL_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LIBTOOL_IPK_DIR)/opt/sbin or $(LIBTOOL_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LIBTOOL_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LIBTOOL_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LIBTOOL_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LIBTOOL_IPK_DIR)/opt/etc/libtool/...
-# Documentation files should be installed in $(LIBTOOL_IPK_DIR)/opt/doc/libtool/...
-# Daemon startup scripts should be installed in $(LIBTOOL_IPK_DIR)/opt/etc/init.d/S??libtool
+# Libraries and include files should be installed into $(LIBTOOL_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LIBTOOL_IPK_DIR)$(TARGET_PREFIX)/etc/libtool/...
+# Documentation files should be installed in $(LIBTOOL_IPK_DIR)$(TARGET_PREFIX)/doc/libtool/...
+# Daemon startup scripts should be installed in $(LIBTOOL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??libtool
 #
 # You may need to patch your application to make it use these locations.
 #
 $(LIBTOOL_IPK): $(LIBTOOL_BUILD_DIR)/.built
 	rm -rf $(LIBTOOL_IPK_DIR) $(BUILD_DIR)/libtool_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBTOOL_BUILD_DIR) DESTDIR=$(LIBTOOL_IPK_DIR) install-strip
-	rm -f $(LIBTOOL_IPK_DIR)/opt/share/info/dir
+	rm -f $(LIBTOOL_IPK_DIR)$(TARGET_PREFIX)/share/info/dir
 	$(MAKE) $(LIBTOOL_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -d $(LIBTOOL_IPK_DIR)/CONTROL
 #	sed -e "s/@ARCH@/$(TARGET_ARCH)/" -e "s/@VERSION@/$(LIBTOOL_VERSION)/" \

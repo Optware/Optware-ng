@@ -40,7 +40,7 @@ TMSNC_IPK_VERSION=1
 
 #
 # TMSNC_CONFFILES should be a list of user-editable files
-#TMSNC_CONFFILES=/opt/etc/tmsnc.conf /opt/etc/init.d/SXXtmsnc
+#TMSNC_CONFFILES=$(TARGET_PREFIX)/etc/tmsnc.conf $(TARGET_PREFIX)/etc/init.d/SXXtmsnc
 
 #
 # TMSNC_PATCHES should list any patches, in the the order in
@@ -180,24 +180,24 @@ $(TMSNC_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(TMSNC_IPK_DIR)/opt/sbin or $(TMSNC_IPK_DIR)/opt/bin
+# Binaries should be installed into $(TMSNC_IPK_DIR)$(TARGET_PREFIX)/sbin or $(TMSNC_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(TMSNC_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(TMSNC_IPK_DIR)/opt/etc/tmsnc/...
-# Documentation files should be installed in $(TMSNC_IPK_DIR)/opt/doc/tmsnc/...
-# Daemon startup scripts should be installed in $(TMSNC_IPK_DIR)/opt/etc/init.d/S??tmsnc
+# Libraries and include files should be installed into $(TMSNC_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(TMSNC_IPK_DIR)$(TARGET_PREFIX)/etc/tmsnc/...
+# Documentation files should be installed in $(TMSNC_IPK_DIR)$(TARGET_PREFIX)/doc/tmsnc/...
+# Daemon startup scripts should be installed in $(TMSNC_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??tmsnc
 #
 # You may need to patch your application to make it use these locations.
 #
 $(TMSNC_IPK): $(TMSNC_BUILD_DIR)/.built
 	rm -rf $(TMSNC_IPK_DIR) $(BUILD_DIR)/tmsnc_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(TMSNC_BUILD_DIR) DESTDIR=$(TMSNC_IPK_DIR) install
-	$(STRIP_COMMAND) $(TMSNC_IPK_DIR)/opt/bin/tmsnc
-#	$(INSTALL) -d $(TMSNC_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(TMSNC_SOURCE_DIR)/tmsnc.conf $(TMSNC_IPK_DIR)/opt/etc/tmsnc.conf
-#	$(INSTALL) -d $(TMSNC_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(TMSNC_SOURCE_DIR)/rc.tmsnc $(TMSNC_IPK_DIR)/opt/etc/init.d/SXXtmsnc
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/opt/etc/init.d/SXXtmsnc
+	$(STRIP_COMMAND) $(TMSNC_IPK_DIR)$(TARGET_PREFIX)/bin/tmsnc
+#	$(INSTALL) -d $(TMSNC_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(TMSNC_SOURCE_DIR)/tmsnc.conf $(TMSNC_IPK_DIR)$(TARGET_PREFIX)/etc/tmsnc.conf
+#	$(INSTALL) -d $(TMSNC_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(TMSNC_SOURCE_DIR)/rc.tmsnc $(TMSNC_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXtmsnc
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXtmsnc
 	$(MAKE) $(TMSNC_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(TMSNC_SOURCE_DIR)/postinst $(TMSNC_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/postinst

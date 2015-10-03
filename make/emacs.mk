@@ -34,7 +34,7 @@ EMACS_IPK_VERSION=5
 
 #
 # EMACS_CONFFILES should be a list of user-editable files
-#EMACS_CONFFILES=/opt/etc/emacs.conf /opt/etc/init.d/SXXemacs
+#EMACS_CONFFILES=$(TARGET_PREFIX)/etc/emacs.conf $(TARGET_PREFIX)/etc/init.d/SXXemacs
 
 #
 # EMACS_PATCHES should list any patches, in the the order in
@@ -130,7 +130,7 @@ $(EMACS_BUILD_DIR)/.configured: $(DL_DIR)/$(EMACS_SOURCE) $(EMACS_PATCHES)
 	)
 	sed -i -e 's%/usr/lib/crt%$(TARGET_LIBDIR)/crt%g' $(EMACS_BUILD_DIR)/src/Makefile
 	sed -i -e 's%`./prefix-args.*`%-Xlinker -z -Xlinker nocombreloc $(LDFLAGS)%' $(EMACS_BUILD_DIR)/src/Makefile
-	sed -i -e 's%LIBES =%LIBES = -Wl,-rpath-link=$(STAGING_LIB_DIR) -Wl,-rpath=/opt/lib%' $(EMACS_BUILD_DIR)/src/Makefile
+	sed -i -e 's%LIBES =%LIBES = -Wl,-rpath-link=$(STAGING_LIB_DIR) -Wl,-rpath=$(TARGET_PREFIX)/lib%' $(EMACS_BUILD_DIR)/src/Makefile
 	touch $(EMACS_BUILD_DIR)/.configured
 
 emacs-unpack: $(EMACS_BUILD_DIR)/.configured
@@ -202,13 +202,13 @@ $(EMACS_IPK): $(EMACS_BUILD_DIR)/.built
 	rm -rf $(EMACS_LISP_SRC_IPK_DIR) $(BUILD_DIR)/emacs-lisp-src_*_$(TARGET_ARCH).ipk
 	$(MAKE) $(EMACS_IPK_DIR)/CONTROL/control
 	$(MAKE) -C $(EMACS_BUILD_DIR) prefix=$(EMACS_IPK_DIR)$(TARGET_PREFIX) install TARGET_LIBDIR=$(TARGET_LIBDIR)
-	rm -f $(EMACS_IPK_DIR)/opt/bin/emacs
+	rm -f $(EMACS_IPK_DIR)$(TARGET_PREFIX)/bin/emacs
 	for F in \
-		$(EMACS_IPK_DIR)/opt/bin/* \
-		$(EMACS_IPK_DIR)/opt/libexec/emacs/$(EMACS_VERSION)/*/* ; \
+		$(EMACS_IPK_DIR)$(TARGET_PREFIX)/bin/* \
+		$(EMACS_IPK_DIR)$(TARGET_PREFIX)/libexec/emacs/$(EMACS_VERSION)/*/* ; \
 		do $(STRIP_COMMAND) $$F || : ; \
 	done
-	ln -s /opt/bin/emacs-$(EMACS_VERSION) $(EMACS_IPK_DIR)/opt/bin/emacs
+	ln -s $(TARGET_PREFIX)/bin/emacs-$(EMACS_VERSION) $(EMACS_IPK_DIR)$(TARGET_PREFIX)/bin/emacs
 	$(MAKE) $(EMACS_LISP_SRC_IPK_DIR)/CONTROL/control
 	( \
 		cd $(EMACS_IPK_DIR) ; \
@@ -221,8 +221,8 @@ $(EMACS_IPK): $(EMACS_BUILD_DIR)/.built
 			done ; \
 	)
 	$(MAKE) $(EMACS_LISP_IPK_DIR)/CONTROL/control
-	$(INSTALL) -d $(EMACS_LISP_IPK_DIR)/opt/share/emacs/$(EMACS_VERSION)
-	mv $(EMACS_IPK_DIR)/opt/share/emacs/$(EMACS_VERSION)/lisp $(EMACS_LISP_IPK_DIR)/opt/share/emacs/$(EMACS_VERSION)
+	$(INSTALL) -d $(EMACS_LISP_IPK_DIR)$(TARGET_PREFIX)/share/emacs/$(EMACS_VERSION)
+	mv $(EMACS_IPK_DIR)$(TARGET_PREFIX)/share/emacs/$(EMACS_VERSION)/lisp $(EMACS_LISP_IPK_DIR)$(TARGET_PREFIX)/share/emacs/$(EMACS_VERSION)
 #	$(INSTALL) -m 644 $(EMACS_SOURCE_DIR)/postinst $(EMACS_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 644 $(EMACS_SOURCE_DIR)/prerm $(EMACS_IPK_DIR)/CONTROL/prerm
 #	echo $(EMACS_CONFFILES) | sed -e 's/ /\n/g' > $(EMACS_IPK_DIR)/CONTROL/conffiles

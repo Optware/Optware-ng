@@ -54,7 +54,7 @@ GHOSTSCRIPT-FONTS_IPK_VERSION=1
 
 #
 # GHOSTSCRIPT-FONTS_CONFFILES should be a list of user-editable files
-#GHOSTSCRIPT-FONTS_CONFFILES=/opt/etc/ghostscript-fonts.conf /opt/etc/init.d/SXXghostscript-fonts
+#GHOSTSCRIPT-FONTS_CONFFILES=$(TARGET_PREFIX)/etc/ghostscript-fonts.conf $(TARGET_PREFIX)/etc/init.d/SXXghostscript-fonts
 
 #
 # GHOSTSCRIPT-FONTS_PATCHES should list any patches, in the the order in
@@ -191,24 +191,24 @@ $(GHOSTSCRIPT-FONTS_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(GHOSTSCRIPT-FONTS_IPK_DIR)/opt/sbin or $(GHOSTSCRIPT-FONTS_IPK_DIR)/opt/bin
+# Binaries should be installed into $(GHOSTSCRIPT-FONTS_IPK_DIR)$(TARGET_PREFIX)/sbin or $(GHOSTSCRIPT-FONTS_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(GHOSTSCRIPT-FONTS_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(GHOSTSCRIPT-FONTS_IPK_DIR)/opt/etc/ghostscript-fonts/...
-# Documentation files should be installed in $(GHOSTSCRIPT-FONTS_IPK_DIR)/opt/doc/ghostscript-fonts/...
-# Daemon startup scripts should be installed in $(GHOSTSCRIPT-FONTS_IPK_DIR)/opt/etc/init.d/S??ghostscript-fonts
+# Libraries and include files should be installed into $(GHOSTSCRIPT-FONTS_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(GHOSTSCRIPT-FONTS_IPK_DIR)$(TARGET_PREFIX)/etc/ghostscript-fonts/...
+# Documentation files should be installed in $(GHOSTSCRIPT-FONTS_IPK_DIR)$(TARGET_PREFIX)/doc/ghostscript-fonts/...
+# Daemon startup scripts should be installed in $(GHOSTSCRIPT-FONTS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??ghostscript-fonts
 #
 # You may need to patch your application to make it use these locations.
 #
 $(GHOSTSCRIPT-FONTS_IPK): $(GHOSTSCRIPT-FONTS_BUILD_DIR)/.configured
 	rm -rf $(GHOSTSCRIPT-FONTS_IPK_DIR) $(BUILD_DIR)/ghostscript-fonts_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(GHOSTSCRIPT-FONTS_BUILD_DIR) DESTDIR=$(GHOSTSCRIPT-FONTS_IPK_DIR) install
-	$(INSTALL) -d $(GHOSTSCRIPT-FONTS_IPK_DIR)/opt/share/fonts/default/Type1
-	cp -f $(addprefix $(GHOSTSCRIPT-FONTS_BUILD_DIR)/*., afm pfb pfm) $(GHOSTSCRIPT-FONTS_IPK_DIR)/opt/share/fonts/default/Type1
-#	$(INSTALL) -m 644 $(GHOSTSCRIPT-FONTS_SOURCE_DIR)/ghostscript-fonts.conf $(GHOSTSCRIPT-FONTS_IPK_DIR)/opt/etc/ghostscript-fonts.conf
-#	$(INSTALL) -d $(GHOSTSCRIPT-FONTS_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(GHOSTSCRIPT-FONTS_SOURCE_DIR)/rc.ghostscript-fonts $(GHOSTSCRIPT-FONTS_IPK_DIR)/opt/etc/init.d/SXXghostscript-fonts
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(GHOSTSCRIPT-FONTS_IPK_DIR)/opt/etc/init.d/SXXghostscript-fonts
+	$(INSTALL) -d $(GHOSTSCRIPT-FONTS_IPK_DIR)$(TARGET_PREFIX)/share/fonts/default/Type1
+	cp -f $(addprefix $(GHOSTSCRIPT-FONTS_BUILD_DIR)/*., afm pfb pfm) $(GHOSTSCRIPT-FONTS_IPK_DIR)$(TARGET_PREFIX)/share/fonts/default/Type1
+#	$(INSTALL) -m 644 $(GHOSTSCRIPT-FONTS_SOURCE_DIR)/ghostscript-fonts.conf $(GHOSTSCRIPT-FONTS_IPK_DIR)$(TARGET_PREFIX)/etc/ghostscript-fonts.conf
+#	$(INSTALL) -d $(GHOSTSCRIPT-FONTS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(GHOSTSCRIPT-FONTS_SOURCE_DIR)/rc.ghostscript-fonts $(GHOSTSCRIPT-FONTS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXghostscript-fonts
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(GHOSTSCRIPT-FONTS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXghostscript-fonts
 	$(MAKE) $(GHOSTSCRIPT-FONTS_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(GHOSTSCRIPT-FONTS_SOURCE_DIR)/postinst $(GHOSTSCRIPT-FONTS_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(GHOSTSCRIPT-FONTS_IPK_DIR)/CONTROL/postinst

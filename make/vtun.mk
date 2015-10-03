@@ -40,7 +40,7 @@ VTUN_IPK_VERSION=2
 
 #
 # VTUN_CONFFILES should be a list of user-editable files
-VTUN_CONFFILES=/opt/etc/vtund.conf
+VTUN_CONFFILES=$(TARGET_PREFIX)/etc/vtund.conf
 
 #
 # VTUN_PATCHES should list any patches, in the the order in
@@ -187,24 +187,24 @@ $(VTUN_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(VTUN_IPK_DIR)/opt/sbin or $(VTUN_IPK_DIR)/opt/bin
+# Binaries should be installed into $(VTUN_IPK_DIR)$(TARGET_PREFIX)/sbin or $(VTUN_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(VTUN_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(VTUN_IPK_DIR)/opt/etc/vtun/...
-# Documentation files should be installed in $(VTUN_IPK_DIR)/opt/doc/vtun/...
-# Daemon startup scripts should be installed in $(VTUN_IPK_DIR)/opt/etc/init.d/S??vtun
+# Libraries and include files should be installed into $(VTUN_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(VTUN_IPK_DIR)$(TARGET_PREFIX)/etc/vtun/...
+# Documentation files should be installed in $(VTUN_IPK_DIR)$(TARGET_PREFIX)/doc/vtun/...
+# Daemon startup scripts should be installed in $(VTUN_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??vtun
 #
 # You may need to patch your application to make it use these locations.
 #
 $(VTUN_IPK): $(VTUN_BUILD_DIR)/.built
 	rm -rf $(VTUN_IPK_DIR) $(BUILD_DIR)/vtun_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(VTUN_BUILD_DIR) DESTDIR=$(VTUN_IPK_DIR) INSTALL_OWNER="" install
-	$(STRIP_COMMAND) $(VTUN_IPK_DIR)/opt/sbin/vtund
-#	$(INSTALL) -d $(VTUN_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(VTUN_SOURCE_DIR)/vtun.conf $(VTUN_IPK_DIR)/opt/etc/vtun.conf
-#	$(INSTALL) -d $(VTUN_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(VTUN_SOURCE_DIR)/rc.vtun $(VTUN_IPK_DIR)/opt/etc/init.d/SXXvtun
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(VTUN_IPK_DIR)/opt/etc/init.d/SXXvtun
+	$(STRIP_COMMAND) $(VTUN_IPK_DIR)$(TARGET_PREFIX)/sbin/vtund
+#	$(INSTALL) -d $(VTUN_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(VTUN_SOURCE_DIR)/vtun.conf $(VTUN_IPK_DIR)$(TARGET_PREFIX)/etc/vtun.conf
+#	$(INSTALL) -d $(VTUN_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(VTUN_SOURCE_DIR)/rc.vtun $(VTUN_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXvtun
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(VTUN_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXvtun
 	$(MAKE) $(VTUN_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(VTUN_SOURCE_DIR)/postinst $(VTUN_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(VTUN_IPK_DIR)/CONTROL/postinst

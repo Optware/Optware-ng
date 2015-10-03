@@ -40,7 +40,7 @@ LIBDB52_IPK_VERSION=1
 
 #
 # LIBDB52_CONFFILES should be a list of user-editable files
-#LIBDB52_CONFFILES=/opt/etc/libdb52.conf /opt/etc/init.d/SXXlibdb52
+#LIBDB52_CONFFILES=$(TARGET_PREFIX)/etc/libdb52.conf $(TARGET_PREFIX)/etc/init.d/SXXlibdb52
 
 #
 # LIBDB52_PATCHES should list any patches, in the the order in
@@ -130,7 +130,7 @@ $(LIBDB52_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBDB52_SOURCE) $(LIBDB52_PATCHES)
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=$(TARGET_PREFIX) \
-		--includedir=/opt/include/db5 \
+		--includedir=$(TARGET_PREFIX)/include/db5 \
 		--enable-compat185 \
 		$(LIBDB52_MUTEX) \
 		--with-uniquename \
@@ -190,12 +190,12 @@ $(LIBDB52_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LIBDB52_IPK_DIR)/opt/sbin or $(LIBDB52_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LIBDB52_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LIBDB52_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LIBDB52_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LIBDB52_IPK_DIR)/opt/etc/libdb52/...
-# Documentation files should be installed in $(LIBDB52_IPK_DIR)/opt/doc/libdb52/...
-# Daemon startup scripts should be installed in $(LIBDB52_IPK_DIR)/opt/etc/init.d/S??libdb52
+# Libraries and include files should be installed into $(LIBDB52_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LIBDB52_IPK_DIR)$(TARGET_PREFIX)/etc/libdb52/...
+# Documentation files should be installed in $(LIBDB52_IPK_DIR)$(TARGET_PREFIX)/doc/libdb52/...
+# Daemon startup scripts should be installed in $(LIBDB52_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??libdb52
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -203,7 +203,7 @@ $(LIBDB52_IPK): $(LIBDB52_BUILD_DIR)/.built
 	rm -rf $(LIBDB52_IPK_DIR) $(BUILD_DIR)/libdb52_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBDB52_BUILD_DIR)/build_unix DESTDIR=$(LIBDB52_IPK_DIR) \
 		$(INSTALL)_setup install_include install_lib # install_utilities
-	$(STRIP_COMMAND) $(LIBDB52_IPK_DIR)/opt/lib/libdb-5.2.so
+	$(STRIP_COMMAND) $(LIBDB52_IPK_DIR)$(TARGET_PREFIX)/lib/libdb-5.2.so
 	$(MAKE) $(LIBDB52_IPK_DIR)/CONTROL/control
 	echo $(LIBDB52_CONFFILES) | sed -e 's/ /\n/g' > $(LIBDB52_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBDB52_IPK_DIR)

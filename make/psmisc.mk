@@ -43,7 +43,7 @@ PSMISC_IPK_VERSION=1
 
 #
 # PSMISC_CONFFILES should be a list of user-editable files
-#PSMISC_CONFFILES=/opt/etc/psmisc.conf /opt/etc/init.d/SXXpsmisc
+#PSMISC_CONFFILES=$(TARGET_PREFIX)/etc/psmisc.conf $(TARGET_PREFIX)/etc/init.d/SXXpsmisc
 
 #
 # PSMISC_PATCHES should list any patches, in the the order in
@@ -124,7 +124,7 @@ endif
 	if test "$(BUILD_DIR)/$(PSMISC_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(PSMISC_DIR) $(@D) ; \
 	fi
-	sed -i -e 's|/usr/share/locale|/opt/share/locale|' $(@D)/src/Makefile.in
+	sed -i -e 's|/usr/share/locale|$(TARGET_PREFIX)/share/locale|' $(@D)/src/Makefile.in
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PSMISC_CPPFLAGS)" \
@@ -188,28 +188,28 @@ $(PSMISC_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PSMISC_IPK_DIR)/opt/sbin or $(PSMISC_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PSMISC_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PSMISC_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PSMISC_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PSMISC_IPK_DIR)/opt/etc/psmisc/...
-# Documentation files should be installed in $(PSMISC_IPK_DIR)/opt/doc/psmisc/...
-# Daemon startup scripts should be installed in $(PSMISC_IPK_DIR)/opt/etc/init.d/S??psmisc
+# Libraries and include files should be installed into $(PSMISC_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PSMISC_IPK_DIR)$(TARGET_PREFIX)/etc/psmisc/...
+# Documentation files should be installed in $(PSMISC_IPK_DIR)$(TARGET_PREFIX)/doc/psmisc/...
+# Daemon startup scripts should be installed in $(PSMISC_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??psmisc
 #
 # You may need to patch your application to make it use these locations.
 #
 $(PSMISC_IPK): $(PSMISC_BUILD_DIR)/.built
 	rm -rf $(PSMISC_IPK_DIR) $(BUILD_DIR)/psmisc_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PSMISC_BUILD_DIR) DESTDIR=$(PSMISC_IPK_DIR) install-strip
-	$(STRIP_COMMAND) $(PSMISC_IPK_DIR)/opt/bin/pstree.x11
-	mv $(PSMISC_IPK_DIR)/opt/bin/killall $(PSMISC_IPK_DIR)/opt/bin/psmisc-killall
+	$(STRIP_COMMAND) $(PSMISC_IPK_DIR)$(TARGET_PREFIX)/bin/pstree.x11
+	mv $(PSMISC_IPK_DIR)$(TARGET_PREFIX)/bin/killall $(PSMISC_IPK_DIR)$(TARGET_PREFIX)/bin/psmisc-killall
 	$(MAKE) $(PSMISC_IPK_DIR)/CONTROL/control
 	(echo "#!/bin/sh"; \
-	 echo "update-alternatives --install /opt/bin/killall killall /opt/bin/psmisc-killall 70"; \
-	 echo "update-alternatives --install /opt/bin/pidof pidof /opt/bin/psmisc-killall 70"; \
+	 echo "update-alternatives --install $(TARGET_PREFIX)/bin/killall killall $(TARGET_PREFIX)/bin/psmisc-killall 70"; \
+	 echo "update-alternatives --install $(TARGET_PREFIX)/bin/pidof pidof $(TARGET_PREFIX)/bin/psmisc-killall 70"; \
 	) > $(PSMISC_IPK_DIR)/CONTROL/postinst
 	(echo "#!/bin/sh"; \
-	 echo "update-alternatives --remove killall /opt/bin/psmisc-killall"; \
-	 echo "update-alternatives --remove pidof /opt/bin/psmisc-killall"; \
+	 echo "update-alternatives --remove killall $(TARGET_PREFIX)/bin/psmisc-killall"; \
+	 echo "update-alternatives --remove pidof $(TARGET_PREFIX)/bin/psmisc-killall"; \
 	) > $(PSMISC_IPK_DIR)/CONTROL/prerm
 	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

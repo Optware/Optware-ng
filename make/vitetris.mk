@@ -40,7 +40,7 @@ VITETRIS_IPK_VERSION=1
 
 #
 # VITETRIS_CONFFILES should be a list of user-editable files
-#VITETRIS_CONFFILES=/opt/etc/vitetris.conf /opt/etc/init.d/SXXvitetris
+#VITETRIS_CONFFILES=$(TARGET_PREFIX)/etc/vitetris.conf $(TARGET_PREFIX)/etc/init.d/SXXvitetris
 
 #
 # VITETRIS_PATCHES should list any patches, in the the order in
@@ -179,22 +179,22 @@ $(VITETRIS_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(VITETRIS_IPK_DIR)/opt/sbin or $(VITETRIS_IPK_DIR)/opt/bin
+# Binaries should be installed into $(VITETRIS_IPK_DIR)$(TARGET_PREFIX)/sbin or $(VITETRIS_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(VITETRIS_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(VITETRIS_IPK_DIR)/opt/etc/vitetris/...
-# Documentation files should be installed in $(VITETRIS_IPK_DIR)/opt/doc/vitetris/...
-# Daemon startup scripts should be installed in $(VITETRIS_IPK_DIR)/opt/etc/init.d/S??vitetris
+# Libraries and include files should be installed into $(VITETRIS_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(VITETRIS_IPK_DIR)$(TARGET_PREFIX)/etc/vitetris/...
+# Documentation files should be installed in $(VITETRIS_IPK_DIR)$(TARGET_PREFIX)/doc/vitetris/...
+# Daemon startup scripts should be installed in $(VITETRIS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??vitetris
 #
 # You may need to patch your application to make it use these locations.
 #
 $(VITETRIS_IPK): $(VITETRIS_BUILD_DIR)/.built
 	rm -rf $(VITETRIS_IPK_DIR) $(BUILD_DIR)/vitetris_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(VITETRIS_BUILD_DIR) DESTDIR=$(VITETRIS_IPK_DIR) install
-	$(INSTALL) -d $(VITETRIS_IPK_DIR)/opt/bin $(VITETRIS_IPK_DIR)/opt/share/doc/vitetris
-	$(STRIP_COMMAND) $(<D)/tetris -o $(VITETRIS_IPK_DIR)/opt/bin/vitetris
+	$(INSTALL) -d $(VITETRIS_IPK_DIR)$(TARGET_PREFIX)/bin $(VITETRIS_IPK_DIR)$(TARGET_PREFIX)/share/doc/vitetris
+	$(STRIP_COMMAND) $(<D)/tetris -o $(VITETRIS_IPK_DIR)$(TARGET_PREFIX)/bin/vitetris
 	$(INSTALL) -m 644 $(<D)/README $(<D)/lice*.txt \
-		$(VITETRIS_IPK_DIR)/opt/share/doc/vitetris/
+		$(VITETRIS_IPK_DIR)$(TARGET_PREFIX)/share/doc/vitetris/
 	$(MAKE) $(VITETRIS_IPK_DIR)/CONTROL/control
 	echo $(VITETRIS_CONFFILES) | sed -e 's/ /\n/g' > $(VITETRIS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(VITETRIS_IPK_DIR)

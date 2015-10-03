@@ -41,7 +41,7 @@ MOD_FASTCGI_IPK_VERSION=1
 
 #
 # MOD_FASTCGI_CONFFILES should be a list of user-editable files
-MOD_FASTCGI_CONFFILES=/opt/etc/apache2/conf.d/mod_fastcgi.conf
+MOD_FASTCGI_CONFFILES=$(TARGET_PREFIX)/etc/apache2/conf.d/mod_fastcgi.conf
 
 #
 # MOD_FASTCGI_PATCHES should list any patches, in the the order in
@@ -164,12 +164,12 @@ $(MOD_FASTCGI_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(MOD_FASTCGI_IPK_DIR)/opt/sbin or $(MOD_FASTCGI_IPK_DIR)/opt/bin
+# Binaries should be installed into $(MOD_FASTCGI_IPK_DIR)$(TARGET_PREFIX)/sbin or $(MOD_FASTCGI_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(MOD_FASTCGI_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(MOD_FASTCGI_IPK_DIR)/opt/etc/mod-fastcgi/...
-# Documentation files should be installed in $(MOD_FASTCGI_IPK_DIR)/opt/doc/mod-fastcgi/...
-# Daemon startup scripts should be installed in $(MOD_FASTCGI_IPK_DIR)/opt/etc/init.d/S??mod-fastcgi
+# Libraries and include files should be installed into $(MOD_FASTCGI_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(MOD_FASTCGI_IPK_DIR)$(TARGET_PREFIX)/etc/mod-fastcgi/...
+# Documentation files should be installed in $(MOD_FASTCGI_IPK_DIR)$(TARGET_PREFIX)/doc/mod-fastcgi/...
+# Daemon startup scripts should be installed in $(MOD_FASTCGI_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??mod-fastcgi
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -179,9 +179,9 @@ $(MOD_FASTCGI_IPK): $(MOD_FASTCGI_BUILD_DIR)/.built
 	    DESTDIR=$(MOD_FASTCGI_IPK_DIR) \
 	    top_dir=$(STAGING_PREFIX)/share/apache2 \
 	    $(INSTALL)
-	$(STRIP_COMMAND) $(MOD_FASTCGI_IPK_DIR)/opt/libexec/mod_fastcgi.so
-	$(INSTALL) -d $(MOD_FASTCGI_IPK_DIR)/opt/etc/apache2/conf.d/
-	$(INSTALL) -m 644 $(MOD_FASTCGI_SOURCE_DIR)/mod_fastcgi.conf $(MOD_FASTCGI_IPK_DIR)/opt/etc/apache2/conf.d/mod_fastcgi.conf
+	$(STRIP_COMMAND) $(MOD_FASTCGI_IPK_DIR)$(TARGET_PREFIX)/libexec/mod_fastcgi.so
+	$(INSTALL) -d $(MOD_FASTCGI_IPK_DIR)$(TARGET_PREFIX)/etc/apache2/conf.d/
+	$(INSTALL) -m 644 $(MOD_FASTCGI_SOURCE_DIR)/mod_fastcgi.conf $(MOD_FASTCGI_IPK_DIR)$(TARGET_PREFIX)/etc/apache2/conf.d/mod_fastcgi.conf
 	$(MAKE) $(MOD_FASTCGI_IPK_DIR)/CONTROL/control
 	echo $(MOD_FASTCGI_CONFFILES) | sed -e 's/ /\n/g' > $(MOD_FASTCGI_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MOD_FASTCGI_IPK_DIR)

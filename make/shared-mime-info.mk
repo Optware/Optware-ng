@@ -47,7 +47,7 @@ SHARED-MIME-INFO_IPK_VERSION=2
 
 #
 # SHARED-MIME-INFO_CONFFILES should be a list of user-editable files
-#SHARED-MIME-INFO_CONFFILES=/opt/etc/shared-mime-info.conf /opt/etc/init.d/SXXshared-mime-info
+#SHARED-MIME-INFO_CONFFILES=$(TARGET_PREFIX)/etc/shared-mime-info.conf $(TARGET_PREFIX)/etc/init.d/SXXshared-mime-info
 
 #
 # SHARED-MIME-INFO_PATCHES should list any patches, in the the order in
@@ -122,9 +122,9 @@ $(SHARED-MIME-INFO_BUILD_DIR)/.configured: $(DL_DIR)/$(SHARED-MIME-INFO_SOURCE) 
 	if test "$(BUILD_DIR)/$(SHARED-MIME-INFO_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(SHARED-MIME-INFO_DIR) $(@D) ; \
 	fi
-#	tell update-mime-database that default datadirs value is "/opt/share/" -- NOT "/usr/local/share:/usr/share"
+#	tell update-mime-database that default datadirs value is "$(TARGET_PREFIX)/share/" -- NOT "/usr/local/share:/usr/share"
 #		to suppress misleading warnings
-	sed -i -e 's|env = ".*|env = "/opt/share/";|' $(@D)/update-mime-database.c
+	sed -i -e 's|env = ".*|env = "$(TARGET_PREFIX)/share/";|' $(@D)/update-mime-database.c
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SHARED-MIME-INFO_CPPFLAGS)" \
@@ -193,26 +193,26 @@ $(SHARED-MIME-INFO_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(SHARED-MIME-INFO_IPK_DIR)/opt/sbin or $(SHARED-MIME-INFO_IPK_DIR)/opt/bin
+# Binaries should be installed into $(SHARED-MIME-INFO_IPK_DIR)$(TARGET_PREFIX)/sbin or $(SHARED-MIME-INFO_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(SHARED-MIME-INFO_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(SHARED-MIME-INFO_IPK_DIR)/opt/etc/shared-mime-info/...
-# Documentation files should be installed in $(SHARED-MIME-INFO_IPK_DIR)/opt/doc/shared-mime-info/...
-# Daemon startup scripts should be installed in $(SHARED-MIME-INFO_IPK_DIR)/opt/etc/init.d/S??shared-mime-info
+# Libraries and include files should be installed into $(SHARED-MIME-INFO_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(SHARED-MIME-INFO_IPK_DIR)$(TARGET_PREFIX)/etc/shared-mime-info/...
+# Documentation files should be installed in $(SHARED-MIME-INFO_IPK_DIR)$(TARGET_PREFIX)/doc/shared-mime-info/...
+# Daemon startup scripts should be installed in $(SHARED-MIME-INFO_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??shared-mime-info
 #
 # You may need to patch your application to make it use these locations.
 #
 $(SHARED-MIME-INFO_IPK): $(SHARED-MIME-INFO_BUILD_DIR)/.built
 	rm -rf $(SHARED-MIME-INFO_IPK_DIR) $(BUILD_DIR)/shared-mime-info_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SHARED-MIME-INFO_BUILD_DIR) DESTDIR=$(SHARED-MIME-INFO_IPK_DIR) install-strip
-	rm -f $(SHARED-MIME-INFO_IPK_DIR)/opt/share/mime/mime.cache
-	$(INSTALL) -d $(SHARED-MIME-INFO_IPK_DIR)/opt/lib
-	mv -f $(SHARED-MIME-INFO_IPK_DIR)/opt/share/pkgconfig $(SHARED-MIME-INFO_IPK_DIR)/opt/lib
-#	$(INSTALL) -d $(SHARED-MIME-INFO_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(SHARED-MIME-INFO_SOURCE_DIR)/shared-mime-info.conf $(SHARED-MIME-INFO_IPK_DIR)/opt/etc/shared-mime-info.conf
-#	$(INSTALL) -d $(SHARED-MIME-INFO_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(SHARED-MIME-INFO_SOURCE_DIR)/rc.shared-mime-info $(SHARED-MIME-INFO_IPK_DIR)/opt/etc/init.d/SXXshared-mime-info
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SHARED-MIME-INFO_IPK_DIR)/opt/etc/init.d/SXXshared-mime-info
+	rm -f $(SHARED-MIME-INFO_IPK_DIR)$(TARGET_PREFIX)/share/mime/mime.cache
+	$(INSTALL) -d $(SHARED-MIME-INFO_IPK_DIR)$(TARGET_PREFIX)/lib
+	mv -f $(SHARED-MIME-INFO_IPK_DIR)$(TARGET_PREFIX)/share/pkgconfig $(SHARED-MIME-INFO_IPK_DIR)$(TARGET_PREFIX)/lib
+#	$(INSTALL) -d $(SHARED-MIME-INFO_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(SHARED-MIME-INFO_SOURCE_DIR)/shared-mime-info.conf $(SHARED-MIME-INFO_IPK_DIR)$(TARGET_PREFIX)/etc/shared-mime-info.conf
+#	$(INSTALL) -d $(SHARED-MIME-INFO_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(SHARED-MIME-INFO_SOURCE_DIR)/rc.shared-mime-info $(SHARED-MIME-INFO_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXshared-mime-info
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SHARED-MIME-INFO_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXshared-mime-info
 	$(MAKE) $(SHARED-MIME-INFO_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 755 $(SHARED-MIME-INFO_SOURCE_DIR)/postinst $(SHARED-MIME-INFO_IPK_DIR)/CONTROL/postinst
 	$(INSTALL) -m 755 $(SHARED-MIME-INFO_SOURCE_DIR)/prerm $(SHARED-MIME-INFO_IPK_DIR)/CONTROL/prerm

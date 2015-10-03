@@ -40,7 +40,7 @@ PY-WSGIREF_IPK_VERSION=2
 
 #
 # PY-WSGIREF_CONFFILES should be a list of user-editable files
-#PY-WSGIREF_CONFFILES=/opt/etc/py-wsgiref.conf /opt/etc/init.d/SXXpy-wsgiref
+#PY-WSGIREF_CONFFILES=$(TARGET_PREFIX)/etc/py-wsgiref.conf $(TARGET_PREFIX)/etc/init.d/SXXpy-wsgiref
 
 #
 # PY-WSGIREF_PATCHES should list any patches, in the the order in
@@ -106,7 +106,7 @@ $(PY-WSGIREF_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-WSGIREF_SOURCE) $(PY-WSGIREF
 	mv $(BUILD_DIR)/$(PY-WSGIREF_DIR) $(PY-WSGIREF_BUILD_DIR)
 	(cd $(PY-WSGIREF_BUILD_DIR); \
 	    (echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python") >> setup.cfg \
+	    echo "executable=$(TARGET_PREFIX)/bin/python") >> setup.cfg \
 	)
 	touch $(PY-WSGIREF_BUILD_DIR)/.configured
 
@@ -159,12 +159,12 @@ $(PY-WSGIREF_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PY-WSGIREF_IPK_DIR)/opt/sbin or $(PY-WSGIREF_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PY-WSGIREF_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PY-WSGIREF_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PY-WSGIREF_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PY-WSGIREF_IPK_DIR)/opt/etc/py-wsgiref/...
-# Documentation files should be installed in $(PY-WSGIREF_IPK_DIR)/opt/doc/py-wsgiref/...
-# Daemon startup scripts should be installed in $(PY-WSGIREF_IPK_DIR)/opt/etc/init.d/S??py-wsgiref
+# Libraries and include files should be installed into $(PY-WSGIREF_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PY-WSGIREF_IPK_DIR)$(TARGET_PREFIX)/etc/py-wsgiref/...
+# Documentation files should be installed in $(PY-WSGIREF_IPK_DIR)$(TARGET_PREFIX)/doc/py-wsgiref/...
+# Daemon startup scripts should be installed in $(PY-WSGIREF_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??py-wsgiref
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -172,7 +172,7 @@ $(PY-WSGIREF_IPK): $(PY-WSGIREF_BUILD_DIR)/.built
 	rm -rf $(PY-WSGIREF_IPK_DIR) $(BUILD_DIR)/py-wsgiref_*_$(TARGET_ARCH).ipk
 	(cd $(PY-WSGIREF_BUILD_DIR); \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(PY-WSGIREF_IPK_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(PY-WSGIREF_IPK_DIR) --prefix=$(TARGET_PREFIX))
 	$(MAKE) $(PY-WSGIREF_IPK_DIR)/CONTROL/control
 	echo $(PY-WSGIREF_CONFFILES) | sed -e 's/ /\n/g' > $(PY-WSGIREF_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-WSGIREF_IPK_DIR)

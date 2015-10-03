@@ -149,12 +149,12 @@ xrender-stage: $(XRENDER_BUILD_DIR)/.staged
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(XRENDER_IPK_DIR)/opt/sbin or $(XRENDER_IPK_DIR)/opt/bin
+# Binaries should be installed into $(XRENDER_IPK_DIR)$(TARGET_PREFIX)/sbin or $(XRENDER_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(XRENDER_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(XRENDER_IPK_DIR)/opt/etc/xrender/...
-# Documentation files should be installed in $(XRENDER_IPK_DIR)/opt/doc/xrender/...
-# Daemon startup scripts should be installed in $(XRENDER_IPK_DIR)/opt/etc/init.d/S??xrender
+# Libraries and include files should be installed into $(XRENDER_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(XRENDER_IPK_DIR)$(TARGET_PREFIX)/etc/xrender/...
+# Documentation files should be installed in $(XRENDER_IPK_DIR)$(TARGET_PREFIX)/doc/xrender/...
+# Daemon startup scripts should be installed in $(XRENDER_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??xrender
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -163,7 +163,7 @@ $(XRENDER_IPK): $(XRENDER_BUILD_DIR)/.built
 	$(MAKE) -C $(XRENDER_BUILD_DIR) DESTDIR=$(XRENDER_IPK_DIR) install-strip
 	$(MAKE) $(XRENDER_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 644 $(XRENDER_SOURCE_DIR)/postinst $(XRENDER_IPK_DIR)/CONTROL/postinst
-	rm -f $(XRENDER_IPK_DIR)/opt/lib/*.la
+	rm -f $(XRENDER_IPK_DIR)$(TARGET_PREFIX)/lib/*.la
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XRENDER_IPK_DIR)
 
 #

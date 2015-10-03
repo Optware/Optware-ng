@@ -104,27 +104,27 @@ $(PROCPS_IPK_DIR)/CONTROL/control:
 #
 $(PROCPS_IPK): $(PROCPS_BUILD_DIR)/.built
 	rm -rf $(PROCPS_IPK_DIR) $(BUILD_DIR)/procps_*_$(TARGET_ARCH).ipk
-	mkdir -p $(PROCPS_IPK_DIR)/opt
-	mkdir -p $(PROCPS_IPK_DIR)/opt/bin
-	$(STRIP_COMMAND) $(PROCPS_BUILD_DIR)/free -o $(PROCPS_IPK_DIR)/opt/bin/procps-free
-	$(STRIP_COMMAND) $(PROCPS_BUILD_DIR)/kill -o $(PROCPS_IPK_DIR)/opt/bin/procps-kill
-	$(STRIP_COMMAND) $(PROCPS_BUILD_DIR)/pgrep -o $(PROCPS_IPK_DIR)/opt/bin/pgrep
-	$(STRIP_COMMAND) $(PROCPS_BUILD_DIR)/pmap -o $(PROCPS_IPK_DIR)/opt/bin/pmap
-	$(STRIP_COMMAND) $(PROCPS_BUILD_DIR)/ps/ps -o $(PROCPS_IPK_DIR)/opt/bin/procps-ps
-	$(STRIP_COMMAND) $(PROCPS_BUILD_DIR)/skill -o $(PROCPS_IPK_DIR)/opt/bin/skill
-	$(STRIP_COMMAND) $(PROCPS_BUILD_DIR)/slabtop -o $(PROCPS_IPK_DIR)/opt/bin/slabtop
-	$(STRIP_COMMAND) $(PROCPS_BUILD_DIR)/snice -o $(PROCPS_IPK_DIR)/opt/bin/snice
-	$(STRIP_COMMAND) $(PROCPS_BUILD_DIR)/sysctl -o $(PROCPS_IPK_DIR)/opt/bin/sysctl
-	cp $(PROCPS_BUILD_DIR)/t $(PROCPS_IPK_DIR)/opt/bin
-	$(STRIP_COMMAND) $(PROCPS_BUILD_DIR)/tload -o $(PROCPS_IPK_DIR)/opt/bin/tload
-	$(STRIP_COMMAND) $(PROCPS_BUILD_DIR)/top -o $(PROCPS_IPK_DIR)/opt/bin/procps-top
-	$(STRIP_COMMAND) $(PROCPS_BUILD_DIR)/uptime -o $(PROCPS_IPK_DIR)/opt/bin/procps-uptime
-	cp $(PROCPS_BUILD_DIR)/v $(PROCPS_IPK_DIR)/opt/bin
-	$(STRIP_COMMAND) $(PROCPS_BUILD_DIR)/vmstat -o $(PROCPS_IPK_DIR)/opt/bin/vmstat
-	$(STRIP_COMMAND) $(PROCPS_BUILD_DIR)/w -o $(PROCPS_IPK_DIR)/opt/bin/w
-	$(STRIP_COMMAND) $(PROCPS_BUILD_DIR)/watch -o $(PROCPS_IPK_DIR)/opt/bin/procps-watch
-	mkdir -p $(PROCPS_IPK_DIR)/opt/lib
-	$(STRIP_COMMAND) $(PROCPS_BUILD_DIR)/proc/libproc-$(PROCPS_VERSION).so -o $(PROCPS_IPK_DIR)/opt/lib/libproc-$(PROCPS_VERSION).so
+	mkdir -p $(PROCPS_IPK_DIR)$(TARGET_PREFIX)
+	mkdir -p $(PROCPS_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(STRIP_COMMAND) $(PROCPS_BUILD_DIR)/free -o $(PROCPS_IPK_DIR)$(TARGET_PREFIX)/bin/procps-free
+	$(STRIP_COMMAND) $(PROCPS_BUILD_DIR)/kill -o $(PROCPS_IPK_DIR)$(TARGET_PREFIX)/bin/procps-kill
+	$(STRIP_COMMAND) $(PROCPS_BUILD_DIR)/pgrep -o $(PROCPS_IPK_DIR)$(TARGET_PREFIX)/bin/pgrep
+	$(STRIP_COMMAND) $(PROCPS_BUILD_DIR)/pmap -o $(PROCPS_IPK_DIR)$(TARGET_PREFIX)/bin/pmap
+	$(STRIP_COMMAND) $(PROCPS_BUILD_DIR)/ps/ps -o $(PROCPS_IPK_DIR)$(TARGET_PREFIX)/bin/procps-ps
+	$(STRIP_COMMAND) $(PROCPS_BUILD_DIR)/skill -o $(PROCPS_IPK_DIR)$(TARGET_PREFIX)/bin/skill
+	$(STRIP_COMMAND) $(PROCPS_BUILD_DIR)/slabtop -o $(PROCPS_IPK_DIR)$(TARGET_PREFIX)/bin/slabtop
+	$(STRIP_COMMAND) $(PROCPS_BUILD_DIR)/snice -o $(PROCPS_IPK_DIR)$(TARGET_PREFIX)/bin/snice
+	$(STRIP_COMMAND) $(PROCPS_BUILD_DIR)/sysctl -o $(PROCPS_IPK_DIR)$(TARGET_PREFIX)/bin/sysctl
+	cp $(PROCPS_BUILD_DIR)/t $(PROCPS_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(STRIP_COMMAND) $(PROCPS_BUILD_DIR)/tload -o $(PROCPS_IPK_DIR)$(TARGET_PREFIX)/bin/tload
+	$(STRIP_COMMAND) $(PROCPS_BUILD_DIR)/top -o $(PROCPS_IPK_DIR)$(TARGET_PREFIX)/bin/procps-top
+	$(STRIP_COMMAND) $(PROCPS_BUILD_DIR)/uptime -o $(PROCPS_IPK_DIR)$(TARGET_PREFIX)/bin/procps-uptime
+	cp $(PROCPS_BUILD_DIR)/v $(PROCPS_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(STRIP_COMMAND) $(PROCPS_BUILD_DIR)/vmstat -o $(PROCPS_IPK_DIR)$(TARGET_PREFIX)/bin/vmstat
+	$(STRIP_COMMAND) $(PROCPS_BUILD_DIR)/w -o $(PROCPS_IPK_DIR)$(TARGET_PREFIX)/bin/w
+	$(STRIP_COMMAND) $(PROCPS_BUILD_DIR)/watch -o $(PROCPS_IPK_DIR)$(TARGET_PREFIX)/bin/procps-watch
+	mkdir -p $(PROCPS_IPK_DIR)$(TARGET_PREFIX)/lib
+	$(STRIP_COMMAND) $(PROCPS_BUILD_DIR)/proc/libproc-$(PROCPS_VERSION).so -o $(PROCPS_IPK_DIR)$(TARGET_PREFIX)/lib/libproc-$(PROCPS_VERSION).so
 	$(MAKE) $(PROCPS_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 644 $(PROCPS_SOURCE_DIR)/postinst $(PROCPS_IPK_DIR)/CONTROL/postinst
 	$(INSTALL) -m 644 $(PROCPS_SOURCE_DIR)/prerm $(PROCPS_IPK_DIR)/CONTROL/prerm

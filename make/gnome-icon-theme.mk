@@ -46,7 +46,7 @@ GNOME-ICON-THEME_IPK_VERSION=2
 
 #
 # GNOME-ICON-THEME_CONFFILES should be a list of user-editable files
-#GNOME-ICON-THEME_CONFFILES=/opt/etc/gnome-icon-theme.conf /opt/etc/init.d/SXXgnome-icon-theme
+#GNOME-ICON-THEME_CONFFILES=$(TARGET_PREFIX)/etc/gnome-icon-theme.conf $(TARGET_PREFIX)/etc/init.d/SXXgnome-icon-theme
 
 #
 # GNOME-ICON-THEME_PATCHES should list any patches, in the the order in
@@ -183,23 +183,23 @@ $(GNOME-ICON-THEME_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(GNOME-ICON-THEME_IPK_DIR)/opt/sbin or $(GNOME-ICON-THEME_IPK_DIR)/opt/bin
+# Binaries should be installed into $(GNOME-ICON-THEME_IPK_DIR)$(TARGET_PREFIX)/sbin or $(GNOME-ICON-THEME_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(GNOME-ICON-THEME_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(GNOME-ICON-THEME_IPK_DIR)/opt/etc/gnome-icon-theme/...
-# Documentation files should be installed in $(GNOME-ICON-THEME_IPK_DIR)/opt/doc/gnome-icon-theme/...
-# Daemon startup scripts should be installed in $(GNOME-ICON-THEME_IPK_DIR)/opt/etc/init.d/S??gnome-icon-theme
+# Libraries and include files should be installed into $(GNOME-ICON-THEME_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(GNOME-ICON-THEME_IPK_DIR)$(TARGET_PREFIX)/etc/gnome-icon-theme/...
+# Documentation files should be installed in $(GNOME-ICON-THEME_IPK_DIR)$(TARGET_PREFIX)/doc/gnome-icon-theme/...
+# Daemon startup scripts should be installed in $(GNOME-ICON-THEME_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??gnome-icon-theme
 #
 # You may need to patch your application to make it use these locations.
 #
 $(GNOME-ICON-THEME_IPK): $(GNOME-ICON-THEME_BUILD_DIR)/.built
 	rm -rf $(GNOME-ICON-THEME_IPK_DIR) $(BUILD_DIR)/gnome-icon-theme_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GNOME-ICON-THEME_BUILD_DIR) DESTDIR=$(GNOME-ICON-THEME_IPK_DIR) install
-#	$(INSTALL) -d $(GNOME-ICON-THEME_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(GNOME-ICON-THEME_SOURCE_DIR)/gnome-icon-theme.conf $(GNOME-ICON-THEME_IPK_DIR)/opt/etc/gnome-icon-theme.conf
-#	$(INSTALL) -d $(GNOME-ICON-THEME_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(GNOME-ICON-THEME_SOURCE_DIR)/rc.gnome-icon-theme $(GNOME-ICON-THEME_IPK_DIR)/opt/etc/init.d/SXXgnome-icon-theme
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(GNOME-ICON-THEME_IPK_DIR)/opt/etc/init.d/SXXgnome-icon-theme
+#	$(INSTALL) -d $(GNOME-ICON-THEME_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(GNOME-ICON-THEME_SOURCE_DIR)/gnome-icon-theme.conf $(GNOME-ICON-THEME_IPK_DIR)$(TARGET_PREFIX)/etc/gnome-icon-theme.conf
+#	$(INSTALL) -d $(GNOME-ICON-THEME_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(GNOME-ICON-THEME_SOURCE_DIR)/rc.gnome-icon-theme $(GNOME-ICON-THEME_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXgnome-icon-theme
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(GNOME-ICON-THEME_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXgnome-icon-theme
 	$(MAKE) $(GNOME-ICON-THEME_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 755 $(GNOME-ICON-THEME_SOURCE_DIR)/postinst $(GNOME-ICON-THEME_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(GNOME-ICON-THEME_IPK_DIR)/CONTROL/postinst

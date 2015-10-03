@@ -108,18 +108,18 @@ $(AUTOCONF_IPK_DIR)/CONTROL/control:
 
 $(AUTOCONF_IPK): $(AUTOCONF_BUILD_DIR)/.built
 	rm -rf $(AUTOCONF_IPK_DIR) $(BUILD_DIR)/autoconf_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(AUTOCONF_IPK_DIR)/opt/bin
-	$(INSTALL) -d $(AUTOCONF_IPK_DIR)/opt/info
-	$(INSTALL) -d $(AUTOCONF_IPK_DIR)/opt/man/man1
-	$(INSTALL) -d $(AUTOCONF_IPK_DIR)/opt/share/autoconf/Autom4te
-	$(INSTALL) -d $(AUTOCONF_IPK_DIR)/opt/share/autoconf/autoconf
-	$(INSTALL) -d $(AUTOCONF_IPK_DIR)/opt/share/autoconf/autoscan
-	$(INSTALL) -d $(AUTOCONF_IPK_DIR)/opt/share/autoconf/autotest
-	$(INSTALL) -d $(AUTOCONF_IPK_DIR)/opt/share/autoconf/m4sugar
+	$(INSTALL) -d $(AUTOCONF_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(INSTALL) -d $(AUTOCONF_IPK_DIR)$(TARGET_PREFIX)/info
+	$(INSTALL) -d $(AUTOCONF_IPK_DIR)$(TARGET_PREFIX)/man/man1
+	$(INSTALL) -d $(AUTOCONF_IPK_DIR)$(TARGET_PREFIX)/share/autoconf/Autom4te
+	$(INSTALL) -d $(AUTOCONF_IPK_DIR)$(TARGET_PREFIX)/share/autoconf/autoconf
+	$(INSTALL) -d $(AUTOCONF_IPK_DIR)$(TARGET_PREFIX)/share/autoconf/autoscan
+	$(INSTALL) -d $(AUTOCONF_IPK_DIR)$(TARGET_PREFIX)/share/autoconf/autotest
+	$(INSTALL) -d $(AUTOCONF_IPK_DIR)$(TARGET_PREFIX)/share/autoconf/m4sugar
 	$(MAKE) -C $(AUTOCONF_BUILD_DIR) DESTDIR=$(AUTOCONF_IPK_DIR) install
-	sed -i -e 's|/usr/bin/m4|/opt/bin/m4|g' $(AUTOCONF_IPK_DIR)/opt/bin/*
-	sed -i -e 's|/usr/bin/perl|/opt/bin/perl|g' $(AUTOCONF_IPK_DIR)/opt/bin/*
-	rm -f $(AUTOCONF_IPK_DIR)/opt/share/info/dir
+	sed -i -e 's|/usr/bin/m4|$(TARGET_PREFIX)/bin/m4|g' $(AUTOCONF_IPK_DIR)$(TARGET_PREFIX)/bin/*
+	sed -i -e 's|/usr/bin/perl|$(TARGET_PREFIX)/bin/perl|g' $(AUTOCONF_IPK_DIR)$(TARGET_PREFIX)/bin/*
+	rm -f $(AUTOCONF_IPK_DIR)$(TARGET_PREFIX)/share/info/dir
 	$(MAKE) $(AUTOCONF_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(AUTOCONF_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(AUTOCONF_IPK_DIR)

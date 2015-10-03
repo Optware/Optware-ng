@@ -51,8 +51,8 @@ SLIMSERVER_IPK_VERSION=14
 
 #
 # SLIMSERVER_CONFFILES should be a list of user-editable files
-SLIMSERVER_CONFFILES=/opt/etc/slimserver.conf /opt/etc/init.d/S99slimserver \
-	/opt/share/slimserver/MySQL/my.tt
+SLIMSERVER_CONFFILES=$(TARGET_PREFIX)/etc/slimserver.conf $(TARGET_PREFIX)/etc/init.d/S99slimserver \
+	$(TARGET_PREFIX)/share/slimserver/MySQL/my.tt
 
 #
 # SLIMSERVER_PATCHES should list any patches, in the the order in
@@ -158,7 +158,7 @@ $(SLIMSERVER_BUILD_DIR)/.configured: $(DL_DIR)/$(SLIMSERVER_SOURCE) make/slimser
 		-e "s|slimServerPath = <STDIN>|slimServerPath = \"$(@D)\"|" \
 		-e "s|downloadPath = <STDIN>|downloadPath = \"$(@D)\/temp\"|" \
 		-e "s|downloadPath = <STDIN>|downloadPath = \"$(@D)\/temp\"|" \
-		-e "/EXPAT.*PATH=/s|=/opt|$$ENV{STAGING_DIR}&|" \
+		-e "/EXPAT.*PATH=/s|=$(TARGET_PREFIX)|$$ENV{STAGING_DIR}&|" \
 		-e '/archname = $$2/a         $$archname =~ s|-uclibc||;' \
 		-e 's/?view=auto/?view=co/g' \
 		-e "/my \$$SOURCE =/s|'.*'|'$(SLIMSERVER_MODULES_SRC)'|" \
@@ -228,42 +228,42 @@ $(SLIMSERVER_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(SLIMSERVER_IPK_DIR)/opt/sbin or $(SLIMSERVER_IPK_DIR)/opt/bin
+# Binaries should be installed into $(SLIMSERVER_IPK_DIR)$(TARGET_PREFIX)/sbin or $(SLIMSERVER_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(SLIMSERVER_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(SLIMSERVER_IPK_DIR)/opt/etc/slimserver/...
-# Documentation files should be installed in $(SLIMSERVER_IPK_DIR)/opt/doc/slimserver/...
-# Daemon startup scripts should be installed in $(SLIMSERVER_IPK_DIR)/opt/etc/init.d/S??slimserver
+# Libraries and include files should be installed into $(SLIMSERVER_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(SLIMSERVER_IPK_DIR)$(TARGET_PREFIX)/etc/slimserver/...
+# Documentation files should be installed in $(SLIMSERVER_IPK_DIR)$(TARGET_PREFIX)/doc/slimserver/...
+# Daemon startup scripts should be installed in $(SLIMSERVER_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??slimserver
 #
 # You may need to patch your application to make it use these locations.
 #
 $(SLIMSERVER_IPK): $(SLIMSERVER_BUILD_DIR)/.built
 	rm -rf $(SLIMSERVER_IPK_DIR) $(BUILD_DIR)/slimserver_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(SLIMSERVER_IPK_DIR)/opt/etc/
-	$(INSTALL) -d $(SLIMSERVER_IPK_DIR)/opt/bin/ $(SLIMSERVER_IPK_DIR)/opt/share/slimserver
-#	$(INSTALL) -m 755 $(SLIMSERVER_BUILD_DIR)/slimserver.pl $(SLIMSERVER_IPK_DIR)/opt/bin/slimserver
-	cp -r $(SLIMSERVER_BUILD_DIR)/ $(SLIMSERVER_IPK_DIR)/opt/share
-	rm -rf	$(SLIMSERVER_IPK_DIR)/opt/share/slimserver/.configured \
-		$(SLIMSERVER_IPK_DIR)/opt/share/slimserver/.built
-	rm -rf $(SLIMSERVER_IPK_DIR)/opt/share/slimserver/temp
-	rm -rf $(SLIMSERVER_IPK_DIR)/opt/share/slimserver/Bin/i386-linux
+	$(INSTALL) -d $(SLIMSERVER_IPK_DIR)$(TARGET_PREFIX)/etc/
+	$(INSTALL) -d $(SLIMSERVER_IPK_DIR)$(TARGET_PREFIX)/bin/ $(SLIMSERVER_IPK_DIR)$(TARGET_PREFIX)/share/slimserver
+#	$(INSTALL) -m 755 $(SLIMSERVER_BUILD_DIR)/slimserver.pl $(SLIMSERVER_IPK_DIR)$(TARGET_PREFIX)/bin/slimserver
+	cp -r $(SLIMSERVER_BUILD_DIR)/ $(SLIMSERVER_IPK_DIR)$(TARGET_PREFIX)/share
+	rm -rf	$(SLIMSERVER_IPK_DIR)$(TARGET_PREFIX)/share/slimserver/.configured \
+		$(SLIMSERVER_IPK_DIR)$(TARGET_PREFIX)/share/slimserver/.built
+	rm -rf $(SLIMSERVER_IPK_DIR)$(TARGET_PREFIX)/share/slimserver/temp
+	rm -rf $(SLIMSERVER_IPK_DIR)$(TARGET_PREFIX)/share/slimserver/Bin/i386-linux
 # To comply with Licence - only Logitech/Slimdevices can include the firmware bin files
 # in distribution. Slimserver will download bin files at startup.
-	rm  $(SLIMSERVER_IPK_DIR)/opt/share/slimserver/Firmware/*.bin
-	(cd  $(SLIMSERVER_IPK_DIR)/opt/share/slimserver/CPAN ; \
+	rm  $(SLIMSERVER_IPK_DIR)$(TARGET_PREFIX)/share/slimserver/Firmware/*.bin
+	(cd  $(SLIMSERVER_IPK_DIR)$(TARGET_PREFIX)/share/slimserver/CPAN ; \
 		find . -name '*.so' -exec chmod +w {} \; ; \
 		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
 		find . -name '*.so' -exec chmod -w {} \; ; \
 	)
-	$(INSTALL) -m 755 $(SLIMSERVER_SOURCE_DIR)/slimserver.conf $(SLIMSERVER_IPK_DIR)/opt/etc/slimserver.conf
-	$(INSTALL) -d $(SLIMSERVER_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -m 755 $(SLIMSERVER_SOURCE_DIR)/slimserver.conf $(SLIMSERVER_IPK_DIR)$(TARGET_PREFIX)/etc/slimserver.conf
+	$(INSTALL) -d $(SLIMSERVER_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
 ifeq ($(OPTWARE_TARGET),fsg3)
-	$(INSTALL) -m 755 $(SLIMSERVER_SOURCE_DIR)/rc.slimserver.fsg3 $(SLIMSERVER_IPK_DIR)/opt/etc/init.d/S99slimserver
+	$(INSTALL) -m 755 $(SLIMSERVER_SOURCE_DIR)/rc.slimserver.fsg3 $(SLIMSERVER_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S99slimserver
 else
-	$(INSTALL) -m 755 $(SLIMSERVER_SOURCE_DIR)/rc.slimserver $(SLIMSERVER_IPK_DIR)/opt/etc/init.d/S99slimserver
+	$(INSTALL) -m 755 $(SLIMSERVER_SOURCE_DIR)/rc.slimserver $(SLIMSERVER_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S99slimserver
 
 endif
-	ln -sf ../etc/init.d/S99slimserver $(SLIMSERVER_IPK_DIR)/opt/bin/slimserver
+	ln -sf ../etc/init.d/S99slimserver $(SLIMSERVER_IPK_DIR)$(TARGET_PREFIX)/bin/slimserver
 	$(MAKE) $(SLIMSERVER_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 755 $(SLIMSERVER_SOURCE_DIR)/slimserver.postinst $(SLIMSERVER_IPK_DIR)/CONTROL/postinst
 	$(INSTALL) -m 755 $(SLIMSERVER_SOURCE_DIR)/slimserver.prerm $(SLIMSERVER_IPK_DIR)/CONTROL/prerm

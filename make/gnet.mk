@@ -40,7 +40,7 @@ GNET_IPK_VERSION=1
 
 #
 # GNET_CONFFILES should be a list of user-editable files
-#GNET_CONFFILES=/opt/etc/gnet.conf /opt/etc/init.d/SXXgnet
+#GNET_CONFFILES=$(TARGET_PREFIX)/etc/gnet.conf $(TARGET_PREFIX)/etc/init.d/SXXgnet
 
 #
 # GNET_PATCHES should list any patches, in the the order in
@@ -181,23 +181,23 @@ $(GNET_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(GNET_IPK_DIR)/opt/sbin or $(GNET_IPK_DIR)/opt/bin
+# Binaries should be installed into $(GNET_IPK_DIR)$(TARGET_PREFIX)/sbin or $(GNET_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(GNET_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(GNET_IPK_DIR)/opt/etc/gnet/...
-# Documentation files should be installed in $(GNET_IPK_DIR)/opt/doc/gnet/...
-# Daemon startup scripts should be installed in $(GNET_IPK_DIR)/opt/etc/init.d/S??gnet
+# Libraries and include files should be installed into $(GNET_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(GNET_IPK_DIR)$(TARGET_PREFIX)/etc/gnet/...
+# Documentation files should be installed in $(GNET_IPK_DIR)$(TARGET_PREFIX)/doc/gnet/...
+# Daemon startup scripts should be installed in $(GNET_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??gnet
 #
 # You may need to patch your application to make it use these locations.
 #
 $(GNET_IPK): $(GNET_BUILD_DIR)/.built
 	rm -rf $(GNET_IPK_DIR) $(BUILD_DIR)/gnet_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GNET_BUILD_DIR) DESTDIR=$(GNET_IPK_DIR) install-strip
-#	$(INSTALL) -d $(GNET_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(GNET_SOURCE_DIR)/gnet.conf $(GNET_IPK_DIR)/opt/etc/gnet.conf
-#	$(INSTALL) -d $(GNET_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(GNET_SOURCE_DIR)/rc.gnet $(GNET_IPK_DIR)/opt/etc/init.d/SXXgnet
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(GNET_IPK_DIR)/opt/etc/init.d/SXXgnet
+#	$(INSTALL) -d $(GNET_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(GNET_SOURCE_DIR)/gnet.conf $(GNET_IPK_DIR)$(TARGET_PREFIX)/etc/gnet.conf
+#	$(INSTALL) -d $(GNET_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(GNET_SOURCE_DIR)/rc.gnet $(GNET_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXgnet
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(GNET_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXgnet
 	$(MAKE) $(GNET_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(GNET_SOURCE_DIR)/postinst $(GNET_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(GNET_IPK_DIR)/CONTROL/postinst

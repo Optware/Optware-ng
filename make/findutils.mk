@@ -179,31 +179,31 @@ findutils: $(FINDUTILS_BUILD_DIR)/.built
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(FINDUTILS_IPK_DIR)/opt/sbin or $(FINDUTILS_IPK_DIR)/opt/bin
+# Binaries should be installed into $(FINDUTILS_IPK_DIR)$(TARGET_PREFIX)/sbin or $(FINDUTILS_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(FINDUTILS_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(FINDUTILS_IPK_DIR)/opt/etc/findutils/...
-# Documentation files should be installed in $(FINDUTILS_IPK_DIR)/opt/doc/findutils/...
-# Daemon startup scripts should be installed in $(FINDUTILS_IPK_DIR)/opt/etc/init.d/S??findutils
+# Libraries and include files should be installed into $(FINDUTILS_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(FINDUTILS_IPK_DIR)$(TARGET_PREFIX)/etc/findutils/...
+# Documentation files should be installed in $(FINDUTILS_IPK_DIR)$(TARGET_PREFIX)/doc/findutils/...
+# Daemon startup scripts should be installed in $(FINDUTILS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??findutils
 #
 # You may need to patch your application to make it use these locations.
 #
 $(FINDUTILS_IPK): $(FINDUTILS_BUILD_DIR)/.built
 	rm -rf $(FINDUTILS_IPK_DIR) $(BUILD_DIR)/findutils_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(FINDUTILS_IPK_DIR)/opt/bin
-	$(STRIP_COMMAND) $(FINDUTILS_BUILD_DIR)/find/find -o $(FINDUTILS_IPK_DIR)/opt/bin/findutils-find
-	$(STRIP_COMMAND) $(FINDUTILS_BUILD_DIR)/xargs/xargs -o $(FINDUTILS_IPK_DIR)/opt/bin/findutils-xargs
-	$(INSTALL) -d $(FINDUTILS_IPK_DIR)/opt/man/man1
-	$(INSTALL) -m 644 $(FINDUTILS_BUILD_DIR)/find/find.1 $(FINDUTILS_IPK_DIR)/opt/man/man1
-	$(INSTALL) -m 644 $(FINDUTILS_BUILD_DIR)/xargs/xargs.1 $(FINDUTILS_IPK_DIR)/opt/man/man1
+	$(INSTALL) -d $(FINDUTILS_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(STRIP_COMMAND) $(FINDUTILS_BUILD_DIR)/find/find -o $(FINDUTILS_IPK_DIR)$(TARGET_PREFIX)/bin/findutils-find
+	$(STRIP_COMMAND) $(FINDUTILS_BUILD_DIR)/xargs/xargs -o $(FINDUTILS_IPK_DIR)$(TARGET_PREFIX)/bin/findutils-xargs
+	$(INSTALL) -d $(FINDUTILS_IPK_DIR)$(TARGET_PREFIX)/man/man1
+	$(INSTALL) -m 644 $(FINDUTILS_BUILD_DIR)/find/find.1 $(FINDUTILS_IPK_DIR)$(TARGET_PREFIX)/man/man1
+	$(INSTALL) -m 644 $(FINDUTILS_BUILD_DIR)/xargs/xargs.1 $(FINDUTILS_IPK_DIR)$(TARGET_PREFIX)/man/man1
 	make  $(FINDUTILS_IPK_DIR)/CONTROL/control
 	(echo "#!/bin/sh"; \
-	 echo "update-alternatives --install /opt/bin/find find /opt/bin/findutils-find 80"; \
-	 echo "update-alternatives --install /opt/bin/xargs xargs /opt/bin/findutils-xargs 80"; \
+	 echo "update-alternatives --install $(TARGET_PREFIX)/bin/find find $(TARGET_PREFIX)/bin/findutils-find 80"; \
+	 echo "update-alternatives --install $(TARGET_PREFIX)/bin/xargs xargs $(TARGET_PREFIX)/bin/findutils-xargs 80"; \
 	) > $(FINDUTILS_IPK_DIR)/CONTROL/postinst
 	(echo "#!/bin/sh"; \
-	 echo "update-alternatives --remove find /opt/bin/findutils-find"; \
-	 echo "update-alternatives --remove xargs /opt/bin/findutils-xargs"; \
+	 echo "update-alternatives --remove find $(TARGET_PREFIX)/bin/findutils-find"; \
+	 echo "update-alternatives --remove xargs $(TARGET_PREFIX)/bin/findutils-xargs"; \
 	) > $(FINDUTILS_IPK_DIR)/CONTROL/prerm
 	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \
@@ -213,8 +213,8 @@ $(FINDUTILS_IPK): $(FINDUTILS_BUILD_DIR)/.built
 
 $(FINDUTILS_DOC_IPK): $(FINDUTILS_BUILD_DIR)/.built
 	rm -rf $(FINDUTILS_DOC_IPK_DIR) $(BUILD_DIR)/findutils-doc_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(FINDUTILS_DOC_IPK_DIR)/opt/doc/findutils
-	$(INSTALL) -m 644 $(FINDUTILS_BUILD_DIR)/doc/find.i* $(FINDUTILS_DOC_IPK_DIR)/opt/doc/findutils
+	$(INSTALL) -d $(FINDUTILS_DOC_IPK_DIR)$(TARGET_PREFIX)/doc/findutils
+	$(INSTALL) -m 644 $(FINDUTILS_BUILD_DIR)/doc/find.i* $(FINDUTILS_DOC_IPK_DIR)$(TARGET_PREFIX)/doc/findutils
 	make  $(FINDUTILS_DOC_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(FINDUTILS_DOC_IPK_DIR)
 

@@ -46,7 +46,7 @@ DOKUWIKI_IPK_VERSION=1
 
 #
 # DOKUWIKI_CONFFILES should be a list of user-editable files
-#DOKUWIKI_CONFFILES=/opt/etc/dokuwiki.conf /opt/etc/init.d/SXXdokuwiki
+#DOKUWIKI_CONFFILES=$(TARGET_PREFIX)/etc/dokuwiki.conf $(TARGET_PREFIX)/etc/init.d/SXXdokuwiki
 
 #
 # DOKUWIKI_PATCHES should list any patches, in the the order in
@@ -140,19 +140,19 @@ $(DOKUWIKI_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(DOKUWIKI_IPK_DIR)/opt/sbin or $(DOKUWIKI_IPK_DIR)/opt/bin
+# Binaries should be installed into $(DOKUWIKI_IPK_DIR)$(TARGET_PREFIX)/sbin or $(DOKUWIKI_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(DOKUWIKI_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(DOKUWIKI_IPK_DIR)/opt/etc/dokuwiki/...
-# Documentation files should be installed in $(DOKUWIKI_IPK_DIR)/opt/doc/dokuwiki/...
-# Daemon startup scripts should be installed in $(DOKUWIKI_IPK_DIR)/opt/etc/init.d/S??dokuwiki
+# Libraries and include files should be installed into $(DOKUWIKI_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(DOKUWIKI_IPK_DIR)$(TARGET_PREFIX)/etc/dokuwiki/...
+# Documentation files should be installed in $(DOKUWIKI_IPK_DIR)$(TARGET_PREFIX)/doc/dokuwiki/...
+# Daemon startup scripts should be installed in $(DOKUWIKI_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??dokuwiki
 #
 # You may need to patch your application to make it use these locations.
 #
 $(DOKUWIKI_IPK): $(DOKUWIKI_BUILD_DIR)/.configured
 	rm -rf $(DOKUWIKI_IPK_DIR) $(BUILD_DIR)/dokuwiki_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(DOKUWIKI_IPK_DIR)/opt/share/www/dokuwiki/data/changes.log
-	cp -a $(DOKUWIKI_BUILD_DIR)/* $(DOKUWIKI_IPK_DIR)/opt/share/www/dokuwiki	
+	$(INSTALL) -d $(DOKUWIKI_IPK_DIR)$(TARGET_PREFIX)/share/www/dokuwiki/data/changes.log
+	cp -a $(DOKUWIKI_BUILD_DIR)/* $(DOKUWIKI_IPK_DIR)$(TARGET_PREFIX)/share/www/dokuwiki	
 	$(MAKE) $(DOKUWIKI_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 755 $(DOKUWIKI_SOURCE_DIR)/postinst $(DOKUWIKI_IPK_DIR)/CONTROL/postinst
 	#$(INSTALL) -m 755 $(DOKUWIKI_SOURCE_DIR)/prerm $(DOKUWIKI_IPK_DIR)/CONTROL/prerm

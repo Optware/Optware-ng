@@ -46,7 +46,7 @@ UNBOUND_IPK_VERSION=1
 
 #
 # UNBOUND_CONFFILES should be a list of user-editable files
-UNBOUND_CONFFILES=/opt/etc/unbound/unbound.conf
+UNBOUND_CONFFILES=$(TARGET_PREFIX)/etc/unbound/unbound.conf
 
 #
 # UNBOUND_PATCHES should list any patches, in the the order in
@@ -189,33 +189,33 @@ $(UNBOUND_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(UNBOUND_IPK_DIR)/opt/sbin or $(UNBOUND_IPK_DIR)/opt/bin
+# Binaries should be installed into $(UNBOUND_IPK_DIR)$(TARGET_PREFIX)/sbin or $(UNBOUND_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(UNBOUND_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(UNBOUND_IPK_DIR)/opt/etc/unbound/...
-# Documentation files should be installed in $(UNBOUND_IPK_DIR)/opt/doc/unbound/...
-# Daemon startup scripts should be installed in $(UNBOUND_IPK_DIR)/opt/etc/init.d/S??unbound
+# Libraries and include files should be installed into $(UNBOUND_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(UNBOUND_IPK_DIR)$(TARGET_PREFIX)/etc/unbound/...
+# Documentation files should be installed in $(UNBOUND_IPK_DIR)$(TARGET_PREFIX)/doc/unbound/...
+# Daemon startup scripts should be installed in $(UNBOUND_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??unbound
 #
 # You may need to patch your application to make it use these locations.
 #
 $(UNBOUND_IPK): $(UNBOUND_BUILD_DIR)/.built
 	rm -rf $(UNBOUND_IPK_DIR) $(BUILD_DIR)/unbound_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(UNBOUND_BUILD_DIR) DESTDIR=$(UNBOUND_IPK_DIR) install
-	$(INSTALL) -d $(UNBOUND_IPK_DIR)/opt/etc/
-	$(INSTALL) -m 644 $(UNBOUND_SOURCE_DIR)/named.cache $(UNBOUND_IPK_DIR)/opt/etc/unbound/named.cache
-	$(INSTALL) -m 644 $(UNBOUND_SOURCE_DIR)/root.key $(UNBOUND_IPK_DIR)/opt/etc/unbound/root.key
-	$(INSTALL) -d $(UNBOUND_IPK_DIR)/opt/var/unbound
-	$(INSTALL) -m 755 $(UNBOUND_SOURCE_DIR)/start.sh $(UNBOUND_IPK_DIR)/opt/var/unbound/start.sh
-	$(INSTALL) -d $(UNBOUND_IPK_DIR)/opt/usr/lib
-	cd $(UNBOUND_IPK_DIR)/opt/usr/lib; ln -s libldns.so.1.6.12 libldns.so.1
+	$(INSTALL) -d $(UNBOUND_IPK_DIR)$(TARGET_PREFIX)/etc/
+	$(INSTALL) -m 644 $(UNBOUND_SOURCE_DIR)/named.cache $(UNBOUND_IPK_DIR)$(TARGET_PREFIX)/etc/unbound/named.cache
+	$(INSTALL) -m 644 $(UNBOUND_SOURCE_DIR)/root.key $(UNBOUND_IPK_DIR)$(TARGET_PREFIX)/etc/unbound/root.key
+	$(INSTALL) -d $(UNBOUND_IPK_DIR)$(TARGET_PREFIX)/var/unbound
+	$(INSTALL) -m 755 $(UNBOUND_SOURCE_DIR)/start.sh $(UNBOUND_IPK_DIR)$(TARGET_PREFIX)/var/unbound/start.sh
+	$(INSTALL) -d $(UNBOUND_IPK_DIR)$(TARGET_PREFIX)/usr/lib
+	cd $(UNBOUND_IPK_DIR)$(TARGET_PREFIX)/usr/lib; ln -s libldns.so.1.6.12 libldns.so.1
 	$(STRIP_COMMAND) \
-		$(UNBOUND_IPK_DIR)/opt/sbin/unbound \
-		$(UNBOUND_IPK_DIR)/opt/sbin/unbound-anchor \
-		$(UNBOUND_IPK_DIR)/opt/sbin/unbound-checkconf \
-		$(UNBOUND_IPK_DIR)/opt/sbin/unbound-control \
-		$(UNBOUND_IPK_DIR)/opt/sbin/unbound-host
+		$(UNBOUND_IPK_DIR)$(TARGET_PREFIX)/sbin/unbound \
+		$(UNBOUND_IPK_DIR)$(TARGET_PREFIX)/sbin/unbound-anchor \
+		$(UNBOUND_IPK_DIR)$(TARGET_PREFIX)/sbin/unbound-checkconf \
+		$(UNBOUND_IPK_DIR)$(TARGET_PREFIX)/sbin/unbound-control \
+		$(UNBOUND_IPK_DIR)$(TARGET_PREFIX)/sbin/unbound-host
 	$(STRIP_COMMAND) \
-		$(UNBOUND_IPK_DIR)/opt/lib/libunbound.so.2.1.1
+		$(UNBOUND_IPK_DIR)$(TARGET_PREFIX)/lib/libunbound.so.2.1.1
 	$(MAKE) $(UNBOUND_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(UNBOUND_SOURCE_DIR)/postinst $(UNBOUND_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(UNBOUND_IPK_DIR)/CONTROL/postinst
@@ -225,7 +225,7 @@ $(UNBOUND_IPK): $(UNBOUND_BUILD_DIR)/.built
 #		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \
 #			$(UNBOUND_IPK_DIR)/CONTROL/postinst $(UNBOUND_IPK_DIR)/CONTROL/prerm; \
 #	fi
-	$(MAKE) $(UNBOUND_IPK_DIR)/opt/sbin
+	$(MAKE) $(UNBOUND_IPK_DIR)$(TARGET_PREFIX)/sbin
 	echo $(UNBOUND_CONFFILES) | sed -e 's/ /\n/g' > $(UNBOUND_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(UNBOUND_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(UNBOUND_IPK_DIR)

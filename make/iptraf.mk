@@ -40,7 +40,7 @@ IPTRAF_IPK_VERSION=1
 
 #
 # IPTRAF_CONFFILES should be a list of user-editable files
-#IPTRAF_CONFFILES=/opt/etc/iptraf.conf /opt/etc/init.d/SXXiptraf
+#IPTRAF_CONFFILES=$(TARGET_PREFIX)/etc/iptraf.conf $(TARGET_PREFIX)/etc/init.d/SXXiptraf
 
 #
 # IPTRAF_PATCHES should list any patches, in the the order in
@@ -148,10 +148,10 @@ $(IPTRAF_BUILD_DIR)/.built: $(IPTRAF_BUILD_DIR)/.configured
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(IPTRAF_CPPFLAGS)" \
 		LDOPTS="$(STAGING_LDFLAGS) $(IPTRAF_LDFLAGS)" \
-		TARGET=/opt/bin \
-		WORKDIR=/opt/var/iptraf \
-		LOGDIR=/opt/var/log/iptraf \
-		LOCKDIR=/opt/var/run/iptraf \
+		TARGET=$(TARGET_PREFIX)/bin \
+		WORKDIR=$(TARGET_PREFIX)/var/iptraf \
+		LOGDIR=$(TARGET_PREFIX)/var/log/iptraf \
+		LOCKDIR=$(TARGET_PREFIX)/var/run/iptraf \
 		;
 	touch $@
 
@@ -192,25 +192,25 @@ $(IPTRAF_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(IPTRAF_IPK_DIR)/opt/sbin or $(IPTRAF_IPK_DIR)/opt/bin
+# Binaries should be installed into $(IPTRAF_IPK_DIR)$(TARGET_PREFIX)/sbin or $(IPTRAF_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(IPTRAF_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(IPTRAF_IPK_DIR)/opt/etc/iptraf/...
-# Documentation files should be installed in $(IPTRAF_IPK_DIR)/opt/doc/iptraf/...
-# Daemon startup scripts should be installed in $(IPTRAF_IPK_DIR)/opt/etc/init.d/S??iptraf
+# Libraries and include files should be installed into $(IPTRAF_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(IPTRAF_IPK_DIR)$(TARGET_PREFIX)/etc/iptraf/...
+# Documentation files should be installed in $(IPTRAF_IPK_DIR)$(TARGET_PREFIX)/doc/iptraf/...
+# Daemon startup scripts should be installed in $(IPTRAF_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??iptraf
 #
 # You may need to patch your application to make it use these locations.
 #
 $(IPTRAF_IPK): $(IPTRAF_BUILD_DIR)/.built
 	rm -rf $(IPTRAF_IPK_DIR) $(BUILD_DIR)/iptraf_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(IPTRAF_IPK_DIR)/opt/bin $(IPTRAF_IPK_DIR)/opt/share/doc/iptraf
+	$(INSTALL) -d $(IPTRAF_IPK_DIR)$(TARGET_PREFIX)/bin $(IPTRAF_IPK_DIR)$(TARGET_PREFIX)/share/doc/iptraf
 	$(MAKE) -C $(IPTRAF_BUILD_DIR)/src install \
-		TARGET=$(IPTRAF_IPK_DIR)/opt/bin \
-		WORKDIR=$(IPTRAF_IPK_DIR)/opt/var/iptraf \
-		LOGDIR=$(IPTRAF_IPK_DIR)/opt/var/log/iptraf \
-		LOCKDIR=$(IPTRAF_IPK_DIR)/opt/var/run/iptraf \
+		TARGET=$(IPTRAF_IPK_DIR)$(TARGET_PREFIX)/bin \
+		WORKDIR=$(IPTRAF_IPK_DIR)$(TARGET_PREFIX)/var/iptraf \
+		LOGDIR=$(IPTRAF_IPK_DIR)$(TARGET_PREFIX)/var/log/iptraf \
+		LOCKDIR=$(IPTRAF_IPK_DIR)$(TARGET_PREFIX)/var/run/iptraf \
 		;
-	$(STRIP_COMMAND) $(IPTRAF_IPK_DIR)/opt/bin/*
+	$(STRIP_COMMAND) $(IPTRAF_IPK_DIR)$(TARGET_PREFIX)/bin/*
 	$(INSTALL) \
 		$(IPTRAF_BUILD_DIR)/CHANGES \
 		$(IPTRAF_BUILD_DIR)/LICENSE \
@@ -219,10 +219,10 @@ $(IPTRAF_IPK): $(IPTRAF_BUILD_DIR)/.built
 		$(IPTRAF_BUILD_DIR)/README* \
 		$(IPTRAF_BUILD_DIR)/RELEASE-NOTES \
 		$(IPTRAF_BUILD_DIR)/Setup \
-		$(IPTRAF_IPK_DIR)/opt/share/doc/iptraf/
-#	cp -pR $(IPTRAF_BUILD_DIR)/Documentation $(IPTRAF_IPK_DIR)/opt/share/doc/iptraf/
-	$(INSTALL) -d $(IPTRAF_IPK_DIR)/opt/share/man/man8
-	$(INSTALL) $(IPTRAF_BUILD_DIR)/Documentation/*.8 $(IPTRAF_IPK_DIR)/opt/share/man/man8/
+		$(IPTRAF_IPK_DIR)$(TARGET_PREFIX)/share/doc/iptraf/
+#	cp -pR $(IPTRAF_BUILD_DIR)/Documentation $(IPTRAF_IPK_DIR)$(TARGET_PREFIX)/share/doc/iptraf/
+	$(INSTALL) -d $(IPTRAF_IPK_DIR)$(TARGET_PREFIX)/share/man/man8
+	$(INSTALL) $(IPTRAF_BUILD_DIR)/Documentation/*.8 $(IPTRAF_IPK_DIR)$(TARGET_PREFIX)/share/man/man8/
 	$(MAKE) $(IPTRAF_IPK_DIR)/CONTROL/control
 	echo $(IPTRAF_CONFFILES) | sed -e 's/ /\n/g' > $(IPTRAF_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(IPTRAF_IPK_DIR)

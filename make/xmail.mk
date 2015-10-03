@@ -11,7 +11,7 @@
 
 # paulhar NOTES
 # 1) When the package is removed, I can't understand why it doesn't remove
-#    everything it installed. e.g /opt/var/MailRoot
+#    everything it installed. e.g $(TARGET_PREFIX)/var/MailRoot
 # 2) For any form of logging to work syslogd needs replacing; the native one
 #    doesn't appear to write any logs. This should be double-checked by someone
 #    other than me since I've just replaced mine :)
@@ -46,7 +46,7 @@ XMAIL_IPK_VERSION=1
 
 #
 # XMAIL_CONFFILES should be a list of user-editable files
-#XMAIL_CONFFILES=/opt/etc/xmail.conf /opt/etc/init.d/S70xmail
+#XMAIL_CONFFILES=$(TARGET_PREFIX)/etc/xmail.conf $(TARGET_PREFIX)/etc/init.d/S70xmail
 
 #
 # XMAIL_PATCHES should list any patches, in the the order in
@@ -189,12 +189,12 @@ $(XMAIL_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(XMAIL_IPK_DIR)/opt/sbin or $(XMAIL_IPK_DIR)/opt/bin
+# Binaries should be installed into $(XMAIL_IPK_DIR)$(TARGET_PREFIX)/sbin or $(XMAIL_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(XMAIL_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(XMAIL_IPK_DIR)/opt/etc/xmail/...
-# Documentation files should be installed in $(XMAIL_IPK_DIR)/opt/doc/xmail/...
-# Daemon startup scripts should be installed in $(XMAIL_IPK_DIR)/opt/etc/init.d/S??xmail
+# Libraries and include files should be installed into $(XMAIL_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(XMAIL_IPK_DIR)$(TARGET_PREFIX)/etc/xmail/...
+# Documentation files should be installed in $(XMAIL_IPK_DIR)$(TARGET_PREFIX)/doc/xmail/...
+# Daemon startup scripts should be installed in $(XMAIL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??xmail
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -202,35 +202,35 @@ $(XMAIL_IPK): $(XMAIL_BUILD_DIR)/.built
 	rm -rf $(XMAIL_IPK_DIR) $(BUILD_DIR)/xmail_*_$(TARGET_ARCH).ipk
 	#$(MAKE) -C $(XMAIL_BUILD_DIR) DESTDIR=$(XMAIL_IPK_DIR) install
 	# Main configuration and temporary stores - the MailRoot folder
-	$(INSTALL) -d $(XMAIL_IPK_DIR)/opt/var/MailRoot
-	cp -R $(XMAIL_BUILD_DIR)/MailRoot/* $(XMAIL_IPK_DIR)/opt/var/MailRoot
-	#chown root $(XMAIL_IPK_DIR)/opt/var/MailRoot
-	#chgrp root $(XMAIL_IPK_DIR)/opt/var/MailRoot
-	$(INSTALL) -m 755 $(XMAIL_BUILD_DIR)/xmail $(XMAIL_IPK_DIR)/opt/var/MailRoot
-	chmod 700 $(XMAIL_IPK_DIR)/opt/var/MailRoot
-	# The binaries (/opt/bin)
-	$(INSTALL) -d $(XMAIL_IPK_DIR)/opt/bin
-	$(INSTALL) -m 755 $(XMAIL_BUILD_DIR)/bin/CtrlClnt $(XMAIL_IPK_DIR)/opt/bin
-	$(INSTALL) -m 700 $(XMAIL_BUILD_DIR)/bin/MkUsers $(XMAIL_IPK_DIR)/opt/bin
-	$(INSTALL) -m 700 $(XMAIL_BUILD_DIR)/bin/sendmail $(XMAIL_IPK_DIR)/opt/bin
-	$(INSTALL) -m 700 $(XMAIL_BUILD_DIR)/bin/XMail $(XMAIL_IPK_DIR)/opt/bin
-	$(INSTALL) -m 700 $(XMAIL_BUILD_DIR)/bin/XMCrypt $(XMAIL_IPK_DIR)/opt/bin
-	# The docs (/opt/doc)
-	$(INSTALL) -d $(XMAIL_IPK_DIR)/opt/doc/xmail
-	$(INSTALL) -m 755 $(XMAIL_BUILD_DIR)/docs/Readme.txt $(XMAIL_IPK_DIR)/opt/doc/xmail
-	$(INSTALL) -m 755 $(XMAIL_BUILD_DIR)/docs/Readme.html $(XMAIL_IPK_DIR)/opt/doc/xmail
-	# rc  (/opt/etc/init.d)
+	$(INSTALL) -d $(XMAIL_IPK_DIR)$(TARGET_PREFIX)/var/MailRoot
+	cp -R $(XMAIL_BUILD_DIR)/MailRoot/* $(XMAIL_IPK_DIR)$(TARGET_PREFIX)/var/MailRoot
+	#chown root $(XMAIL_IPK_DIR)$(TARGET_PREFIX)/var/MailRoot
+	#chgrp root $(XMAIL_IPK_DIR)$(TARGET_PREFIX)/var/MailRoot
+	$(INSTALL) -m 755 $(XMAIL_BUILD_DIR)/xmail $(XMAIL_IPK_DIR)$(TARGET_PREFIX)/var/MailRoot
+	chmod 700 $(XMAIL_IPK_DIR)$(TARGET_PREFIX)/var/MailRoot
+	# The binaries ($(TARGET_PREFIX)/bin)
+	$(INSTALL) -d $(XMAIL_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(INSTALL) -m 755 $(XMAIL_BUILD_DIR)/bin/CtrlClnt $(XMAIL_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(INSTALL) -m 700 $(XMAIL_BUILD_DIR)/bin/MkUsers $(XMAIL_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(INSTALL) -m 700 $(XMAIL_BUILD_DIR)/bin/sendmail $(XMAIL_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(INSTALL) -m 700 $(XMAIL_BUILD_DIR)/bin/XMail $(XMAIL_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(INSTALL) -m 700 $(XMAIL_BUILD_DIR)/bin/XMCrypt $(XMAIL_IPK_DIR)$(TARGET_PREFIX)/bin
+	# The docs ($(TARGET_PREFIX)/doc)
+	$(INSTALL) -d $(XMAIL_IPK_DIR)$(TARGET_PREFIX)/doc/xmail
+	$(INSTALL) -m 755 $(XMAIL_BUILD_DIR)/docs/Readme.txt $(XMAIL_IPK_DIR)$(TARGET_PREFIX)/doc/xmail
+	$(INSTALL) -m 755 $(XMAIL_BUILD_DIR)/docs/Readme.html $(XMAIL_IPK_DIR)$(TARGET_PREFIX)/doc/xmail
+	# rc  ($(TARGET_PREFIX)/etc/init.d)
 	# This is handled by the postinst script
 	# Rest of the stuff
 	$(MAKE) $(XMAIL_IPK_DIR)/CONTROL/control
-	$(INSTALL) -d $(XMAIL_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -d $(XMAIL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
 	$(INSTALL) -m 644 $(XMAIL_SOURCE_DIR)/postinst $(XMAIL_IPK_DIR)/CONTROL/postinst
 	$(INSTALL) -m 644 $(XMAIL_SOURCE_DIR)/prerm $(XMAIL_IPK_DIR)/CONTROL/prerm
 	# conf
 	(cd $(XMAIL_BUILD_DIR)/MailRoot && \
 	 find . -type f | \
 	 grep -v xmailserver.test | \
-	 sed 's|^\.|/opt/var/MailRoot|') > $(XMAIL_IPK_DIR)/CONTROL/conffiles
+	 sed 's|^\.|$(TARGET_PREFIX)/var/MailRoot|') > $(XMAIL_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XMAIL_IPK_DIR)
 
 #

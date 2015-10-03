@@ -148,12 +148,12 @@ xau-stage: $(XAU_BUILD_DIR)/.staged
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(XAU_IPK_DIR)/opt/sbin or $(XAU_IPK_DIR)/opt/bin
+# Binaries should be installed into $(XAU_IPK_DIR)$(TARGET_PREFIX)/sbin or $(XAU_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(XAU_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(XAU_IPK_DIR)/opt/etc/xau/...
-# Documentation files should be installed in $(XAU_IPK_DIR)/opt/doc/xau/...
-# Daemon startup scripts should be installed in $(XAU_IPK_DIR)/opt/etc/init.d/S??xau
+# Libraries and include files should be installed into $(XAU_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(XAU_IPK_DIR)$(TARGET_PREFIX)/etc/xau/...
+# Documentation files should be installed in $(XAU_IPK_DIR)$(TARGET_PREFIX)/doc/xau/...
+# Daemon startup scripts should be installed in $(XAU_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??xau
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -162,7 +162,7 @@ $(XAU_IPK): $(XAU_BUILD_DIR)/.built
 	$(MAKE) -C $(XAU_BUILD_DIR) DESTDIR=$(XAU_IPK_DIR) install-strip
 	$(MAKE) $(XAU_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 644 $(XAU_SOURCE_DIR)/postinst $(XAU_IPK_DIR)/CONTROL/postinst
-	rm -f $(XAU_IPK_DIR)/opt/lib/*.la
+	rm -f $(XAU_IPK_DIR)$(TARGET_PREFIX)/lib/*.la
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XAU_IPK_DIR)
 
 #

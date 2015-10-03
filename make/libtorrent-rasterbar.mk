@@ -56,7 +56,7 @@ LIBTORRENT-RASTERBAR_IPK_VERSION?=1
 
 #
 # LIBTORRENT-RASTERBAR_CONFFILES should be a list of user-editable files
-#LIBTORRENT-RASTERBAR_CONFFILES=/opt/etc/libtorrent-rasterbar.conf /opt/etc/init.d/SXXlibtorrent-rasterbar
+#LIBTORRENT-RASTERBAR_CONFFILES=$(TARGET_PREFIX)/etc/libtorrent-rasterbar.conf $(TARGET_PREFIX)/etc/init.d/SXXlibtorrent-rasterbar
 
 #
 # LIBTORRENT-RASTERBAR_PATCHES should list any patches, in the the order in
@@ -152,7 +152,7 @@ endif
 		then mv $(BUILD_DIR)/$(LIBTORRENT-RASTERBAR_DIR) $(@D) ; \
 	fi
 	sed -i -e "s|/usr/local/ssl /usr/lib/ssl /usr/ssl /usr/pkg /usr/local /usr|$(STAGING_PREFIX)|" $(@D)/m4/ax_check_openssl.m4
-	sed -i -e "s|/usr /usr/local $(TARGET_PREFIX) /opt/local|$(STAGING_PREFIX)|" $(@D)/m4/ax_boost_base.m4 $(@D)/m4/ax_check_geoip.m4
+	sed -i -e "s|/usr /usr/local $(TARGET_PREFIX) $(TARGET_PREFIX)/local|$(STAGING_PREFIX)|" $(@D)/m4/ax_boost_base.m4 $(@D)/m4/ax_check_geoip.m4
 	sed -i -e "s|namespace libtorrent|#ifndef IPV6_V6ONLY\n#  define IPV6_V6ONLY 26\n#endif\n\nnamespace libtorrent|" $(@D)/include/libtorrent/socket.hpp
 	sed -i -e "s|namespace libtorrent { namespace|#ifndef IPV6_V6ONLY\n#  define IPV6_V6ONLY 26\n#endif\n\nnamespace libtorrent { namespace|" $(@D)/src/enum_net.cpp
 #	sed -i -e "s/#include <vector>/#include <vector>\n#include <list>/" $(@D)/include/libtorrent/udp_socket.hpp
@@ -169,7 +169,7 @@ endif
 		PYTHON="$(HOST_STAGING_PREFIX)/bin/python2.6" \
 		PYTHON_CPPFLAGS="-I$(STAGING_INCLUDE_DIR)/python2.6" \
 		PYTHON_LDFLAGS="-L$(STAGING_LIB_DIR) -lpython2.6" \
-		PYTHON_SITE_PKG="/opt/lib/python2.6/site-packages" \
+		PYTHON_SITE_PKG="$(TARGET_PREFIX)/lib/python2.6/site-packages" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -307,12 +307,12 @@ $(LIBTORRENT-RASTERBAR_PYTHON_BINDING3_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LIBTORRENT-RASTERBAR_IPK_DIR)/opt/sbin or $(LIBTORRENT-RASTERBAR_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LIBTORRENT-RASTERBAR_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LIBTORRENT-RASTERBAR_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LIBTORRENT-RASTERBAR_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LIBTORRENT-RASTERBAR_IPK_DIR)/opt/etc/libtorrent-rasterbar/...
-# Documentation files should be installed in $(LIBTORRENT-RASTERBAR_IPK_DIR)/opt/doc/libtorrent-rasterbar/...
-# Daemon startup scripts should be installed in $(LIBTORRENT-RASTERBAR_IPK_DIR)/opt/etc/init.d/S??libtorrent-rasterbar
+# Libraries and include files should be installed into $(LIBTORRENT-RASTERBAR_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LIBTORRENT-RASTERBAR_IPK_DIR)$(TARGET_PREFIX)/etc/libtorrent-rasterbar/...
+# Documentation files should be installed in $(LIBTORRENT-RASTERBAR_IPK_DIR)$(TARGET_PREFIX)/doc/libtorrent-rasterbar/...
+# Daemon startup scripts should be installed in $(LIBTORRENT-RASTERBAR_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??libtorrent-rasterbar
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -320,14 +320,14 @@ $(LIBTORRENT-RASTERBAR_IPK) $(LIBTORRENT-RASTERBAR_PYTHON_BINDING26_IPK): $(LIBT
 	rm -rf $(LIBTORRENT-RASTERBAR_IPK_DIR) $(LIBTORRENT-RASTERBAR_PYTHON_BINDING26_IPK_DIR)
 	rm -f $(BUILD_DIR)/libtorrent-rasterbar_*_$(TARGET_ARCH).ipk $(BUILD_DIR)/py26-libtorrent-rasterbar-binding_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBTORRENT-RASTERBAR_BUILD_DIR) DESTDIR=$(LIBTORRENT-RASTERBAR_IPK_DIR) install-strip
-#	$(INSTALL) -d $(LIBTORRENT-RASTERBAR_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(LIBTORRENT-RASTERBAR_SOURCE_DIR)/libtorrent-rasterbar.conf $(LIBTORRENT-RASTERBAR_IPK_DIR)/opt/etc/libtorrent-rasterbar.conf
-#	$(INSTALL) -d $(LIBTORRENT-RASTERBAR_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(LIBTORRENT-RASTERBAR_SOURCE_DIR)/rc.libtorrent-rasterbar $(LIBTORRENT-RASTERBAR_IPK_DIR)/opt/etc/init.d/SXXlibtorrent-rasterbar
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBTORRENT-RASTERBAR_IPK_DIR)/opt/etc/init.d/SXXlibtorrent-rasterbar
-	mkdir -p $(LIBTORRENT-RASTERBAR_PYTHON_BINDING26_IPK_DIR)/opt/lib
-	mv -f $(LIBTORRENT-RASTERBAR_IPK_DIR)/opt/lib/python2.6 $(LIBTORRENT-RASTERBAR_PYTHON_BINDING26_IPK_DIR)/opt/lib
-	$(STRIP_COMMAND) $(LIBTORRENT-RASTERBAR_PYTHON_BINDING26_IPK_DIR)/opt/lib/python2.6/site-packages/*.so
+#	$(INSTALL) -d $(LIBTORRENT-RASTERBAR_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(LIBTORRENT-RASTERBAR_SOURCE_DIR)/libtorrent-rasterbar.conf $(LIBTORRENT-RASTERBAR_IPK_DIR)$(TARGET_PREFIX)/etc/libtorrent-rasterbar.conf
+#	$(INSTALL) -d $(LIBTORRENT-RASTERBAR_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(LIBTORRENT-RASTERBAR_SOURCE_DIR)/rc.libtorrent-rasterbar $(LIBTORRENT-RASTERBAR_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibtorrent-rasterbar
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBTORRENT-RASTERBAR_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibtorrent-rasterbar
+	mkdir -p $(LIBTORRENT-RASTERBAR_PYTHON_BINDING26_IPK_DIR)$(TARGET_PREFIX)/lib
+	mv -f $(LIBTORRENT-RASTERBAR_IPK_DIR)$(TARGET_PREFIX)/lib/python2.6 $(LIBTORRENT-RASTERBAR_PYTHON_BINDING26_IPK_DIR)$(TARGET_PREFIX)/lib
+	$(STRIP_COMMAND) $(LIBTORRENT-RASTERBAR_PYTHON_BINDING26_IPK_DIR)$(TARGET_PREFIX)/lib/python2.6/site-packages/*.so
 	$(MAKE) $(LIBTORRENT-RASTERBAR_IPK_DIR)/CONTROL/control
 	$(MAKE) $(LIBTORRENT-RASTERBAR_PYTHON_BINDING26_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(LIBTORRENT-RASTERBAR_SOURCE_DIR)/postinst $(LIBTORRENT-RASTERBAR_IPK_DIR)/CONTROL/postinst
@@ -345,16 +345,16 @@ $(LIBTORRENT-RASTERBAR_IPK) $(LIBTORRENT-RASTERBAR_PYTHON_BINDING26_IPK): $(LIBT
 
 $(LIBTORRENT-RASTERBAR_PYTHON_BINDING27_IPK): $(LIBTORRENT-RASTERBAR_BUILD_DIR)/.built
 	rm -rf $(LIBTORRENT-RASTERBAR_PYTHON_BINDING27_IPK_DIR) $(BUILD_DIR)/py27-libtorrent-rasterbar-binding_*_$(TARGET_ARCH).ipk
-	(cd $(LIBTORRENT-RASTERBAR_BUILD_DIR)/bindings/python; $(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --prefix=$(LIBTORRENT-RASTERBAR_PYTHON_BINDING27_IPK_DIR)/opt)
-	$(STRIP_COMMAND) $(LIBTORRENT-RASTERBAR_PYTHON_BINDING27_IPK_DIR)/opt/lib/python2.7/site-packages/*.so
+	(cd $(LIBTORRENT-RASTERBAR_BUILD_DIR)/bindings/python; $(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --prefix=$(LIBTORRENT-RASTERBAR_PYTHON_BINDING27_IPK_DIR)$(TARGET_PREFIX))
+	$(STRIP_COMMAND) $(LIBTORRENT-RASTERBAR_PYTHON_BINDING27_IPK_DIR)$(TARGET_PREFIX)/lib/python2.7/site-packages/*.so
 	$(MAKE) $(LIBTORRENT-RASTERBAR_PYTHON_BINDING27_IPK_DIR)/CONTROL/control
 	echo $(LIBTORRENT-RASTERBAR_PYTHON_BINDING27_CONFFILES) | sed -e 's/ /\n/g' > $(LIBTORRENT-RASTERBAR_PYTHON_BINDING27_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBTORRENT-RASTERBAR_PYTHON_BINDING27_IPK_DIR)
 
 $(LIBTORRENT-RASTERBAR_PYTHON_BINDING3_IPK): $(LIBTORRENT-RASTERBAR_BUILD_DIR)/.built
 	rm -rf $(LIBTORRENT-RASTERBAR_PYTHON_BINDING3_IPK_DIR) $(BUILD_DIR)/py3-libtorrent-rasterbar-binding_*_$(TARGET_ARCH).ipk
-	(cd $(LIBTORRENT-RASTERBAR_BUILD_DIR)/bindings/python; $(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --prefix=$(LIBTORRENT-RASTERBAR_PYTHON_BINDING3_IPK_DIR)/opt)
-	$(STRIP_COMMAND) $(LIBTORRENT-RASTERBAR_PYTHON_BINDING3_IPK_DIR)/opt/lib/python$(PYTHON3_VERSION_MAJOR)/site-packages/*.so
+	(cd $(LIBTORRENT-RASTERBAR_BUILD_DIR)/bindings/python; $(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --prefix=$(LIBTORRENT-RASTERBAR_PYTHON_BINDING3_IPK_DIR)$(TARGET_PREFIX))
+	$(STRIP_COMMAND) $(LIBTORRENT-RASTERBAR_PYTHON_BINDING3_IPK_DIR)$(TARGET_PREFIX)/lib/python$(PYTHON3_VERSION_MAJOR)/site-packages/*.so
 	$(MAKE) $(LIBTORRENT-RASTERBAR_PYTHON_BINDING3_IPK_DIR)/CONTROL/control
 	echo $(LIBTORRENT-RASTERBAR_PYTHON_BINDING3_CONFFILES) | sed -e 's/ /\n/g' > $(LIBTORRENT-RASTERBAR_PYTHON_BINDING3_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBTORRENT-RASTERBAR_PYTHON_BINDING3_IPK_DIR)

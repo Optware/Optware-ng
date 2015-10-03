@@ -42,7 +42,7 @@ PY-MERCURIAL_IPK_VERSION=1
 
 #
 # PY-MERCURIAL_CONFFILES should be a list of user-editable files
-#PY-MERCURIAL_CONFFILES=/opt/etc/py-mercurial.conf /opt/etc/init.d/SXXpy-mercurial
+#PY-MERCURIAL_CONFFILES=$(TARGET_PREFIX)/etc/py-mercurial.conf $(TARGET_PREFIX)/etc/init.d/SXXpy-mercurial
 
 #
 # PY-MERCURIAL_PATCHES should list any patches, in the the order in
@@ -128,11 +128,11 @@ $(PY-MERCURIAL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MERCURIAL_SOURCE) $(PY-MER
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.5"; \
 	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
-	        echo "rpath=/opt/lib"; \
+	        echo "rpath=$(TARGET_PREFIX)/lib"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python2.5"; \
+		echo "executable=$(TARGET_PREFIX)/bin/python2.5"; \
 		echo "[install]"; \
-		echo "install_scripts=/opt/bin"; \
+		echo "install_scripts=$(TARGET_PREFIX)/bin"; \
 	    ) >> setup.cfg; \
 	)
 	sed -i	-e '/linux2/s|if .*|if True:|' \
@@ -148,11 +148,11 @@ $(PY-MERCURIAL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MERCURIAL_SOURCE) $(PY-MER
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.6"; \
 	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
-	        echo "rpath=/opt/lib"; \
+	        echo "rpath=$(TARGET_PREFIX)/lib"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python2.6"; \
+		echo "executable=$(TARGET_PREFIX)/bin/python2.6"; \
 		echo "[install]"; \
-		echo "install_scripts=/opt/bin"; \
+		echo "install_scripts=$(TARGET_PREFIX)/bin"; \
 	    ) >> setup.cfg; \
 	)
 	sed -i	-e '/linux2/s|if .*|if True:|' \
@@ -168,11 +168,11 @@ $(PY-MERCURIAL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MERCURIAL_SOURCE) $(PY-MER
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.7"; \
 	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
-	        echo "rpath=/opt/lib"; \
+	        echo "rpath=$(TARGET_PREFIX)/lib"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python2.7"; \
+		echo "executable=$(TARGET_PREFIX)/bin/python2.7"; \
 		echo "[install]"; \
-		echo "install_scripts=/opt/bin"; \
+		echo "install_scripts=$(TARGET_PREFIX)/bin"; \
 	    ) >> setup.cfg; \
 	)
 	sed -i	-e '/linux2/s|if .*|if True:|' \
@@ -264,12 +264,12 @@ $(PY27-MERCURIAL_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PY-MERCURIAL_IPK_DIR)/opt/sbin or $(PY-MERCURIAL_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PY-MERCURIAL_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PY-MERCURIAL_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PY-MERCURIAL_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PY-MERCURIAL_IPK_DIR)/opt/etc/py-mercurial/...
-# Documentation files should be installed in $(PY-MERCURIAL_IPK_DIR)/opt/doc/py-mercurial/...
-# Daemon startup scripts should be installed in $(PY-MERCURIAL_IPK_DIR)/opt/etc/init.d/S??py-mercurial
+# Libraries and include files should be installed into $(PY-MERCURIAL_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PY-MERCURIAL_IPK_DIR)$(TARGET_PREFIX)/etc/py-mercurial/...
+# Documentation files should be installed in $(PY-MERCURIAL_IPK_DIR)$(TARGET_PREFIX)/doc/py-mercurial/...
+# Daemon startup scripts should be installed in $(PY-MERCURIAL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??py-mercurial
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -278,14 +278,14 @@ $(PY25-MERCURIAL_IPK) $(PY26-MERCURIAL_IPK) $(PY27-MERCURIAL_IPK): $(PY-MERCURIA
 	# 2.5
 	rm -rf $(PY25-MERCURIAL_IPK_DIR) $(BUILD_DIR)/py25-mercurial_*_$(TARGET_ARCH).ipk
 	(cd $(PY-MERCURIAL_BUILD_DIR)/2.5; \
-	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(PY25-MERCURIAL_IPK_DIR) --prefix=/opt; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(PY25-MERCURIAL_IPK_DIR) --prefix=$(TARGET_PREFIX); \
 	)
-	(cd $(PY25-MERCURIAL_IPK_DIR)/opt/lib/python2.5/site-packages; \
+	(cd $(PY25-MERCURIAL_IPK_DIR)$(TARGET_PREFIX)/lib/python2.5/site-packages; \
 		find . -name '*.so' -exec chmod +w {} \; ; \
 		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
 		find . -name '*.so' -exec chmod -w {} \; ; \
 	)
-	for f in $(PY25-MERCURIAL_IPK_DIR)/opt/*bin/*; \
+	for f in $(PY25-MERCURIAL_IPK_DIR)$(TARGET_PREFIX)/*bin/*; \
 		do mv $$f `echo $$f | sed 's|$$|-py2.5|'`; done
 	$(MAKE) $(PY25-MERCURIAL_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-MERCURIAL_IPK_DIR)
@@ -293,9 +293,9 @@ $(PY25-MERCURIAL_IPK) $(PY26-MERCURIAL_IPK) $(PY27-MERCURIAL_IPK): $(PY-MERCURIA
 	# 2.6
 	rm -rf $(PY26-MERCURIAL_IPK_DIR) $(BUILD_DIR)/py26-mercurial_*_$(TARGET_ARCH).ipk
 	(cd $(PY-MERCURIAL_BUILD_DIR)/2.6; \
-	    $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(PY26-MERCURIAL_IPK_DIR) --prefix=/opt; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(PY26-MERCURIAL_IPK_DIR) --prefix=$(TARGET_PREFIX); \
 	)
-	(cd $(PY26-MERCURIAL_IPK_DIR)/opt/lib/python2.6/site-packages; \
+	(cd $(PY26-MERCURIAL_IPK_DIR)$(TARGET_PREFIX)/lib/python2.6/site-packages; \
 		find . -name '*.so' -exec chmod +w {} \; ; \
 		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
 		find . -name '*.so' -exec chmod -w {} \; ; \
@@ -306,14 +306,14 @@ $(PY25-MERCURIAL_IPK) $(PY26-MERCURIAL_IPK) $(PY27-MERCURIAL_IPK): $(PY-MERCURIA
 	# 2.7
 	rm -rf $(PY27-MERCURIAL_IPK_DIR) $(BUILD_DIR)/py27-mercurial_*_$(TARGET_ARCH).ipk
 	(cd $(PY-MERCURIAL_BUILD_DIR)/2.7; \
-	    $(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(PY27-MERCURIAL_IPK_DIR) --prefix=/opt; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(PY27-MERCURIAL_IPK_DIR) --prefix=$(TARGET_PREFIX); \
 	)
-	(cd $(PY27-MERCURIAL_IPK_DIR)/opt/lib/python2.7/site-packages; \
+	(cd $(PY27-MERCURIAL_IPK_DIR)$(TARGET_PREFIX)/lib/python2.7/site-packages; \
 		find . -name '*.so' -exec chmod +w {} \; ; \
 		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
 		find . -name '*.so' -exec chmod -w {} \; ; \
 	)
-	for f in $(PY27-MERCURIAL_IPK_DIR)/opt/*bin/*; \
+	for f in $(PY27-MERCURIAL_IPK_DIR)$(TARGET_PREFIX)/*bin/*; \
 		do mv $$f `echo $$f | sed 's|$$|-py2.7|'`; done
 	$(MAKE) $(PY27-MERCURIAL_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY27-MERCURIAL_IPK_DIR)

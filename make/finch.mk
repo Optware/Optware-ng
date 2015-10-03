@@ -30,7 +30,7 @@ FINCH_IPK_VERSION=1
 
 #
 # FINCH_CONFFILES should be a list of user-editable files
-#FINCH_CONFFILES=/opt/etc/finch.conf /opt/etc/init.d/SXXfinch
+#FINCH_CONFFILES=$(TARGET_PREFIX)/etc/finch.conf $(TARGET_PREFIX)/etc/init.d/SXXfinch
 
 #
 # FINCH_PATCHES should list any patches, in the the order in
@@ -43,7 +43,7 @@ FINCH_IPK_VERSION=1
 # compilation or linking flags, then list them here.
 #
 FINCH_CPPFLAGS=
-FINCH_LDFLAGS=-Wl,-rpath,/opt/lib/purple-2
+FINCH_LDFLAGS=-Wl,-rpath,$(TARGET_PREFIX)/lib/purple-2
 
 #
 # FINCH_BUILD_DIR is the directory in which the build is done.
@@ -188,25 +188,25 @@ $(FINCH_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(FINCH_IPK_DIR)/opt/sbin or $(FINCH_IPK_DIR)/opt/bin
+# Binaries should be installed into $(FINCH_IPK_DIR)$(TARGET_PREFIX)/sbin or $(FINCH_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(FINCH_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(FINCH_IPK_DIR)/opt/etc/finch/...
-# Documentation files should be installed in $(FINCH_IPK_DIR)/opt/doc/finch/...
-# Daemon startup scripts should be installed in $(FINCH_IPK_DIR)/opt/etc/init.d/S??finch
+# Libraries and include files should be installed into $(FINCH_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(FINCH_IPK_DIR)$(TARGET_PREFIX)/etc/finch/...
+# Documentation files should be installed in $(FINCH_IPK_DIR)$(TARGET_PREFIX)/doc/finch/...
+# Daemon startup scripts should be installed in $(FINCH_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??finch
 #
 # You may need to patch your application to make it use these locations.
 #
 $(FINCH_IPK): $(FINCH_BUILD_DIR)/.built
 	rm -rf $(FINCH_IPK_DIR) $(BUILD_DIR)/finch_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(FINCH_BUILD_DIR) DESTDIR=$(FINCH_IPK_DIR) install-strip transform=""
-	rm -f $(FINCH_IPK_DIR)/opt/lib/finch/*.la $(FINCH_IPK_DIR)/opt/lib/purple-2/*.la
-	rm -f $(FINCH_IPK_DIR)/opt/lib/libpurple.la $(FINCH_IPK_DIR)/opt/lib/libgnt.la 
-#	$(INSTALL) -d $(FINCH_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(FINCH_SOURCE_DIR)/finch.conf $(FINCH_IPK_DIR)/opt/etc/finch.conf
-#	$(INSTALL) -d $(FINCH_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(FINCH_SOURCE_DIR)/rc.finch $(FINCH_IPK_DIR)/opt/etc/init.d/SXXfinch
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(FINCH_IPK_DIR)/opt/etc/init.d/SXXfinch
+	rm -f $(FINCH_IPK_DIR)$(TARGET_PREFIX)/lib/finch/*.la $(FINCH_IPK_DIR)$(TARGET_PREFIX)/lib/purple-2/*.la
+	rm -f $(FINCH_IPK_DIR)$(TARGET_PREFIX)/lib/libpurple.la $(FINCH_IPK_DIR)$(TARGET_PREFIX)/lib/libgnt.la 
+#	$(INSTALL) -d $(FINCH_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(FINCH_SOURCE_DIR)/finch.conf $(FINCH_IPK_DIR)$(TARGET_PREFIX)/etc/finch.conf
+#	$(INSTALL) -d $(FINCH_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(FINCH_SOURCE_DIR)/rc.finch $(FINCH_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXfinch
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(FINCH_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXfinch
 	$(MAKE) $(FINCH_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(FINCH_SOURCE_DIR)/postinst $(FINCH_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(FINCH_IPK_DIR)/CONTROL/postinst

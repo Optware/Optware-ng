@@ -180,25 +180,25 @@ $(FLAC_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(FLAC_IPK_DIR)/opt/sbin or $(FLAC_IPK_DIR)/opt/bin
+# Binaries should be installed into $(FLAC_IPK_DIR)$(TARGET_PREFIX)/sbin or $(FLAC_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(FLAC_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(FLAC_IPK_DIR)/opt/etc/flac/...
-# Documentation files should be installed in $(FLAC_IPK_DIR)/opt/doc/flac/...
-# Daemon startup scripts should be installed in $(FLAC_IPK_DIR)/opt/etc/init.d/S??flac
+# Libraries and include files should be installed into $(FLAC_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(FLAC_IPK_DIR)$(TARGET_PREFIX)/etc/flac/...
+# Documentation files should be installed in $(FLAC_IPK_DIR)$(TARGET_PREFIX)/doc/flac/...
+# Daemon startup scripts should be installed in $(FLAC_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??flac
 #
 # You may need to patch your application to make it use these locations.
 #
 $(FLAC_IPK): $(FLAC_BUILD_DIR)/.built
 	rm -rf $(FLAC_IPK_DIR) $(BUILD_DIR)/flac_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(FLAC_BUILD_DIR) DESTDIR=$(FLAC_IPK_DIR) install
-	rm -f $(FLAC_IPK_DIR)/opt/lib/lib*.a $(FLAC_IPK_DIR)/opt/lib/lib*.la
-	$(STRIP_COMMAND) $(FLAC_IPK_DIR)/opt/bin/*flac
-	$(STRIP_COMMAND) $(FLAC_IPK_DIR)/opt/lib/libFLAC*.so.*.*.*
-	#[JEC]install -d $(FLAC_IPK_DIR)/opt/etc/
-	#[JEC]install -m 644 $(FLAC_SOURCE_DIR)/flac.conf $(FLAC_IPK_DIR)/opt/etc/flac.conf
-	#[JEC]install -d $(FLAC_IPK_DIR)/opt/etc/init.d
-	#[JEC]install -m 755 $(FLAC_SOURCE_DIR)/rc.flac $(FLAC_IPK_DIR)/opt/etc/init.d/SXXflac
+	rm -f $(FLAC_IPK_DIR)$(TARGET_PREFIX)/lib/lib*.a $(FLAC_IPK_DIR)$(TARGET_PREFIX)/lib/lib*.la
+	$(STRIP_COMMAND) $(FLAC_IPK_DIR)$(TARGET_PREFIX)/bin/*flac
+	$(STRIP_COMMAND) $(FLAC_IPK_DIR)$(TARGET_PREFIX)/lib/libFLAC*.so.*.*.*
+	#[JEC]install -d $(FLAC_IPK_DIR)$(TARGET_PREFIX)/etc/
+	#[JEC]install -m 644 $(FLAC_SOURCE_DIR)/flac.conf $(FLAC_IPK_DIR)$(TARGET_PREFIX)/etc/flac.conf
+	#[JEC]install -d $(FLAC_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	#[JEC]install -m 755 $(FLAC_SOURCE_DIR)/rc.flac $(FLAC_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXflac
 	$(MAKE) $(FLAC_IPK_DIR)/CONTROL/control
 	#[JEC]install -m 755 $(FLAC_SOURCE_DIR)/postinst $(FLAC_IPK_DIR)/CONTROL/postinst
 	#[JEC]install -m 755 $(FLAC_SOURCE_DIR)/prerm $(FLAC_IPK_DIR)/CONTROL/prerm

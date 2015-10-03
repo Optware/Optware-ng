@@ -30,7 +30,7 @@ CROSSTOO-NG_DESCRIPTION=crosstool-NG is a versatile toolchain generator, aiming 
 
 #
 # CROSSTOO-NG_CONFFILES should be a list of user-editable files
-#CROSSTOO-NG_CONFFILES=/opt/etc/crosstool-ng.conf /opt/etc/init.d/SXXcrosstool-ng
+#CROSSTOO-NG_CONFFILES=$(TARGET_PREFIX)/etc/crosstool-ng.conf $(TARGET_PREFIX)/etc/init.d/SXXcrosstool-ng
 
 #
 # CROSSTOO-NG_PATCHES should list any patches, in the the order in

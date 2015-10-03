@@ -46,7 +46,7 @@ PYTHON27_IPK_VERSION=2
 
 #
 # PYTHON27_CONFFILES should be a list of user-editable files
-#PYTHON27_CONFFILES=/opt/etc/python.conf /opt/etc/init.d/SXXpython
+#PYTHON27_CONFFILES=$(TARGET_PREFIX)/etc/python.conf $(TARGET_PREFIX)/etc/init.d/SXXpython
 
 #
 # If the compilation of the package requires additional
@@ -140,7 +140,7 @@ endif
 	echo "[build_ext]"; \
 	echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/ncurses"; \
 	echo "library-dirs=$(STAGING_LIB_DIR)"; \
-	echo "rpath=/opt/lib") > setup.cfg
+	echo "rpath=$(TARGET_PREFIX)/lib") > setup.cfg
 	(cd $(@D); \
 	 $(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PYTHON27_CPPFLAGS)" \
@@ -156,7 +156,7 @@ endif
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=$(TARGET_PREFIX) \
-		--mandir=/opt/man \
+		--mandir=$(TARGET_PREFIX)/man \
 		--enable-shared \
 		--enable-unicode=ucs4 \
 		--with-system-ffi \
@@ -217,37 +217,37 @@ $(PYTHON27_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PYTHON27_IPK_DIR)/opt/sbin or $(PYTHON27_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PYTHON27_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PYTHON27_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PYTHON27_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PYTHON27_IPK_DIR)/opt/etc/python/...
-# Documentation files should be installed in $(PYTHON27_IPK_DIR)/opt/doc/python/...
-# Daemon startup scripts should be installed in $(PYTHON27_IPK_DIR)/opt/etc/init.d/S??python
+# Libraries and include files should be installed into $(PYTHON27_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PYTHON27_IPK_DIR)$(TARGET_PREFIX)/etc/python/...
+# Documentation files should be installed in $(PYTHON27_IPK_DIR)$(TARGET_PREFIX)/doc/python/...
+# Daemon startup scripts should be installed in $(PYTHON27_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??python
 #
 # You may need to patch your application to make it use these locations.
 #
 $(PYTHON27_IPK): $(PYTHON27_BUILD_DIR)/.built
 	rm -rf $(PYTHON27_IPK_DIR) $(BUILD_DIR)/python27_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PYTHON27_BUILD_DIR) DESTDIR=$(PYTHON27_IPK_DIR) install
-	$(STRIP_COMMAND) $(PYTHON27_IPK_DIR)/opt/bin/python$(PYTHON27_VERSION_MAJOR)
-	$(STRIP_COMMAND) $(PYTHON27_IPK_DIR)/opt/lib/python$(PYTHON27_VERSION_MAJOR)/lib-dynload/*.so
-	chmod 755 $(PYTHON27_IPK_DIR)/opt/lib/libpython$(PYTHON27_VERSION_MAJOR).so.1.0
-	$(STRIP_COMMAND) $(PYTHON27_IPK_DIR)/opt/lib/libpython$(PYTHON27_VERSION_MAJOR).so.1.0
-	chmod 555 $(PYTHON27_IPK_DIR)/opt/lib/libpython$(PYTHON27_VERSION_MAJOR).so.1.0
-	rm $(PYTHON27_IPK_DIR)/opt/bin/python $(PYTHON27_IPK_DIR)/opt/bin/python-config
-#	cd $(PYTHON27_IPK_DIR)/opt/bin; ln -s python$(PYTHON27_VERSION_MAJOR) python
+	$(STRIP_COMMAND) $(PYTHON27_IPK_DIR)$(TARGET_PREFIX)/bin/python$(PYTHON27_VERSION_MAJOR)
+	$(STRIP_COMMAND) $(PYTHON27_IPK_DIR)$(TARGET_PREFIX)/lib/python$(PYTHON27_VERSION_MAJOR)/lib-dynload/*.so
+	chmod 755 $(PYTHON27_IPK_DIR)$(TARGET_PREFIX)/lib/libpython$(PYTHON27_VERSION_MAJOR).so.1.0
+	$(STRIP_COMMAND) $(PYTHON27_IPK_DIR)$(TARGET_PREFIX)/lib/libpython$(PYTHON27_VERSION_MAJOR).so.1.0
+	chmod 555 $(PYTHON27_IPK_DIR)$(TARGET_PREFIX)/lib/libpython$(PYTHON27_VERSION_MAJOR).so.1.0
+	rm $(PYTHON27_IPK_DIR)$(TARGET_PREFIX)/bin/python $(PYTHON27_IPK_DIR)$(TARGET_PREFIX)/bin/python-config
+#	cd $(PYTHON27_IPK_DIR)$(TARGET_PREFIX)/bin; ln -s python$(PYTHON27_VERSION_MAJOR) python
 	for f in bin/pydoc bin/idle bin/smtpd.py; \
-	    do mv $(PYTHON27_IPK_DIR)/opt/$$f $(PYTHON27_IPK_DIR)/opt/`echo $$f | sed -e 's/\(\.\|$$\)/-2.7\1/'`; done
-	$(INSTALL) -d $(PYTHON27_IPK_DIR)/opt/local/bin
-	$(INSTALL) -d $(PYTHON27_IPK_DIR)/opt/local/lib/python$(PYTHON27_VERSION_MAJOR)/site-packages
-	sed -i -e 's|$(TARGET_CROSS)|/opt/bin/|g' \
-	       -e 's|$(STAGING_INCLUDE_DIR)|/opt/include|g' \
-	       -e 's|$(STAGING_LIB_DIR)|/opt/lib|g' \
+	    do mv $(PYTHON27_IPK_DIR)$(TARGET_PREFIX)/$$f $(PYTHON27_IPK_DIR)$(TARGET_PREFIX)/`echo $$f | sed -e 's/\(\.\|$$\)/-2.7\1/'`; done
+	$(INSTALL) -d $(PYTHON27_IPK_DIR)$(TARGET_PREFIX)/local/bin
+	$(INSTALL) -d $(PYTHON27_IPK_DIR)$(TARGET_PREFIX)/local/lib/python$(PYTHON27_VERSION_MAJOR)/site-packages
+	sed -i -e 's|$(TARGET_CROSS)|$(TARGET_PREFIX)/bin/|g' \
+	       -e 's|$(STAGING_INCLUDE_DIR)|$(TARGET_PREFIX)/include|g' \
+	       -e 's|$(STAGING_LIB_DIR)|$(TARGET_PREFIX)/lib|g' \
 	       -e '/^RUNSHARED=/s|=.*|=|' \
-	       $(PYTHON27_IPK_DIR)/opt/lib/python2.7/config/Makefile
+	       $(PYTHON27_IPK_DIR)$(TARGET_PREFIX)/lib/python2.7/config/Makefile
 #ifeq ($(OPTWARE_WRITE_OUTSIDE_OPT_ALLOWED),true)
 #	$(INSTALL) -d $(PYTHON27_IPK_DIR)/usr/bin
-#	ln -s /opt/bin/python $(PYTHON27_IPK_DIR)/usr/bin/python
+#	ln -s $(TARGET_PREFIX)/bin/python $(PYTHON27_IPK_DIR)/usr/bin/python
 #endif
 	$(MAKE) $(PYTHON27_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(PYTHON27_SOURCE_DIR)/postinst $(PYTHON27_IPK_DIR)/CONTROL/postinst

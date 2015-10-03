@@ -64,7 +64,7 @@ SANE_BACKENDS_CONFLICTS=
 
 #
 # SANE_BACKENDS_CONFFILES should be a list of user-editable files
-SANE_BACKENDS_CONFFILES=/opt/etc/sane.d/saned.conf /opt/etc/init.d/S01sane-backends
+SANE_BACKENDS_CONFFILES=$(TARGET_PREFIX)/etc/sane.d/saned.conf $(TARGET_PREFIX)/etc/init.d/S01sane-backends
 
 #
 # SANE_BACKENDS_PATCHES should list any patches, in the the order in
@@ -83,7 +83,7 @@ endif
 # compilation or linking flags, then list them here.
 #
 SANE_BACKENDS_CPPFLAGS=
-SANE_BACKENDS_LDFLAGS=-Wl,-rpath=/opt/lib/sane -ldl -lpthread -ltiff -lz
+SANE_BACKENDS_LDFLAGS=-Wl,-rpath=$(TARGET_PREFIX)/lib/sane -ldl -lpthread -ltiff -lz
 
 #
 # SANE_BACKENDS_BUILD_DIR is the directory in which the build is done.
@@ -217,28 +217,28 @@ $(SANE_BACKENDS_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(SANE_BACKENDS_IPK_DIR)/opt/sbin or $(SANE_BACKENDS_IPK_DIR)/opt/bin
+# Binaries should be installed into $(SANE_BACKENDS_IPK_DIR)$(TARGET_PREFIX)/sbin or $(SANE_BACKENDS_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(SANE_BACKENDS_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(SANE_BACKENDS_IPK_DIR)/opt/etc/sane-backends/...
-# Documentation files should be installed in $(SANE_BACKENDS_IPK_DIR)/opt/doc/sane-backends/...
-# Daemon startup scripts should be installed in $(SANE_BACKENDS_IPK_DIR)/opt/etc/init.d/S??sane-backends
+# Libraries and include files should be installed into $(SANE_BACKENDS_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(SANE_BACKENDS_IPK_DIR)$(TARGET_PREFIX)/etc/sane-backends/...
+# Documentation files should be installed in $(SANE_BACKENDS_IPK_DIR)$(TARGET_PREFIX)/doc/sane-backends/...
+# Daemon startup scripts should be installed in $(SANE_BACKENDS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??sane-backends
 #
 # You may need to patch your application to make it use these locations.
 #
 $(SANE_BACKENDS_IPK): $(SANE_BACKENDS_BUILD_DIR)/.built
 	rm -rf $(SANE_BACKENDS_IPK_DIR) $(BUILD_DIR)/sane-backends_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SANE_BACKENDS_BUILD_DIR) DESTDIR=$(SANE_BACKENDS_IPK_DIR) install
-	rm -rf $(SANE_BACKENDS_IPK_DIR)/opt/lib/libsane.la
-	$(STRIP_COMMAND) $(SANE_BACKENDS_IPK_DIR)/opt/bin/gamma4scanimage
-	$(STRIP_COMMAND) $(SANE_BACKENDS_IPK_DIR)/opt/bin/sane-find-scanner
-	$(STRIP_COMMAND) $(SANE_BACKENDS_IPK_DIR)/opt/bin/scanimage
-	$(STRIP_COMMAND) $(SANE_BACKENDS_IPK_DIR)/opt/sbin/saned
-	$(STRIP_COMMAND) $(SANE_BACKENDS_IPK_DIR)/opt/lib/sane/*.so.*
-	$(STRIP_COMMAND) $(SANE_BACKENDS_IPK_DIR)/opt/lib/*.so.*
-	rm -rf $(SANE_BACKENDS_IPK_DIR)/opt/lib/sane/*.la
-	$(INSTALL) -d $(SANE_BACKENDS_IPK_DIR)/opt/etc/init.d
-	$(INSTALL) -m 755 $(SANE_BACKENDS_SOURCE_DIR)/rc.sane-backends $(SANE_BACKENDS_IPK_DIR)/opt/etc/init.d/S01sane-backends
+	rm -rf $(SANE_BACKENDS_IPK_DIR)$(TARGET_PREFIX)/lib/libsane.la
+	$(STRIP_COMMAND) $(SANE_BACKENDS_IPK_DIR)$(TARGET_PREFIX)/bin/gamma4scanimage
+	$(STRIP_COMMAND) $(SANE_BACKENDS_IPK_DIR)$(TARGET_PREFIX)/bin/sane-find-scanner
+	$(STRIP_COMMAND) $(SANE_BACKENDS_IPK_DIR)$(TARGET_PREFIX)/bin/scanimage
+	$(STRIP_COMMAND) $(SANE_BACKENDS_IPK_DIR)$(TARGET_PREFIX)/sbin/saned
+	$(STRIP_COMMAND) $(SANE_BACKENDS_IPK_DIR)$(TARGET_PREFIX)/lib/sane/*.so.*
+	$(STRIP_COMMAND) $(SANE_BACKENDS_IPK_DIR)$(TARGET_PREFIX)/lib/*.so.*
+	rm -rf $(SANE_BACKENDS_IPK_DIR)$(TARGET_PREFIX)/lib/sane/*.la
+	$(INSTALL) -d $(SANE_BACKENDS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(INSTALL) -m 755 $(SANE_BACKENDS_SOURCE_DIR)/rc.sane-backends $(SANE_BACKENDS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S01sane-backends
 	$(MAKE) $(SANE_BACKENDS_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 755 $(SANE_BACKENDS_SOURCE_DIR)/postinst $(SANE_BACKENDS_IPK_DIR)/CONTROL/postinst
 	$(INSTALL) -m 755 $(SANE_BACKENDS_SOURCE_DIR)/prerm $(SANE_BACKENDS_IPK_DIR)/CONTROL/prerm

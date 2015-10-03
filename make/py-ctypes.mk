@@ -40,7 +40,7 @@ PY-CTYPES_IPK_VERSION=2
 
 #
 # PY-CTYPES_CONFFILES should be a list of user-editable files
-#PY-CTYPES_CONFFILES=/opt/etc/py-ctypes.conf /opt/etc/init.d/SXXpy-ctypes
+#PY-CTYPES_CONFFILES=$(TARGET_PREFIX)/etc/py-ctypes.conf $(TARGET_PREFIX)/etc/init.d/SXXpy-ctypes
 
 #
 # PY-CTYPES_PATCHES should list any patches, in the the order in
@@ -114,11 +114,11 @@ $(PY-CTYPES_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CTYPES_SOURCE) $(PY-CTYPES_PA
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
 	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
-	        echo "rpath=/opt/lib"; \
+	        echo "rpath=$(TARGET_PREFIX)/lib"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python"; \
+		echo "executable=$(TARGET_PREFIX)/bin/python"; \
 		echo "[install]"; \
-		echo "install_scripts=/opt/bin"; \
+		echo "install_scripts=$(TARGET_PREFIX)/bin"; \
 	    ) > setup.cfg; \
 	    sed -i \
 		-e '/config_args =/s|=.*$$|= ["--build=$(GNU_HOST_NAME)", "--host=$(GNU_TARGET_NAME)", "--target=$(GNU_TARGET_NAME)"]|' \
@@ -177,22 +177,22 @@ $(PY-CTYPES_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PY-CTYPES_IPK_DIR)/opt/sbin or $(PY-CTYPES_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PY-CTYPES_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PY-CTYPES_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PY-CTYPES_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PY-CTYPES_IPK_DIR)/opt/etc/py-ctypes/...
-# Documentation files should be installed in $(PY-CTYPES_IPK_DIR)/opt/doc/py-ctypes/...
-# Daemon startup scripts should be installed in $(PY-CTYPES_IPK_DIR)/opt/etc/init.d/S??py-ctypes
+# Libraries and include files should be installed into $(PY-CTYPES_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PY-CTYPES_IPK_DIR)$(TARGET_PREFIX)/etc/py-ctypes/...
+# Documentation files should be installed in $(PY-CTYPES_IPK_DIR)$(TARGET_PREFIX)/doc/py-ctypes/...
+# Daemon startup scripts should be installed in $(PY-CTYPES_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??py-ctypes
 #
 # You may need to patch your application to make it use these locations.
 #
 $(PY-CTYPES_IPK): $(PY-CTYPES_BUILD_DIR)/.built
 	rm -rf $(PY-CTYPES_IPK_DIR) $(BUILD_DIR)/py-ctypes_*_$(TARGET_ARCH).ipk
 	(cd $(PY-CTYPES_BUILD_DIR); \
-	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(PY-CTYPES_IPK_DIR) --prefix=/opt; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(PY-CTYPES_IPK_DIR) --prefix=$(TARGET_PREFIX); \
 	)
-#	$(STRIP_COMMAND) $(PY-CTYPES_IPK_DIR)/opt/lib/python2.4/site-packages/ctypes/*.so
-	(cd $(PY-CTYPES_IPK_DIR)/opt; \
+#	$(STRIP_COMMAND) $(PY-CTYPES_IPK_DIR)$(TARGET_PREFIX)/lib/python2.4/site-packages/ctypes/*.so
+	(cd $(PY-CTYPES_IPK_DIR)$(TARGET_PREFIX); \
 		find . -name '*.so' -exec chmod +w {} \; ; \
 		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
 		find . -name '*.so' -exec chmod -w {} \; ; \

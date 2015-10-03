@@ -40,7 +40,7 @@ LIBNETFILTER_QUEUE_IPK_VERSION=1
 
 #
 # LIBNETFILTER_QUEUE_CONFFILES should be a list of user-editable files
-#LIBNETFILTER_QUEUE_CONFFILES=/opt/etc/libnetfilter-queue.conf /opt/etc/init.d/SXXlibnetfilter-queue
+#LIBNETFILTER_QUEUE_CONFFILES=$(TARGET_PREFIX)/etc/libnetfilter-queue.conf $(TARGET_PREFIX)/etc/init.d/SXXlibnetfilter-queue
 
 #
 # LIBNETFILTER_QUEUE_PATCHES should list any patches, in the the order in
@@ -181,24 +181,24 @@ $(LIBNETFILTER_QUEUE_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LIBNETFILTER_QUEUE_IPK_DIR)/opt/sbin or $(LIBNETFILTER_QUEUE_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LIBNETFILTER_QUEUE_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LIBNETFILTER_QUEUE_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LIBNETFILTER_QUEUE_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LIBNETFILTER_QUEUE_IPK_DIR)/opt/etc/libnetfilter-queue/...
-# Documentation files should be installed in $(LIBNETFILTER_QUEUE_IPK_DIR)/opt/doc/libnetfilter-queue/...
-# Daemon startup scripts should be installed in $(LIBNETFILTER_QUEUE_IPK_DIR)/opt/etc/init.d/S??libnetfilter-queue
+# Libraries and include files should be installed into $(LIBNETFILTER_QUEUE_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LIBNETFILTER_QUEUE_IPK_DIR)$(TARGET_PREFIX)/etc/libnetfilter-queue/...
+# Documentation files should be installed in $(LIBNETFILTER_QUEUE_IPK_DIR)$(TARGET_PREFIX)/doc/libnetfilter-queue/...
+# Daemon startup scripts should be installed in $(LIBNETFILTER_QUEUE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??libnetfilter-queue
 #
 # You may need to patch your application to make it use these locations.
 #
 $(LIBNETFILTER_QUEUE_IPK): $(LIBNETFILTER_QUEUE_BUILD_DIR)/.built
 	rm -rf $(LIBNETFILTER_QUEUE_IPK_DIR) $(BUILD_DIR)/libnetfilter-queue_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBNETFILTER_QUEUE_BUILD_DIR) DESTDIR=$(LIBNETFILTER_QUEUE_IPK_DIR) install-strip
-	rm -rf $(LIBNETFILTER_QUEUE_IPK_DIR)/opt/include
-#	$(INSTALL) -d $(LIBNETFILTER_QUEUE_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(LIBNETFILTER_QUEUE_SOURCE_DIR)/libnetfilter-queue.conf $(LIBNETFILTER_QUEUE_IPK_DIR)/opt/etc/libnetfilter-queue.conf
-#	$(INSTALL) -d $(LIBNETFILTER_QUEUE_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(LIBNETFILTER_QUEUE_SOURCE_DIR)/rc.libnetfilter-queue $(LIBNETFILTER_QUEUE_IPK_DIR)/opt/etc/init.d/SXXlibnetfilter-queue
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBNETFILTER_QUEUE_IPK_DIR)/opt/etc/init.d/SXXlibnetfilter-queue
+	rm -rf $(LIBNETFILTER_QUEUE_IPK_DIR)$(TARGET_PREFIX)/include
+#	$(INSTALL) -d $(LIBNETFILTER_QUEUE_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(LIBNETFILTER_QUEUE_SOURCE_DIR)/libnetfilter-queue.conf $(LIBNETFILTER_QUEUE_IPK_DIR)$(TARGET_PREFIX)/etc/libnetfilter-queue.conf
+#	$(INSTALL) -d $(LIBNETFILTER_QUEUE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(LIBNETFILTER_QUEUE_SOURCE_DIR)/rc.libnetfilter-queue $(LIBNETFILTER_QUEUE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibnetfilter-queue
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBNETFILTER_QUEUE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibnetfilter-queue
 	$(MAKE) $(LIBNETFILTER_QUEUE_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(LIBNETFILTER_QUEUE_SOURCE_DIR)/postinst $(LIBNETFILTER_QUEUE_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBNETFILTER_QUEUE_IPK_DIR)/CONTROL/postinst

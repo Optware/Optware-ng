@@ -37,7 +37,7 @@ $(SLIMRAT_BUILD_DIR)/.configured: $(DL_DIR)/$(SLIMRAT_SOURCE) $(SLIMRAT_PATCHES)
 	$(SLIMRAT_UNZIP) $(DL_DIR)/$(SLIMRAT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(SLIMRAT_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(SLIMRAT_DIR) -p1
 	mv $(BUILD_DIR)/$(SLIMRAT_DIR) $(@D)
-	sed -i -e '1s|#!.*|#!/opt/bin/perl|' $(@D)/src/slimrat
+	sed -i -e '1s|#!.*|#!$(TARGET_PREFIX)/bin/perl|' $(@D)/src/slimrat
 #	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
@@ -76,12 +76,12 @@ $(SLIMRAT_IPK_DIR)/CONTROL/control:
 $(SLIMRAT_IPK): $(SLIMRAT_BUILD_DIR)/.built
 	rm -rf $(SLIMRAT_IPK_DIR) $(BUILD_DIR)/slimrat_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(SLIMRAT_BUILD_DIR) DESTDIR=$(SLIMRAT_IPK_DIR) install
-	$(INSTALL) -d $(SLIMRAT_IPK_DIR)/opt/share
-	cp -rp $(SLIMRAT_BUILD_DIR) $(SLIMRAT_IPK_DIR)/opt/share/
-	rm -f $(SLIMRAT_IPK_DIR)/opt/share/slimrat/.[bc]*
-	cd $(SLIMRAT_IPK_DIR)/opt/share/slimrat/src && rm -f .[bc]* slimrat-gui slimrat.glade
-	$(INSTALL) -d $(SLIMRAT_IPK_DIR)/opt/bin
-	cd $(SLIMRAT_IPK_DIR)/opt/bin; ln -s ../share/slimrat/src/slimrat .
+	$(INSTALL) -d $(SLIMRAT_IPK_DIR)$(TARGET_PREFIX)/share
+	cp -rp $(SLIMRAT_BUILD_DIR) $(SLIMRAT_IPK_DIR)$(TARGET_PREFIX)/share/
+	rm -f $(SLIMRAT_IPK_DIR)$(TARGET_PREFIX)/share/slimrat/.[bc]*
+	cd $(SLIMRAT_IPK_DIR)$(TARGET_PREFIX)/share/slimrat/src && rm -f .[bc]* slimrat-gui slimrat.glade
+	$(INSTALL) -d $(SLIMRAT_IPK_DIR)$(TARGET_PREFIX)/bin
+	cd $(SLIMRAT_IPK_DIR)$(TARGET_PREFIX)/bin; ln -s ../share/slimrat/src/slimrat .
 	$(MAKE) $(SLIMRAT_IPK_DIR)/CONTROL/control
 	echo $(SLIMRAT_CONFFILES) | sed -e 's/ /\n/g' > $(SLIMRAT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SLIMRAT_IPK_DIR)

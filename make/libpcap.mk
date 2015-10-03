@@ -159,7 +159,7 @@ $(LIBPCAP_BUILD_DIR)/.staged: $(LIBPCAP_BUILD_DIR)/.built
 	rm -f $@
 	rm -f $(STAGING_PREFIX)/share/man/man3/pcap_*.3pcap
 	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
-	rm -f $(STAGING_LIB_DIR)/opt/lib/libpcap.a
+	rm -f $(STAGING_LIB_DIR)$(TARGET_PREFIX)/lib/libpcap.a
 	touch $@
 
 libpcap-stage: $(LIBPCAP_BUILD_DIR)/.staged
@@ -201,28 +201,28 @@ $(LIBPCAP-DEV_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LIBPCAP_IPK_DIR)/opt/sbin or $(LIBPCAP_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LIBPCAP_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LIBPCAP_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LIBPCAP_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LIBPCAP_IPK_DIR)/opt/etc/libpcap/...
-# Documentation files should be installed in $(LIBPCAP_IPK_DIR)/opt/doc/libpcap/...
-# Daemon startup scripts should be installed in $(LIBPCAP_IPK_DIR)/opt/etc/init.d/S??libpcap
+# Libraries and include files should be installed into $(LIBPCAP_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LIBPCAP_IPK_DIR)$(TARGET_PREFIX)/etc/libpcap/...
+# Documentation files should be installed in $(LIBPCAP_IPK_DIR)$(TARGET_PREFIX)/doc/libpcap/...
+# Daemon startup scripts should be installed in $(LIBPCAP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??libpcap
 #
 # You may need to patch your application to make it use these locations.
 #
 $(LIBPCAP_IPK) $(LIBPCAP-DEV_IPK): $(LIBPCAP_BUILD_DIR)/.built
 	rm -rf $(LIBPCAP_IPK_DIR) $(BUILD_DIR)/libpcap_*_$(TARGET_ARCH).ipk
 	rm -rf $(LIBPCAP-DEV_IPK_DIR) $(BUILD_DIR)/libpcap-dev_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(LIBPCAP_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(LIBPCAP_IPK_DIR)$(TARGET_PREFIX)/bin
 	$(MAKE) -C $(LIBPCAP_BUILD_DIR) DESTDIR=$(LIBPCAP_IPK_DIR) install
-	$(STRIP_COMMAND) $(LIBPCAP_IPK_DIR)/opt/lib/libpcap.so.[0-9]*.[0-9]*.[0-9]*
-	rm -f $(LIBPCAP_IPK_DIR)/opt/lib/libpcap.a
+	$(STRIP_COMMAND) $(LIBPCAP_IPK_DIR)$(TARGET_PREFIX)/lib/libpcap.so.[0-9]*.[0-9]*.[0-9]*
+	rm -f $(LIBPCAP_IPK_DIR)$(TARGET_PREFIX)/lib/libpcap.a
 	$(MAKE) $(LIBPCAP_IPK_DIR)/CONTROL/control
 	$(MAKE) $(LIBPCAP-DEV_IPK_DIR)/CONTROL/control
-	$(INSTALL) -d $(LIBPCAP-DEV_IPK_DIR)/opt/
-	mv $(LIBPCAP_IPK_DIR)/opt/bin $(LIBPCAP-DEV_IPK_DIR)/opt/
-	mv $(LIBPCAP_IPK_DIR)/opt/include $(LIBPCAP-DEV_IPK_DIR)/opt/
-	mv $(LIBPCAP_IPK_DIR)/opt/share $(LIBPCAP-DEV_IPK_DIR)/opt/
+	$(INSTALL) -d $(LIBPCAP-DEV_IPK_DIR)$(TARGET_PREFIX)/
+	mv $(LIBPCAP_IPK_DIR)$(TARGET_PREFIX)/bin $(LIBPCAP-DEV_IPK_DIR)$(TARGET_PREFIX)/
+	mv $(LIBPCAP_IPK_DIR)$(TARGET_PREFIX)/include $(LIBPCAP-DEV_IPK_DIR)$(TARGET_PREFIX)/
+	mv $(LIBPCAP_IPK_DIR)$(TARGET_PREFIX)/share $(LIBPCAP-DEV_IPK_DIR)$(TARGET_PREFIX)/
 #	echo $(LIBPCAP_CONFFILES) | sed -e 's/ /\n/g' > $(LIBPCAP_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBPCAP_IPK_DIR)
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBPCAP-DEV_IPK_DIR)

@@ -40,7 +40,7 @@ PCAPSIPDUMP_IPK_VERSION=3
 
 #
 # PCAPSIPDUMP_CONFFILES should be a list of user-editable files
-#PCAPSIPDUMP_CONFFILES=/opt/etc/pcapsipdump.conf /opt/etc/init.d/SXXpcapsipdump
+#PCAPSIPDUMP_CONFFILES=$(TARGET_PREFIX)/etc/pcapsipdump.conf $(TARGET_PREFIX)/etc/init.d/SXXpcapsipdump
 
 #
 # PCAPSIPDUMP_PATCHES should list any patches, in the the order in
@@ -166,12 +166,12 @@ $(PCAPSIPDUMP_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PCAPSIPDUMP_IPK_DIR)/opt/sbin or $(PCAPSIPDUMP_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PCAPSIPDUMP_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PCAPSIPDUMP_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PCAPSIPDUMP_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PCAPSIPDUMP_IPK_DIR)/opt/etc/pcapsipdump/...
-# Documentation files should be installed in $(PCAPSIPDUMP_IPK_DIR)/opt/doc/pcapsipdump/...
-# Daemon startup scripts should be installed in $(PCAPSIPDUMP_IPK_DIR)/opt/etc/init.d/S??pcapsipdump
+# Libraries and include files should be installed into $(PCAPSIPDUMP_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PCAPSIPDUMP_IPK_DIR)$(TARGET_PREFIX)/etc/pcapsipdump/...
+# Documentation files should be installed in $(PCAPSIPDUMP_IPK_DIR)$(TARGET_PREFIX)/doc/pcapsipdump/...
+# Daemon startup scripts should be installed in $(PCAPSIPDUMP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??pcapsipdump
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -179,8 +179,8 @@ $(PCAPSIPDUMP_IPK): $(PCAPSIPDUMP_BUILD_DIR)/.built
 	rm -rf $(PCAPSIPDUMP_IPK_DIR) $(BUILD_DIR)/pcapsipdump_*_$(TARGET_ARCH).ipk
 	#$(MAKE) -C $(PCAPSIPDUMP_BUILD_DIR) DESTDIR=$(PCAPSIPDUMP_IPK_DIR) install-strip
 	$(STRIP_COMMAND) $(PCAPSIPDUMP_BUILD_DIR)/pcapsipdump
-	$(INSTALL) -d $(PCAPSIPDUMP_IPK_DIR)/opt/sbin/
-	$(INSTALL) -m 755 $(PCAPSIPDUMP_BUILD_DIR)/pcapsipdump $(PCAPSIPDUMP_IPK_DIR)/opt/sbin/
+	$(INSTALL) -d $(PCAPSIPDUMP_IPK_DIR)$(TARGET_PREFIX)/sbin/
+	$(INSTALL) -m 755 $(PCAPSIPDUMP_BUILD_DIR)/pcapsipdump $(PCAPSIPDUMP_IPK_DIR)$(TARGET_PREFIX)/sbin/
 	$(MAKE) $(PCAPSIPDUMP_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PCAPSIPDUMP_IPK_DIR)
 

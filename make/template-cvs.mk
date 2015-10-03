@@ -176,22 +176,22 @@ $(<BAR>_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(<BAR>_IPK_DIR)/opt/sbin or $(<BAR>_IPK_DIR)/opt/bin
+# Binaries should be installed into $(<BAR>_IPK_DIR)$(TARGET_PREFIX)/sbin or $(<BAR>_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(<BAR>_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(<BAR>_IPK_DIR)/opt/etc/<bar>/...
-# Documentation files should be installed in $(<BAR>_IPK_DIR)/opt/doc/<bar>/...
-# Daemon startup scripts should be installed in $(<BAR>_IPK_DIR)/opt/etc/init.d/S??<bar>
+# Libraries and include files should be installed into $(<BAR>_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(<BAR>_IPK_DIR)$(TARGET_PREFIX)/etc/<bar>/...
+# Documentation files should be installed in $(<BAR>_IPK_DIR)$(TARGET_PREFIX)/doc/<bar>/...
+# Daemon startup scripts should be installed in $(<BAR>_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??<bar>
 #
 # You may need to patch your application to make it use these locations.
 #
 $(<BAR>_IPK): $(<BAR>_BUILD_DIR)/.built
 	rm -rf $(<BAR>_IPK_DIR) $(BUILD_DIR)/<bar>_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(<BAR>_BUILD_DIR) DESTDIR=$(<BAR>_IPK_DIR) install
-	$(INSTALL) -d $(<BAR>_IPK_DIR)/opt/etc/
-	$(INSTALL) -m 644 $(<BAR>_SOURCE_DIR)/<bar>.conf $(<BAR>_IPK_DIR)/opt/etc/<bar>.conf
-	$(INSTALL) -d $(<BAR>_IPK_DIR)/opt/etc/init.d
-	$(INSTALL) -m 755 $(<BAR>_SOURCE_DIR)/rc.<bar> $(<BAR>_IPK_DIR)/opt/etc/init.d/SXX<bar>
+	$(INSTALL) -d $(<BAR>_IPK_DIR)$(TARGET_PREFIX)/etc/
+	$(INSTALL) -m 644 $(<BAR>_SOURCE_DIR)/<bar>.conf $(<BAR>_IPK_DIR)$(TARGET_PREFIX)/etc/<bar>.conf
+	$(INSTALL) -d $(<BAR>_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(INSTALL) -m 755 $(<BAR>_SOURCE_DIR)/rc.<bar> $(<BAR>_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXX<bar>
 	$(MAKE) $(<BAR>_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 755 $(<BAR>_SOURCE_DIR)/postinst $(<BAR>_IPK_DIR)/CONTROL/postinst
 	$(INSTALL) -m 755 $(<BAR>_SOURCE_DIR)/prerm $(<BAR>_IPK_DIR)/CONTROL/prerm

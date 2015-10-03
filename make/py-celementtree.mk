@@ -41,7 +41,7 @@ PY-CELEMENTTREE_IPK_VERSION=5
 
 #
 # PY-CELEMENTTREE_CONFFILES should be a list of user-editable files
-#PY-CELEMENTTREE_CONFFILES=/opt/etc/py-celementtree.conf /opt/etc/init.d/SXXpy-celementtree
+#PY-CELEMENTTREE_CONFFILES=$(TARGET_PREFIX)/etc/py-celementtree.conf $(TARGET_PREFIX)/etc/init.d/SXXpy-celementtree
 
 #
 # PY-CELEMENTTREE_PATCHES should list any patches, in the the order in
@@ -120,9 +120,9 @@ $(PY-CELEMENTTREE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CELEMENTTREE_SOURCE) $(
 	    echo "[build_ext]"; \
 	    echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
 	    echo "library-dirs=$(STAGING_LIB_DIR)"; \
-	    echo "rpath=/opt/lib"; \
+	    echo "rpath=$(TARGET_PREFIX)/lib"; \
 	    echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python2.4") > setup.cfg \
+	    echo "executable=$(TARGET_PREFIX)/bin/python2.4") > setup.cfg \
 	)
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-CELEMENTTREE_DIR)
@@ -134,9 +134,9 @@ $(PY-CELEMENTTREE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CELEMENTTREE_SOURCE) $(
 	    echo "[build_ext]"; \
 	    echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.5"; \
 	    echo "library-dirs=$(STAGING_LIB_DIR)"; \
-	    echo "rpath=/opt/lib"; \
+	    echo "rpath=$(TARGET_PREFIX)/lib"; \
 	    echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python2.5") > setup.cfg \
+	    echo "executable=$(TARGET_PREFIX)/bin/python2.5") > setup.cfg \
 	)
 	touch $@
 
@@ -208,12 +208,12 @@ $(PY25-CELEMENTTREE_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PY-CELEMENTTREE_IPK_DIR)/opt/sbin or $(PY-CELEMENTTREE_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PY-CELEMENTTREE_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PY-CELEMENTTREE_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PY-CELEMENTTREE_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PY-CELEMENTTREE_IPK_DIR)/opt/etc/py-celementtree/...
-# Documentation files should be installed in $(PY-CELEMENTTREE_IPK_DIR)/opt/doc/py-celementtree/...
-# Daemon startup scripts should be installed in $(PY-CELEMENTTREE_IPK_DIR)/opt/etc/init.d/S??py-celementtree
+# Libraries and include files should be installed into $(PY-CELEMENTTREE_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PY-CELEMENTTREE_IPK_DIR)$(TARGET_PREFIX)/etc/py-celementtree/...
+# Documentation files should be installed in $(PY-CELEMENTTREE_IPK_DIR)$(TARGET_PREFIX)/doc/py-celementtree/...
+# Daemon startup scripts should be installed in $(PY-CELEMENTTREE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??py-celementtree
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -223,8 +223,8 @@ $(PY24-CELEMENTTREE_IPK): $(PY-CELEMENTTREE_BUILD_DIR)/.built
 	(cd $(PY-CELEMENTTREE_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.4 -c "import setuptools; execfile('setup.py')" \
-	$(INSTALL) --root=$(PY24-CELEMENTTREE_IPK_DIR) --prefix=/opt)
-	$(STRIP_COMMAND) $(PY24-CELEMENTTREE_IPK_DIR)/opt/lib/python2.4/site-packages/*.so
+	$(INSTALL) --root=$(PY24-CELEMENTTREE_IPK_DIR) --prefix=$(TARGET_PREFIX))
+	$(STRIP_COMMAND) $(PY24-CELEMENTTREE_IPK_DIR)$(TARGET_PREFIX)/lib/python2.4/site-packages/*.so
 	$(MAKE) $(PY24-CELEMENTTREE_IPK_DIR)/CONTROL/control
 #	echo $(PY-CELEMENTTREE_CONFFILES) | sed -e 's/ /\n/g' > $(PY24-CELEMENTTREE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-CELEMENTTREE_IPK_DIR)
@@ -234,8 +234,8 @@ $(PY25-CELEMENTTREE_IPK): $(PY-CELEMENTTREE_BUILD_DIR)/.built
 	(cd $(PY-CELEMENTTREE_BUILD_DIR)/2.5; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.5 -c "import setuptools; execfile('setup.py')" \
-	$(INSTALL) --root=$(PY25-CELEMENTTREE_IPK_DIR) --prefix=/opt)
-	$(STRIP_COMMAND) $(PY25-CELEMENTTREE_IPK_DIR)/opt/lib/python2.5/site-packages/*.so
+	$(INSTALL) --root=$(PY25-CELEMENTTREE_IPK_DIR) --prefix=$(TARGET_PREFIX))
+	$(STRIP_COMMAND) $(PY25-CELEMENTTREE_IPK_DIR)$(TARGET_PREFIX)/lib/python2.5/site-packages/*.so
 	$(MAKE) $(PY25-CELEMENTTREE_IPK_DIR)/CONTROL/control
 #	echo $(PY-CELEMENTTREE_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-CELEMENTTREE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-CELEMENTTREE_IPK_DIR)

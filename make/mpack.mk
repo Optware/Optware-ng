@@ -40,7 +40,7 @@ MPACK_IPK_VERSION=3
 
 #
 # MPACK_CONFFILES should be a list of user-editable files
-#MPACK_CONFFILES=/opt/etc/mpack.conf /opt/etc/init.d/SXXmpack
+#MPACK_CONFFILES=$(TARGET_PREFIX)/etc/mpack.conf $(TARGET_PREFIX)/etc/init.d/SXXmpack
 
 #
 # MPACK_PATCHES should list any patches, in the the order in
@@ -178,24 +178,24 @@ $(MPACK_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(MPACK_IPK_DIR)/opt/sbin or $(MPACK_IPK_DIR)/opt/bin
+# Binaries should be installed into $(MPACK_IPK_DIR)$(TARGET_PREFIX)/sbin or $(MPACK_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(MPACK_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(MPACK_IPK_DIR)/opt/etc/mpack/...
-# Documentation files should be installed in $(MPACK_IPK_DIR)/opt/doc/mpack/...
-# Daemon startup scripts should be installed in $(MPACK_IPK_DIR)/opt/etc/init.d/S??mpack
+# Libraries and include files should be installed into $(MPACK_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(MPACK_IPK_DIR)$(TARGET_PREFIX)/etc/mpack/...
+# Documentation files should be installed in $(MPACK_IPK_DIR)$(TARGET_PREFIX)/doc/mpack/...
+# Daemon startup scripts should be installed in $(MPACK_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??mpack
 #
 # You may need to patch your application to make it use these locations.
 #
 $(MPACK_IPK): $(MPACK_BUILD_DIR)/.built
 	rm -rf $(MPACK_IPK_DIR) $(BUILD_DIR)/mpack_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MPACK_BUILD_DIR) DESTDIR=$(MPACK_IPK_DIR) install
-	$(STRIP_COMMAND) $(MPACK_IPK_DIR)/opt/bin/*
-#	$(INSTALL) -d $(MPACK_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(MPACK_SOURCE_DIR)/mpack.conf $(MPACK_IPK_DIR)/opt/etc/mpack.conf
-#	$(INSTALL) -d $(MPACK_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(MPACK_SOURCE_DIR)/rc.mpack $(MPACK_IPK_DIR)/opt/etc/init.d/SXXmpack
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/opt/etc/init.d/SXXmpack
+	$(STRIP_COMMAND) $(MPACK_IPK_DIR)$(TARGET_PREFIX)/bin/*
+#	$(INSTALL) -d $(MPACK_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(MPACK_SOURCE_DIR)/mpack.conf $(MPACK_IPK_DIR)$(TARGET_PREFIX)/etc/mpack.conf
+#	$(INSTALL) -d $(MPACK_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(MPACK_SOURCE_DIR)/rc.mpack $(MPACK_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXmpack
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXmpack
 	$(MAKE) $(MPACK_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(MPACK_SOURCE_DIR)/postinst $(MPACK_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/postinst

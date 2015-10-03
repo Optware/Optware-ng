@@ -46,7 +46,7 @@ LIBPTH_IPK_VERSION=2
 
 #
 # LIBPTH_CONFFILES should be a list of user-editable files
-#LIBPTH_CONFFILES=/opt/etc/libpth.conf /opt/etc/init.d/SXXlibpth
+#LIBPTH_CONFFILES=$(TARGET_PREFIX)/etc/libpth.conf $(TARGET_PREFIX)/etc/init.d/SXXlibpth
 
 #
 # LIBPTH_PATCHES should list any patches, in the the order in
@@ -177,20 +177,20 @@ $(LIBPTH_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LIBPTH_IPK_DIR)/opt/sbin or $(LIBPTH_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LIBPTH_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LIBPTH_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LIBPTH_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LIBPTH_IPK_DIR)/opt/etc/libpth/...
-# Documentation files should be installed in $(LIBPTH_IPK_DIR)/opt/doc/libpth/...
-# Daemon startup scripts should be installed in $(LIBPTH_IPK_DIR)/opt/etc/init.d/S??libpth
+# Libraries and include files should be installed into $(LIBPTH_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LIBPTH_IPK_DIR)$(TARGET_PREFIX)/etc/libpth/...
+# Documentation files should be installed in $(LIBPTH_IPK_DIR)$(TARGET_PREFIX)/doc/libpth/...
+# Daemon startup scripts should be installed in $(LIBPTH_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??libpth
 #
 # You may need to patch your application to make it use these locations.
 #
 $(LIBPTH_IPK): $(LIBPTH_BUILD_DIR)/.built
 	rm -rf $(LIBPTH_IPK_DIR) $(BUILD_DIR)/libpth_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBPTH_BUILD_DIR) DESTDIR=$(LIBPTH_IPK_DIR) install-strip
-	rm -f $(LIBPTH_IPK_DIR)/opt/lib/libpth.a
-	$(STRIP_COMMAND) $(LIBPTH_IPK_DIR)/opt/lib/libpth.so.*.*.*
+	rm -f $(LIBPTH_IPK_DIR)$(TARGET_PREFIX)/lib/libpth.a
+	$(STRIP_COMMAND) $(LIBPTH_IPK_DIR)$(TARGET_PREFIX)/lib/libpth.so.*.*.*
 	$(MAKE) $(LIBPTH_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBPTH_IPK_DIR)
 

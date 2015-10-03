@@ -45,7 +45,7 @@ $(FLEX_BUILD_DIR)/.configured: $(DL_DIR)/$(FLEX_SOURCE) make/flex.mk
 		--disable-static \
 		--disable-nls \
 	)
-	sed -i -e 's|/usr/bin|/opt/bin|'  $(@D)/config.h
+	sed -i -e 's|/usr/bin|$(TARGET_PREFIX)/bin|'  $(@D)/config.h
 	touch $@
 
 flex-unpack: $(FLEX_BUILD_DIR)/.configured
@@ -69,7 +69,7 @@ flex: $(FLEX_BUILD_DIR)/.built
 $(FLEX_BUILD_DIR)/.staged: $(FLEX_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
-ifneq ($(HOSTCC), $(TARGET_CC)) # prevent PATH=staging/opt/bin problems
+ifneq ($(HOSTCC), $(TARGET_CC)) # prevent PATH=staging$(TARGET_PREFIX)/bin problems
 	if test -x $(STAGING_PREFIX)/bin/flex ;\
 		 then rm $(STAGING_PREFIX)/bin/flex ;\
 	fi
@@ -95,8 +95,8 @@ $(FLEX_IPK_DIR)/CONTROL/control:
 $(FLEX_IPK): $(FLEX_BUILD_DIR)/.built
 	rm -rf $(FLEX_IPK_DIR) $(BUILD_DIR)/flex_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(FLEX_BUILD_DIR) DESTDIR=$(FLEX_IPK_DIR) install-strip
-	rm -f $(FLEX_IPK_DIR)/opt/info/dir
-	rm -rf $(FLEX_IPK_DIR)/opt/man
+	rm -f $(FLEX_IPK_DIR)$(TARGET_PREFIX)/info/dir
+	rm -rf $(FLEX_IPK_DIR)$(TARGET_PREFIX)/man
 	$(MAKE) $(FLEX_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(FLEX_IPK_DIR)
 

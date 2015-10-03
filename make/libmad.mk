@@ -186,10 +186,10 @@ $(LIBMAD_IPK_DIR)/CONTROL/control:
 $(LIBMAD_IPK): $(LIBMAD_BUILD_DIR)/.built
 	rm -rf $(LIBMAD_IPK_DIR) $(BUILD_DIR)/libmad_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBMAD_BUILD_DIR) DESTDIR=$(LIBMAD_IPK_DIR) install
-	$(STRIP_COMMAND) $(LIBMAD_IPK_DIR)/opt/lib/libmad.so.0.*
-	rm -f $(LIBMAD_IPK_DIR)/opt/lib/libmad.la
-	$(INSTALL) -d $(LIBMAD_IPK_DIR)/opt/lib/pkgconfig
-	$(INSTALL) $(<D)/mad.pc $(LIBMAD_IPK_DIR)/opt/lib/pkgconfig/mad.pc
+	$(STRIP_COMMAND) $(LIBMAD_IPK_DIR)$(TARGET_PREFIX)/lib/libmad.so.0.*
+	rm -f $(LIBMAD_IPK_DIR)$(TARGET_PREFIX)/lib/libmad.la
+	$(INSTALL) -d $(LIBMAD_IPK_DIR)$(TARGET_PREFIX)/lib/pkgconfig
+	$(INSTALL) $(<D)/mad.pc $(LIBMAD_IPK_DIR)$(TARGET_PREFIX)/lib/pkgconfig/mad.pc
 	$(MAKE) $(LIBMAD_IPK_DIR)/CONTROL/control
 	echo $(LIBMAD_CONFFILES) | sed -e 's/ /\n/g' > $(LIBMAD_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBMAD_IPK_DIR)

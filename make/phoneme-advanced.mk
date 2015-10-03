@@ -42,7 +42,7 @@ PHONEME_ADVANCED_IPK_VERSION=1
 
 #
 # PHONEME_ADVANCED_CONFFILES should be a list of user-editable files
-#PHONEME_ADVANCED_CONFFILES=/opt/etc/phoneme-advanced.conf /opt/etc/init.d/SXXphoneme-advanced
+#PHONEME_ADVANCED_CONFFILES=$(TARGET_PREFIX)/etc/phoneme-advanced.conf $(TARGET_PREFIX)/etc/init.d/SXXphoneme-advanced
 
 PHONEME_ADVANCED_ARCH=$(strip \
 	$(if $(filter armeb, $(TARGET_ARCH)), arm, \
@@ -230,23 +230,23 @@ $(PHONEME_ADVANCED_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PHONEME_ADVANCED_IPK_DIR)/opt/sbin or $(PHONEME_ADVANCED_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PHONEME_ADVANCED_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PHONEME_ADVANCED_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PHONEME_ADVANCED_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PHONEME_ADVANCED_IPK_DIR)/opt/etc/phoneme-advanced/...
-# Documentation files should be installed in $(PHONEME_ADVANCED_IPK_DIR)/opt/doc/phoneme-advanced/...
-# Daemon startup scripts should be installed in $(PHONEME_ADVANCED_IPK_DIR)/opt/etc/init.d/S??phoneme-advanced
+# Libraries and include files should be installed into $(PHONEME_ADVANCED_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PHONEME_ADVANCED_IPK_DIR)$(TARGET_PREFIX)/etc/phoneme-advanced/...
+# Documentation files should be installed in $(PHONEME_ADVANCED_IPK_DIR)$(TARGET_PREFIX)/doc/phoneme-advanced/...
+# Daemon startup scripts should be installed in $(PHONEME_ADVANCED_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??phoneme-advanced
 #
 # You may need to patch your application to make it use these locations.
 #
 $(PHONEME_ADVANCED_IPK): $(PHONEME_ADVANCED_BUILD_DIR)/.built
 	rm -rf $(PHONEME_ADVANCED_IPK_DIR) $(BUILD_DIR)/phoneme-advanced_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(PHONEME_ADVANCED_IPK_DIR)/opt/lib/java
-	cd $(PHONEME_ADVANCED_IPK_DIR)/opt/lib/java && \
+	$(INSTALL) -d $(PHONEME_ADVANCED_IPK_DIR)$(TARGET_PREFIX)/lib/java
+	cd $(PHONEME_ADVANCED_IPK_DIR)$(TARGET_PREFIX)/lib/java && \
 	unzip $(PHONEME_ADVANCED_BUILD_DIR)/cdc/install/phoneme-advanced.zip
-	$(STRIP_COMMAND) $(PHONEME_ADVANCED_IPK_DIR)/opt/lib/java/phoneme-advanced/bin/cvm
-	$(INSTALL) -d $(PHONEME_ADVANCED_IPK_DIR)/opt/bin
-	cd $(PHONEME_ADVANCED_IPK_DIR)/opt/bin; ln -s ../lib/java/phoneme-advanced/bin/cvm .
+	$(STRIP_COMMAND) $(PHONEME_ADVANCED_IPK_DIR)$(TARGET_PREFIX)/lib/java/phoneme-advanced/bin/cvm
+	$(INSTALL) -d $(PHONEME_ADVANCED_IPK_DIR)$(TARGET_PREFIX)/bin
+	cd $(PHONEME_ADVANCED_IPK_DIR)$(TARGET_PREFIX)/bin; ln -s ../lib/java/phoneme-advanced/bin/cvm .
 	$(MAKE) $(PHONEME_ADVANCED_IPK_DIR)/CONTROL/control
 	echo $(PHONEME_ADVANCED_CONFFILES) | sed -e 's/ /\n/g' > $(PHONEME_ADVANCED_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PHONEME_ADVANCED_IPK_DIR)

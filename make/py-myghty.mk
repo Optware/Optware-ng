@@ -41,7 +41,7 @@ PY-MYGHTY_IPK_VERSION=1
 
 #
 # PY-MYGHTY_CONFFILES should be a list of user-editable files
-#PY-MYGHTY_CONFFILES=/opt/etc/py-myghty.conf /opt/etc/init.d/SXXpy-myghty
+#PY-MYGHTY_CONFFILES=$(TARGET_PREFIX)/etc/py-myghty.conf $(TARGET_PREFIX)/etc/init.d/SXXpy-myghty
 
 #
 # PY-MYGHTY_PATCHES should list any patches, in the the order in
@@ -117,7 +117,7 @@ $(PY-MYGHTY_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MYGHTY_SOURCE) $(PY-MYGHTY_PA
 	mv $(BUILD_DIR)/$(PY-MYGHTY_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
 	    (echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python2.5") >> setup.cfg \
+	    echo "executable=$(TARGET_PREFIX)/bin/python2.5") >> setup.cfg \
 	)
 	# 2.6
 	rm -rf $(BUILD_DIR)/$(PY-MYGHTY_DIR)
@@ -126,7 +126,7 @@ $(PY-MYGHTY_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MYGHTY_SOURCE) $(PY-MYGHTY_PA
 	mv $(BUILD_DIR)/$(PY-MYGHTY_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
 	    (echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python2.6") >> setup.cfg \
+	    echo "executable=$(TARGET_PREFIX)/bin/python2.6") >> setup.cfg \
 	)
 	touch $@
 
@@ -195,12 +195,12 @@ $(PY26-MYGHTY_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PY-MYGHTY_IPK_DIR)/opt/sbin or $(PY-MYGHTY_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PY-MYGHTY_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PY-MYGHTY_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PY-MYGHTY_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PY-MYGHTY_IPK_DIR)/opt/etc/py-myghty/...
-# Documentation files should be installed in $(PY-MYGHTY_IPK_DIR)/opt/doc/py-myghty/...
-# Daemon startup scripts should be installed in $(PY-MYGHTY_IPK_DIR)/opt/etc/init.d/S??py-myghty
+# Libraries and include files should be installed into $(PY-MYGHTY_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PY-MYGHTY_IPK_DIR)$(TARGET_PREFIX)/etc/py-myghty/...
+# Documentation files should be installed in $(PY-MYGHTY_IPK_DIR)$(TARGET_PREFIX)/doc/py-myghty/...
+# Daemon startup scripts should be installed in $(PY-MYGHTY_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??py-myghty
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -210,7 +210,7 @@ $(PY25-MYGHTY_IPK): $(PY-MYGHTY_BUILD_DIR)/.built
 	(cd $(PY-MYGHTY_BUILD_DIR)/2.5; \
 	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
-	    --root=$(PY25-MYGHTY_IPK_DIR) --prefix=/opt)
+	    --root=$(PY25-MYGHTY_IPK_DIR) --prefix=$(TARGET_PREFIX))
 	$(MAKE) $(PY25-MYGHTY_IPK_DIR)/CONTROL/control
 #	echo $(PY-MYGHTY_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-MYGHTY_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-MYGHTY_IPK_DIR)
@@ -220,7 +220,7 @@ $(PY26-MYGHTY_IPK): $(PY-MYGHTY_BUILD_DIR)/.built
 	(cd $(PY-MYGHTY_BUILD_DIR)/2.6; \
 	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
 	    $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install \
-	    --root=$(PY26-MYGHTY_IPK_DIR) --prefix=/opt)
+	    --root=$(PY26-MYGHTY_IPK_DIR) --prefix=$(TARGET_PREFIX))
 	$(MAKE) $(PY26-MYGHTY_IPK_DIR)/CONTROL/control
 #	echo $(PY-MYGHTY_CONFFILES) | sed -e 's/ /\n/g' > $(PY26-MYGHTY_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-MYGHTY_IPK_DIR)

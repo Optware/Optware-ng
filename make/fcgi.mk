@@ -147,8 +147,8 @@ $(FCGI_IPK) $(FCGI_DEV_IPK): $(FCGI_BUILD_DIR)/.built
 	rm -rf $(FCGI_IPK_DIR)/{opt/include,opt/lib/{*.a,*la,*.so}} 
 	$(MAKE) $(FCGI_DEV_IPK_DIR)/CONTROL/control
 	$(MAKE) $(FCGI_IPK_DIR)/CONTROL/control
-	-$(STRIP_COMMAND) $(FCGI_IPK_DIR)/opt/bin/*
-	-$(STRIP_COMMAND) $(FCGI_IPK_DIR)/opt/lib/*.so.*
+	-$(STRIP_COMMAND) $(FCGI_IPK_DIR)$(TARGET_PREFIX)/bin/*
+	-$(STRIP_COMMAND) $(FCGI_IPK_DIR)$(TARGET_PREFIX)/lib/*.so.*
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(FCGI_DEV_IPK_DIR)
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(FCGI_IPK_DIR)
 

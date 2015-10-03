@@ -46,7 +46,7 @@ LIBRSVG_IPK_VERSION=1
 
 #
 # LIBRSVG_CONFFILES should be a list of user-editable files
-#LIBRSVG_CONFFILES=/opt/etc/librsvg.conf /opt/etc/init.d/SXXlibrsvg
+#LIBRSVG_CONFFILES=$(TARGET_PREFIX)/etc/librsvg.conf $(TARGET_PREFIX)/etc/init.d/SXXlibrsvg
 
 #
 # LIBRSVG_PATCHES should list any patches, in the the order in
@@ -189,12 +189,12 @@ $(LIBRSVG_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LIBRSVG_IPK_DIR)/opt/sbin or $(LIBRSVG_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LIBRSVG_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LIBRSVG_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LIBRSVG_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LIBRSVG_IPK_DIR)/opt/etc/librsvg/...
-# Documentation files should be installed in $(LIBRSVG_IPK_DIR)/opt/doc/librsvg/...
-# Daemon startup scripts should be installed in $(LIBRSVG_IPK_DIR)/opt/etc/init.d/S??librsvg
+# Libraries and include files should be installed into $(LIBRSVG_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LIBRSVG_IPK_DIR)$(TARGET_PREFIX)/etc/librsvg/...
+# Documentation files should be installed in $(LIBRSVG_IPK_DIR)$(TARGET_PREFIX)/doc/librsvg/...
+# Daemon startup scripts should be installed in $(LIBRSVG_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??librsvg
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -202,14 +202,14 @@ $(LIBRSVG_IPK): $(LIBRSVG_BUILD_DIR)/.built
 	rm -rf $(LIBRSVG_IPK_DIR) $(BUILD_DIR)/librsvg_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBRSVG_BUILD_DIR) DESTDIR=$(LIBRSVG_IPK_DIR) install-strip
 	find $(LIBRSVG_IPK_DIR)$(TARGET_PREFIX) -type f -name *.la -exec rm -f {} \;
-	$(INSTALL) -d $(LIBRSVG_IPK_DIR)/opt/share/gir-1.0
+	$(INSTALL) -d $(LIBRSVG_IPK_DIR)$(TARGET_PREFIX)/share/gir-1.0
 	$(INSTALL) -m 644 $(LIBRSVG_SOURCE_DIR)/$(LIBRSVG_VERSION)/Rsvg-2.0.gir \
-		$(LIBRSVG_IPK_DIR)/opt/share/gir-1.0/Rsvg-2.0.gir
-#	$(INSTALL) -d $(LIBRSVG_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(LIBRSVG_SOURCE_DIR)/librsvg.conf $(LIBRSVG_IPK_DIR)/opt/etc/librsvg.conf
-#	$(INSTALL) -d $(LIBRSVG_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(LIBRSVG_SOURCE_DIR)/rc.librsvg $(LIBRSVG_IPK_DIR)/opt/etc/init.d/SXXlibrsvg
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBRSVG_IPK_DIR)/opt/etc/init.d/SXXlibrsvg
+		$(LIBRSVG_IPK_DIR)$(TARGET_PREFIX)/share/gir-1.0/Rsvg-2.0.gir
+#	$(INSTALL) -d $(LIBRSVG_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(LIBRSVG_SOURCE_DIR)/librsvg.conf $(LIBRSVG_IPK_DIR)$(TARGET_PREFIX)/etc/librsvg.conf
+#	$(INSTALL) -d $(LIBRSVG_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(LIBRSVG_SOURCE_DIR)/rc.librsvg $(LIBRSVG_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibrsvg
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBRSVG_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibrsvg
 	$(MAKE) $(LIBRSVG_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 755 $(LIBRSVG_SOURCE_DIR)/postinst $(LIBRSVG_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBRSVG_IPK_DIR)/CONTROL/postinst

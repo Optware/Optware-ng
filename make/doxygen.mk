@@ -46,7 +46,7 @@ DOXYGEN_IPK_VERSION=2
 
 #
 # DOXYGEN_CONFFILES should be a list of user-editable files
-#DOXYGEN_CONFFILES=/opt/etc/doxygen.conf /opt/etc/init.d/SXXdoxygen
+#DOXYGEN_CONFFILES=$(TARGET_PREFIX)/etc/doxygen.conf $(TARGET_PREFIX)/etc/init.d/SXXdoxygen
 
 #
 # DOXYGEN_PATCHES should list any patches, in the the order in
@@ -175,22 +175,22 @@ $(DOXYGEN_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(DOXYGEN_IPK_DIR)/opt/sbin or $(DOXYGEN_IPK_DIR)/opt/bin
+# Binaries should be installed into $(DOXYGEN_IPK_DIR)$(TARGET_PREFIX)/sbin or $(DOXYGEN_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(DOXYGEN_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(DOXYGEN_IPK_DIR)/opt/etc/doxygen/...
-# Documentation files should be installed in $(DOXYGEN_IPK_DIR)/opt/doc/doxygen/...
-# Daemon startup scripts should be installed in $(DOXYGEN_IPK_DIR)/opt/etc/init.d/S??doxygen
+# Libraries and include files should be installed into $(DOXYGEN_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(DOXYGEN_IPK_DIR)$(TARGET_PREFIX)/etc/doxygen/...
+# Documentation files should be installed in $(DOXYGEN_IPK_DIR)$(TARGET_PREFIX)/doc/doxygen/...
+# Daemon startup scripts should be installed in $(DOXYGEN_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??doxygen
 #
 # You may need to patch your application to make it use these locations.
 #
 $(DOXYGEN_IPK): $(DOXYGEN_BUILD_DIR)/.built
 	rm -rf $(DOXYGEN_IPK_DIR) $(BUILD_DIR)/doxygen_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(DOXYGEN_BUILD_DIR) DESTDIR=$(DOXYGEN_IPK_DIR) install
-#	$(INSTALL) -d $(DOXYGEN_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(DOXYGEN_SOURCE_DIR)/doxygen.conf $(DOXYGEN_IPK_DIR)/opt/etc/doxygen.conf
-#	$(INSTALL) -d $(DOXYGEN_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(DOXYGEN_SOURCE_DIR)/rc.doxygen $(DOXYGEN_IPK_DIR)/opt/etc/init.d/SXXdoxygen
+#	$(INSTALL) -d $(DOXYGEN_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(DOXYGEN_SOURCE_DIR)/doxygen.conf $(DOXYGEN_IPK_DIR)$(TARGET_PREFIX)/etc/doxygen.conf
+#	$(INSTALL) -d $(DOXYGEN_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(DOXYGEN_SOURCE_DIR)/rc.doxygen $(DOXYGEN_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXdoxygen
 	$(MAKE) $(DOXYGEN_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(DOXYGEN_SOURCE_DIR)/postinst $(DOXYGEN_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 755 $(DOXYGEN_SOURCE_DIR)/prerm $(DOXYGEN_IPK_DIR)/CONTROL/prerm

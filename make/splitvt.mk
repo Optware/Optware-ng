@@ -40,7 +40,7 @@ SPLITVT_IPK_VERSION=1
 
 #
 # SPLITVT_CONFFILES should be a list of user-editable files
-#SPLITVT_CONFFILES=/opt/etc/splitvt.conf /opt/etc/init.d/SXXsplitvt
+#SPLITVT_CONFFILES=$(TARGET_PREFIX)/etc/splitvt.conf $(TARGET_PREFIX)/etc/init.d/SXXsplitvt
 
 #
 # SPLITVT_PATCHES should list any patches, in the the order in
@@ -182,19 +182,19 @@ $(SPLITVT_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(SPLITVT_IPK_DIR)/opt/sbin or $(SPLITVT_IPK_DIR)/opt/bin
+# Binaries should be installed into $(SPLITVT_IPK_DIR)$(TARGET_PREFIX)/sbin or $(SPLITVT_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(SPLITVT_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(SPLITVT_IPK_DIR)/opt/etc/splitvt/...
-# Documentation files should be installed in $(SPLITVT_IPK_DIR)/opt/doc/splitvt/...
-# Daemon startup scripts should be installed in $(SPLITVT_IPK_DIR)/opt/etc/init.d/S??splitvt
+# Libraries and include files should be installed into $(SPLITVT_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(SPLITVT_IPK_DIR)$(TARGET_PREFIX)/etc/splitvt/...
+# Documentation files should be installed in $(SPLITVT_IPK_DIR)$(TARGET_PREFIX)/doc/splitvt/...
+# Daemon startup scripts should be installed in $(SPLITVT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??splitvt
 #
 # You may need to patch your application to make it use these locations.
 #
 $(SPLITVT_IPK): $(SPLITVT_BUILD_DIR)/.built
 	rm -rf $(SPLITVT_IPK_DIR) $(BUILD_DIR)/splitvt_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SPLITVT_BUILD_DIR) DESTDIR=$(SPLITVT_IPK_DIR) install
-	$(STRIP_COMMAND) $(SPLITVT_IPK_DIR)/opt/bin/splitvt
+	$(STRIP_COMMAND) $(SPLITVT_IPK_DIR)$(TARGET_PREFIX)/bin/splitvt
 	$(MAKE) $(SPLITVT_IPK_DIR)/CONTROL/control
 	echo $(SPLITVT_CONFFILES) | sed -e 's/ /\n/g' > $(SPLITVT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SPLITVT_IPK_DIR)

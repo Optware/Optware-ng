@@ -44,7 +44,7 @@ BITLBEE_IPK_VERSION ?= 2
 
 #
 # BITLBEE_CONFFILES should be a list of user-editable files
-BITLBEE_CONFFILES=/opt/etc/bitlbee/bitlbee.conf /opt/etc/xinetd.d/bitlbee
+BITLBEE_CONFFILES=$(TARGET_PREFIX)/etc/bitlbee/bitlbee.conf $(TARGET_PREFIX)/etc/xinetd.d/bitlbee
 
 #
 # BITLBEE_PATCHES should list any patches, in the the order in
@@ -141,9 +141,9 @@ endif
 		--msn=1 \
 		--yahoo=1 \
 		--otr=1 \
-		--mandir=/opt/man \
-		--datadir=/opt/var/bitlbee \
-		--config=/opt/var/bitlbee \
+		--mandir=$(TARGET_PREFIX)/man \
+		--datadir=$(TARGET_PREFIX)/var/bitlbee \
+		--config=$(TARGET_PREFIX)/var/bitlbee \
 	)
 	sed -i -e '/BITLBEE_VERSION/d' $(@D)/config.h
 	touch $@
@@ -195,22 +195,22 @@ $(BITLBEE_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(BITLBEE_IPK_DIR)/opt/sbin or $(BITLBEE_IPK_DIR)/opt/bin
+# Binaries should be installed into $(BITLBEE_IPK_DIR)$(TARGET_PREFIX)/sbin or $(BITLBEE_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(BITLBEE_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(BITLBEE_IPK_DIR)/opt/etc/bitlbee/...
-# Documentation files should be installed in $(BITLBEE_IPK_DIR)/opt/doc/bitlbee/...
-# Daemon startup scripts should be installed in $(BITLBEE_IPK_DIR)/opt/etc/init.d/S??bitlbee
+# Libraries and include files should be installed into $(BITLBEE_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(BITLBEE_IPK_DIR)$(TARGET_PREFIX)/etc/bitlbee/...
+# Documentation files should be installed in $(BITLBEE_IPK_DIR)$(TARGET_PREFIX)/doc/bitlbee/...
+# Daemon startup scripts should be installed in $(BITLBEE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??bitlbee
 #
 # You may need to patch your application to make it use these locations.
 #
 $(BITLBEE_IPK): $(BITLBEE_BUILD_DIR)/.built
 	rm -rf $(BITLBEE_IPK_DIR) $(BUILD_DIR)/bitlbee_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(BITLBEE_BUILD_DIR) DESTDIR=$(BITLBEE_IPK_DIR) install
-	$(INSTALL) -d $(BITLBEE_IPK_DIR)/opt/etc/bitlbee
-	$(INSTALL) -m 644 $(BITLBEE_BUILD_DIR)/bitlbee.conf $(BITLBEE_IPK_DIR)/opt/etc/bitlbee/bitlbee.conf
-	$(INSTALL) -d $(BITLBEE_IPK_DIR)/opt/etc/xinetd.d
-	$(INSTALL) -m 755 $(BITLBEE_SOURCE_DIR)/xinetd.bitlbee $(BITLBEE_IPK_DIR)/opt/etc/xinetd.d/bitlbee
+	$(INSTALL) -d $(BITLBEE_IPK_DIR)$(TARGET_PREFIX)/etc/bitlbee
+	$(INSTALL) -m 644 $(BITLBEE_BUILD_DIR)/bitlbee.conf $(BITLBEE_IPK_DIR)$(TARGET_PREFIX)/etc/bitlbee/bitlbee.conf
+	$(INSTALL) -d $(BITLBEE_IPK_DIR)$(TARGET_PREFIX)/etc/xinetd.d
+	$(INSTALL) -m 755 $(BITLBEE_SOURCE_DIR)/xinetd.bitlbee $(BITLBEE_IPK_DIR)$(TARGET_PREFIX)/etc/xinetd.d/bitlbee
 	$(MAKE) $(BITLBEE_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 755 $(BITLBEE_SOURCE_DIR)/postinst $(BITLBEE_IPK_DIR)/CONTROL/postinst
 	#$(INSTALL) -m 755 $(BITLBEE_SOURCE_DIR)/prerm $(BITLBEE_IPK_DIR)/CONTROL/prerm

@@ -41,7 +41,7 @@ TORSOCKS_IPK_VERSION=1
 
 #
 # TORSOCKS_CONFFILES should be a list of user-editable files
-#TORSOCKS_CONFFILES=/opt/etc/torsocks.conf
+#TORSOCKS_CONFFILES=$(TARGET_PREFIX)/etc/torsocks.conf
 
 #
 # TORSOCKS_PATCHES should list any patches, in the the order in
@@ -122,7 +122,7 @@ $(TORSOCKS_BUILD_DIR)/.configured: $(DL_DIR)/$(TORSOCKS_SOURCE) $(TORSOCKS_PATCH
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=$(TARGET_PREFIX) \
-		--with-conf=/opt/etc/torsocks.conf \
+		--with-conf=$(TARGET_PREFIX)/etc/torsocks.conf \
 		--disable-nls \
 	)
 	$(PATCH_LIBTOOL) $(@D)/libtool
@@ -175,25 +175,25 @@ $(TORSOCKS_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(TORSOCKS_IPK_DIR)/opt/sbin or $(TORSOCKS_IPK_DIR)/opt/bin
+# Binaries should be installed into $(TORSOCKS_IPK_DIR)$(TARGET_PREFIX)/sbin or $(TORSOCKS_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(TORSOCKS_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(TORSOCKS_IPK_DIR)/opt/etc/torsocks/...
-# Documentation files should be installed in $(TORSOCKS_IPK_DIR)/opt/doc/torsocks/...
-# Daemon startup scripts should be installed in $(TORSOCKS_IPK_DIR)/opt/etc/init.d/S??torsocks
+# Libraries and include files should be installed into $(TORSOCKS_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(TORSOCKS_IPK_DIR)$(TARGET_PREFIX)/etc/torsocks/...
+# Documentation files should be installed in $(TORSOCKS_IPK_DIR)$(TARGET_PREFIX)/doc/torsocks/...
+# Daemon startup scripts should be installed in $(TORSOCKS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??torsocks
 #
 # You may need to patch your application to make it use these locations.
 #
 $(TORSOCKS_IPK): $(TORSOCKS_BUILD_DIR)/.built
 	rm -rf $(TORSOCKS_IPK_DIR) $(BUILD_DIR)/torsocks_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(TORSOCKS_BUILD_DIR) DESTDIR=$(TORSOCKS_IPK_DIR) install
-	sed -i -e 's:/usr/:/opt/:g' $(TORSOCKS_IPK_DIR)/opt/bin/torsocks
-	rm -f $(TORSOCKS_IPK_DIR)/opt/lib/torsocks/libtorsocks*.a
-	$(STRIP_COMMAND) $(TORSOCKS_IPK_DIR)/opt/lib/torsocks/libtorsocks.so.[0-9].[0-9].[0-9]
-#	$(INSTALL) -d $(TORSOCKS_IPK_DIR)/opt/etc/
-#	mv $(TORSOCKS_IPK_DIR)/lib $(TORSOCKS_IPK_DIR)/opt/
-#	$(STRIP_COMMAND) $(TORSOCKS_IPK_DIR)/opt/lib/libtorsocks.so.1.8
-	#$(INSTALL) -m 644 $(TORSOCKS_SOURCE_DIR)/torsocks.conf $(TORSOCKS_IPK_DIR)/opt/etc/torsocks.conf
+	sed -i -e 's:/usr/:$(TARGET_PREFIX)/:g' $(TORSOCKS_IPK_DIR)$(TARGET_PREFIX)/bin/torsocks
+	rm -f $(TORSOCKS_IPK_DIR)$(TARGET_PREFIX)/lib/torsocks/libtorsocks*.a
+	$(STRIP_COMMAND) $(TORSOCKS_IPK_DIR)$(TARGET_PREFIX)/lib/torsocks/libtorsocks.so.[0-9].[0-9].[0-9]
+#	$(INSTALL) -d $(TORSOCKS_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	mv $(TORSOCKS_IPK_DIR)/lib $(TORSOCKS_IPK_DIR)$(TARGET_PREFIX)/
+#	$(STRIP_COMMAND) $(TORSOCKS_IPK_DIR)$(TARGET_PREFIX)/lib/libtorsocks.so.1.8
+	#$(INSTALL) -m 644 $(TORSOCKS_SOURCE_DIR)/torsocks.conf $(TORSOCKS_IPK_DIR)$(TARGET_PREFIX)/etc/torsocks.conf
 	$(MAKE) $(TORSOCKS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TORSOCKS_IPK_DIR)
 

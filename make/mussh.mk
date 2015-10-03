@@ -40,7 +40,7 @@ MUSSH_IPK_VERSION=1
 
 #
 # MUSSH_CONFFILES should be a list of user-editable files
-#MUSSH_CONFFILES=/opt/etc/mussh.conf /opt/etc/init.d/SXXmussh
+#MUSSH_CONFFILES=$(TARGET_PREFIX)/etc/mussh.conf $(TARGET_PREFIX)/etc/init.d/SXXmussh
 
 #
 # MUSSH_PATCHES should list any patches, in the the order in
@@ -178,21 +178,21 @@ $(MUSSH_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(MUSSH_IPK_DIR)/opt/sbin or $(MUSSH_IPK_DIR)/opt/bin
+# Binaries should be installed into $(MUSSH_IPK_DIR)$(TARGET_PREFIX)/sbin or $(MUSSH_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(MUSSH_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(MUSSH_IPK_DIR)/opt/etc/mussh/...
-# Documentation files should be installed in $(MUSSH_IPK_DIR)/opt/doc/mussh/...
-# Daemon startup scripts should be installed in $(MUSSH_IPK_DIR)/opt/etc/init.d/S??mussh
+# Libraries and include files should be installed into $(MUSSH_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(MUSSH_IPK_DIR)$(TARGET_PREFIX)/etc/mussh/...
+# Documentation files should be installed in $(MUSSH_IPK_DIR)$(TARGET_PREFIX)/doc/mussh/...
+# Daemon startup scripts should be installed in $(MUSSH_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??mussh
 #
 # You may need to patch your application to make it use these locations.
 #
 $(MUSSH_IPK): $(MUSSH_BUILD_DIR)/.built
 	rm -rf $(MUSSH_IPK_DIR) $(BUILD_DIR)/mussh_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(MUSSH_IPK_DIR)/opt/bin
-	$(INSTALL) -m 755 $(MUSSH_BUILD_DIR)/mussh $(MUSSH_IPK_DIR)/opt/bin/
-	$(INSTALL) -d $(MUSSH_IPK_DIR)/opt/share/man/man1
-	$(INSTALL) -m 644 $(MUSSH_BUILD_DIR)/mussh.1 $(MUSSH_IPK_DIR)/opt/share/man/man1
+	$(INSTALL) -d $(MUSSH_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(INSTALL) -m 755 $(MUSSH_BUILD_DIR)/mussh $(MUSSH_IPK_DIR)$(TARGET_PREFIX)/bin/
+	$(INSTALL) -d $(MUSSH_IPK_DIR)$(TARGET_PREFIX)/share/man/man1
+	$(INSTALL) -m 644 $(MUSSH_BUILD_DIR)/mussh.1 $(MUSSH_IPK_DIR)$(TARGET_PREFIX)/share/man/man1
 	$(MAKE) $(MUSSH_IPK_DIR)/CONTROL/control
 	echo $(MUSSH_CONFFILES) | sed -e 's/ /\n/g' > $(MUSSH_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MUSSH_IPK_DIR)

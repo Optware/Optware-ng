@@ -40,7 +40,7 @@ UCL_IPK_VERSION=1
 
 #
 # UCL_CONFFILES should be a list of user-editable files
-#UCL_CONFFILES=/opt/etc/ucl.conf /opt/etc/init.d/SXXucl
+#UCL_CONFFILES=$(TARGET_PREFIX)/etc/ucl.conf $(TARGET_PREFIX)/etc/init.d/SXXucl
 
 #
 # UCL_PATCHES should list any patches, in the the order in
@@ -166,24 +166,24 @@ $(UCL_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(UCL_IPK_DIR)/opt/sbin or $(UCL_IPK_DIR)/opt/bin
+# Binaries should be installed into $(UCL_IPK_DIR)$(TARGET_PREFIX)/sbin or $(UCL_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(UCL_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(UCL_IPK_DIR)/opt/etc/ucl/...
-# Documentation files should be installed in $(UCL_IPK_DIR)/opt/doc/ucl/...
-# Daemon startup scripts should be installed in $(UCL_IPK_DIR)/opt/etc/init.d/S??ucl
+# Libraries and include files should be installed into $(UCL_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(UCL_IPK_DIR)$(TARGET_PREFIX)/etc/ucl/...
+# Documentation files should be installed in $(UCL_IPK_DIR)$(TARGET_PREFIX)/doc/ucl/...
+# Daemon startup scripts should be installed in $(UCL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??ucl
 #
 # You may need to patch your application to make it use these locations.
 #
 $(UCL_IPK): $(UCL_BUILD_DIR)/.built
 	rm -rf $(UCL_IPK_DIR) $(BUILD_DIR)/ucl_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(UCL_BUILD_DIR) DESTDIR=$(UCL_IPK_DIR) install-strip
-	rm -f $(UCL_IPK_DIR)/opt/lib/libucl.la
-#	$(INSTALL) -d $(UCL_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(UCL_SOURCE_DIR)/ucl.conf $(UCL_IPK_DIR)/opt/etc/ucl.conf
-#	$(INSTALL) -d $(UCL_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(UCL_SOURCE_DIR)/rc.ucl $(UCL_IPK_DIR)/opt/etc/init.d/SXXucl
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(UCL_IPK_DIR)/opt/etc/init.d/SXXucl
+	rm -f $(UCL_IPK_DIR)$(TARGET_PREFIX)/lib/libucl.la
+#	$(INSTALL) -d $(UCL_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(UCL_SOURCE_DIR)/ucl.conf $(UCL_IPK_DIR)$(TARGET_PREFIX)/etc/ucl.conf
+#	$(INSTALL) -d $(UCL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(UCL_SOURCE_DIR)/rc.ucl $(UCL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXucl
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(UCL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXucl
 	$(MAKE) $(UCL_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(UCL_SOURCE_DIR)/postinst $(UCL_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(UCL_IPK_DIR)/CONTROL/postinst

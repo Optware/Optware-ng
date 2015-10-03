@@ -33,7 +33,7 @@ USBUTILS_IPK_VERSION=3
 
 #
 # USBUTILS_CONFFILES should be a list of user-editable files
-USBUTILS_CONFFILES=/opt/share/misc/usb.ids
+USBUTILS_CONFFILES=$(TARGET_PREFIX)/share/misc/usb.ids
 
 #
 # USBUTILS_PATCHES should list any patches, in the the order in
@@ -100,7 +100,7 @@ $(USBUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(USBUTILS_SOURCE) $(USBUTILS_PATCH
 		cat $(USBUTILS_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(USBUTILS_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(USBUTILS_DIR) $(@D)
-#	sed -i 's|DEST=|&/opt/share/misc/|' $(@D)/update-usbids.sh
+#	sed -i 's|DEST=|&$(TARGET_PREFIX)/share/misc/|' $(@D)/update-usbids.sh
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(USBUTILS_CPPFLAGS)" \
@@ -111,7 +111,7 @@ $(USBUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(USBUTILS_SOURCE) $(USBUTILS_PATCH
 		--host=$(GNU_TARGET_NAME) \
 		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
-		--datadir=/opt/share/misc \
+		--datadir=$(TARGET_PREFIX)/share/misc \
 	)
 	touch $@
 
@@ -162,27 +162,27 @@ $(USBUTILS_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(USBUTILS_IPK_DIR)/opt/sbin or $(USBUTILS_IPK_DIR)/opt/bin
+# Binaries should be installed into $(USBUTILS_IPK_DIR)$(TARGET_PREFIX)/sbin or $(USBUTILS_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(USBUTILS_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(USBUTILS_IPK_DIR)/opt/etc/usbutils/...
-# Documentation files should be installed in $(USBUTILS_IPK_DIR)/opt/doc/usbutils/...
-# Daemon startup scripts should be installed in $(USBUTILS_IPK_DIR)/opt/etc/init.d/S??usbutils
+# Libraries and include files should be installed into $(USBUTILS_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(USBUTILS_IPK_DIR)$(TARGET_PREFIX)/etc/usbutils/...
+# Documentation files should be installed in $(USBUTILS_IPK_DIR)$(TARGET_PREFIX)/doc/usbutils/...
+# Daemon startup scripts should be installed in $(USBUTILS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??usbutils
 #
 # You may need to patch your application to make it use these locations.
 #
 $(USBUTILS_IPK): $(USBUTILS_BUILD_DIR)/.built
 	rm -rf $(USBUTILS_IPK_DIR) $(BUILD_DIR)/usbutils_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(USBUTILS_BUILD_DIR) DESTDIR=$(USBUTILS_IPK_DIR) install-strip
-	$(INSTALL) -m 755 $(USBUTILS_BUILD_DIR)/update-usbids.sh $(USBUTILS_IPK_DIR)/opt/sbin/
-	$(INSTALL) -d $(USBUTILS_IPK_DIR)/opt/lib/pkgconfig
-	$(INSTALL) -m 644 $(USBUTILS_BUILD_DIR)/usbutils.pc $(USBUTILS_IPK_DIR)/opt/lib/pkgconfig
+	$(INSTALL) -m 755 $(USBUTILS_BUILD_DIR)/update-usbids.sh $(USBUTILS_IPK_DIR)$(TARGET_PREFIX)/sbin/
+	$(INSTALL) -d $(USBUTILS_IPK_DIR)$(TARGET_PREFIX)/lib/pkgconfig
+	$(INSTALL) -m 644 $(USBUTILS_BUILD_DIR)/usbutils.pc $(USBUTILS_IPK_DIR)$(TARGET_PREFIX)/lib/pkgconfig
 	# don't want these as they conflict with real libusb
-	rm -rf $(USBUTILS_IPK_DIR)/opt/lib $(USBUTILS_IPK_DIR)/opt/include
-#	$(INSTALL) -d $(USBUTILS_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(USBUTILS_SOURCE_DIR)/usbutils.conf $(USBUTILS_IPK_DIR)/opt/etc/usbutils.conf
-#	$(INSTALL) -d $(USBUTILS_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(USBUTILS_SOURCE_DIR)/rc.usbutils $(USBUTILS_IPK_DIR)/opt/etc/init.d/SXXusbutils
+	rm -rf $(USBUTILS_IPK_DIR)$(TARGET_PREFIX)/lib $(USBUTILS_IPK_DIR)$(TARGET_PREFIX)/include
+#	$(INSTALL) -d $(USBUTILS_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(USBUTILS_SOURCE_DIR)/usbutils.conf $(USBUTILS_IPK_DIR)$(TARGET_PREFIX)/etc/usbutils.conf
+#	$(INSTALL) -d $(USBUTILS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(USBUTILS_SOURCE_DIR)/rc.usbutils $(USBUTILS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXusbutils
 	$(MAKE) $(USBUTILS_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(USBUTILS_SOURCE_DIR)/postinst $(USBUTILS_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 755 $(USBUTILS_SOURCE_DIR)/prerm $(USBUTILS_IPK_DIR)/CONTROL/prerm

@@ -146,20 +146,20 @@ xauth-stage: $(XAUTH_BUILD_DIR)/.staged
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(XAUTH_IPK_DIR)/opt/sbin or $(XAUTH_IPK_DIR)/opt/bin
+# Binaries should be installed into $(XAUTH_IPK_DIR)$(TARGET_PREFIX)/sbin or $(XAUTH_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(XAUTH_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(XAUTH_IPK_DIR)/opt/etc/xauth/...
-# Documentation files should be installed in $(XAUTH_IPK_DIR)/opt/doc/xauth/...
-# Daemon startup scripts should be installed in $(XAUTH_IPK_DIR)/opt/etc/init.d/S??xauth
+# Libraries and include files should be installed into $(XAUTH_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(XAUTH_IPK_DIR)$(TARGET_PREFIX)/etc/xauth/...
+# Documentation files should be installed in $(XAUTH_IPK_DIR)$(TARGET_PREFIX)/doc/xauth/...
+# Daemon startup scripts should be installed in $(XAUTH_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??xauth
 #
 # You may need to patch your application to make it use these locations.
 #
 $(XAUTH_IPK): $(XAUTH_BUILD_DIR)/.built
 	rm -rf $(XAUTH_IPK_DIR) $(BUILD_DIR)/xauth_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(XAUTH_BUILD_DIR) DESTDIR=$(XAUTH_IPK_DIR) install-strip
-	$(INSTALL) -d $(XAUTH_IPK_DIR)/opt/X11R6/X11
-	ln -s /opt/bin/xauth $(XAUTH_IPK_DIR)/opt/X11R6/X11/xauth
+	$(INSTALL) -d $(XAUTH_IPK_DIR)$(TARGET_PREFIX)/X11R6/X11
+	ln -s $(TARGET_PREFIX)/bin/xauth $(XAUTH_IPK_DIR)$(TARGET_PREFIX)/X11R6/X11/xauth
 	$(MAKE) $(XAUTH_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 644 $(XAUTH_SOURCE_DIR)/postinst $(XAUTH_IPK_DIR)/CONTROL/postinst
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XAUTH_IPK_DIR)

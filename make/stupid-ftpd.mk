@@ -40,8 +40,8 @@ STUPID-FTPD_IPK_VERSION=1
 
 #
 # STUPID-FTPD_CONFFILES should be a list of user-editable files
-STUPID-FTPD_CONFFILES=/opt/etc/stupid-ftpd.conf
-#/opt/etc/init.d/SXXstupid-ftpd
+STUPID-FTPD_CONFFILES=$(TARGET_PREFIX)/etc/stupid-ftpd.conf
+#$(TARGET_PREFIX)/etc/init.d/SXXstupid-ftpd
 
 #
 # STUPID-FTPD_PATCHES should list any patches, in the the order in
@@ -122,7 +122,7 @@ $(STUPID-FTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(STUPID-FTPD_SOURCE) $(STUPID-F
 			-e "/^LIBS/c \\" \
 			-e "LIBS=$(STAGING_LDFLAGS) $(STUPID-FTPD_LDFLAGS)" \
 			Makefile ; \
-		sed -i -e 's|/etc/stupid-ftpd/|/opt/etc/|' ftpdconfig.c stupid-ftpd.conf; \
+		sed -i -e 's|/etc/stupid-ftpd/|$(TARGET_PREFIX)/etc/|' ftpdconfig.c stupid-ftpd.conf; \
 		sed -i -e 's/port=2121/port=21/' \
 			-e 's|serverroot=.*|serverroot=/tmp|' \
 			stupid-ftpd.conf; \
@@ -179,27 +179,27 @@ $(STUPID-FTPD_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(STUPID-FTPD_IPK_DIR)/opt/sbin or $(STUPID-FTPD_IPK_DIR)/opt/bin
+# Binaries should be installed into $(STUPID-FTPD_IPK_DIR)$(TARGET_PREFIX)/sbin or $(STUPID-FTPD_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(STUPID-FTPD_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(STUPID-FTPD_IPK_DIR)/opt/etc/stupid-ftpd/...
-# Documentation files should be installed in $(STUPID-FTPD_IPK_DIR)/opt/doc/stupid-ftpd/...
-# Daemon startup scripts should be installed in $(STUPID-FTPD_IPK_DIR)/opt/etc/init.d/S??stupid-ftpd
+# Libraries and include files should be installed into $(STUPID-FTPD_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(STUPID-FTPD_IPK_DIR)$(TARGET_PREFIX)/etc/stupid-ftpd/...
+# Documentation files should be installed in $(STUPID-FTPD_IPK_DIR)$(TARGET_PREFIX)/doc/stupid-ftpd/...
+# Daemon startup scripts should be installed in $(STUPID-FTPD_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??stupid-ftpd
 #
 # You may need to patch your application to make it use these locations.
 #
 $(STUPID-FTPD_IPK): $(STUPID-FTPD_BUILD_DIR)/.built
 	rm -rf $(STUPID-FTPD_IPK_DIR) $(BUILD_DIR)/STUPID-FTPD_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(STUPID-FTPD_IPK_DIR)/opt/sbin/
+	$(INSTALL) -d $(STUPID-FTPD_IPK_DIR)$(TARGET_PREFIX)/sbin/
 	$(INSTALL) -m 755 $(STUPID-FTPD_BUILD_DIR)/stupid-ftpd.Linux6 \
-		$(STUPID-FTPD_IPK_DIR)/opt/sbin/stupid-ftpd
-	$(STRIP_COMMAND) $(STUPID-FTPD_IPK_DIR)/opt/sbin/stupid-ftpd
-	$(INSTALL) -d $(STUPID-FTPD_IPK_DIR)/opt/etc/
+		$(STUPID-FTPD_IPK_DIR)$(TARGET_PREFIX)/sbin/stupid-ftpd
+	$(STRIP_COMMAND) $(STUPID-FTPD_IPK_DIR)$(TARGET_PREFIX)/sbin/stupid-ftpd
+	$(INSTALL) -d $(STUPID-FTPD_IPK_DIR)$(TARGET_PREFIX)/etc/
 	$(INSTALL) -m 644 $(STUPID-FTPD_BUILD_DIR)/stupid-ftpd.conf \
-		$(STUPID-FTPD_IPK_DIR)/opt/etc/stupid-ftpd.conf
-#	$(INSTALL) -d $(STUPID-FTPD_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(STUPID-FTPD_SOURCE_DIR)/rc.stupid-ftpd $(STUPID-FTPD_IPK_DIR)/opt/etc/init.d/SXXstupid-ftpd
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(STUPID-FTPD_IPK_DIR)/opt/etc/init.d/SXXstupid-ftpd
+		$(STUPID-FTPD_IPK_DIR)$(TARGET_PREFIX)/etc/stupid-ftpd.conf
+#	$(INSTALL) -d $(STUPID-FTPD_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(STUPID-FTPD_SOURCE_DIR)/rc.stupid-ftpd $(STUPID-FTPD_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXstupid-ftpd
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(STUPID-FTPD_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXstupid-ftpd
 	$(MAKE) $(STUPID-FTPD_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(STUPID-FTPD_SOURCE_DIR)/postinst $(STUPID-FTPD_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(STUPID-FTPD_IPK_DIR)/CONTROL/postinst

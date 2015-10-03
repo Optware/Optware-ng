@@ -62,7 +62,7 @@ GCC_IPK_VERSION ?= 5
 
 #
 # GCC_CONFFILES should be a list of user-editable files
-#GCC_CONFFILES=/opt/etc/gcc.conf /opt/etc/init.d/SXXgcc
+#GCC_CONFFILES=$(TARGET_PREFIX)/etc/gcc.conf $(TARGET_PREFIX)/etc/init.d/SXXgcc
 
 GCC_BUILD_DIR=$(BUILD_DIR)/gcc
 GCC_SOURCE_DIR=$(SOURCE_DIR)/gcc
@@ -256,12 +256,12 @@ $(GCC_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(GCC_IPK_DIR)/opt/sbin or $(GCC_IPK_DIR)/opt/bin
+# Binaries should be installed into $(GCC_IPK_DIR)$(TARGET_PREFIX)/sbin or $(GCC_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(GCC_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(GCC_IPK_DIR)/opt/etc/gcc/...
-# Documentation files should be installed in $(GCC_IPK_DIR)/opt/doc/gcc/...
-# Daemon startup scripts should be installed in $(GCC_IPK_DIR)/opt/etc/init.d/S??gcc
+# Libraries and include files should be installed into $(GCC_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(GCC_IPK_DIR)$(TARGET_PREFIX)/etc/gcc/...
+# Documentation files should be installed in $(GCC_IPK_DIR)$(TARGET_PREFIX)/doc/gcc/...
+# Daemon startup scripts should be installed in $(GCC_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??gcc
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -270,18 +270,18 @@ $(GCC_IPK): $(GCC_BUILD_DIR)/.built
 	PATH=`dirname $(TARGET_CC)`:$(STAGING_DIR)/bin:$(PATH) \
 	$(GCC_BUILD_EXTRA_ENV) \
 		$(MAKE) -C $(GCC_BUILD_DIR) DESTDIR=$(GCC_IPK_DIR) install
-	rm -f $(GCC_IPK_DIR)/opt/lib/libiberty.a $(GCC_IPK_DIR)/opt/info/dir $(GCC_IPK_DIR)/opt/info/dir.old
-	rm -f $(GCC_IPK_DIR)/opt/lib/libstdc++.so*
+	rm -f $(GCC_IPK_DIR)$(TARGET_PREFIX)/lib/libiberty.a $(GCC_IPK_DIR)$(TARGET_PREFIX)/info/dir $(GCC_IPK_DIR)$(TARGET_PREFIX)/info/dir.old
+	rm -f $(GCC_IPK_DIR)$(TARGET_PREFIX)/lib/libstdc++.so*
 ifeq (wdtv, $(OPTWARE_TARGET))
-	rm -f $(GCC_IPK_DIR)/opt/lib/lib*.so* $(GCC_IPK_DIR)/opt/include/*.h
+	rm -f $(GCC_IPK_DIR)$(TARGET_PREFIX)/lib/lib*.so* $(GCC_IPK_DIR)$(TARGET_PREFIX)/include/*.h
 endif
 ifeq (uclibc-opt, $(filter uclibc-opt, $(PACKAGES)))
-	rm -f $(GCC_IPK_DIR)/opt/lib/libgcc_s.so*
+	rm -f $(GCC_IPK_DIR)$(TARGET_PREFIX)/lib/libgcc_s.so*
 endif
-	-cd $(GCC_IPK_DIR)/opt/libexec/gcc/`$(TARGET_CC) -dumpmachine`/$(GCC_VERSION); \
+	-cd $(GCC_IPK_DIR)$(TARGET_PREFIX)/libexec/gcc/`$(TARGET_CC) -dumpmachine`/$(GCC_VERSION); \
 		$(STRIP_COMMAND) c* install-tools/fixincl
-	-cd $(GCC_IPK_DIR)/opt/bin; $(STRIP_COMMAND) cpp gcc g++ gcov
-	rm -f $(GCC_IPK_DIR)/opt/share/info/dir
+	-cd $(GCC_IPK_DIR)$(TARGET_PREFIX)/bin; $(STRIP_COMMAND) cpp gcc g++ gcov
+	rm -f $(GCC_IPK_DIR)$(TARGET_PREFIX)/share/info/dir
 	$(MAKE) $(GCC_IPK_DIR)/CONTROL/control
 	echo $(GCC_CONFFILES) | sed -e 's/ /\n/g' > $(GCC_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GCC_IPK_DIR)

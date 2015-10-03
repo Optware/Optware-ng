@@ -40,7 +40,7 @@ SER2NET_IPK_VERSION=1
 
 #
 # SER2NET_CONFFILES should be a list of user-editable files
-SER2NET_CONFFILES=/opt/etc/ser2net.conf /opt/etc/init.d/S95ser2net
+SER2NET_CONFFILES=$(TARGET_PREFIX)/etc/ser2net.conf $(TARGET_PREFIX)/etc/init.d/S95ser2net
 
 #
 # SER2NET_PATCHES should list any patches, in the the order in
@@ -115,7 +115,7 @@ $(SER2NET_BUILD_DIR)/.configured: $(DL_DIR)/$(SER2NET_SOURCE) $(SER2NET_PATCHES)
 	if test "$(BUILD_DIR)/$(SER2NET_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(SER2NET_DIR) $(@D) ; \
 	fi
-	sed -i -e 's/\/etc\/ser2net\.conf/\/opt\/etc\/ser2net.conf/g' $(SER2NET_BUILD_DIR)/ser2net.8 $(SER2NET_BUILD_DIR)/ser2net.c
+	sed -i -e 's/\/etc\/ser2net\.conf/\$(TARGET_PREFIX)\/etc\/ser2net.conf/g' $(SER2NET_BUILD_DIR)/ser2net.8 $(SER2NET_BUILD_DIR)/ser2net.c
 	sed -i -e 's/ttyS/usb\/tts\//g' $(SER2NET_BUILD_DIR)/ser2net.conf
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -179,24 +179,24 @@ $(SER2NET_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(SER2NET_IPK_DIR)/opt/sbin or $(SER2NET_IPK_DIR)/opt/bin
+# Binaries should be installed into $(SER2NET_IPK_DIR)$(TARGET_PREFIX)/sbin or $(SER2NET_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(SER2NET_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(SER2NET_IPK_DIR)/opt/etc/ser2net/...
-# Documentation files should be installed in $(SER2NET_IPK_DIR)/opt/doc/ser2net/...
-# Daemon startup scripts should be installed in $(SER2NET_IPK_DIR)/opt/etc/init.d/S??ser2net
+# Libraries and include files should be installed into $(SER2NET_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(SER2NET_IPK_DIR)$(TARGET_PREFIX)/etc/ser2net/...
+# Documentation files should be installed in $(SER2NET_IPK_DIR)$(TARGET_PREFIX)/doc/ser2net/...
+# Daemon startup scripts should be installed in $(SER2NET_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??ser2net
 #
 # You may need to patch your application to make it use these locations.
 #
 $(SER2NET_IPK): $(SER2NET_BUILD_DIR)/.built
 	rm -rf $(SER2NET_IPK_DIR) $(BUILD_DIR)/ser2net_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SER2NET_BUILD_DIR) DESTDIR=$(SER2NET_IPK_DIR) install-am
-	$(STRIP_COMMAND) $(SER2NET_IPK_DIR)/opt/sbin/ser2net
-	$(INSTALL) -d $(SER2NET_IPK_DIR)/opt/etc/
-	$(INSTALL) -m 644 $(SER2NET_BUILD_DIR)/ser2net.conf $(SER2NET_IPK_DIR)/opt/etc/ser2net.conf
-	$(INSTALL) -d $(SER2NET_IPK_DIR)/opt/etc/init.d
-	$(INSTALL) -m 755 $(SER2NET_BUILD_DIR)/ser2net.init $(SER2NET_IPK_DIR)/opt/etc/init.d/S95ser2net
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SER2NET_IPK_DIR)/opt/etc/init.d/SXXser2net
+	$(STRIP_COMMAND) $(SER2NET_IPK_DIR)$(TARGET_PREFIX)/sbin/ser2net
+	$(INSTALL) -d $(SER2NET_IPK_DIR)$(TARGET_PREFIX)/etc/
+	$(INSTALL) -m 644 $(SER2NET_BUILD_DIR)/ser2net.conf $(SER2NET_IPK_DIR)$(TARGET_PREFIX)/etc/ser2net.conf
+	$(INSTALL) -d $(SER2NET_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(INSTALL) -m 755 $(SER2NET_BUILD_DIR)/ser2net.init $(SER2NET_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S95ser2net
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SER2NET_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXser2net
 	$(MAKE) $(SER2NET_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(SER2NET_SOURCE_DIR)/postinst $(SER2NET_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SER2NET_IPK_DIR)/CONTROL/postinst

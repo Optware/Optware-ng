@@ -40,7 +40,7 @@ LIBDAEMON_IPK_VERSION=1
 
 #
 # LIBDAEMON_CONFFILES should be a list of user-editable files
-#LIBDAEMON_CONFFILES=/opt/etc/libdaemon.conf /opt/etc/init.d/SXXlibdaemon
+#LIBDAEMON_CONFFILES=$(TARGET_PREFIX)/etc/libdaemon.conf $(TARGET_PREFIX)/etc/init.d/SXXlibdaemon
 
 #
 # LIBDAEMON_PATCHES should list any patches, in the the order in
@@ -181,24 +181,24 @@ $(LIBDAEMON_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LIBDAEMON_IPK_DIR)/opt/sbin or $(LIBDAEMON_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LIBDAEMON_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LIBDAEMON_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LIBDAEMON_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LIBDAEMON_IPK_DIR)/opt/etc/libdaemon/...
-# Documentation files should be installed in $(LIBDAEMON_IPK_DIR)/opt/doc/libdaemon/...
-# Daemon startup scripts should be installed in $(LIBDAEMON_IPK_DIR)/opt/etc/init.d/S??libdaemon
+# Libraries and include files should be installed into $(LIBDAEMON_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LIBDAEMON_IPK_DIR)$(TARGET_PREFIX)/etc/libdaemon/...
+# Documentation files should be installed in $(LIBDAEMON_IPK_DIR)$(TARGET_PREFIX)/doc/libdaemon/...
+# Daemon startup scripts should be installed in $(LIBDAEMON_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??libdaemon
 #
 # You may need to patch your application to make it use these locations.
 #
 $(LIBDAEMON_IPK): $(LIBDAEMON_BUILD_DIR)/.built
 	rm -rf $(LIBDAEMON_IPK_DIR) $(BUILD_DIR)/libdaemon_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBDAEMON_BUILD_DIR) DESTDIR=$(LIBDAEMON_IPK_DIR) install-strip
-	rm -f $(LIBDAEMON_IPK_DIR)/opt/lib/libdaemon.la
-#	$(INSTALL) -d $(LIBDAEMON_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(LIBDAEMON_SOURCE_DIR)/libdaemon.conf $(LIBDAEMON_IPK_DIR)/opt/etc/libdaemon.conf
-#	$(INSTALL) -d $(LIBDAEMON_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(LIBDAEMON_SOURCE_DIR)/rc.libdaemon $(LIBDAEMON_IPK_DIR)/opt/etc/init.d/SXXlibdaemon
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBDAEMON_IPK_DIR)/opt/etc/init.d/SXXlibdaemon
+	rm -f $(LIBDAEMON_IPK_DIR)$(TARGET_PREFIX)/lib/libdaemon.la
+#	$(INSTALL) -d $(LIBDAEMON_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(LIBDAEMON_SOURCE_DIR)/libdaemon.conf $(LIBDAEMON_IPK_DIR)$(TARGET_PREFIX)/etc/libdaemon.conf
+#	$(INSTALL) -d $(LIBDAEMON_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(LIBDAEMON_SOURCE_DIR)/rc.libdaemon $(LIBDAEMON_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibdaemon
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBDAEMON_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibdaemon
 	$(MAKE) $(LIBDAEMON_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(LIBDAEMON_SOURCE_DIR)/postinst $(LIBDAEMON_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBDAEMON_IPK_DIR)/CONTROL/postinst

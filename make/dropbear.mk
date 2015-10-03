@@ -27,7 +27,7 @@ DROPBEAR_PATCHES=$(DROPBEAR_SOURCE_DIR)/configure.patch \
 		 $(DROPBEAR_SOURCE_DIR)/options.h.patch \
 		 $(DROPBEAR_SOURCE_DIR)/auth_pubkey_path.patch \
 
-DROPBEAR_CONFFILES=/opt/etc/default/dropbear /opt/etc/init.d/S51dropbear
+DROPBEAR_CONFFILES=$(TARGET_PREFIX)/etc/default/dropbear $(TARGET_PREFIX)/etc/init.d/S51dropbear
 
 DROPBEAR_CPPFLAGS=
 DROPBEAR_LDFLAGS=
@@ -99,16 +99,16 @@ $(DROPBEAR_IPK_DIR)/CONTROL/control:
 
 $(DROPBEAR_IPK): $(DROPBEAR_BUILD_DIR)/.built
 	rm -rf $(DROPBEAR_IPK_DIR) $(BUILD_DIR)/dropbear_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(DROPBEAR_IPK_DIR)/opt/sbin $(DROPBEAR_IPK_DIR)/opt/bin
-	$(STRIP_COMMAND) $(DROPBEAR_BUILD_DIR)/dropbearmulti -o $(DROPBEAR_IPK_DIR)/opt/sbin/dropbearmulti
-	cd $(DROPBEAR_IPK_DIR)/opt/sbin && ln -sf dropbearmulti dropbear
-	cd $(DROPBEAR_IPK_DIR)/opt/sbin && ln -sf dropbearmulti dropbearkey
-	cd $(DROPBEAR_IPK_DIR)/opt/sbin && ln -sf dropbearmulti dropbearconvert
-	cd $(DROPBEAR_IPK_DIR)/opt/bin && ln -sf ../sbin/dropbearmulti dbclient
-	$(INSTALL) -d $(DROPBEAR_IPK_DIR)/opt/etc/init.d
-	$(INSTALL) -m 755 $(DROPBEAR_SOURCE_DIR)/rc.dropbear $(DROPBEAR_IPK_DIR)/opt/etc/init.d/S51dropbear
-	$(INSTALL) -d $(DROPBEAR_IPK_DIR)/opt/etc/default
-	$(INSTALL) -m 755 $(DROPBEAR_SOURCE_DIR)/dropbear.default $(DROPBEAR_IPK_DIR)/opt/etc/default/dropbear
+	$(INSTALL) -d $(DROPBEAR_IPK_DIR)$(TARGET_PREFIX)/sbin $(DROPBEAR_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(STRIP_COMMAND) $(DROPBEAR_BUILD_DIR)/dropbearmulti -o $(DROPBEAR_IPK_DIR)$(TARGET_PREFIX)/sbin/dropbearmulti
+	cd $(DROPBEAR_IPK_DIR)$(TARGET_PREFIX)/sbin && ln -sf dropbearmulti dropbear
+	cd $(DROPBEAR_IPK_DIR)$(TARGET_PREFIX)/sbin && ln -sf dropbearmulti dropbearkey
+	cd $(DROPBEAR_IPK_DIR)$(TARGET_PREFIX)/sbin && ln -sf dropbearmulti dropbearconvert
+	cd $(DROPBEAR_IPK_DIR)$(TARGET_PREFIX)/bin && ln -sf ../sbin/dropbearmulti dbclient
+	$(INSTALL) -d $(DROPBEAR_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(INSTALL) -m 755 $(DROPBEAR_SOURCE_DIR)/rc.dropbear $(DROPBEAR_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S51dropbear
+	$(INSTALL) -d $(DROPBEAR_IPK_DIR)$(TARGET_PREFIX)/etc/default
+	$(INSTALL) -m 755 $(DROPBEAR_SOURCE_DIR)/dropbear.default $(DROPBEAR_IPK_DIR)$(TARGET_PREFIX)/etc/default/dropbear
 	$(MAKE) $(DROPBEAR_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 644 $(DROPBEAR_SOURCE_DIR)/postinst $(DROPBEAR_IPK_DIR)/CONTROL/postinst
 	$(INSTALL) -m 644 $(DROPBEAR_SOURCE_DIR)/prerm    $(DROPBEAR_IPK_DIR)/CONTROL/prerm

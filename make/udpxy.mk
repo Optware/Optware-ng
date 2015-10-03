@@ -50,7 +50,7 @@ UDPXY_IPK_VERSION=1
 
 #
 # UDPXY_CONFFILES should be a list of user-editable files
-UDPXY_CONFFILES=/opt/etc/init.d/S29udpxy
+UDPXY_CONFFILES=$(TARGET_PREFIX)/etc/init.d/S29udpxy
 
 #
 # UDPXY_PATCHES should list any patches, in the the order in
@@ -186,12 +186,12 @@ $(UDPXY_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(UDPXY_IPK_DIR)/opt/sbin or $(UDPXY_IPK_DIR)/opt/bin
+# Binaries should be installed into $(UDPXY_IPK_DIR)$(TARGET_PREFIX)/sbin or $(UDPXY_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(UDPXY_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(UDPXY_IPK_DIR)/opt/etc/udpxy/...
-# Documentation files should be installed in $(UDPXY_IPK_DIR)/opt/doc/udpxy/...
-# Daemon startup scripts should be installed in $(UDPXY_IPK_DIR)/opt/etc/init.d/S??udpxy
+# Libraries and include files should be installed into $(UDPXY_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(UDPXY_IPK_DIR)$(TARGET_PREFIX)/etc/udpxy/...
+# Documentation files should be installed in $(UDPXY_IPK_DIR)$(TARGET_PREFIX)/doc/udpxy/...
+# Daemon startup scripts should be installed in $(UDPXY_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??udpxy
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -199,13 +199,13 @@ $(UDPXY_IPK): $(UDPXY_BUILD_DIR)/.built
 	rm -rf $(UDPXY_IPK_DIR) $(BUILD_DIR)/udpxy_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(UDPXY_BUILD_DIR) install \
 		INSTALLROOT=$(UDPXY_IPK_DIR)$(TARGET_PREFIX) \
-		MANPAGE_DIR=$(UDPXY_IPK_DIR)/opt/share/man/man1
-	$(STRIP_COMMAND) $(UDPXY_IPK_DIR)/opt/bin/{udpxy,udpxrec}
-#	$(INSTALL) -d $(UDPXY_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(UDPXY_SOURCE_DIR)/udpxy.conf $(UDPXY_IPK_DIR)/opt/etc/udpxy.conf
-	$(INSTALL) -d $(UDPXY_IPK_DIR)/opt/etc/init.d
-	$(INSTALL) -m 755 $(UDPXY_SOURCE_DIR)/rc.udpxy $(UDPXY_IPK_DIR)/opt/etc/init.d/S29udpxy
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(UDPXY_IPK_DIR)/opt/etc/init.d/SXXudpxy
+		MANPAGE_DIR=$(UDPXY_IPK_DIR)$(TARGET_PREFIX)/share/man/man1
+	$(STRIP_COMMAND) $(UDPXY_IPK_DIR)$(TARGET_PREFIX)/bin/{udpxy,udpxrec}
+#	$(INSTALL) -d $(UDPXY_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(UDPXY_SOURCE_DIR)/udpxy.conf $(UDPXY_IPK_DIR)$(TARGET_PREFIX)/etc/udpxy.conf
+	$(INSTALL) -d $(UDPXY_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(INSTALL) -m 755 $(UDPXY_SOURCE_DIR)/rc.udpxy $(UDPXY_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S29udpxy
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(UDPXY_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXudpxy
 	$(MAKE) $(UDPXY_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(UDPXY_SOURCE_DIR)/postinst $(UDPXY_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(UDPXY_IPK_DIR)/CONTROL/postinst

@@ -190,25 +190,25 @@ $(EXPAT_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(EXPAT_IPK_DIR)/opt/sbin or $(EXPAT_IPK_DIR)/opt/bin
+# Binaries should be installed into $(EXPAT_IPK_DIR)$(TARGET_PREFIX)/sbin or $(EXPAT_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(EXPAT_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(EXPAT_IPK_DIR)/opt/etc/expat/...
-# Documentation files should be installed in $(EXPAT_IPK_DIR)/opt/doc/expat/...
-# Daemon startup scripts should be installed in $(EXPAT_IPK_DIR)/opt/etc/init.d/S??expat
+# Libraries and include files should be installed into $(EXPAT_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(EXPAT_IPK_DIR)$(TARGET_PREFIX)/etc/expat/...
+# Documentation files should be installed in $(EXPAT_IPK_DIR)$(TARGET_PREFIX)/doc/expat/...
+# Daemon startup scripts should be installed in $(EXPAT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??expat
 #
 # You may need to patch your application to make it use these locations.
 #
 $(EXPAT_IPK): $(EXPAT_BUILD_DIR)/.built
 	rm -rf $(EXPAT_IPK_DIR) $(BUILD_DIR)/expat_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(EXPAT_IPK_DIR)/opt/lib $(EXPAT_IPK_DIR)/opt/include
+	$(INSTALL) -d $(EXPAT_IPK_DIR)$(TARGET_PREFIX)/lib $(EXPAT_IPK_DIR)$(TARGET_PREFIX)/include
 	(cd $(EXPAT_BUILD_DIR); \
-		./libtool --mode=install install -c libexpat.la $(EXPAT_IPK_DIR)/opt/lib/libexpat.la ; \
-		$(INSTALL) -c -m 644 ./lib/expat.h ./lib/expat_external.h $(EXPAT_IPK_DIR)/opt/include ; \
+		./libtool --mode=install install -c libexpat.la $(EXPAT_IPK_DIR)$(TARGET_PREFIX)/lib/libexpat.la ; \
+		$(INSTALL) -c -m 644 ./lib/expat.h ./lib/expat_external.h $(EXPAT_IPK_DIR)$(TARGET_PREFIX)/include ; \
 	)
-	$(STRIP_COMMAND) $(EXPAT_IPK_DIR)/opt/lib/libexpat.so
+	$(STRIP_COMMAND) $(EXPAT_IPK_DIR)$(TARGET_PREFIX)/lib/libexpat.so
 	# avoid problems with libtool later
-	rm -f $(EXPAT_IPK_DIR)/opt/lib/libexpat.la
+	rm -f $(EXPAT_IPK_DIR)$(TARGET_PREFIX)/lib/libexpat.la
 	$(MAKE) $(EXPAT_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(EXPAT_IPK_DIR)
 

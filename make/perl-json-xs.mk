@@ -90,7 +90,7 @@ $(PERL-JSON-XS_IPK): $(PERL-JSON-XS_BUILD_DIR)/.built
 	rm -rf $(PERL-JSON-XS_IPK_DIR) $(BUILD_DIR)/perl-json-xs_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PERL-JSON-XS_BUILD_DIR) DESTDIR=$(PERL-JSON-XS_IPK_DIR) install
 	find $(PERL-JSON-XS_IPK_DIR)$(TARGET_PREFIX) -name 'perllocal.pod' -exec rm -f {} \;
-	(cd $(PERL-JSON-XS_IPK_DIR)/opt/lib/perl5 ; \
+	(cd $(PERL-JSON-XS_IPK_DIR)$(TARGET_PREFIX)/lib/perl5 ; \
 		find . -name '*.so' -exec chmod +w {} \; ; \
 		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
 		find . -name '*.so' -exec chmod -w {} \; ; \

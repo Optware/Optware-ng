@@ -44,7 +44,7 @@ SURFRAW_IPK_VERSION=1
 
 #
 # SURFRAW_CONFFILES should be a list of user-editable files
-#SURFRAW_CONFFILES=/opt/etc/surfraw.conf /opt/etc/init.d/SXXsurfraw
+#SURFRAW_CONFFILES=$(TARGET_PREFIX)/etc/surfraw.conf $(TARGET_PREFIX)/etc/init.d/SXXsurfraw
 
 #
 # SURFRAW_PATCHES should list any patches, in the the order in
@@ -181,19 +181,19 @@ $(SURFRAW_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(SURFRAW_IPK_DIR)/opt/sbin or $(SURFRAW_IPK_DIR)/opt/bin
+# Binaries should be installed into $(SURFRAW_IPK_DIR)$(TARGET_PREFIX)/sbin or $(SURFRAW_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(SURFRAW_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(SURFRAW_IPK_DIR)/opt/etc/surfraw/...
-# Documentation files should be installed in $(SURFRAW_IPK_DIR)/opt/doc/surfraw/...
-# Daemon startup scripts should be installed in $(SURFRAW_IPK_DIR)/opt/etc/init.d/S??surfraw
+# Libraries and include files should be installed into $(SURFRAW_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(SURFRAW_IPK_DIR)$(TARGET_PREFIX)/etc/surfraw/...
+# Documentation files should be installed in $(SURFRAW_IPK_DIR)$(TARGET_PREFIX)/doc/surfraw/...
+# Daemon startup scripts should be installed in $(SURFRAW_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??surfraw
 #
 # You may need to patch your application to make it use these locations.
 #
 $(SURFRAW_IPK): $(SURFRAW_BUILD_DIR)/.built
 	rm -rf $(SURFRAW_IPK_DIR) $(BUILD_DIR)/surfraw_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SURFRAW_BUILD_DIR) DESTDIR=$(SURFRAW_IPK_DIR) install-strip
-	sed -i -e '/^#!\/usr\/bin\/perl/s|/usr/|/opt/|' $(SURFRAW_IPK_DIR)/opt/bin/*
+	sed -i -e '/^#!\/usr\/bin\/perl/s|/usr/|$(TARGET_PREFIX)/|' $(SURFRAW_IPK_DIR)$(TARGET_PREFIX)/bin/*
 	$(MAKE) $(SURFRAW_IPK_DIR)/CONTROL/control
 	echo $(SURFRAW_CONFFILES) | sed -e 's/ /\n/g' > $(SURFRAW_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SURFRAW_IPK_DIR)

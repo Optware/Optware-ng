@@ -50,7 +50,7 @@ WIZD_IPK_VERSION=2
 
 #
 # WIZD_CONFFILES should be a list of user-editable files
-WIZD_CONFFILES=/opt/etc/wizd.conf
+WIZD_CONFFILES=$(TARGET_PREFIX)/etc/wizd.conf
 
 #
 # WIZD_PATCHES should list any patches, in the the order in
@@ -138,7 +138,7 @@ wizd-unpack: $(WIZD_BUILD_DIR)/.configured
 $(WIZD_BUILD_DIR)/.built: $(WIZD_BUILD_DIR)/.configured
 	rm -f $(WIZD_BUILD_DIR)/.built
 	sed -i "s#-I/usr/local/include#$(WIZD_CPPFLAGS)#g" $(WIZD_BUILD_DIR)/Makefile
-	sed -i "s#/usr/local#${STAGING_DIR}/opt#g" $(WIZD_BUILD_DIR)/Makefile 
+	sed -i "s#/usr/local#${STAGING_DIR}$(TARGET_PREFIX)#g" $(WIZD_BUILD_DIR)/Makefile 
 	sed -i "s/-static //" $(WIZD_BUILD_DIR)/Makefile
 	CPPFLAGS="$(STAGING_CPPFLAGS) $(WIZD_CPPFLAGS)" \
        LDFLAGS="$(STAGING_LDFLAGS) $(WIZD_LDFLAGS)" \
@@ -182,27 +182,27 @@ $(WIZD_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(WIZD_IPK_DIR)/opt/sbin or $(WIZD_IPK_DIR)/opt/bin
+# Binaries should be installed into $(WIZD_IPK_DIR)$(TARGET_PREFIX)/sbin or $(WIZD_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(WIZD_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(WIZD_IPK_DIR)/opt/etc/wizd/...
-# Documentation files should be installed in $(WIZD_IPK_DIR)/opt/doc/wizd/...
-# Daemon startup scripts should be installed in $(WIZD_IPK_DIR)/opt/etc/init.d/S??wizd
+# Libraries and include files should be installed into $(WIZD_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(WIZD_IPK_DIR)$(TARGET_PREFIX)/etc/wizd/...
+# Documentation files should be installed in $(WIZD_IPK_DIR)$(TARGET_PREFIX)/doc/wizd/...
+# Daemon startup scripts should be installed in $(WIZD_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??wizd
 #
 # You may need to patch your application to make it use these locations.
 #
 $(WIZD_IPK): $(WIZD_BUILD_DIR)/.built
 	rm -rf $(WIZD_IPK_DIR) $(BUILD_DIR)/wizd_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(WIZD_IPK_DIR)/opt/sbin/
-	$(INSTALL) -m 755 $(WIZD_BUILD_DIR)/wizd $(WIZD_IPK_DIR)/opt/sbin/wizd
-	$(INSTALL) -d $(WIZD_IPK_DIR)/opt/etc/
-	$(INSTALL) -m 644 $(WIZD_SOURCE_DIR)/wizd.conf $(WIZD_IPK_DIR)/opt/etc/wizd.conf
-	$(INSTALL) -d $(WIZD_IPK_DIR)/opt/etc/init.d
-	$(INSTALL) -m 755 $(WIZD_SOURCE_DIR)/rc.wizd $(WIZD_IPK_DIR)/opt/etc/init.d/S84wizd
-	$(INSTALL) -d $(WIZD_IPK_DIR)/opt/share/wizd
-	#cp -rip $(WIZD_BUILD_DIR)/docroot $(WIZD_IPK_DIR)/opt/share/wizd
-	$(INSTALL) -d $(WIZD_IPK_DIR)/opt/share/wizd/docroot
-	cp -rip $(WIZD_BUILD_DIR)/skin $(WIZD_IPK_DIR)/opt/share/wizd
+	$(INSTALL) -d $(WIZD_IPK_DIR)$(TARGET_PREFIX)/sbin/
+	$(INSTALL) -m 755 $(WIZD_BUILD_DIR)/wizd $(WIZD_IPK_DIR)$(TARGET_PREFIX)/sbin/wizd
+	$(INSTALL) -d $(WIZD_IPK_DIR)$(TARGET_PREFIX)/etc/
+	$(INSTALL) -m 644 $(WIZD_SOURCE_DIR)/wizd.conf $(WIZD_IPK_DIR)$(TARGET_PREFIX)/etc/wizd.conf
+	$(INSTALL) -d $(WIZD_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(INSTALL) -m 755 $(WIZD_SOURCE_DIR)/rc.wizd $(WIZD_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S84wizd
+	$(INSTALL) -d $(WIZD_IPK_DIR)$(TARGET_PREFIX)/share/wizd
+	#cp -rip $(WIZD_BUILD_DIR)/docroot $(WIZD_IPK_DIR)$(TARGET_PREFIX)/share/wizd
+	$(INSTALL) -d $(WIZD_IPK_DIR)$(TARGET_PREFIX)/share/wizd/docroot
+	cp -rip $(WIZD_BUILD_DIR)/skin $(WIZD_IPK_DIR)$(TARGET_PREFIX)/share/wizd
 	$(MAKE) $(WIZD_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 755 $(WIZD_SOURCE_DIR)/postinst $(WIZD_IPK_DIR)/CONTROL/postinst
 	$(INSTALL) -m 755 $(WIZD_SOURCE_DIR)/prerm $(WIZD_IPK_DIR)/CONTROL/prerm

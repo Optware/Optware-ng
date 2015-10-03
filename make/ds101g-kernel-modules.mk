@@ -27,7 +27,7 @@ DS101G-KERNEL-MODULES_IPK_VERSION=6
 
 #
 # DS101G-KERNEL-MODULES_CONFFILES should be a list of user-editable files
-#DS101G-KERNEL-MODULES_CONFFILES=/opt/etc/ds101g-kernel-modules.conf /opt/etc/init.d/SXXds101g-kernel-modules
+#DS101G-KERNEL-MODULES_CONFFILES=$(TARGET_PREFIX)/etc/ds101g-kernel-modules.conf $(TARGET_PREFIX)/etc/init.d/SXXds101g-kernel-modules
 
 #
 # DS101G-KERNEL-MODULES_PATCHES should list any patches, in the the order in
@@ -145,12 +145,12 @@ $(DS101G-KERNEL-MODULES_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(DS101G-KERNEL-MODULES_IPK_DIR)/opt/sbin or $(DS101G-KERNEL-MODULES_IPK_DIR)/opt/bin
+# Binaries should be installed into $(DS101G-KERNEL-MODULES_IPK_DIR)$(TARGET_PREFIX)/sbin or $(DS101G-KERNEL-MODULES_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(DS101G-KERNEL-MODULES_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(DS101G-KERNEL-MODULES_IPK_DIR)/opt/etc/ds101g-kernel-modules/...
-# Documentation files should be installed in $(DS101G-KERNEL-MODULES_IPK_DIR)/opt/doc/ds101g-kernel-modules/...
-# Daemon startup scripts should be installed in $(DS101G-KERNEL-MODULES_IPK_DIR)/opt/etc/init.d/S??ds101g-kernel-modules
+# Libraries and include files should be installed into $(DS101G-KERNEL-MODULES_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(DS101G-KERNEL-MODULES_IPK_DIR)$(TARGET_PREFIX)/etc/ds101g-kernel-modules/...
+# Documentation files should be installed in $(DS101G-KERNEL-MODULES_IPK_DIR)$(TARGET_PREFIX)/doc/ds101g-kernel-modules/...
+# Daemon startup scripts should be installed in $(DS101G-KERNEL-MODULES_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??ds101g-kernel-modules
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -160,8 +160,8 @@ $(DS101G-KERNEL-MODULES_BUILD_DIR)/.ipkdone: $(DS101G-KERNEL-MODULES_BUILD_DIR)/
 	$(MAKE) -C $(DS101G-KERNEL-MODULES_BUILD_DIR) modules_install
 	rm -rf $(DS101G-KERNEL-MODULES_IPK_DIR)/lib/modules/2.4.22-uc0/kernel/drivers/synobios
 	for m in $(DS101G-KERNEL-MODULES); do \
-	  $(INSTALL) -d $(DS101G-KERNEL-MODULES_IPK_DIR)-$$m/opt/lib/modules; \
-	  $(INSTALL) -m 644 `find $(DS101G-KERNEL-MODULES_IPK_DIR) -name $$m.o` $(DS101G-KERNEL-MODULES_IPK_DIR)-$$m/opt/lib/modules; \
+	  $(INSTALL) -d $(DS101G-KERNEL-MODULES_IPK_DIR)-$$m$(TARGET_PREFIX)/lib/modules; \
+	  $(INSTALL) -m 644 `find $(DS101G-KERNEL-MODULES_IPK_DIR) -name $$m.o` $(DS101G-KERNEL-MODULES_IPK_DIR)-$$m$(TARGET_PREFIX)/lib/modules; \
 	done
 	$(MAKE) $(DS101G-KERNEL-MODULES_IPK_DIR)/CONTROL/control
 	for m in $(DS101G-KERNEL-MODULES); do \

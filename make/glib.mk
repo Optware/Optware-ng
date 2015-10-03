@@ -44,7 +44,7 @@ GLIB_LOCALES=
 
 #
 # GLIB_CONFFILES should be a list of user-editable files
-#GLIB_CONFFILES=/opt/etc/glib.conf /opt/etc/init.d/SXXglib
+#GLIB_CONFFILES=$(TARGET_PREFIX)/etc/glib.conf $(TARGET_PREFIX)/etc/init.d/SXXglib
 
 #
 # GLIB_PATCHES should list any patches, in the the order in
@@ -163,9 +163,9 @@ endif
 	cp $(SOURCE_DIR)/glib/glib.cache $(@D)/arm.cache
 #	sed -i -e '/^ALL_LINGUAS=/s/"[^"]\+"$$/$(GLIB_LOCALES)/;' $(@D)/configure
 	sed -i -e 's/^ *$$as_echo_n /echo -n /' $(@D)/configure
-#	fallback to "/opt/share" if XDG_DATA_DIRS env variable not given instead of "/usr/local/share:/usr/share"
-	sed -i -e 's|xdg_data_dirs = ".*|xdg_data_dirs = "/opt/share/";|' $(@D)/gio/xdgmime/xdgmime.c
-	sed -i -e 's|data_dirs = ".*|data_dirs = "/opt/share/";|' $(@D)/glib/gutils.c
+#	fallback to "$(TARGET_PREFIX)/share" if XDG_DATA_DIRS env variable not given instead of "/usr/local/share:/usr/share"
+	sed -i -e 's|xdg_data_dirs = ".*|xdg_data_dirs = "$(TARGET_PREFIX)/share/";|' $(@D)/gio/xdgmime/xdgmime.c
+	sed -i -e 's|data_dirs = ".*|data_dirs = "$(TARGET_PREFIX)/share/";|' $(@D)/glib/gutils.c
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GLIB_CPPFLAGS)" \
@@ -252,20 +252,20 @@ $(GLIB_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(GLIB_IPK_DIR)/opt/sbin or $(GLIB_IPK_DIR)/opt/bin
+# Binaries should be installed into $(GLIB_IPK_DIR)$(TARGET_PREFIX)/sbin or $(GLIB_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(GLIB_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(GLIB_IPK_DIR)/opt/etc/glib/...
-# Documentation files should be installed in $(GLIB_IPK_DIR)/opt/doc/glib/...
-# Daemon startup scripts should be installed in $(GLIB_IPK_DIR)/opt/etc/init.d/S??glib
+# Libraries and include files should be installed into $(GLIB_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(GLIB_IPK_DIR)$(TARGET_PREFIX)/etc/glib/...
+# Documentation files should be installed in $(GLIB_IPK_DIR)$(TARGET_PREFIX)/doc/glib/...
+# Daemon startup scripts should be installed in $(GLIB_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??glib
 #
 # You may need to patch your application to make it use these locations.
 #
 $(GLIB_IPK): $(GLIB_BUILD_DIR)/.built
 	rm -rf $(GLIB_IPK_DIR) $(BUILD_DIR)/glib_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(GLIB_BUILD_DIR) install-strip prefix=$(GLIB_IPK_DIR)/opt
-	rm -rf $(GLIB_IPK_DIR)/opt/share/gtk-doc
-	rm -rf $(GLIB_IPK_DIR)/opt/man
+	$(MAKE) -C $(GLIB_BUILD_DIR) install-strip prefix=$(GLIB_IPK_DIR)$(TARGET_PREFIX)
+	rm -rf $(GLIB_IPK_DIR)$(TARGET_PREFIX)/share/gtk-doc
+	rm -rf $(GLIB_IPK_DIR)$(TARGET_PREFIX)/man
 	$(MAKE) $(GLIB_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 755 $(GLIB_SOURCE_DIR)/postinst $(GLIB_IPK_DIR)/CONTROL/postinst
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GLIB_IPK_DIR)

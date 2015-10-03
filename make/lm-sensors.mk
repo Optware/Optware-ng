@@ -40,7 +40,7 @@ LM_SENSORS_IPK_VERSION=1
 
 #
 # LM_SENSORS_CONFFILES should be a list of user-editable files
-LM_SENSORS_CONFFILES=/opt/etc/sensors3.conf
+LM_SENSORS_CONFFILES=$(TARGET_PREFIX)/etc/sensors3.conf
 
 #
 # LM_SENSORS_PATCHES should list any patches, in the the order in
@@ -147,7 +147,7 @@ $(LM_SENSORS_BUILD_DIR)/.built: $(LM_SENSORS_BUILD_DIR)/.configured
 		LDFLAGS="$(STAGING_LDFLAGS) $(LM_SENSORS_LDFLAGS)" \
 		EXLDFLAGS="$(STAGING_LDFLAGS) $(LM_SENSORS_LDFLAGS)" \
 		PREFIX=$(TARGET_PREFIX) \
-		ETCDIR=/opt/etc \
+		ETCDIR=$(TARGET_PREFIX)/etc \
 		;
 	touch $@
 
@@ -188,12 +188,12 @@ $(LM_SENSORS_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LM_SENSORS_IPK_DIR)/opt/sbin or $(LM_SENSORS_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LM_SENSORS_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LM_SENSORS_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LM_SENSORS_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LM_SENSORS_IPK_DIR)/opt/etc/lm-sensors/...
-# Documentation files should be installed in $(LM_SENSORS_IPK_DIR)/opt/doc/lm-sensors/...
-# Daemon startup scripts should be installed in $(LM_SENSORS_IPK_DIR)/opt/etc/init.d/S??lm-sensors
+# Libraries and include files should be installed into $(LM_SENSORS_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LM_SENSORS_IPK_DIR)$(TARGET_PREFIX)/etc/lm-sensors/...
+# Documentation files should be installed in $(LM_SENSORS_IPK_DIR)$(TARGET_PREFIX)/doc/lm-sensors/...
+# Daemon startup scripts should be installed in $(LM_SENSORS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??lm-sensors
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -206,13 +206,13 @@ $(LM_SENSORS_IPK): $(LM_SENSORS_BUILD_DIR)/.built
 		LDFLAGS="$(STAGING_LDFLAGS) $(LM_SENSORS_LDFLAGS)" \
 		EXLDFLAGS="$(STAGING_LDFLAGS) $(LM_SENSORS_LDFLAGS)" \
 		PREFIX=$(TARGET_PREFIX) \
-		ETCDIR=/opt/etc \
+		ETCDIR=$(TARGET_PREFIX)/etc \
 		;
-	rm -f $(LM_SENSORS_IPK_DIR)/opt/lib/libsensors.a
+	rm -f $(LM_SENSORS_IPK_DIR)$(TARGET_PREFIX)/lib/libsensors.a
 	$(STRIP_COMMAND) \
-		$(LM_SENSORS_IPK_DIR)/opt/bin/sensors \
-		$(LM_SENSORS_IPK_DIR)/opt/sbin/isa* \
-		$(LM_SENSORS_IPK_DIR)/opt/lib/libsensors.so
+		$(LM_SENSORS_IPK_DIR)$(TARGET_PREFIX)/bin/sensors \
+		$(LM_SENSORS_IPK_DIR)$(TARGET_PREFIX)/sbin/isa* \
+		$(LM_SENSORS_IPK_DIR)$(TARGET_PREFIX)/lib/libsensors.so
 	$(MAKE) $(LM_SENSORS_IPK_DIR)/CONTROL/control
 	echo $(LM_SENSORS_CONFFILES) | sed -e 's/ /\n/g' > $(LM_SENSORS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LM_SENSORS_IPK_DIR)

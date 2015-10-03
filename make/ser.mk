@@ -39,7 +39,7 @@ SER_IPK_VERSION=5
 
 #
 # SER_CONFFILES should be a list of user-editable files
-#SER_CONFFILES=/opt/etc/ser.conf /opt/etc/init.d/SXXser
+#SER_CONFFILES=$(TARGET_PREFIX)/etc/ser.conf $(TARGET_PREFIX)/etc/init.d/SXXser
 
 #
 # SER_PATCHES should list any patches, in the the order in
@@ -181,12 +181,12 @@ $(SER_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(SER_IPK_DIR)/opt/sbin or $(SER_IPK_DIR)/opt/bin
+# Binaries should be installed into $(SER_IPK_DIR)$(TARGET_PREFIX)/sbin or $(SER_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(SER_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(SER_IPK_DIR)/opt/etc/ser/...
-# Documentation files should be installed in $(SER_IPK_DIR)/opt/doc/ser/...
-# Daemon startup scripts should be installed in $(SER_IPK_DIR)/opt/etc/init.d/S??ser
+# Libraries and include files should be installed into $(SER_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(SER_IPK_DIR)$(TARGET_PREFIX)/etc/ser/...
+# Documentation files should be installed in $(SER_IPK_DIR)$(TARGET_PREFIX)/doc/ser/...
+# Daemon startup scripts should be installed in $(SER_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??ser
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -197,12 +197,12 @@ $(SER_IPK): $(SER_BUILD_DIR)/.built
 	$(MAKE) -C $(SER_BUILD_DIR) DESTDIR=$(TARGET_PREFIX) \
 		BASEDIR=$(SER_IPK_DIR) LOCALBASE=$(SER_IPK_DIR) \
 		$(SER_MAKEFLAGS) install
-	$(STRIP_COMMAND) $(SER_IPK_DIR)/opt/sbin/ser $(SER_IPK_DIR)/opt/sbin/gen_ha1
-	$(STRIP_COMMAND) $(SER_IPK_DIR)/opt/lib/ser/modules/*.so
-#	$(INSTALL) -d $(SER_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(SER_SOURCE_DIR)/ser.conf $(SER_IPK_DIR)/opt/etc/ser.conf
-#	$(INSTALL) -d $(SER_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(SER_SOURCE_DIR)/rc.ser $(SER_IPK_DIR)/opt/etc/init.d/SXXser
+	$(STRIP_COMMAND) $(SER_IPK_DIR)$(TARGET_PREFIX)/sbin/ser $(SER_IPK_DIR)$(TARGET_PREFIX)/sbin/gen_ha1
+	$(STRIP_COMMAND) $(SER_IPK_DIR)$(TARGET_PREFIX)/lib/ser/modules/*.so
+#	$(INSTALL) -d $(SER_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(SER_SOURCE_DIR)/ser.conf $(SER_IPK_DIR)$(TARGET_PREFIX)/etc/ser.conf
+#	$(INSTALL) -d $(SER_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(SER_SOURCE_DIR)/rc.ser $(SER_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXser
 	$(MAKE) $(SER_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(SER_SOURCE_DIR)/postinst $(SER_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 755 $(SER_SOURCE_DIR)/prerm $(SER_IPK_DIR)/CONTROL/prerm

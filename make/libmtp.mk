@@ -40,7 +40,7 @@ LIBMTP_IPK_VERSION=1
 
 #
 # LIBMTP_CONFFILES should be a list of user-editable files
-#LIBMTP_CONFFILES=/opt/etc/libmtp.conf /opt/etc/init.d/SXXlibmtp
+#LIBMTP_CONFFILES=$(TARGET_PREFIX)/etc/libmtp.conf $(TARGET_PREFIX)/etc/init.d/SXXlibmtp
 
 #
 # LIBMTP_PATCHES should list any patches, in the the order in
@@ -178,23 +178,23 @@ $(LIBMTP_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LIBMTP_IPK_DIR)/opt/sbin or $(LIBMTP_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LIBMTP_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LIBMTP_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LIBMTP_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LIBMTP_IPK_DIR)/opt/etc/libmtp/...
-# Documentation files should be installed in $(LIBMTP_IPK_DIR)/opt/doc/libmtp/...
-# Daemon startup scripts should be installed in $(LIBMTP_IPK_DIR)/opt/etc/init.d/S??libmtp
+# Libraries and include files should be installed into $(LIBMTP_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LIBMTP_IPK_DIR)$(TARGET_PREFIX)/etc/libmtp/...
+# Documentation files should be installed in $(LIBMTP_IPK_DIR)$(TARGET_PREFIX)/doc/libmtp/...
+# Daemon startup scripts should be installed in $(LIBMTP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??libmtp
 #
 # You may need to patch your application to make it use these locations.
 #
 $(LIBMTP_IPK): $(LIBMTP_BUILD_DIR)/.built
 	rm -rf $(LIBMTP_IPK_DIR) $(BUILD_DIR)/libmtp_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBMTP_BUILD_DIR) DESTDIR=$(LIBMTP_IPK_DIR) install-strip
-#	$(INSTALL) -d $(LIBMTP_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(LIBMTP_SOURCE_DIR)/libmtp.conf $(LIBMTP_IPK_DIR)/opt/etc/libmtp.conf
-#	$(INSTALL) -d $(LIBMTP_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(LIBMTP_SOURCE_DIR)/rc.libmtp $(LIBMTP_IPK_DIR)/opt/etc/init.d/SXXlibmtp
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBMTP_IPK_DIR)/opt/etc/init.d/SXXlibmtp
+#	$(INSTALL) -d $(LIBMTP_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(LIBMTP_SOURCE_DIR)/libmtp.conf $(LIBMTP_IPK_DIR)$(TARGET_PREFIX)/etc/libmtp.conf
+#	$(INSTALL) -d $(LIBMTP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(LIBMTP_SOURCE_DIR)/rc.libmtp $(LIBMTP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibmtp
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBMTP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibmtp
 	$(MAKE) $(LIBMTP_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(LIBMTP_SOURCE_DIR)/postinst $(LIBMTP_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBMTP_IPK_DIR)/CONTROL/postinst

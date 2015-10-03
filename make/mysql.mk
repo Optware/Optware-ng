@@ -48,7 +48,7 @@ MYSQL_IPK_VERSION=3
 
 #
 # MYSQL_CONFFILES should be a list of user-editable files
-MYSQL_CONFFILES=/opt/etc/my.cnf
+MYSQL_CONFFILES=$(TARGET_PREFIX)/etc/my.cnf
 
 #
 # MYSQL_PATCHES should list any patches, in the the order in
@@ -71,7 +71,7 @@ endif
 # compilation or linking flags, then list them here.
 #
 MYSQL_CPPFLAGS=
-MYSQL_LDFLAGS="-Wl,-rpath,/opt/lib/mysql"
+MYSQL_LDFLAGS="-Wl,-rpath,$(TARGET_PREFIX)/lib/mysql"
 MYSQL_CONFIG_ENV=ac_cv_sys_restartable_syscalls=yes
 MYSQL_CONFIG_ENV += $(strip \
 $(if $(filter arm armeb, $(TARGET_ARCH)), ac_cv_c_stack_direction=1, \
@@ -112,7 +112,7 @@ $(MYSQL_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(MYSQL_SOURCE) make/
 	rm -rf $(HOST_BUILD_DIR)/$(MYSQL_DIR) $(@D)
 	$(MYSQL_UNZIP) $(DL_DIR)/$(MYSQL_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
 	mv $(HOST_BUILD_DIR)/$(MYSQL_DIR) $(@D)
-	cd $(@D); ./configure --prefix=/opt
+	cd $(@D); ./configure --prefix=$(TARGET_PREFIX)
 	$(MAKE) -C $(@D)
 	touch $@
 
@@ -176,7 +176,7 @@ endif
 	)
 #		--with-named-thread-libs=-lpthread \
 
-	sed -i -e 's!"/etc!"/opt/etc!g' $(@D)/*/default.c $(@D)/scripts/*.sh
+	sed -i -e 's!"/etc!"$(TARGET_PREFIX)/etc!g' $(@D)/*/default.c $(@D)/scripts/*.sh
 	$(PATCH_LIBTOOL) $(@D)/libtool
 ifeq ($(CROSS_CONFIGURATION_UCLIBC_VERSION), 0.9.29)
 	sed -i -e 's!.*HAVE_INDEX.*!#define HAVE_INDEX 1!' $(@D)/config.h
@@ -233,25 +233,25 @@ $(MYSQL_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(MYSQL_IPK_DIR)/opt/sbin or $(MYSQL_IPK_DIR)/opt/bin
+# Binaries should be installed into $(MYSQL_IPK_DIR)$(TARGET_PREFIX)/sbin or $(MYSQL_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(MYSQL_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(MYSQL_IPK_DIR)/opt/etc/mysql/...
-# Documentation files should be installed in $(MYSQL_IPK_DIR)/opt/doc/mysql/...
-# Daemon startup scripts should be installed in $(MYSQL_IPK_DIR)/opt/etc/init.d/S??mysql
+# Libraries and include files should be installed into $(MYSQL_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(MYSQL_IPK_DIR)$(TARGET_PREFIX)/etc/mysql/...
+# Documentation files should be installed in $(MYSQL_IPK_DIR)$(TARGET_PREFIX)/doc/mysql/...
+# Daemon startup scripts should be installed in $(MYSQL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??mysql
 #
 # You may need to patch your application to make it use these locations.
 #
 $(MYSQL_IPK): $(MYSQL_BUILD_DIR)/.built
 	rm -rf $(MYSQL_IPK_DIR) $(BUILD_DIR)/mysql_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MYSQL_BUILD_DIR) DESTDIR=$(MYSQL_IPK_DIR) install-strip
-	rm -rf $(MYSQL_IPK_DIR)/opt/mysql-test
-	$(INSTALL) -d $(MYSQL_IPK_DIR)/opt/var/lib/mysql
-	$(INSTALL) -d $(MYSQL_IPK_DIR)/opt/var/log
-	$(INSTALL) -d $(MYSQL_IPK_DIR)/opt/etc/
-	$(INSTALL) -m 644 $(MYSQL_SOURCE_DIR)/my.cnf $(MYSQL_IPK_DIR)/opt/etc/my.cnf
-	$(INSTALL) -d $(MYSQL_IPK_DIR)/opt/etc/init.d
-	( cd $(MYSQL_IPK_DIR)/opt/etc/init.d ; \
+	rm -rf $(MYSQL_IPK_DIR)$(TARGET_PREFIX)/mysql-test
+	$(INSTALL) -d $(MYSQL_IPK_DIR)$(TARGET_PREFIX)/var/lib/mysql
+	$(INSTALL) -d $(MYSQL_IPK_DIR)$(TARGET_PREFIX)/var/log
+	$(INSTALL) -d $(MYSQL_IPK_DIR)$(TARGET_PREFIX)/etc/
+	$(INSTALL) -m 644 $(MYSQL_SOURCE_DIR)/my.cnf $(MYSQL_IPK_DIR)$(TARGET_PREFIX)/etc/my.cnf
+	$(INSTALL) -d $(MYSQL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	( cd $(MYSQL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d ; \
 		ln -s ../../share/mysql/mysql.server S70mysqld ; \
 		ln -s ../../share/mysql/mysql.server K70mysqld ; \
 	)

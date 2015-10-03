@@ -30,7 +30,7 @@ ATOP_IPK_VERSION=1
 
 #
 # ATOP_CONFFILES should be a list of user-editable files
-# ATOP_CONFFILES=/opt/etc/atop.conf /opt/etc/init.d/SXXatop
+# ATOP_CONFFILES=$(TARGET_PREFIX)/etc/atop.conf $(TARGET_PREFIX)/etc/init.d/SXXatop
 
 #
 # ATOP_PATCHES should list any patches, in the the order in
@@ -170,20 +170,20 @@ $(ATOP_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(ATOP_IPK_DIR)/opt/sbin or $(ATOP_IPK_DIR)/opt/bin
+# Binaries should be installed into $(ATOP_IPK_DIR)$(TARGET_PREFIX)/sbin or $(ATOP_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(ATOP_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(ATOP_IPK_DIR)/opt/etc/atop/...
-# Documentation files should be installed in $(ATOP_IPK_DIR)/opt/doc/atop/...
-# Daemon startup scripts should be installed in $(ATOP_IPK_DIR)/opt/etc/init.d/S??atop
+# Libraries and include files should be installed into $(ATOP_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(ATOP_IPK_DIR)$(TARGET_PREFIX)/etc/atop/...
+# Documentation files should be installed in $(ATOP_IPK_DIR)$(TARGET_PREFIX)/doc/atop/...
+# Daemon startup scripts should be installed in $(ATOP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??atop
 #
 # You may need to patch your application to make it use these locations.
 #
 $(ATOP_IPK): $(ATOP_BUILD_DIR)/.built
-	mkdir -p $(ATOP_IPK_DIR)/opt
+	mkdir -p $(ATOP_IPK_DIR)$(TARGET_PREFIX)
 	$(MAKE) -C $(ATOP_BUILD_DIR) install
-	$(TARGET_STRIP) $(ATOP_IPK_DIR)/opt/bin/atop
-	# sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/opt/etc/init.d/SXXatop
+	$(TARGET_STRIP) $(ATOP_IPK_DIR)$(TARGET_PREFIX)/bin/atop
+	# sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXatop
 	$(MAKE) $(ATOP_IPK_DIR)/CONTROL/control
 	# $(INSTALL) -m 755 $(ATOP_SOURCE_DIR)/postinst $(ATOP_IPK_DIR)/CONTROL/postinst
 	# sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/postinst

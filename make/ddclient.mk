@@ -82,16 +82,16 @@ $(DDCLIENT_IPK_DIR)/CONTROL/control:
 $(DDCLIENT_IPK): $(DDCLIENT_BUILD_DIR)/.built
 	rm -rf $(DDCLIENT_IPK_DIR) $(BUILD_DIR)/ddclient_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(DDCLIENT_BUILD_DIR) DESTDIR=$(DDCLIENT_IPK_DIR) install
-	$(INSTALL) -d $(DDCLIENT_IPK_DIR)/opt/sbin
-	$(INSTALL) -m 755 $(DDCLIENT_BUILD_DIR)/ddclient $(DDCLIENT_IPK_DIR)/opt/sbin
-	$(INSTALL) -d $(DDCLIENT_IPK_DIR)/opt/etc/ddclient
-	$(INSTALL) -m 644 $(DDCLIENT_BUILD_DIR)/sample-etc_ddclient.conf $(DDCLIENT_IPK_DIR)/opt/etc/ddclient/ddclient.conf-dist
-	$(INSTALL) -d $(DDCLIENT_IPK_DIR)/opt/var/cache/ddclient
-	$(INSTALL) -d $(DDCLIENT_IPK_DIR)/opt/tmp
-	$(INSTALL) -d $(DDCLIENT_IPK_DIR)/opt/share/doc/ddclient
-	$(INSTALL) $(DDCLIENT_BUILD_DIR)/README* $(DDCLIENT_IPK_DIR)/opt/share/doc/ddclient
+	$(INSTALL) -d $(DDCLIENT_IPK_DIR)$(TARGET_PREFIX)/sbin
+	$(INSTALL) -m 755 $(DDCLIENT_BUILD_DIR)/ddclient $(DDCLIENT_IPK_DIR)$(TARGET_PREFIX)/sbin
+	$(INSTALL) -d $(DDCLIENT_IPK_DIR)$(TARGET_PREFIX)/etc/ddclient
+	$(INSTALL) -m 644 $(DDCLIENT_BUILD_DIR)/sample-etc_ddclient.conf $(DDCLIENT_IPK_DIR)$(TARGET_PREFIX)/etc/ddclient/ddclient.conf-dist
+	$(INSTALL) -d $(DDCLIENT_IPK_DIR)$(TARGET_PREFIX)/var/cache/ddclient
+	$(INSTALL) -d $(DDCLIENT_IPK_DIR)$(TARGET_PREFIX)/tmp
+	$(INSTALL) -d $(DDCLIENT_IPK_DIR)$(TARGET_PREFIX)/share/doc/ddclient
+	$(INSTALL) $(DDCLIENT_BUILD_DIR)/README* $(DDCLIENT_IPK_DIR)$(TARGET_PREFIX)/share/doc/ddclient
 #	find $(DDCLIENT_IPK_DIR)$(TARGET_PREFIX) -name 'perllocal.pod' -exec rm -f {} \;
-#	(cd $(DDCLIENT_IPK_DIR)/opt/lib/perl5 ; \
+#	(cd $(DDCLIENT_IPK_DIR)$(TARGET_PREFIX)/lib/perl5 ; \
 		find . -name '*.so' -exec chmod +w {} \; ; \
 		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
 		find . -name '*.so' -exec chmod -w {} \; ; \

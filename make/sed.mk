@@ -34,7 +34,7 @@ SED_IPK_VERSION=1
 
 #
 # SED_CONFFILES should be a list of user-editable files
-#SED_CONFFILES=/opt/etc/sed.conf /opt/etc/init.d/SXXsed
+#SED_CONFFILES=$(TARGET_PREFIX)/etc/sed.conf $(TARGET_PREFIX)/etc/init.d/SXXsed
 
 #
 # SED_PATCHES should list any patches, in the the order in
@@ -161,26 +161,26 @@ $(SED_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(SED_IPK_DIR)/opt/sbin or $(SED_IPK_DIR)/opt/bin
+# Binaries should be installed into $(SED_IPK_DIR)$(TARGET_PREFIX)/sbin or $(SED_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(SED_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(SED_IPK_DIR)/opt/etc/sed/...
-# Documentation files should be installed in $(SED_IPK_DIR)/opt/doc/sed/...
-# Daemon startup scripts should be installed in $(SED_IPK_DIR)/opt/etc/init.d/S??sed
+# Libraries and include files should be installed into $(SED_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(SED_IPK_DIR)$(TARGET_PREFIX)/etc/sed/...
+# Documentation files should be installed in $(SED_IPK_DIR)$(TARGET_PREFIX)/doc/sed/...
+# Daemon startup scripts should be installed in $(SED_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??sed
 #
 # You may need to patch your application to make it use these locations.
 #
 $(SED_IPK): $(SED_BUILD_DIR)/.built
 	rm -rf $(SED_IPK_DIR) $(BUILD_DIR)/sed_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SED_BUILD_DIR) DESTDIR=$(SED_IPK_DIR) install-strip
-	rm -f $(SED_IPK_DIR)/opt/share/info/dir
-	mv $(SED_IPK_DIR)/opt/bin/sed $(SED_IPK_DIR)/opt/bin/gnu-sed
+	rm -f $(SED_IPK_DIR)$(TARGET_PREFIX)/share/info/dir
+	mv $(SED_IPK_DIR)$(TARGET_PREFIX)/bin/sed $(SED_IPK_DIR)$(TARGET_PREFIX)/bin/gnu-sed
 	$(MAKE) $(SED_IPK_DIR)/CONTROL/control
 	(echo "#!/bin/sh"; \
-	 echo "update-alternatives --install /opt/bin/sed sed /opt/bin/gnu-sed 80"; \
+	 echo "update-alternatives --install $(TARGET_PREFIX)/bin/sed sed $(TARGET_PREFIX)/bin/gnu-sed 80"; \
 	) > $(SED_IPK_DIR)/CONTROL/postinst
 	(echo "#!/bin/sh"; \
-	 echo "update-alternatives --remove sed /opt/bin/gnu-sed"; \
+	 echo "update-alternatives --remove sed $(TARGET_PREFIX)/bin/gnu-sed"; \
 	) > $(SED_IPK_DIR)/CONTROL/prerm
 	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

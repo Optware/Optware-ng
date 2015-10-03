@@ -108,15 +108,15 @@ $(QEMU_GNEMUL_IPK_DIR)/CONTROL/control:
 $(QEMU_GNEMUL_IPK): $(DL_DIR)/$(QEMU_GNEMUL_SOURCE)
 	rm -rf $(QEMU_GNEMUL_IPK_DIR) $(BUILD_DIR)/qemu-gnemul_*_$(TARGET_ARCH).ipk
 	$(MAKE) $(QEMU_GNEMUL_IPK_DIR)/CONTROL/control
-	mkdir -p $(QEMU_GNEMUL_IPK_DIR)/opt
-	mkdir -p $(QEMU_GNEMUL_IPK_DIR)/opt/lib
-	( cd $(QEMU_GNEMUL_IPK_DIR)/opt/lib ; \
+	mkdir -p $(QEMU_GNEMUL_IPK_DIR)$(TARGET_PREFIX)
+	mkdir -p $(QEMU_GNEMUL_IPK_DIR)$(TARGET_PREFIX)/lib
+	( cd $(QEMU_GNEMUL_IPK_DIR)$(TARGET_PREFIX)/lib ; \
 		$(QEMU_GNEMUL_UNZIP) $(DL_DIR)/$(QEMU_GNEMUL_SOURCE) | \
 			tar xf - ; \
 		mv usr/gnemul . ; \
 		rmdir usr ; \
 	)
-	rm -f $(QEMU_GNEMUL_IPK_DIR)/opt/lib/gnemul/qemu-*/etc/*~
+	rm -f $(QEMU_GNEMUL_IPK_DIR)$(TARGET_PREFIX)/lib/gnemul/qemu-*/etc/*~
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(QEMU_GNEMUL_IPK_DIR)
 
 #

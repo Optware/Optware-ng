@@ -46,7 +46,7 @@ LDNS_IPK_VERSION=1
 
 #
 # LDNS_CONFFILES should be a list of user-editable files
-#LDNS_CONFFILES=/opt/etc/ldns.conf /opt/etc/init.d/SXXldns
+#LDNS_CONFFILES=$(TARGET_PREFIX)/etc/ldns.conf $(TARGET_PREFIX)/etc/init.d/SXXldns
 
 #
 # LDNS_PATCHES should list any patches, in the the order in
@@ -59,7 +59,7 @@ LDNS_PATCHES=$(LDNS_SOURCE_DIR)/configure.patch
 # compilation or linking flags, then list them here.
 #
 LDNS_CPPFLAGS=-g -O2
-LDNS_LDFLAGS=-L/home/bob/Documents/Code/Optware/optware/ddwrt/staging/opt/lib
+LDNS_LDFLAGS=-L/home/bob/Documents/Code/Optware/optware/ddwrt/staging$(TARGET_PREFIX)/lib
 
 #
 # LDNS_BUILD_DIR is the directory in which the build is done.
@@ -184,24 +184,24 @@ $(LDNS_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LDNS_IPK_DIR)/opt/sbin or $(LDNS_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LDNS_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LDNS_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LDNS_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LDNS_IPK_DIR)/opt/etc/ldns/...
-# Documentation files should be installed in $(LDNS_IPK_DIR)/opt/doc/ldns/...
-# Daemon startup scripts should be installed in $(LDNS_IPK_DIR)/opt/etc/init.d/S??ldns
+# Libraries and include files should be installed into $(LDNS_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LDNS_IPK_DIR)$(TARGET_PREFIX)/etc/ldns/...
+# Documentation files should be installed in $(LDNS_IPK_DIR)$(TARGET_PREFIX)/doc/ldns/...
+# Daemon startup scripts should be installed in $(LDNS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??ldns
 #
 # You may need to patch your application to make it use these locations.
 #
 $(LDNS_IPK): $(LDNS_BUILD_DIR)/.built
 	rm -rf $(LDNS_IPK_DIR) $(BUILD_DIR)/ldns_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LDNS_BUILD_DIR) DESTDIR=$(LDNS_IPK_DIR) install
-	$(STRIP_COMMAND) $(LDNS_IPK_DIR)/opt/lib/libldns.so.1.6.12
-#	$(INSTALL) -d $(LDNS_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(LDNS_SOURCE_DIR)/ldns.conf $(LDNS_IPK_DIR)/opt/etc/ldns.conf
-#	$(INSTALL) -d $(LDNS_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(LDNS_SOURCE_DIR)/rc.ldns $(LDNS_IPK_DIR)/opt/etc/init.d/SXXldns
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LDNS_IPK_DIR)/opt/etc/init.d/SXXldns
+	$(STRIP_COMMAND) $(LDNS_IPK_DIR)$(TARGET_PREFIX)/lib/libldns.so.1.6.12
+#	$(INSTALL) -d $(LDNS_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(LDNS_SOURCE_DIR)/ldns.conf $(LDNS_IPK_DIR)$(TARGET_PREFIX)/etc/ldns.conf
+#	$(INSTALL) -d $(LDNS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(LDNS_SOURCE_DIR)/rc.ldns $(LDNS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXldns
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LDNS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXldns
 	$(MAKE) $(LDNS_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(LDNS_SOURCE_DIR)/postinst $(LDNS_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LDNS_IPK_DIR)/CONTROL/postinst

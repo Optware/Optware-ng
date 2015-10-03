@@ -32,7 +32,7 @@ IPKG-STATIC_IPK_VERSION=2
 
 #
 # IPKG-STATIC_CONFFILES should be a list of user-editable files
-IPKG-STATIC_CONFFILES=/opt/etc/ipkg.conf
+IPKG-STATIC_CONFFILES=$(TARGET_PREFIX)/etc/ipkg.conf
 
 #
 # If the compilation of the package requires additional
@@ -131,7 +131,7 @@ $(IPKG-STATIC_BUILD_DIR)/.configured: make/ipkg-static.mk #$(DL_DIR)/ipkg-static
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--with-ipkglibdir=/opt/lib \
+		--with-ipkglibdir=$(TARGET_PREFIX)/lib \
 		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-shared \
@@ -179,12 +179,12 @@ $(IPKG-STATIC_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(IPKG-STATIC_IPK_DIR)/opt/sbin or $(IPKG-STATIC_IPK_DIR)/opt/bin
+# Binaries should be installed into $(IPKG-STATIC_IPK_DIR)$(TARGET_PREFIX)/sbin or $(IPKG-STATIC_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(IPKG-STATIC_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(IPKG-STATIC_IPK_DIR)/opt/etc/ipkg/...
-# Documentation files should be installed in $(IPKG-STATIC_IPK_DIR)/opt/doc/ipkg-static/...
-# Daemon startup scripts should be installed in $(IPKG-STATIC_IPK_DIR)/opt/etc/init.d/S??ipkg
+# Libraries and include files should be installed into $(IPKG-STATIC_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(IPKG-STATIC_IPK_DIR)$(TARGET_PREFIX)/etc/ipkg/...
+# Documentation files should be installed in $(IPKG-STATIC_IPK_DIR)$(TARGET_PREFIX)/doc/ipkg-static/...
+# Daemon startup scripts should be installed in $(IPKG-STATIC_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??ipkg
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -193,24 +193,24 @@ $(IPKG-STATIC_IPK): $(IPKG-STATIC_BUILD_DIR)/.built
 	rm -rf $(IPKG-STATIC_IPK_DIR) $(BUILD_DIR)/ipkg-static_*_$(TARGET_ARCH).ipk
 	PATH="$(PATH):$(TOOL_BUILD_DIR)/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)/bin/" \
 		$(MAKE) -C $(IPKG-STATIC_BUILD_DIR) DESTDIR=$(IPKG-STATIC_IPK_DIR) install-strip
-	$(INSTALL) -d $(IPKG-STATIC_IPK_DIR)/opt/etc/
+	$(INSTALL) -d $(IPKG-STATIC_IPK_DIR)$(TARGET_PREFIX)/etc/
 ifneq (, $(filter ddwrt ds101 ds101g fsg3 gumstix1151 mss nas100d nslu2 oleg slugosbe slugosle ts72xx wl500g, $(OPTWARE_TARGET)))
 	echo "#Uncomment the following line for native packages feed (if any)" \
-		> $(IPKG-STATIC_IPK_DIR)/opt/etc/ipkg.conf
+		> $(IPKG-STATIC_IPK_DIR)$(TARGET_PREFIX)/etc/ipkg.conf
 	echo "#src/gz native $(IPKG-STATIC_FEEDS)/$(OPTWARE_TARGET)/native/stable"\
-			>> $(IPKG-STATIC_IPK_DIR)/opt/etc/ipkg.conf
+			>> $(IPKG-STATIC_IPK_DIR)$(TARGET_PREFIX)/etc/ipkg.conf
 	echo "src/gz optware $(IPKG-STATIC_FEEDS)/$(OPTWARE_TARGET)/cross/stable" \
-			>> $(IPKG-STATIC_IPK_DIR)/opt/etc/ipkg.conf
-	echo "dest /opt/ /" >> $(IPKG-STATIC_IPK_DIR)/opt/etc/ipkg.conf
-	echo "#option verbose-wget" >> $(IPKG-STATIC_IPK_DIR)/opt/etc/ipkg.conf
+			>> $(IPKG-STATIC_IPK_DIR)$(TARGET_PREFIX)/etc/ipkg.conf
+	echo "dest $(TARGET_PREFIX)/ /" >> $(IPKG-STATIC_IPK_DIR)$(TARGET_PREFIX)/etc/ipkg.conf
+	echo "#option verbose-wget" >> $(IPKG-STATIC_IPK_DIR)$(TARGET_PREFIX)/etc/ipkg.conf
 else
 	$(INSTALL) -m 644 $(IPKG-STATIC_SOURCE_DIR)/ipkg.conf \
-		$(IPKG-STATIC_IPK_DIR)/opt/etc/ipkg.conf
+		$(IPKG-STATIC_IPK_DIR)$(TARGET_PREFIX)/etc/ipkg.conf
 endif
-	rm -f $(IPKG-STATIC_IPK_DIR)/opt/lib/*.a $(IPKG-STATIC_IPK_DIR)/opt/lib/*.la
-	rm -rf $(IPKG-STATIC_IPK_DIR)/opt/include
-	mv $(IPKG-STATIC_IPK_DIR)/opt/bin/ipkg-cl $(IPKG-STATIC_IPK_DIR)/opt/bin/ipkg
-	ln -s ipkg $(IPKG-STATIC_IPK_DIR)/opt/bin/ipkg-static
+	rm -f $(IPKG-STATIC_IPK_DIR)$(TARGET_PREFIX)/lib/*.a $(IPKG-STATIC_IPK_DIR)$(TARGET_PREFIX)/lib/*.la
+	rm -rf $(IPKG-STATIC_IPK_DIR)$(TARGET_PREFIX)/include
+	mv $(IPKG-STATIC_IPK_DIR)$(TARGET_PREFIX)/bin/ipkg-cl $(IPKG-STATIC_IPK_DIR)$(TARGET_PREFIX)/bin/ipkg
+	ln -s ipkg $(IPKG-STATIC_IPK_DIR)$(TARGET_PREFIX)/bin/ipkg-static
 	$(MAKE) $(IPKG-STATIC_IPK_DIR)/CONTROL/control
 	echo $(IPKG-STATIC_CONFFILES) | sed -e 's/ /\n/g' > $(IPKG-STATIC_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(IPKG-STATIC_IPK_DIR)

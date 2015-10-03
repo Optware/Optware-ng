@@ -150,12 +150,12 @@ pciaccess-stage: $(PCIACCESS_BUILD_DIR)/.staged
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PCIACCESS_IPK_DIR)/opt/sbin or $(PCIACCESS_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PCIACCESS_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PCIACCESS_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PCIACCESS_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PCIACCESS_IPK_DIR)/opt/etc/pciaccess/...
-# Documentation files should be installed in $(PCIACCESS_IPK_DIR)/opt/doc/pciaccess/...
-# Daemon startup scripts should be installed in $(PCIACCESS_IPK_DIR)/opt/etc/init.d/S??pciaccess
+# Libraries and include files should be installed into $(PCIACCESS_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PCIACCESS_IPK_DIR)$(TARGET_PREFIX)/etc/pciaccess/...
+# Documentation files should be installed in $(PCIACCESS_IPK_DIR)$(TARGET_PREFIX)/doc/pciaccess/...
+# Daemon startup scripts should be installed in $(PCIACCESS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??pciaccess
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -164,7 +164,7 @@ $(PCIACCESS_IPK): $(PCIACCESS_BUILD_DIR)/.built
 	$(MAKE) -C $(PCIACCESS_BUILD_DIR) DESTDIR=$(PCIACCESS_IPK_DIR) install-strip
 	$(MAKE) $(PCIACCESS_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 644 $(PCIACCESS_SOURCE_DIR)/postinst $(PCIACCESS_IPK_DIR)/CONTROL/postinst
-	rm -f $(PCIACCESS_IPK_DIR)/opt/lib/*.la
+	rm -f $(PCIACCESS_IPK_DIR)$(TARGET_PREFIX)/lib/*.la
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PCIACCESS_IPK_DIR)
 
 #

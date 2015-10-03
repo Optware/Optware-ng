@@ -40,7 +40,7 @@ LIBNETFILTER_CONNTRACK_IPK_VERSION=1
 
 #
 # LIBNETFILTER_CONNTRACK_CONFFILES should be a list of user-editable files
-#LIBNETFILTER_CONNTRACK_CONFFILES=/opt/etc/libnetfilter-conntrack.conf /opt/etc/init.d/SXXlibnetfilter-conntrack
+#LIBNETFILTER_CONNTRACK_CONFFILES=$(TARGET_PREFIX)/etc/libnetfilter-conntrack.conf $(TARGET_PREFIX)/etc/init.d/SXXlibnetfilter-conntrack
 
 #
 # LIBNETFILTER_CONNTRACK_PATCHES should list any patches, in the the order in
@@ -181,24 +181,24 @@ $(LIBNETFILTER_CONNTRACK_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LIBNETFILTER_CONNTRACK_IPK_DIR)/opt/sbin or $(LIBNETFILTER_CONNTRACK_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LIBNETFILTER_CONNTRACK_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LIBNETFILTER_CONNTRACK_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LIBNETFILTER_CONNTRACK_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LIBNETFILTER_CONNTRACK_IPK_DIR)/opt/etc/libnetfilter-conntrack/...
-# Documentation files should be installed in $(LIBNETFILTER_CONNTRACK_IPK_DIR)/opt/doc/libnetfilter-conntrack/...
-# Daemon startup scripts should be installed in $(LIBNETFILTER_CONNTRACK_IPK_DIR)/opt/etc/init.d/S??libnetfilter-conntrack
+# Libraries and include files should be installed into $(LIBNETFILTER_CONNTRACK_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LIBNETFILTER_CONNTRACK_IPK_DIR)$(TARGET_PREFIX)/etc/libnetfilter-conntrack/...
+# Documentation files should be installed in $(LIBNETFILTER_CONNTRACK_IPK_DIR)$(TARGET_PREFIX)/doc/libnetfilter-conntrack/...
+# Daemon startup scripts should be installed in $(LIBNETFILTER_CONNTRACK_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??libnetfilter-conntrack
 #
 # You may need to patch your application to make it use these locations.
 #
 $(LIBNETFILTER_CONNTRACK_IPK): $(LIBNETFILTER_CONNTRACK_BUILD_DIR)/.built
 	rm -rf $(LIBNETFILTER_CONNTRACK_IPK_DIR) $(BUILD_DIR)/libnetfilter-conntrack_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBNETFILTER_CONNTRACK_BUILD_DIR) DESTDIR=$(LIBNETFILTER_CONNTRACK_IPK_DIR) install-strip
-	rm -rf $(LIBNETFILTER_CONNTRACK_IPK_DIR)/opt/include
-#	$(INSTALL) -d $(LIBNETFILTER_CONNTRACK_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(LIBNETFILTER_CONNTRACK_SOURCE_DIR)/libnetfilter-conntrack.conf $(LIBNETFILTER_CONNTRACK_IPK_DIR)/opt/etc/libnetfilter-conntrack.conf
-#	$(INSTALL) -d $(LIBNETFILTER_CONNTRACK_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(LIBNETFILTER_CONNTRACK_SOURCE_DIR)/rc.libnetfilter-conntrack $(LIBNETFILTER_CONNTRACK_IPK_DIR)/opt/etc/init.d/SXXlibnetfilter-conntrack
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBNETFILTER_CONNTRACK_IPK_DIR)/opt/etc/init.d/SXXlibnetfilter-conntrack
+	rm -rf $(LIBNETFILTER_CONNTRACK_IPK_DIR)$(TARGET_PREFIX)/include
+#	$(INSTALL) -d $(LIBNETFILTER_CONNTRACK_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(LIBNETFILTER_CONNTRACK_SOURCE_DIR)/libnetfilter-conntrack.conf $(LIBNETFILTER_CONNTRACK_IPK_DIR)$(TARGET_PREFIX)/etc/libnetfilter-conntrack.conf
+#	$(INSTALL) -d $(LIBNETFILTER_CONNTRACK_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(LIBNETFILTER_CONNTRACK_SOURCE_DIR)/rc.libnetfilter-conntrack $(LIBNETFILTER_CONNTRACK_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibnetfilter-conntrack
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBNETFILTER_CONNTRACK_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibnetfilter-conntrack
 	$(MAKE) $(LIBNETFILTER_CONNTRACK_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(LIBNETFILTER_CONNTRACK_SOURCE_DIR)/postinst $(LIBNETFILTER_CONNTRACK_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBNETFILTER_CONNTRACK_IPK_DIR)/CONTROL/postinst

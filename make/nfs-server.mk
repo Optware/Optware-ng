@@ -155,22 +155,22 @@ $(NFS_SERVER_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(NFS_SERVER_IPK_DIR)/opt/sbin or $(NFS_SERVER_IPK_DIR)/opt/bin
+# Binaries should be installed into $(NFS_SERVER_IPK_DIR)$(TARGET_PREFIX)/sbin or $(NFS_SERVER_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(NFS_SERVER_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(NFS_SERVER_IPK_DIR)/opt/etc/nfs-server/...
-# Documentation files should be installed in $(NFS_SERVER_IPK_DIR)/opt/doc/nfs-server/...
-# Daemon startup scripts should be installed in $(NFS_SERVER_IPK_DIR)/opt/etc/init.d/S??nfs-server
+# Libraries and include files should be installed into $(NFS_SERVER_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(NFS_SERVER_IPK_DIR)$(TARGET_PREFIX)/etc/nfs-server/...
+# Documentation files should be installed in $(NFS_SERVER_IPK_DIR)$(TARGET_PREFIX)/doc/nfs-server/...
+# Daemon startup scripts should be installed in $(NFS_SERVER_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??nfs-server
 #
 # You may need to patch your application to make it use these locations.
 #
 $(NFS_SERVER_IPK): $(NFS_SERVER_BUILD_DIR)/rpc.nfsd
 	rm -rf $(NFS_SERVER_IPK_DIR) $(NFS_SERVER_IPK)
-	$(INSTALL) -d $(NFS_SERVER_IPK_DIR)/opt/sbin
-	$(STRIP_COMMAND) $(NFS_SERVER_BUILD_DIR)/rpc.nfsd -o $(NFS_SERVER_IPK_DIR)/opt/sbin/rpc.nfsd
-	$(STRIP_COMMAND) $(NFS_SERVER_BUILD_DIR)/rpc.mountd -o $(NFS_SERVER_IPK_DIR)/opt/sbin/rpc.mountd
-	$(INSTALL) -d $(NFS_SERVER_IPK_DIR)/opt/etc/init.d
-	$(INSTALL) -m 755 $(NFS_SERVER_SOURCE_DIR)/rc.nfs-server $(NFS_SERVER_IPK_DIR)/opt/etc/init.d/S56nfsd
+	$(INSTALL) -d $(NFS_SERVER_IPK_DIR)$(TARGET_PREFIX)/sbin
+	$(STRIP_COMMAND) $(NFS_SERVER_BUILD_DIR)/rpc.nfsd -o $(NFS_SERVER_IPK_DIR)$(TARGET_PREFIX)/sbin/rpc.nfsd
+	$(STRIP_COMMAND) $(NFS_SERVER_BUILD_DIR)/rpc.mountd -o $(NFS_SERVER_IPK_DIR)$(TARGET_PREFIX)/sbin/rpc.mountd
+	$(INSTALL) -d $(NFS_SERVER_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(INSTALL) -m 755 $(NFS_SERVER_SOURCE_DIR)/rc.nfs-server $(NFS_SERVER_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S56nfsd
 	$(MAKE) $(NFS_SERVER_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NFS_SERVER_IPK_DIR)
 

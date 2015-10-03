@@ -87,7 +87,7 @@ $(PERL-CGI-APPLICATION_IPK): $(PERL-CGI-APPLICATION_BUILD_DIR)/.built
 	rm -rf $(PERL-CGI-APPLICATION_IPK_DIR) $(BUILD_DIR)/perl-cgi-application_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PERL-CGI-APPLICATION_BUILD_DIR) DESTDIR=$(PERL-CGI-APPLICATION_IPK_DIR) install
 	find $(PERL-CGI-APPLICATION_IPK_DIR)$(TARGET_PREFIX) -name 'perllocal.pod' -exec rm -f {} \;
-	(cd $(PERL-CGI-APPLICATION_IPK_DIR)/opt/lib/perl5 ; \
+	(cd $(PERL-CGI-APPLICATION_IPK_DIR)$(TARGET_PREFIX)/lib/perl5 ; \
 		find . -name '*.so' -exec chmod +w {} \; ; \
 		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
 		find . -name '*.so' -exec chmod -w {} \; ; \

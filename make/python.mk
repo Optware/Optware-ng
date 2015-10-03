@@ -48,8 +48,8 @@ $(PYTHON_IPK_DIR)/CONTROL/control:
 $(PYTHON_IPK): make/python.mk
 	rm -rf $(PYTHON_IPK_DIR) $(BUILD_DIR)/python_*_$(TARGET_ARCH).ipk
 	$(MAKE) $(PYTHON_IPK_DIR)/CONTROL/control
-	$(INSTALL) -d $(PYTHON_IPK_DIR)/opt/bin
-	(cd $(PYTHON_IPK_DIR)/opt/bin; \
+	$(INSTALL) -d $(PYTHON_IPK_DIR)$(TARGET_PREFIX)/bin
+	(cd $(PYTHON_IPK_DIR)$(TARGET_PREFIX)/bin; \
 		ln -s python2.7 python; \
 		ln -s idle2.7 idle; \
 		ln -s pydoc2.7 pydoc; \
@@ -57,7 +57,7 @@ $(PYTHON_IPK): make/python.mk
 	)
 ifeq ($(OPTWARE_WRITE_OUTSIDE_OPT_ALLOWED),true)
 	$(INSTALL) -d $(PYTHON_IPK_DIR)/usr/bin
-	ln -s /opt/bin/python $(PYTHON_IPK_DIR)/usr/bin/python
+	ln -s $(TARGET_PREFIX)/bin/python $(PYTHON_IPK_DIR)/usr/bin/python
 endif   
 #	$(INSTALL) -m 755 $(PYTHON_SOURCE_DIR)/postinst $(PYTHON_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 755 $(PYTHON_SOURCE_DIR)/prerm $(PYTHON_IPK_DIR)/CONTROL/prerm

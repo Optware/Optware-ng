@@ -184,22 +184,22 @@ $(SCREEN_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(SCREEN_IPK_DIR)/opt/sbin or $(SCREEN_IPK_DIR)/opt/bin
+# Binaries should be installed into $(SCREEN_IPK_DIR)$(TARGET_PREFIX)/sbin or $(SCREEN_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(SCREEN_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(SCREEN_IPK_DIR)/opt/etc/screen/...
-# Documentation files should be installed in $(SCREEN_IPK_DIR)/opt/doc/screen/...
-# Daemon startup scripts should be installed in $(SCREEN_IPK_DIR)/opt/etc/init.d/S??screen
+# Libraries and include files should be installed into $(SCREEN_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(SCREEN_IPK_DIR)$(TARGET_PREFIX)/etc/screen/...
+# Documentation files should be installed in $(SCREEN_IPK_DIR)$(TARGET_PREFIX)/doc/screen/...
+# Daemon startup scripts should be installed in $(SCREEN_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??screen
 #
 # You may need to patch your application to make it use these locations.
 #
 $(SCREEN_IPK): $(SCREEN_BUILD_DIR)/screen
 	rm -rf $(SCREEN_IPK_DIR) $(BUILD_DIR)/screen_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SCREEN_BUILD_DIR) DESTDIR=$(SCREEN_IPK_DIR) install
-	$(STRIP_COMMAND) $(SCREEN_IPK_DIR)/opt/bin/screen-$(SCREEN_VERSION)
-	rm -f $(SCREEN_IPK_DIR)/opt/{,share/}info/dir{,.old}
-#	$(INSTALL) -d $(SCREEN_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(SCREEN_SOURCE_DIR)/rc.screen $(SCREEN_IPK_DIR)/opt/etc/init.d/SXXscreen
+	$(STRIP_COMMAND) $(SCREEN_IPK_DIR)$(TARGET_PREFIX)/bin/screen-$(SCREEN_VERSION)
+	rm -f $(SCREEN_IPK_DIR)$(TARGET_PREFIX)/{,share/}info/dir{,.old}
+#	$(INSTALL) -d $(SCREEN_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(SCREEN_SOURCE_DIR)/rc.screen $(SCREEN_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXscreen
 	$(MAKE) $(SCREEN_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 644 $(SCREEN_SOURCE_DIR)/postinst $(SCREEN_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 644 $(SCREEN_SOURCE_DIR)/prerm $(SCREEN_IPK_DIR)/CONTROL/prerm

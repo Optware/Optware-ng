@@ -40,7 +40,7 @@ PERL-DEVICE-SERIALPORT_IPK_VERSION=1
 
 #
 # PERL-DEVICE-SERIALPORT_CONFFILES should be a list of user-editable files
-# PERL-DEVICE-SERIALPORT_CONFFILES=/opt/etc/perl-device-serialport.conf /opt/etc/init.d/SXXperl-device-serialport
+# PERL-DEVICE-SERIALPORT_CONFFILES=$(TARGET_PREFIX)/etc/perl-device-serialport.conf $(TARGET_PREFIX)/etc/init.d/SXXperl-device-serialport
 
 #
 # PERL-DEVICE-SERIALPORT_PATCHES should list any patches, in the the order in
@@ -194,12 +194,12 @@ $(PERL-DEVICE-SERIALPORT_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PERL-DEVICE-SERIALPORT_IPK_DIR)/opt/sbin or $(PERL-DEVICE-SERIALPORT_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PERL-DEVICE-SERIALPORT_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PERL-DEVICE-SERIALPORT_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PERL-DEVICE-SERIALPORT_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PERL-DEVICE-SERIALPORT_IPK_DIR)/opt/etc/perl-device-serialport/...
-# Documentation files should be installed in $(PERL-DEVICE-SERIALPORT_IPK_DIR)/opt/doc/perl-device-serialport/...
-# Daemon startup scripts should be installed in $(PERL-DEVICE-SERIALPORT_IPK_DIR)/opt/etc/init.d/S??perl-device-serialport
+# Libraries and include files should be installed into $(PERL-DEVICE-SERIALPORT_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PERL-DEVICE-SERIALPORT_IPK_DIR)$(TARGET_PREFIX)/etc/perl-device-serialport/...
+# Documentation files should be installed in $(PERL-DEVICE-SERIALPORT_IPK_DIR)$(TARGET_PREFIX)/doc/perl-device-serialport/...
+# Daemon startup scripts should be installed in $(PERL-DEVICE-SERIALPORT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??perl-device-serialport
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -207,7 +207,7 @@ $(PERL-DEVICE-SERIALPORT_IPK): $(PERL-DEVICE-SERIALPORT_BUILD_DIR)/.built
 	rm -rf $(PERL-DEVICE-SERIALPORT_IPK_DIR) $(BUILD_DIR)/perl-device-serialport_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PERL-DEVICE-SERIALPORT_BUILD_DIR) DESTDIR=$(PERL-DEVICE-SERIALPORT_IPK_DIR) install
 	find $(PERL-DEVICE-SERIALPORT_IPK_DIR)$(TARGET_PREFIX) -name 'perllocal.pod' -exec rm -f {} \;
-	(cd $(PERL-DEVICE-SERIALPORT_IPK_DIR)/opt/lib/perl5 ; \
+	(cd $(PERL-DEVICE-SERIALPORT_IPK_DIR)$(TARGET_PREFIX)/lib/perl5 ; \
 		find . -name '*.so' -exec chmod +w {} \; ; \
 		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
 		find . -name '*.so' -exec chmod -w {} \; ; \

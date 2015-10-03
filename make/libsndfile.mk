@@ -40,7 +40,7 @@ LIBSNDFILE_IPK_VERSION=1
 
 #
 # LIBSNDFILE_CONFFILES should be a list of user-editable files
-#LIBSNDFILE_CONFFILES=/opt/etc/libsndfile.conf /opt/etc/init.d/SXXlibsndfile
+#LIBSNDFILE_CONFFILES=$(TARGET_PREFIX)/etc/libsndfile.conf $(TARGET_PREFIX)/etc/init.d/SXXlibsndfile
 
 #
 # LIBSNDFILE_PATCHES should list any patches, in the the order in
@@ -186,23 +186,23 @@ $(LIBSNDFILE_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LIBSNDFILE_IPK_DIR)/opt/sbin or $(LIBSNDFILE_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LIBSNDFILE_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LIBSNDFILE_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LIBSNDFILE_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LIBSNDFILE_IPK_DIR)/opt/etc/libsndfile/...
-# Documentation files should be installed in $(LIBSNDFILE_IPK_DIR)/opt/doc/libsndfile/...
-# Daemon startup scripts should be installed in $(LIBSNDFILE_IPK_DIR)/opt/etc/init.d/S??libsndfile
+# Libraries and include files should be installed into $(LIBSNDFILE_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LIBSNDFILE_IPK_DIR)$(TARGET_PREFIX)/etc/libsndfile/...
+# Documentation files should be installed in $(LIBSNDFILE_IPK_DIR)$(TARGET_PREFIX)/doc/libsndfile/...
+# Daemon startup scripts should be installed in $(LIBSNDFILE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??libsndfile
 #
 # You may need to patch your application to make it use these locations.
 #
 $(LIBSNDFILE_IPK): $(LIBSNDFILE_BUILD_DIR)/.built
 	rm -rf $(LIBSNDFILE_IPK_DIR) $(BUILD_DIR)/libsndfile_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBSNDFILE_BUILD_DIR) DESTDIR=$(LIBSNDFILE_IPK_DIR) install-strip transform=''
-#	$(INSTALL) -d $(LIBSNDFILE_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(LIBSNDFILE_SOURCE_DIR)/libsndfile.conf $(LIBSNDFILE_IPK_DIR)/opt/etc/libsndfile.conf
-#	$(INSTALL) -d $(LIBSNDFILE_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(LIBSNDFILE_SOURCE_DIR)/rc.libsndfile $(LIBSNDFILE_IPK_DIR)/opt/etc/init.d/SXXlibsndfile
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBSNDFILE_IPK_DIR)/opt/etc/init.d/SXXlibsndfile
+#	$(INSTALL) -d $(LIBSNDFILE_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(LIBSNDFILE_SOURCE_DIR)/libsndfile.conf $(LIBSNDFILE_IPK_DIR)$(TARGET_PREFIX)/etc/libsndfile.conf
+#	$(INSTALL) -d $(LIBSNDFILE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(LIBSNDFILE_SOURCE_DIR)/rc.libsndfile $(LIBSNDFILE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibsndfile
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBSNDFILE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibsndfile
 	$(MAKE) $(LIBSNDFILE_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(LIBSNDFILE_SOURCE_DIR)/postinst $(LIBSNDFILE_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBSNDFILE_IPK_DIR)/CONTROL/postinst

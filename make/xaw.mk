@@ -156,7 +156,7 @@ $(XAW_IPK): $(XAW_BUILD_DIR)/.built
 	rm -rf $(XAW_IPK_DIR) $(BUILD_DIR)/xaw_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(XAW_BUILD_DIR) DESTDIR=$(XAW_IPK_DIR) install-strip
 	$(MAKE) $(XAW_IPK_DIR)/CONTROL/control
-	rm -f $(XAW_IPK_DIR)/opt/lib/*.la
+	rm -f $(XAW_IPK_DIR)$(TARGET_PREFIX)/lib/*.la
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XAW_IPK_DIR)
 
 #

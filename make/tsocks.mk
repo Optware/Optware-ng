@@ -41,7 +41,7 @@ TSOCKS_IPK_VERSION=4
 
 #
 # TSOCKS_CONFFILES should be a list of user-editable files
-#TSOCKS_CONFFILES=/opt/etc/tsocks.conf
+#TSOCKS_CONFFILES=$(TARGET_PREFIX)/etc/tsocks.conf
 
 #
 # TSOCKS_PATCHES should list any patches, in the the order in
@@ -122,7 +122,7 @@ $(TSOCKS_BUILD_DIR)/.configured: $(DL_DIR)/$(TSOCKS_SOURCE) $(TSOCKS_PATCHES)
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=$(TARGET_PREFIX) \
-		--with-conf=/opt/etc/tsocks.conf \
+		--with-conf=$(TARGET_PREFIX)/etc/tsocks.conf \
 		--disable-nls \
 	)
 	touch $(@)
@@ -174,23 +174,23 @@ $(TSOCKS_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(TSOCKS_IPK_DIR)/opt/sbin or $(TSOCKS_IPK_DIR)/opt/bin
+# Binaries should be installed into $(TSOCKS_IPK_DIR)$(TARGET_PREFIX)/sbin or $(TSOCKS_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(TSOCKS_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(TSOCKS_IPK_DIR)/opt/etc/tsocks/...
-# Documentation files should be installed in $(TSOCKS_IPK_DIR)/opt/doc/tsocks/...
-# Daemon startup scripts should be installed in $(TSOCKS_IPK_DIR)/opt/etc/init.d/S??tsocks
+# Libraries and include files should be installed into $(TSOCKS_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(TSOCKS_IPK_DIR)$(TARGET_PREFIX)/etc/tsocks/...
+# Documentation files should be installed in $(TSOCKS_IPK_DIR)$(TARGET_PREFIX)/doc/tsocks/...
+# Daemon startup scripts should be installed in $(TSOCKS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??tsocks
 #
 # You may need to patch your application to make it use these locations.
 #
 $(TSOCKS_IPK): $(TSOCKS_BUILD_DIR)/.built
 	rm -rf $(TSOCKS_IPK_DIR) $(BUILD_DIR)/tsocks_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(TSOCKS_BUILD_DIR) DESTDIR=$(TSOCKS_IPK_DIR) install
-	sed -i -e 's:/usr/:/opt/:g' $(TSOCKS_IPK_DIR)/opt/bin/tsocks
-	$(INSTALL) -d $(TSOCKS_IPK_DIR)/opt/etc/
-	mv $(TSOCKS_IPK_DIR)/lib $(TSOCKS_IPK_DIR)/opt/
-	$(STRIP_COMMAND) $(TSOCKS_IPK_DIR)/opt/lib/libtsocks.so.1.8
-	#$(INSTALL) -m 644 $(TSOCKS_SOURCE_DIR)/tsocks.conf $(TSOCKS_IPK_DIR)/opt/etc/tsocks.conf
+	sed -i -e 's:/usr/:$(TARGET_PREFIX)/:g' $(TSOCKS_IPK_DIR)$(TARGET_PREFIX)/bin/tsocks
+	$(INSTALL) -d $(TSOCKS_IPK_DIR)$(TARGET_PREFIX)/etc/
+	mv $(TSOCKS_IPK_DIR)/lib $(TSOCKS_IPK_DIR)$(TARGET_PREFIX)/
+	$(STRIP_COMMAND) $(TSOCKS_IPK_DIR)$(TARGET_PREFIX)/lib/libtsocks.so.1.8
+	#$(INSTALL) -m 644 $(TSOCKS_SOURCE_DIR)/tsocks.conf $(TSOCKS_IPK_DIR)$(TARGET_PREFIX)/etc/tsocks.conf
 	$(MAKE) $(TSOCKS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TSOCKS_IPK_DIR)
 

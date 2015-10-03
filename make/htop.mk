@@ -37,7 +37,7 @@ HTOP_CONFLICTS=
 
 #
 # HTOP_CONFFILES should be a list of user-editable files
-#HTOP_CONFFILES=/opt/etc/htop.conf /opt/etc/init.d/SXXhtop
+#HTOP_CONFFILES=$(TARGET_PREFIX)/etc/htop.conf $(TARGET_PREFIX)/etc/init.d/SXXhtop
 
 #
 # HTOP_PATCHES should list any patches, in the the order in
@@ -202,12 +202,12 @@ $(HTOP_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(HTOP_IPK_DIR)/opt/sbin or $(HTOP_IPK_DIR)/opt/bin
+# Binaries should be installed into $(HTOP_IPK_DIR)$(TARGET_PREFIX)/sbin or $(HTOP_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(HTOP_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(HTOP_IPK_DIR)/opt/etc/htop/...
-# Documentation files should be installed in $(HTOP_IPK_DIR)/opt/doc/htop/...
-# Daemon startup scripts should be installed in $(HTOP_IPK_DIR)/opt/etc/init.d/S??htop
+# Libraries and include files should be installed into $(HTOP_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(HTOP_IPK_DIR)$(TARGET_PREFIX)/etc/htop/...
+# Documentation files should be installed in $(HTOP_IPK_DIR)$(TARGET_PREFIX)/doc/htop/...
+# Daemon startup scripts should be installed in $(HTOP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??htop
 #
 # You may need to patch your application to make it use these locations.
 #

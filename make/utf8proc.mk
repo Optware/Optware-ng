@@ -40,7 +40,7 @@ UTF8PROC_IPK_VERSION=1
 
 #
 # UTF8PROC_CONFFILES should be a list of user-editable files
-#UTF8PROC_CONFFILES=/opt/etc/utf8proc.conf /opt/etc/init.d/SXXutf8proc
+#UTF8PROC_CONFFILES=$(TARGET_PREFIX)/etc/utf8proc.conf $(TARGET_PREFIX)/etc/init.d/SXXutf8proc
 
 #
 # UTF8PROC_PATCHES should list any patches, in the the order in
@@ -187,22 +187,22 @@ $(UTF8PROC_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(UTF8PROC_IPK_DIR)/opt/sbin or $(UTF8PROC_IPK_DIR)/opt/bin
+# Binaries should be installed into $(UTF8PROC_IPK_DIR)$(TARGET_PREFIX)/sbin or $(UTF8PROC_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(UTF8PROC_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(UTF8PROC_IPK_DIR)/opt/etc/utf8proc/...
-# Documentation files should be installed in $(UTF8PROC_IPK_DIR)/opt/doc/utf8proc/...
-# Daemon startup scripts should be installed in $(UTF8PROC_IPK_DIR)/opt/etc/init.d/S??utf8proc
+# Libraries and include files should be installed into $(UTF8PROC_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(UTF8PROC_IPK_DIR)$(TARGET_PREFIX)/etc/utf8proc/...
+# Documentation files should be installed in $(UTF8PROC_IPK_DIR)$(TARGET_PREFIX)/doc/utf8proc/...
+# Daemon startup scripts should be installed in $(UTF8PROC_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??utf8proc
 #
 # You may need to patch your application to make it use these locations.
 #
 $(UTF8PROC_IPK): $(UTF8PROC_BUILD_DIR)/.built
 	rm -rf $(UTF8PROC_IPK_DIR) $(BUILD_DIR)/utf8proc_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(UTF8PROC_BUILD_DIR) DESTDIR=$(UTF8PROC_IPK_DIR) install-strip
-	$(INSTALL) -d $(UTF8PROC_IPK_DIR)/opt/include $(UTF8PROC_IPK_DIR)/opt/lib
-	$(INSTALL) -m 644 $(UTF8PROC_BUILD_DIR)/utf8proc.h $(UTF8PROC_IPK_DIR)/opt/include/
-	$(INSTALL) -m 755 $(UTF8PROC_BUILD_DIR)/libutf8proc.so $(UTF8PROC_IPK_DIR)/opt/lib/
-	$(STRIP_COMMAND) $(UTF8PROC_IPK_DIR)/opt/lib/libutf8proc.so
+	$(INSTALL) -d $(UTF8PROC_IPK_DIR)$(TARGET_PREFIX)/include $(UTF8PROC_IPK_DIR)$(TARGET_PREFIX)/lib
+	$(INSTALL) -m 644 $(UTF8PROC_BUILD_DIR)/utf8proc.h $(UTF8PROC_IPK_DIR)$(TARGET_PREFIX)/include/
+	$(INSTALL) -m 755 $(UTF8PROC_BUILD_DIR)/libutf8proc.so $(UTF8PROC_IPK_DIR)$(TARGET_PREFIX)/lib/
+	$(STRIP_COMMAND) $(UTF8PROC_IPK_DIR)$(TARGET_PREFIX)/lib/libutf8proc.so
 	$(MAKE) $(UTF8PROC_IPK_DIR)/CONTROL/control
 	echo $(UTF8PROC_CONFFILES) | sed -e 's/ /\n/g' > $(UTF8PROC_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(UTF8PROC_IPK_DIR)

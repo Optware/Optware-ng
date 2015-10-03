@@ -40,7 +40,7 @@ SHARUTILS_IPK_VERSION=1
 
 #
 # SHARUTILS_CONFFILES should be a list of user-editable files
-#SHARUTILS_CONFFILES=/opt/etc/sharutils.conf /opt/etc/init.d/SXXsharutils
+#SHARUTILS_CONFFILES=$(TARGET_PREFIX)/etc/sharutils.conf $(TARGET_PREFIX)/etc/init.d/SXXsharutils
 
 #
 # SHARUTILS_PATCHES should list any patches, in the the order in
@@ -178,29 +178,29 @@ $(SHARUTILS_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(SHARUTILS_IPK_DIR)/opt/sbin or $(SHARUTILS_IPK_DIR)/opt/bin
+# Binaries should be installed into $(SHARUTILS_IPK_DIR)$(TARGET_PREFIX)/sbin or $(SHARUTILS_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(SHARUTILS_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(SHARUTILS_IPK_DIR)/opt/etc/sharutils/...
-# Documentation files should be installed in $(SHARUTILS_IPK_DIR)/opt/doc/sharutils/...
-# Daemon startup scripts should be installed in $(SHARUTILS_IPK_DIR)/opt/etc/init.d/S??sharutils
+# Libraries and include files should be installed into $(SHARUTILS_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(SHARUTILS_IPK_DIR)$(TARGET_PREFIX)/etc/sharutils/...
+# Documentation files should be installed in $(SHARUTILS_IPK_DIR)$(TARGET_PREFIX)/doc/sharutils/...
+# Daemon startup scripts should be installed in $(SHARUTILS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??sharutils
 #
 # You may need to patch your application to make it use these locations.
 #
 $(SHARUTILS_IPK): $(SHARUTILS_BUILD_DIR)/.built
 	rm -rf $(SHARUTILS_IPK_DIR) $(BUILD_DIR)/sharutils_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SHARUTILS_BUILD_DIR) DESTDIR=$(SHARUTILS_IPK_DIR) install-strip
-	rm -f $(SHARUTILS_IPK_DIR)/opt/share/info/dir
-	mv $(SHARUTILS_IPK_DIR)/opt/bin/uudecode $(SHARUTILS_IPK_DIR)/opt/bin/sharutils-uudecode
-	mv $(SHARUTILS_IPK_DIR)/opt/bin/uuencode $(SHARUTILS_IPK_DIR)/opt/bin/sharutils-uuencode
+	rm -f $(SHARUTILS_IPK_DIR)$(TARGET_PREFIX)/share/info/dir
+	mv $(SHARUTILS_IPK_DIR)$(TARGET_PREFIX)/bin/uudecode $(SHARUTILS_IPK_DIR)$(TARGET_PREFIX)/bin/sharutils-uudecode
+	mv $(SHARUTILS_IPK_DIR)$(TARGET_PREFIX)/bin/uuencode $(SHARUTILS_IPK_DIR)$(TARGET_PREFIX)/bin/sharutils-uuencode
 	$(MAKE) $(SHARUTILS_IPK_DIR)/CONTROL/control
 	(echo "#!/bin/sh"; \
-	 echo "update-alternatives --install /opt/bin/uudecode uudecode /opt/bin/sharutils-uudecode 70"; \
-	 echo "update-alternatives --install /opt/bin/uuencode uuencode /opt/bin/sharutils-uuencode 70"; \
+	 echo "update-alternatives --install $(TARGET_PREFIX)/bin/uudecode uudecode $(TARGET_PREFIX)/bin/sharutils-uudecode 70"; \
+	 echo "update-alternatives --install $(TARGET_PREFIX)/bin/uuencode uuencode $(TARGET_PREFIX)/bin/sharutils-uuencode 70"; \
 	) > $(SHARUTILS_IPK_DIR)/CONTROL/postinst
 	(echo "#!/bin/sh"; \
-	 echo "update-alternatives --remove uudecode /opt/bin/sharutils-uudecode"; \
-	 echo "update-alternatives --remove uuencode /opt/bin/sharutils-uuencode"; \
+	 echo "update-alternatives --remove uudecode $(TARGET_PREFIX)/bin/sharutils-uudecode"; \
+	 echo "update-alternatives --remove uuencode $(TARGET_PREFIX)/bin/sharutils-uuencode"; \
 	) > $(SHARUTILS_IPK_DIR)/CONTROL/prerm
 	echo $(SHARUTILS_CONFFILES) | sed -e 's/ /\n/g' > $(SHARUTILS_IPK_DIR)/CONTROL/conffiles
 	if test -n "$(UPD-ALT_PREFIX)"; then \

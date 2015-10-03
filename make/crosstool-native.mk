@@ -59,7 +59,7 @@ $(CROSSTOOL-NATIVE_SOURCE_DIR)/all.sh.patch))
 CROSSTOOL-NATIVE_CPPFLAGS=
 CROSSTOOL-NATIVE_LDFLAGS=
 
-CROSSTOOL-NATIVE_PREFIX=/opt/$(TARGET_ARCH)
+CROSSTOOL-NATIVE_PREFIX=$(TARGET_PREFIX)/$(TARGET_ARCH)
 
 #
 # CROSSTOOL-NATIVE_BUILD_DIR is the directory in which the build is done.
@@ -278,12 +278,12 @@ crosstool-native: $(CROSSTOOL-NATIVE_BUILD_DIR)/.built
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(CROSSTOOL-NATIVE_IPK_DIR)/opt/sbin or $(CROSSTOOL-NATIVE_IPK_DIR)/opt/bin
+# Binaries should be installed into $(CROSSTOOL-NATIVE_IPK_DIR)$(TARGET_PREFIX)/sbin or $(CROSSTOOL-NATIVE_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(CROSSTOOL-NATIVE_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(CROSSTOOL-NATIVE_IPK_DIR)/opt/etc/crosstool-native/...
-# Documentation files should be installed in $(CROSSTOOL-NATIVE_IPK_DIR)/opt/doc/crosstool-native/...
-# Daemon startup scripts should be installed in $(CROSSTOOL-NATIVE_IPK_DIR)/opt/etc/init.d/S??crosstool-native
+# Libraries and include files should be installed into $(CROSSTOOL-NATIVE_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(CROSSTOOL-NATIVE_IPK_DIR)$(TARGET_PREFIX)/etc/crosstool-native/...
+# Documentation files should be installed in $(CROSSTOOL-NATIVE_IPK_DIR)$(TARGET_PREFIX)/doc/crosstool-native/...
+# Daemon startup scripts should be installed in $(CROSSTOOL-NATIVE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??crosstool-native
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -295,17 +295,17 @@ $(CROSSTOOL-NATIVE_IPK): $(CROSSTOOL-NATIVE_BUILD_DIR)/.built
 # For some reason, syslimits.h is missing; copy it from the toolchain
 	$(INSTALL) -m 644 $(TOOL_BUILD_DIR)/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)/lib/gcc-lib/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION_GCC_VERSION)/include/syslimits.h $(CROSSTOOL-NATIVE_IPK_DIR)$(CROSSTOOL-NATIVE_PREFIX)/lib/gcc-lib\/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION_GCC_VERSION)/include/syslimits.h
 # Install symlinks for common toolchain programs
-	$(INSTALL) -d $(CROSSTOOL-NATIVE_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(CROSSTOOL-NATIVE_IPK_DIR)$(TARGET_PREFIX)/bin
 	for f in ar as c++ g++ gcc ld nm ranlib strip ; do \
 	  rm -f $(CROSSTOOL-NATIVE_IPK_DIR)$(CROSSTOOL-NATIVE_PREFIX)/bin/$(GNU_TARGET_NAME)-$$f ; \
 	  ln -s $(CROSSTOOL-NATIVE_PREFIX)/$(GNU_TARGET_NAME)/bin/$$f \
 		$(CROSSTOOL-NATIVE_IPK_DIR)$(CROSSTOOL-NATIVE_PREFIX)/bin/$(GNU_TARGET_NAME)-$$f ; \
-	  ln -s $(CROSSTOOL-NATIVE_PREFIX)/bin/$(GNU_TARGET_NAME)-$$f $(CROSSTOOL-NATIVE_IPK_DIR)/opt/bin/$$f ; \
+	  ln -s $(CROSSTOOL-NATIVE_PREFIX)/bin/$(GNU_TARGET_NAME)-$$f $(CROSSTOOL-NATIVE_IPK_DIR)$(TARGET_PREFIX)/bin/$$f ; \
 	done
 	ln -s $(CROSSTOOL-NATIVE_PREFIX)/bin/$(GNU_TARGET_NAME)-cpp  \
-		$(CROSSTOOL-NATIVE_IPK_DIR)/opt/bin/cpp
+		$(CROSSTOOL-NATIVE_IPK_DIR)$(TARGET_PREFIX)/bin/cpp
 	ln -s $(CROSSTOOL-NATIVE_PREFIX)/bin/$(GNU_TARGET_NAME)-size \
-		$(CROSSTOOL-NATIVE_IPK_DIR)/opt/bin/size
+		$(CROSSTOOL-NATIVE_IPK_DIR)$(TARGET_PREFIX)/bin/size
 	rm -f $(CROSSTOOL-NATIVE_IPK_DIR)$(CROSSTOOL-NATIVE_PREFIX)/$(GNU_TARGET_NAME)/bin/g++
 	ln -s ./c++ $(CROSSTOOL-NATIVE_IPK_DIR)$(CROSSTOOL-NATIVE_PREFIX)/$(GNU_TARGET_NAME)/bin/g++
 # Package into bite-sized chunks

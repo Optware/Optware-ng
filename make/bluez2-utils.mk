@@ -41,13 +41,13 @@ BLUEZ2-UTILS_IPK_VERSION=6
 
 #
 # BLUEZ2-UTILS_CONFFILES should be a list of user-editable files
-#BLUEZ2-UTILS_CONFFILES=/opt/etc/bluez-utils.conf /opt/etc/init.d/SXXbluez-utils
+#BLUEZ2-UTILS_CONFFILES=$(TARGET_PREFIX)/etc/bluez-utils.conf $(TARGET_PREFIX)/etc/init.d/SXXbluez-utils
 BLUEZ2-UTILS_CONFFILES=\
-	/opt/etc/bluetooth/hcid.conf \
-	/opt/etc/bluetooth/rfcomm.conf \
-	/opt/etc/bluetooth/pin-helper \
-	/opt/etc/init.d/S75bluez-utils \
-	/opt/etc/default/bluetooth
+	$(TARGET_PREFIX)/etc/bluetooth/hcid.conf \
+	$(TARGET_PREFIX)/etc/bluetooth/rfcomm.conf \
+	$(TARGET_PREFIX)/etc/bluetooth/pin-helper \
+	$(TARGET_PREFIX)/etc/init.d/S75bluez-utils \
+	$(TARGET_PREFIX)/etc/default/bluetooth
 
 #
 # BLUEZ2-UTILS_PATCHES should list any patches, in the the order in
@@ -173,26 +173,26 @@ $(BLUEZ2-UTILS_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(BLUEZ2-UTILS_IPK_DIR)/opt/sbin or $(BLUEZ2-UTILS_IPK_DIR)/opt/bin
+# Binaries should be installed into $(BLUEZ2-UTILS_IPK_DIR)$(TARGET_PREFIX)/sbin or $(BLUEZ2-UTILS_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(BLUEZ2-UTILS_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(BLUEZ2-UTILS_IPK_DIR)/opt/etc/bluez-utils/...
-# Documentation files should be installed in $(BLUEZ2-UTILS_IPK_DIR)/opt/doc/bluez-utils/...
-# Daemon startup scripts should be installed in $(BLUEZ2-UTILS_IPK_DIR)/opt/etc/init.d/S??bluez-utils
+# Libraries and include files should be installed into $(BLUEZ2-UTILS_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(BLUEZ2-UTILS_IPK_DIR)$(TARGET_PREFIX)/etc/bluez-utils/...
+# Documentation files should be installed in $(BLUEZ2-UTILS_IPK_DIR)$(TARGET_PREFIX)/doc/bluez-utils/...
+# Daemon startup scripts should be installed in $(BLUEZ2-UTILS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??bluez-utils
 #
 # You may need to patch your application to make it use these locations.
 #
 $(BLUEZ2-UTILS_IPK): $(BLUEZ2-UTILS_BUILD_DIR)/.built
 	rm -rf $(BLUEZ2-UTILS_IPK_DIR) $(BUILD_DIR)/bluez2-utils_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(BLUEZ2-UTILS_BUILD_DIR) DESTDIR=$(BLUEZ2-UTILS_IPK_DIR) install-strip
-	$(INSTALL) -d $(BLUEZ2-UTILS_IPK_DIR)/opt/etc/bluetooth
-	$(INSTALL) -m 0644 $(BLUEZ2-UTILS_SOURCE_DIR)/hcid.conf $(BLUEZ2-UTILS_IPK_DIR)/opt/etc/bluetooth/hcid.conf
-	$(INSTALL) -m 0644 $(BLUEZ2-UTILS_SOURCE_DIR)/rfcomm.conf $(BLUEZ2-UTILS_IPK_DIR)/opt/etc/bluetooth/rfcomm.conf
-	$(INSTALL) -m 0755 $(BLUEZ2-UTILS_SOURCE_DIR)/pin-helper $(BLUEZ2-UTILS_IPK_DIR)/opt/etc/bluetooth/pin-helper
-	$(INSTALL) -d $(BLUEZ2-UTILS_IPK_DIR)/opt/etc/default
-	$(INSTALL) -m 0644 $(BLUEZ2-UTILS_SOURCE_DIR)/bluetooth.default $(BLUEZ2-UTILS_IPK_DIR)/opt/etc/default/bluetooth
-	$(INSTALL) -d $(BLUEZ2-UTILS_IPK_DIR)/opt/etc/init.d
-	$(INSTALL) -m 0755 $(BLUEZ2-UTILS_SOURCE_DIR)/bluetooth.init $(BLUEZ2-UTILS_IPK_DIR)/opt/etc/init.d/S75bluez-utils
+	$(INSTALL) -d $(BLUEZ2-UTILS_IPK_DIR)$(TARGET_PREFIX)/etc/bluetooth
+	$(INSTALL) -m 0644 $(BLUEZ2-UTILS_SOURCE_DIR)/hcid.conf $(BLUEZ2-UTILS_IPK_DIR)$(TARGET_PREFIX)/etc/bluetooth/hcid.conf
+	$(INSTALL) -m 0644 $(BLUEZ2-UTILS_SOURCE_DIR)/rfcomm.conf $(BLUEZ2-UTILS_IPK_DIR)$(TARGET_PREFIX)/etc/bluetooth/rfcomm.conf
+	$(INSTALL) -m 0755 $(BLUEZ2-UTILS_SOURCE_DIR)/pin-helper $(BLUEZ2-UTILS_IPK_DIR)$(TARGET_PREFIX)/etc/bluetooth/pin-helper
+	$(INSTALL) -d $(BLUEZ2-UTILS_IPK_DIR)$(TARGET_PREFIX)/etc/default
+	$(INSTALL) -m 0644 $(BLUEZ2-UTILS_SOURCE_DIR)/bluetooth.default $(BLUEZ2-UTILS_IPK_DIR)$(TARGET_PREFIX)/etc/default/bluetooth
+	$(INSTALL) -d $(BLUEZ2-UTILS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(INSTALL) -m 0755 $(BLUEZ2-UTILS_SOURCE_DIR)/bluetooth.init $(BLUEZ2-UTILS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S75bluez-utils
 	$(MAKE) $(BLUEZ2-UTILS_IPK_DIR)/CONTROL/control
 	echo $(BLUEZ2-UTILS_CONFFILES) | sed -e 's/ /\n/g' > $(BLUEZ2-UTILS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BLUEZ2-UTILS_IPK_DIR)

@@ -41,7 +41,7 @@ YAWK_IPK_VERSION=1
 
 #
 # YAWK_CONFFILES should be a list of user-editable files
-YAWK_CONFFILES=/opt/etc/yawk/yawk.conf /opt/etc/yawk/wiki-wiki.conf
+YAWK_CONFFILES=$(TARGET_PREFIX)/etc/yawk/yawk.conf $(TARGET_PREFIX)/etc/yawk/wiki-wiki.conf
 
 #
 # YAWK_PATCHES should list any patches, in the the order in
@@ -118,20 +118,20 @@ $(YAWK_BUILD_DIR)/.configured: $(DL_DIR)/$(YAWK_SOURCE) $(YAWK_PATCHES) make/yaw
 	fi
 #	sed -i.orig \
 	    -e 's|strip |$(STRIP_COMMAND) |' \
-	    -e 's|/usr/local/bin/|$$(DESTDIR)/opt/bin/|' \
-	    -e 's|/usr/httpd/|$$(DESTDIR)/opt/share/www/|' \
+	    -e 's|/usr/local/bin/|$$(DESTDIR)$(TARGET_PREFIX)/bin/|' \
+	    -e 's|/usr/httpd/|$$(DESTDIR)$(TARGET_PREFIX)/share/www/|' \
 	    $(YAWK_BUILD_DIR)/makefile
 	sed -i \
-	    -e 's|#! */usr/bin/gawk|#!/opt/bin/gawk|' \
+	    -e 's|#! */usr/bin/gawk|#!$(TARGET_PREFIX)/bin/gawk|' \
 	    `grep -Il '#! */usr/bin/gawk' $(YAWK_BUILD_DIR)/*`
 	sed -i \
-	    -e '/configdir[ 	]*\/etc\/yawk/s|/etc/yawk|/opt/etc/yawk|' \
-	    -e '/bindir[ 	]*\/usr\/lib\/yawk/s|/usr/lib/yawk|/opt/lib/yawk|' \
+	    -e '/configdir[ 	]*\/etc\/yawk/s|/etc/yawk|$(TARGET_PREFIX)/etc/yawk|' \
+	    -e '/bindir[ 	]*\/usr\/lib\/yawk/s|/usr/lib/yawk|$(TARGET_PREFIX)/lib/yawk|' \
 	    $(YAWK_BUILD_DIR)/yawk.conf
 	sed -i \
-	    -e '/configdir *=/s|"[^"]*"|"/opt/etc/yawk"|' \
-	    -e '/bindir *=/s|"[^"]*"|"/opt/lib/yawk"|' \
-	    -e '/yawkconf *=/s|"[^"]*"|"/opt/etc/yawk/yawk.conf"|' \
+	    -e '/configdir *=/s|"[^"]*"|"$(TARGET_PREFIX)/etc/yawk"|' \
+	    -e '/bindir *=/s|"[^"]*"|"$(TARGET_PREFIX)/lib/yawk"|' \
+	    -e '/yawkconf *=/s|"[^"]*"|"$(TARGET_PREFIX)/etc/yawk/yawk.conf"|' \
 	    $(YAWK_BUILD_DIR)/wiki.cgi
 #	(cd $(YAWK_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -198,34 +198,34 @@ $(YAWK_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(YAWK_IPK_DIR)/opt/sbin or $(YAWK_IPK_DIR)/opt/bin
+# Binaries should be installed into $(YAWK_IPK_DIR)$(TARGET_PREFIX)/sbin or $(YAWK_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(YAWK_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(YAWK_IPK_DIR)/opt/etc/yawk/...
-# Documentation files should be installed in $(YAWK_IPK_DIR)/opt/doc/yawk/...
-# Daemon startup scripts should be installed in $(YAWK_IPK_DIR)/opt/etc/init.d/S??yawk
+# Libraries and include files should be installed into $(YAWK_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(YAWK_IPK_DIR)$(TARGET_PREFIX)/etc/yawk/...
+# Documentation files should be installed in $(YAWK_IPK_DIR)$(TARGET_PREFIX)/doc/yawk/...
+# Daemon startup scripts should be installed in $(YAWK_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??yawk
 #
 # You may need to patch your application to make it use these locations.
 #
 $(YAWK_IPK): $(YAWK_BUILD_DIR)/.built
 	rm -rf $(YAWK_IPK_DIR) $(BUILD_DIR)/yawk_*_$(TARGET_ARCH).ipk
 	$(INSTALL) -d \
-		$(YAWK_IPK_DIR)/opt/etc/yawk \
-		$(YAWK_IPK_DIR)/opt/share/www/cgi-bin \
-		$(YAWK_IPK_DIR)/opt/lib/yawk \
+		$(YAWK_IPK_DIR)$(TARGET_PREFIX)/etc/yawk \
+		$(YAWK_IPK_DIR)$(TARGET_PREFIX)/share/www/cgi-bin \
+		$(YAWK_IPK_DIR)$(TARGET_PREFIX)/lib/yawk \
 		;
 	$(INSTALL) $(YAWK_BUILD_DIR)/yawk.conf \
-		$(YAWK_IPK_DIR)/opt/etc/yawk
+		$(YAWK_IPK_DIR)$(TARGET_PREFIX)/etc/yawk
 	$(INSTALL) $(YAWK_BUILD_DIR)/wiki.cgi \
-		$(YAWK_IPK_DIR)/opt/share/www/cgi-bin/
+		$(YAWK_IPK_DIR)$(TARGET_PREFIX)/share/www/cgi-bin/
 	$(INSTALL) $(YAWK_BUILD_DIR)/wiki-parser \
 		$(YAWK_BUILD_DIR)/wiki-receiver \
 		$(YAWK_BUILD_DIR)/wiki-relsearch \
-		$(YAWK_IPK_DIR)/opt/lib/yawk/
-	$(INSTALL) -d $(YAWK_IPK_DIR)/opt/share/yawk-wikispace/wiki-wiki
-	echo "dir	/opt/share/yawk-wikispace/wiki-wiki" \
-		> $(YAWK_IPK_DIR)/opt/etc/yawk/wiki-wiki.conf
-	chmod -R 777 $(YAWK_IPK_DIR)/opt/share/yawk-wikispace
+		$(YAWK_IPK_DIR)$(TARGET_PREFIX)/lib/yawk/
+	$(INSTALL) -d $(YAWK_IPK_DIR)$(TARGET_PREFIX)/share/yawk-wikispace/wiki-wiki
+	echo "dir	$(TARGET_PREFIX)/share/yawk-wikispace/wiki-wiki" \
+		> $(YAWK_IPK_DIR)$(TARGET_PREFIX)/etc/yawk/wiki-wiki.conf
+	chmod -R 777 $(YAWK_IPK_DIR)$(TARGET_PREFIX)/share/yawk-wikispace
 	$(MAKE) $(YAWK_IPK_DIR)/CONTROL/control
 	echo $(YAWK_CONFFILES) | sed -e 's/ /\n/g' > $(YAWK_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(YAWK_IPK_DIR)

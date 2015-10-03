@@ -40,7 +40,7 @@ LIBCDIO_IPK_VERSION=1
 
 #
 # LIBCDIO_CONFFILES should be a list of user-editable files
-#LIBCDIO_CONFFILES=/opt/etc/libcdio.conf /opt/etc/init.d/SXXlibcdio
+#LIBCDIO_CONFFILES=$(TARGET_PREFIX)/etc/libcdio.conf $(TARGET_PREFIX)/etc/init.d/SXXlibcdio
 
 #
 # LIBCDIO_PATCHES should list any patches, in the the order in
@@ -193,24 +193,24 @@ $(LIBCDIO_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LIBCDIO_IPK_DIR)/opt/sbin or $(LIBCDIO_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LIBCDIO_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LIBCDIO_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LIBCDIO_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LIBCDIO_IPK_DIR)/opt/etc/libcdio/...
-# Documentation files should be installed in $(LIBCDIO_IPK_DIR)/opt/doc/libcdio/...
-# Daemon startup scripts should be installed in $(LIBCDIO_IPK_DIR)/opt/etc/init.d/S??libcdio
+# Libraries and include files should be installed into $(LIBCDIO_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LIBCDIO_IPK_DIR)$(TARGET_PREFIX)/etc/libcdio/...
+# Documentation files should be installed in $(LIBCDIO_IPK_DIR)$(TARGET_PREFIX)/doc/libcdio/...
+# Daemon startup scripts should be installed in $(LIBCDIO_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??libcdio
 #
 # You may need to patch your application to make it use these locations.
 #
 $(LIBCDIO_IPK): $(LIBCDIO_BUILD_DIR)/.built
 	rm -rf $(LIBCDIO_IPK_DIR) $(BUILD_DIR)/libcdio_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBCDIO_BUILD_DIR) DESTDIR=$(LIBCDIO_IPK_DIR) install-strip
-	rm -f $(LIBCDIO_IPK_DIR)/opt/share/info/dir
-#	$(INSTALL) -d $(LIBCDIO_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(LIBCDIO_SOURCE_DIR)/libcdio.conf $(LIBCDIO_IPK_DIR)/opt/etc/libcdio.conf
-#	$(INSTALL) -d $(LIBCDIO_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(LIBCDIO_SOURCE_DIR)/rc.libcdio $(LIBCDIO_IPK_DIR)/opt/etc/init.d/SXXlibcdio
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBCDIO_IPK_DIR)/opt/etc/init.d/SXXlibcdio
+	rm -f $(LIBCDIO_IPK_DIR)$(TARGET_PREFIX)/share/info/dir
+#	$(INSTALL) -d $(LIBCDIO_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(LIBCDIO_SOURCE_DIR)/libcdio.conf $(LIBCDIO_IPK_DIR)$(TARGET_PREFIX)/etc/libcdio.conf
+#	$(INSTALL) -d $(LIBCDIO_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(LIBCDIO_SOURCE_DIR)/rc.libcdio $(LIBCDIO_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibcdio
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBCDIO_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibcdio
 	$(MAKE) $(LIBCDIO_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(LIBCDIO_SOURCE_DIR)/postinst $(LIBCDIO_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBCDIO_IPK_DIR)/CONTROL/postinst

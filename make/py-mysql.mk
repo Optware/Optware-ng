@@ -41,7 +41,7 @@ PY-MYSQL_IPK_VERSION=1
 
 #
 # PY-MYSQL_CONFFILES should be a list of user-editable files
-#PY-MYSQL_CONFFILES=/opt/etc/py-mysql.conf /opt/etc/init.d/SXXpy-mysql
+#PY-MYSQL_CONFFILES=$(TARGET_PREFIX)/etc/py-mysql.conf $(TARGET_PREFIX)/etc/init.d/SXXpy-mysql
 
 #
 # PY-MYSQL_PATCHES should list any patches, in the the order in
@@ -122,9 +122,9 @@ $(PY-MYSQL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MYSQL_SOURCE) $(PY-MYSQL_PATCH
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.5"; \
 	        echo "library-dirs=$(STAGING_LIB_DIR):$(STAGING_LIB_DIR)/mysql"; \
 	        echo "libraries=mysqlclient_r"; \
-	        echo "rpath=/opt/lib:/opt/lib/mysql"; \
+	        echo "rpath=$(TARGET_PREFIX)/lib:$(TARGET_PREFIX)/lib/mysql"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python2.5" \
+		echo "executable=$(TARGET_PREFIX)/bin/python2.5" \
 	    ) >> setup.cfg; \
 	)
 	# 2.6
@@ -139,9 +139,9 @@ $(PY-MYSQL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MYSQL_SOURCE) $(PY-MYSQL_PATCH
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.6"; \
 	        echo "library-dirs=$(STAGING_LIB_DIR):$(STAGING_LIB_DIR)/mysql"; \
 	        echo "libraries=mysqlclient_r"; \
-	        echo "rpath=/opt/lib:/opt/lib/mysql"; \
+	        echo "rpath=$(TARGET_PREFIX)/lib:$(TARGET_PREFIX)/lib/mysql"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python2.6" \
+		echo "executable=$(TARGET_PREFIX)/bin/python2.6" \
 	    ) >> setup.cfg; \
 	)
 	touch $@
@@ -215,12 +215,12 @@ $(PY26-MYSQL_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PY-MYSQL_IPK_DIR)/opt/sbin or $(PY-MYSQL_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PY-MYSQL_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PY-MYSQL_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PY-MYSQL_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PY-MYSQL_IPK_DIR)/opt/etc/py-mysql/...
-# Documentation files should be installed in $(PY-MYSQL_IPK_DIR)/opt/doc/py-mysql/...
-# Daemon startup scripts should be installed in $(PY-MYSQL_IPK_DIR)/opt/etc/init.d/S??py-mysql
+# Libraries and include files should be installed into $(PY-MYSQL_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PY-MYSQL_IPK_DIR)$(TARGET_PREFIX)/etc/py-mysql/...
+# Documentation files should be installed in $(PY-MYSQL_IPK_DIR)$(TARGET_PREFIX)/doc/py-mysql/...
+# Daemon startup scripts should be installed in $(PY-MYSQL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??py-mysql
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -231,9 +231,9 @@ $(PY25-MYSQL_IPK): $(PY-MYSQL_BUILD_DIR)/.built
 	 PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py \
-	    $(INSTALL) --root=$(PY25-MYSQL_IPK_DIR) --prefix=/opt; \
+	    $(INSTALL) --root=$(PY25-MYSQL_IPK_DIR) --prefix=$(TARGET_PREFIX); \
 	)
-	$(STRIP_COMMAND) $(PY25-MYSQL_IPK_DIR)/opt/lib/python2.5/site-packages/_mysql.so
+	$(STRIP_COMMAND) $(PY25-MYSQL_IPK_DIR)$(TARGET_PREFIX)/lib/python2.5/site-packages/_mysql.so
 	$(MAKE) $(PY25-MYSQL_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-MYSQL_IPK_DIR)
 
@@ -243,9 +243,9 @@ $(PY26-MYSQL_IPK): $(PY-MYSQL_BUILD_DIR)/.built
 	 PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py \
-	    $(INSTALL) --root=$(PY26-MYSQL_IPK_DIR) --prefix=/opt; \
+	    $(INSTALL) --root=$(PY26-MYSQL_IPK_DIR) --prefix=$(TARGET_PREFIX); \
 	)
-	$(STRIP_COMMAND) $(PY26-MYSQL_IPK_DIR)/opt/lib/python2.6/site-packages/_mysql.so
+	$(STRIP_COMMAND) $(PY26-MYSQL_IPK_DIR)$(TARGET_PREFIX)/lib/python2.6/site-packages/_mysql.so
 	$(MAKE) $(PY26-MYSQL_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-MYSQL_IPK_DIR)
 

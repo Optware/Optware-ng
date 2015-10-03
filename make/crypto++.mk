@@ -40,7 +40,7 @@ CRYPTO++_CONFLICTS=
 
 #
 # CRYPTO++_CONFFILES should be a list of user-editable files
-#CRYPTO++_CONFFILES=/opt/etc/crypto++.conf /opt/etc/init.d/SXXcrypto++
+#CRYPTO++_CONFFILES=$(TARGET_PREFIX)/etc/crypto++.conf $(TARGET_PREFIX)/etc/init.d/SXXcrypto++
 
 #
 # CRYPTO++_PATCHES should list any patches, in the the order in
@@ -191,23 +191,23 @@ $(CRYPTO++_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(CRYPTO++_IPK_DIR)/opt/sbin or $(CRYPTO++_IPK_DIR)/opt/bin
+# Binaries should be installed into $(CRYPTO++_IPK_DIR)$(TARGET_PREFIX)/sbin or $(CRYPTO++_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(CRYPTO++_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(CRYPTO++_IPK_DIR)/opt/etc/crypto++/...
-# Documentation files should be installed in $(CRYPTO++_IPK_DIR)/opt/doc/crypto++/...
-# Daemon startup scripts should be installed in $(CRYPTO++_IPK_DIR)/opt/etc/init.d/S??crypto++
+# Libraries and include files should be installed into $(CRYPTO++_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(CRYPTO++_IPK_DIR)$(TARGET_PREFIX)/etc/crypto++/...
+# Documentation files should be installed in $(CRYPTO++_IPK_DIR)$(TARGET_PREFIX)/doc/crypto++/...
+# Daemon startup scripts should be installed in $(CRYPTO++_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??crypto++
 #
 # You may need to patch your application to make it use these locations.
 #
 $(CRYPTO++_IPK): $(CRYPTO++_BUILD_DIR)/.built
 	rm -rf $(CRYPTO++_IPK_DIR) $(BUILD_DIR)/crypto++_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(CRYPTO++_BUILD_DIR) DESTDIR=$(CRYPTO++_IPK_DIR) install-strip
-#	$(INSTALL) -d $(CRYPTO++_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(CRYPTO++_SOURCE_DIR)/crypto++.conf $(CRYPTO++_IPK_DIR)/opt/etc/crypto++.conf
-#	$(INSTALL) -d $(CRYPTO++_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(CRYPTO++_SOURCE_DIR)/rc.crypto++ $(CRYPTO++_IPK_DIR)/opt/etc/init.d/SXXcrypto++
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(CRYPTO++_IPK_DIR)/opt/etc/init.d/SXXcrypto++
+#	$(INSTALL) -d $(CRYPTO++_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(CRYPTO++_SOURCE_DIR)/crypto++.conf $(CRYPTO++_IPK_DIR)$(TARGET_PREFIX)/etc/crypto++.conf
+#	$(INSTALL) -d $(CRYPTO++_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(CRYPTO++_SOURCE_DIR)/rc.crypto++ $(CRYPTO++_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXcrypto++
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(CRYPTO++_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXcrypto++
 	$(MAKE) $(CRYPTO++_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(CRYPTO++_SOURCE_DIR)/postinst $(CRYPTO++_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(CRYPTO++_IPK_DIR)/CONTROL/postinst

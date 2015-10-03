@@ -41,7 +41,7 @@ LIBNET10_IPK_VERSION=1
 
 #
 # LIBNET10_CONFFILES should be a list of user-editable files
-#LIBNET10_CONFFILES=/opt/etc/libnet10.conf /opt/etc/init.d/SXXlibnet10
+#LIBNET10_CONFFILES=$(TARGET_PREFIX)/etc/libnet10.conf $(TARGET_PREFIX)/etc/init.d/SXXlibnet10
 
 #
 # LIBNET10_PATCHES should list any patches, in the the order in
@@ -182,23 +182,23 @@ $(LIBNET10_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LIBNET10_IPK_DIR)/opt/sbin or $(LIBNET10_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LIBNET10_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LIBNET10_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LIBNET10_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LIBNET10_IPK_DIR)/opt/etc/libnet10/...
-# Documentation files should be installed in $(LIBNET10_IPK_DIR)/opt/doc/libnet10/...
-# Daemon startup scripts should be installed in $(LIBNET10_IPK_DIR)/opt/etc/init.d/S??libnet10
+# Libraries and include files should be installed into $(LIBNET10_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LIBNET10_IPK_DIR)$(TARGET_PREFIX)/etc/libnet10/...
+# Documentation files should be installed in $(LIBNET10_IPK_DIR)$(TARGET_PREFIX)/doc/libnet10/...
+# Daemon startup scripts should be installed in $(LIBNET10_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??libnet10
 #
 # You may need to patch your application to make it use these locations.
 #
 $(LIBNET10_IPK): $(LIBNET10_BUILD_DIR)/.built
 	rm -rf $(LIBNET10_IPK_DIR) $(BUILD_DIR)/libnet10_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBNET10_BUILD_DIR) DESTDIR=$(LIBNET10_IPK_DIR) install-strip
-#	$(INSTALL) -d $(LIBNET10_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(LIBNET10_SOURCE_DIR)/libnet10.conf $(LIBNET10_IPK_DIR)/opt/etc/libnet10.conf
-#	$(INSTALL) -d $(LIBNET10_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(LIBNET10_SOURCE_DIR)/rc.libnet10 $(LIBNET10_IPK_DIR)/opt/etc/init.d/SXXlibnet10
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBNET10_IPK_DIR)/opt/etc/init.d/SXXlibnet10
+#	$(INSTALL) -d $(LIBNET10_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(LIBNET10_SOURCE_DIR)/libnet10.conf $(LIBNET10_IPK_DIR)$(TARGET_PREFIX)/etc/libnet10.conf
+#	$(INSTALL) -d $(LIBNET10_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(LIBNET10_SOURCE_DIR)/rc.libnet10 $(LIBNET10_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibnet10
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBNET10_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibnet10
 	$(MAKE) $(LIBNET10_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(LIBNET10_SOURCE_DIR)/postinst $(LIBNET10_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBNET10_IPK_DIR)/CONTROL/postinst

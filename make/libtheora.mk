@@ -40,7 +40,7 @@ LIBTHEORA_IPK_VERSION=1
 
 #
 # LIBTHEORA_CONFFILES should be a list of user-editable files
-#LIBTHEORA_CONFFILES=/opt/etc/libtheora.conf /opt/etc/init.d/SXXlibtheora
+#LIBTHEORA_CONFFILES=$(TARGET_PREFIX)/etc/libtheora.conf $(TARGET_PREFIX)/etc/init.d/SXXlibtheora
 
 #
 # LIBTHEORA_PATCHES should list any patches, in the the order in
@@ -182,23 +182,23 @@ $(LIBTHEORA_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LIBTHEORA_IPK_DIR)/opt/sbin or $(LIBTHEORA_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LIBTHEORA_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LIBTHEORA_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LIBTHEORA_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LIBTHEORA_IPK_DIR)/opt/etc/libtheora/...
-# Documentation files should be installed in $(LIBTHEORA_IPK_DIR)/opt/doc/libtheora/...
-# Daemon startup scripts should be installed in $(LIBTHEORA_IPK_DIR)/opt/etc/init.d/S??libtheora
+# Libraries and include files should be installed into $(LIBTHEORA_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LIBTHEORA_IPK_DIR)$(TARGET_PREFIX)/etc/libtheora/...
+# Documentation files should be installed in $(LIBTHEORA_IPK_DIR)$(TARGET_PREFIX)/doc/libtheora/...
+# Daemon startup scripts should be installed in $(LIBTHEORA_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??libtheora
 #
 # You may need to patch your application to make it use these locations.
 #
 $(LIBTHEORA_IPK): $(LIBTHEORA_BUILD_DIR)/.built
 	rm -rf $(LIBTHEORA_IPK_DIR) $(BUILD_DIR)/libtheora_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBTHEORA_BUILD_DIR) DESTDIR=$(LIBTHEORA_IPK_DIR) install-strip
-#	$(INSTALL) -d $(LIBTHEORA_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(LIBTHEORA_SOURCE_DIR)/libtheora.conf $(LIBTHEORA_IPK_DIR)/opt/etc/libtheora.conf
-#	$(INSTALL) -d $(LIBTHEORA_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(LIBTHEORA_SOURCE_DIR)/rc.libtheora $(LIBTHEORA_IPK_DIR)/opt/etc/init.d/SXXlibtheora
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBTHEORA_IPK_DIR)/opt/etc/init.d/SXXlibtheora
+#	$(INSTALL) -d $(LIBTHEORA_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(LIBTHEORA_SOURCE_DIR)/libtheora.conf $(LIBTHEORA_IPK_DIR)$(TARGET_PREFIX)/etc/libtheora.conf
+#	$(INSTALL) -d $(LIBTHEORA_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(LIBTHEORA_SOURCE_DIR)/rc.libtheora $(LIBTHEORA_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibtheora
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBTHEORA_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibtheora
 	$(MAKE) $(LIBTHEORA_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(LIBTHEORA_SOURCE_DIR)/postinst $(LIBTHEORA_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBTHEORA_IPK_DIR)/CONTROL/postinst

@@ -42,7 +42,7 @@ RADIUSCLIENT_NG_IPK_VERSION=1
 
 #
 # RADIUSCLIENT_NG_CONFFILES should be a list of user-editable files
-#RADIUSCLIENT_NG_CONFFILES=/opt/etc/radiusclient-ng.conf /opt/etc/init.d/SXXradiusclient-ng
+#RADIUSCLIENT_NG_CONFFILES=$(TARGET_PREFIX)/etc/radiusclient-ng.conf $(TARGET_PREFIX)/etc/init.d/SXXradiusclient-ng
 
 #
 # RADIUSCLIENT_NG_PATCHES should list any patches, in the the order in
@@ -178,12 +178,12 @@ $(RADIUSCLIENT_NG_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(RADIUSCLIENT_NG_IPK_DIR)/opt/sbin or $(RADIUSCLIENT_NG_IPK_DIR)/opt/bin
+# Binaries should be installed into $(RADIUSCLIENT_NG_IPK_DIR)$(TARGET_PREFIX)/sbin or $(RADIUSCLIENT_NG_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(RADIUSCLIENT_NG_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(RADIUSCLIENT_NG_IPK_DIR)/opt/etc/radiusclient-ng/...
-# Documentation files should be installed in $(RADIUSCLIENT_NG_IPK_DIR)/opt/doc/radiusclient-ng/...
-# Daemon startup scripts should be installed in $(RADIUSCLIENT_NG_IPK_DIR)/opt/etc/init.d/S??radiusclient-ng
+# Libraries and include files should be installed into $(RADIUSCLIENT_NG_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(RADIUSCLIENT_NG_IPK_DIR)$(TARGET_PREFIX)/etc/radiusclient-ng/...
+# Documentation files should be installed in $(RADIUSCLIENT_NG_IPK_DIR)$(TARGET_PREFIX)/doc/radiusclient-ng/...
+# Daemon startup scripts should be installed in $(RADIUSCLIENT_NG_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??radiusclient-ng
 #
 # You may need to patch your application to make it use these locations.
 #

@@ -40,7 +40,7 @@ LOOKAT_IPK_VERSION=1
 
 #
 # LOOKAT_CONFFILES should be a list of user-editable files
-LOOKAT_CONFFILES=/opt/etc/lookat.conf
+LOOKAT_CONFFILES=$(TARGET_PREFIX)/etc/lookat.conf
 
 #
 # LOOKAT_PATCHES should list any patches, in the the order in
@@ -181,23 +181,23 @@ $(LOOKAT_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LOOKAT_IPK_DIR)/opt/sbin or $(LOOKAT_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LOOKAT_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LOOKAT_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LOOKAT_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LOOKAT_IPK_DIR)/opt/etc/lookat/...
-# Documentation files should be installed in $(LOOKAT_IPK_DIR)/opt/doc/lookat/...
-# Daemon startup scripts should be installed in $(LOOKAT_IPK_DIR)/opt/etc/init.d/S??lookat
+# Libraries and include files should be installed into $(LOOKAT_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LOOKAT_IPK_DIR)$(TARGET_PREFIX)/etc/lookat/...
+# Documentation files should be installed in $(LOOKAT_IPK_DIR)$(TARGET_PREFIX)/doc/lookat/...
+# Daemon startup scripts should be installed in $(LOOKAT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??lookat
 #
 # You may need to patch your application to make it use these locations.
 #
 $(LOOKAT_IPK): $(LOOKAT_BUILD_DIR)/.built
 	rm -rf $(LOOKAT_IPK_DIR) $(BUILD_DIR)/lookat_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LOOKAT_BUILD_DIR) DESTDIR=$(LOOKAT_IPK_DIR) transform="" install-strip
-#	$(INSTALL) -d $(LOOKAT_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(LOOKAT_SOURCE_DIR)/lookat.conf $(LOOKAT_IPK_DIR)/opt/etc/lookat.conf
-#	$(INSTALL) -d $(LOOKAT_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(LOOKAT_SOURCE_DIR)/rc.lookat $(LOOKAT_IPK_DIR)/opt/etc/init.d/SXXlookat
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LOOKAT_IPK_DIR)/opt/etc/init.d/SXXlookat
+#	$(INSTALL) -d $(LOOKAT_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(LOOKAT_SOURCE_DIR)/lookat.conf $(LOOKAT_IPK_DIR)$(TARGET_PREFIX)/etc/lookat.conf
+#	$(INSTALL) -d $(LOOKAT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(LOOKAT_SOURCE_DIR)/rc.lookat $(LOOKAT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlookat
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LOOKAT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlookat
 	$(MAKE) $(LOOKAT_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(LOOKAT_SOURCE_DIR)/postinst $(LOOKAT_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LOOKAT_IPK_DIR)/CONTROL/postinst

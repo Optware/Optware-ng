@@ -36,9 +36,9 @@ APACHE_IPK_VERSION=1
 #
 # APACHE_CONFFILES should be a list of user-editable files
 #
-APACHE_CONFFILES=/opt/etc/apache2/httpd.conf \
-		/opt/etc/apache2/extra/httpd-ssl.conf \
-		/opt/etc/init.d/S80apache
+APACHE_CONFFILES=$(TARGET_PREFIX)/etc/apache2/httpd.conf \
+		$(TARGET_PREFIX)/etc/apache2/extra/httpd-ssl.conf \
+		$(TARGET_PREFIX)/etc/init.d/S80apache
 
 #
 # APACHE_LOCALES defines which locales get installed
@@ -47,7 +47,7 @@ APACHE_LOCALES=
 
 #
 # APACHE_CONFFILES should be a list of user-editable files
-#APACHE_CONFFILES=/opt/etc/apache.conf /opt/etc/init.d/SXXapache
+#APACHE_CONFFILES=$(TARGET_PREFIX)/etc/apache.conf $(TARGET_PREFIX)/etc/init.d/SXXapache
 
 #
 # APACHE_PATCHES should list any patches, in the the order in
@@ -171,8 +171,8 @@ $(APACHE_BUILD_DIR)/.configured: $(DL_DIR)/$(APACHE_SOURCE) $(APACHE_PATCHES) ma
 	mv $(BUILD_DIR)/$(APACHE_DIR) $(@D)
 	cat $(APACHE_PATCHES) |$(PATCH) -p0 -d $(@D)
 	sed -i -e "s% *installbuilddir: .*% installbuilddir: $(STAGING_PREFIX)/share/apache2/build%" \
-		-e 's%[ \t]\{1,\}prefix: .*%    prefix: /opt%' \
-		-e "s% *htdocsdir: .*% htdocsdir: /opt/share/www%" \
+		-e 's%[ \t]\{1,\}prefix: .*%    prefix: $(TARGET_PREFIX)%' \
+		-e "s% *htdocsdir: .*% htdocsdir: $(TARGET_PREFIX)/share/www%" \
 		$(@D)/config.layout
 	#cp $(APACHE_SOURCE_DIR)/httpd-std.conf.in $(@D)/docs/conf
 	autoreconf -vif $(@D)
@@ -208,7 +208,7 @@ $(APACHE_BUILD_DIR)/.configured: $(DL_DIR)/$(APACHE_SOURCE) $(APACHE_PATCHES) ma
 		--with-expat=$(TARGET_PREFIX) \
 		--with-port=8000 \
 	)
-	sed -i -e "s|-L/opt/lib -R/opt/lib|$(STAGING_LDFLAGS)|g" $(@D)/build/config_vars.mk
+	sed -i -e "s|-L$(TARGET_PREFIX)/lib -R$(TARGET_PREFIX)/lib|$(STAGING_LDFLAGS)|g" $(@D)/build/config_vars.mk
 	touch $@
 
 apache-unpack: $(APACHE_BUILD_DIR)/.configured
@@ -234,7 +234,7 @@ apache: $(APACHE_BUILD_DIR)/.built
 $(APACHE_BUILD_DIR)/.staged: $(APACHE_BUILD_DIR)/.built
 	rm -f $@
 	rm -f $(STAGING_PREFIX)/libexec/mod_*.so
-	$(MAKE) -C $(@D) install installbuilddir=/opt/share/apache2/build DESTDIR=$(STAGING_DIR)
+	$(MAKE) -C $(@D) install installbuilddir=$(TARGET_PREFIX)/share/apache2/build DESTDIR=$(STAGING_DIR)
 	sed -i -e 's!includedir = .*!includedir = $(STAGING_INCLUDE_DIR)/apache2!' $(STAGING_PREFIX)/share/apache2/build/config_vars.mk
 	touch $@
 
@@ -243,41 +243,41 @@ apache-stage: $(APACHE_BUILD_DIR)/.staged
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(APACHE_IPK_DIR)/opt/sbin or $(APACHE_IPK_DIR)/opt/bin
+# Binaries should be installed into $(APACHE_IPK_DIR)$(TARGET_PREFIX)/sbin or $(APACHE_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(APACHE_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(APACHE_IPK_DIR)/opt/etc/apache/...
-# Documentation files should be installed in $(APACHE_IPK_DIR)/opt/doc/apache/...
-# Daemon startup scripts should be installed in $(APACHE_IPK_DIR)/opt/etc/init.d/S??apache
+# Libraries and include files should be installed into $(APACHE_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(APACHE_IPK_DIR)$(TARGET_PREFIX)/etc/apache/...
+# Documentation files should be installed in $(APACHE_IPK_DIR)$(TARGET_PREFIX)/doc/apache/...
+# Daemon startup scripts should be installed in $(APACHE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??apache
 #
 # You may need to patch your application to make it use these locations.
 #
 $(APACHE_IPK) $(APACHE_MANUAL_IPK): $(APACHE_BUILD_DIR)/.built
 	rm -rf $(APACHE_IPK_DIR) $(BUILD_DIR)/apache_*_$(TARGET_ARCH).ipk $(APACHE_MANUAL_IPK_DIR) $(BUILD_DIR)/apache-manual_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(APACHE_BUILD_DIR) DESTDIR=$(APACHE_IPK_DIR) installbuilddir=/opt/share/apache2/build install
-	rm -rf $(APACHE_IPK_DIR)/opt/share/apache2/manual
-	mv -f $(APACHE_IPK_DIR)/opt/bin/* $(APACHE_IPK_DIR)/opt/sbin/
-#	$(TARGET_STRIP) $(APACHE_IPK_DIR)/opt/libexec/*.so
-#	$(TARGET_STRIP) $(APACHE_IPK_DIR)/opt/sbin/ab
-#	$(TARGET_STRIP) $(APACHE_IPK_DIR)/opt/sbin/checkgid
-#	$(TARGET_STRIP) $(APACHE_IPK_DIR)/opt/sbin/htcacheclean
-#	$(TARGET_STRIP) $(APACHE_IPK_DIR)/opt/sbin/htdbm
-#	$(TARGET_STRIP) $(APACHE_IPK_DIR)/opt/sbin/htdigest
-#	$(TARGET_STRIP) $(APACHE_IPK_DIR)/opt/sbin/htpasswd
-#	$(TARGET_STRIP) $(APACHE_IPK_DIR)/opt/sbin/httxt2dbm
-#	$(TARGET_STRIP) $(APACHE_IPK_DIR)/opt/sbin/httpd
-#	$(TARGET_STRIP) $(APACHE_IPK_DIR)/opt/sbin/logresolve
-#	$(TARGET_STRIP) $(APACHE_IPK_DIR)/opt/sbin/rotatelogs
-#	$(TARGET_STRIP) $(APACHE_IPK_DIR)/opt/sbin/fcgistarter
-	mv $(APACHE_IPK_DIR)/opt/sbin/httpd $(APACHE_IPK_DIR)/opt/sbin/apache-httpd
-	mv $(APACHE_IPK_DIR)/opt/sbin/htpasswd $(APACHE_IPK_DIR)/opt/sbin/apache-htpasswd
-	rm -f $(APACHE_IPK_DIR)/opt/man/man1/htpasswd.1
-	sed -i -e "s%$(STAGING_DIR)%%" $(APACHE_IPK_DIR)/opt/sbin/apxs
-	sed -i -e "s%^#!.*perl%#!/opt/bin/perl%" $(APACHE_IPK_DIR)/opt/sbin/apxs
-	sed -i -e "s%^#!.*perl%#!/opt/bin/perl%" $(APACHE_IPK_DIR)/opt/sbin/dbmmanage
-	$(INSTALL) -d $(APACHE_IPK_DIR)/opt/etc/apache2/conf.d
-	$(INSTALL) -d $(APACHE_IPK_DIR)/opt/etc/init.d
-	$(INSTALL) -m 755 $(APACHE_SOURCE_DIR)/rc.apache $(APACHE_IPK_DIR)/opt/etc/init.d/S80apache
+	$(MAKE) -C $(APACHE_BUILD_DIR) DESTDIR=$(APACHE_IPK_DIR) installbuilddir=$(TARGET_PREFIX)/share/apache2/build install
+	rm -rf $(APACHE_IPK_DIR)$(TARGET_PREFIX)/share/apache2/manual
+	mv -f $(APACHE_IPK_DIR)$(TARGET_PREFIX)/bin/* $(APACHE_IPK_DIR)$(TARGET_PREFIX)/sbin/
+#	$(TARGET_STRIP) $(APACHE_IPK_DIR)$(TARGET_PREFIX)/libexec/*.so
+#	$(TARGET_STRIP) $(APACHE_IPK_DIR)$(TARGET_PREFIX)/sbin/ab
+#	$(TARGET_STRIP) $(APACHE_IPK_DIR)$(TARGET_PREFIX)/sbin/checkgid
+#	$(TARGET_STRIP) $(APACHE_IPK_DIR)$(TARGET_PREFIX)/sbin/htcacheclean
+#	$(TARGET_STRIP) $(APACHE_IPK_DIR)$(TARGET_PREFIX)/sbin/htdbm
+#	$(TARGET_STRIP) $(APACHE_IPK_DIR)$(TARGET_PREFIX)/sbin/htdigest
+#	$(TARGET_STRIP) $(APACHE_IPK_DIR)$(TARGET_PREFIX)/sbin/htpasswd
+#	$(TARGET_STRIP) $(APACHE_IPK_DIR)$(TARGET_PREFIX)/sbin/httxt2dbm
+#	$(TARGET_STRIP) $(APACHE_IPK_DIR)$(TARGET_PREFIX)/sbin/httpd
+#	$(TARGET_STRIP) $(APACHE_IPK_DIR)$(TARGET_PREFIX)/sbin/logresolve
+#	$(TARGET_STRIP) $(APACHE_IPK_DIR)$(TARGET_PREFIX)/sbin/rotatelogs
+#	$(TARGET_STRIP) $(APACHE_IPK_DIR)$(TARGET_PREFIX)/sbin/fcgistarter
+	mv $(APACHE_IPK_DIR)$(TARGET_PREFIX)/sbin/httpd $(APACHE_IPK_DIR)$(TARGET_PREFIX)/sbin/apache-httpd
+	mv $(APACHE_IPK_DIR)$(TARGET_PREFIX)/sbin/htpasswd $(APACHE_IPK_DIR)$(TARGET_PREFIX)/sbin/apache-htpasswd
+	rm -f $(APACHE_IPK_DIR)$(TARGET_PREFIX)/man/man1/htpasswd.1
+	sed -i -e "s%$(STAGING_DIR)%%" $(APACHE_IPK_DIR)$(TARGET_PREFIX)/sbin/apxs
+	sed -i -e "s%^#!.*perl%#!$(TARGET_PREFIX)/bin/perl%" $(APACHE_IPK_DIR)$(TARGET_PREFIX)/sbin/apxs
+	sed -i -e "s%^#!.*perl%#!$(TARGET_PREFIX)/bin/perl%" $(APACHE_IPK_DIR)$(TARGET_PREFIX)/sbin/dbmmanage
+	$(INSTALL) -d $(APACHE_IPK_DIR)$(TARGET_PREFIX)/etc/apache2/conf.d
+	$(INSTALL) -d $(APACHE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(INSTALL) -m 755 $(APACHE_SOURCE_DIR)/rc.apache $(APACHE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S80apache
 	$(MAKE) $(APACHE_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 755 $(APACHE_SOURCE_DIR)/prerm $(APACHE_IPK_DIR)/CONTROL/prerm
 	$(INSTALL) -m 755 $(APACHE_SOURCE_DIR)/postinst $(APACHE_IPK_DIR)/CONTROL/postinst
@@ -288,8 +288,8 @@ $(APACHE_IPK) $(APACHE_MANUAL_IPK): $(APACHE_BUILD_DIR)/.built
 	echo $(APACHE_CONFFILES) | sed -e 's/ /\n/g' > $(APACHE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(APACHE_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(APACHE_IPK_DIR)
-	$(MAKE) -C $(APACHE_BUILD_DIR) DESTDIR=$(APACHE_MANUAL_IPK_DIR) installbuilddir=/opt/share/apache2/build install-man
-	rm -rf $(APACHE_MANUAL_IPK_DIR)/opt/man
+	$(MAKE) -C $(APACHE_BUILD_DIR) DESTDIR=$(APACHE_MANUAL_IPK_DIR) installbuilddir=$(TARGET_PREFIX)/share/apache2/build install-man
+	rm -rf $(APACHE_MANUAL_IPK_DIR)$(TARGET_PREFIX)/man
 	$(MAKE) $(APACHE_MANUAL_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(APACHE_MANUAL_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(APACHE_MANUAL_IPK_DIR)

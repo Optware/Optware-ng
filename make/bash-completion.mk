@@ -40,7 +40,7 @@ BASH_COMPLETION_IPK_VERSION=1
 
 #
 # BASH_COMPLETION_CONFFILES should be a list of user-editable files
-#BASH_COMPLETION_CONFFILES=/opt/etc/bash-completion.conf /opt/etc/init.d/SXXbash-completion
+#BASH_COMPLETION_CONFFILES=$(TARGET_PREFIX)/etc/bash-completion.conf $(TARGET_PREFIX)/etc/init.d/SXXbash-completion
 
 #
 # BASH_COMPLETION_PATCHES should list any patches, in the the order in
@@ -115,7 +115,7 @@ $(BASH_COMPLETION_BUILD_DIR)/.configured: $(DL_DIR)/$(BASH_COMPLETION_SOURCE) $(
 	if test "$(BUILD_DIR)/$(BASH_COMPLETION_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(BASH_COMPLETION_DIR) $(@D) ; \
 	fi
-	sed -i -e 's|/etc/bash_completion|/opt&|' $(@D)/bash_completion*
+	sed -i -e 's|/etc/bash_completion|$(TARGET_PREFIX)&|' $(@D)/bash_completion*
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(BASH_COMPLETION_CPPFLAGS)" \
@@ -178,23 +178,23 @@ $(BASH_COMPLETION_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(BASH_COMPLETION_IPK_DIR)/opt/sbin or $(BASH_COMPLETION_IPK_DIR)/opt/bin
+# Binaries should be installed into $(BASH_COMPLETION_IPK_DIR)$(TARGET_PREFIX)/sbin or $(BASH_COMPLETION_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(BASH_COMPLETION_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(BASH_COMPLETION_IPK_DIR)/opt/etc/bash-completion/...
-# Documentation files should be installed in $(BASH_COMPLETION_IPK_DIR)/opt/doc/bash-completion/...
-# Daemon startup scripts should be installed in $(BASH_COMPLETION_IPK_DIR)/opt/etc/init.d/S??bash-completion
+# Libraries and include files should be installed into $(BASH_COMPLETION_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(BASH_COMPLETION_IPK_DIR)$(TARGET_PREFIX)/etc/bash-completion/...
+# Documentation files should be installed in $(BASH_COMPLETION_IPK_DIR)$(TARGET_PREFIX)/doc/bash-completion/...
+# Daemon startup scripts should be installed in $(BASH_COMPLETION_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??bash-completion
 #
 # You may need to patch your application to make it use these locations.
 #
 $(BASH_COMPLETION_IPK): $(BASH_COMPLETION_BUILD_DIR)/.built
 	rm -rf $(BASH_COMPLETION_IPK_DIR) $(BUILD_DIR)/bash-completion_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(<D) DESTDIR=$(BASH_COMPLETION_IPK_DIR) install-strip
-	$(INSTALL) -d $(BASH_COMPLETION_IPK_DIR)/opt/share/doc/bash-completion/contrib
-	mv $(BASH_COMPLETION_IPK_DIR)/opt/etc/bash_completion.d/* \
-		$(BASH_COMPLETION_IPK_DIR)/opt/share/doc/bash-completion/contrib/
+	$(INSTALL) -d $(BASH_COMPLETION_IPK_DIR)$(TARGET_PREFIX)/share/doc/bash-completion/contrib
+	mv $(BASH_COMPLETION_IPK_DIR)$(TARGET_PREFIX)/etc/bash_completion.d/* \
+		$(BASH_COMPLETION_IPK_DIR)$(TARGET_PREFIX)/share/doc/bash-completion/contrib/
 	$(INSTALL) -m644 $(<D)/[CRT]* $(<D)/bash_completion \
-		$(BASH_COMPLETION_IPK_DIR)/opt/share/doc/bash-completion/
+		$(BASH_COMPLETION_IPK_DIR)$(TARGET_PREFIX)/share/doc/bash-completion/
 	$(MAKE) $(BASH_COMPLETION_IPK_DIR)/CONTROL/control
 	echo $(BASH_COMPLETION_CONFFILES) | sed -e 's/ /\n/g' > $(BASH_COMPLETION_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BASH_COMPLETION_IPK_DIR)

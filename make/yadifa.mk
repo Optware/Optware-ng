@@ -46,7 +46,7 @@ YADIFA_IPK_VERSION=1
 
 #
 # YADIFA_CONFFILES should be a list of user-editable files
-#YADIFA_CONFFILES=/opt/etc/yadifa.conf /opt/etc/init.d/SXXyadifa
+#YADIFA_CONFFILES=$(TARGET_PREFIX)/etc/yadifa.conf $(TARGET_PREFIX)/etc/init.d/SXXyadifa
 
 #
 # YADIFA_PATCHES should list any patches, in the the order in
@@ -182,23 +182,23 @@ $(YADIFA_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(YADIFA_IPK_DIR)/opt/sbin or $(YADIFA_IPK_DIR)/opt/bin
+# Binaries should be installed into $(YADIFA_IPK_DIR)$(TARGET_PREFIX)/sbin or $(YADIFA_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(YADIFA_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(YADIFA_IPK_DIR)/opt/etc/yadifa/...
-# Documentation files should be installed in $(YADIFA_IPK_DIR)/opt/doc/yadifa/...
-# Daemon startup scripts should be installed in $(YADIFA_IPK_DIR)/opt/etc/init.d/S??yadifa
+# Libraries and include files should be installed into $(YADIFA_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(YADIFA_IPK_DIR)$(TARGET_PREFIX)/etc/yadifa/...
+# Documentation files should be installed in $(YADIFA_IPK_DIR)$(TARGET_PREFIX)/doc/yadifa/...
+# Daemon startup scripts should be installed in $(YADIFA_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??yadifa
 #
 # You may need to patch your application to make it use these locations.
 #
 $(YADIFA_IPK): $(YADIFA_BUILD_DIR)/.built
 	rm -rf $(YADIFA_IPK_DIR) $(BUILD_DIR)/yadifa_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(YADIFA_BUILD_DIR) DESTDIR=$(YADIFA_IPK_DIR) install-strip
-#	$(INSTALL) -d $(YADIFA_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(YADIFA_SOURCE_DIR)/yadifa.conf $(YADIFA_IPK_DIR)/opt/etc/yadifa.conf
-#	$(INSTALL) -d $(YADIFA_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(YADIFA_SOURCE_DIR)/rc.yadifa $(YADIFA_IPK_DIR)/opt/etc/init.d/SXXyadifa
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(YADIFA_IPK_DIR)/opt/etc/init.d/SXXyadifa
+#	$(INSTALL) -d $(YADIFA_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(YADIFA_SOURCE_DIR)/yadifa.conf $(YADIFA_IPK_DIR)$(TARGET_PREFIX)/etc/yadifa.conf
+#	$(INSTALL) -d $(YADIFA_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(YADIFA_SOURCE_DIR)/rc.yadifa $(YADIFA_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXyadifa
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(YADIFA_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXyadifa
 	$(MAKE) $(YADIFA_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(YADIFA_SOURCE_DIR)/postinst $(YADIFA_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(YADIFA_IPK_DIR)/CONTROL/postinst

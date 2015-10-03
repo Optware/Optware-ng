@@ -40,7 +40,7 @@ HD2U_IPK_VERSION=1
 
 #
 # HD2U_CONFFILES should be a list of user-editable files
-#HD2U_CONFFILES=/opt/etc/hd2u.conf /opt/etc/init.d/SXXhd2u
+#HD2U_CONFFILES=$(TARGET_PREFIX)/etc/hd2u.conf $(TARGET_PREFIX)/etc/init.d/SXXhd2u
 
 #
 # HD2U_PATCHES should list any patches, in the the order in
@@ -186,12 +186,12 @@ $(HD2U_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(HD2U_IPK_DIR)/opt/sbin or $(HD2U_IPK_DIR)/opt/bin
+# Binaries should be installed into $(HD2U_IPK_DIR)$(TARGET_PREFIX)/sbin or $(HD2U_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(HD2U_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(HD2U_IPK_DIR)/opt/etc/hd2u/...
-# Documentation files should be installed in $(HD2U_IPK_DIR)/opt/doc/hd2u/...
-# Daemon startup scripts should be installed in $(HD2U_IPK_DIR)/opt/etc/init.d/S??hd2u
+# Libraries and include files should be installed into $(HD2U_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(HD2U_IPK_DIR)$(TARGET_PREFIX)/etc/hd2u/...
+# Documentation files should be installed in $(HD2U_IPK_DIR)$(TARGET_PREFIX)/doc/hd2u/...
+# Daemon startup scripts should be installed in $(HD2U_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??hd2u
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -201,9 +201,9 @@ $(HD2U_IPK): $(HD2U_BUILD_DIR)/.built
 		DESTDIR=$(HD2U_IPK_DIR) \
 		prefix=$(HD2U_IPK_DIR)$(TARGET_PREFIX) \
 		;
-	$(STRIP_COMMAND) $(HD2U_IPK_DIR)/opt/bin/*
-	mv $(HD2U_IPK_DIR)/opt/bin/dos2unix $(HD2U_IPK_DIR)/opt/bin/hd2u-dos2unix
-	$(INSTALL) -d $(HD2U_IPK_DIR)/opt/share/doc/hd2u
+	$(STRIP_COMMAND) $(HD2U_IPK_DIR)$(TARGET_PREFIX)/bin/*
+	mv $(HD2U_IPK_DIR)$(TARGET_PREFIX)/bin/dos2unix $(HD2U_IPK_DIR)$(TARGET_PREFIX)/bin/hd2u-dos2unix
+	$(INSTALL) -d $(HD2U_IPK_DIR)$(TARGET_PREFIX)/share/doc/hd2u
 	$(INSTALL) $(HD2U_BUILD_DIR)/AUTHORS \
 		$(HD2U_BUILD_DIR)/ChangeLog \
 		$(HD2U_BUILD_DIR)/COPYING \
@@ -212,13 +212,13 @@ $(HD2U_IPK): $(HD2U_BUILD_DIR)/.built
 		$(HD2U_BUILD_DIR)/NEWS \
 		$(HD2U_BUILD_DIR)/README \
 		$(HD2U_BUILD_DIR)/TODO \
-		$(HD2U_IPK_DIR)/opt/share/doc/hd2u/
+		$(HD2U_IPK_DIR)$(TARGET_PREFIX)/share/doc/hd2u/
 	$(MAKE) $(HD2U_IPK_DIR)/CONTROL/control
 	(echo "#!/bin/sh"; \
-	 echo "update-alternatives --install /opt/bin/dos2unix dos2unix /opt/bin/hd2u-dos2unix 60"; \
+	 echo "update-alternatives --install $(TARGET_PREFIX)/bin/dos2unix dos2unix $(TARGET_PREFIX)/bin/hd2u-dos2unix 60"; \
 	) > $(HD2U_IPK_DIR)/CONTROL/postinst
 	(echo "#!/bin/sh"; \
-	 echo "update-alternatives --remove dos2unix /opt/bin/hd2u-dos2unix"; \
+	 echo "update-alternatives --remove dos2unix $(TARGET_PREFIX)/bin/hd2u-dos2unix"; \
 	) > $(HD2U_IPK_DIR)/CONTROL/prerm
 	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

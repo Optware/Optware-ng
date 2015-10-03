@@ -68,16 +68,16 @@ byrequest: $(BYREQUEST_BUILD_DIR)/.built
 $(BYREQUEST_IPK): $(BYREQUEST_BUILD_DIR)/.built
 	rm -rf $(BYREQUEST_IPK_DIR) $(BUILD_DIR)/byrequest_*_$(TARGET_ARCH).ipk
 	# Bin file
-	$(INSTALL) -d $(BYREQUEST_IPK_DIR)/opt/bin
-	$(STRIP_COMMAND) $(BYREQUEST_BUILD_DIR)/byRequest -o $(BYREQUEST_IPK_DIR)/opt/bin/byRequest
+	$(INSTALL) -d $(BYREQUEST_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(STRIP_COMMAND) $(BYREQUEST_BUILD_DIR)/byRequest -o $(BYREQUEST_IPK_DIR)$(TARGET_PREFIX)/bin/byRequest
 	# Docs file
-	$(INSTALL) -d $(BYREQUEST_IPK_DIR)/opt/usr/doc/byRequest
-	$(INSTALL) -m 644 $(BYREQUEST_BUILD_DIR)/byRequest.conf $(BYREQUEST_IPK_DIR)/opt/usr/doc/byRequest
-	$(INSTALL) -m 644 $(BYREQUEST_BUILD_DIR)/README* $(BYREQUEST_IPK_DIR)/opt/usr/doc/byRequest
-	$(INSTALL) -m 644 $(BYREQUEST_BUILD_DIR)/ANNOUNCE $(BYREQUEST_IPK_DIR)/opt/usr/doc/byRequest
+	$(INSTALL) -d $(BYREQUEST_IPK_DIR)$(TARGET_PREFIX)/usr/doc/byRequest
+	$(INSTALL) -m 644 $(BYREQUEST_BUILD_DIR)/byRequest.conf $(BYREQUEST_IPK_DIR)$(TARGET_PREFIX)/usr/doc/byRequest
+	$(INSTALL) -m 644 $(BYREQUEST_BUILD_DIR)/README* $(BYREQUEST_IPK_DIR)$(TARGET_PREFIX)/usr/doc/byRequest
+	$(INSTALL) -m 644 $(BYREQUEST_BUILD_DIR)/ANNOUNCE $(BYREQUEST_IPK_DIR)$(TARGET_PREFIX)/usr/doc/byRequest
 	# Init file
-	$(INSTALL) -d $(BYREQUEST_IPK_DIR)/opt/etc/init.d
-	$(INSTALL) -m 755 $(BYREQUEST_SOURCE_DIR)/S99byRequest $(BYREQUEST_IPK_DIR)/opt/etc/init.d/S99byRequest
+	$(INSTALL) -d $(BYREQUEST_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(INSTALL) -m 755 $(BYREQUEST_SOURCE_DIR)/S99byRequest $(BYREQUEST_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S99byRequest
 	# Control files
 	$(INSTALL) -d $(BYREQUEST_IPK_DIR)/CONTROL
 	$(MAKE) $(BYREQUEST_IPK_DIR)/CONTROL/control

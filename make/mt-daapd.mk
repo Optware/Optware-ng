@@ -93,27 +93,27 @@ $(MT_DAAPD_IPK_DIR)/CONTROL/control:
 
 $(MT_DAAPD_IPK): $(MT_DAAPD_BUILD_DIR)/src/mt-daapd
 	rm -rf $(MT_DAAPD_IPK_DIR) $(BUILD_DIR)/mt-daapd_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(MT_DAAPD_IPK_DIR)/opt/sbin
-	$(STRIP_COMMAND) $(MT_DAAPD_BUILD_DIR)/src/mt-daapd -o $(MT_DAAPD_IPK_DIR)/opt/sbin/mt-daapd
-	$(INSTALL) -d $(MT_DAAPD_IPK_DIR)/opt/etc/init.d
-	$(INSTALL) -m 755 $(MT_DAAPD_SOURCE_DIR)/rc.mt-daapd $(MT_DAAPD_IPK_DIR)/opt/etc/init.d/S60mt-daapd
+	$(INSTALL) -d $(MT_DAAPD_IPK_DIR)$(TARGET_PREFIX)/sbin
+	$(STRIP_COMMAND) $(MT_DAAPD_BUILD_DIR)/src/mt-daapd -o $(MT_DAAPD_IPK_DIR)$(TARGET_PREFIX)/sbin/mt-daapd
+	$(INSTALL) -d $(MT_DAAPD_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(INSTALL) -m 755 $(MT_DAAPD_SOURCE_DIR)/rc.mt-daapd $(MT_DAAPD_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S60mt-daapd
 	$(MAKE) $(MT_DAAPD_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 644 $(MT_DAAPD_SOURCE_DIR)/postinst $(MT_DAAPD_IPK_DIR)/CONTROL/postinst
 	$(INSTALL) -m 644 $(MT_DAAPD_SOURCE_DIR)/prerm $(MT_DAAPD_IPK_DIR)/CONTROL/prerm
 	$(INSTALL) -m 644 $(MT_DAAPD_SOURCE_DIR)/conffiles $(MT_DAAPD_IPK_DIR)/CONTROL/conffiles
 
-	$(INSTALL) -d $(MT_DAAPD_IPK_DIR)/opt/etc/mt-daapd
-	$(INSTALL) -m 644 $(MT_DAAPD_SOURCE_DIR)/mt-daapd.conf $(MT_DAAPD_IPK_DIR)/opt/etc/mt-daapd
-	$(INSTALL) -m 644 $(MT_DAAPD_SOURCE_DIR)/mt-daapd.playlist $(MT_DAAPD_IPK_DIR)/opt/etc/mt-daapd
+	$(INSTALL) -d $(MT_DAAPD_IPK_DIR)$(TARGET_PREFIX)/etc/mt-daapd
+	$(INSTALL) -m 644 $(MT_DAAPD_SOURCE_DIR)/mt-daapd.conf $(MT_DAAPD_IPK_DIR)$(TARGET_PREFIX)/etc/mt-daapd
+	$(INSTALL) -m 644 $(MT_DAAPD_SOURCE_DIR)/mt-daapd.playlist $(MT_DAAPD_IPK_DIR)$(TARGET_PREFIX)/etc/mt-daapd
 
-	$(INSTALL) -d $(MT_DAAPD_IPK_DIR)/opt/doc/mt-daapd
-	$(INSTALL) -m 644 $(MT_DAAPD_SOURCE_DIR)/mt-daapd.conf $(MT_DAAPD_IPK_DIR)/opt/doc/mt-daapd
-	$(INSTALL) -m 644 $(MT_DAAPD_SOURCE_DIR)/mt-daapd.playlist $(MT_DAAPD_IPK_DIR)/opt/doc/mt-daapd
+	$(INSTALL) -d $(MT_DAAPD_IPK_DIR)$(TARGET_PREFIX)/doc/mt-daapd
+	$(INSTALL) -m 644 $(MT_DAAPD_SOURCE_DIR)/mt-daapd.conf $(MT_DAAPD_IPK_DIR)$(TARGET_PREFIX)/doc/mt-daapd
+	$(INSTALL) -m 644 $(MT_DAAPD_SOURCE_DIR)/mt-daapd.playlist $(MT_DAAPD_IPK_DIR)$(TARGET_PREFIX)/doc/mt-daapd
 
-	$(INSTALL) -d $(MT_DAAPD_IPK_DIR)/opt/share/mt-daapd/admin-root
-	$(INSTALL) -m 644 $(MT_DAAPD_BUILD_DIR)/admin-root/* $(MT_DAAPD_IPK_DIR)/opt/share/mt-daapd/admin-root
-	rm -f $(MT_DAAPD_IPK_DIR)/opt/share/mt-daapd/admin-root/Makefile*
-	$(INSTALL) -d $(MT_DAAPD_IPK_DIR)/opt/var/mt-daapd
+	$(INSTALL) -d $(MT_DAAPD_IPK_DIR)$(TARGET_PREFIX)/share/mt-daapd/admin-root
+	$(INSTALL) -m 644 $(MT_DAAPD_BUILD_DIR)/admin-root/* $(MT_DAAPD_IPK_DIR)$(TARGET_PREFIX)/share/mt-daapd/admin-root
+	rm -f $(MT_DAAPD_IPK_DIR)$(TARGET_PREFIX)/share/mt-daapd/admin-root/Makefile*
+	$(INSTALL) -d $(MT_DAAPD_IPK_DIR)$(TARGET_PREFIX)/var/mt-daapd
 
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MT_DAAPD_IPK_DIR)
 

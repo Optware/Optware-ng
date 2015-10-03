@@ -154,25 +154,25 @@ $(UCLIBCNOTIMPL_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(UCLIBCNOTIMPL_IPK_DIR)/opt/sbin or $(UCLIBCNOTIMPL_IPK_DIR)/opt/bin
+# Binaries should be installed into $(UCLIBCNOTIMPL_IPK_DIR)$(TARGET_PREFIX)/sbin or $(UCLIBCNOTIMPL_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(UCLIBCNOTIMPL_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(UCLIBCNOTIMPL_IPK_DIR)/opt/etc/uclibcnotimpl/...
-# Documentation files should be installed in $(UCLIBCNOTIMPL_IPK_DIR)/opt/doc/uclibcnotimpl/...
-# Daemon startup scripts should be installed in $(UCLIBCNOTIMPL_IPK_DIR)/opt/etc/init.d/S??uclibcnotimpl
+# Libraries and include files should be installed into $(UCLIBCNOTIMPL_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(UCLIBCNOTIMPL_IPK_DIR)$(TARGET_PREFIX)/etc/uclibcnotimpl/...
+# Documentation files should be installed in $(UCLIBCNOTIMPL_IPK_DIR)$(TARGET_PREFIX)/doc/uclibcnotimpl/...
+# Daemon startup scripts should be installed in $(UCLIBCNOTIMPL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??uclibcnotimpl
 #
 # You may need to patch your application to make it use these locations.
 #
 $(UCLIBCNOTIMPL_IPK): $(UCLIBCNOTIMPL_BUILD_DIR)/.built
 	rm -rf $(UCLIBCNOTIMPL_IPK_DIR) $(BUILD_DIR)/uclibcnotimpl_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(UCLIBCNOTIMPL_BUILD_DIR) DESTDIR=$(UCLIBCNOTIMPL_IPK_DIR) install-strip
-	$(INSTALL) -d $(UCLIBCNOTIMPL_IPK_DIR)/opt/lib
+	$(INSTALL) -d $(UCLIBCNOTIMPL_IPK_DIR)$(TARGET_PREFIX)/lib
 	$(INSTALL) -m 644  $(UCLIBCNOTIMPL_BUILD_DIR)/libuclibcnotimpl.a \
-		$(UCLIBCNOTIMPL_IPK_DIR)/opt/lib/
-#	$(INSTALL) -m 644 $(UCLIBCNOTIMPL_SOURCE_DIR)/uclibcnotimpl.conf $(UCLIBCNOTIMPL_IPK_DIR)/opt/etc/uclibcnotimpl.conf
-#	$(INSTALL) -d $(UCLIBCNOTIMPL_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(UCLIBCNOTIMPL_SOURCE_DIR)/rc.uclibcnotimpl $(UCLIBCNOTIMPL_IPK_DIR)/opt/etc/init.d/SXXuclibcnotimpl
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(UCLIBCNOTIMPL_IPK_DIR)/opt/etc/init.d/SXXuclibcnotimpl
+		$(UCLIBCNOTIMPL_IPK_DIR)$(TARGET_PREFIX)/lib/
+#	$(INSTALL) -m 644 $(UCLIBCNOTIMPL_SOURCE_DIR)/uclibcnotimpl.conf $(UCLIBCNOTIMPL_IPK_DIR)$(TARGET_PREFIX)/etc/uclibcnotimpl.conf
+#	$(INSTALL) -d $(UCLIBCNOTIMPL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(UCLIBCNOTIMPL_SOURCE_DIR)/rc.uclibcnotimpl $(UCLIBCNOTIMPL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXuclibcnotimpl
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(UCLIBCNOTIMPL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXuclibcnotimpl
 	$(MAKE) $(UCLIBCNOTIMPL_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(UCLIBCNOTIMPL_SOURCE_DIR)/postinst $(UCLIBCNOTIMPL_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(UCLIBCNOTIMPL_IPK_DIR)/CONTROL/postinst

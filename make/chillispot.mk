@@ -45,7 +45,7 @@ CHILLISPOT_IPK_VERSION=1
 
 #
 # CHILLISPOT_CONFFILES should be a list of user-editable files
-CHILLISPOT_CONFFILES=/opt/etc/chilli.conf /opt/etc/init.d/S80chillispot
+CHILLISPOT_CONFFILES=$(TARGET_PREFIX)/etc/chilli.conf $(TARGET_PREFIX)/etc/init.d/S80chillispot
 
 #
 # CHILLISPOT_PATCHES should list any patches, in the the order in
@@ -176,30 +176,30 @@ $(CHILLISPOT_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(CHILLISPOT_IPK_DIR)/opt/sbin or $(CHILLISPOT_IPK_DIR)/opt/bin
+# Binaries should be installed into $(CHILLISPOT_IPK_DIR)$(TARGET_PREFIX)/sbin or $(CHILLISPOT_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(CHILLISPOT_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(CHILLISPOT_IPK_DIR)/opt/etc/chillispot/...
-# Documentation files should be installed in $(CHILLISPOT_IPK_DIR)/opt/doc/chillispot/...
-# Daemon startup scripts should be installed in $(CHILLISPOT_IPK_DIR)/opt/etc/init.d/S??chillispot
+# Libraries and include files should be installed into $(CHILLISPOT_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(CHILLISPOT_IPK_DIR)$(TARGET_PREFIX)/etc/chillispot/...
+# Documentation files should be installed in $(CHILLISPOT_IPK_DIR)$(TARGET_PREFIX)/doc/chillispot/...
+# Daemon startup scripts should be installed in $(CHILLISPOT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??chillispot
 #
 # You may need to patch your application to make it use these locations.
 #
 $(CHILLISPOT_IPK): $(CHILLISPOT_BUILD_DIR)/.built
 	rm -rf $(CHILLISPOT_IPK_DIR) $(BUILD_DIR)/chillispot_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(CHILLISPOT_BUILD_DIR) DESTDIR=$(CHILLISPOT_IPK_DIR) install
-	$(STRIP_COMMAND) $(CHILLISPOT_IPK_DIR)/opt/sbin/chilli
-	$(INSTALL) -d $(CHILLISPOT_IPK_DIR)/opt/etc/
-	$(INSTALL) -m 644 $(CHILLISPOT_SOURCE_DIR)/chilli.conf $(CHILLISPOT_IPK_DIR)/opt/etc/chilli.conf
-	$(INSTALL) -d $(CHILLISPOT_IPK_DIR)/opt/doc/chillispot
-	$(INSTALL) -m 644 $(CHILLISPOT_SOURCE_DIR)/hotspotlogin.cgi $(CHILLISPOT_IPK_DIR)/opt/doc/chillispot/hotspotlogin.cgi
-	$(INSTALL) -m 644 $(CHILLISPOT_SOURCE_DIR)/firewall.iptables $(CHILLISPOT_IPK_DIR)/opt/doc/chillispot/firewall.iptables
-	$(INSTALL) -m 644 $(CHILLISPOT_SOURCE_DIR)/firewall.openwrt $(CHILLISPOT_IPK_DIR)/opt/doc/chillispot/firewall.openwrt
-	$(INSTALL) -m 644 $(CHILLISPOT_SOURCE_DIR)/freeradius.users $(CHILLISPOT_IPK_DIR)/opt/doc/chillispot/freeradius.users
-	$(INSTALL) -m 644 $(CHILLISPOT_SOURCE_DIR)/dictionary.chillispot $(CHILLISPOT_IPK_DIR)/opt/doc/chillispot/dictionary.chillispot
-	$(INSTALL) -d $(CHILLISPOT_IPK_DIR)/opt/var/lib/chilli
-	$(INSTALL) -d $(CHILLISPOT_IPK_DIR)/opt/etc/init.d
-	$(INSTALL) -m 755 $(CHILLISPOT_SOURCE_DIR)/rc.chilli $(CHILLISPOT_IPK_DIR)/opt/etc/init.d/S80chillispot
+	$(STRIP_COMMAND) $(CHILLISPOT_IPK_DIR)$(TARGET_PREFIX)/sbin/chilli
+	$(INSTALL) -d $(CHILLISPOT_IPK_DIR)$(TARGET_PREFIX)/etc/
+	$(INSTALL) -m 644 $(CHILLISPOT_SOURCE_DIR)/chilli.conf $(CHILLISPOT_IPK_DIR)$(TARGET_PREFIX)/etc/chilli.conf
+	$(INSTALL) -d $(CHILLISPOT_IPK_DIR)$(TARGET_PREFIX)/doc/chillispot
+	$(INSTALL) -m 644 $(CHILLISPOT_SOURCE_DIR)/hotspotlogin.cgi $(CHILLISPOT_IPK_DIR)$(TARGET_PREFIX)/doc/chillispot/hotspotlogin.cgi
+	$(INSTALL) -m 644 $(CHILLISPOT_SOURCE_DIR)/firewall.iptables $(CHILLISPOT_IPK_DIR)$(TARGET_PREFIX)/doc/chillispot/firewall.iptables
+	$(INSTALL) -m 644 $(CHILLISPOT_SOURCE_DIR)/firewall.openwrt $(CHILLISPOT_IPK_DIR)$(TARGET_PREFIX)/doc/chillispot/firewall.openwrt
+	$(INSTALL) -m 644 $(CHILLISPOT_SOURCE_DIR)/freeradius.users $(CHILLISPOT_IPK_DIR)$(TARGET_PREFIX)/doc/chillispot/freeradius.users
+	$(INSTALL) -m 644 $(CHILLISPOT_SOURCE_DIR)/dictionary.chillispot $(CHILLISPOT_IPK_DIR)$(TARGET_PREFIX)/doc/chillispot/dictionary.chillispot
+	$(INSTALL) -d $(CHILLISPOT_IPK_DIR)$(TARGET_PREFIX)/var/lib/chilli
+	$(INSTALL) -d $(CHILLISPOT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(INSTALL) -m 755 $(CHILLISPOT_SOURCE_DIR)/rc.chilli $(CHILLISPOT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S80chillispot
 	$(MAKE) $(CHILLISPOT_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 755 $(CHILLISPOT_SOURCE_DIR)/postinst $(CHILLISPOT_IPK_DIR)/CONTROL/postinst
 	$(INSTALL) -m 755 $(CHILLISPOT_SOURCE_DIR)/prerm $(CHILLISPOT_IPK_DIR)/CONTROL/prerm

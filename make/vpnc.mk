@@ -40,7 +40,7 @@ VPNC_IPK_VERSION=1
 
 #
 # VPNC_CONFFILES should be a list of user-editable files
-VPNC_CONFFILES=/opt/etc/vpnc/default.conf /opt/etc/vpnc/vpnc-script
+VPNC_CONFFILES=$(TARGET_PREFIX)/etc/vpnc/default.conf $(TARGET_PREFIX)/etc/vpnc/vpnc-script
 
 #
 # VPNC_PATCHES should list any patches, in the the order in
@@ -174,23 +174,23 @@ $(VPNC_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(VPNC_IPK_DIR)/opt/sbin or $(VPNC_IPK_DIR)/opt/bin
+# Binaries should be installed into $(VPNC_IPK_DIR)$(TARGET_PREFIX)/sbin or $(VPNC_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(VPNC_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(VPNC_IPK_DIR)/opt/etc/vpnc/...
-# Documentation files should be installed in $(VPNC_IPK_DIR)/opt/doc/vpnc/...
-# Daemon startup scripts should be installed in $(VPNC_IPK_DIR)/opt/etc/init.d/S??vpnc
+# Libraries and include files should be installed into $(VPNC_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(VPNC_IPK_DIR)$(TARGET_PREFIX)/etc/vpnc/...
+# Documentation files should be installed in $(VPNC_IPK_DIR)$(TARGET_PREFIX)/doc/vpnc/...
+# Daemon startup scripts should be installed in $(VPNC_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??vpnc
 #
 # You may need to patch your application to make it use these locations.
 #
 $(VPNC_IPK): $(VPNC_BUILD_DIR)/.built
 	rm -rf $(VPNC_IPK_DIR) $(BUILD_DIR)/vpnc_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(VPNC_BUILD_DIR) DESTDIR=$(VPNC_IPK_DIR) install
-	$(STRIP_COMMAND) $(VPNC_IPK_DIR)/opt/sbin/vpnc
-	$(STRIP_COMMAND) $(VPNC_IPK_DIR)/opt/bin/cisco-decrypt
-	sed -i -e 's|/var/|/opt&|' $(VPNC_IPK_DIR)/opt/etc/vpnc/vpnc-script
-	$(INSTALL) -d $(VPNC_IPK_DIR)/opt/man/man8
-	$(INSTALL) -m 644 $(VPNC_SOURCE_DIR)/vpnc.8 $(VPNC_IPK_DIR)/opt/man/man8
+	$(STRIP_COMMAND) $(VPNC_IPK_DIR)$(TARGET_PREFIX)/sbin/vpnc
+	$(STRIP_COMMAND) $(VPNC_IPK_DIR)$(TARGET_PREFIX)/bin/cisco-decrypt
+	sed -i -e 's|/var/|$(TARGET_PREFIX)&|' $(VPNC_IPK_DIR)$(TARGET_PREFIX)/etc/vpnc/vpnc-script
+	$(INSTALL) -d $(VPNC_IPK_DIR)$(TARGET_PREFIX)/man/man8
+	$(INSTALL) -m 644 $(VPNC_SOURCE_DIR)/vpnc.8 $(VPNC_IPK_DIR)$(TARGET_PREFIX)/man/man8
 	$(MAKE) $(VPNC_IPK_DIR)/CONTROL/control
 	echo $(VPNC_CONFFILES) | sed -e 's/ /\n/g' > $(VPNC_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(VPNC_IPK_DIR)

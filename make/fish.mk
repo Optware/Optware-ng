@@ -41,7 +41,7 @@ FISH_IPK_VERSION=1
 
 #
 # FISH_CONFFILES should be a list of user-editable files
-#FISH_CONFFILES=/opt/etc/fish.conf /opt/etc/init.d/SXXfish
+#FISH_CONFFILES=$(TARGET_PREFIX)/etc/fish.conf $(TARGET_PREFIX)/etc/init.d/SXXfish
 
 #
 # FISH_PATCHES should list any patches, in the the order in
@@ -192,19 +192,19 @@ $(FISH_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(FISH_IPK_DIR)/opt/sbin or $(FISH_IPK_DIR)/opt/bin
+# Binaries should be installed into $(FISH_IPK_DIR)$(TARGET_PREFIX)/sbin or $(FISH_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(FISH_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(FISH_IPK_DIR)/opt/etc/fish/...
-# Documentation files should be installed in $(FISH_IPK_DIR)/opt/doc/fish/...
-# Daemon startup scripts should be installed in $(FISH_IPK_DIR)/opt/etc/init.d/S??fish
+# Libraries and include files should be installed into $(FISH_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(FISH_IPK_DIR)$(TARGET_PREFIX)/etc/fish/...
+# Documentation files should be installed in $(FISH_IPK_DIR)$(TARGET_PREFIX)/doc/fish/...
+# Daemon startup scripts should be installed in $(FISH_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??fish
 #
 # You may need to patch your application to make it use these locations.
 #
 $(FISH_IPK): $(FISH_BUILD_DIR)/.built
 	rm -rf $(FISH_IPK_DIR) $(BUILD_DIR)/fish_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(FISH_BUILD_DIR) DESTDIR=$(FISH_IPK_DIR) install
-	$(STRIP_COMMAND) $(FISH_IPK_DIR)/opt/bin/*
+	$(STRIP_COMMAND) $(FISH_IPK_DIR)$(TARGET_PREFIX)/bin/*
 	$(MAKE) $(FISH_IPK_DIR)/CONTROL/control
 	echo $(FISH_CONFFILES) | sed -e 's/ /\n/g' > $(FISH_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(FISH_IPK_DIR)

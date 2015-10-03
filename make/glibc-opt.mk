@@ -54,12 +54,12 @@ $(GLIBC-OPT_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(GLIBC-OPT_IPK_DIR)/opt/sbin or $(GLIBC-OPT_IPK_DIR)/opt/bin
+# Binaries should be installed into $(GLIBC-OPT_IPK_DIR)$(TARGET_PREFIX)/sbin or $(GLIBC-OPT_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(GLIBC-OPT_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(GLIBC-OPT_IPK_DIR)/opt/etc/glibc-opt/...
-# Documentation files should be installed in $(GLIBC-OPT_IPK_DIR)/opt/doc/glibc-opt/...
-# Daemon startup scripts should be installed in $(GLIBC-OPT_IPK_DIR)/opt/etc/init.d/S??glibc-opt
+# Libraries and include files should be installed into $(GLIBC-OPT_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(GLIBC-OPT_IPK_DIR)$(TARGET_PREFIX)/etc/glibc-opt/...
+# Documentation files should be installed in $(GLIBC-OPT_IPK_DIR)$(TARGET_PREFIX)/doc/glibc-opt/...
+# Daemon startup scripts should be installed in $(GLIBC-OPT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??glibc-opt
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -82,14 +82,14 @@ $(GLIBC-OPT_IPK): make/glibc-opt.mk
 	$(INSTALL) -d $(GLIBC-OPT_IPK_DIR)
 #	$(MAKE) -C $(BUILDROOT_BUILD_DIR) DESTDIR=$(GLIBC-OPT_IPK_DIR) install-strip
 #	tar -xv -C $(GLIBC-OPT_IPK_DIR) -f $(BUILDROOT_BUILD_DIR)/rootfs.$(TARGET_ARCH).tar \
-#		--wildcards $(GLIBC-OPT_LIBS_PATTERN) ./opt/sbin/ldconfig
-	$(INSTALL) -d $(GLIBC-OPT_IPK_DIR)/opt/etc
-	$(INSTALL) -d $(GLIBC-OPT_IPK_DIR)/opt/lib
-	cp -af $(GLIBC-OPT_LIBS_PATTERN) $(GLIBC-OPT_IPK_DIR)/opt/lib
-	-$(STRIP_COMMAND) $(patsubst %, $(GLIBC-OPT_IPK_DIR)/opt/lib/%*so*, $(GLIBC-OPT_LIBS))
+#		--wildcards $(GLIBC-OPT_LIBS_PATTERN) .$(TARGET_PREFIX)/sbin/ldconfig
+	$(INSTALL) -d $(GLIBC-OPT_IPK_DIR)$(TARGET_PREFIX)/etc
+	$(INSTALL) -d $(GLIBC-OPT_IPK_DIR)$(TARGET_PREFIX)/lib
+	cp -af $(GLIBC-OPT_LIBS_PATTERN) $(GLIBC-OPT_IPK_DIR)$(TARGET_PREFIX)/lib
+	-$(STRIP_COMMAND) $(patsubst %, $(GLIBC-OPT_IPK_DIR)$(TARGET_PREFIX)/lib/%*so*, $(GLIBC-OPT_LIBS))
 	### package non-stripped libpthread and libthread_db
 	cp -f $(GLIBC-OPT_LIBS_SOURCE_DIR)/libpthread* $(GLIBC-OPT_LIBS_SOURCE_DIR)/libthread_db* \
-							$(GLIBC-OPT_IPK_DIR)/opt/lib
+							$(GLIBC-OPT_IPK_DIR)$(TARGET_PREFIX)/lib
 	$(MAKE) $(GLIBC-OPT_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(BUILDROOT_SOURCE_DIR)/prerm $(GLIBC-OPT_IPK_DIR)/CONTROL/prerm
 #	echo $(GLIBC-OPT_CONFFILES) | sed -e 's/ /\n/g' > $(GLIBC-OPT_IPK_DIR)/CONTROL/conffiles

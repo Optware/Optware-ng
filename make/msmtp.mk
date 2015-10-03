@@ -43,7 +43,7 @@ MSMTP_IPK_VERSION=1
 
 #
 # MSMTP_CONFFILES should be a list of user-editable files
-#MSMTP_CONFFILES=/opt/etc/msmtp.conf /opt/etc/init.d/SXXmsmtp
+#MSMTP_CONFFILES=$(TARGET_PREFIX)/etc/msmtp.conf $(TARGET_PREFIX)/etc/init.d/SXXmsmtp
 
 #
 # MSMTP_PATCHES should list any patches, in the the order in
@@ -191,24 +191,24 @@ $(MSMTP_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(MSMTP_IPK_DIR)/opt/sbin or $(MSMTP_IPK_DIR)/opt/bin
+# Binaries should be installed into $(MSMTP_IPK_DIR)$(TARGET_PREFIX)/sbin or $(MSMTP_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(MSMTP_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(MSMTP_IPK_DIR)/opt/etc/msmtp/...
-# Documentation files should be installed in $(MSMTP_IPK_DIR)/opt/doc/msmtp/...
-# Daemon startup scripts should be installed in $(MSMTP_IPK_DIR)/opt/etc/init.d/S??msmtp
+# Libraries and include files should be installed into $(MSMTP_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(MSMTP_IPK_DIR)$(TARGET_PREFIX)/etc/msmtp/...
+# Documentation files should be installed in $(MSMTP_IPK_DIR)$(TARGET_PREFIX)/doc/msmtp/...
+# Daemon startup scripts should be installed in $(MSMTP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??msmtp
 #
 # You may need to patch your application to make it use these locations.
 #
 $(MSMTP_IPK): $(MSMTP_BUILD_DIR)/.built
 	rm -rf $(MSMTP_IPK_DIR) $(BUILD_DIR)/msmtp_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MSMTP_BUILD_DIR) install-strip transform='' DESTDIR=$(MSMTP_IPK_DIR)
-	rm -f $(MSMTP_IPK_DIR)/opt/share/info/dir
-#	$(INSTALL) -d $(MSMTP_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(MSMTP_SOURCE_DIR)/msmtp.conf $(MSMTP_IPK_DIR)/opt/etc/msmtp.conf
-#	$(INSTALL) -d $(MSMTP_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(MSMTP_SOURCE_DIR)/rc.msmtp $(MSMTP_IPK_DIR)/opt/etc/init.d/SXXmsmtp
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MSMTP_IPK_DIR)/opt/etc/init.d/SXXmsmtp
+	rm -f $(MSMTP_IPK_DIR)$(TARGET_PREFIX)/share/info/dir
+#	$(INSTALL) -d $(MSMTP_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(MSMTP_SOURCE_DIR)/msmtp.conf $(MSMTP_IPK_DIR)$(TARGET_PREFIX)/etc/msmtp.conf
+#	$(INSTALL) -d $(MSMTP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(MSMTP_SOURCE_DIR)/rc.msmtp $(MSMTP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXmsmtp
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MSMTP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXmsmtp
 	$(MAKE) $(MSMTP_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(MSMTP_SOURCE_DIR)/postinst $(MSMTP_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MSMTP_IPK_DIR)/CONTROL/postinst

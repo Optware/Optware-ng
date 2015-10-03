@@ -47,7 +47,7 @@ NEWSBEUTER_IPK_VERSION=1
 
 #
 # NEWSBEUTER_CONFFILES should be a list of user-editable files
-#NEWSBEUTER_CONFFILES=/opt/etc/newsbeuter.conf /opt/etc/init.d/SXXnewsbeuter
+#NEWSBEUTER_CONFFILES=$(TARGET_PREFIX)/etc/newsbeuter.conf $(TARGET_PREFIX)/etc/init.d/SXXnewsbeuter
 
 #
 # NEWSBEUTER_PATCHES should list any patches, in the the order in
@@ -217,12 +217,12 @@ $(NEWSBEUTER_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(NEWSBEUTER_IPK_DIR)/opt/sbin or $(NEWSBEUTER_IPK_DIR)/opt/bin
+# Binaries should be installed into $(NEWSBEUTER_IPK_DIR)$(TARGET_PREFIX)/sbin or $(NEWSBEUTER_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(NEWSBEUTER_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(NEWSBEUTER_IPK_DIR)/opt/etc/newsbeuter/...
-# Documentation files should be installed in $(NEWSBEUTER_IPK_DIR)/opt/doc/newsbeuter/...
-# Daemon startup scripts should be installed in $(NEWSBEUTER_IPK_DIR)/opt/etc/init.d/S??newsbeuter
+# Libraries and include files should be installed into $(NEWSBEUTER_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(NEWSBEUTER_IPK_DIR)$(TARGET_PREFIX)/etc/newsbeuter/...
+# Documentation files should be installed in $(NEWSBEUTER_IPK_DIR)$(TARGET_PREFIX)/doc/newsbeuter/...
+# Daemon startup scripts should be installed in $(NEWSBEUTER_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??newsbeuter
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -230,13 +230,13 @@ $(NEWSBEUTER_IPK): $(NEWSBEUTER_BUILD_DIR)/.built
 	rm -rf $(NEWSBEUTER_IPK_DIR) $(BUILD_DIR)/newsbeuter_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(NEWSBEUTER_BUILD_DIR) install \
 		DESTDIR=$(NEWSBEUTER_IPK_DIR) \
-		prefix=$(if $(filter 1.2,$(NEWSBEUTER_VERSION)),$(NEWSBEUTER_IPK_DIR),)/opt
-	$(STRIP_COMMAND) $(NEWSBEUTER_IPK_DIR)/opt/bin/*
-#	$(INSTALL) -d $(NEWSBEUTER_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(NEWSBEUTER_SOURCE_DIR)/newsbeuter.conf $(NEWSBEUTER_IPK_DIR)/opt/etc/newsbeuter.conf
-#	$(INSTALL) -d $(NEWSBEUTER_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(NEWSBEUTER_SOURCE_DIR)/rc.newsbeuter $(NEWSBEUTER_IPK_DIR)/opt/etc/init.d/SXXnewsbeuter
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(NEWSBEUTER_IPK_DIR)/opt/etc/init.d/SXXnewsbeuter
+		prefix=$(if $(filter 1.2,$(NEWSBEUTER_VERSION)),$(NEWSBEUTER_IPK_DIR),)$(TARGET_PREFIX)
+	$(STRIP_COMMAND) $(NEWSBEUTER_IPK_DIR)$(TARGET_PREFIX)/bin/*
+#	$(INSTALL) -d $(NEWSBEUTER_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(NEWSBEUTER_SOURCE_DIR)/newsbeuter.conf $(NEWSBEUTER_IPK_DIR)$(TARGET_PREFIX)/etc/newsbeuter.conf
+#	$(INSTALL) -d $(NEWSBEUTER_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(NEWSBEUTER_SOURCE_DIR)/rc.newsbeuter $(NEWSBEUTER_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXnewsbeuter
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(NEWSBEUTER_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXnewsbeuter
 	$(MAKE) $(NEWSBEUTER_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(NEWSBEUTER_SOURCE_DIR)/postinst $(NEWSBEUTER_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(NEWSBEUTER_IPK_DIR)/CONTROL/postinst

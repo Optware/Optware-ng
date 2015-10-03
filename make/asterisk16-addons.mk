@@ -41,10 +41,10 @@ ASTERISK16_ADDONS_IPK_VERSION=1
 #
 # ASTERISK16_ADDONS_CONFFILES should be a list of user-editable files
 ASTERISK16_ADDONS_CONFFILES=\
-/opt/etc/asterisk/mobile.conf \
-/opt/etc/asterisk/res_mysql.conf \
-/opt/etc/asterisk/ooh323.conf \
-/opt/etc/asterisk/cdr_mysql.conf
+$(TARGET_PREFIX)/etc/asterisk/mobile.conf \
+$(TARGET_PREFIX)/etc/asterisk/res_mysql.conf \
+$(TARGET_PREFIX)/etc/asterisk/ooh323.conf \
+$(TARGET_PREFIX)/etc/asterisk/cdr_mysql.conf
 
 #
 # ASTERISK16_ADDONS_PATCHES should list any patches, in the the order in
@@ -146,8 +146,8 @@ $(ASTERISK16_ADDONS_BUILD_DIR)/.configured: $(DL_DIR)/$(ASTERISK16_ADDONS_SOURCE
 		--with-mysqlclient=$(STAGING_PREFIX) \
 		--with-bluetooth=$(STAGING_PREFIX) \
 		--without-spandsp \
-		--localstatedir=/opt/var \
-		--sysconfdir=/opt/etc \
+		--localstatedir=$(TARGET_PREFIX)/var \
+		--sysconfdir=$(TARGET_PREFIX)/etc \
 	)
 	touch $(ASTERISK16_ADDONS_BUILD_DIR)/.configured
 
@@ -204,18 +204,18 @@ $(ASTERISK16_ADDONS_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(ASTERISK16_ADDONS_IPK_DIR)/opt/sbin or $(ASTERISK16_ADDONS_IPK_DIR)/opt/bin
+# Binaries should be installed into $(ASTERISK16_ADDONS_IPK_DIR)$(TARGET_PREFIX)/sbin or $(ASTERISK16_ADDONS_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(ASTERISK16_ADDONS_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(ASTERISK16_ADDONS_IPK_DIR)/opt/etc/asterisk16-addons/...
-# Documentation files should be installed in $(ASTERISK16_ADDONS_IPK_DIR)/opt/doc/asterisk16-addons/...
-# Daemon startup scripts should be installed in $(ASTERISK16_ADDONS_IPK_DIR)/opt/etc/init.d/S??asterisk16-addons
+# Libraries and include files should be installed into $(ASTERISK16_ADDONS_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(ASTERISK16_ADDONS_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk16-addons/...
+# Documentation files should be installed in $(ASTERISK16_ADDONS_IPK_DIR)$(TARGET_PREFIX)/doc/asterisk16-addons/...
+# Daemon startup scripts should be installed in $(ASTERISK16_ADDONS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??asterisk16-addons
 #
 # You may need to patch your application to make it use these locations.
 #
 $(ASTERISK16_ADDONS_IPK): $(ASTERISK16_ADDONS_BUILD_DIR)/.built
 	rm -rf $(ASTERISK16_ADDONS_IPK_DIR) $(BUILD_DIR)/asterisk16-addons_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(ASTERISK16_ADDONS_IPK_DIR)/opt/var/lib/asterisk/documentation
+	$(INSTALL) -d $(ASTERISK16_ADDONS_IPK_DIR)$(TARGET_PREFIX)/var/lib/asterisk/documentation
 	ASTCFLAGS="$(ASTERISK16_CPPFLAGS)" \
 	ASTLDFLAGS="$(STAGING_LDFLAGS) $(ASTERISK16_LDFLAGS)" \
 	$(MAKE) -C $(ASTERISK16_ADDONS_BUILD_DIR) DESTDIR=$(ASTERISK16_ADDONS_IPK_DIR) install
@@ -228,7 +228,7 @@ $(ASTERISK16_ADDONS_IPK): $(ASTERISK16_ADDONS_BUILD_DIR)/.built
 
 	echo $(ASTERISK16_ADDONS_CONFFILES) | sed -e 's/ /\n/g' > $(ASTERISK16_ADDONS_IPK_DIR)/CONTROL/conffiles
 
-	for filetostrip in $(ASTERISK16_ADDONS_IPK_DIR)/opt/lib/asterisk/modules/*.so ; do \
+	for filetostrip in $(ASTERISK16_ADDONS_IPK_DIR)$(TARGET_PREFIX)/lib/asterisk/modules/*.so ; do \
 		$(STRIP_COMMAND) $$filetostrip; \
 	done
 

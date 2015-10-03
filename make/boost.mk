@@ -110,7 +110,7 @@ BOOST_IPK_VERSION ?= 2
 
 #
 # BOOST_CONFFILES should be a list of user-editable files
-#BOOST_CONFFILES=/opt/etc/boost.conf /opt/etc/init.d/SXXboost
+#BOOST_CONFFILES=$(TARGET_PREFIX)/etc/boost.conf $(TARGET_PREFIX)/etc/init.d/SXXboost
 
 #
 # BOOST_PATCHES should list any patches, in the the order in
@@ -863,12 +863,12 @@ $(BOOST_EXCEPTION_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(BOOST_IPK_DIR)/opt/sbin or $(BOOST_IPK_DIR)/opt/bin
+# Binaries should be installed into $(BOOST_IPK_DIR)$(TARGET_PREFIX)/sbin or $(BOOST_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(BOOST_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(BOOST_IPK_DIR)/opt/etc/boost/...
-# Documentation files should be installed in $(BOOST_IPK_DIR)/opt/doc/boost/...
-# Daemon startup scripts should be installed in $(BOOST_IPK_DIR)/opt/etc/init.d/S??boost
+# Libraries and include files should be installed into $(BOOST_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(BOOST_IPK_DIR)$(TARGET_PREFIX)/etc/boost/...
+# Documentation files should be installed in $(BOOST_IPK_DIR)$(TARGET_PREFIX)/doc/boost/...
+# Daemon startup scripts should be installed in $(BOOST_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??boost
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -876,107 +876,107 @@ $(BOOST_PYTHON26_IPK): $(BOOST_BUILD_DIR)/.py26built
 	### now make boost-python-py26
 	rm -rf $(BOOST_PYTHON26_IPK_DIR) $(BUILD_DIR)/boost-python26_*_$(TARGET_ARCH).ipk
 	$(MAKE) $(BOOST_PYTHON26_IPK_DIR)/CONTROL/control
-	mkdir -p $(BOOST_PYTHON26_IPK_DIR)/opt/lib
-	cp -f $(BOOST_BUILD_DIR)/stage/lib/libboost_python-py26.so.$(BOOST_VERSION_DOTTED) $(BOOST_PYTHON26_IPK_DIR)/opt/lib
-	ln -s libboost_python-py26.so.$(BOOST_VERSION_DOTTED) $(BOOST_PYTHON26_IPK_DIR)/opt/lib/libboost_python-py26.so
-	$(STRIP_COMMAND) $(BOOST_PYTHON26_IPK_DIR)/opt/lib/libboost_python-py26.so.$(BOOST_VERSION_DOTTED)
+	mkdir -p $(BOOST_PYTHON26_IPK_DIR)$(TARGET_PREFIX)/lib
+	cp -f $(BOOST_BUILD_DIR)/stage/lib/libboost_python-py26.so.$(BOOST_VERSION_DOTTED) $(BOOST_PYTHON26_IPK_DIR)$(TARGET_PREFIX)/lib
+	ln -s libboost_python-py26.so.$(BOOST_VERSION_DOTTED) $(BOOST_PYTHON26_IPK_DIR)$(TARGET_PREFIX)/lib/libboost_python-py26.so
+	$(STRIP_COMMAND) $(BOOST_PYTHON26_IPK_DIR)$(TARGET_PREFIX)/lib/libboost_python-py26.so.$(BOOST_VERSION_DOTTED)
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BOOST_PYTHON26_IPK_DIR)
 
 $(BOOST_PYTHON27_IPK): $(BOOST_BUILD_DIR)/.py27built
 	rm -rf $(BOOST_PYTHON27_IPK_DIR) $(BUILD_DIR)/boost-python27_*_$(TARGET_ARCH).ipk
 	### now make boost-python-py27
 	$(MAKE) $(BOOST_PYTHON27_IPK_DIR)/CONTROL/control
-	mkdir -p $(BOOST_PYTHON27_IPK_DIR)/opt/lib
-	cp -f $(BOOST_BUILD_DIR)/stage/lib/libboost_python-py27.so.$(BOOST_VERSION_DOTTED) $(BOOST_PYTHON27_IPK_DIR)/opt/lib
-	ln -s libboost_python-py27.so.$(BOOST_VERSION_DOTTED) $(BOOST_PYTHON27_IPK_DIR)/opt/lib/libboost_python-py27.so
-	$(STRIP_COMMAND) $(BOOST_PYTHON27_IPK_DIR)/opt/lib/libboost_python-py27.so.$(BOOST_VERSION_DOTTED)
+	mkdir -p $(BOOST_PYTHON27_IPK_DIR)$(TARGET_PREFIX)/lib
+	cp -f $(BOOST_BUILD_DIR)/stage/lib/libboost_python-py27.so.$(BOOST_VERSION_DOTTED) $(BOOST_PYTHON27_IPK_DIR)$(TARGET_PREFIX)/lib
+	ln -s libboost_python-py27.so.$(BOOST_VERSION_DOTTED) $(BOOST_PYTHON27_IPK_DIR)$(TARGET_PREFIX)/lib/libboost_python-py27.so
+	$(STRIP_COMMAND) $(BOOST_PYTHON27_IPK_DIR)$(TARGET_PREFIX)/lib/libboost_python-py27.so.$(BOOST_VERSION_DOTTED)
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BOOST_PYTHON27_IPK_DIR)
 
 $(BOOST_PYTHON3_IPK): $(BOOST_BUILD_DIR)/.py3built
 	rm -rf $(BOOST_PYTHON3_IPK_DIR) $(BUILD_DIR)/boost-python3_*_$(TARGET_ARCH).ipk
 	### now make boost-python-py3
 	$(MAKE) $(BOOST_PYTHON3_IPK_DIR)/CONTROL/control
-	mkdir -p $(BOOST_PYTHON3_IPK_DIR)/opt/lib
-	cp -f $(BOOST_BUILD_DIR)/stage/lib/libboost_python-py$(shell echo $(PYTHON3_VERSION_MAJOR)|sed 's/\.//g').so.$(BOOST_VERSION_DOTTED) $(BOOST_PYTHON3_IPK_DIR)/opt/lib
-	ln -s libboost_python-py$(shell echo $(PYTHON3_VERSION_MAJOR)|sed 's/\.//g').so.$(BOOST_VERSION_DOTTED) $(BOOST_PYTHON3_IPK_DIR)/opt/lib/libboost_python-py$(shell \
+	mkdir -p $(BOOST_PYTHON3_IPK_DIR)$(TARGET_PREFIX)/lib
+	cp -f $(BOOST_BUILD_DIR)/stage/lib/libboost_python-py$(shell echo $(PYTHON3_VERSION_MAJOR)|sed 's/\.//g').so.$(BOOST_VERSION_DOTTED) $(BOOST_PYTHON3_IPK_DIR)$(TARGET_PREFIX)/lib
+	ln -s libboost_python-py$(shell echo $(PYTHON3_VERSION_MAJOR)|sed 's/\.//g').so.$(BOOST_VERSION_DOTTED) $(BOOST_PYTHON3_IPK_DIR)$(TARGET_PREFIX)/lib/libboost_python-py$(shell \
 																echo $(PYTHON3_VERSION_MAJOR)|sed 's/\.//g').so
-	$(STRIP_COMMAND) $(BOOST_PYTHON3_IPK_DIR)/opt/lib/libboost_python-py$(shell echo $(PYTHON3_VERSION_MAJOR)|sed 's/\.//g').so.$(BOOST_VERSION_DOTTED)
+	$(STRIP_COMMAND) $(BOOST_PYTHON3_IPK_DIR)$(TARGET_PREFIX)/lib/libboost_python-py$(shell echo $(PYTHON3_VERSION_MAJOR)|sed 's/\.//g').so.$(BOOST_VERSION_DOTTED)
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BOOST_PYTHON3_IPK_DIR)
 
 $(BOOST_DEV_IPK) $(BOOST_LIB_IPKS): $(BOOST_BUILD_DIR)/.mainbuilt
 	rm -rf $(BOOST_IPK_DIRS) $(BOOST_LIB_IPKS_MASK)
-	-(cd $(BOOST_BUILD_DIR); $(BOOST_JAM) install $(BOOST_JAM_ARGS) --prefix=$(BOOST_DEV_IPK_DIR)/opt)
-	$(STRIP_COMMAND) $(BOOST_DEV_IPK_DIR)/opt/lib/*.so*
+	-(cd $(BOOST_BUILD_DIR); $(BOOST_JAM) install $(BOOST_JAM_ARGS) --prefix=$(BOOST_DEV_IPK_DIR)$(TARGET_PREFIX))
+	$(STRIP_COMMAND) $(BOOST_DEV_IPK_DIR)$(TARGET_PREFIX)/lib/*.so*
 	### now make boost-date_time
 	$(MAKE) $(BOOST_DATE_TIME_IPK_DIR)/CONTROL/control
-	mkdir -p $(BOOST_DATE_TIME_IPK_DIR)/opt/lib
-	mv $(BOOST_DEV_IPK_DIR)/opt/lib/*date_time* $(BOOST_DATE_TIME_IPK_DIR)/opt/lib
+	mkdir -p $(BOOST_DATE_TIME_IPK_DIR)$(TARGET_PREFIX)/lib
+	mv $(BOOST_DEV_IPK_DIR)$(TARGET_PREFIX)/lib/*date_time* $(BOOST_DATE_TIME_IPK_DIR)$(TARGET_PREFIX)/lib
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BOOST_DATE_TIME_IPK_DIR)
 	### now make boost-filesystem
 	$(MAKE) $(BOOST_FILESYSTEM_IPK_DIR)/CONTROL/control
-	mkdir -p $(BOOST_FILESYSTEM_IPK_DIR)/opt/lib
-	-mv $(BOOST_DEV_IPK_DIR)/opt/lib/*filesystem* $(BOOST_FILESYSTEM_IPK_DIR)/opt/lib
+	mkdir -p $(BOOST_FILESYSTEM_IPK_DIR)$(TARGET_PREFIX)/lib
+	-mv $(BOOST_DEV_IPK_DIR)$(TARGET_PREFIX)/lib/*filesystem* $(BOOST_FILESYSTEM_IPK_DIR)$(TARGET_PREFIX)/lib
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BOOST_FILESYSTEM_IPK_DIR)
 	### now make boost-graph
 	$(MAKE) $(BOOST_GRAPH_IPK_DIR)/CONTROL/control
-	mkdir -p $(BOOST_GRAPH_IPK_DIR)/opt/lib
-	-mv $(BOOST_DEV_IPK_DIR)/opt/lib/*graph* $(BOOST_GRAPH_IPK_DIR)/opt/lib
+	mkdir -p $(BOOST_GRAPH_IPK_DIR)$(TARGET_PREFIX)/lib
+	-mv $(BOOST_DEV_IPK_DIR)$(TARGET_PREFIX)/lib/*graph* $(BOOST_GRAPH_IPK_DIR)$(TARGET_PREFIX)/lib
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BOOST_GRAPH_IPK_DIR)
 	### now make boost-iostreams
 	$(MAKE) $(BOOST_IOSTREAMS_IPK_DIR)/CONTROL/control
-	mkdir -p $(BOOST_IOSTREAMS_IPK_DIR)/opt/lib
-	mv $(BOOST_DEV_IPK_DIR)/opt/lib/*iostreams* $(BOOST_IOSTREAMS_IPK_DIR)/opt/lib
+	mkdir -p $(BOOST_IOSTREAMS_IPK_DIR)$(TARGET_PREFIX)/lib
+	mv $(BOOST_DEV_IPK_DIR)$(TARGET_PREFIX)/lib/*iostreams* $(BOOST_IOSTREAMS_IPK_DIR)$(TARGET_PREFIX)/lib
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BOOST_IOSTREAMS_IPK_DIR)
 	### now make boost-program_options
 	$(MAKE) $(BOOST_PROGRAM_OPTIONS_IPK_DIR)/CONTROL/control
-	mkdir -p $(BOOST_PROGRAM_OPTIONS_IPK_DIR)/opt/lib
-	mv $(BOOST_DEV_IPK_DIR)/opt/lib/*program_options* $(BOOST_PROGRAM_OPTIONS_IPK_DIR)/opt/lib
+	mkdir -p $(BOOST_PROGRAM_OPTIONS_IPK_DIR)$(TARGET_PREFIX)/lib
+	mv $(BOOST_DEV_IPK_DIR)$(TARGET_PREFIX)/lib/*program_options* $(BOOST_PROGRAM_OPTIONS_IPK_DIR)$(TARGET_PREFIX)/lib
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BOOST_PROGRAM_OPTIONS_IPK_DIR)
 	### now make boost-random
 	$(MAKE) $(BOOST_RANDOM_IPK_DIR)/CONTROL/control
-	mkdir -p $(BOOST_RANDOM_IPK_DIR)/opt/lib
-	mv $(BOOST_DEV_IPK_DIR)/opt/lib/*random* $(BOOST_RANDOM_IPK_DIR)/opt/lib
+	mkdir -p $(BOOST_RANDOM_IPK_DIR)$(TARGET_PREFIX)/lib
+	mv $(BOOST_DEV_IPK_DIR)$(TARGET_PREFIX)/lib/*random* $(BOOST_RANDOM_IPK_DIR)$(TARGET_PREFIX)/lib
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BOOST_RANDOM_IPK_DIR)
 	### now make boost-regex
 	$(MAKE) $(BOOST_REGEX_IPK_DIR)/CONTROL/control
-	mkdir -p $(BOOST_REGEX_IPK_DIR)/opt/lib
-	mv $(BOOST_DEV_IPK_DIR)/opt/lib/*regex* $(BOOST_REGEX_IPK_DIR)/opt/lib
+	mkdir -p $(BOOST_REGEX_IPK_DIR)$(TARGET_PREFIX)/lib
+	mv $(BOOST_DEV_IPK_DIR)$(TARGET_PREFIX)/lib/*regex* $(BOOST_REGEX_IPK_DIR)$(TARGET_PREFIX)/lib
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BOOST_REGEX_IPK_DIR)
 	### now make boost-signals
 	$(MAKE) $(BOOST_SIGNALS_IPK_DIR)/CONTROL/control
-	mkdir -p $(BOOST_SIGNALS_IPK_DIR)/opt/lib
-	mv $(BOOST_DEV_IPK_DIR)/opt/lib/*signals* $(BOOST_SIGNALS_IPK_DIR)/opt/lib
+	mkdir -p $(BOOST_SIGNALS_IPK_DIR)$(TARGET_PREFIX)/lib
+	mv $(BOOST_DEV_IPK_DIR)$(TARGET_PREFIX)/lib/*signals* $(BOOST_SIGNALS_IPK_DIR)$(TARGET_PREFIX)/lib
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BOOST_SIGNALS_IPK_DIR)
 	### now make boost-system
 	$(MAKE) $(BOOST_SYSTEM_IPK_DIR)/CONTROL/control
-	mkdir -p $(BOOST_SYSTEM_IPK_DIR)/opt/lib
-	mv $(BOOST_DEV_IPK_DIR)/opt/lib/*system* $(BOOST_SYSTEM_IPK_DIR)/opt/lib
+	mkdir -p $(BOOST_SYSTEM_IPK_DIR)$(TARGET_PREFIX)/lib
+	mv $(BOOST_DEV_IPK_DIR)$(TARGET_PREFIX)/lib/*system* $(BOOST_SYSTEM_IPK_DIR)$(TARGET_PREFIX)/lib
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BOOST_SYSTEM_IPK_DIR)
 ifeq (test, $(filter test, $(BOOST_ADDITIONAL_LIBS)))
 	### now make boost-test
 	$(MAKE) $(BOOST_TEST_IPK_DIR)/CONTROL/control
-	mkdir -p $(BOOST_TEST_IPK_DIR)/opt/lib
-	mv $(BOOST_DEV_IPK_DIR)/opt/lib/*unit_test_framework* $(BOOST_TEST_IPK_DIR)/opt/lib
-	mv $(BOOST_DEV_IPK_DIR)/opt/lib/*prg_exec_monitor* $(BOOST_TEST_IPK_DIR)/opt/lib
+	mkdir -p $(BOOST_TEST_IPK_DIR)$(TARGET_PREFIX)/lib
+	mv $(BOOST_DEV_IPK_DIR)$(TARGET_PREFIX)/lib/*unit_test_framework* $(BOOST_TEST_IPK_DIR)$(TARGET_PREFIX)/lib
+	mv $(BOOST_DEV_IPK_DIR)$(TARGET_PREFIX)/lib/*prg_exec_monitor* $(BOOST_TEST_IPK_DIR)$(TARGET_PREFIX)/lib
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BOOST_TEST_IPK_DIR)
 endif
 	### now make boost-thread
 	$(MAKE) $(BOOST_THREAD_IPK_DIR)/CONTROL/control
-	mkdir -p $(BOOST_THREAD_IPK_DIR)/opt/lib
-	mv $(BOOST_DEV_IPK_DIR)/opt/lib/*thread* $(BOOST_THREAD_IPK_DIR)/opt/lib
+	mkdir -p $(BOOST_THREAD_IPK_DIR)$(TARGET_PREFIX)/lib
+	mv $(BOOST_DEV_IPK_DIR)$(TARGET_PREFIX)/lib/*thread* $(BOOST_THREAD_IPK_DIR)$(TARGET_PREFIX)/lib
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BOOST_THREAD_IPK_DIR)
 ifneq ($(BOOST_ADDITIONAL_LIBS),)
 	### make additional libs
 	for lib in $(filter-out coroutine2 graph-parallel test, $(BOOST_ADDITIONAL_LIBS)); do \
 		$(MAKE) $(BUILD_DIR)/boost-$${lib}-$(BOOST_VERSION)-ipk/CONTROL/control; \
-		mkdir -p $(BUILD_DIR)/boost-$${lib}-$(BOOST_VERSION)-ipk/opt/lib; \
-		mv $(BOOST_DEV_IPK_DIR)/opt/lib/libboost_`echo $${lib} | tr \- _`* $(BUILD_DIR)/boost-$${lib}-$(BOOST_VERSION)-ipk/opt/lib; \
+		mkdir -p $(BUILD_DIR)/boost-$${lib}-$(BOOST_VERSION)-ipk$(TARGET_PREFIX)/lib; \
+		mv $(BOOST_DEV_IPK_DIR)$(TARGET_PREFIX)/lib/libboost_`echo $${lib} | tr \- _`* $(BUILD_DIR)/boost-$${lib}-$(BOOST_VERSION)-ipk$(TARGET_PREFIX)/lib; \
 		(cd $(BUILD_DIR); $(IPKG_BUILD) $(BUILD_DIR)/boost-$${lib}-$(BOOST_VERSION)-ipk); \
 	done
 endif
 	### finally boost-dev
 	$(MAKE) $(BOOST_DEV_IPK_DIR)/CONTROL/control
-	rm -rf $(BOOST_DEV_IPK_DIR)/opt/lib
+	rm -rf $(BOOST_DEV_IPK_DIR)$(TARGET_PREFIX)/lib
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BOOST_DEV_IPK_DIR)
 
 #

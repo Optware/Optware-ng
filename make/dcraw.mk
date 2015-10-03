@@ -41,7 +41,7 @@ DCRAW_IPK_VERSION=2
 
 #
 # DCRAW_CONFFILES should be a list of user-editable files
-#DCRAW_CONFFILES=/opt/etc/dcraw.conf /opt/etc/init.d/SXXdcraw
+#DCRAW_CONFFILES=$(TARGET_PREFIX)/etc/dcraw.conf $(TARGET_PREFIX)/etc/init.d/SXXdcraw
 
 #
 # DCRAW_PATCHES should list any patches, in the the order in
@@ -173,27 +173,27 @@ $(DCRAW_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(DCRAW_IPK_DIR)/opt/sbin or $(DCRAW_IPK_DIR)/opt/bin
+# Binaries should be installed into $(DCRAW_IPK_DIR)$(TARGET_PREFIX)/sbin or $(DCRAW_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(DCRAW_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(DCRAW_IPK_DIR)/opt/etc/dcraw/...
-# Documentation files should be installed in $(DCRAW_IPK_DIR)/opt/doc/dcraw/...
-# Daemon startup scripts should be installed in $(DCRAW_IPK_DIR)/opt/etc/init.d/S??dcraw
+# Libraries and include files should be installed into $(DCRAW_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(DCRAW_IPK_DIR)$(TARGET_PREFIX)/etc/dcraw/...
+# Documentation files should be installed in $(DCRAW_IPK_DIR)$(TARGET_PREFIX)/doc/dcraw/...
+# Daemon startup scripts should be installed in $(DCRAW_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??dcraw
 #
 # You may need to patch your application to make it use these locations.
 #
 $(DCRAW_IPK): $(DCRAW_BUILD_DIR)/.built
 	rm -rf $(DCRAW_IPK_DIR) $(BUILD_DIR)/dcraw_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(DCRAW_IPK_DIR)/opt/bin/
-	$(INSTALL) $(DCRAW_BUILD_DIR)/dcraw $(DCRAW_IPK_DIR)/opt/bin/
-	$(STRIP_COMMAND) $(DCRAW_IPK_DIR)/opt/bin/dcraw
-	$(INSTALL) -d $(DCRAW_IPK_DIR)/opt/share/man/man1
-	$(INSTALL) $(DL_DIR)/dcraw.1 $(DCRAW_IPK_DIR)/opt/share/man/man1/
+	$(INSTALL) -d $(DCRAW_IPK_DIR)$(TARGET_PREFIX)/bin/
+	$(INSTALL) $(DCRAW_BUILD_DIR)/dcraw $(DCRAW_IPK_DIR)$(TARGET_PREFIX)/bin/
+	$(STRIP_COMMAND) $(DCRAW_IPK_DIR)$(TARGET_PREFIX)/bin/dcraw
+	$(INSTALL) -d $(DCRAW_IPK_DIR)$(TARGET_PREFIX)/share/man/man1
+	$(INSTALL) $(DL_DIR)/dcraw.1 $(DCRAW_IPK_DIR)$(TARGET_PREFIX)/share/man/man1/
 #	$(MAKE) -C $(DCRAW_BUILD_DIR) DESTDIR=$(DCRAW_IPK_DIR) install-strip
-#	$(INSTALL) -d $(DCRAW_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(DCRAW_SOURCE_DIR)/dcraw.conf $(DCRAW_IPK_DIR)/opt/etc/dcraw.conf
-#	$(INSTALL) -d $(DCRAW_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(DCRAW_SOURCE_DIR)/rc.dcraw $(DCRAW_IPK_DIR)/opt/etc/init.d/SXXdcraw
+#	$(INSTALL) -d $(DCRAW_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(DCRAW_SOURCE_DIR)/dcraw.conf $(DCRAW_IPK_DIR)$(TARGET_PREFIX)/etc/dcraw.conf
+#	$(INSTALL) -d $(DCRAW_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(DCRAW_SOURCE_DIR)/rc.dcraw $(DCRAW_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXdcraw
 	$(MAKE) $(DCRAW_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(DCRAW_SOURCE_DIR)/postinst $(DCRAW_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 755 $(DCRAW_SOURCE_DIR)/prerm $(DCRAW_IPK_DIR)/CONTROL/prerm

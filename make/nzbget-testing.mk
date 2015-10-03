@@ -188,21 +188,21 @@ $(NZBGET-TESTING_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(NZBGET-TESTING_IPK_DIR)/opt/sbin or $(NZBGET-TESTING_IPK_DIR)/opt/bin
+# Binaries should be installed into $(NZBGET-TESTING_IPK_DIR)$(TARGET_PREFIX)/sbin or $(NZBGET-TESTING_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(NZBGET-TESTING_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(NZBGET-TESTING_IPK_DIR)/opt/etc/nzbget/...
-# Documentation files should be installed in $(NZBGET-TESTING_IPK_DIR)/opt/doc/nzbget/...
-# Daemon startup scripts should be installed in $(NZBGET-TESTING_IPK_DIR)/opt/etc/init.d/S??nzbget
+# Libraries and include files should be installed into $(NZBGET-TESTING_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(NZBGET-TESTING_IPK_DIR)$(TARGET_PREFIX)/etc/nzbget/...
+# Documentation files should be installed in $(NZBGET-TESTING_IPK_DIR)$(TARGET_PREFIX)/doc/nzbget/...
+# Daemon startup scripts should be installed in $(NZBGET-TESTING_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??nzbget
 #
 # You may need to patch your application to make it use these locations.
 #
 $(NZBGET-TESTING_IPK): $(NZBGET-TESTING_BUILD_DIR)/.built
 	rm -rf $(NZBGET-TESTING_IPK_DIR) $(BUILD_DIR)/nzbget-testing_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(NZBGET-TESTING_BUILD_DIR) DESTDIR=$(NZBGET-TESTING_IPK_DIR) install
-	$(STRIP_COMMAND) $(NZBGET-TESTING_IPK_DIR)/opt/bin/nzbget
-#	$(INSTALL) -d $(NZBGET-TESTING_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(NZBGET-TESTING_SOURCE_DIR)/rc.nzbget $(NZBGET-TESTING_IPK_DIR)/opt/etc/init.d/SXXnzbget
+	$(STRIP_COMMAND) $(NZBGET-TESTING_IPK_DIR)$(TARGET_PREFIX)/bin/nzbget
+#	$(INSTALL) -d $(NZBGET-TESTING_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(NZBGET-TESTING_SOURCE_DIR)/rc.nzbget $(NZBGET-TESTING_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXnzbget
 	$(MAKE) $(NZBGET-TESTING_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(NZBGET-TESTING_SOURCE_DIR)/postinst $(NZBGET-TESTING_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 755 $(NZBGET-TESTING_SOURCE_DIR)/prerm $(NZBGET-TESTING_IPK_DIR)/CONTROL/prerm

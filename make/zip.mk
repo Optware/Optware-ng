@@ -173,23 +173,23 @@ $(ZIP_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(ZIP_IPK_DIR)/opt/sbin or $(ZIP_IPK_DIR)/opt/bin
+# Binaries should be installed into $(ZIP_IPK_DIR)$(TARGET_PREFIX)/sbin or $(ZIP_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(ZIP_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(ZIP_IPK_DIR)/opt/etc/zip/...
-# Documentation files should be installed in $(ZIP_IPK_DIR)/opt/doc/zip/...
-# Daemon startup scripts should be installed in $(ZIP_IPK_DIR)/opt/etc/init.d/S??zip
+# Libraries and include files should be installed into $(ZIP_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(ZIP_IPK_DIR)$(TARGET_PREFIX)/etc/zip/...
+# Documentation files should be installed in $(ZIP_IPK_DIR)$(TARGET_PREFIX)/doc/zip/...
+# Daemon startup scripts should be installed in $(ZIP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??zip
 #
 # You may need to patch your application to make it use these locations.
 #
 $(ZIP_IPK): $(ZIP_BUILD_DIR)/.built
 	rm -rf $(ZIP_IPK_DIR) $(BUILD_DIR)/zip_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(ZIP_IPK_DIR)/opt/bin
-	$(INSTALL) -m 755 $(ZIP_BUILD_DIR)/zip $(ZIP_IPK_DIR)/opt/bin
-	$(INSTALL) -m 755 $(ZIP_BUILD_DIR)/zipsplit $(ZIP_IPK_DIR)/opt/bin
-	$(INSTALL) -m 755 $(ZIP_BUILD_DIR)/zipnote $(ZIP_IPK_DIR)/opt/bin
-	$(INSTALL) -m 755 $(ZIP_BUILD_DIR)/zipcloak $(ZIP_IPK_DIR)/opt/bin
-	$(STRIP_COMMAND)  $(ZIP_IPK_DIR)/opt/bin/*
+	$(INSTALL) -d $(ZIP_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(INSTALL) -m 755 $(ZIP_BUILD_DIR)/zip $(ZIP_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(INSTALL) -m 755 $(ZIP_BUILD_DIR)/zipsplit $(ZIP_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(INSTALL) -m 755 $(ZIP_BUILD_DIR)/zipnote $(ZIP_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(INSTALL) -m 755 $(ZIP_BUILD_DIR)/zipcloak $(ZIP_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(STRIP_COMMAND)  $(ZIP_IPK_DIR)$(TARGET_PREFIX)/bin/*
 	$(MAKE) $(ZIP_IPK_DIR)/CONTROL/control
 	# $(INSTALL) -m 755 $(ZIP_SOURCE_DIR)/postinst $(ZIP_IPK_DIR)/CONTROL/postinst
 	# $(INSTALL) -m 755 $(ZIP_SOURCE_DIR)/prerm $(ZIP_IPK_DIR)/CONTROL/prerm

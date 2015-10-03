@@ -40,7 +40,7 @@ FCRON_IPK_VERSION=1
 
 #
 # FCRON_CONFFILES should be a list of user-editable files
-FCRON_CONFFILES=/opt/etc/fcron.conf /opt/etc/fcron.allow /opt/etc/fcron.deny
+FCRON_CONFFILES=$(TARGET_PREFIX)/etc/fcron.conf $(TARGET_PREFIX)/etc/fcron.allow $(TARGET_PREFIX)/etc/fcron.deny
 
 #
 # FCRON_PATCHES should list any patches, in the the order in
@@ -179,24 +179,24 @@ $(FCRON_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(FCRON_IPK_DIR)/opt/sbin or $(FCRON_IPK_DIR)/opt/bin
+# Binaries should be installed into $(FCRON_IPK_DIR)$(TARGET_PREFIX)/sbin or $(FCRON_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(FCRON_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(FCRON_IPK_DIR)/opt/etc/fcron/...
-# Documentation files should be installed in $(FCRON_IPK_DIR)/opt/doc/fcron/...
-# Daemon startup scripts should be installed in $(FCRON_IPK_DIR)/opt/etc/init.d/S??fcron
+# Libraries and include files should be installed into $(FCRON_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(FCRON_IPK_DIR)$(TARGET_PREFIX)/etc/fcron/...
+# Documentation files should be installed in $(FCRON_IPK_DIR)$(TARGET_PREFIX)/doc/fcron/...
+# Daemon startup scripts should be installed in $(FCRON_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??fcron
 #
 # You may need to patch your application to make it use these locations.
 #
 $(FCRON_IPK): $(FCRON_BUILD_DIR)/.built
 	rm -rf $(FCRON_IPK_DIR) $(BUILD_DIR)/fcron_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(FCRON_BUILD_DIR) DESTDIR=$(FCRON_IPK_DIR) install-staged
-	$(STRIP_COMMAND) $(FCRON_IPK_DIR)/opt/*bin/fcron*
-#	$(INSTALL) -d $(FCRON_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(FCRON_SOURCE_DIR)/fcron.conf $(FCRON_IPK_DIR)/opt/etc/fcron.conf
-#	$(INSTALL) -d $(FCRON_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(FCRON_SOURCE_DIR)/rc.fcron $(FCRON_IPK_DIR)/opt/etc/init.d/SXXfcron
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(FCRON_IPK_DIR)/opt/etc/init.d/SXXfcron
+	$(STRIP_COMMAND) $(FCRON_IPK_DIR)$(TARGET_PREFIX)/*bin/fcron*
+#	$(INSTALL) -d $(FCRON_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(FCRON_SOURCE_DIR)/fcron.conf $(FCRON_IPK_DIR)$(TARGET_PREFIX)/etc/fcron.conf
+#	$(INSTALL) -d $(FCRON_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(FCRON_SOURCE_DIR)/rc.fcron $(FCRON_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXfcron
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(FCRON_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXfcron
 	$(MAKE) $(FCRON_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(FCRON_SOURCE_DIR)/postinst $(FCRON_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(FCRON_IPK_DIR)/CONTROL/postinst

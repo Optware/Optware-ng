@@ -46,7 +46,7 @@ CRYPTSETUP_IPK_VERSION=1
 
 #
 # CRYPTSETUP_CONFFILES should be a list of user-editable files
-#CRYPTSETUP_CONFFILES=/opt/etc/cryptsetup.conf /opt/etc/init.d/SXXcryptsetup
+#CRYPTSETUP_CONFFILES=$(TARGET_PREFIX)/etc/cryptsetup.conf $(TARGET_PREFIX)/etc/init.d/SXXcryptsetup
 
 #
 # CRYPTSETUP_PATCHES should list any patches, in the the order in
@@ -132,7 +132,7 @@ $(CRYPTSETUP_BUILD_DIR)/.configured: $(DL_DIR)/$(CRYPTSETUP_SOURCE) $(CRYPTSETUP
 		--target=$(GNU_TARGET_NAME) \
                 --with-libgcrypt-prefix=$(STAGING_PREFIX) \
 		--prefix=$(TARGET_PREFIX) \
-		--mandir=/opt/man \
+		--mandir=$(TARGET_PREFIX)/man \
 		--disable-nls \
 		--disable-static \
 	)
@@ -186,12 +186,12 @@ $(CRYPTSETUP_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(CRYPTSETUP_IPK_DIR)/opt/sbin or $(CRYPTSETUP_IPK_DIR)/opt/bin
+# Binaries should be installed into $(CRYPTSETUP_IPK_DIR)$(TARGET_PREFIX)/sbin or $(CRYPTSETUP_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(CRYPTSETUP_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(CRYPTSETUP_IPK_DIR)/opt/etc/cryptsetup/...
-# Documentation files should be installed in $(CRYPTSETUP_IPK_DIR)/opt/doc/cryptsetup/...
-# Daemon startup scripts should be installed in $(CRYPTSETUP_IPK_DIR)/opt/etc/init.d/S??cryptsetup
+# Libraries and include files should be installed into $(CRYPTSETUP_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(CRYPTSETUP_IPK_DIR)$(TARGET_PREFIX)/etc/cryptsetup/...
+# Documentation files should be installed in $(CRYPTSETUP_IPK_DIR)$(TARGET_PREFIX)/doc/cryptsetup/...
+# Daemon startup scripts should be installed in $(CRYPTSETUP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??cryptsetup
 #
 # You may need to patch your application to make it use these locations.
 #

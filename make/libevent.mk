@@ -117,7 +117,7 @@ $(LIBEVENT_IPK_DIR)/CONTROL/control:
 $(LIBEVENT_IPK): $(LIBEVENT_BUILD_DIR)/.built
 	rm -rf $(LIBEVENT_IPK_DIR) $(BUILD_DIR)/libevent_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBEVENT_BUILD_DIR) DESTDIR=$(LIBEVENT_IPK_DIR) install-strip
-	rm -f $(LIBEVENT_IPK_DIR)/opt/lib/libevent*.la $(LIBEVENT_IPK_DIR)/opt/lib/libevent*.a
+	rm -f $(LIBEVENT_IPK_DIR)$(TARGET_PREFIX)/lib/libevent*.la $(LIBEVENT_IPK_DIR)$(TARGET_PREFIX)/lib/libevent*.a
 	$(MAKE) $(LIBEVENT_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBEVENT_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(LIBEVENT_IPK_DIR)

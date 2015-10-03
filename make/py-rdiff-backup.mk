@@ -41,7 +41,7 @@ PY-RDIFF-BACKUP_IPK_VERSION=1
 
 #
 # PY-RDIFF-BACKUP_CONFFILES should be a list of user-editable files
-#PY-RDIFF-BACKUP_CONFFILES=/opt/etc/py-rdiff-backup.conf /opt/etc/init.d/SXXpy-rdiff-backup
+#PY-RDIFF-BACKUP_CONFFILES=$(TARGET_PREFIX)/etc/py-rdiff-backup.conf $(TARGET_PREFIX)/etc/init.d/SXXpy-rdiff-backup
 
 #
 # PY-RDIFF-BACKUP_PATCHES should list any patches, in the the order in
@@ -120,11 +120,11 @@ $(PY-RDIFF-BACKUP_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-RDIFF-BACKUP_SOURCE) $(
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.5"; \
 	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
-	        echo "rpath=/opt/lib"; \
+	        echo "rpath=$(TARGET_PREFIX)/lib"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python2.5"; \
+		echo "executable=$(TARGET_PREFIX)/bin/python2.5"; \
 		echo "[install]"; \
-		echo "install_scripts=/opt/bin"; \
+		echo "install_scripts=$(TARGET_PREFIX)/bin"; \
 	    ) >> setup.cfg; \
 	)
 	# 2.6
@@ -137,11 +137,11 @@ $(PY-RDIFF-BACKUP_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-RDIFF-BACKUP_SOURCE) $(
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.6"; \
 	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
-	        echo "rpath=/opt/lib"; \
+	        echo "rpath=$(TARGET_PREFIX)/lib"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python2.6"; \
+		echo "executable=$(TARGET_PREFIX)/bin/python2.6"; \
 		echo "[install]"; \
-		echo "install_scripts=/opt/bin"; \
+		echo "install_scripts=$(TARGET_PREFIX)/bin"; \
 	    ) >> setup.cfg; \
 	)
 	touch $@
@@ -213,12 +213,12 @@ $(PY26-RDIFF-BACKUP_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PY-RDIFF-BACKUP_IPK_DIR)/opt/sbin or $(PY-RDIFF-BACKUP_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PY-RDIFF-BACKUP_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PY-RDIFF-BACKUP_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PY-RDIFF-BACKUP_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PY-RDIFF-BACKUP_IPK_DIR)/opt/etc/py-rdiff-backup/...
-# Documentation files should be installed in $(PY-RDIFF-BACKUP_IPK_DIR)/opt/doc/py-rdiff-backup/...
-# Daemon startup scripts should be installed in $(PY-RDIFF-BACKUP_IPK_DIR)/opt/etc/init.d/S??py-rdiff-backup
+# Libraries and include files should be installed into $(PY-RDIFF-BACKUP_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PY-RDIFF-BACKUP_IPK_DIR)$(TARGET_PREFIX)/etc/py-rdiff-backup/...
+# Documentation files should be installed in $(PY-RDIFF-BACKUP_IPK_DIR)$(TARGET_PREFIX)/doc/py-rdiff-backup/...
+# Daemon startup scripts should be installed in $(PY-RDIFF-BACKUP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??py-rdiff-backup
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -228,9 +228,9 @@ $(PY25-RDIFF-BACKUP_IPK): $(PY-RDIFF-BACKUP_BUILD_DIR)/.built
 	(cd $(PY-RDIFF-BACKUP_BUILD_DIR)/2.5; \
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
-	    --root=$(PY25-RDIFF-BACKUP_IPK_DIR) --prefix=/opt; \
+	    --root=$(PY25-RDIFF-BACKUP_IPK_DIR) --prefix=$(TARGET_PREFIX); \
 	)
-	$(STRIP_COMMAND) $(PY25-RDIFF-BACKUP_IPK_DIR)/opt/lib/python2.5/site-packages/*/*.so
+	$(STRIP_COMMAND) $(PY25-RDIFF-BACKUP_IPK_DIR)$(TARGET_PREFIX)/lib/python2.5/site-packages/*/*.so
 	$(MAKE) $(PY25-RDIFF-BACKUP_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-RDIFF-BACKUP_IPK_DIR)
 
@@ -239,11 +239,11 @@ $(PY26-RDIFF-BACKUP_IPK): $(PY-RDIFF-BACKUP_BUILD_DIR)/.built
 	(cd $(PY-RDIFF-BACKUP_BUILD_DIR)/2.6; \
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install \
-	    --root=$(PY26-RDIFF-BACKUP_IPK_DIR) --prefix=/opt; \
+	    --root=$(PY26-RDIFF-BACKUP_IPK_DIR) --prefix=$(TARGET_PREFIX); \
 	)
-	$(STRIP_COMMAND) $(PY26-RDIFF-BACKUP_IPK_DIR)/opt/lib/python2.6/site-packages/*/*.so
-	rm -rf $(PY26-RDIFF-BACKUP_IPK_DIR)/opt/share
-	for f in $(PY26-RDIFF-BACKUP_IPK_DIR)/opt/*bin/*; \
+	$(STRIP_COMMAND) $(PY26-RDIFF-BACKUP_IPK_DIR)$(TARGET_PREFIX)/lib/python2.6/site-packages/*/*.so
+	rm -rf $(PY26-RDIFF-BACKUP_IPK_DIR)$(TARGET_PREFIX)/share
+	for f in $(PY26-RDIFF-BACKUP_IPK_DIR)$(TARGET_PREFIX)/*bin/*; \
 		do mv $$f `echo $$f | sed 's|$$|-2.6|'`; done
 	$(MAKE) $(PY26-RDIFF-BACKUP_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-RDIFF-BACKUP_IPK_DIR)

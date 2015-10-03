@@ -37,7 +37,7 @@ NETKIT-TELNET_SECTION=net
 NETKIT-TELNET_PRIORITY=optional
 NETKIT-TELNET_DEPENDS=ncurses
 NETKIT-TELNET_SUGGESTS=
-NETKIT-TELNET_CONFLICTS=Any telnet client program located in /opt/bin, such as inetutils-telnet
+NETKIT-TELNET_CONFLICTS=Any telnet client program located in $(TARGET_PREFIX)/bin, such as inetutils-telnet
 
 #
 # NETKIT-TELNET_IPK_VERSION should be incremented when the ipk changes.
@@ -46,7 +46,7 @@ NETKIT-TELNET_IPK_VERSION=1
 
 #
 # NETKIT-TELNET_CONFFILES should be a list of user-editable files
-NETKIT-TELNET_CONFFILES=/opt/etc/netkit-telnet.conf /opt/etc/init.d/SXXnetkit-telnet
+NETKIT-TELNET_CONFFILES=$(TARGET_PREFIX)/etc/netkit-telnet.conf $(TARGET_PREFIX)/etc/init.d/SXXnetkit-telnet
 
 #
 # NETKIT-TELNET_PATCHES should list any patches, in the the order in
@@ -186,30 +186,30 @@ $(NETKIT-TELNET_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(NETKIT-TELNET_IPK_DIR)/opt/sbin or $(NETKIT-TELNET_IPK_DIR)/opt/bin
+# Binaries should be installed into $(NETKIT-TELNET_IPK_DIR)$(TARGET_PREFIX)/sbin or $(NETKIT-TELNET_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(NETKIT-TELNET_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(NETKIT-TELNET_IPK_DIR)/opt/etc/netkit-telnet/...
-# Documentation files should be installed in $(NETKIT-TELNET_IPK_DIR)/opt/doc/netkit-telnet/...
-# Daemon startup scripts should be installed in $(NETKIT-TELNET_IPK_DIR)/opt/etc/init.d/S??netkit-telnet
+# Libraries and include files should be installed into $(NETKIT-TELNET_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(NETKIT-TELNET_IPK_DIR)$(TARGET_PREFIX)/etc/netkit-telnet/...
+# Documentation files should be installed in $(NETKIT-TELNET_IPK_DIR)$(TARGET_PREFIX)/doc/netkit-telnet/...
+# Daemon startup scripts should be installed in $(NETKIT-TELNET_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??netkit-telnet
 #
 # You may need to patch your application to make it use these locations.
 #
 $(NETKIT-TELNET_IPK): $(NETKIT-TELNET_BUILD_DIR)/.built
 	rm -rf $(NETKIT-TELNET_IPK_DIR) $(BUILD_DIR)/netkit-telnet_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(NETKIT-TELNET_IPK_DIR)/opt/bin/
-	$(INSTALL) -d $(NETKIT-TELNET_IPK_DIR)/opt/man/man1/
-	$(INSTALL) -d $(NETKIT-TELNET_IPK_DIR)/opt/man/man5/
-	$(INSTALL) -d $(NETKIT-TELNET_IPK_DIR)/opt/man/man8/
-	$(INSTALL) -d $(NETKIT-TELNET_IPK_DIR)/opt/sbin/in.telnetd/
+	$(INSTALL) -d $(NETKIT-TELNET_IPK_DIR)$(TARGET_PREFIX)/bin/
+	$(INSTALL) -d $(NETKIT-TELNET_IPK_DIR)$(TARGET_PREFIX)/man/man1/
+	$(INSTALL) -d $(NETKIT-TELNET_IPK_DIR)$(TARGET_PREFIX)/man/man5/
+	$(INSTALL) -d $(NETKIT-TELNET_IPK_DIR)$(TARGET_PREFIX)/man/man8/
+	$(INSTALL) -d $(NETKIT-TELNET_IPK_DIR)$(TARGET_PREFIX)/sbin/in.telnetd/
 	$(MAKE) -C $(NETKIT-TELNET_BUILD_DIR) DESTDIR=$(NETKIT-TELNET_IPK_DIR) install
-	$(STRIP_COMMAND) $(NETKIT-TELNET_IPK_DIR)/opt/bin/telnet
-	$(STRIP_COMMAND) $(NETKIT-TELNET_IPK_DIR)/opt/sbin/in.telnetd/telnetd
-#	$(INSTALL) -d $(NETKIT-TELNET_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(NETKIT-TELNET_SOURCE_DIR)/netkit-telnet.conf $(NETKIT-TELNET_IPK_DIR)/opt/etc/netkit-telnet.conf
-#	$(INSTALL) -d $(NETKIT-TELNET_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(NETKIT-TELNET_SOURCE_DIR)/rc.netkit-telnet $(NETKIT-TELNET_IPK_DIR)/opt/etc/init.d/SXXnetkit-telnet
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(NETKIT-TELNET_IPK_DIR)/opt/etc/init.d/SXXnetkit-telnet
+	$(STRIP_COMMAND) $(NETKIT-TELNET_IPK_DIR)$(TARGET_PREFIX)/bin/telnet
+	$(STRIP_COMMAND) $(NETKIT-TELNET_IPK_DIR)$(TARGET_PREFIX)/sbin/in.telnetd/telnetd
+#	$(INSTALL) -d $(NETKIT-TELNET_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(NETKIT-TELNET_SOURCE_DIR)/netkit-telnet.conf $(NETKIT-TELNET_IPK_DIR)$(TARGET_PREFIX)/etc/netkit-telnet.conf
+#	$(INSTALL) -d $(NETKIT-TELNET_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(NETKIT-TELNET_SOURCE_DIR)/rc.netkit-telnet $(NETKIT-TELNET_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXnetkit-telnet
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(NETKIT-TELNET_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXnetkit-telnet
 	$(MAKE) $(NETKIT-TELNET_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(NETKIT-TELNET_SOURCE_DIR)/postinst $(NETKIT-TELNET_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(NETKIT-TELNET_IPK_DIR)/CONTROL/postinst

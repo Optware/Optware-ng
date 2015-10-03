@@ -40,7 +40,7 @@ MPAGE_IPK_VERSION=1
 
 #
 # MPAGE_CONFFILES should be a list of user-editable files
-## MPAGE_CONFFILES=/opt/etc/mpage.conf /opt/etc/init.d/SXXmpage
+## MPAGE_CONFFILES=$(TARGET_PREFIX)/etc/mpage.conf $(TARGET_PREFIX)/etc/init.d/SXXmpage
 
 #
 # MPAGE_PATCHES should list any patches, in the the order in
@@ -125,7 +125,7 @@ $(MPAGE_BUILD_DIR)/.built: $(MPAGE_BUILD_DIR)/.configured
 	rm -f $(MPAGE_BUILD_DIR)/.built
 	$(MAKE) -C $(MPAGE_BUILD_DIR) \
 		$(TARGET_CONFIGURE_OPTS) \
-		PREFIX=/opt
+		PREFIX=$(TARGET_PREFIX)
 ##		CPPFLAGS="$(STAGING_CPPFLAGS) $(MPAGE_CPPFLAGS)" \
 ##		LDFLAGS="$(STAGING_LDFLAGS) $(MPAGE_LDFLAGS)" \
 ##		PAGESIZE=letter
@@ -168,23 +168,23 @@ $(MPAGE_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(MPAGE_IPK_DIR)/opt/sbin or $(MPAGE_IPK_DIR)/opt/bin
+# Binaries should be installed into $(MPAGE_IPK_DIR)$(TARGET_PREFIX)/sbin or $(MPAGE_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(MPAGE_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(MPAGE_IPK_DIR)/opt/etc/mpage/...
-# Documentation files should be installed in $(MPAGE_IPK_DIR)/opt/doc/mpage/...
-# Daemon startup scripts should be installed in $(MPAGE_IPK_DIR)/opt/etc/init.d/S??mpage
+# Libraries and include files should be installed into $(MPAGE_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(MPAGE_IPK_DIR)$(TARGET_PREFIX)/etc/mpage/...
+# Documentation files should be installed in $(MPAGE_IPK_DIR)$(TARGET_PREFIX)/doc/mpage/...
+# Daemon startup scripts should be installed in $(MPAGE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??mpage
 #
 # You may need to patch your application to make it use these locations.
 #
 $(MPAGE_IPK): $(MPAGE_BUILD_DIR)/.built
 	rm -rf $(MPAGE_IPK_DIR) $(BUILD_DIR)/mpage_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MPAGE_BUILD_DIR) PREFIX=$(MPAGE_IPK_DIR)$(TARGET_PREFIX) install
-	$(STRIP_COMMAND) $(MPAGE_IPK_DIR)/opt/bin/mpage
-#	$(INSTALL) -d $(MPAGE_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(MPAGE_SOURCE_DIR)/mpage.conf $(MPAGE_IPK_DIR)/opt/etc/mpage.conf
-#	$(INSTALL) -d $(MPAGE_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(MPAGE_SOURCE_DIR)/rc.mpage $(MPAGE_IPK_DIR)/opt/etc/init.d/SXXmpage
+	$(STRIP_COMMAND) $(MPAGE_IPK_DIR)$(TARGET_PREFIX)/bin/mpage
+#	$(INSTALL) -d $(MPAGE_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(MPAGE_SOURCE_DIR)/mpage.conf $(MPAGE_IPK_DIR)$(TARGET_PREFIX)/etc/mpage.conf
+#	$(INSTALL) -d $(MPAGE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(MPAGE_SOURCE_DIR)/rc.mpage $(MPAGE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXmpage
 	$(MAKE) $(MPAGE_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(MPAGE_SOURCE_DIR)/postinst $(MPAGE_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 755 $(MPAGE_SOURCE_DIR)/prerm $(MPAGE_IPK_DIR)/CONTROL/prerm

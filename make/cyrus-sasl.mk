@@ -37,7 +37,7 @@ CYRUS-SASL_IPK_VERSION=1
 
 #
 # CYRUS-SASL_CONFFILES should be a list of user-editable files
-CYRUS-SASL_CONFFILES=/opt/etc/init.d/S52saslauthd
+CYRUS-SASL_CONFFILES=$(TARGET_PREFIX)/etc/init.d/S52saslauthd
 
 #
 # CYRUS-SASL_PATCHES should list any patches, in the the order in
@@ -109,9 +109,9 @@ $(CYRUS-SASL_BUILD_DIR)/.configured: $(DL_DIR)/$(CYRUS-SASL_SOURCE) $(CYRUS-SASL
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=$(TARGET_PREFIX) \
-		--with-plugindir=/opt/lib/sasl2 \
-		--with-saslauthd=/opt/var/state/saslauthd \
-		--with-dbpath=/opt/etc/sasl2 \
+		--with-plugindir=$(TARGET_PREFIX)/lib/sasl2 \
+		--with-saslauthd=$(TARGET_PREFIX)/var/state/saslauthd \
+		--with-dbpath=$(TARGET_PREFIX)/etc/sasl2 \
 		--with-openssl="$(STAGING_PREFIX)" \
 		--enable-anon \
 		--enable-plain \
@@ -190,12 +190,12 @@ $(CYRUS-SASL-LIBS_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(CYRUS-SASL_IPK_DIR)/opt/sbin or $(CYRUS-SASL_IPK_DIR)/opt/bin
+# Binaries should be installed into $(CYRUS-SASL_IPK_DIR)$(TARGET_PREFIX)/sbin or $(CYRUS-SASL_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(CYRUS-SASL_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(CYRUS-SASL_IPK_DIR)/opt/etc/cyrus-sasl/...
-# Documentation files should be installed in $(CYRUS-SASL_IPK_DIR)/opt/doc/cyrus-sasl/...
-# Daemon startup scripts should be installed in $(CYRUS-SASL_IPK_DIR)/opt/etc/init.d/S??cyrus-sasl
+# Libraries and include files should be installed into $(CYRUS-SASL_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(CYRUS-SASL_IPK_DIR)$(TARGET_PREFIX)/etc/cyrus-sasl/...
+# Documentation files should be installed in $(CYRUS-SASL_IPK_DIR)$(TARGET_PREFIX)/doc/cyrus-sasl/...
+# Daemon startup scripts should be installed in $(CYRUS-SASL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??cyrus-sasl
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -203,24 +203,24 @@ $(CYRUS-SASL_IPK): $(CYRUS-SASL_BUILD_DIR)/.built
 	rm -rf $(CYRUS-SASL_IPK_DIR) $(BUILD_DIR)/cyrus-sasl_*_$(TARGET_ARCH).ipk
 	rm -rf $(CYRUS-SASL-LIBS_IPK_DIR) $(BUILD_DIR)/cyrus-sasl-libs_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(CYRUS-SASL_BUILD_DIR) DESTDIR=$(CYRUS-SASL_IPK_DIR) install-strip
-	rm -f $(CYRUS-SASL_IPK_DIR)/opt/lib/libsasl2.la
-	rm -f $(CYRUS-SASL_IPK_DIR)/opt/lib/sasl2/*.la
+	rm -f $(CYRUS-SASL_IPK_DIR)$(TARGET_PREFIX)/lib/libsasl2.la
+	rm -f $(CYRUS-SASL_IPK_DIR)$(TARGET_PREFIX)/lib/sasl2/*.la
 	find $(CYRUS-SASL_IPK_DIR) -type d -exec chmod go+rx {} \;
-	$(STRIP_COMMAND) $(CYRUS-SASL_IPK_DIR)/opt/sbin/*
-	$(STRIP_COMMAND) $(CYRUS-SASL_IPK_DIR)/opt/lib/*.so
-	$(STRIP_COMMAND) $(CYRUS-SASL_IPK_DIR)/opt/lib/sasl2/*.so
-	$(INSTALL) -d $(CYRUS-SASL_IPK_DIR)/opt/var/state/saslauthd
-	$(INSTALL) -d $(CYRUS-SASL_IPK_DIR)/opt/etc/init.d
+	$(STRIP_COMMAND) $(CYRUS-SASL_IPK_DIR)$(TARGET_PREFIX)/sbin/*
+	$(STRIP_COMMAND) $(CYRUS-SASL_IPK_DIR)$(TARGET_PREFIX)/lib/*.so
+	$(STRIP_COMMAND) $(CYRUS-SASL_IPK_DIR)$(TARGET_PREFIX)/lib/sasl2/*.so
+	$(INSTALL) -d $(CYRUS-SASL_IPK_DIR)$(TARGET_PREFIX)/var/state/saslauthd
+	$(INSTALL) -d $(CYRUS-SASL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
 ifeq ($(OPTWARE_TARGET),ds101g)
-	$(INSTALL) -m 755 $(CYRUS-SASL_SOURCE_DIR)/rc.saslauthd.ds101g $(CYRUS-SASL_IPK_DIR)/opt/etc/init.d/S52saslauthd
+	$(INSTALL) -m 755 $(CYRUS-SASL_SOURCE_DIR)/rc.saslauthd.ds101g $(CYRUS-SASL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S52saslauthd
 else
-	$(INSTALL) -m 755 $(CYRUS-SASL_SOURCE_DIR)/rc.saslauthd $(CYRUS-SASL_IPK_DIR)/opt/etc/init.d/S52saslauthd
+	$(INSTALL) -m 755 $(CYRUS-SASL_SOURCE_DIR)/rc.saslauthd $(CYRUS-SASL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S52saslauthd
 endif
 	### build cyrus-sasl-libs
 	$(MAKE) $(CYRUS-SASL-LIBS_IPK_DIR)/CONTROL/control
-	$(INSTALL) -d $(CYRUS-SASL-LIBS_IPK_DIR)/opt
-	mv $(CYRUS-SASL_IPK_DIR)/opt/include $(CYRUS-SASL-LIBS_IPK_DIR)/opt
-	mv $(CYRUS-SASL_IPK_DIR)/opt/lib $(CYRUS-SASL-LIBS_IPK_DIR)/opt
+	$(INSTALL) -d $(CYRUS-SASL-LIBS_IPK_DIR)$(TARGET_PREFIX)
+	mv $(CYRUS-SASL_IPK_DIR)$(TARGET_PREFIX)/include $(CYRUS-SASL-LIBS_IPK_DIR)$(TARGET_PREFIX)
+	mv $(CYRUS-SASL_IPK_DIR)$(TARGET_PREFIX)/lib $(CYRUS-SASL-LIBS_IPK_DIR)$(TARGET_PREFIX)
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CYRUS-SASL-LIBS_IPK_DIR)
 	### build the main ipk
 	$(MAKE) $(CYRUS-SASL_IPK_DIR)/CONTROL/control

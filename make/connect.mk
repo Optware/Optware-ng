@@ -40,7 +40,7 @@ CONNECT_IPK_VERSION=1
 
 #
 # CONNECT_CONFFILES should be a list of user-editable files
-#CONNECT_CONFFILES=/opt/etc/connect.conf /opt/etc/init.d/SXXconnect
+#CONNECT_CONFFILES=$(TARGET_PREFIX)/etc/connect.conf $(TARGET_PREFIX)/etc/init.d/SXXconnect
 
 #
 # CONNECT_PATCHES should list any patches, in the the order in
@@ -186,21 +186,21 @@ $(CONNECT_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(CONNECT_IPK_DIR)/opt/sbin or $(CONNECT_IPK_DIR)/opt/bin
+# Binaries should be installed into $(CONNECT_IPK_DIR)$(TARGET_PREFIX)/sbin or $(CONNECT_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(CONNECT_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(CONNECT_IPK_DIR)/opt/etc/connect/...
-# Documentation files should be installed in $(CONNECT_IPK_DIR)/opt/doc/connect/...
-# Daemon startup scripts should be installed in $(CONNECT_IPK_DIR)/opt/etc/init.d/S??connect
+# Libraries and include files should be installed into $(CONNECT_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(CONNECT_IPK_DIR)$(TARGET_PREFIX)/etc/connect/...
+# Documentation files should be installed in $(CONNECT_IPK_DIR)$(TARGET_PREFIX)/doc/connect/...
+# Daemon startup scripts should be installed in $(CONNECT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??connect
 #
 # You may need to patch your application to make it use these locations.
 #
 $(CONNECT_IPK): $(CONNECT_BUILD_DIR)/.built
 	rm -rf $(CONNECT_IPK_DIR) $(BUILD_DIR)/connect_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(CONNECT_BUILD_DIR) DESTDIR=$(CONNECT_IPK_DIR) install-strip
-	$(INSTALL) -d $(CONNECT_IPK_DIR)/opt/bin/
-	$(INSTALL) $(CONNECT_BUILD_DIR)/connect $(CONNECT_IPK_DIR)/opt/bin/
-	$(STRIP_COMMAND) $(CONNECT_IPK_DIR)/opt/bin/connect
+	$(INSTALL) -d $(CONNECT_IPK_DIR)$(TARGET_PREFIX)/bin/
+	$(INSTALL) $(CONNECT_BUILD_DIR)/connect $(CONNECT_IPK_DIR)$(TARGET_PREFIX)/bin/
+	$(STRIP_COMMAND) $(CONNECT_IPK_DIR)$(TARGET_PREFIX)/bin/connect
 	$(MAKE) $(CONNECT_IPK_DIR)/CONTROL/control
 #	echo $(CONNECT_CONFFILES) | sed -e 's/ /\n/g' > $(CONNECT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CONNECT_IPK_DIR)

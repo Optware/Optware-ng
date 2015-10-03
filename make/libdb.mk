@@ -176,20 +176,20 @@ $(LIBDB_IPK_DIR)/CONTROL/control:
 
 # This builds the IPK file.
 #
-# Binaries should be installed into $(<FOO>_IPK_DIR)/opt/sbin or $(LIBDB_IPK_DIR)/opt/bin
+# Binaries should be installed into $(<FOO>_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LIBDB_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(<FOO>_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(<FOO>_IPK_DIR)/opt/etc/<foo>/...
-# Documentation files should be installed in $(<FOO>_IPK_DIR)/opt/doc/<foo>/...
-# Daemon startup scripts should be installed in $(<FOO>_IPK_DIR)/opt/etc/init.d/S??<foo>
+# Libraries and include files should be installed into $(<FOO>_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(<FOO>_IPK_DIR)$(TARGET_PREFIX)/etc/<foo>/...
+# Documentation files should be installed in $(<FOO>_IPK_DIR)$(TARGET_PREFIX)/doc/<foo>/...
+# Daemon startup scripts should be installed in $(<FOO>_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??<foo>
 #
 # You may need to patch your application to make it use these locations.
 #
 $(LIBDB_IPK): $(LIBDB_BUILD_DIR)/build_unix/.libs/libdb-$(LIBDB_LIB_VERSION).a
 	rm -rf $(LIBDB_IPK_DIR) $(LIBDB_IPK)
 	$(MAKE) -C $(LIBDB_BUILD_DIR)/build_unix DESTDIR=$(LIBDB_IPK_DIR) install_setup install_include install_lib
-	-$(STRIP_COMMAND) $(LIBDB_IPK_DIR)/opt/lib/*.so
-	rm -f $(LIBDB_IPK_DIR)/opt/lib/*.{la,a}
+	-$(STRIP_COMMAND) $(LIBDB_IPK_DIR)$(TARGET_PREFIX)/lib/*.so
+	rm -f $(LIBDB_IPK_DIR)$(TARGET_PREFIX)/lib/*.{la,a}
 	$(MAKE) $(LIBDB_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBDB_IPK_DIR)
 #

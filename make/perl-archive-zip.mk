@@ -81,9 +81,9 @@ $(PERL-ARCHIVE-ZIP_IPK_DIR)/CONTROL/control:
 $(PERL-ARCHIVE-ZIP_IPK): $(PERL-ARCHIVE-ZIP_BUILD_DIR)/.built
 	rm -rf $(PERL-ARCHIVE-ZIP_IPK_DIR) $(BUILD_DIR)/perl-archive-zip_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PERL-ARCHIVE-ZIP_BUILD_DIR) DESTDIR=$(PERL-ARCHIVE-ZIP_IPK_DIR) install
-	perl -pi -e 's|$(PERL_HOSTPERL)|/opt/bin/perl|g' $(PERL-ARCHIVE-ZIP_IPK_DIR)/*
+	perl -pi -e 's|$(PERL_HOSTPERL)|$(TARGET_PREFIX)/bin/perl|g' $(PERL-ARCHIVE-ZIP_IPK_DIR)/*
 	find $(PERL-ARCHIVE-ZIP_IPK_DIR)$(TARGET_PREFIX) -name 'perllocal.pod' -exec rm -f {} \;
-	(cd $(PERL-ARCHIVE-ZIP_IPK_DIR)/opt/lib/perl5 ; \
+	(cd $(PERL-ARCHIVE-ZIP_IPK_DIR)$(TARGET_PREFIX)/lib/perl5 ; \
 		find . -name '*.so' -exec chmod +w {} \; ; \
 		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
 		find . -name '*.so' -exec chmod -w {} \; ; \

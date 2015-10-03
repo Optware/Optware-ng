@@ -33,7 +33,7 @@ MAN_PAGES_IPK_VERSION=1
 
 #
 # MAN_PAGES_CONFFILES should be a list of user-editable files
-#MAN_PAGES_CONFFILES=/opt/etc/man-pages.conf /opt/etc/init.d/SXXman-pages
+#MAN_PAGES_CONFFILES=$(TARGET_PREFIX)/etc/man-pages.conf $(TARGET_PREFIX)/etc/init.d/SXXman-pages
 
 #
 # MAN_PAGES_PATCHES should list any patches, in the the order in
@@ -119,7 +119,7 @@ man-pages-unpack: $(MAN_PAGES_BUILD_DIR)/.configured
 #
 $(MAN_PAGES_BUILD_DIR)/.built: $(MAN_PAGES_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(@D) MANDIR=/opt/man gz
+	$(MAKE) -C $(@D) MANDIR=$(TARGET_PREFIX)/man gz
 	touch $@
 
 #
@@ -158,22 +158,22 @@ $(MAN_PAGES_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(MAN_PAGES_IPK_DIR)/opt/sbin or $(MAN_PAGES_IPK_DIR)/opt/bin
+# Binaries should be installed into $(MAN_PAGES_IPK_DIR)$(TARGET_PREFIX)/sbin or $(MAN_PAGES_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(MAN_PAGES_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(MAN_PAGES_IPK_DIR)/opt/etc/man-pages/...
-# Documentation files should be installed in $(MAN_PAGES_IPK_DIR)/opt/doc/man-pages/...
-# Daemon startup scripts should be installed in $(MAN_PAGES_IPK_DIR)/opt/etc/init.d/S??man-pages
+# Libraries and include files should be installed into $(MAN_PAGES_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(MAN_PAGES_IPK_DIR)$(TARGET_PREFIX)/etc/man-pages/...
+# Documentation files should be installed in $(MAN_PAGES_IPK_DIR)$(TARGET_PREFIX)/doc/man-pages/...
+# Daemon startup scripts should be installed in $(MAN_PAGES_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??man-pages
 #
 # You may need to patch your application to make it use these locations.
 #
 $(MAN_PAGES_IPK): $(MAN_PAGES_BUILD_DIR)/.built
 	rm -rf $(MAN_PAGES_IPK_DIR) $(BUILD_DIR)/man-pages_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(MAN_PAGES_BUILD_DIR) MANDIR=$(MAN_PAGES_IPK_DIR)/opt/man install
-#	$(INSTALL) -d $(MAN_PAGES_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 755 $(MAN_PAGES_SOURCE_DIR)/man-pages.conf $(MAN_PAGES_IPK_DIR)/opt/etc/man-pages.conf
-#	$(INSTALL) -d $(MAN_PAGES_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(MAN_PAGES_SOURCE_DIR)/rc.man-pages $(MAN_PAGES_IPK_DIR)/opt/etc/init.d/SXXman-pages
+	$(MAKE) -C $(MAN_PAGES_BUILD_DIR) MANDIR=$(MAN_PAGES_IPK_DIR)$(TARGET_PREFIX)/man install
+#	$(INSTALL) -d $(MAN_PAGES_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 755 $(MAN_PAGES_SOURCE_DIR)/man-pages.conf $(MAN_PAGES_IPK_DIR)$(TARGET_PREFIX)/etc/man-pages.conf
+#	$(INSTALL) -d $(MAN_PAGES_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(MAN_PAGES_SOURCE_DIR)/rc.man-pages $(MAN_PAGES_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXman-pages
 	$(MAKE) $(MAN_PAGES_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 644 $(MAN_PAGES_SOURCE_DIR)/postinst $(MAN_PAGES_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 644 $(MAN_PAGES_SOURCE_DIR)/prerm $(MAN_PAGES_IPK_DIR)/CONTROL/prerm

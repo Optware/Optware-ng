@@ -40,7 +40,7 @@ POUND_IPK_VERSION=4
 
 #
 # POUND_CONFFILES should be a list of user-editable files
-POUND_CONFFILES=/opt/etc/pound.cfg /opt/etc/init.d/pound
+POUND_CONFFILES=$(TARGET_PREFIX)/etc/pound.cfg $(TARGET_PREFIX)/etc/init.d/pound
 
 #
 # POUND_PATCHES should list any patches, in the the order in
@@ -52,7 +52,7 @@ POUND_CONFFILES=/opt/etc/pound.cfg /opt/etc/init.d/pound
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-POUND_CPPFLAGS=-DF_CONF='\"/opt/etc/pound.cfg\"' -DF_PID='\"/opt/var/run/pound.pid\"'
+POUND_CPPFLAGS=-DF_CONF='\"$(TARGET_PREFIX)/etc/pound.cfg\"' -DF_PID='\"$(TARGET_PREFIX)/var/run/pound.pid\"'
 POUND_LDFLAGS=
 
 #
@@ -184,25 +184,25 @@ $(POUND_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(POUND_IPK_DIR)/opt/sbin or $(POUND_IPK_DIR)/opt/bin
+# Binaries should be installed into $(POUND_IPK_DIR)$(TARGET_PREFIX)/sbin or $(POUND_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(POUND_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(POUND_IPK_DIR)/opt/etc/pound/...
-# Documentation files should be installed in $(POUND_IPK_DIR)/opt/doc/pound/...
-# Daemon startup scripts should be installed in $(POUND_IPK_DIR)/opt/etc/init.d/S??pound
+# Libraries and include files should be installed into $(POUND_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(POUND_IPK_DIR)$(TARGET_PREFIX)/etc/pound/...
+# Documentation files should be installed in $(POUND_IPK_DIR)$(TARGET_PREFIX)/doc/pound/...
+# Daemon startup scripts should be installed in $(POUND_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??pound
 #
 # You may need to patch your application to make it use these locations.
 #
 $(POUND_IPK): $(POUND_BUILD_DIR)/.built
 	rm -rf $(POUND_IPK_DIR) $(BUILD_DIR)/pound_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(POUND_IPK_DIR)/opt/var/run $(POUND_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -d $(POUND_IPK_DIR)$(TARGET_PREFIX)/var/run $(POUND_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
 	$(MAKE) -C $(POUND_BUILD_DIR) DESTDIR=$(POUND_IPK_DIR) install
-	$(STRIP_COMMAND) $(POUND_IPK_DIR)/opt/sbin/pound*
-	chmod 555 $(POUND_IPK_DIR)/opt/sbin/pound
-#	$(INSTALL) -d $(POUND_IPK_DIR)/opt/etc/
-	$(INSTALL) -m 644 $(POUND_SOURCE_DIR)/pound.cfg $(POUND_IPK_DIR)/opt/etc/pound.cfg
-#	$(INSTALL) -d $(POUND_IPK_DIR)/opt/etc/init.d
-	$(INSTALL) -m 755 $(POUND_SOURCE_DIR)/rc.pound $(POUND_IPK_DIR)/opt/etc/init.d/pound
+	$(STRIP_COMMAND) $(POUND_IPK_DIR)$(TARGET_PREFIX)/sbin/pound*
+	chmod 555 $(POUND_IPK_DIR)$(TARGET_PREFIX)/sbin/pound
+#	$(INSTALL) -d $(POUND_IPK_DIR)$(TARGET_PREFIX)/etc/
+	$(INSTALL) -m 644 $(POUND_SOURCE_DIR)/pound.cfg $(POUND_IPK_DIR)$(TARGET_PREFIX)/etc/pound.cfg
+#	$(INSTALL) -d $(POUND_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(INSTALL) -m 755 $(POUND_SOURCE_DIR)/rc.pound $(POUND_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/pound
 	$(MAKE) $(POUND_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(POUND_SOURCE_DIR)/postinst $(POUND_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 755 $(POUND_SOURCE_DIR)/prerm $(POUND_IPK_DIR)/CONTROL/prerm

@@ -40,7 +40,7 @@ FCONFIG_IPK_VERSION=1
 
 #
 # FCONFIG_CONFFILES should be a list of user-editable files
-#FCONFIG_CONFFILES=/opt/etc/fconfig.conf /opt/etc/init.d/SXXfconfig
+#FCONFIG_CONFFILES=$(TARGET_PREFIX)/etc/fconfig.conf $(TARGET_PREFIX)/etc/init.d/SXXfconfig
 
 #
 # FCONFIG_PATCHES should list any patches, in the the order in
@@ -181,25 +181,25 @@ $(FCONFIG_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(FCONFIG_IPK_DIR)/opt/sbin or $(FCONFIG_IPK_DIR)/opt/bin
+# Binaries should be installed into $(FCONFIG_IPK_DIR)$(TARGET_PREFIX)/sbin or $(FCONFIG_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(FCONFIG_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(FCONFIG_IPK_DIR)/opt/etc/fconfig/...
-# Documentation files should be installed in $(FCONFIG_IPK_DIR)/opt/doc/fconfig/...
-# Daemon startup scripts should be installed in $(FCONFIG_IPK_DIR)/opt/etc/init.d/S??fconfig
+# Libraries and include files should be installed into $(FCONFIG_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(FCONFIG_IPK_DIR)$(TARGET_PREFIX)/etc/fconfig/...
+# Documentation files should be installed in $(FCONFIG_IPK_DIR)$(TARGET_PREFIX)/doc/fconfig/...
+# Daemon startup scripts should be installed in $(FCONFIG_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??fconfig
 #
 # You may need to patch your application to make it use these locations.
 #
 $(FCONFIG_IPK): $(FCONFIG_BUILD_DIR)/.built
 	rm -rf $(FCONFIG_IPK_DIR) $(BUILD_DIR)/fconfig_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(FCONFIG_BUILD_DIR) DESTDIR=$(FCONFIG_IPK_DIR) install-strip
-	$(INSTALL) -d $(FCONFIG_IPK_DIR)/opt/sbin/
-	$(INSTALL) -m 755 $(FCONFIG_BUILD_DIR)/fconfig $(FCONFIG_IPK_DIR)/opt/sbin/
-	$(STRIP_COMMAND) $(FCONFIG_IPK_DIR)/opt/sbin/fconfig
-#	$(INSTALL) -m 644 $(FCONFIG_SOURCE_DIR)/fconfig.conf $(FCONFIG_IPK_DIR)/opt/etc/fconfig.conf
-#	$(INSTALL) -d $(FCONFIG_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(FCONFIG_SOURCE_DIR)/rc.fconfig $(FCONFIG_IPK_DIR)/opt/etc/init.d/SXXfconfig
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(FCONFIG_IPK_DIR)/opt/etc/init.d/SXXfconfig
+	$(INSTALL) -d $(FCONFIG_IPK_DIR)$(TARGET_PREFIX)/sbin/
+	$(INSTALL) -m 755 $(FCONFIG_BUILD_DIR)/fconfig $(FCONFIG_IPK_DIR)$(TARGET_PREFIX)/sbin/
+	$(STRIP_COMMAND) $(FCONFIG_IPK_DIR)$(TARGET_PREFIX)/sbin/fconfig
+#	$(INSTALL) -m 644 $(FCONFIG_SOURCE_DIR)/fconfig.conf $(FCONFIG_IPK_DIR)$(TARGET_PREFIX)/etc/fconfig.conf
+#	$(INSTALL) -d $(FCONFIG_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(FCONFIG_SOURCE_DIR)/rc.fconfig $(FCONFIG_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXfconfig
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(FCONFIG_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXfconfig
 	$(MAKE) $(FCONFIG_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(FCONFIG_SOURCE_DIR)/postinst $(FCONFIG_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(FCONFIG_IPK_DIR)/CONTROL/postinst

@@ -40,7 +40,7 @@ MOC_IPK_VERSION=1
 
 #
 # MOC_CONFFILES should be a list of user-editable files
-#MOC_CONFFILES=/opt/etc/moc.conf /opt/etc/init.d/SXXmoc
+#MOC_CONFFILES=$(TARGET_PREFIX)/etc/moc.conf $(TARGET_PREFIX)/etc/init.d/SXXmoc
 
 #
 # MOC_PATCHES should list any patches, in the the order in
@@ -204,23 +204,23 @@ $(MOC_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(MOC_IPK_DIR)/opt/sbin or $(MOC_IPK_DIR)/opt/bin
+# Binaries should be installed into $(MOC_IPK_DIR)$(TARGET_PREFIX)/sbin or $(MOC_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(MOC_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(MOC_IPK_DIR)/opt/etc/moc/...
-# Documentation files should be installed in $(MOC_IPK_DIR)/opt/doc/moc/...
-# Daemon startup scripts should be installed in $(MOC_IPK_DIR)/opt/etc/init.d/S??moc
+# Libraries and include files should be installed into $(MOC_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(MOC_IPK_DIR)$(TARGET_PREFIX)/etc/moc/...
+# Documentation files should be installed in $(MOC_IPK_DIR)$(TARGET_PREFIX)/doc/moc/...
+# Daemon startup scripts should be installed in $(MOC_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??moc
 #
 # You may need to patch your application to make it use these locations.
 #
 $(MOC_IPK): $(MOC_BUILD_DIR)/.built
 	rm -rf $(MOC_IPK_DIR) $(BUILD_DIR)/moc_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MOC_BUILD_DIR) DESTDIR=$(MOC_IPK_DIR) install-strip
-#	$(INSTALL) -d $(MOC_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(MOC_SOURCE_DIR)/moc.conf $(MOC_IPK_DIR)/opt/etc/moc.conf
-#	$(INSTALL) -d $(MOC_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(MOC_SOURCE_DIR)/rc.moc $(MOC_IPK_DIR)/opt/etc/init.d/SXXmoc
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MOC_IPK_DIR)/opt/etc/init.d/SXXmoc
+#	$(INSTALL) -d $(MOC_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(MOC_SOURCE_DIR)/moc.conf $(MOC_IPK_DIR)$(TARGET_PREFIX)/etc/moc.conf
+#	$(INSTALL) -d $(MOC_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(MOC_SOURCE_DIR)/rc.moc $(MOC_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXmoc
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MOC_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXmoc
 	$(MAKE) $(MOC_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(MOC_SOURCE_DIR)/postinst $(MOC_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MOC_IPK_DIR)/CONTROL/postinst

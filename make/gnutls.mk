@@ -46,7 +46,7 @@ GNUTLS_IPK_VERSION=1
 
 #
 # GNUTLS_CONFFILES should be a list of user-editable files
-GNUTLS_CONFFILES=#/opt/etc/gnutls.conf /opt/etc/init.d/SXXgnutls
+GNUTLS_CONFFILES=#$(TARGET_PREFIX)/etc/gnutls.conf $(TARGET_PREFIX)/etc/init.d/SXXgnutls
 
 #
 # GNUTLS_PATCHES should list any patches, in the the order in
@@ -207,12 +207,12 @@ $(GNUTLS-DEV_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(GNUTLS_IPK_DIR)/opt/sbin or $(GNUTLS_IPK_DIR)/opt/bin
+# Binaries should be installed into $(GNUTLS_IPK_DIR)$(TARGET_PREFIX)/sbin or $(GNUTLS_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(GNUTLS_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(GNUTLS_IPK_DIR)/opt/etc/gnutls/...
-# Documentation files should be installed in $(GNUTLS_IPK_DIR)/opt/doc/gnutls/...
-# Daemon startup scripts should be installed in $(GNUTLS_IPK_DIR)/opt/etc/init.d/S??gnutls
+# Libraries and include files should be installed into $(GNUTLS_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(GNUTLS_IPK_DIR)$(TARGET_PREFIX)/etc/gnutls/...
+# Documentation files should be installed in $(GNUTLS_IPK_DIR)$(TARGET_PREFIX)/doc/gnutls/...
+# Daemon startup scripts should be installed in $(GNUTLS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??gnutls
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -220,19 +220,19 @@ $(GNUTLS_IPK) $(GNUTLS-DEV_IPK): $(GNUTLS_BUILD_DIR)/.built
 	rm -rf $(GNUTLS_IPK_DIR) $(BUILD_DIR)/gnutls_*_$(TARGET_ARCH).ipk
 	rm -rf $(GNUTLS-DEV_IPK_DIR) $(BUILD_DIR)/gnutls-dev_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GNUTLS_BUILD_DIR) DESTDIR=$(GNUTLS_IPK_DIR) program_transform_name="" install-strip
-	$(INSTALL) -d $(GNUTLS-DEV_IPK_DIR)/opt
-	mv $(GNUTLS_IPK_DIR)/opt/include $(GNUTLS-DEV_IPK_DIR)/opt/
-	$(INSTALL) -d $(GNUTLS-DEV_IPK_DIR)/opt/share/man
-	mv $(GNUTLS_IPK_DIR)/opt/share/man/man3 $(GNUTLS-DEV_IPK_DIR)/opt/share/man/
-	rm -rf $(GNUTLS_IPK_DIR)/opt/share/info/dir
-	mv $(GNUTLS_IPK_DIR)/opt/share/info $(GNUTLS-DEV_IPK_DIR)/opt/share/
-#	mv $(GNUTLS_IPK_DIR)/opt/share/aclocal $(GNUTLS-DEV_IPK_DIR)/opt/share/
-	$(INSTALL) -d $(GNUTLS-DEV_IPK_DIR)/opt/bin $(GNUTLS-DEV_IPK_DIR)/opt/lib
-#	mv $(GNUTLS_IPK_DIR)/opt/bin/libgnutls*-config $(GNUTLS-DEV_IPK_DIR)/opt/bin/
-	mv $(GNUTLS_IPK_DIR)/opt/lib/pkgconfig $(GNUTLS-DEV_IPK_DIR)/opt/lib/
-#	$(INSTALL) -m 644 $(GNUTLS_SOURCE_DIR)/gnutls.conf $(GNUTLS_IPK_DIR)/opt/etc/gnutls.conf
-#	$(INSTALL) -d $(GNUTLS_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(GNUTLS_SOURCE_DIR)/rc.gnutls $(GNUTLS_IPK_DIR)/opt/etc/init.d/SXXgnutls
+	$(INSTALL) -d $(GNUTLS-DEV_IPK_DIR)$(TARGET_PREFIX)
+	mv $(GNUTLS_IPK_DIR)$(TARGET_PREFIX)/include $(GNUTLS-DEV_IPK_DIR)$(TARGET_PREFIX)/
+	$(INSTALL) -d $(GNUTLS-DEV_IPK_DIR)$(TARGET_PREFIX)/share/man
+	mv $(GNUTLS_IPK_DIR)$(TARGET_PREFIX)/share/man/man3 $(GNUTLS-DEV_IPK_DIR)$(TARGET_PREFIX)/share/man/
+	rm -rf $(GNUTLS_IPK_DIR)$(TARGET_PREFIX)/share/info/dir
+	mv $(GNUTLS_IPK_DIR)$(TARGET_PREFIX)/share/info $(GNUTLS-DEV_IPK_DIR)$(TARGET_PREFIX)/share/
+#	mv $(GNUTLS_IPK_DIR)$(TARGET_PREFIX)/share/aclocal $(GNUTLS-DEV_IPK_DIR)$(TARGET_PREFIX)/share/
+	$(INSTALL) -d $(GNUTLS-DEV_IPK_DIR)$(TARGET_PREFIX)/bin $(GNUTLS-DEV_IPK_DIR)$(TARGET_PREFIX)/lib
+#	mv $(GNUTLS_IPK_DIR)$(TARGET_PREFIX)/bin/libgnutls*-config $(GNUTLS-DEV_IPK_DIR)$(TARGET_PREFIX)/bin/
+	mv $(GNUTLS_IPK_DIR)$(TARGET_PREFIX)/lib/pkgconfig $(GNUTLS-DEV_IPK_DIR)$(TARGET_PREFIX)/lib/
+#	$(INSTALL) -m 644 $(GNUTLS_SOURCE_DIR)/gnutls.conf $(GNUTLS_IPK_DIR)$(TARGET_PREFIX)/etc/gnutls.conf
+#	$(INSTALL) -d $(GNUTLS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(GNUTLS_SOURCE_DIR)/rc.gnutls $(GNUTLS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXgnutls
 	$(MAKE) $(GNUTLS_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(GNUTLS_SOURCE_DIR)/postinst $(GNUTLS_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 755 $(GNUTLS_SOURCE_DIR)/prerm $(GNUTLS_IPK_DIR)/CONTROL/prerm

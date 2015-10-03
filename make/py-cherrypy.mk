@@ -41,7 +41,7 @@ PY-CHERRYPY_IPK_VERSION=1
 
 #
 # PY-CHERRYPY_CONFFILES should be a list of user-editable files
-#PY-CHERRYPY_CONFFILES=/opt/etc/py-cherrypy.conf /opt/etc/init.d/SXXpy-cherrypy
+#PY-CHERRYPY_CONFFILES=$(TARGET_PREFIX)/etc/py-cherrypy.conf $(TARGET_PREFIX)/etc/init.d/SXXpy-cherrypy
 
 #
 # PY-CHERRYPY_PATCHES should list any patches, in the the order in
@@ -113,14 +113,14 @@ $(PY-CHERRYPY_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CHERRYPY_SOURCE) $(PY-CHERR
 	mv $(BUILD_DIR)/$(PY-CHERRYPY_DIR) $(@D)/2.4
 	(cd $(@D)/2.4; \
 	    (echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python2.4") > setup.cfg \
+	    echo "executable=$(TARGET_PREFIX)/bin/python2.4") > setup.cfg \
 	)
 	$(PY-CHERRYPY_UNZIP) $(DL_DIR)/$(PY-CHERRYPY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-CHERRYPY_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-CHERRYPY_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-CHERRYPY_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
 	    (echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python2.5") > setup.cfg \
+	    echo "executable=$(TARGET_PREFIX)/bin/python2.5") > setup.cfg \
 	)
 	touch $@
 
@@ -152,11 +152,11 @@ $(PY-CHERRYPY_BUILD_DIR)/.staged: $(PY-CHERRYPY_BUILD_DIR)/.built
 	(cd $(@D)/2.4; \
 	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 -c "import setuptools; execfile('setup.py')" \
-	    $(INSTALL) --root=$(STAGING_DIR) --prefix=/opt)
+	    $(INSTALL) --root=$(STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	(cd $(@D)/2.5; \
 	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 -c "import setuptools; execfile('setup.py')" \
-	    $(INSTALL) --root=$(STAGING_DIR) --prefix=/opt)
+	    $(INSTALL) --root=$(STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	touch $@
 
 py-cherrypy-stage: $(PY-CHERRYPY_BUILD_DIR)/.staged
@@ -196,12 +196,12 @@ $(PY25-CHERRYPY_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PY-CHERRYPY_IPK_DIR)/opt/sbin or $(PY-CHERRYPY_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PY-CHERRYPY_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PY-CHERRYPY_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PY-CHERRYPY_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PY-CHERRYPY_IPK_DIR)/opt/etc/py-cherrypy/...
-# Documentation files should be installed in $(PY-CHERRYPY_IPK_DIR)/opt/doc/py-cherrypy/...
-# Daemon startup scripts should be installed in $(PY-CHERRYPY_IPK_DIR)/opt/etc/init.d/S??py-cherrypy
+# Libraries and include files should be installed into $(PY-CHERRYPY_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PY-CHERRYPY_IPK_DIR)$(TARGET_PREFIX)/etc/py-cherrypy/...
+# Documentation files should be installed in $(PY-CHERRYPY_IPK_DIR)$(TARGET_PREFIX)/doc/py-cherrypy/...
+# Daemon startup scripts should be installed in $(PY-CHERRYPY_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??py-cherrypy
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -211,7 +211,7 @@ $(PY24-CHERRYPY_IPK): $(PY-CHERRYPY_BUILD_DIR)/.built
 	(cd $(PY-CHERRYPY_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.4 -c "import setuptools; execfile('setup.py')" \
-	$(INSTALL) --root=$(PY24-CHERRYPY_IPK_DIR) --prefix=/opt)
+	$(INSTALL) --root=$(PY24-CHERRYPY_IPK_DIR) --prefix=$(TARGET_PREFIX))
 	$(MAKE) $(PY24-CHERRYPY_IPK_DIR)/CONTROL/control
 	echo $(PY-CHERRYPY_CONFFILES) | sed -e 's/ /\n/g' > $(PY24-CHERRYPY_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-CHERRYPY_IPK_DIR)
@@ -221,7 +221,7 @@ $(PY25-CHERRYPY_IPK): $(PY-CHERRYPY_BUILD_DIR)/.built
 	(cd $(PY-CHERRYPY_BUILD_DIR)/2.5; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.5 -c "import setuptools; execfile('setup.py')" \
-	$(INSTALL) --root=$(PY25-CHERRYPY_IPK_DIR) --prefix=/opt)
+	$(INSTALL) --root=$(PY25-CHERRYPY_IPK_DIR) --prefix=$(TARGET_PREFIX))
 	$(MAKE) $(PY25-CHERRYPY_IPK_DIR)/CONTROL/control
 	echo $(PY-CHERRYPY_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-CHERRYPY_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-CHERRYPY_IPK_DIR)

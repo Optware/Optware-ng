@@ -53,7 +53,7 @@ NTOP_IPK_VERSION=7
 #
 # NTOP_CONFFILES should be a list of user-editable files
 NTOP_CONFFILES=
-#/opt/etc/ntop.conf /opt/etc/init.d/SXXntop
+#$(TARGET_PREFIX)/etc/ntop.conf $(TARGET_PREFIX)/etc/init.d/SXXntop
 
 #
 # NTOP_PATCHES should list any patches, in the the order in
@@ -186,7 +186,7 @@ endif
 	)
 	sed -i -e '/HAVE_LOCALE_H/d' -e '/HAVE_MALLINFO_MALLOC_H/d' \
 		$(@D)/config.status
-	sed -i -e 's| -I/opt/include||' $(@D)/Makefile $(@D)/plugins/Makefile
+	sed -i -e 's| -I$(TARGET_PREFIX)/include||' $(@D)/Makefile $(@D)/plugins/Makefile
 	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
@@ -218,22 +218,22 @@ ntop-stage: $(NTOP_BUILD_DIR)/.staged
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(NTOP_IPK_DIR)/opt/sbin or $(NTOP_IPK_DIR)/opt/bin
+# Binaries should be installed into $(NTOP_IPK_DIR)$(TARGET_PREFIX)/sbin or $(NTOP_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(NTOP_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(NTOP_IPK_DIR)/opt/etc/ntop/...
-# Documentation files should be installed in $(NTOP_IPK_DIR)/opt/doc/ntop/...
-# Daemon startup scripts should be installed in $(NTOP_IPK_DIR)/opt/etc/init.d/S??ntop
+# Libraries and include files should be installed into $(NTOP_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(NTOP_IPK_DIR)$(TARGET_PREFIX)/etc/ntop/...
+# Documentation files should be installed in $(NTOP_IPK_DIR)$(TARGET_PREFIX)/doc/ntop/...
+# Daemon startup scripts should be installed in $(NTOP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??ntop
 #
 # You may need to patch your application to make it use these locations.
 #
 $(NTOP_IPK): $(NTOP_BUILD_DIR)/.built
 	rm -rf $(NTOP_IPK_DIR) $(BUILD_DIR)/ntop_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(NTOP_BUILD_DIR) DESTDIR=$(NTOP_IPK_DIR) transform='' install-strip
-	rm -f $(NTOP_IPK_DIR)/opt/lib/lib*.a $(NTOP_IPK_DIR)/opt/lib/lib*.la
-	$(STRIP_COMMAND) $(NTOP_IPK_DIR)/opt/lib/ntop/plugins/*.so
-	$(INSTALL) -d $(NTOP_IPK_DIR)/opt/etc/init.d
-	$(INSTALL) -m 755 $(NTOP_SOURCE_DIR)/rc.ntop $(NTOP_IPK_DIR)/opt/etc/init.d/S01ntop
+	rm -f $(NTOP_IPK_DIR)$(TARGET_PREFIX)/lib/lib*.a $(NTOP_IPK_DIR)$(TARGET_PREFIX)/lib/lib*.la
+	$(STRIP_COMMAND) $(NTOP_IPK_DIR)$(TARGET_PREFIX)/lib/ntop/plugins/*.so
+	$(INSTALL) -d $(NTOP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(INSTALL) -m 755 $(NTOP_SOURCE_DIR)/rc.ntop $(NTOP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S01ntop
 	$(MAKE) $(NTOP_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 755 $(NTOP_SOURCE_DIR)/postinst $(NTOP_IPK_DIR)/CONTROL/postinst
 	$(INSTALL) -m 755 $(NTOP_SOURCE_DIR)/prerm $(NTOP_IPK_DIR)/CONTROL/prerm

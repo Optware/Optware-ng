@@ -42,7 +42,7 @@ LIBGCRYPT_CONFLICTS=
 
 #
 # LIBGCRYPT_CONFFILES should be a list of user-editable files
-LIBGCRYPT_CONFFILES=#/opt/etc/libgcrypt.conf /opt/etc/init.d/SXXlibgcrypt
+LIBGCRYPT_CONFFILES=#$(TARGET_PREFIX)/etc/libgcrypt.conf $(TARGET_PREFIX)/etc/init.d/SXXlibgcrypt
 
 #
 # LIBGCRYPT_PATCHES should list any patches, in the the order in
@@ -154,10 +154,10 @@ libgcrypt: $(LIBGCRYPT_BUILD_DIR)/.built
 $(LIBGCRYPT_BUILD_DIR)/.staged: $(LIBGCRYPT_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) transform='' install
-	sed -i -e '/_cflags=/s|-I/opt/include||g' \
+	sed -i -e '/_cflags=/s|-I$(TARGET_PREFIX)/include||g' \
 	       -e '/_cflags=/s|-I$${prefix}/include|-I$(STAGING_INCLUDE_DIR)|' \
 	       -e 's|I$$includedir|I$(STAGING_INCLUDE_DIR)|' \
-	       -e 's|-L/opt/lib|-L$(STAGING_LIB_DIR)|g' \
+	       -e 's|-L$(TARGET_PREFIX)/lib|-L$(STAGING_LIB_DIR)|g' \
 	       -e '/^prefix=/s|=.*|="$(STAGING_PREFIX)"|' \
 		$(STAGING_PREFIX)/bin/*libgcrypt-config
 	rm -f $(STAGING_LIB_DIR)/libgcrypt.la
@@ -187,23 +187,23 @@ $(LIBGCRYPT_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LIBGCRYPT_IPK_DIR)/opt/sbin or $(LIBGCRYPT_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LIBGCRYPT_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LIBGCRYPT_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LIBGCRYPT_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LIBGCRYPT_IPK_DIR)/opt/etc/libgcrypt/...
-# Documentation files should be installed in $(LIBGCRYPT_IPK_DIR)/opt/doc/libgcrypt/...
-# Daemon startup scripts should be installed in $(LIBGCRYPT_IPK_DIR)/opt/etc/init.d/S??libgcrypt
+# Libraries and include files should be installed into $(LIBGCRYPT_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LIBGCRYPT_IPK_DIR)$(TARGET_PREFIX)/etc/libgcrypt/...
+# Documentation files should be installed in $(LIBGCRYPT_IPK_DIR)$(TARGET_PREFIX)/doc/libgcrypt/...
+# Daemon startup scripts should be installed in $(LIBGCRYPT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??libgcrypt
 #
 # You may need to patch your application to make it use these locations.
 #
 $(LIBGCRYPT_IPK): $(LIBGCRYPT_BUILD_DIR)/.built
 	rm -rf $(LIBGCRYPT_IPK_DIR) $(BUILD_DIR)/libgcrypt_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBGCRYPT_BUILD_DIR) DESTDIR=$(LIBGCRYPT_IPK_DIR) transform='' install-strip
-	#$(INSTALL) -d $(LIBGCRYPT_IPK_DIR)/opt/etc/
-	#$(INSTALL) -m 644 $(LIBGCRYPT_SOURCE_DIR)/libgcrypt.conf $(LIBGCRYPT_IPK_DIR)/opt/etc/libgcrypt.conf
-	#$(INSTALL) -d $(LIBGCRYPT_IPK_DIR)/opt/etc/init.d
-	#$(INSTALL) -m 755 $(LIBGCRYPT_SOURCE_DIR)/rc.libgcrypt $(LIBGCRYPT_IPK_DIR)/opt/etc/init.d/SXXlibgcrypt
-	rm -f $(LIBGCRYPT_IPK_DIR)/opt/share/info/dir
+	#$(INSTALL) -d $(LIBGCRYPT_IPK_DIR)$(TARGET_PREFIX)/etc/
+	#$(INSTALL) -m 644 $(LIBGCRYPT_SOURCE_DIR)/libgcrypt.conf $(LIBGCRYPT_IPK_DIR)$(TARGET_PREFIX)/etc/libgcrypt.conf
+	#$(INSTALL) -d $(LIBGCRYPT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	#$(INSTALL) -m 755 $(LIBGCRYPT_SOURCE_DIR)/rc.libgcrypt $(LIBGCRYPT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibgcrypt
+	rm -f $(LIBGCRYPT_IPK_DIR)$(TARGET_PREFIX)/share/info/dir
 	$(MAKE) $(LIBGCRYPT_IPK_DIR)/CONTROL/control
 	#$(INSTALL) -m 755 $(LIBGCRYPT_SOURCE_DIR)/postinst $(LIBGCRYPT_IPK_DIR)/CONTROL/postinst
 	#$(INSTALL) -m 755 $(LIBGCRYPT_SOURCE_DIR)/prerm $(LIBGCRYPT_IPK_DIR)/CONTROL/prerm

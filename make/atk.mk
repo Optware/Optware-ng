@@ -35,7 +35,7 @@ ATK_LOCALES=
 
 #
 # ATK_CONFFILES should be a list of user-editable files
-#ATK_CONFFILES=/opt/etc/atk.conf /opt/etc/init.d/SXXatk
+#ATK_CONFFILES=$(TARGET_PREFIX)/etc/atk.conf $(TARGET_PREFIX)/etc/init.d/SXXatk
 
 #
 # ATK_PATCHES should list any patches, in the the order in
@@ -156,23 +156,23 @@ atk-stage: $(ATK_BUILD_DIR)/.staged
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(ATK_IPK_DIR)/opt/sbin or $(ATK_IPK_DIR)/opt/bin
+# Binaries should be installed into $(ATK_IPK_DIR)$(TARGET_PREFIX)/sbin or $(ATK_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(ATK_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(ATK_IPK_DIR)/opt/etc/atk/...
-# Documentation files should be installed in $(ATK_IPK_DIR)/opt/doc/atk/...
-# Daemon startup scripts should be installed in $(ATK_IPK_DIR)/opt/etc/init.d/S??atk
+# Libraries and include files should be installed into $(ATK_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(ATK_IPK_DIR)$(TARGET_PREFIX)/etc/atk/...
+# Documentation files should be installed in $(ATK_IPK_DIR)$(TARGET_PREFIX)/doc/atk/...
+# Daemon startup scripts should be installed in $(ATK_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??atk
 #
 # You may need to patch your application to make it use these locations.
 #
 $(ATK_IPK): $(ATK_BUILD_DIR)/.built
 	rm -rf $(ATK_IPK_DIR) $(BUILD_DIR)/atk_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(ATK_BUILD_DIR) DESTDIR=$(ATK_IPK_DIR) install-strip
-	$(INSTALL) -d $(ATK_IPK_DIR)/opt/share/gir-1.0
+	$(INSTALL) -d $(ATK_IPK_DIR)$(TARGET_PREFIX)/share/gir-1.0
 	$(INSTALL) -m 644 $(ATK_SOURCE_DIR)/$(ATK_VERSION)/Atk-1.0.gir \
-		$(ATK_IPK_DIR)/opt/share/gir-1.0/Atk-1.0.gir
-	rm -f $(ATK_IPK_DIR)/opt/lib/*.la
-	rm -rf $(ATK_IPK_DIR)/opt/share/gtk-doc
+		$(ATK_IPK_DIR)$(TARGET_PREFIX)/share/gir-1.0/Atk-1.0.gir
+	rm -f $(ATK_IPK_DIR)$(TARGET_PREFIX)/lib/*.la
+	rm -rf $(ATK_IPK_DIR)$(TARGET_PREFIX)/share/gtk-doc
 	$(MAKE) $(ATK_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 755 $(ATK_SOURCE_DIR)/postinst $(ATK_IPK_DIR)/CONTROL/postinst
 	$(INSTALL) -m 755 $(ATK_SOURCE_DIR)/prerm $(ATK_IPK_DIR)/CONTROL/prerm

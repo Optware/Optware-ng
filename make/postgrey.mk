@@ -36,9 +36,9 @@ $(POSTGREY_BUILD_DIR)/.configured: $(DL_DIR)/$(POSTGREY_SOURCE) $(POSTGREY_PATCH
 	$(POSTGREY_UNZIP) $(DL_DIR)/$(POSTGREY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(POSTGREY_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(POSTGREY_DIR) -p1
 	mv $(BUILD_DIR)/$(POSTGREY_DIR) $(@D)
-	sed -i	-e '1s|#! */usr/bin/perl|#!/opt/bin/perl|' \
-		-e "s|/etc/postfix|/opt&|" \
-		-e "s|/var/spool|/opt&|" \
+	sed -i	-e '1s|#! */usr/bin/perl|#!$(TARGET_PREFIX)/bin/perl|' \
+		-e "s|/etc/postfix|$(TARGET_PREFIX)&|" \
+		-e "s|/var/spool|$(TARGET_PREFIX)&|" \
 		$(@D)/postgrey $(@D)/contrib/postgreyreport
 #	(cd $(POSTGREY_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -84,17 +84,17 @@ $(POSTGREY_IPK_DIR)/CONTROL/control:
 $(POSTGREY_IPK): $(POSTGREY_BUILD_DIR)/.built
 	rm -rf $(POSTGREY_IPK_DIR) $(BUILD_DIR)/postgrey_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(POSTGREY_BUILD_DIR) DESTDIR=$(POSTGREY_IPK_DIR) install
-	$(INSTALL) -d $(POSTGREY_IPK_DIR)/opt/sbin $(POSTGREY_IPK_DIR)/opt/bin
-	$(INSTALL) -m 755 $(POSTGREY_BUILD_DIR)/postgrey $(POSTGREY_IPK_DIR)/opt/sbin
-	$(INSTALL) -m 755 $(POSTGREY_BUILD_DIR)/contrib/postgreyreport $(POSTGREY_IPK_DIR)/opt/bin
-	$(INSTALL) -d $(POSTGREY_IPK_DIR)/opt/share/postgrey
+	$(INSTALL) -d $(POSTGREY_IPK_DIR)$(TARGET_PREFIX)/sbin $(POSTGREY_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(INSTALL) -m 755 $(POSTGREY_BUILD_DIR)/postgrey $(POSTGREY_IPK_DIR)$(TARGET_PREFIX)/sbin
+	$(INSTALL) -m 755 $(POSTGREY_BUILD_DIR)/contrib/postgreyreport $(POSTGREY_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(INSTALL) -d $(POSTGREY_IPK_DIR)$(TARGET_PREFIX)/share/postgrey
 	$(INSTALL) $(POSTGREY_BUILD_DIR)/README* \
 		$(POSTGREY_BUILD_DIR)/COPYING \
 		$(POSTGREY_BUILD_DIR)/Changes \
 		$(POSTGREY_BUILD_DIR)/policy-test \
 		$(POSTGREY_BUILD_DIR)/postgrey_whitelist_* \
-		$(POSTGREY_IPK_DIR)/opt/share/postgrey/
-	$(INSTALL) -d $(POSTGREY_IPK_DIR)/opt/var/spool/postfix/postgrey
+		$(POSTGREY_IPK_DIR)$(TARGET_PREFIX)/share/postgrey/
+	$(INSTALL) -d $(POSTGREY_IPK_DIR)$(TARGET_PREFIX)/var/spool/postfix/postgrey
 	$(MAKE) $(POSTGREY_IPK_DIR)/CONTROL/control
 	echo $(POSTGREY_CONFFILES) | sed -e 's/ /\n/g' > $(POSTGREY_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(POSTGREY_IPK_DIR)

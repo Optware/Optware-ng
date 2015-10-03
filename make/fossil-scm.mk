@@ -41,7 +41,7 @@ FOSSIL-SCM_IPK_VERSION=1
 
 #
 # FOSSIL-SCM_CONFFILES should be a list of user-editable files
-#FOSSIL-SCM_CONFFILES=/opt/etc/fossil-scm.conf /opt/etc/init.d/SXXfossil-scm
+#FOSSIL-SCM_CONFFILES=$(TARGET_PREFIX)/etc/fossil-scm.conf $(TARGET_PREFIX)/etc/init.d/SXXfossil-scm
 
 #
 # FOSSIL-SCM_PATCHES should list any patches, in the the order in
@@ -181,21 +181,21 @@ $(FOSSIL-SCM_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(FOSSIL-SCM_IPK_DIR)/opt/sbin or $(FOSSIL-SCM_IPK_DIR)/opt/bin
+# Binaries should be installed into $(FOSSIL-SCM_IPK_DIR)$(TARGET_PREFIX)/sbin or $(FOSSIL-SCM_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(FOSSIL-SCM_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(FOSSIL-SCM_IPK_DIR)/opt/etc/fossil-scm/...
-# Documentation files should be installed in $(FOSSIL-SCM_IPK_DIR)/opt/doc/fossil-scm/...
-# Daemon startup scripts should be installed in $(FOSSIL-SCM_IPK_DIR)/opt/etc/init.d/S??fossil-scm
+# Libraries and include files should be installed into $(FOSSIL-SCM_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(FOSSIL-SCM_IPK_DIR)$(TARGET_PREFIX)/etc/fossil-scm/...
+# Documentation files should be installed in $(FOSSIL-SCM_IPK_DIR)$(TARGET_PREFIX)/doc/fossil-scm/...
+# Daemon startup scripts should be installed in $(FOSSIL-SCM_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??fossil-scm
 #
 # You may need to patch your application to make it use these locations.
 #
 $(FOSSIL-SCM_IPK): $(FOSSIL-SCM_BUILD_DIR)/.built
 	rm -rf $(FOSSIL-SCM_IPK_DIR) $(BUILD_DIR)/fossil-scm_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(FOSSIL-SCM_BUILD_DIR) DESTDIR=$(FOSSIL-SCM_IPK_DIR) install-strip
-	$(INSTALL) -d $(FOSSIL-SCM_IPK_DIR)/opt/bin
-	$(INSTALL) -m755 $(<D)/fossil $(FOSSIL-SCM_IPK_DIR)/opt/bin
-	$(STRIP_COMMAND) $(FOSSIL-SCM_IPK_DIR)/opt/bin/fossil
+	$(INSTALL) -d $(FOSSIL-SCM_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(INSTALL) -m755 $(<D)/fossil $(FOSSIL-SCM_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(STRIP_COMMAND) $(FOSSIL-SCM_IPK_DIR)$(TARGET_PREFIX)/bin/fossil
 	$(MAKE) $(FOSSIL-SCM_IPK_DIR)/CONTROL/control
 	echo $(FOSSIL-SCM_CONFFILES) | sed -e 's/ /\n/g' > $(FOSSIL-SCM_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(FOSSIL-SCM_IPK_DIR)

@@ -47,7 +47,7 @@ PY-PROTOCOLS_IPK_VERSION=5
 
 #
 # PY-PROTOCOLS_CONFFILES should be a list of user-editable files
-#PY-PROTOCOLS_CONFFILES=/opt/etc/py-protocols.conf /opt/etc/init.d/SXXpy-protocols
+#PY-PROTOCOLS_CONFFILES=$(TARGET_PREFIX)/etc/py-protocols.conf $(TARGET_PREFIX)/etc/init.d/SXXpy-protocols
 
 #
 # PY-PROTOCOLS_PATCHES should list any patches, in the the order in
@@ -133,7 +133,7 @@ $(PY-PROTOCOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PROTOCOLS_SOURCE) $(PY-PRO
         fi
 	mv $(BUILD_DIR)/$(PY-PROTOCOLS_DIR) $(PY-PROTOCOLS_BUILD_DIR)/2.4
 	(cd $(PY-PROTOCOLS_BUILD_DIR)/2.4; \
-	    (echo "[build_scripts]"; echo "executable=/opt/bin/python2.4") >> setup.cfg \
+	    (echo "[build_scripts]"; echo "executable=$(TARGET_PREFIX)/bin/python2.4") >> setup.cfg \
 	)
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-PROTOCOLS_DIR)
@@ -143,7 +143,7 @@ $(PY-PROTOCOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PROTOCOLS_SOURCE) $(PY-PRO
         fi
 	mv $(BUILD_DIR)/$(PY-PROTOCOLS_DIR) $(PY-PROTOCOLS_BUILD_DIR)/2.5
 	(cd $(PY-PROTOCOLS_BUILD_DIR)/2.5; \
-	    (echo "[build_scripts]"; echo "executable=/opt/bin/python2.5") >> setup.cfg \
+	    (echo "[build_scripts]"; echo "executable=$(TARGET_PREFIX)/bin/python2.5") >> setup.cfg \
 	)
 	touch $@
 
@@ -212,12 +212,12 @@ $(PY25-PROTOCOLS_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PY-PROTOCOLS_IPK_DIR)/opt/sbin or $(PY-PROTOCOLS_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PY-PROTOCOLS_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PY-PROTOCOLS_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PY-PROTOCOLS_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PY-PROTOCOLS_IPK_DIR)/opt/etc/py-protocols/...
-# Documentation files should be installed in $(PY-PROTOCOLS_IPK_DIR)/opt/doc/py-protocols/...
-# Daemon startup scripts should be installed in $(PY-PROTOCOLS_IPK_DIR)/opt/etc/init.d/S??py-protocols
+# Libraries and include files should be installed into $(PY-PROTOCOLS_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PY-PROTOCOLS_IPK_DIR)$(TARGET_PREFIX)/etc/py-protocols/...
+# Documentation files should be installed in $(PY-PROTOCOLS_IPK_DIR)$(TARGET_PREFIX)/doc/py-protocols/...
+# Daemon startup scripts should be installed in $(PY-PROTOCOLS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??py-protocols
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -227,7 +227,7 @@ $(PY24-PROTOCOLS_IPK): $(PY-PROTOCOLS_BUILD_DIR)/.built
 	(cd $(PY-PROTOCOLS_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py --without-speedups install \
-		--root=$(PY24-PROTOCOLS_IPK_DIR) --prefix=/opt)
+		--root=$(PY24-PROTOCOLS_IPK_DIR) --prefix=$(TARGET_PREFIX))
 	$(MAKE) $(PY24-PROTOCOLS_IPK_DIR)/CONTROL/control
 #	echo $(PY-PROTOCOLS_CONFFILES) | sed -e 's/ /\n/g' > $(PY24-PROTOCOLS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-PROTOCOLS_IPK_DIR)
@@ -237,7 +237,7 @@ $(PY25-PROTOCOLS_IPK): $(PY-PROTOCOLS_BUILD_DIR)/.built
 	(cd $(PY-PROTOCOLS_BUILD_DIR)/2.5; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py --without-speedups install \
-		--root=$(PY25-PROTOCOLS_IPK_DIR) --prefix=/opt)
+		--root=$(PY25-PROTOCOLS_IPK_DIR) --prefix=$(TARGET_PREFIX))
 	$(MAKE) $(PY25-PROTOCOLS_IPK_DIR)/CONTROL/control
 #	echo $(PY-PROTOCOLS_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-PROTOCOLS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-PROTOCOLS_IPK_DIR)

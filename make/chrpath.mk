@@ -42,7 +42,7 @@ CHRPATH_IPK_VERSION=1
 
 #
 # CHRPATH_CONFFILES should be a list of user-editable files
-#CHRPATH_CONFFILES=/opt/etc/chrpath.conf /opt/etc/init.d/SXXchrpath
+#CHRPATH_CONFFILES=$(TARGET_PREFIX)/etc/chrpath.conf $(TARGET_PREFIX)/etc/init.d/SXXchrpath
 
 #
 # CHRPATH_PATCHES should list any patches, in the the order in
@@ -167,20 +167,20 @@ $(CHRPATH_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(CHRPATH_IPK_DIR)/opt/sbin or $(CHRPATH_IPK_DIR)/opt/bin
+# Binaries should be installed into $(CHRPATH_IPK_DIR)$(TARGET_PREFIX)/sbin or $(CHRPATH_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(CHRPATH_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(CHRPATH_IPK_DIR)/opt/etc/chrpath/...
-# Documentation files should be installed in $(CHRPATH_IPK_DIR)/opt/doc/chrpath/...
-# Daemon startup scripts should be installed in $(CHRPATH_IPK_DIR)/opt/etc/init.d/S??chrpath
+# Libraries and include files should be installed into $(CHRPATH_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(CHRPATH_IPK_DIR)$(TARGET_PREFIX)/etc/chrpath/...
+# Documentation files should be installed in $(CHRPATH_IPK_DIR)$(TARGET_PREFIX)/doc/chrpath/...
+# Daemon startup scripts should be installed in $(CHRPATH_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??chrpath
 #
 # You may need to patch your application to make it use these locations.
 #
 $(CHRPATH_IPK): $(CHRPATH_BUILD_DIR)/.built
 	rm -rf $(CHRPATH_IPK_DIR) $(BUILD_DIR)/chrpath_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(CHRPATH_BUILD_DIR) DESTDIR=$(CHRPATH_IPK_DIR) install
-	cd $(CHRPATH_IPK_DIR)/opt/bin; ln -s $(GNU_TARGET_NAME)-chrpath chrpath
-	$(STRIP_COMMAND) $(CHRPATH_IPK_DIR)/opt/bin/$(GNU_TARGET_NAME)-chrpath
+	cd $(CHRPATH_IPK_DIR)$(TARGET_PREFIX)/bin; ln -s $(GNU_TARGET_NAME)-chrpath chrpath
+	$(STRIP_COMMAND) $(CHRPATH_IPK_DIR)$(TARGET_PREFIX)/bin/$(GNU_TARGET_NAME)-chrpath
 	$(MAKE) $(CHRPATH_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CHRPATH_IPK_DIR)
 

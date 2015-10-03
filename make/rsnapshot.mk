@@ -18,7 +18,7 @@ RSNAPSHOT_DEPENDS=coreutils, perl, rsync, openssh
 
 RSNAPSHOT_IPK_VERSION=1
 
-RSNAPSHOT_CONFFILES=/opt/etc/rsnapshot.conf
+RSNAPSHOT_CONFFILES=$(TARGET_PREFIX)/etc/rsnapshot.conf
 
 RSNAPSHOT_PATCHES=
 
@@ -60,12 +60,12 @@ $(RSNAPSHOT_BUILD_DIR)/.configured: $(DL_DIR)/$(RSNAPSHOT_SOURCE) $(RSNAPSHOT_PA
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(RSNAPSHOT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(RSNAPSHOT_LDFLAGS)" \
-		ac_cv_path_PERL=/opt/bin/perl \
-		ac_cv_path_RSYNC=/opt/bin/rsync \
-		ac_cv_path_SSH=/opt/bin/ssh \
-		ac_cv_path_CP=/opt/bin/cp \
-		ac_cv_path_RM=/opt/bin/rm \
-		ac_cv_path_DU=/opt/bin/du \
+		ac_cv_path_PERL=$(TARGET_PREFIX)/bin/perl \
+		ac_cv_path_RSYNC=$(TARGET_PREFIX)/bin/rsync \
+		ac_cv_path_SSH=$(TARGET_PREFIX)/bin/ssh \
+		ac_cv_path_CP=$(TARGET_PREFIX)/bin/cp \
+		ac_cv_path_RM=$(TARGET_PREFIX)/bin/rm \
+		ac_cv_path_DU=$(TARGET_PREFIX)/bin/du \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -97,12 +97,12 @@ $(RSNAPSHOT_IPK): $(RSNAPSHOT_BUILD_DIR)/.built
 	-$(MAKE) -C $(RSNAPSHOT_BUILD_DIR) DESTDIR=$(RSNAPSHOT_IPK_DIR) install
 	sed -i '/^=head1 USAGE$$/s/^/=back\n\n/' $(RSNAPSHOT_BUILD_DIR)/rsnapshot
 	$(MAKE) -C $(RSNAPSHOT_BUILD_DIR) DESTDIR=$(RSNAPSHOT_IPK_DIR) install
-	sed -i -e '/\/usr\/bin\/perl -w/d' -e 's|/usr/local/|/opt/|g' $(RSNAPSHOT_IPK_DIR)/opt/bin/*
+	sed -i -e '/\/usr\/bin\/perl -w/d' -e 's|/usr/local/|$(TARGET_PREFIX)/|g' $(RSNAPSHOT_IPK_DIR)$(TARGET_PREFIX)/bin/*
 	find $(RSNAPSHOT_IPK_DIR)$(TARGET_PREFIX) -type d -exec chmod go+rx {} \;
-	$(INSTALL) -m 644 $(RSNAPSHOT_SOURCE_DIR)/rsnapshot.conf $(RSNAPSHOT_IPK_DIR)/opt/etc/rsnapshot.conf
-	$(INSTALL) -d $(RSNAPSHOT_IPK_DIR)/opt/var/rsnapshot/
-	$(INSTALL) -d $(RSNAPSHOT_IPK_DIR)/opt/var/run/
-	$(INSTALL) -d $(RSNAPSHOT_IPK_DIR)/opt/var/log/
+	$(INSTALL) -m 644 $(RSNAPSHOT_SOURCE_DIR)/rsnapshot.conf $(RSNAPSHOT_IPK_DIR)$(TARGET_PREFIX)/etc/rsnapshot.conf
+	$(INSTALL) -d $(RSNAPSHOT_IPK_DIR)$(TARGET_PREFIX)/var/rsnapshot/
+	$(INSTALL) -d $(RSNAPSHOT_IPK_DIR)$(TARGET_PREFIX)/var/run/
+	$(INSTALL) -d $(RSNAPSHOT_IPK_DIR)$(TARGET_PREFIX)/var/log/
 	$(MAKE) $(RSNAPSHOT_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(RSNAPSHOT_SOURCE_DIR)/postinst $(RSNAPSHOT_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 755 $(RSNAPSHOT_SOURCE_DIR)/prerm $(RSNAPSHOT_IPK_DIR)/CONTROL/prerm

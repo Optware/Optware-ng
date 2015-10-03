@@ -40,7 +40,7 @@ CSCOPE_IPK_VERSION=2
 
 #
 # CSCOPE_CONFFILES should be a list of user-editable files
-# CSCOPE_CONFFILES=/opt/etc/cscope.conf /opt/etc/init.d/SXXcscope
+# CSCOPE_CONFFILES=$(TARGET_PREFIX)/etc/cscope.conf $(TARGET_PREFIX)/etc/init.d/SXXcscope
 
 #
 # CSCOPE_PATCHES should list any patches, in the the order in
@@ -178,23 +178,23 @@ $(CSCOPE_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(CSCOPE_IPK_DIR)/opt/sbin or $(CSCOPE_IPK_DIR)/opt/bin
+# Binaries should be installed into $(CSCOPE_IPK_DIR)$(TARGET_PREFIX)/sbin or $(CSCOPE_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(CSCOPE_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(CSCOPE_IPK_DIR)/opt/etc/cscope/...
-# Documentation files should be installed in $(CSCOPE_IPK_DIR)/opt/doc/cscope/...
-# Daemon startup scripts should be installed in $(CSCOPE_IPK_DIR)/opt/etc/init.d/S??cscope
+# Libraries and include files should be installed into $(CSCOPE_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(CSCOPE_IPK_DIR)$(TARGET_PREFIX)/etc/cscope/...
+# Documentation files should be installed in $(CSCOPE_IPK_DIR)$(TARGET_PREFIX)/doc/cscope/...
+# Daemon startup scripts should be installed in $(CSCOPE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??cscope
 #
 # You may need to patch your application to make it use these locations.
 #
 $(CSCOPE_IPK): $(CSCOPE_BUILD_DIR)/.built
 	rm -rf $(CSCOPE_IPK_DIR) $(BUILD_DIR)/cscope_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(CSCOPE_BUILD_DIR) DESTDIR=$(CSCOPE_IPK_DIR) install-strip
-#	$(INSTALL) -d $(CSCOPE_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(CSCOPE_SOURCE_DIR)/cscope.conf $(CSCOPE_IPK_DIR)/opt/etc/cscope.conf
-#	$(INSTALL) -d $(CSCOPE_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(CSCOPE_SOURCE_DIR)/rc.cscope $(CSCOPE_IPK_DIR)/opt/etc/init.d/SXXcscope
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/opt/etc/init.d/SXXcscope
+#	$(INSTALL) -d $(CSCOPE_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(CSCOPE_SOURCE_DIR)/cscope.conf $(CSCOPE_IPK_DIR)$(TARGET_PREFIX)/etc/cscope.conf
+#	$(INSTALL) -d $(CSCOPE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(CSCOPE_SOURCE_DIR)/rc.cscope $(CSCOPE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXcscope
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXcscope
 	$(MAKE) $(CSCOPE_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(CSCOPE_SOURCE_DIR)/postinst $(CSCOPE_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/postinst

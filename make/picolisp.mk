@@ -40,7 +40,7 @@ PICOLISP_IPK_VERSION=1
 
 #
 # PICOLISP_CONFFILES should be a list of user-editable files
-#PICOLISP_CONFFILES=/opt/etc/picolisp.conf /opt/etc/init.d/SXXpicolisp
+#PICOLISP_CONFFILES=$(TARGET_PREFIX)/etc/picolisp.conf $(TARGET_PREFIX)/etc/init.d/SXXpicolisp
 
 #
 # PICOLISP_PATCHES should list any patches, in the the order in
@@ -182,25 +182,25 @@ $(PICOLISP_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PICOLISP_IPK_DIR)/opt/sbin or $(PICOLISP_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PICOLISP_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PICOLISP_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PICOLISP_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PICOLISP_IPK_DIR)/opt/etc/picolisp/...
-# Documentation files should be installed in $(PICOLISP_IPK_DIR)/opt/doc/picolisp/...
-# Daemon startup scripts should be installed in $(PICOLISP_IPK_DIR)/opt/etc/init.d/S??picolisp
+# Libraries and include files should be installed into $(PICOLISP_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PICOLISP_IPK_DIR)$(TARGET_PREFIX)/etc/picolisp/...
+# Documentation files should be installed in $(PICOLISP_IPK_DIR)$(TARGET_PREFIX)/doc/picolisp/...
+# Daemon startup scripts should be installed in $(PICOLISP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??picolisp
 #
 # You may need to patch your application to make it use these locations.
 #
 $(PICOLISP_IPK): $(PICOLISP_BUILD_DIR)/.built
 	rm -rf $(PICOLISP_IPK_DIR) $(BUILD_DIR)/picolisp_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(PICOLISP_BUILD_DIR) DESTDIR=$(PICOLISP_IPK_DIR) install-strip
-	$(INSTALL) -d $(PICOLISP_IPK_DIR)/opt/lib/picolisp
-	cp -a $(PICOLISP_BUILD_DIR)/* $(PICOLISP_IPK_DIR)/opt/lib/picolisp/
-	rm -rf $(PICOLISP_IPK_DIR)/opt/lib/picolisp/cygwin
-	rm -rf $(PICOLISP_IPK_DIR)/opt/lib/picolisp/src
+	$(INSTALL) -d $(PICOLISP_IPK_DIR)$(TARGET_PREFIX)/lib/picolisp
+	cp -a $(PICOLISP_BUILD_DIR)/* $(PICOLISP_IPK_DIR)$(TARGET_PREFIX)/lib/picolisp/
+	rm -rf $(PICOLISP_IPK_DIR)$(TARGET_PREFIX)/lib/picolisp/cygwin
+	rm -rf $(PICOLISP_IPK_DIR)$(TARGET_PREFIX)/lib/picolisp/src
 	$(MAKE) $(PICOLISP_IPK_DIR)/CONTROL/control
-	echo "touch /opt/lib/picolisp/.picoHistory" > $(PICOLISP_IPK_DIR)/CONTROL/postinst
-	echo "chmod 666 /opt/lib/picolisp/.picoHistory" >> $(PICOLISP_IPK_DIR)/CONTROL/postinst
+	echo "touch $(TARGET_PREFIX)/lib/picolisp/.picoHistory" > $(PICOLISP_IPK_DIR)/CONTROL/postinst
+	echo "chmod 666 $(TARGET_PREFIX)/lib/picolisp/.picoHistory" >> $(PICOLISP_IPK_DIR)/CONTROL/postinst
 	echo $(PICOLISP_CONFFILES) | sed -e 's/ /\n/g' > $(PICOLISP_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PICOLISP_IPK_DIR)
 

@@ -40,7 +40,7 @@ SSAM_IPK_VERSION=1
 
 #
 # SSAM_CONFFILES should be a list of user-editable files
-#SSAM_CONFFILES=/opt/etc/ssam.conf /opt/etc/init.d/SXXssam
+#SSAM_CONFFILES=$(TARGET_PREFIX)/etc/ssam.conf $(TARGET_PREFIX)/etc/init.d/SXXssam
 
 #
 # SSAM_PATCHES should list any patches, in the the order in
@@ -177,19 +177,19 @@ $(SSAM_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(SSAM_IPK_DIR)/opt/sbin or $(SSAM_IPK_DIR)/opt/bin
+# Binaries should be installed into $(SSAM_IPK_DIR)$(TARGET_PREFIX)/sbin or $(SSAM_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(SSAM_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(SSAM_IPK_DIR)/opt/etc/ssam/...
-# Documentation files should be installed in $(SSAM_IPK_DIR)/opt/doc/ssam/...
-# Daemon startup scripts should be installed in $(SSAM_IPK_DIR)/opt/etc/init.d/S??ssam
+# Libraries and include files should be installed into $(SSAM_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(SSAM_IPK_DIR)$(TARGET_PREFIX)/etc/ssam/...
+# Documentation files should be installed in $(SSAM_IPK_DIR)$(TARGET_PREFIX)/doc/ssam/...
+# Daemon startup scripts should be installed in $(SSAM_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??ssam
 #
 # You may need to patch your application to make it use these locations.
 #
 $(SSAM_IPK): $(SSAM_BUILD_DIR)/.built
 	rm -rf $(SSAM_IPK_DIR) $(BUILD_DIR)/ssam_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SSAM_BUILD_DIR) DESTDIR=$(SSAM_IPK_DIR) prefix=$(SSAM_IPK_DIR)$(TARGET_PREFIX) install
-	$(STRIP_COMMAND) $(SSAM_IPK_DIR)/opt/bin/ssam
+	$(STRIP_COMMAND) $(SSAM_IPK_DIR)$(TARGET_PREFIX)/bin/ssam
 	$(MAKE) $(SSAM_IPK_DIR)/CONTROL/control
 	echo $(SSAM_CONFFILES) | sed -e 's/ /\n/g' > $(SSAM_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SSAM_IPK_DIR)

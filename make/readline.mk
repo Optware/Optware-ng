@@ -44,7 +44,7 @@ READLINE_IPK_VERSION=2
 
 #
 # READLINE_CONFFILES should be a list of user-editable files
-#READLINE_CONFFILES=/opt/etc/readline.conf /opt/etc/init.d/SXXreadline
+#READLINE_CONFFILES=$(TARGET_PREFIX)/etc/readline.conf $(TARGET_PREFIX)/etc/init.d/SXXreadline
 
 #
 # READLINE_PATCHES should list any patches, in the the order in
@@ -182,20 +182,20 @@ $(READLINE_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(READLINE_IPK_DIR)/opt/sbin or $(READLINE_IPK_DIR)/opt/bin
+# Binaries should be installed into $(READLINE_IPK_DIR)$(TARGET_PREFIX)/sbin or $(READLINE_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(READLINE_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(READLINE_IPK_DIR)/opt/etc/readline/...
-# Documentation files should be installed in $(READLINE_IPK_DIR)/opt/doc/readline/...
-# Daemon startup scripts should be installed in $(READLINE_IPK_DIR)/opt/etc/init.d/S??readline
+# Libraries and include files should be installed into $(READLINE_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(READLINE_IPK_DIR)$(TARGET_PREFIX)/etc/readline/...
+# Documentation files should be installed in $(READLINE_IPK_DIR)$(TARGET_PREFIX)/doc/readline/...
+# Daemon startup scripts should be installed in $(READLINE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??readline
 #
 # You may need to patch your application to make it use these locations.
 #
 $(READLINE_IPK): $(READLINE_BUILD_DIR)/.built
 	rm -rf $(READLINE_IPK_DIR) $(BUILD_DIR)/readline_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(READLINE_BUILD_DIR) DESTDIR=$(READLINE_IPK_DIR) install
-	rm -f $(READLINE_IPK_DIR)/opt/share/info/dir*
-	(cd $(READLINE_IPK_DIR)/opt/lib/ ; \
+	rm -f $(READLINE_IPK_DIR)$(TARGET_PREFIX)/share/info/dir*
+	(cd $(READLINE_IPK_DIR)$(TARGET_PREFIX)/lib/ ; \
 		find . -name '*.$(SHLIB_EXT)' -exec chmod +w {} \; ; \
 		find . -name '*.$(SHLIB_EXT)' -exec $(STRIP_COMMAND) {} \; ; \
 		find . -name '*.$(SHLIB_EXT)' -exec chmod -w {} \; ; \

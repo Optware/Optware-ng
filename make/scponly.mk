@@ -26,7 +26,7 @@ SCPONLY_IPK_VERSION=2
 
 #
 # SCPONLY_CONFFILES should be a list of user-editable files
-# SCPONLY_CONFFILES=/opt/etc/scponly.conf /opt/etc/init.d/SXXscponly
+# SCPONLY_CONFFILES=$(TARGET_PREFIX)/etc/scponly.conf $(TARGET_PREFIX)/etc/init.d/SXXscponly
 
 #
 # SCPONLY_PATCHES should list any patches, in the the order in
@@ -107,14 +107,14 @@ $(SCPONLY_BUILD_DIR)/.configured: $(DL_DIR)/$(SCPONLY_SOURCE) $(SCPONLY_PATCHES)
 # Rsync isn't working yet!
 #		--enable-rsync-compat \
 #
-	sed -i -e '/echo "\$$as_me: enabling SFTP compatability..."/s|$$|\nscponly_explicit_sftpserver_path=/opt/libexec/sftp-server|' \
-		-e 's|scponly_PROG_SFTP_SERVER=.*|scponly_PROG_SFTP_SERVER=/opt/libexec/sftp-server|' $(@D)/configure
+	sed -i -e '/echo "\$$as_me: enabling SFTP compatability..."/s|$$|\nscponly_explicit_sftpserver_path=$(TARGET_PREFIX)/libexec/sftp-server|' \
+		-e 's|scponly_PROG_SFTP_SERVER=.*|scponly_PROG_SFTP_SERVER=$(TARGET_PREFIX)/libexec/sftp-server|' $(@D)/configure
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SCPONLY_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(SCPONLY_LDFLAGS)" \
-		ac_cv_path_scponly_PROG_SCP=/opt/bin/scp \
-		ac_cv_path_scponly_PROG_GROUPS=/opt/bin/groups \
+		ac_cv_path_scponly_PROG_SCP=$(TARGET_PREFIX)/bin/scp \
+		ac_cv_path_scponly_PROG_GROUPS=$(TARGET_PREFIX)/bin/groups \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -126,7 +126,7 @@ $(SCPONLY_BUILD_DIR)/.configured: $(DL_DIR)/$(SCPONLY_SOURCE) $(SCPONLY_PATCHES)
 		--enable-sftp-logging-compat \
 		--enable-scp-compat \
 		--enable-chrooted-binary \
-		--with-sftp-server=/opt/libexec/sftp-server; \
+		--with-sftp-server=$(TARGET_PREFIX)/libexec/sftp-server; \
 	)
 	# $(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
@@ -178,12 +178,12 @@ $(SCPONLY_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(SCPONLY_IPK_DIR)/opt/sbin or $(SCPONLY_IPK_DIR)/opt/bin
+# Binaries should be installed into $(SCPONLY_IPK_DIR)$(TARGET_PREFIX)/sbin or $(SCPONLY_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(SCPONLY_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(SCPONLY_IPK_DIR)/opt/etc/scponly/...
-# Documentation files should be installed in $(SCPONLY_IPK_DIR)/opt/doc/scponly/...
-# Daemon startup scripts should be installed in $(SCPONLY_IPK_DIR)/opt/etc/init.d/S??scponly
+# Libraries and include files should be installed into $(SCPONLY_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(SCPONLY_IPK_DIR)$(TARGET_PREFIX)/etc/scponly/...
+# Documentation files should be installed in $(SCPONLY_IPK_DIR)$(TARGET_PREFIX)/doc/scponly/...
+# Daemon startup scripts should be installed in $(SCPONLY_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??scponly
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -191,13 +191,13 @@ $(SCPONLY_IPK): $(SCPONLY_BUILD_DIR)/.built
 	rm -rf $(SCPONLY_IPK_DIR) $(BUILD_DIR)/scponly_*_$(TARGET_ARCH).ipk
 	sed -i '/INSTALL/s/ -o 0 -g 0 / /' $(SCPONLY_BUILD_DIR)/Makefile
 	$(MAKE) -C $(SCPONLY_BUILD_DIR) DESTDIR=$(SCPONLY_IPK_DIR) install
-	$(STRIP_COMMAND) $(SCPONLY_IPK_DIR)/opt/*bin/*
-	$(INSTALL) -d $(SCPONLY_IPK_DIR)/opt/etc/
-	$(INSTALL) -m 755 $(SCPONLY_SOURCE_DIR)/mkscproot $(SCPONLY_IPK_DIR)/opt/sbin/mkscproot
-#	$(INSTALL) -m 644 $(SCPONLY_SOURCE_DIR)/scponly.conf $(SCPONLY_IPK_DIR)/opt/etc/scponly.conf
-#	$(INSTALL) -d $(SCPONLY_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(SCPONLY_SOURCE_DIR)/rc.scponly $(SCPONLY_IPK_DIR)/opt/etc/init.d/SXXscponly
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SCPONLY_IPK_DIR)/opt/etc/init.d/SXXscponly
+	$(STRIP_COMMAND) $(SCPONLY_IPK_DIR)$(TARGET_PREFIX)/*bin/*
+	$(INSTALL) -d $(SCPONLY_IPK_DIR)$(TARGET_PREFIX)/etc/
+	$(INSTALL) -m 755 $(SCPONLY_SOURCE_DIR)/mkscproot $(SCPONLY_IPK_DIR)$(TARGET_PREFIX)/sbin/mkscproot
+#	$(INSTALL) -m 644 $(SCPONLY_SOURCE_DIR)/scponly.conf $(SCPONLY_IPK_DIR)$(TARGET_PREFIX)/etc/scponly.conf
+#	$(INSTALL) -d $(SCPONLY_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(SCPONLY_SOURCE_DIR)/rc.scponly $(SCPONLY_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXscponly
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SCPONLY_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXscponly
 	$(MAKE) $(SCPONLY_IPK_DIR)/CONTROL/control
 	# $(INSTALL) -m 755 $(SCPONLY_SOURCE_DIR)/postinst $(SCPONLY_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SCPONLY_IPK_DIR)/CONTROL/postinst

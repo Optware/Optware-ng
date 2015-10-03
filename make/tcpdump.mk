@@ -40,7 +40,7 @@ TCPDUMP_IPK_VERSION=1
 
 #
 # TCPDUMP_CONFFILES should be a list of user-editable files
-#TCPDUMP_CONFFILES=/opt/etc/tcpdump.conf /opt/etc/init.d/SXXtcpdump
+#TCPDUMP_CONFFILES=$(TARGET_PREFIX)/etc/tcpdump.conf $(TARGET_PREFIX)/etc/init.d/SXXtcpdump
 
 #
 # TCPDUMP_PATCHES should list any patches, in the the order in
@@ -182,25 +182,25 @@ $(TCPDUMP_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(TCPDUMP_IPK_DIR)/opt/sbin or $(TCPDUMP_IPK_DIR)/opt/bin
+# Binaries should be installed into $(TCPDUMP_IPK_DIR)$(TARGET_PREFIX)/sbin or $(TCPDUMP_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(TCPDUMP_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(TCPDUMP_IPK_DIR)/opt/etc/tcpdump/...
-# Documentation files should be installed in $(TCPDUMP_IPK_DIR)/opt/doc/tcpdump/...
-# Daemon startup scripts should be installed in $(TCPDUMP_IPK_DIR)/opt/etc/init.d/S??tcpdump
+# Libraries and include files should be installed into $(TCPDUMP_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(TCPDUMP_IPK_DIR)$(TARGET_PREFIX)/etc/tcpdump/...
+# Documentation files should be installed in $(TCPDUMP_IPK_DIR)$(TARGET_PREFIX)/doc/tcpdump/...
+# Daemon startup scripts should be installed in $(TCPDUMP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??tcpdump
 #
 # You may need to patch your application to make it use these locations.
 #
 $(TCPDUMP_IPK): $(TCPDUMP_BUILD_DIR)/.built
 	rm -rf $(TCPDUMP_IPK_DIR) $(BUILD_DIR)/tcpdump_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(TCPDUMP_BUILD_DIR) DESTDIR=$(TCPDUMP_IPK_DIR) install
-	rm -f $(TCPDUMP_IPK_DIR)/opt/sbin/tcpdump.$(TCPDUMP_VERSION)
-	$(STRIP_COMMAND) $(TCPDUMP_IPK_DIR)/opt/sbin/tcpdump
-#	$(INSTALL) -d $(TCPDUMP_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(TCPDUMP_SOURCE_DIR)/tcpdump.conf $(TCPDUMP_IPK_DIR)/opt/etc/tcpdump.conf
-#	$(INSTALL) -d $(TCPDUMP_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(TCPDUMP_SOURCE_DIR)/rc.tcpdump $(TCPDUMP_IPK_DIR)/opt/etc/init.d/SXXtcpdump
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(TCPDUMP_IPK_DIR)/opt/etc/init.d/SXXtcpdump
+	rm -f $(TCPDUMP_IPK_DIR)$(TARGET_PREFIX)/sbin/tcpdump.$(TCPDUMP_VERSION)
+	$(STRIP_COMMAND) $(TCPDUMP_IPK_DIR)$(TARGET_PREFIX)/sbin/tcpdump
+#	$(INSTALL) -d $(TCPDUMP_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(TCPDUMP_SOURCE_DIR)/tcpdump.conf $(TCPDUMP_IPK_DIR)$(TARGET_PREFIX)/etc/tcpdump.conf
+#	$(INSTALL) -d $(TCPDUMP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(TCPDUMP_SOURCE_DIR)/rc.tcpdump $(TCPDUMP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXtcpdump
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(TCPDUMP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXtcpdump
 	$(MAKE) $(TCPDUMP_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(TCPDUMP_SOURCE_DIR)/postinst $(TCPDUMP_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(TCPDUMP_IPK_DIR)/CONTROL/postinst

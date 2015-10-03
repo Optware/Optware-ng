@@ -46,7 +46,7 @@ GNOME-ICON-THEME-SYMBOLIC_IPK_VERSION=1
 
 #
 # GNOME-ICON-THEME-SYMBOLIC_CONFFILES should be a list of user-editable files
-#GNOME-ICON-THEME-SYMBOLIC_CONFFILES=/opt/etc/gnome-icon-theme-symbolic.conf /opt/etc/init.d/SXXgnome-icon-theme-symbolic
+#GNOME-ICON-THEME-SYMBOLIC_CONFFILES=$(TARGET_PREFIX)/etc/gnome-icon-theme-symbolic.conf $(TARGET_PREFIX)/etc/init.d/SXXgnome-icon-theme-symbolic
 
 #
 # GNOME-ICON-THEME-SYMBOLIC_PATCHES should list any patches, in the the order in
@@ -183,23 +183,23 @@ $(GNOME-ICON-THEME-SYMBOLIC_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(GNOME-ICON-THEME-SYMBOLIC_IPK_DIR)/opt/sbin or $(GNOME-ICON-THEME-SYMBOLIC_IPK_DIR)/opt/bin
+# Binaries should be installed into $(GNOME-ICON-THEME-SYMBOLIC_IPK_DIR)$(TARGET_PREFIX)/sbin or $(GNOME-ICON-THEME-SYMBOLIC_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(GNOME-ICON-THEME-SYMBOLIC_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(GNOME-ICON-THEME-SYMBOLIC_IPK_DIR)/opt/etc/gnome-icon-theme-symbolic/...
-# Documentation files should be installed in $(GNOME-ICON-THEME-SYMBOLIC_IPK_DIR)/opt/doc/gnome-icon-theme-symbolic/...
-# Daemon startup scripts should be installed in $(GNOME-ICON-THEME-SYMBOLIC_IPK_DIR)/opt/etc/init.d/S??gnome-icon-theme-symbolic
+# Libraries and include files should be installed into $(GNOME-ICON-THEME-SYMBOLIC_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(GNOME-ICON-THEME-SYMBOLIC_IPK_DIR)$(TARGET_PREFIX)/etc/gnome-icon-theme-symbolic/...
+# Documentation files should be installed in $(GNOME-ICON-THEME-SYMBOLIC_IPK_DIR)$(TARGET_PREFIX)/doc/gnome-icon-theme-symbolic/...
+# Daemon startup scripts should be installed in $(GNOME-ICON-THEME-SYMBOLIC_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??gnome-icon-theme-symbolic
 #
 # You may need to patch your application to make it use these locations.
 #
 $(GNOME-ICON-THEME-SYMBOLIC_IPK): $(GNOME-ICON-THEME-SYMBOLIC_BUILD_DIR)/.built
 	rm -rf $(GNOME-ICON-THEME-SYMBOLIC_IPK_DIR) $(BUILD_DIR)/gnome-icon-theme-symbolic_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GNOME-ICON-THEME-SYMBOLIC_BUILD_DIR) DESTDIR=$(GNOME-ICON-THEME-SYMBOLIC_IPK_DIR) install
-#	$(INSTALL) -d $(GNOME-ICON-THEME-SYMBOLIC_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(GNOME-ICON-THEME-SYMBOLIC_SOURCE_DIR)/gnome-icon-theme-symbolic.conf $(GNOME-ICON-THEME-SYMBOLIC_IPK_DIR)/opt/etc/gnome-icon-theme-symbolic.conf
-#	$(INSTALL) -d $(GNOME-ICON-THEME-SYMBOLIC_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(GNOME-ICON-THEME-SYMBOLIC_SOURCE_DIR)/rc.gnome-icon-theme-symbolic $(GNOME-ICON-THEME-SYMBOLIC_IPK_DIR)/opt/etc/init.d/SXXgnome-icon-theme-symbolic
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(GNOME-ICON-THEME-SYMBOLIC_IPK_DIR)/opt/etc/init.d/SXXgnome-icon-theme-symbolic
+#	$(INSTALL) -d $(GNOME-ICON-THEME-SYMBOLIC_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(GNOME-ICON-THEME-SYMBOLIC_SOURCE_DIR)/gnome-icon-theme-symbolic.conf $(GNOME-ICON-THEME-SYMBOLIC_IPK_DIR)$(TARGET_PREFIX)/etc/gnome-icon-theme-symbolic.conf
+#	$(INSTALL) -d $(GNOME-ICON-THEME-SYMBOLIC_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(GNOME-ICON-THEME-SYMBOLIC_SOURCE_DIR)/rc.gnome-icon-theme-symbolic $(GNOME-ICON-THEME-SYMBOLIC_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXgnome-icon-theme-symbolic
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(GNOME-ICON-THEME-SYMBOLIC_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXgnome-icon-theme-symbolic
 	$(MAKE) $(GNOME-ICON-THEME-SYMBOLIC_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 755 $(GNOME-ICON-THEME-SYMBOLIC_SOURCE_DIR)/postinst $(GNOME-ICON-THEME-SYMBOLIC_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(GNOME-ICON-THEME-SYMBOLIC_IPK_DIR)/CONTROL/postinst

@@ -40,7 +40,7 @@ WERC_IPK_VERSION=1
 
 #
 # WERC_CONFFILES should be a list of user-editable files
-WERC_CONFFILES=/opt/share/www/werc/etc/initrc
+WERC_CONFFILES=$(TARGET_PREFIX)/share/www/werc/etc/initrc
 
 #
 # WERC_PATCHES should list any patches, in the the order in
@@ -115,7 +115,7 @@ $(WERC_BUILD_DIR)/.configured: $(DL_DIR)/$(WERC_SOURCE) $(WERC_PATCHES) make/wer
 	if test "$(BUILD_DIR)/$(WERC_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(WERC_DIR) $(@D) ; \
 	fi
-	sed -i -e '1s|#!.*|#!/opt/lib/9base/bin/rc|' $(@D)/bin/werc.rc
+	sed -i -e '1s|#!.*|#!$(TARGET_PREFIX)/lib/9base/bin/rc|' $(@D)/bin/werc.rc
 #	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(WERC_CPPFLAGS)" \
@@ -178,22 +178,22 @@ $(WERC_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(WERC_IPK_DIR)/opt/sbin or $(WERC_IPK_DIR)/opt/bin
+# Binaries should be installed into $(WERC_IPK_DIR)$(TARGET_PREFIX)/sbin or $(WERC_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(WERC_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(WERC_IPK_DIR)/opt/etc/werc/...
-# Documentation files should be installed in $(WERC_IPK_DIR)/opt/doc/werc/...
-# Daemon startup scripts should be installed in $(WERC_IPK_DIR)/opt/etc/init.d/S??werc
+# Libraries and include files should be installed into $(WERC_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(WERC_IPK_DIR)$(TARGET_PREFIX)/etc/werc/...
+# Documentation files should be installed in $(WERC_IPK_DIR)$(TARGET_PREFIX)/doc/werc/...
+# Daemon startup scripts should be installed in $(WERC_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??werc
 #
 # You may need to patch your application to make it use these locations.
 #
 $(WERC_IPK): $(WERC_BUILD_DIR)/.built
 	rm -rf $(WERC_IPK_DIR) $(BUILD_DIR)/werc_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(WERC_BUILD_DIR) DESTDIR=$(WERC_IPK_DIR) install-strip
-	$(INSTALL) -d $(WERC_IPK_DIR)/opt/share/www
-	rsync -av $(WERC_BUILD_DIR) $(WERC_IPK_DIR)/opt/share/www/
-	rm -f $(WERC_IPK_DIR)/opt/share/www/werc/.configured \
-	      $(WERC_IPK_DIR)/opt/share/www/werc/.built
+	$(INSTALL) -d $(WERC_IPK_DIR)$(TARGET_PREFIX)/share/www
+	rsync -av $(WERC_BUILD_DIR) $(WERC_IPK_DIR)$(TARGET_PREFIX)/share/www/
+	rm -f $(WERC_IPK_DIR)$(TARGET_PREFIX)/share/www/werc/.configured \
+	      $(WERC_IPK_DIR)$(TARGET_PREFIX)/share/www/werc/.built
 	$(MAKE) $(WERC_IPK_DIR)/CONTROL/control
 	echo $(WERC_CONFFILES) | sed -e 's/ /\n/g' > $(WERC_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(WERC_IPK_DIR)

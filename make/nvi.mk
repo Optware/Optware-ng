@@ -46,7 +46,7 @@ NVI_IPK_VERSION=2
 
 #
 # NVI_CONFFILES should be a list of user-editable files
-#NVI_CONFFILES=/opt/etc/nvi.conf /opt/etc/init.d/SXXnvi
+#NVI_CONFFILES=$(TARGET_PREFIX)/etc/nvi.conf $(TARGET_PREFIX)/etc/init.d/SXXnvi
 
 #
 # NVI_PATCHES should list any patches, in the the order in
@@ -193,20 +193,20 @@ $(NVI_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(NVI_IPK_DIR)/opt/sbin or $(NVI_IPK_DIR)/opt/bin
+# Binaries should be installed into $(NVI_IPK_DIR)$(TARGET_PREFIX)/sbin or $(NVI_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(NVI_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(NVI_IPK_DIR)/opt/etc/nvi/...
-# Documentation files should be installed in $(NVI_IPK_DIR)/opt/doc/nvi/...
-# Daemon startup scripts should be installed in $(NVI_IPK_DIR)/opt/etc/init.d/S??nvi
+# Libraries and include files should be installed into $(NVI_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(NVI_IPK_DIR)$(TARGET_PREFIX)/etc/nvi/...
+# Documentation files should be installed in $(NVI_IPK_DIR)$(TARGET_PREFIX)/doc/nvi/...
+# Daemon startup scripts should be installed in $(NVI_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??nvi
 #
 # You may need to patch your application to make it use these locations.
 #
 $(NVI_IPK): $(NVI_BUILD_DIR)/.built
 	rm -rf $(NVI_IPK_DIR) $(BUILD_DIR)/nvi_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(NVI_IPK_DIR)/opt
+	$(INSTALL) -d $(NVI_IPK_DIR)$(TARGET_PREFIX)
 	$(MAKE) -C $(NVI_BUILD_DIR) prefix=$(NVI_IPK_DIR)$(TARGET_PREFIX) transform=s/^/n/ strip=$(TARGET_STRIP) install
-	mv $(NVI_IPK_DIR)/opt/share/vi $(NVI_IPK_DIR)/opt/share/nvi
+	mv $(NVI_IPK_DIR)$(TARGET_PREFIX)/share/vi $(NVI_IPK_DIR)$(TARGET_PREFIX)/share/nvi
 	$(MAKE) $(NVI_IPK_DIR)/CONTROL/control
 	echo $(NVI_CONFFILES) | sed -e 's/ /\n/g' > $(NVI_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NVI_IPK_DIR)

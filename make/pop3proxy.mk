@@ -46,7 +46,7 @@ POP3PROXY_IPK_VERSION=1
 
 #
 # POP3PROXY_CONFFILES should be a list of user-editable files
-POP3PROXY_CONFFILES=/opt/etc/xinetd.d/pop3proxy
+POP3PROXY_CONFFILES=$(TARGET_PREFIX)/etc/xinetd.d/pop3proxy
 
 #
 # POP3PROXY_PATCHES should list any patches, in the order in
@@ -192,12 +192,12 @@ $(POP3PROXY_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(POP3PROXY_IPK_DIR)/opt/sbin or $(POP3PROXY_IPK_DIR)/opt/bin
+# Binaries should be installed into $(POP3PROXY_IPK_DIR)$(TARGET_PREFIX)/sbin or $(POP3PROXY_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(POP3PROXY_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(POP3PROXY_IPK_DIR)/opt/etc/pop3proxy/...
-# Documentation files should be installed in $(POP3PROXY_IPK_DIR)/opt/doc/pop3proxy/...
-# Daemon startup scripts should be installed in $(POP3PROXY_IPK_DIR)/opt/etc/init.d/S??pop3proxy
+# Libraries and include files should be installed into $(POP3PROXY_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(POP3PROXY_IPK_DIR)$(TARGET_PREFIX)/etc/pop3proxy/...
+# Documentation files should be installed in $(POP3PROXY_IPK_DIR)$(TARGET_PREFIX)/doc/pop3proxy/...
+# Daemon startup scripts should be installed in $(POP3PROXY_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??pop3proxy
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -205,22 +205,22 @@ $(POP3PROXY_IPK): $(POP3PROXY_BUILD_DIR)/.built
 	rm -rf $(POP3PROXY_IPK_DIR) $(BUILD_DIR)/pop3proxy_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(POP3PROXY_BUILD_DIR) DESTDIR=$(POP3PROXY_IPK_DIR) install-strip
 	$(STRIP_COMMAND) $(POP3PROXY_BUILD_DIR)/pop3.proxy
-	$(INSTALL) -d $(POP3PROXY_IPK_DIR)/opt/sbin/
-	$(INSTALL) -m 755 $(<D)/pop3.proxy $(POP3PROXY_IPK_DIR)/opt/sbin/
-	$(INSTALL) -d $(POP3PROXY_IPK_DIR)/opt/man/man1/
-	$(INSTALL) -m 644 $(<D)/pop3.proxy.1 $(POP3PROXY_IPK_DIR)/opt/man/man1/
-	$(INSTALL) -d $(POP3PROXY_IPK_DIR)/opt/share/doc/pop3proxy/
+	$(INSTALL) -d $(POP3PROXY_IPK_DIR)$(TARGET_PREFIX)/sbin/
+	$(INSTALL) -m 755 $(<D)/pop3.proxy $(POP3PROXY_IPK_DIR)$(TARGET_PREFIX)/sbin/
+	$(INSTALL) -d $(POP3PROXY_IPK_DIR)$(TARGET_PREFIX)/man/man1/
+	$(INSTALL) -m 644 $(<D)/pop3.proxy.1 $(POP3PROXY_IPK_DIR)$(TARGET_PREFIX)/man/man1/
+	$(INSTALL) -d $(POP3PROXY_IPK_DIR)$(TARGET_PREFIX)/share/doc/pop3proxy/
 	$(INSTALL) -m 644 $(<D)/acp.pop3 $(<D)/LICENSE $(<D)/pop3proxy.lsm \
-		$(<D)/README $(POP3PROXY_IPK_DIR)/opt/share/doc/pop3proxy/
-	$(INSTALL) -m 644 $(POP3PROXY_SOURCE_DIR)/pop3proxy.txt $(POP3PROXY_IPK_DIR)/opt/share/doc/pop3proxy/
-	$(INSTALL) -d $(POP3PROXY_IPK_DIR)/opt/etc/xinetd.d/
-	$(INSTALL) -m 644 $(POP3PROXY_SOURCE_DIR)/pop3proxy $(POP3PROXY_IPK_DIR)/opt/etc/xinetd.d/pop3proxy
-	$(INSTALL) -d $(POP3PROXY_IPK_DIR)/opt/var/pop3proxy/
-#	$(INSTALL) -d $(POP3PROXY_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(POP3PROXY_SOURCE_DIR)/pop3proxy.conf $(POP3PROXY_IPK_DIR)/opt/etc/pop3proxy.conf
-#	$(INSTALL) -d $(POP3PROXY_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(POP3PROXY_SOURCE_DIR)/rc.pop3proxy $(POP3PROXY_IPK_DIR)/opt/etc/init.d/SXXpop3proxy
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(POP3PROXY_IPK_DIR)/opt/etc/init.d/SXXpop3proxy
+		$(<D)/README $(POP3PROXY_IPK_DIR)$(TARGET_PREFIX)/share/doc/pop3proxy/
+	$(INSTALL) -m 644 $(POP3PROXY_SOURCE_DIR)/pop3proxy.txt $(POP3PROXY_IPK_DIR)$(TARGET_PREFIX)/share/doc/pop3proxy/
+	$(INSTALL) -d $(POP3PROXY_IPK_DIR)$(TARGET_PREFIX)/etc/xinetd.d/
+	$(INSTALL) -m 644 $(POP3PROXY_SOURCE_DIR)/pop3proxy $(POP3PROXY_IPK_DIR)$(TARGET_PREFIX)/etc/xinetd.d/pop3proxy
+	$(INSTALL) -d $(POP3PROXY_IPK_DIR)$(TARGET_PREFIX)/var/pop3proxy/
+#	$(INSTALL) -d $(POP3PROXY_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(POP3PROXY_SOURCE_DIR)/pop3proxy.conf $(POP3PROXY_IPK_DIR)$(TARGET_PREFIX)/etc/pop3proxy.conf
+#	$(INSTALL) -d $(POP3PROXY_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(POP3PROXY_SOURCE_DIR)/rc.pop3proxy $(POP3PROXY_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXpop3proxy
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(POP3PROXY_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXpop3proxy
 	$(MAKE) $(POP3PROXY_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 755 $(POP3PROXY_SOURCE_DIR)/postinst $(POP3PROXY_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(POP3PROXY_IPK_DIR)/CONTROL/postinst

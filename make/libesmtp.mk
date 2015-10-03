@@ -41,7 +41,7 @@ LIBESMTP_IPK_VERSION=1
 
 #
 # LIBESMTP_CONFFILES should be a list of user-editable files
-#LIBESMTP_CONFFILES=/opt/etc/libesmtp.conf /opt/etc/init.d/SXXlibesmtp
+#LIBESMTP_CONFFILES=$(TARGET_PREFIX)/etc/libesmtp.conf $(TARGET_PREFIX)/etc/init.d/SXXlibesmtp
 
 #
 # LIBESMTP_PATCHES should list any patches, in the the order in
@@ -168,23 +168,23 @@ $(LIBESMTP_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LIBESMTP_IPK_DIR)/opt/sbin or $(LIBESMTP_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LIBESMTP_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LIBESMTP_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LIBESMTP_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LIBESMTP_IPK_DIR)/opt/etc/libesmtp/...
-# Documentation files should be installed in $(LIBESMTP_IPK_DIR)/opt/doc/libesmtp/...
-# Daemon startup scripts should be installed in $(LIBESMTP_IPK_DIR)/opt/etc/init.d/S??libesmtp
+# Libraries and include files should be installed into $(LIBESMTP_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LIBESMTP_IPK_DIR)$(TARGET_PREFIX)/etc/libesmtp/...
+# Documentation files should be installed in $(LIBESMTP_IPK_DIR)$(TARGET_PREFIX)/doc/libesmtp/...
+# Daemon startup scripts should be installed in $(LIBESMTP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??libesmtp
 #
 # You may need to patch your application to make it use these locations.
 #
 $(LIBESMTP_IPK): $(LIBESMTP_BUILD_DIR)/.built
 	rm -rf $(LIBESMTP_IPK_DIR) $(BUILD_DIR)/libesmtp_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBESMTP_BUILD_DIR) DESTDIR=$(LIBESMTP_IPK_DIR) install-strip
-	rm -f `find $(LIBESMTP_IPK_DIR)/opt/lib -name '*.a'`
-	$(INSTALL) -d $(LIBESMTP_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(LIBESMTP_SOURCE_DIR)/libesmtp.conf $(LIBESMTP_IPK_DIR)/opt/etc/libesmtp.conf
-#	$(INSTALL) -d $(LIBESMTP_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(LIBESMTP_SOURCE_DIR)/rc.libesmtp $(LIBESMTP_IPK_DIR)/opt/etc/init.d/SXXlibesmtp
+	rm -f `find $(LIBESMTP_IPK_DIR)$(TARGET_PREFIX)/lib -name '*.a'`
+	$(INSTALL) -d $(LIBESMTP_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(LIBESMTP_SOURCE_DIR)/libesmtp.conf $(LIBESMTP_IPK_DIR)$(TARGET_PREFIX)/etc/libesmtp.conf
+#	$(INSTALL) -d $(LIBESMTP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(LIBESMTP_SOURCE_DIR)/rc.libesmtp $(LIBESMTP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibesmtp
 	$(MAKE) $(LIBESMTP_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(LIBESMTP_SOURCE_DIR)/postinst $(LIBESMTP_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 755 $(LIBESMTP_SOURCE_DIR)/prerm $(LIBESMTP_IPK_DIR)/CONTROL/prerm

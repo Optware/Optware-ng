@@ -33,7 +33,7 @@ JOVE_PATCHES=$(JOVE_SOURCE_DIR)/Makefile.patch
 # compilation or linking flags, then list them here.
 #
 JOVE_CPPFLAGS=-DBSDPOSIX
-JOVE_LDFLAGS=-Xlinker -rpath -Xlinker /opt/lib
+JOVE_LDFLAGS=-Xlinker -rpath -Xlinker $(TARGET_PREFIX)/lib
 
 #
 # JOVE_BUILD_DIR is the directory in which the build is done.
@@ -128,19 +128,19 @@ $(JOVE_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(JOVE_IPK_DIR)/opt/sbin or $(JOVE_IPK_DIR)/opt/bin
+# Binaries should be installed into $(JOVE_IPK_DIR)$(TARGET_PREFIX)/sbin or $(JOVE_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(JOVE_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(JOVE_IPK_DIR)/opt/etc/jove/...
-# Documentation files should be installed in $(JOVE_IPK_DIR)/opt/doc/jove/...
-# Daemon startup scripts should be installed in $(JOVE_IPK_DIR)/opt/etc/init.d/S??jove
+# Libraries and include files should be installed into $(JOVE_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(JOVE_IPK_DIR)$(TARGET_PREFIX)/etc/jove/...
+# Documentation files should be installed in $(JOVE_IPK_DIR)$(TARGET_PREFIX)/doc/jove/...
+# Daemon startup scripts should be installed in $(JOVE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??jove
 #
 # You may need to patch your application to make it use these locations.
 #
 $(JOVE_IPK): $(JOVE_BUILD_DIR)/.built
 	rm -rf $(JOVE_IPK_DIR) $(JOVE_IPK)
-	$(INSTALL) -d $(JOVE_IPK_DIR)/opt/bin
-	$(STRIP_COMMAND) $(JOVE_BUILD_DIR)/jjove -o $(JOVE_IPK_DIR)/opt/bin/jove
+	$(INSTALL) -d $(JOVE_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(STRIP_COMMAND) $(JOVE_BUILD_DIR)/jjove -o $(JOVE_IPK_DIR)$(TARGET_PREFIX)/bin/jove
 	$(MAKE) $(JOVE_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(JOVE_IPK_DIR)
 

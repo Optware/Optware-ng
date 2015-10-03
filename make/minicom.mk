@@ -48,7 +48,7 @@ MINICOM_IPK_VERSION=1
 
 #
 # MINICOM_CONFFILES should be a list of user-editable files
-MINICOM_CONFFILES=/opt/etc/minirc.dfl
+MINICOM_CONFFILES=$(TARGET_PREFIX)/etc/minirc.dfl
 
 #
 # MINICOM_PATCHES should list any patches, in the the order in
@@ -185,23 +185,23 @@ $(MINICOM_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(MINICOM_IPK_DIR)/opt/sbin or $(MINICOM_IPK_DIR)/opt/bin
+# Binaries should be installed into $(MINICOM_IPK_DIR)$(TARGET_PREFIX)/sbin or $(MINICOM_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(MINICOM_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(MINICOM_IPK_DIR)/opt/etc/minicom/...
-# Documentation files should be installed in $(MINICOM_IPK_DIR)/opt/doc/minicom/...
-# Daemon startup scripts should be installed in $(MINICOM_IPK_DIR)/opt/etc/init.d/S??minicom
+# Libraries and include files should be installed into $(MINICOM_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(MINICOM_IPK_DIR)$(TARGET_PREFIX)/etc/minicom/...
+# Documentation files should be installed in $(MINICOM_IPK_DIR)$(TARGET_PREFIX)/doc/minicom/...
+# Daemon startup scripts should be installed in $(MINICOM_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??minicom
 #
 # You may need to patch your application to make it use these locations.
 #
 $(MINICOM_IPK): $(MINICOM_BUILD_DIR)/.built
 	rm -rf $(MINICOM_IPK_DIR) $(BUILD_DIR)/minicom_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MINICOM_BUILD_DIR) DESTDIR=$(MINICOM_IPK_DIR) install
-	$(TARGET_STRIP) $(MINICOM_IPK_DIR)/opt/bin/ascii-xfr
-	$(TARGET_STRIP) $(MINICOM_IPK_DIR)/opt/bin/minicom
-	$(TARGET_STRIP) $(MINICOM_IPK_DIR)/opt/bin/runscript
-	$(INSTALL) -d $(MINICOM_IPK_DIR)/opt/etc/
-	$(INSTALL) -m 755 $(MINICOM_BUILD_DIR)/doc/minirc.dfl $(MINICOM_IPK_DIR)/opt/etc/minirc.dfl
+	$(TARGET_STRIP) $(MINICOM_IPK_DIR)$(TARGET_PREFIX)/bin/ascii-xfr
+	$(TARGET_STRIP) $(MINICOM_IPK_DIR)$(TARGET_PREFIX)/bin/minicom
+	$(TARGET_STRIP) $(MINICOM_IPK_DIR)$(TARGET_PREFIX)/bin/runscript
+	$(INSTALL) -d $(MINICOM_IPK_DIR)$(TARGET_PREFIX)/etc/
+	$(INSTALL) -m 755 $(MINICOM_BUILD_DIR)/doc/minirc.dfl $(MINICOM_IPK_DIR)$(TARGET_PREFIX)/etc/minirc.dfl
 	$(MAKE) $(MINICOM_IPK_DIR)/CONTROL/control
 	echo $(MINICOM_CONFFILES) | sed -e 's/ /\n/g' > $(MINICOM_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MINICOM_IPK_DIR)

@@ -40,7 +40,7 @@ NINVADERS_IPK_VERSION=1
 
 #
 # NINVADERS_CONFFILES should be a list of user-editable files
-NINVADERS_CONFFILES=/opt/etc/ninvaders.conf /opt/etc/init.d/SXXninvaders
+NINVADERS_CONFFILES=$(TARGET_PREFIX)/etc/ninvaders.conf $(TARGET_PREFIX)/etc/init.d/SXXninvaders
 
 #
 # NINVADERS_PATCHES should list any patches, in the the order in
@@ -170,20 +170,20 @@ $(NINVADERS_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(NINVADERS_IPK_DIR)/opt/sbin or $(NINVADERS_IPK_DIR)/opt/bin
+# Binaries should be installed into $(NINVADERS_IPK_DIR)$(TARGET_PREFIX)/sbin or $(NINVADERS_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(NINVADERS_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(NINVADERS_IPK_DIR)/opt/etc/ninvaders/...
-# Documentation files should be installed in $(NINVADERS_IPK_DIR)/opt/doc/ninvaders/...
-# Daemon startup scripts should be installed in $(NINVADERS_IPK_DIR)/opt/etc/init.d/S??ninvaders
+# Libraries and include files should be installed into $(NINVADERS_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(NINVADERS_IPK_DIR)$(TARGET_PREFIX)/etc/ninvaders/...
+# Documentation files should be installed in $(NINVADERS_IPK_DIR)$(TARGET_PREFIX)/doc/ninvaders/...
+# Daemon startup scripts should be installed in $(NINVADERS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??ninvaders
 #
 # You may need to patch your application to make it use these locations.
 #
 $(NINVADERS_IPK): $(NINVADERS_BUILD_DIR)/.built
 	rm -rf $(NINVADERS_IPK_DIR) $(BUILD_DIR)/ninvaders_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(NINVADERS_IPK_DIR)/opt/bin/
-	$(INSTALL) -m 755 $(NINVADERS_BUILD_DIR)/nInvaders $(NINVADERS_IPK_DIR)/opt/bin/
-	$(STRIP_COMMAND) $(NINVADERS_IPK_DIR)/opt/bin/nInvaders
+	$(INSTALL) -d $(NINVADERS_IPK_DIR)$(TARGET_PREFIX)/bin/
+	$(INSTALL) -m 755 $(NINVADERS_BUILD_DIR)/nInvaders $(NINVADERS_IPK_DIR)$(TARGET_PREFIX)/bin/
+	$(STRIP_COMMAND) $(NINVADERS_IPK_DIR)$(TARGET_PREFIX)/bin/nInvaders
 	$(MAKE) $(NINVADERS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NINVADERS_IPK_DIR)
 

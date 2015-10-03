@@ -41,7 +41,7 @@ FIS_IPK_VERSION=2
 
 #
 # FIS_CONFFILES should be a list of user-editable files
-#FIS_CONFFILES=/opt/etc/fis.conf /opt/etc/init.d/SXXfis
+#FIS_CONFFILES=$(TARGET_PREFIX)/etc/fis.conf $(TARGET_PREFIX)/etc/init.d/SXXfis
 
 #
 # FIS_PATCHES should list any patches, in the the order in
@@ -155,20 +155,20 @@ $(FIS_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(FIS_IPK_DIR)/opt/sbin or $(FIS_IPK_DIR)/opt/bin
+# Binaries should be installed into $(FIS_IPK_DIR)$(TARGET_PREFIX)/sbin or $(FIS_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(FIS_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(FIS_IPK_DIR)/opt/etc/fis/...
-# Documentation files should be installed in $(FIS_IPK_DIR)/opt/doc/fis/...
-# Daemon startup scripts should be installed in $(FIS_IPK_DIR)/opt/etc/init.d/S??fis
+# Libraries and include files should be installed into $(FIS_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(FIS_IPK_DIR)$(TARGET_PREFIX)/etc/fis/...
+# Documentation files should be installed in $(FIS_IPK_DIR)$(TARGET_PREFIX)/doc/fis/...
+# Daemon startup scripts should be installed in $(FIS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??fis
 #
 # You may need to patch your application to make it use these locations.
 #
 $(FIS_IPK): $(FIS_BUILD_DIR)/.built
 	rm -rf $(FIS_IPK_DIR) $(BUILD_DIR)/fis_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(FIS_IPK_DIR)/opt/sbin/
-	$(INSTALL) -m 755 $(FIS_BUILD_DIR)/fis $(FIS_IPK_DIR)/opt/sbin/
-	$(STRIP_COMMAND) $(FIS_IPK_DIR)/opt/sbin/fis
+	$(INSTALL) -d $(FIS_IPK_DIR)$(TARGET_PREFIX)/sbin/
+	$(INSTALL) -m 755 $(FIS_BUILD_DIR)/fis $(FIS_IPK_DIR)$(TARGET_PREFIX)/sbin/
+	$(STRIP_COMMAND) $(FIS_IPK_DIR)$(TARGET_PREFIX)/sbin/fis
 	$(MAKE) $(FIS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(FIS_IPK_DIR)
 

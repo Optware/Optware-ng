@@ -147,33 +147,33 @@ $(NCURSES_IPK) $(NCURSES-DEV_IPK): $(NCURSES_DIR)/.built
 	$(if $(filter $(HOSTCC), $(TARGET_CC)),,PATH=$(NCURSES_HOST_BUILD_DIR)/progs:$$PATH) \
 		$(MAKE) -C $(NCURSES_DIR) DESTDIR=$(NCURSES_IPK_DIR) \
 		$(INSTALL).libs install.progs install.data
-	rm -rf $(NCURSES_IPK_DIR)/opt/include
-	rm -f $(NCURSES_IPK_DIR)/opt/lib/*.a
-	$(STRIP_COMMAND) $(NCURSES_IPK_DIR)/opt/bin/clear \
-		$(NCURSES_IPK_DIR)/opt/bin/infocmp $(NCURSES_IPK_DIR)/opt/bin/t*
-	$(STRIP_COMMAND) $(NCURSES_IPK_DIR)/opt/lib/*$(SO).5$(DYLIB)
+	rm -rf $(NCURSES_IPK_DIR)$(TARGET_PREFIX)/include
+	rm -f $(NCURSES_IPK_DIR)$(TARGET_PREFIX)/lib/*.a
+	$(STRIP_COMMAND) $(NCURSES_IPK_DIR)$(TARGET_PREFIX)/bin/clear \
+		$(NCURSES_IPK_DIR)$(TARGET_PREFIX)/bin/infocmp $(NCURSES_IPK_DIR)$(TARGET_PREFIX)/bin/t*
+	$(STRIP_COMMAND) $(NCURSES_IPK_DIR)$(TARGET_PREFIX)/lib/*$(SO).5$(DYLIB)
 ifeq (darwin, $(TARGET_OS))
-	for dylib in $(NCURSES_IPK_DIR)/opt/lib/*$(SO).5$(DYLIB); do \
-	$(TARGET_CROSS)install_name_tool -change $$dylib /opt/lib/`basename $$dylib` $$dylib; \
+	for dylib in $(NCURSES_IPK_DIR)$(TARGET_PREFIX)/lib/*$(SO).5$(DYLIB); do \
+	$(TARGET_CROSS)install_name_tool -change $$dylib $(TARGET_PREFIX)/lib/`basename $$dylib` $$dylib; \
 	done
 endif
 	$(MAKE) $(NCURSES_IPK_DIR)/CONTROL/control
-	mv $(NCURSES_IPK_DIR)/opt/bin/clear $(NCURSES_IPK_DIR)/opt/bin/ncurses-clear
+	mv $(NCURSES_IPK_DIR)$(TARGET_PREFIX)/bin/clear $(NCURSES_IPK_DIR)$(TARGET_PREFIX)/bin/ncurses-clear
 	(echo "#!/bin/sh"; \
-	 echo "update-alternatives --install /opt/bin/clear clear /opt/bin/ncurses-clear 80"; \
+	 echo "update-alternatives --install $(TARGET_PREFIX)/bin/clear clear $(TARGET_PREFIX)/bin/ncurses-clear 80"; \
 	) > $(NCURSES_IPK_DIR)/CONTROL/postinst
 	(echo "#!/bin/sh"; \
-	 echo "update-alternatives --remove clear /opt/bin/ncurses-clear"; \
+	 echo "update-alternatives --remove clear $(TARGET_PREFIX)/bin/ncurses-clear"; \
 	) > $(NCURSES_IPK_DIR)/CONTROL/prerm
 	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \
 			$(NCURSES_IPK_DIR)/CONTROL/postinst $(NCURSES_IPK_DIR)/CONTROL/prerm; \
 	fi
 	# ncurses-dev
-	$(INSTALL) -d $(NCURSES-DEV_IPK_DIR)/opt/include/ncurses
+	$(INSTALL) -d $(NCURSES-DEV_IPK_DIR)$(TARGET_PREFIX)/include/ncurses
 	$(MAKE) -C $(NCURSES_DIR) DESTDIR=$(NCURSES-DEV_IPK_DIR) install.includes
-	ln -sf ncurses/ncurses.h $(NCURSES-DEV_IPK_DIR)/opt/include/
-	ln -sf ncurses/curses.h $(NCURSES-DEV_IPK_DIR)/opt/include/
+	ln -sf ncurses/ncurses.h $(NCURSES-DEV_IPK_DIR)$(TARGET_PREFIX)/include/
+	ln -sf ncurses/curses.h $(NCURSES-DEV_IPK_DIR)$(TARGET_PREFIX)/include/
 	# building ipk's
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NCURSES_IPK_DIR)
 	$(MAKE) $(NCURSES-DEV_IPK_DIR)/CONTROL/control

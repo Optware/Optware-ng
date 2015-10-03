@@ -40,7 +40,7 @@ ERL-ESCRIPT_IPK_VERSION=1
 
 #
 # ERL-ESCRIPT_CONFFILES should be a list of user-editable files
-# ERL-ESCRIPT_CONFFILES=/opt/etc/escript.conf /opt/etc/escript-cert.pem /opt/etc/escript-key.pem
+# ERL-ESCRIPT_CONFFILES=$(TARGET_PREFIX)/etc/escript.conf $(TARGET_PREFIX)/etc/escript-cert.pem $(TARGET_PREFIX)/etc/escript-key.pem
 
 #
 # ERL-ESCRIPT_PATCHES should list any patches, in the the order in
@@ -118,7 +118,7 @@ $(ERL-ESCRIPT_BUILD_DIR)/.configured: $(DL_DIR)/$(ERL-ESCRIPT_SOURCE) $(ERL-ESCR
 	    -e 's|{BEAM_FILES}|(BEAM_FILES)|' \
 	    -e 's|(MODS:=\(\..*\))|(addsuffix \1,$$(MODS))|' \
 	    $(ERL-ESCRIPT_BUILD_DIR)/Makefile
-	sed -i -e 's|$$CWD|/opt/lib/erlang/lib/$(ERL-ESCRIPT_DIR)|' $(ERL-ESCRIPT_BUILD_DIR)/mk_escript.sh
+	sed -i -e 's|$$CWD|$(TARGET_PREFIX)/lib/erlang/lib/$(ERL-ESCRIPT_DIR)|' $(ERL-ESCRIPT_BUILD_DIR)/mk_escript.sh
 	touch $(ERL-ESCRIPT_BUILD_DIR)/.configured
 
 erl-escript-unpack: $(ERL-ESCRIPT_BUILD_DIR)/.configured
@@ -169,28 +169,28 @@ $(ERL-ESCRIPT_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(ERL-ESCRIPT_IPK_DIR)/opt/sbin or $(ERL-ESCRIPT_IPK_DIR)/opt/bin
+# Binaries should be installed into $(ERL-ESCRIPT_IPK_DIR)$(TARGET_PREFIX)/sbin or $(ERL-ESCRIPT_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(ERL-ESCRIPT_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(ERL-ESCRIPT_IPK_DIR)/opt/etc/erl-escript/...
-# Documentation files should be installed in $(ERL-ESCRIPT_IPK_DIR)/opt/doc/erl-escript/...
-# Daemon startup scripts should be installed in $(ERL-ESCRIPT_IPK_DIR)/opt/etc/init.d/S??erl-escript
+# Libraries and include files should be installed into $(ERL-ESCRIPT_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(ERL-ESCRIPT_IPK_DIR)$(TARGET_PREFIX)/etc/erl-escript/...
+# Documentation files should be installed in $(ERL-ESCRIPT_IPK_DIR)$(TARGET_PREFIX)/doc/erl-escript/...
+# Daemon startup scripts should be installed in $(ERL-ESCRIPT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??erl-escript
 #
 # You may need to patch your application to make it use these locations.
 #
 $(ERL-ESCRIPT_IPK): $(ERL-ESCRIPT_BUILD_DIR)/.built
 	rm -rf $(ERL-ESCRIPT_IPK_DIR) $(BUILD_DIR)/erl-escript_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(ERL-ESCRIPT_BUILD_DIR) DESTDIR=$(ERL-ESCRIPT_IPK_DIR) install
-	$(INSTALL) -d $(ERL-ESCRIPT_IPK_DIR)/opt/lib/erlang/lib/$(ERL-ESCRIPT_DIR)
+	$(INSTALL) -d $(ERL-ESCRIPT_IPK_DIR)$(TARGET_PREFIX)/lib/erlang/lib/$(ERL-ESCRIPT_DIR)
 	(cd $(ERL-ESCRIPT_BUILD_DIR); \
 	$(INSTALL) -m 755 escript mk_escript.sh factorial fibi fibc \
-		$(ERL-ESCRIPT_IPK_DIR)/opt/lib/erlang/lib/$(ERL-ESCRIPT_DIR); \
+		$(ERL-ESCRIPT_IPK_DIR)$(TARGET_PREFIX)/lib/erlang/lib/$(ERL-ESCRIPT_DIR); \
 	$(INSTALL) -m 644 escript.{erl,beam} \
 		Makefile history escript.html \
-		$(ERL-ESCRIPT_IPK_DIR)/opt/lib/erlang/lib/$(ERL-ESCRIPT_DIR); )
-	$(INSTALL) -d $(ERL-ESCRIPT_IPK_DIR)/opt/bin
-	(cd $(ERL-ESCRIPT_IPK_DIR)/opt/bin; \
-		ln -s /opt/lib/erlang/lib/$(ERL-ESCRIPT_DIR)/escript .; )
+		$(ERL-ESCRIPT_IPK_DIR)$(TARGET_PREFIX)/lib/erlang/lib/$(ERL-ESCRIPT_DIR); )
+	$(INSTALL) -d $(ERL-ESCRIPT_IPK_DIR)$(TARGET_PREFIX)/bin
+	(cd $(ERL-ESCRIPT_IPK_DIR)$(TARGET_PREFIX)/bin; \
+		ln -s $(TARGET_PREFIX)/lib/erlang/lib/$(ERL-ESCRIPT_DIR)/escript .; )
 	$(MAKE) $(ERL-ESCRIPT_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(ERL-ESCRIPT_SOURCE_DIR)/postinst $(ERL-ESCRIPT_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 755 $(ERL-ESCRIPT_SOURCE_DIR)/prerm $(ERL-ESCRIPT_IPK_DIR)/CONTROL/prerm

@@ -46,7 +46,7 @@ ICU54_IPK_VERSION=1
 
 #
 # ICU54_CONFFILES should be a list of user-editable files
-#ICU54_CONFFILES=/opt/etc/icu54.conf /opt/etc/init.d/SXXicu54
+#ICU54_CONFFILES=$(TARGET_PREFIX)/etc/icu54.conf $(TARGET_PREFIX)/etc/init.d/SXXicu54
 
 #
 # ICU54_PATCHES should list any patches, in the the order in
@@ -130,7 +130,7 @@ $(ICU54_BUILD_DIR)/.configured: $(DL_DIR)/$(ICU54_SOURCE) $(ICU54_PATCHES) make/
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=$(TARGET_PREFIX) \
 		--with-library-suffix=54 \
-		--includedir=/opt/include/icu54 \
+		--includedir=$(TARGET_PREFIX)/include/icu54 \
 		--disable-tools \
 		--disable-tests \
 		--disable-extras \
@@ -163,7 +163,7 @@ icu: $(ICU54_BUILD_DIR)/.built
 #
 $(ICU54_BUILD_DIR)/.staged: $(ICU54_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(@D)/source bindir=/opt/bin/icu54 libdir=/opt/lib/icu54 DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D)/source bindir=$(TARGET_PREFIX)/bin/icu54 libdir=$(TARGET_PREFIX)/lib/icu54 DESTDIR=$(STAGING_DIR) install
 	mv -f $(STAGING_LIB_DIR)/icu54/lib*.so* $(STAGING_LIB_DIR)
 	rm -rf $(STAGING_LIB_DIR)/icu54
 	cp -f $(ICU54_HOST_BUILD_DIR)/bin/pkgdata $(STAGING_PREFIX)/bin/pkgdata54
@@ -206,29 +206,29 @@ $(ICU54_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(ICU54_IPK_DIR)/opt/sbin or $(ICU54_IPK_DIR)/opt/bin
+# Binaries should be installed into $(ICU54_IPK_DIR)$(TARGET_PREFIX)/sbin or $(ICU54_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(ICU54_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(ICU54_IPK_DIR)/opt/etc/icu/...
-# Documentation files should be installed in $(ICU54_IPK_DIR)/opt/doc/icu/...
-# Daemon startup scripts should be installed in $(ICU54_IPK_DIR)/opt/etc/init.d/S??icu
+# Libraries and include files should be installed into $(ICU54_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(ICU54_IPK_DIR)$(TARGET_PREFIX)/etc/icu/...
+# Documentation files should be installed in $(ICU54_IPK_DIR)$(TARGET_PREFIX)/doc/icu/...
+# Daemon startup scripts should be installed in $(ICU54_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??icu
 #
 # You may need to patch your application to make it use these locations.
 #
 $(ICU54_IPK): $(ICU54_BUILD_DIR)/.built
 	rm -rf $(ICU54_IPK_DIR) $(BUILD_DIR)/icu_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(ICU54_BUILD_DIR)/source bindir=/opt/bin/icu54 DESTDIR=$(ICU54_IPK_DIR) install
+	$(MAKE) -C $(ICU54_BUILD_DIR)/source bindir=$(TARGET_PREFIX)/bin/icu54 DESTDIR=$(ICU54_IPK_DIR) install
 	$(STRIP_COMMAND) \
-		`ls $(ICU54_IPK_DIR)/opt/bin/* | grep -v icu-config` \
-		$(ICU54_IPK_DIR)/opt/lib/lib*.so.*.*
-	rm -rf $(ICU54_IPK_DIR)/opt/sbin $(ICU54_IPK_DIR)/opt/share/man $(ICU54_IPK_DIR)/opt/lib/pkgconfig
-	mv -f $(ICU54_IPK_DIR)/opt/bin/icu54/icu-config $(ICU54_IPK_DIR)/opt/bin/icu54-config
-	rm -rf $(ICU54_IPK_DIR)/opt/bin/icu54
-#	$(INSTALL) -d $(ICU54_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(ICU54_SOURCE_DIR)/icu.conf $(ICU54_IPK_DIR)/opt/etc/icu.conf
-#	$(INSTALL) -d $(ICU54_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(ICU54_SOURCE_DIR)/rc.icu $(ICU54_IPK_DIR)/opt/etc/init.d/SXXicu
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(ICU54_IPK_DIR)/opt/etc/init.d/SXXicu
+		`ls $(ICU54_IPK_DIR)$(TARGET_PREFIX)/bin/* | grep -v icu-config` \
+		$(ICU54_IPK_DIR)$(TARGET_PREFIX)/lib/lib*.so.*.*
+	rm -rf $(ICU54_IPK_DIR)$(TARGET_PREFIX)/sbin $(ICU54_IPK_DIR)$(TARGET_PREFIX)/share/man $(ICU54_IPK_DIR)$(TARGET_PREFIX)/lib/pkgconfig
+	mv -f $(ICU54_IPK_DIR)$(TARGET_PREFIX)/bin/icu54/icu-config $(ICU54_IPK_DIR)$(TARGET_PREFIX)/bin/icu54-config
+	rm -rf $(ICU54_IPK_DIR)$(TARGET_PREFIX)/bin/icu54
+#	$(INSTALL) -d $(ICU54_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(ICU54_SOURCE_DIR)/icu.conf $(ICU54_IPK_DIR)$(TARGET_PREFIX)/etc/icu.conf
+#	$(INSTALL) -d $(ICU54_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(ICU54_SOURCE_DIR)/rc.icu $(ICU54_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXicu
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(ICU54_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXicu
 	$(MAKE) $(ICU54_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(ICU54_SOURCE_DIR)/postinst $(ICU54_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(ICU54_IPK_DIR)/CONTROL/postinst

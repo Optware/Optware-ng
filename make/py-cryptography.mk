@@ -42,7 +42,7 @@ PY-CRYPTOGRAPHY_IPK_VERSION=1
 
 #
 # PY-CRYPTOGRAPHY_CONFFILES should be a list of user-editable files
-#PY-CRYPTOGRAPHY_CONFFILES=/opt/etc/py-cryptography.conf /opt/etc/init.d/SXXpy-cryptography
+#PY-CRYPTOGRAPHY_CONFFILES=$(TARGET_PREFIX)/etc/py-cryptography.conf $(TARGET_PREFIX)/etc/init.d/SXXpy-cryptography
 
 #
 # PY-CRYPTOGRAPHY_PATCHES should list any patches, in the the order in
@@ -127,11 +127,11 @@ $(PY-CRYPTOGRAPHY_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CRYPTOGRAPHY_SOURCE) $(
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.6"; \
 	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
-	        echo "rpath=/opt/lib"; \
+	        echo "rpath=$(TARGET_PREFIX)/lib"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python2.6"; \
+		echo "executable=$(TARGET_PREFIX)/bin/python2.6"; \
 		echo "[install]"; \
-		echo "install_scripts=/opt/bin"; \
+		echo "install_scripts=$(TARGET_PREFIX)/bin"; \
 	    ) >> setup.cfg; \
 	)
 	# 2.7
@@ -143,11 +143,11 @@ $(PY-CRYPTOGRAPHY_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CRYPTOGRAPHY_SOURCE) $(
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.7"; \
 	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
-	        echo "rpath=/opt/lib"; \
+	        echo "rpath=$(TARGET_PREFIX)/lib"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python2.7"; \
+		echo "executable=$(TARGET_PREFIX)/bin/python2.7"; \
 		echo "[install]"; \
-		echo "install_scripts=/opt/bin"; \
+		echo "install_scripts=$(TARGET_PREFIX)/bin"; \
 	    ) >> setup.cfg; \
 	)
 	# 3
@@ -159,11 +159,11 @@ $(PY-CRYPTOGRAPHY_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CRYPTOGRAPHY_SOURCE) $(
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python$(PYTHON3_VERSION_MAJOR)m"; \
 	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
-	        echo "rpath=/opt/lib"; \
+	        echo "rpath=$(TARGET_PREFIX)/lib"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python$(PYTHON3_VERSION_MAJOR)"; \
+		echo "executable=$(TARGET_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR)"; \
 		echo "[install]"; \
-		echo "install_scripts=/opt/bin"; \
+		echo "install_scripts=$(TARGET_PREFIX)/bin"; \
 	    ) >> setup.cfg; \
 	)
 	touch $@
@@ -201,13 +201,13 @@ $(PY-CRYPTOGRAPHY_BUILD_DIR)/.staged: $(PY-CRYPTOGRAPHY_BUILD_DIR)/.built
 	rm -f $@
 	(cd $(@D)/2.6; \
 		CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-		$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(STAGING_DIR) --prefix=/opt)
+		$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	(cd $(@D)/2.7; \
 		CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-		$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(STAGING_DIR) --prefix=/opt)
+		$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	(cd $(@D)/3; \
 		CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
-		$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(STAGING_DIR) --prefix=/opt)
+		$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	touch $@
 
 $(PY-CRYPTOGRAPHY_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(PY-CRYPTOGRAPHY_SOURCE) make/py-cryptography.mk
@@ -245,11 +245,11 @@ $(PY-CRYPTOGRAPHY_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(PY-CRYPT
 	    ) >> setup.cfg; \
 	)
 	(cd $(@D)/2.6; \
-		$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+		$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(HOST_STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	(cd $(@D)/2.7; \
-		$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+		$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(HOST_STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	(cd $(@D)/3; \
-		$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+		$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(HOST_STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	touch $@
 
 py-cryptography-stage: $(PY-CRYPTOGRAPHY_BUILD_DIR)/.staged
@@ -305,12 +305,12 @@ $(PY3-CRYPTOGRAPHY_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PY-CRYPTOGRAPHY_IPK_DIR)/opt/sbin or $(PY-CRYPTOGRAPHY_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PY-CRYPTOGRAPHY_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PY-CRYPTOGRAPHY_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PY-CRYPTOGRAPHY_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PY-CRYPTOGRAPHY_IPK_DIR)/opt/etc/py-cryptography/...
-# Documentation files should be installed in $(PY-CRYPTOGRAPHY_IPK_DIR)/opt/doc/py-cryptography/...
-# Daemon startup scripts should be installed in $(PY-CRYPTOGRAPHY_IPK_DIR)/opt/etc/init.d/S??py-cryptography
+# Libraries and include files should be installed into $(PY-CRYPTOGRAPHY_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PY-CRYPTOGRAPHY_IPK_DIR)$(TARGET_PREFIX)/etc/py-cryptography/...
+# Documentation files should be installed in $(PY-CRYPTOGRAPHY_IPK_DIR)$(TARGET_PREFIX)/doc/py-cryptography/...
+# Daemon startup scripts should be installed in $(PY-CRYPTOGRAPHY_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??py-cryptography
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -320,27 +320,27 @@ $(PY26-CRYPTOGRAPHY_IPK) $(PY27-CRYPTOGRAPHY_IPK) $(PY3-CRYPTOGRAPHY_IPK): $(PY-
 	rm -rf $(PY26-CRYPTOGRAPHY_IPK_DIR) $(BUILD_DIR)/py26-cryptography_*_$(TARGET_ARCH).ipk
 	(cd $(PY-CRYPTOGRAPHY_BUILD_DIR)/2.6; \
 	$(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
-	    $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(PY26-CRYPTOGRAPHY_IPK_DIR) --prefix=/opt; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(PY26-CRYPTOGRAPHY_IPK_DIR) --prefix=$(TARGET_PREFIX); \
 	)
-	$(STRIP_COMMAND) $(PY26-CRYPTOGRAPHY_IPK_DIR)/opt/lib/python2.6/site-packages/*/*.so
+	$(STRIP_COMMAND) $(PY26-CRYPTOGRAPHY_IPK_DIR)$(TARGET_PREFIX)/lib/python2.6/site-packages/*/*.so
 	$(MAKE) $(PY26-CRYPTOGRAPHY_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-CRYPTOGRAPHY_IPK_DIR)
 	# 2.7
 	rm -rf $(PY27-CRYPTOGRAPHY_IPK_DIR) $(BUILD_DIR)/py27-cryptography_*_$(TARGET_ARCH).ipk
 	(cd $(PY-CRYPTOGRAPHY_BUILD_DIR)/2.7; \
 	$(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
-	    $(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(PY27-CRYPTOGRAPHY_IPK_DIR) --prefix=/opt; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(PY27-CRYPTOGRAPHY_IPK_DIR) --prefix=$(TARGET_PREFIX); \
 	)
-	$(STRIP_COMMAND) $(PY27-CRYPTOGRAPHY_IPK_DIR)/opt/lib/python2.7/site-packages/*/*.so
+	$(STRIP_COMMAND) $(PY27-CRYPTOGRAPHY_IPK_DIR)$(TARGET_PREFIX)/lib/python2.7/site-packages/*/*.so
 	$(MAKE) $(PY27-CRYPTOGRAPHY_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY27-CRYPTOGRAPHY_IPK_DIR)
 	# 3
 	rm -rf $(PY3-CRYPTOGRAPHY_IPK_DIR) $(BUILD_DIR)/py3-cryptography_*_$(TARGET_ARCH).ipk
 	(cd $(PY-CRYPTOGRAPHY_BUILD_DIR)/3; \
 	$(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
-	    $(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(PY3-CRYPTOGRAPHY_IPK_DIR) --prefix=/opt; \
+	    $(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(PY3-CRYPTOGRAPHY_IPK_DIR) --prefix=$(TARGET_PREFIX); \
 	)
-	$(STRIP_COMMAND) $(PY3-CRYPTOGRAPHY_IPK_DIR)/opt/lib/python$(PYTHON3_VERSION_MAJOR)/site-packages/*/*.so
+	$(STRIP_COMMAND) $(PY3-CRYPTOGRAPHY_IPK_DIR)$(TARGET_PREFIX)/lib/python$(PYTHON3_VERSION_MAJOR)/site-packages/*/*.so
 	$(MAKE) $(PY3-CRYPTOGRAPHY_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY3-CRYPTOGRAPHY_IPK_DIR)
 

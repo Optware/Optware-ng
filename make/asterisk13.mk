@@ -83,117 +83,117 @@ ASTERISK13_IPK_VERSION=1
 
 #
 # ASTERISK13_CONFFILES should be a list of user-editable files
-#ASTERISK13_CONFFILES=/opt/etc/asterisk.conf /opt/etc/init.d/SXXasterisk
+#ASTERISK13_CONFFILES=$(TARGET_PREFIX)/etc/asterisk.conf $(TARGET_PREFIX)/etc/init.d/SXXasterisk
 ASTERISK13_CONFFILES=\
-/opt/etc/asterisk/acl.conf \
-/opt/etc/asterisk/adsi.conf \
-/opt/etc/asterisk/agents.conf \
-/opt/etc/asterisk/alarmreceiver.conf \
-/opt/etc/asterisk/alsa.conf \
-/opt/etc/asterisk/amd.conf \
-/opt/etc/asterisk/app_mysql.conf \
-/opt/etc/asterisk/app_skel.conf \
-/opt/etc/asterisk/ari.conf \
-/opt/etc/asterisk/asterisk.adsi \
-/opt/etc/asterisk/asterisk.conf \
-/opt/etc/asterisk/calendar.conf \
-/opt/etc/asterisk/ccss.conf \
-/opt/etc/asterisk/cdr_adaptive_odbc.conf \
-/opt/etc/asterisk/cdr.conf \
-/opt/etc/asterisk/cdr_custom.conf \
-/opt/etc/asterisk/cdr_manager.conf \
-/opt/etc/asterisk/cdr_mysql.conf \
-/opt/etc/asterisk/cdr_odbc.conf \
-/opt/etc/asterisk/cdr_pgsql.conf \
-/opt/etc/asterisk/cdr_sqlite3_custom.conf \
-/opt/etc/asterisk/cdr_syslog.conf \
-/opt/etc/asterisk/cdr_tds.conf \
-/opt/etc/asterisk/cel.conf \
-/opt/etc/asterisk/cel_custom.conf \
-/opt/etc/asterisk/cel_odbc.conf \
-/opt/etc/asterisk/cel_pgsql.conf \
-/opt/etc/asterisk/cel_sqlite3_custom.conf \
-/opt/etc/asterisk/cel_tds.conf \
-/opt/etc/asterisk/chan_dahdi.conf \
-/opt/etc/asterisk/chan_mobile.conf \
-/opt/etc/asterisk/cli_aliases.conf \
-/opt/etc/asterisk/cli.conf \
-/opt/etc/asterisk/cli_permissions.conf \
-/opt/etc/asterisk/codecs.conf \
-/opt/etc/asterisk/confbridge.conf \
-/opt/etc/asterisk/config_test.conf \
-/opt/etc/asterisk/console.conf \
-/opt/etc/asterisk/dbsep.conf \
-/opt/etc/asterisk/dnsmgr.conf \
-/opt/etc/asterisk/dsp.conf \
-/opt/etc/asterisk/dundi.conf \
-/opt/etc/asterisk/enum.conf \
-/opt/etc/asterisk/extconfig.conf \
-/opt/etc/asterisk/extensions.ael \
-/opt/etc/asterisk/extensions.conf \
-/opt/etc/asterisk/extensions.lua \
-/opt/etc/asterisk/extensions_minivm.conf \
-/opt/etc/asterisk/features.conf \
-/opt/etc/asterisk/festival.conf \
-/opt/etc/asterisk/followme.conf \
-/opt/etc/asterisk/func_odbc.conf \
-/opt/etc/asterisk/hep.conf \
-/opt/etc/asterisk/http.conf \
-/opt/etc/asterisk/iax.conf \
-/opt/etc/asterisk/iaxprov.conf \
-/opt/etc/asterisk/indications.conf \
-/opt/etc/asterisk/logger.conf \
-/opt/etc/asterisk/manager.conf \
-/opt/etc/asterisk/meetme.conf \
-/opt/etc/asterisk/mgcp.conf \
-/opt/etc/asterisk/minivm.conf \
-/opt/etc/asterisk/misdn.conf \
-/opt/etc/asterisk/modules.conf \
-/opt/etc/asterisk/motif.conf \
-/opt/etc/asterisk/musiconhold.conf \
-/opt/etc/asterisk/muted.conf \
-/opt/etc/asterisk/ooh323.conf \
-/opt/etc/asterisk/osp.conf \
-/opt/etc/asterisk/oss.conf \
-/opt/etc/asterisk/phone.conf \
-/opt/etc/asterisk/phoneprov.conf \
-/opt/etc/asterisk/pjsip.conf \
-/opt/etc/asterisk/pjsip_notify.conf \
-/opt/etc/asterisk/pjsip_wizard.conf \
-/opt/etc/asterisk/queuerules.conf \
-/opt/etc/asterisk/queues.conf \
-/opt/etc/asterisk/res_config_mysql.conf \
-/opt/etc/asterisk/res_config_sqlite3.conf \
-/opt/etc/asterisk/res_config_sqlite.conf \
-/opt/etc/asterisk/res_corosync.conf \
-/opt/etc/asterisk/res_curl.conf \
-/opt/etc/asterisk/res_fax.conf \
-/opt/etc/asterisk/res_ldap.conf \
-/opt/etc/asterisk/res_odbc.conf \
-/opt/etc/asterisk/res_parking.conf \
-/opt/etc/asterisk/res_pgsql.conf \
-/opt/etc/asterisk/res_pktccops.conf \
-/opt/etc/asterisk/res_snmp.conf \
-/opt/etc/asterisk/res_stun_monitor.conf \
-/opt/etc/asterisk/rtp.conf \
-/opt/etc/asterisk/say.conf \
-/opt/etc/asterisk/sip.conf \
-/opt/etc/asterisk/sip_notify.conf \
-/opt/etc/asterisk/skinny.conf \
-/opt/etc/asterisk/sla.conf \
-/opt/etc/asterisk/smdi.conf \
-/opt/etc/asterisk/sorcery.conf \
-/opt/etc/asterisk/ss7.timers \
-/opt/etc/asterisk/stasis.conf \
-/opt/etc/asterisk/statsd.conf \
-/opt/etc/asterisk/telcordia-1.adsi \
-/opt/etc/asterisk/test_sorcery.conf \
-/opt/etc/asterisk/udptl.conf \
-/opt/etc/asterisk/unistim.conf \
-/opt/etc/asterisk/users.conf \
-/opt/etc/asterisk/voicemail.conf \
-/opt/etc/asterisk/vpb.conf \
-/opt/etc/asterisk/xmpp.conf \
+$(TARGET_PREFIX)/etc/asterisk/acl.conf \
+$(TARGET_PREFIX)/etc/asterisk/adsi.conf \
+$(TARGET_PREFIX)/etc/asterisk/agents.conf \
+$(TARGET_PREFIX)/etc/asterisk/alarmreceiver.conf \
+$(TARGET_PREFIX)/etc/asterisk/alsa.conf \
+$(TARGET_PREFIX)/etc/asterisk/amd.conf \
+$(TARGET_PREFIX)/etc/asterisk/app_mysql.conf \
+$(TARGET_PREFIX)/etc/asterisk/app_skel.conf \
+$(TARGET_PREFIX)/etc/asterisk/ari.conf \
+$(TARGET_PREFIX)/etc/asterisk/asterisk.adsi \
+$(TARGET_PREFIX)/etc/asterisk/asterisk.conf \
+$(TARGET_PREFIX)/etc/asterisk/calendar.conf \
+$(TARGET_PREFIX)/etc/asterisk/ccss.conf \
+$(TARGET_PREFIX)/etc/asterisk/cdr_adaptive_odbc.conf \
+$(TARGET_PREFIX)/etc/asterisk/cdr.conf \
+$(TARGET_PREFIX)/etc/asterisk/cdr_custom.conf \
+$(TARGET_PREFIX)/etc/asterisk/cdr_manager.conf \
+$(TARGET_PREFIX)/etc/asterisk/cdr_mysql.conf \
+$(TARGET_PREFIX)/etc/asterisk/cdr_odbc.conf \
+$(TARGET_PREFIX)/etc/asterisk/cdr_pgsql.conf \
+$(TARGET_PREFIX)/etc/asterisk/cdr_sqlite3_custom.conf \
+$(TARGET_PREFIX)/etc/asterisk/cdr_syslog.conf \
+$(TARGET_PREFIX)/etc/asterisk/cdr_tds.conf \
+$(TARGET_PREFIX)/etc/asterisk/cel.conf \
+$(TARGET_PREFIX)/etc/asterisk/cel_custom.conf \
+$(TARGET_PREFIX)/etc/asterisk/cel_odbc.conf \
+$(TARGET_PREFIX)/etc/asterisk/cel_pgsql.conf \
+$(TARGET_PREFIX)/etc/asterisk/cel_sqlite3_custom.conf \
+$(TARGET_PREFIX)/etc/asterisk/cel_tds.conf \
+$(TARGET_PREFIX)/etc/asterisk/chan_dahdi.conf \
+$(TARGET_PREFIX)/etc/asterisk/chan_mobile.conf \
+$(TARGET_PREFIX)/etc/asterisk/cli_aliases.conf \
+$(TARGET_PREFIX)/etc/asterisk/cli.conf \
+$(TARGET_PREFIX)/etc/asterisk/cli_permissions.conf \
+$(TARGET_PREFIX)/etc/asterisk/codecs.conf \
+$(TARGET_PREFIX)/etc/asterisk/confbridge.conf \
+$(TARGET_PREFIX)/etc/asterisk/config_test.conf \
+$(TARGET_PREFIX)/etc/asterisk/console.conf \
+$(TARGET_PREFIX)/etc/asterisk/dbsep.conf \
+$(TARGET_PREFIX)/etc/asterisk/dnsmgr.conf \
+$(TARGET_PREFIX)/etc/asterisk/dsp.conf \
+$(TARGET_PREFIX)/etc/asterisk/dundi.conf \
+$(TARGET_PREFIX)/etc/asterisk/enum.conf \
+$(TARGET_PREFIX)/etc/asterisk/extconfig.conf \
+$(TARGET_PREFIX)/etc/asterisk/extensions.ael \
+$(TARGET_PREFIX)/etc/asterisk/extensions.conf \
+$(TARGET_PREFIX)/etc/asterisk/extensions.lua \
+$(TARGET_PREFIX)/etc/asterisk/extensions_minivm.conf \
+$(TARGET_PREFIX)/etc/asterisk/features.conf \
+$(TARGET_PREFIX)/etc/asterisk/festival.conf \
+$(TARGET_PREFIX)/etc/asterisk/followme.conf \
+$(TARGET_PREFIX)/etc/asterisk/func_odbc.conf \
+$(TARGET_PREFIX)/etc/asterisk/hep.conf \
+$(TARGET_PREFIX)/etc/asterisk/http.conf \
+$(TARGET_PREFIX)/etc/asterisk/iax.conf \
+$(TARGET_PREFIX)/etc/asterisk/iaxprov.conf \
+$(TARGET_PREFIX)/etc/asterisk/indications.conf \
+$(TARGET_PREFIX)/etc/asterisk/logger.conf \
+$(TARGET_PREFIX)/etc/asterisk/manager.conf \
+$(TARGET_PREFIX)/etc/asterisk/meetme.conf \
+$(TARGET_PREFIX)/etc/asterisk/mgcp.conf \
+$(TARGET_PREFIX)/etc/asterisk/minivm.conf \
+$(TARGET_PREFIX)/etc/asterisk/misdn.conf \
+$(TARGET_PREFIX)/etc/asterisk/modules.conf \
+$(TARGET_PREFIX)/etc/asterisk/motif.conf \
+$(TARGET_PREFIX)/etc/asterisk/musiconhold.conf \
+$(TARGET_PREFIX)/etc/asterisk/muted.conf \
+$(TARGET_PREFIX)/etc/asterisk/ooh323.conf \
+$(TARGET_PREFIX)/etc/asterisk/osp.conf \
+$(TARGET_PREFIX)/etc/asterisk/oss.conf \
+$(TARGET_PREFIX)/etc/asterisk/phone.conf \
+$(TARGET_PREFIX)/etc/asterisk/phoneprov.conf \
+$(TARGET_PREFIX)/etc/asterisk/pjsip.conf \
+$(TARGET_PREFIX)/etc/asterisk/pjsip_notify.conf \
+$(TARGET_PREFIX)/etc/asterisk/pjsip_wizard.conf \
+$(TARGET_PREFIX)/etc/asterisk/queuerules.conf \
+$(TARGET_PREFIX)/etc/asterisk/queues.conf \
+$(TARGET_PREFIX)/etc/asterisk/res_config_mysql.conf \
+$(TARGET_PREFIX)/etc/asterisk/res_config_sqlite3.conf \
+$(TARGET_PREFIX)/etc/asterisk/res_config_sqlite.conf \
+$(TARGET_PREFIX)/etc/asterisk/res_corosync.conf \
+$(TARGET_PREFIX)/etc/asterisk/res_curl.conf \
+$(TARGET_PREFIX)/etc/asterisk/res_fax.conf \
+$(TARGET_PREFIX)/etc/asterisk/res_ldap.conf \
+$(TARGET_PREFIX)/etc/asterisk/res_odbc.conf \
+$(TARGET_PREFIX)/etc/asterisk/res_parking.conf \
+$(TARGET_PREFIX)/etc/asterisk/res_pgsql.conf \
+$(TARGET_PREFIX)/etc/asterisk/res_pktccops.conf \
+$(TARGET_PREFIX)/etc/asterisk/res_snmp.conf \
+$(TARGET_PREFIX)/etc/asterisk/res_stun_monitor.conf \
+$(TARGET_PREFIX)/etc/asterisk/rtp.conf \
+$(TARGET_PREFIX)/etc/asterisk/say.conf \
+$(TARGET_PREFIX)/etc/asterisk/sip.conf \
+$(TARGET_PREFIX)/etc/asterisk/sip_notify.conf \
+$(TARGET_PREFIX)/etc/asterisk/skinny.conf \
+$(TARGET_PREFIX)/etc/asterisk/sla.conf \
+$(TARGET_PREFIX)/etc/asterisk/smdi.conf \
+$(TARGET_PREFIX)/etc/asterisk/sorcery.conf \
+$(TARGET_PREFIX)/etc/asterisk/ss7.timers \
+$(TARGET_PREFIX)/etc/asterisk/stasis.conf \
+$(TARGET_PREFIX)/etc/asterisk/statsd.conf \
+$(TARGET_PREFIX)/etc/asterisk/telcordia-1.adsi \
+$(TARGET_PREFIX)/etc/asterisk/test_sorcery.conf \
+$(TARGET_PREFIX)/etc/asterisk/udptl.conf \
+$(TARGET_PREFIX)/etc/asterisk/unistim.conf \
+$(TARGET_PREFIX)/etc/asterisk/users.conf \
+$(TARGET_PREFIX)/etc/asterisk/voicemail.conf \
+$(TARGET_PREFIX)/etc/asterisk/vpb.conf \
+$(TARGET_PREFIX)/etc/asterisk/xmpp.conf \
 
 
 #
@@ -211,7 +211,7 @@ ASTERISK13_CPPFLAGS=-fPIC -fsigned-char -I$(STAGING_INCLUDE_DIR)
 ifeq (slugosbe, $(OPTWARE_TARGET))
 ASTERISK13_CPPFLAGS+= -DPATH_MAX=4096
 endif
-ASTERISK13_LDFLAGS=-L$(STAGING_LIB_DIR)/mysql -Wl,-rpath,/opt/lib/mysql -Wl,-rpath-link,$(STAGING_LIB_DIR)/mysql
+ASTERISK13_LDFLAGS=-L$(STAGING_LIB_DIR)/mysql -Wl,-rpath,$(TARGET_PREFIX)/lib/mysql -Wl,-rpath-link,$(STAGING_LIB_DIR)/mysql
 ifeq ($(OPTWARE_TARGET), $(filter angstrombe angstromle cs05q3armel cs08q1armel syno-e500, $(OPTWARE_TARGET)))
 ASTERISK13_LDFLAGS+=-lpthread -ldl -lresolv
 endif
@@ -372,8 +372,8 @@ endif
 		--without-sdl \
 		--disable-xmldoc \
 		$(ASTERISK13_CONFIGURE_OPTS) \
-		--localstatedir=/opt/var \
-		--sysconfdir=/opt/etc; \
+		--localstatedir=$(TARGET_PREFIX)/var \
+		--sysconfdir=$(TARGET_PREFIX)/etc; \
 	)
 	touch $@
 
@@ -417,7 +417,7 @@ $(ASTERISK13_BUILD_DIR)/.staged: $(ASTERISK13_BUILD_DIR)/.built
 	rm -f $(ASTERISK13_BUILD_DIR)/.staged
 	ASTCFLAGS="$(ASTERISK13_CPPFLAGS)" \
 	ASTLDFLAGS="$(STAGING_LDFLAGS) $(ASTERISK13_LDFLAGS)" \
-	$(MAKE) NOISY_BUILD=$(NOISY_BUILD) -C $(ASTERISK13_BUILD_DIR) DESTDIR=$(STAGING_DIR) ASTSBINDIR=/opt/sbin install
+	$(MAKE) NOISY_BUILD=$(NOISY_BUILD) -C $(ASTERISK13_BUILD_DIR) DESTDIR=$(STAGING_DIR) ASTSBINDIR=$(TARGET_PREFIX)/sbin install
 	touch $(ASTERISK13_BUILD_DIR)/.staged
 
 asterisk13-stage: $(ASTERISK13_BUILD_DIR)/.staged
@@ -444,12 +444,12 @@ $(ASTERISK13_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(ASTERISK13_IPK_DIR)/opt/sbin or $(ASTERISK13_IPK_DIR)/opt/bin
+# Binaries should be installed into $(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/sbin or $(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(ASTERISK13_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(ASTERISK13_IPK_DIR)/opt/etc/asterisk/...
-# Documentation files should be installed in $(ASTERISK13_IPK_DIR)/opt/doc/asterisk/...
-# Daemon startup scripts should be installed in $(ASTERISK13_IPK_DIR)/opt/etc/init.d/S??asterisk
+# Libraries and include files should be installed into $(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/...
+# Documentation files should be installed in $(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/doc/asterisk/...
+# Daemon startup scripts should be installed in $(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??asterisk
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -457,88 +457,88 @@ $(ASTERISK13_IPK): $(ASTERISK13_BUILD_DIR)/.built
 	rm -rf $(ASTERISK13_IPK_DIR) $(BUILD_DIR)/asterisk13_*_$(TARGET_ARCH).ipk
 	ASTCFLAGS="$(ASTERISK13_CPPFLAGS)" \
 	ASTLDFLAGS="$(STAGING_LDFLAGS) $(ASTERISK13_LDFLAGS)" \
-	$(MAKE) NOISY_BUILD=$(NOISY_BUILD) -C $(ASTERISK13_BUILD_DIR) DESTDIR=$(ASTERISK13_IPK_DIR) ASTSBINDIR=/opt/sbin install
+	$(MAKE) NOISY_BUILD=$(NOISY_BUILD) -C $(ASTERISK13_BUILD_DIR) DESTDIR=$(ASTERISK13_IPK_DIR) ASTSBINDIR=$(TARGET_PREFIX)/sbin install
 	ASTCFLAGS="$(ASTERISK13_CPPFLAGS)" \
 	ASTLDFLAGS="$(STAGING_LDFLAGS) $(ASTERISK13_LDFLAGS)" \
 	$(MAKE) NOISY_BUILD=$(NOISY_BUILD) -C $(ASTERISK13_BUILD_DIR) DESTDIR=$(ASTERISK13_IPK_DIR) samples
 
-	sed -i -e 's#/var/spool/asterisk#/opt/var/spool/asterisk#g' $(ASTERISK13_IPK_DIR)/opt/etc/asterisk/*
-	sed -i -e 's#/var/lib/asterisk#/opt/var/lib/asterisk#g' $(ASTERISK13_IPK_DIR)/opt/etc/asterisk/*
-	sed -i -e 's#/var/calls#/opt/var/calls#g' $(ASTERISK13_IPK_DIR)/opt/etc/asterisk/*
-	sed -i -e 's#/usr/bin/streamplayer#/opt/sbin/streamplayer#g' $(ASTERISK13_IPK_DIR)/opt/etc/asterisk/*
-	sed -i -e 's#/opt/opt/#/opt/#g' $(ASTERISK13_IPK_DIR)/opt/etc/asterisk/*
+	sed -i -e 's#/var/spool/asterisk#$(TARGET_PREFIX)/var/spool/asterisk#g' $(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/*
+	sed -i -e 's#/var/lib/asterisk#$(TARGET_PREFIX)/var/lib/asterisk#g' $(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/*
+	sed -i -e 's#/var/calls#$(TARGET_PREFIX)/var/calls#g' $(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/*
+	sed -i -e 's#/usr/bin/streamplayer#$(TARGET_PREFIX)/sbin/streamplayer#g' $(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/*
+	sed -i -e 's#$(TARGET_PREFIX)$(TARGET_PREFIX)/#$(TARGET_PREFIX)/#g' $(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/*
 
-	echo "" >> $(ASTERISK13_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "noload => func_odbc.so" >> $(ASTERISK13_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "noload => func_speex.so" >> $(ASTERISK13_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "" >> $(ASTERISK13_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "noload => chan_alsa.so" >> $(ASTERISK13_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "noload => chan_console.so" >> $(ASTERISK13_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "noload => chan_gtalk.so" >> $(ASTERISK13_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "noload => chan_iax2.so" >> $(ASTERISK13_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "noload => chan_jingle.so" >> $(ASTERISK13_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "noload => chan_mgcp.so" >> $(ASTERISK13_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "noload => chan_mobile.so" >> $(ASTERISK13_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "noload => chan_skinny.so" >> $(ASTERISK13_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "noload => chan_oss.so" >> $(ASTERISK13_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "noload => chan_unistim.so" >> $(ASTERISK13_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "" >> $(ASTERISK13_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "noload => pbx_dundi.so" >> $(ASTERISK13_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "noload => pbx_ael.so" >> $(ASTERISK13_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "" >> $(ASTERISK13_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "noload => codec_ilbc.so" >> $(ASTERISK13_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "noload => codec_lpc10.so" >> $(ASTERISK13_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "noload => codec_speex.so" >> $(ASTERISK13_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "" >> $(ASTERISK13_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "noload => format_ogg_vorbis.so" >> $(ASTERISK13_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "" >> $(ASTERISK13_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "noload => app_amd.so" >> $(ASTERISK13_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "noload => app_dictate.so" >> $(ASTERISK13_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "noload => app_festival.so" >> $(ASTERISK13_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "noload => app_mixmonitor.so" >> $(ASTERISK13_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "noload => app_morsecode.so" >> $(ASTERISK13_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "noload => app_mysql.so" >> $(ASTERISK13_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "noload => app_queue.so" >> $(ASTERISK13_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "noload => app_speech_utils.so" >> $(ASTERISK13_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "" >> $(ASTERISK13_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "noload => res_ael_share.so" >> $(ASTERISK13_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "noload => res_agi.so" >> $(ASTERISK13_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "noload => res_config_curl.so" >> $(ASTERISK13_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "noload => res_config_ldap.so" >> $(ASTERISK13_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "noload => res_config_mysql.so" >> $(ASTERISK13_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "noload => res_config_odbc.so" >> $(ASTERISK13_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "noload => res_config_sqlite.so" >> $(ASTERISK13_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "noload => res_fax.so" >> $(ASTERISK13_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "noload => res_jabber.so" >> $(ASTERISK13_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "noload => res_odbc.so" >> $(ASTERISK13_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "noload => res_snmp.so" >> $(ASTERISK13_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "noload => res_speech.so" >> $(ASTERISK13_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "noload => res_smdi.so" >> $(ASTERISK13_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "noload => res_srtp.so" >> $(ASTERISK13_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "" >> $(ASTERISK13_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "noload => cdr_adaptive_odbc.so" >> $(ASTERISK13_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "noload => cdr_mysql.so" >> $(ASTERISK13_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "noload => cdr_odbc.so" >> $(ASTERISK13_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "noload => cdr_radius.so" >> $(ASTERISK13_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "noload => cdr_sqlite.so" >> $(ASTERISK13_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "noload => cdr_sqlite3_custom.so" >> $(ASTERISK13_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "noload => cdr_tds.so" >> $(ASTERISK13_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "" >> $(ASTERISK13_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "noload => cel_odbc.so" >> $(ASTERISK13_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "noload => cel_radius.so" >> $(ASTERISK13_IPK_DIR)/opt/etc/asterisk/modules.conf
-	echo "noload => cel_sqlite3_custom.so" >> $(ASTERISK13_IPK_DIR)/opt/etc/asterisk/modules.conf
+	echo "" >> $(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "noload => func_odbc.so" >> $(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "noload => func_speex.so" >> $(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "" >> $(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "noload => chan_alsa.so" >> $(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "noload => chan_console.so" >> $(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "noload => chan_gtalk.so" >> $(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "noload => chan_iax2.so" >> $(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "noload => chan_jingle.so" >> $(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "noload => chan_mgcp.so" >> $(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "noload => chan_mobile.so" >> $(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "noload => chan_skinny.so" >> $(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "noload => chan_oss.so" >> $(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "noload => chan_unistim.so" >> $(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "" >> $(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "noload => pbx_dundi.so" >> $(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "noload => pbx_ael.so" >> $(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "" >> $(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "noload => codec_ilbc.so" >> $(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "noload => codec_lpc10.so" >> $(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "noload => codec_speex.so" >> $(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "" >> $(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "noload => format_ogg_vorbis.so" >> $(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "" >> $(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "noload => app_amd.so" >> $(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "noload => app_dictate.so" >> $(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "noload => app_festival.so" >> $(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "noload => app_mixmonitor.so" >> $(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "noload => app_morsecode.so" >> $(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "noload => app_mysql.so" >> $(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "noload => app_queue.so" >> $(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "noload => app_speech_utils.so" >> $(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "" >> $(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "noload => res_ael_share.so" >> $(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "noload => res_agi.so" >> $(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "noload => res_config_curl.so" >> $(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "noload => res_config_ldap.so" >> $(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "noload => res_config_mysql.so" >> $(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "noload => res_config_odbc.so" >> $(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "noload => res_config_sqlite.so" >> $(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "noload => res_fax.so" >> $(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "noload => res_jabber.so" >> $(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "noload => res_odbc.so" >> $(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "noload => res_snmp.so" >> $(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "noload => res_speech.so" >> $(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "noload => res_smdi.so" >> $(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "noload => res_srtp.so" >> $(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "" >> $(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "noload => cdr_adaptive_odbc.so" >> $(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "noload => cdr_mysql.so" >> $(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "noload => cdr_odbc.so" >> $(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "noload => cdr_radius.so" >> $(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "noload => cdr_sqlite.so" >> $(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "noload => cdr_sqlite3_custom.so" >> $(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "noload => cdr_tds.so" >> $(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "" >> $(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "noload => cel_odbc.so" >> $(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "noload => cel_radius.so" >> $(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
+	echo "noload => cel_sqlite3_custom.so" >> $(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/etc/asterisk/modules.conf
 
 	$(MAKE) NOISY_BUILD=$(NOISY_BUILD) $(ASTERISK13_IPK_DIR)/CONTROL/control
 	echo $(ASTERISK13_CONFFILES) | sed -e 's/ /\n/g' > $(ASTERISK13_IPK_DIR)/CONTROL/conffiles
 
-	for filetostrip in $(ASTERISK13_IPK_DIR)/opt/lib/asterisk/modules/*.so ; do \
+	for filetostrip in $(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/lib/asterisk/modules/*.so ; do \
 		$(STRIP_COMMAND) $$filetostrip; \
 	done
-	$(STRIP_COMMAND) $(ASTERISK13_IPK_DIR)/opt/lib/libasteriskssl.so
-	for filetostrip in $(ASTERISK13_IPK_DIR)/opt/sbin/astcanary \
-			$(ASTERISK13_IPK_DIR)/opt/sbin/astdb2bdb \
-			$(ASTERISK13_IPK_DIR)/opt/sbin/astdb2sqlite3 \
-			$(ASTERISK13_IPK_DIR)/opt/sbin/asterisk ; do \
+	$(STRIP_COMMAND) $(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/lib/libasteriskssl.so
+	for filetostrip in $(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/sbin/astcanary \
+			$(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/sbin/astdb2bdb \
+			$(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/sbin/astdb2sqlite3 \
+			$(ASTERISK13_IPK_DIR)$(TARGET_PREFIX)/sbin/asterisk ; do \
 		$(STRIP_COMMAND) $$filetostrip; \
 	done
 

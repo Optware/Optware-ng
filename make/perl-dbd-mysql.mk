@@ -20,7 +20,7 @@ PERL-DBD-MYSQL_CONFLICTS=
 PERL-DBD-MYSQL_IPK_VERSION=1
 
 PERL-DBD-MYSQL_CPPFLAGS=-I$(STAGING_LIB_DIR)/perl5/site_perl/$(PERL_VERSION)/$(PERL_ARCH)/auto/DBI -I$(STAGING_INCLUDE_DIR)/mysql
-PERL-DBD-MYSQL_LDFLAGS=-L$(STAGING_LIB_DIR)/perl5/$(PERL_VERSION)/$(PERL_ARCH)/CORE -lperl -L$(STAGING_LIB_DIR)/mysql -lmysqlclient_r -Wl,-rpath=/opt/lib/mysql
+PERL-DBD-MYSQL_LDFLAGS=-L$(STAGING_LIB_DIR)/perl5/$(PERL_VERSION)/$(PERL_ARCH)/CORE -lperl -L$(STAGING_LIB_DIR)/mysql -lmysqlclient_r -Wl,-rpath=$(TARGET_PREFIX)/lib/mysql
 
 PERL-DBD-MYSQL_CONFFILES=
 PERL-DBD-MYSQL_PATCHES=$(PERL-DBD-MYSQL_SOURCE_DIR)/Makefile.PL.patch
@@ -110,7 +110,7 @@ $(PERL-DBD-MYSQL_IPK): $(PERL-DBD-MYSQL_BUILD_DIR)/.built
 		DBI_DRIVER_XST="$(STAGING_LIB_DIR)/perl5/site_perl/$(PERL_VERSION)/$(PERL_ARCH)/auto/DBI/Driver.xst" \
 		;
 	find $(PERL-DBD-MYSQL_IPK_DIR)$(TARGET_PREFIX) -name 'perllocal.pod' -exec rm -f {} \;
-	(cd $(PERL-DBD-MYSQL_IPK_DIR)/opt/lib/perl5 ; \
+	(cd $(PERL-DBD-MYSQL_IPK_DIR)$(TARGET_PREFIX)/lib/perl5 ; \
 		find . -name '*.so' -exec chmod +w {} \; ; \
 		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
 		find . -name '*.so' -exec chmod -w {} \; ; \

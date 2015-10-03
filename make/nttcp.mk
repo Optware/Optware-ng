@@ -53,7 +53,7 @@ NTTCP_PATCHES=
 # compilation or linking flags, then list them here.
 #
 NTTCP_CPPFLAGS=
-NTTCP_LDFLAGS=-Wl,-rpath,/opt/lib
+NTTCP_LDFLAGS=-Wl,-rpath,$(TARGET_PREFIX)/lib
 
 #
 # NTTCP_BUILD_DIR is the directory in which the build is done.
@@ -163,22 +163,22 @@ $(NTTCP_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(NTTCP_IPK_DIR)/opt/sbin or $(NTTCP_IPK_DIR)/opt/bin
+# Binaries should be installed into $(NTTCP_IPK_DIR)$(TARGET_PREFIX)/sbin or $(NTTCP_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(NTTCP_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(NTTCP_IPK_DIR)/opt/etc/nttcp/...
-# Documentation files should be installed in $(NTTCP_IPK_DIR)/opt/doc/nttcp/...
-# Daemon startup scripts should be installed in $(NTTCP_IPK_DIR)/opt/etc/init.d/S??nttcp
+# Libraries and include files should be installed into $(NTTCP_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(NTTCP_IPK_DIR)$(TARGET_PREFIX)/etc/nttcp/...
+# Documentation files should be installed in $(NTTCP_IPK_DIR)$(TARGET_PREFIX)/doc/nttcp/...
+# Daemon startup scripts should be installed in $(NTTCP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??nttcp
 #
 # You may need to patch your application to make it use these locations.
 #
 $(NTTCP_IPK): $(NTTCP_BUILD_DIR)/.built
 	rm -rf $(NTTCP_IPK_DIR) $(BUILD_DIR)/nttcp_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(NTTCP_IPK_DIR)/opt/bin
-	$(INSTALL) $(NTTCP_BUILD_DIR)/nttcp $(NTTCP_IPK_DIR)/opt/bin/nttcp
-	$(TARGET_STRIP) $(NTTCP_IPK_DIR)/opt/bin/nttcp
-	$(INSTALL) -d $(NTTCP_IPK_DIR)/opt/man/man1
-	$(INSTALL) -m 644 $(NTTCP_BUILD_DIR)/nttcp.1 $(NTTCP_IPK_DIR)/opt/man/man1/nttcp.1
+	$(INSTALL) -d $(NTTCP_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(INSTALL) $(NTTCP_BUILD_DIR)/nttcp $(NTTCP_IPK_DIR)$(TARGET_PREFIX)/bin/nttcp
+	$(TARGET_STRIP) $(NTTCP_IPK_DIR)$(TARGET_PREFIX)/bin/nttcp
+	$(INSTALL) -d $(NTTCP_IPK_DIR)$(TARGET_PREFIX)/man/man1
+	$(INSTALL) -m 644 $(NTTCP_BUILD_DIR)/nttcp.1 $(NTTCP_IPK_DIR)$(TARGET_PREFIX)/man/man1/nttcp.1
 	$(MAKE) $(NTTCP_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NTTCP_IPK_DIR)
 

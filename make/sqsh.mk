@@ -41,7 +41,7 @@ SQSH_IPK_VERSION=4
 
 #
 # SQSH_CONFFILES should be a list of user-editable files
-SQSH_CONFFILES=/opt/etc/sqshrc
+SQSH_CONFFILES=$(TARGET_PREFIX)/etc/sqshrc
 
 #
 # SQSH_PATCHES should list any patches, in the the order in
@@ -196,23 +196,23 @@ $(SQSH_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(SQSH_IPK_DIR)/opt/sbin or $(SQSH_IPK_DIR)/opt/bin
+# Binaries should be installed into $(SQSH_IPK_DIR)$(TARGET_PREFIX)/sbin or $(SQSH_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(SQSH_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(SQSH_IPK_DIR)/opt/etc/sqsh/...
-# Documentation files should be installed in $(SQSH_IPK_DIR)/opt/doc/sqsh/...
-# Daemon startup scripts should be installed in $(SQSH_IPK_DIR)/opt/etc/init.d/S??sqsh
+# Libraries and include files should be installed into $(SQSH_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(SQSH_IPK_DIR)$(TARGET_PREFIX)/etc/sqsh/...
+# Documentation files should be installed in $(SQSH_IPK_DIR)$(TARGET_PREFIX)/doc/sqsh/...
+# Daemon startup scripts should be installed in $(SQSH_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??sqsh
 #
 # You may need to patch your application to make it use these locations.
 #
 $(SQSH_IPK): $(SQSH_BUILD_DIR)/.built
 	rm -rf $(SQSH_IPK_DIR) $(BUILD_DIR)/sqsh_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SQSH_BUILD_DIR) prefix=$(SQSH_IPK_DIR)$(TARGET_PREFIX) install install.man
-	$(STRIP_COMMAND) $(SQSH_IPK_DIR)/opt/bin/sqsh
-#	$(INSTALL) -d $(SQSH_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(SQSH_SOURCE_DIR)/sqsh.conf $(SQSH_IPK_DIR)/opt/etc/sqsh.conf
-#	$(INSTALL) -d $(SQSH_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(SQSH_SOURCE_DIR)/rc.sqsh $(SQSH_IPK_DIR)/opt/etc/init.d/SXXsqsh
+	$(STRIP_COMMAND) $(SQSH_IPK_DIR)$(TARGET_PREFIX)/bin/sqsh
+#	$(INSTALL) -d $(SQSH_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(SQSH_SOURCE_DIR)/sqsh.conf $(SQSH_IPK_DIR)$(TARGET_PREFIX)/etc/sqsh.conf
+#	$(INSTALL) -d $(SQSH_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(SQSH_SOURCE_DIR)/rc.sqsh $(SQSH_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXsqsh
 	$(MAKE) $(SQSH_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(SQSH_SOURCE_DIR)/postinst $(SQSH_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 755 $(SQSH_SOURCE_DIR)/prerm $(SQSH_IPK_DIR)/CONTROL/prerm

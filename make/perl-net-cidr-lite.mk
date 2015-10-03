@@ -87,7 +87,7 @@ $(PERL-NET-CIDR-LITE_IPK): $(PERL-NET-CIDR-LITE_BUILD_DIR)/.built
 	rm -rf $(PERL-NET-CIDR-LITE_IPK_DIR) $(BUILD_DIR)/perl-net-cidr-lite_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PERL-NET-CIDR-LITE_BUILD_DIR) DESTDIR=$(PERL-NET-CIDR-LITE_IPK_DIR) install
 	find $(PERL-NET-CIDR-LITE_IPK_DIR)$(TARGET_PREFIX) -name 'perllocal.pod' -exec rm -f {} \;
-	(cd $(PERL-NET-CIDR-LITE_IPK_DIR)/opt/lib/perl5 ; \
+	(cd $(PERL-NET-CIDR-LITE_IPK_DIR)$(TARGET_PREFIX)/lib/perl5 ; \
 		find . -name '*.so' -exec chmod +w {} \; ; \
 		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
 		find . -name '*.so' -exec chmod -w {} \; ; \

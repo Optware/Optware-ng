@@ -46,7 +46,7 @@ MINIUPNPD_IPK_VERSION=2
 #
 # MINIUPNPD_CONFFILES should be a list of user-editable files
 #
-MINIUPNPD_CONFFILES=/opt/etc/miniupnpd/minupnpd.conf /opt/etc/init.d/miniupnpd
+MINIUPNPD_CONFFILES=$(TARGET_PREFIX)/etc/miniupnpd/minupnpd.conf $(TARGET_PREFIX)/etc/init.d/miniupnpd
 
 #
 # MINIUPNPD_PATCHES should list any patches, in the the order in
@@ -74,7 +74,7 @@ MINIUPNPD_BUILD_DIR=$(BUILD_DIR)/miniupnpd
 MINIUPNPD_SOURCE_DIR=$(SOURCE_DIR)/miniupnpd
 MINIUPNPD_IPK_DIR=$(BUILD_DIR)/miniupnpd-$(MINIUPNPD_VERSION)-ipk
 MINIUPNPD_IPK=$(BUILD_DIR)/miniupnpd_$(MINIUPNPD_VERSION)-$(MINIUPNPD_IPK_VERSION)_$(TARGET_ARCH).ipk
-MINIUPNPD_INST_DIR=/opt
+MINIUPNPD_INST_DIR=$(TARGET_PREFIX)
 
 
 .PHONY: miniupnpd-source miniupnpd-unpack miniupnpd miniupnpd-stage miniupnpd-ipk miniupnpd-clean miniupnpd-dirclean miniupnpd-check
@@ -183,19 +183,19 @@ $(MINIUPNPD_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(MINIUPNPD_IPK_DIR)/opt/sbin or $(MINIUPNPD_IPK_DIR)/opt/bin
+# Binaries should be installed into $(MINIUPNPD_IPK_DIR)$(TARGET_PREFIX)/sbin or $(MINIUPNPD_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(MINIUPNPD_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(MINIUPNPD_IPK_DIR)/opt/etc/MINIUPNPD/...
-# Documentation files should be installed in $(MINIUPNPD_IPK_DIR)/opt/doc/MINIUPNPD/...
-# Daemon startup scripts should be installed in $(MINIUPNPD_IPK_DIR)/opt/etc/init.d/S??MINIUPNPD
+# Libraries and include files should be installed into $(MINIUPNPD_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(MINIUPNPD_IPK_DIR)$(TARGET_PREFIX)/etc/MINIUPNPD/...
+# Documentation files should be installed in $(MINIUPNPD_IPK_DIR)$(TARGET_PREFIX)/doc/MINIUPNPD/...
+# Daemon startup scripts should be installed in $(MINIUPNPD_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??MINIUPNPD
 #
 # You may need to patch your application to make it use these locations.
 #
 $(MINIUPNPD_IPK): $(MINIUPNPD_BUILD_DIR)/.built
 	rm -rf $(MINIUPNPD_IPK_DIR) $(BUILD_DIR)/miniupnpd_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MINIUPNPD_BUILD_DIR) -f Makefile.optware STRIP="$(STRIP_COMMAND)" PREFIX=$(TARGET_PREFIX) DESTDIR=$(MINIUPNPD_IPK_DIR) install
-	rm -f $(MINIUPNPD_IPK_DIR)/opt/info/dir $(MINIUPNPD_IPK_DIR)/opt/info/dir.old
+	rm -f $(MINIUPNPD_IPK_DIR)$(TARGET_PREFIX)/info/dir $(MINIUPNPD_IPK_DIR)$(TARGET_PREFIX)/info/dir.old
 	$(MAKE) $(MINIUPNPD_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MINIUPNPD_IPK_DIR)
 

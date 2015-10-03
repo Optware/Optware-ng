@@ -40,7 +40,7 @@ PROXYTUNNEL_IPK_VERSION=1
 
 #
 # PROXYTUNNEL_CONFFILES should be a list of user-editable files
-#PROXYTUNNEL_CONFFILES=/opt/etc/proxytunnel.conf /opt/etc/init.d/SXXproxytunnel
+#PROXYTUNNEL_CONFFILES=$(TARGET_PREFIX)/etc/proxytunnel.conf $(TARGET_PREFIX)/etc/init.d/SXXproxytunnel
 
 #
 # PROXYTUNNEL_PATCHES should list any patches, in the the order in
@@ -184,21 +184,21 @@ $(PROXYTUNNEL_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PROXYTUNNEL_IPK_DIR)/opt/sbin or $(PROXYTUNNEL_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PROXYTUNNEL_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PROXYTUNNEL_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PROXYTUNNEL_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PROXYTUNNEL_IPK_DIR)/opt/etc/proxytunnel/...
-# Documentation files should be installed in $(PROXYTUNNEL_IPK_DIR)/opt/doc/proxytunnel/...
-# Daemon startup scripts should be installed in $(PROXYTUNNEL_IPK_DIR)/opt/etc/init.d/S??proxytunnel
+# Libraries and include files should be installed into $(PROXYTUNNEL_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PROXYTUNNEL_IPK_DIR)$(TARGET_PREFIX)/etc/proxytunnel/...
+# Documentation files should be installed in $(PROXYTUNNEL_IPK_DIR)$(TARGET_PREFIX)/doc/proxytunnel/...
+# Daemon startup scripts should be installed in $(PROXYTUNNEL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??proxytunnel
 #
 # You may need to patch your application to make it use these locations.
 #
 $(PROXYTUNNEL_IPK): $(PROXYTUNNEL_BUILD_DIR)/.built
 	rm -rf $(PROXYTUNNEL_IPK_DIR) $(BUILD_DIR)/proxytunnel_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PROXYTUNNEL_BUILD_DIR) DESTDIR=$(PROXYTUNNEL_IPK_DIR) PREFIX=$(TARGET_PREFIX) install
-	$(STRIP_COMMAND) $(PROXYTUNNEL_IPK_DIR)/opt/bin/proxytunnel
-	$(INSTALL) -d $(PROXYTUNNEL_IPK_DIR)/opt/share/doc/proxytunnel
-	$(INSTALL) $(PROXYTUNNEL_BUILD_DIR)/[CIKLRT]* $(PROXYTUNNEL_IPK_DIR)/opt/share/doc/proxytunnel
+	$(STRIP_COMMAND) $(PROXYTUNNEL_IPK_DIR)$(TARGET_PREFIX)/bin/proxytunnel
+	$(INSTALL) -d $(PROXYTUNNEL_IPK_DIR)$(TARGET_PREFIX)/share/doc/proxytunnel
+	$(INSTALL) $(PROXYTUNNEL_BUILD_DIR)/[CIKLRT]* $(PROXYTUNNEL_IPK_DIR)$(TARGET_PREFIX)/share/doc/proxytunnel
 	$(MAKE) $(PROXYTUNNEL_IPK_DIR)/CONTROL/control
 	echo $(PROXYTUNNEL_CONFFILES) | sed -e 's/ /\n/g' > $(PROXYTUNNEL_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PROXYTUNNEL_IPK_DIR)

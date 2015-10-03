@@ -44,7 +44,7 @@ NAIL_IPK_VERSION=1
 
 #
 # NAIL_CONFFILES should be a list of user-editable files
-NAIL_CONFFILES=/opt/etc/nail.rc
+NAIL_CONFFILES=$(TARGET_PREFIX)/etc/nail.rc
 
 #
 # NAIL_PATCHES should list any patches, in the the order in
@@ -199,26 +199,26 @@ endif
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(NAIL_IPK_DIR)/opt/sbin or $(NAIL_IPK_DIR)/opt/bin
+# Binaries should be installed into $(NAIL_IPK_DIR)$(TARGET_PREFIX)/sbin or $(NAIL_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(NAIL_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(NAIL_IPK_DIR)/opt/etc/nail/...
-# Documentation files should be installed in $(NAIL_IPK_DIR)/opt/doc/nail/...
-# Daemon startup scripts should be installed in $(NAIL_IPK_DIR)/opt/etc/init.d/S??nail
+# Libraries and include files should be installed into $(NAIL_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(NAIL_IPK_DIR)$(TARGET_PREFIX)/etc/nail/...
+# Documentation files should be installed in $(NAIL_IPK_DIR)$(TARGET_PREFIX)/doc/nail/...
+# Daemon startup scripts should be installed in $(NAIL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??nail
 #
 # You may need to patch your application to make it use these locations.
 #
 $(NAIL_IPK): $(NAIL_BUILD_DIR)/.built
 	rm -rf $(NAIL_IPK_DIR) $(BUILD_DIR)/nail_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(NAIL_IPK_DIR)/opt/bin
-	$(INSTALL) -d $(NAIL_IPK_DIR)/opt/etc
-	$(INSTALL) -d $(NAIL_IPK_DIR)/opt/share/man/man1
-	$(STRIP_COMMAND) $(NAIL_BUILD_DIR)/mailx -o $(NAIL_IPK_DIR)/opt/bin/mailx
-	$(INSTALL) -m 644 $(NAIL_BUILD_DIR)/mailx.1 $(NAIL_IPK_DIR)/opt/share/man/man1
-	ln -s mailx $(NAIL_IPK_DIR)/opt/bin/nail
-	$(INSTALL) -m 644 $(NAIL_BUILD_DIR)/nail.rc $(NAIL_IPK_DIR)/opt/etc/nail.rc
-#	$(INSTALL) -d $(NAIL_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(NAIL_SOURCE_DIR)/rc.nail $(NAIL_IPK_DIR)/opt/etc/init.d/SXXnail
+	$(INSTALL) -d $(NAIL_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(INSTALL) -d $(NAIL_IPK_DIR)$(TARGET_PREFIX)/etc
+	$(INSTALL) -d $(NAIL_IPK_DIR)$(TARGET_PREFIX)/share/man/man1
+	$(STRIP_COMMAND) $(NAIL_BUILD_DIR)/mailx -o $(NAIL_IPK_DIR)$(TARGET_PREFIX)/bin/mailx
+	$(INSTALL) -m 644 $(NAIL_BUILD_DIR)/mailx.1 $(NAIL_IPK_DIR)$(TARGET_PREFIX)/share/man/man1
+	ln -s mailx $(NAIL_IPK_DIR)$(TARGET_PREFIX)/bin/nail
+	$(INSTALL) -m 644 $(NAIL_BUILD_DIR)/nail.rc $(NAIL_IPK_DIR)$(TARGET_PREFIX)/etc/nail.rc
+#	$(INSTALL) -d $(NAIL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(NAIL_SOURCE_DIR)/rc.nail $(NAIL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXnail
 	$(MAKE) $(NAIL_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 644 $(NAIL_SOURCE_DIR)/postinst $(NAIL_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 644 $(NAIL_SOURCE_DIR)/prerm $(NAIL_IPK_DIR)/CONTROL/prerm

@@ -40,7 +40,7 @@ GEOIP_IPK_VERSION=1
 
 #
 # GEOIP_CONFFILES should be a list of user-editable files
-#GEOIP_CONFFILES=/opt/etc/geoip.conf /opt/etc/init.d/SXXgeoip
+#GEOIP_CONFFILES=$(TARGET_PREFIX)/etc/geoip.conf $(TARGET_PREFIX)/etc/init.d/SXXgeoip
 
 #
 # GEOIP_PATCHES should list any patches, in the the order in
@@ -179,19 +179,19 @@ $(GEOIP_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(GEOIP_IPK_DIR)/opt/sbin or $(GEOIP_IPK_DIR)/opt/bin
+# Binaries should be installed into $(GEOIP_IPK_DIR)$(TARGET_PREFIX)/sbin or $(GEOIP_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(GEOIP_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(GEOIP_IPK_DIR)/opt/etc/geoip/...
-# Documentation files should be installed in $(GEOIP_IPK_DIR)/opt/doc/geoip/...
-# Daemon startup scripts should be installed in $(GEOIP_IPK_DIR)/opt/etc/init.d/S??geoip
+# Libraries and include files should be installed into $(GEOIP_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(GEOIP_IPK_DIR)$(TARGET_PREFIX)/etc/geoip/...
+# Documentation files should be installed in $(GEOIP_IPK_DIR)$(TARGET_PREFIX)/doc/geoip/...
+# Daemon startup scripts should be installed in $(GEOIP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??geoip
 #
 # You may need to patch your application to make it use these locations.
 #
 $(GEOIP_IPK): $(GEOIP_BUILD_DIR)/.built
 	rm -rf $(GEOIP_IPK_DIR) $(BUILD_DIR)/geoip_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GEOIP_BUILD_DIR) DESTDIR=$(GEOIP_IPK_DIR) install
-	$(STRIP_COMMAND) $(GEOIP_IPK_DIR)/opt/bin/geoip* $(GEOIP_IPK_DIR)/opt/lib/libGeoIP*.so*
+	$(STRIP_COMMAND) $(GEOIP_IPK_DIR)$(TARGET_PREFIX)/bin/geoip* $(GEOIP_IPK_DIR)$(TARGET_PREFIX)/lib/libGeoIP*.so*
 	$(MAKE) $(GEOIP_IPK_DIR)/CONTROL/control
 	echo $(GEOIP_CONFFILES) | sed -e 's/ /\n/g' > $(GEOIP_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GEOIP_IPK_DIR)

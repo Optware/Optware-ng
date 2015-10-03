@@ -40,7 +40,7 @@ DAVTOOLS_IPK_VERSION=2
 
 #
 # DAVTOOLS_CONFFILES should be a list of user-editable files
-#DAVTOOLS_CONFFILES=/opt/etc/davtools.conf /opt/etc/init.d/SXXdavtools
+#DAVTOOLS_CONFFILES=$(TARGET_PREFIX)/etc/davtools.conf $(TARGET_PREFIX)/etc/init.d/SXXdavtools
 
 #
 # DAVTOOLS_PATCHES should list any patches, in the the order in
@@ -178,25 +178,25 @@ $(DAVTOOLS_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(DAVTOOLS_IPK_DIR)/opt/sbin or $(DAVTOOLS_IPK_DIR)/opt/bin
+# Binaries should be installed into $(DAVTOOLS_IPK_DIR)$(TARGET_PREFIX)/sbin or $(DAVTOOLS_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(DAVTOOLS_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(DAVTOOLS_IPK_DIR)/opt/etc/davtools/...
-# Documentation files should be installed in $(DAVTOOLS_IPK_DIR)/opt/doc/davtools/...
-# Daemon startup scripts should be installed in $(DAVTOOLS_IPK_DIR)/opt/etc/init.d/S??davtools
+# Libraries and include files should be installed into $(DAVTOOLS_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(DAVTOOLS_IPK_DIR)$(TARGET_PREFIX)/etc/davtools/...
+# Documentation files should be installed in $(DAVTOOLS_IPK_DIR)$(TARGET_PREFIX)/doc/davtools/...
+# Daemon startup scripts should be installed in $(DAVTOOLS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??davtools
 #
 # You may need to patch your application to make it use these locations.
 #
 $(DAVTOOLS_IPK): $(DAVTOOLS_BUILD_DIR)/.built
 	rm -rf $(DAVTOOLS_IPK_DIR) $(BUILD_DIR)/davtools_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(DAVTOOLS_BUILD_DIR) DESTDIR=$(DAVTOOLS_IPK_DIR) install-strip
-	$(INSTALL) -d $(DAVTOOLS_IPK_DIR)/opt/bin
-	$(INSTALL) -m 755 $(DAVTOOLS_BUILD_DIR)/src/cdavl/cdavl $(DAVTOOLS_IPK_DIR)/opt/bin
-	$(STRIP_COMMAND) $(DAVTOOLS_IPK_DIR)/opt/bin/cdavl
-	$(INSTALL) -d $(DAVTOOLS_IPK_DIR)/opt/man/man8
-	$(INSTALL) -m 644 $(DAVTOOLS_BUILD_DIR)/doc/cdavl.8 $(DAVTOOLS_IPK_DIR)/opt/man/man8/
-#	$(INSTALL) -m 755 $(DAVTOOLS_SOURCE_DIR)/rc.davtools $(DAVTOOLS_IPK_DIR)/opt/etc/init.d/SXXdavtools
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(DAVTOOLS_IPK_DIR)/opt/etc/init.d/SXXdavtools
+	$(INSTALL) -d $(DAVTOOLS_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(INSTALL) -m 755 $(DAVTOOLS_BUILD_DIR)/src/cdavl/cdavl $(DAVTOOLS_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(STRIP_COMMAND) $(DAVTOOLS_IPK_DIR)$(TARGET_PREFIX)/bin/cdavl
+	$(INSTALL) -d $(DAVTOOLS_IPK_DIR)$(TARGET_PREFIX)/man/man8
+	$(INSTALL) -m 644 $(DAVTOOLS_BUILD_DIR)/doc/cdavl.8 $(DAVTOOLS_IPK_DIR)$(TARGET_PREFIX)/man/man8/
+#	$(INSTALL) -m 755 $(DAVTOOLS_SOURCE_DIR)/rc.davtools $(DAVTOOLS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXdavtools
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(DAVTOOLS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXdavtools
 	$(MAKE) $(DAVTOOLS_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(DAVTOOLS_SOURCE_DIR)/postinst $(DAVTOOLS_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(DAVTOOLS_IPK_DIR)/CONTROL/postinst

@@ -43,7 +43,7 @@ RTMPDUMP_IPK_VERSION=1
 
 #
 # RTMPDUMP_CONFFILES should be a list of user-editable files
-#RTMPDUMP_CONFFILES=/opt/etc/rtmpdump.conf /opt/etc/init.d/SXXrtmpdump
+#RTMPDUMP_CONFFILES=$(TARGET_PREFIX)/etc/rtmpdump.conf $(TARGET_PREFIX)/etc/init.d/SXXrtmpdump
 
 #
 # RTMPDUMP_PATCHES should list any patches, in the the order in
@@ -174,25 +174,25 @@ $(RTMPDUMP_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(RTMPDUMP_IPK_DIR)/opt/sbin or $(RTMPDUMP_IPK_DIR)/opt/bin
+# Binaries should be installed into $(RTMPDUMP_IPK_DIR)$(TARGET_PREFIX)/sbin or $(RTMPDUMP_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(RTMPDUMP_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(RTMPDUMP_IPK_DIR)/opt/etc/rtmpdump/...
-# Documentation files should be installed in $(RTMPDUMP_IPK_DIR)/opt/doc/rtmpdump/...
-# Daemon startup scripts should be installed in $(RTMPDUMP_IPK_DIR)/opt/etc/init.d/S??rtmpdump
+# Libraries and include files should be installed into $(RTMPDUMP_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(RTMPDUMP_IPK_DIR)$(TARGET_PREFIX)/etc/rtmpdump/...
+# Documentation files should be installed in $(RTMPDUMP_IPK_DIR)$(TARGET_PREFIX)/doc/rtmpdump/...
+# Daemon startup scripts should be installed in $(RTMPDUMP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??rtmpdump
 #
 # You may need to patch your application to make it use these locations.
 #
 $(RTMPDUMP_IPK): $(RTMPDUMP_BUILD_DIR)/.built
 	rm -rf $(RTMPDUMP_IPK_DIR) $(BUILD_DIR)/rtmpdump_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(RTMPDUMP_BUILD_DIR) prefix=$(TARGET_PREFIX) DESTDIR=$(RTMPDUMP_IPK_DIR) install
-	rm -f $(RTMPDUMP_IPK_DIR)/opt/lib/*.a
-	$(STRIP_COMMAND) $(RTMPDUMP_IPK_DIR)/opt/{{bin,sbin}/*,lib/*.so}
-#	$(INSTALL) -d $(RTMPDUMP_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(RTMPDUMP_SOURCE_DIR)/rtmpdump.conf $(RTMPDUMP_IPK_DIR)/opt/etc/rtmpdump.conf
-#	$(INSTALL) -d $(RTMPDUMP_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(RTMPDUMP_SOURCE_DIR)/rc.rtmpdump $(RTMPDUMP_IPK_DIR)/opt/etc/init.d/SXXrtmpdump
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(RTMPDUMP_IPK_DIR)/opt/etc/init.d/SXXrtmpdump
+	rm -f $(RTMPDUMP_IPK_DIR)$(TARGET_PREFIX)/lib/*.a
+	$(STRIP_COMMAND) $(RTMPDUMP_IPK_DIR)$(TARGET_PREFIX)/{{bin,sbin}/*,lib/*.so}
+#	$(INSTALL) -d $(RTMPDUMP_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(RTMPDUMP_SOURCE_DIR)/rtmpdump.conf $(RTMPDUMP_IPK_DIR)$(TARGET_PREFIX)/etc/rtmpdump.conf
+#	$(INSTALL) -d $(RTMPDUMP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(RTMPDUMP_SOURCE_DIR)/rc.rtmpdump $(RTMPDUMP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXrtmpdump
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(RTMPDUMP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXrtmpdump
 	$(MAKE) $(RTMPDUMP_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(RTMPDUMP_SOURCE_DIR)/postinst $(RTMPDUMP_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(RTMPDUMP_IPK_DIR)/CONTROL/postinst

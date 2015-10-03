@@ -49,7 +49,7 @@ LIBEXTRACTOR_IPK_VERSION=2
 
 #
 # LIBEXTRACTOR_CONFFILES should be a list of user-editable files
-#LIBEXTRACTOR_CONFFILES=/opt/etc/libextractor.conf /opt/etc/init.d/SXXlibextractor
+#LIBEXTRACTOR_CONFFILES=$(TARGET_PREFIX)/etc/libextractor.conf $(TARGET_PREFIX)/etc/init.d/SXXlibextractor
 
 #
 # LIBEXTRACTOR_PATCHES should list any patches, in the the order in
@@ -239,23 +239,23 @@ $(LIBEXTRACTOR_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LIBEXTRACTOR_IPK_DIR)/opt/sbin or $(LIBEXTRACTOR_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LIBEXTRACTOR_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LIBEXTRACTOR_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LIBEXTRACTOR_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LIBEXTRACTOR_IPK_DIR)/opt/etc/libextractor/...
-# Documentation files should be installed in $(LIBEXTRACTOR_IPK_DIR)/opt/doc/libextractor/...
-# Daemon startup scripts should be installed in $(LIBEXTRACTOR_IPK_DIR)/opt/etc/init.d/S??libextractor
+# Libraries and include files should be installed into $(LIBEXTRACTOR_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LIBEXTRACTOR_IPK_DIR)$(TARGET_PREFIX)/etc/libextractor/...
+# Documentation files should be installed in $(LIBEXTRACTOR_IPK_DIR)$(TARGET_PREFIX)/doc/libextractor/...
+# Daemon startup scripts should be installed in $(LIBEXTRACTOR_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??libextractor
 #
 # You may need to patch your application to make it use these locations.
 #
 $(LIBEXTRACTOR_IPK): $(LIBEXTRACTOR_BUILD_DIR)/.built
 	rm -rf $(LIBEXTRACTOR_IPK_DIR) $(BUILD_DIR)/libextractor_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBEXTRACTOR_BUILD_DIR) DESTDIR=$(LIBEXTRACTOR_IPK_DIR) install-strip
-	rm -f $(LIBEXTRACTOR_IPK_DIR)/opt/lib/libextractor.la $(LIBEXTRACTOR_IPK_DIR)/opt/lib/libextractor/*.la
-#	$(INSTALL) -d $(LIBEXTRACTOR_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(LIBEXTRACTOR_SOURCE_DIR)/libextractor.conf $(LIBEXTRACTOR_IPK_DIR)/opt/etc/libextractor.conf
-#	$(INSTALL) -d $(LIBEXTRACTOR_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(LIBEXTRACTOR_SOURCE_DIR)/rc.libextractor $(LIBEXTRACTOR_IPK_DIR)/opt/etc/init.d/SXXlibextractor
+	rm -f $(LIBEXTRACTOR_IPK_DIR)$(TARGET_PREFIX)/lib/libextractor.la $(LIBEXTRACTOR_IPK_DIR)$(TARGET_PREFIX)/lib/libextractor/*.la
+#	$(INSTALL) -d $(LIBEXTRACTOR_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(LIBEXTRACTOR_SOURCE_DIR)/libextractor.conf $(LIBEXTRACTOR_IPK_DIR)$(TARGET_PREFIX)/etc/libextractor.conf
+#	$(INSTALL) -d $(LIBEXTRACTOR_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(LIBEXTRACTOR_SOURCE_DIR)/rc.libextractor $(LIBEXTRACTOR_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibextractor
 	$(MAKE) $(LIBEXTRACTOR_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(LIBEXTRACTOR_SOURCE_DIR)/postinst $(LIBEXTRACTOR_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 755 $(LIBEXTRACTOR_SOURCE_DIR)/prerm $(LIBEXTRACTOR_IPK_DIR)/CONTROL/prerm

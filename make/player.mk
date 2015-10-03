@@ -47,7 +47,7 @@ PLAYER_IPK_VERSION?=6
 
 #
 # PLAYER_CONFFILES should be a list of user-editable files
-#PLAYER_CONFFILES=/opt/etc/player.conf /opt/etc/init.d/SXXplayer
+#PLAYER_CONFFILES=$(TARGET_PREFIX)/etc/player.conf $(TARGET_PREFIX)/etc/init.d/SXXplayer
 
 #
 # PLAYER_PATCHES should list any patches, in the the order in
@@ -210,24 +210,24 @@ $(PLAYER_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PLAYER_IPK_DIR)/opt/sbin or $(PLAYER_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PLAYER_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PLAYER_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PLAYER_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PLAYER_IPK_DIR)/opt/etc/player/...
-# Documentation files should be installed in $(PLAYER_IPK_DIR)/opt/doc/player/...
-# Daemon startup scripts should be installed in $(PLAYER_IPK_DIR)/opt/etc/init.d/S??player
+# Libraries and include files should be installed into $(PLAYER_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PLAYER_IPK_DIR)$(TARGET_PREFIX)/etc/player/...
+# Documentation files should be installed in $(PLAYER_IPK_DIR)$(TARGET_PREFIX)/doc/player/...
+# Daemon startup scripts should be installed in $(PLAYER_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??player
 #
 # You may need to patch your application to make it use these locations.
 #
 $(PLAYER_IPK): $(PLAYER_BUILD_DIR)/.built
 	rm -rf $(PLAYER_IPK_DIR) $(BUILD_DIR)/player_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PLAYER_BUILD_DIR) DESTDIR=$(PLAYER_IPK_DIR) install-strip
-	rm -f $(PLAYER_IPK_DIR)/opt/lib/libplayer*.la
-#	$(INSTALL) -d $(PLAYER_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(PLAYER_SOURCE_DIR)/player.conf $(PLAYER_IPK_DIR)/opt/etc/player.conf
-#	$(INSTALL) -d $(PLAYER_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(PLAYER_SOURCE_DIR)/rc.player $(PLAYER_IPK_DIR)/opt/etc/init.d/SXXplayer
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(PLAYER_IPK_DIR)/opt/etc/init.d/SXXplayer
+	rm -f $(PLAYER_IPK_DIR)$(TARGET_PREFIX)/lib/libplayer*.la
+#	$(INSTALL) -d $(PLAYER_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(PLAYER_SOURCE_DIR)/player.conf $(PLAYER_IPK_DIR)$(TARGET_PREFIX)/etc/player.conf
+#	$(INSTALL) -d $(PLAYER_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(PLAYER_SOURCE_DIR)/rc.player $(PLAYER_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXplayer
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(PLAYER_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXplayer
 	$(MAKE) $(PLAYER_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(PLAYER_SOURCE_DIR)/postinst $(PLAYER_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(PLAYER_IPK_DIR)/CONTROL/postinst

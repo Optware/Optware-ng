@@ -47,7 +47,7 @@ PY-DJANGO_IPK_VERSION=2
 
 #
 # PY-DJANGO_CONFFILES should be a list of user-editable files
-#PY-DJANGO_CONFFILES=/opt/etc/py-django.conf /opt/etc/init.d/SXXpy-django
+#PY-DJANGO_CONFFILES=$(TARGET_PREFIX)/etc/py-django.conf $(TARGET_PREFIX)/etc/init.d/SXXpy-django
 
 #
 # PY-DJANGO_PATCHES should list any patches, in the the order in
@@ -134,9 +134,9 @@ $(PY-DJANGO_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-DJANGO_SOURCE) $(DL_DIR)/$(PY
 	(cd $(@D)/2.5; \
 	    ( \
 	    echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python2.5"; \
+	    echo "executable=$(TARGET_PREFIX)/bin/python2.5"; \
 	    echo "[install]"; \
-	    echo "install_scripts=/opt/bin"; \
+	    echo "install_scripts=$(TARGET_PREFIX)/bin"; \
 	    ) >> setup.cfg \
 	)
 	$(PY-DJANGO_UNZIP) $(DL_DIR)/$(PY-DJANGO_SOURCE_OLD) | tar -C $(BUILD_DIR) -xvf -
@@ -145,9 +145,9 @@ $(PY-DJANGO_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-DJANGO_SOURCE) $(DL_DIR)/$(PY
 	(cd $(@D)/2.6; \
 	    ( \
 	    echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python2.6"; \
+	    echo "executable=$(TARGET_PREFIX)/bin/python2.6"; \
 	    echo "[install]"; \
-	    echo "install_scripts=/opt/bin"; \
+	    echo "install_scripts=$(TARGET_PREFIX)/bin"; \
 	    ) >> setup.cfg \
 	)
 	$(PY-DJANGO_UNZIP) $(DL_DIR)/$(PY-DJANGO_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -156,9 +156,9 @@ $(PY-DJANGO_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-DJANGO_SOURCE) $(DL_DIR)/$(PY
 	(cd $(@D)/2.7; \
 	    ( \
 	    echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python2.7"; \
+	    echo "executable=$(TARGET_PREFIX)/bin/python2.7"; \
 	    echo "[install]"; \
-	    echo "install_scripts=/opt/bin"; \
+	    echo "install_scripts=$(TARGET_PREFIX)/bin"; \
 	    ) >> setup.cfg \
 	)
 	$(PY-DJANGO_UNZIP) $(DL_DIR)/$(PY-DJANGO_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -167,9 +167,9 @@ $(PY-DJANGO_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-DJANGO_SOURCE) $(DL_DIR)/$(PY
 	(cd $(@D)/3; \
 	    ( \
 	    echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python$(PYTHON3_VERSION_MAJOR)"; \
+	    echo "executable=$(TARGET_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR)"; \
 	    echo "[install]"; \
-	    echo "install_scripts=/opt/bin"; \
+	    echo "install_scripts=$(TARGET_PREFIX)/bin"; \
 	    ) >> setup.cfg \
 	)
 	touch $@
@@ -269,12 +269,12 @@ $(PY3-DJANGO_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PY-DJANGO_IPK_DIR)/opt/sbin or $(PY-DJANGO_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PY-DJANGO_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PY-DJANGO_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PY-DJANGO_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PY-DJANGO_IPK_DIR)/opt/etc/py-django/...
-# Documentation files should be installed in $(PY-DJANGO_IPK_DIR)/opt/doc/py-django/...
-# Daemon startup scripts should be installed in $(PY-DJANGO_IPK_DIR)/opt/etc/init.d/S??py-django
+# Libraries and include files should be installed into $(PY-DJANGO_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PY-DJANGO_IPK_DIR)$(TARGET_PREFIX)/etc/py-django/...
+# Documentation files should be installed in $(PY-DJANGO_IPK_DIR)$(TARGET_PREFIX)/doc/py-django/...
+# Daemon startup scripts should be installed in $(PY-DJANGO_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??py-django
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -282,8 +282,8 @@ $(PY25-DJANGO_IPK): $(PY-DJANGO_BUILD_DIR)/.built
 	rm -rf $(BUILD_DIR)/py-django_*_$(TARGET_ARCH).ipk
 	rm -rf $(PY25-DJANGO_IPK_DIR) $(BUILD_DIR)/py25-django_*_$(TARGET_ARCH).ipk
 	(cd $(PY-DJANGO_BUILD_DIR)/2.5; \
-	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(PY25-DJANGO_IPK_DIR) --prefix=/opt)
-	for f in $(PY25-DJANGO_IPK_DIR)/opt/*bin/*; do \
+	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(PY25-DJANGO_IPK_DIR) --prefix=$(TARGET_PREFIX))
+	for f in $(PY25-DJANGO_IPK_DIR)$(TARGET_PREFIX)/*bin/*; do \
 		mv $$f `echo $$f | sed -e 's/$$/-2.5/' -e 's/\.py-2.5$$/-2.5.py/'`; done
 	$(MAKE) $(PY25-DJANGO_IPK_DIR)/CONTROL/control
 	echo $(PY-DJANGO_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-DJANGO_IPK_DIR)/CONTROL/conffiles
@@ -292,8 +292,8 @@ $(PY25-DJANGO_IPK): $(PY-DJANGO_BUILD_DIR)/.built
 $(PY26-DJANGO_IPK): $(PY-DJANGO_BUILD_DIR)/.built
 	rm -rf $(PY26-DJANGO_IPK_DIR) $(BUILD_DIR)/py26-django_*_$(TARGET_ARCH).ipk
 	(cd $(PY-DJANGO_BUILD_DIR)/2.6; \
-	$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(PY26-DJANGO_IPK_DIR) --prefix=/opt)
-	for f in $(PY26-DJANGO_IPK_DIR)/opt/*bin/*; do \
+	$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(PY26-DJANGO_IPK_DIR) --prefix=$(TARGET_PREFIX))
+	for f in $(PY26-DJANGO_IPK_DIR)$(TARGET_PREFIX)/*bin/*; do \
 		mv $$f `echo $$f | sed -e 's/$$/-2.6/' -e 's/\.py-2.6$$/-2.6.py/'`; done
 	$(MAKE) $(PY26-DJANGO_IPK_DIR)/CONTROL/control
 	echo $(PY-DJANGO_CONFFILES) | sed -e 's/ /\n/g' > $(PY26-DJANGO_IPK_DIR)/CONTROL/conffiles
@@ -302,8 +302,8 @@ $(PY26-DJANGO_IPK): $(PY-DJANGO_BUILD_DIR)/.built
 $(PY27-DJANGO_IPK): $(PY-DJANGO_BUILD_DIR)/.built
 	rm -rf $(PY27-DJANGO_IPK_DIR) $(BUILD_DIR)/py27-django_*_$(TARGET_ARCH).ipk
 	(cd $(PY-DJANGO_BUILD_DIR)/2.7; \
-	$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(PY27-DJANGO_IPK_DIR) --prefix=/opt)
-	for f in $(PY27-DJANGO_IPK_DIR)/opt/*bin/*; do \
+	$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(PY27-DJANGO_IPK_DIR) --prefix=$(TARGET_PREFIX))
+	for f in $(PY27-DJANGO_IPK_DIR)$(TARGET_PREFIX)/*bin/*; do \
 		mv $$f `echo $$f | sed -e 's/$$/-2.7/' -e 's/\.py-2.7$$/-2.7.py/'`; \
 		ln -s `echo $$f | sed -e 's|.*/||' -e 's/$$/-2.7/' -e 's/\.py-2.7$$/-2.7.py/'` $$f; \
 	done
@@ -314,8 +314,8 @@ $(PY27-DJANGO_IPK): $(PY-DJANGO_BUILD_DIR)/.built
 $(PY3-DJANGO_IPK): $(PY-DJANGO_BUILD_DIR)/.built
 	rm -rf $(PY3-DJANGO_IPK_DIR) $(BUILD_DIR)/py3-django_*_$(TARGET_ARCH).ipk
 	(cd $(PY-DJANGO_BUILD_DIR)/3; \
-	$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(PY3-DJANGO_IPK_DIR) --prefix=/opt)
-	for f in $(PY3-DJANGO_IPK_DIR)/opt/*bin/*; do \
+	$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(PY3-DJANGO_IPK_DIR) --prefix=$(TARGET_PREFIX))
+	for f in $(PY3-DJANGO_IPK_DIR)$(TARGET_PREFIX)/*bin/*; do \
 		mv $$f `echo $$f | sed -e 's/$$/-3/' -e 's/\.py-3$$/-3.py/'`; \
 	done
 	$(MAKE) $(PY3-DJANGO_IPK_DIR)/CONTROL/control

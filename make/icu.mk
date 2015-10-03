@@ -46,7 +46,7 @@ ICU_IPK_VERSION=1
 
 #
 # ICU_CONFFILES should be a list of user-editable files
-#ICU_CONFFILES=/opt/etc/icu.conf /opt/etc/init.d/SXXicu
+#ICU_CONFFILES=$(TARGET_PREFIX)/etc/icu.conf $(TARGET_PREFIX)/etc/init.d/SXXicu
 
 #
 # ICU_PATCHES should list any patches, in the the order in
@@ -218,12 +218,12 @@ $(ICU_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(ICU_IPK_DIR)/opt/sbin or $(ICU_IPK_DIR)/opt/bin
+# Binaries should be installed into $(ICU_IPK_DIR)$(TARGET_PREFIX)/sbin or $(ICU_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(ICU_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(ICU_IPK_DIR)/opt/etc/icu/...
-# Documentation files should be installed in $(ICU_IPK_DIR)/opt/doc/icu/...
-# Daemon startup scripts should be installed in $(ICU_IPK_DIR)/opt/etc/init.d/S??icu
+# Libraries and include files should be installed into $(ICU_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(ICU_IPK_DIR)$(TARGET_PREFIX)/etc/icu/...
+# Documentation files should be installed in $(ICU_IPK_DIR)$(TARGET_PREFIX)/doc/icu/...
+# Daemon startup scripts should be installed in $(ICU_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??icu
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -231,17 +231,17 @@ $(ICU_IPK): $(ICU_BUILD_DIR)/.built
 	rm -rf $(ICU_IPK_DIR) $(BUILD_DIR)/icu_*_$(TARGET_ARCH).ipk
 	cp -f $(HOST_BUILD_DIR)/icu/bin/pkgdata $(ICU_BUILD_DIR)/source/bin
 	$(MAKE) -C $(ICU_BUILD_DIR)/source DESTDIR=$(ICU_IPK_DIR) install
-	cp -f $(ICU_BUILD_DIR)/source/bin.cross/pkgdata $(ICU_IPK_DIR)/opt/bin
+	cp -f $(ICU_BUILD_DIR)/source/bin.cross/pkgdata $(ICU_IPK_DIR)$(TARGET_PREFIX)/bin
 	cp -f $(ICU_BUILD_DIR)/source/bin.cross/pkgdata $(ICU_BUILD_DIR)/source/bin
 	$(STRIP_COMMAND) \
-		`ls $(ICU_IPK_DIR)/opt/bin/* | grep -v icu-config` \
-		$(ICU_IPK_DIR)/opt/sbin/* \
-		$(ICU_IPK_DIR)/opt/lib/lib*.so.*.*
-#	$(INSTALL) -d $(ICU_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(ICU_SOURCE_DIR)/icu.conf $(ICU_IPK_DIR)/opt/etc/icu.conf
-#	$(INSTALL) -d $(ICU_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(ICU_SOURCE_DIR)/rc.icu $(ICU_IPK_DIR)/opt/etc/init.d/SXXicu
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(ICU_IPK_DIR)/opt/etc/init.d/SXXicu
+		`ls $(ICU_IPK_DIR)$(TARGET_PREFIX)/bin/* | grep -v icu-config` \
+		$(ICU_IPK_DIR)$(TARGET_PREFIX)/sbin/* \
+		$(ICU_IPK_DIR)$(TARGET_PREFIX)/lib/lib*.so.*.*
+#	$(INSTALL) -d $(ICU_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(ICU_SOURCE_DIR)/icu.conf $(ICU_IPK_DIR)$(TARGET_PREFIX)/etc/icu.conf
+#	$(INSTALL) -d $(ICU_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(ICU_SOURCE_DIR)/rc.icu $(ICU_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXicu
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(ICU_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXicu
 	$(MAKE) $(ICU_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(ICU_SOURCE_DIR)/postinst $(ICU_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(ICU_IPK_DIR)/CONTROL/postinst

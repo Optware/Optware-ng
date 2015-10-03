@@ -43,7 +43,7 @@ AMULE_IPK_VERSION=2
 
 #
 # AMULE_CONFFILES should be a list of user-editable files
-## AMULE_CONFFILES=/opt/etc/amule.conf /opt/etc/init.d/SXXamule
+## AMULE_CONFFILES=$(TARGET_PREFIX)/etc/amule.conf $(TARGET_PREFIX)/etc/init.d/SXXamule
 
 #
 # AMULE_PATCHES should list any patches, in the the order in
@@ -225,22 +225,22 @@ $(AMULE_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(AMULE_IPK_DIR)/opt/sbin or $(AMULE_IPK_DIR)/opt/bin
+# Binaries should be installed into $(AMULE_IPK_DIR)$(TARGET_PREFIX)/sbin or $(AMULE_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(AMULE_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(AMULE_IPK_DIR)/opt/etc/amule/...
-# Documentation files should be installed in $(AMULE_IPK_DIR)/opt/doc/amule/...
-# Daemon startup scripts should be installed in $(AMULE_IPK_DIR)/opt/etc/init.d/S??amule
+# Libraries and include files should be installed into $(AMULE_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(AMULE_IPK_DIR)$(TARGET_PREFIX)/etc/amule/...
+# Documentation files should be installed in $(AMULE_IPK_DIR)$(TARGET_PREFIX)/doc/amule/...
+# Daemon startup scripts should be installed in $(AMULE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??amule
 #
 # You may need to patch your application to make it use these locations.
 #
 $(AMULE_IPK): $(AMULE_BUILD_DIR)/.built
 	rm -rf $(AMULE_IPK_DIR) $(BUILD_DIR)/amule_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(AMULE_BUILD_DIR) DESTDIR=$(AMULE_IPK_DIR) program_transform_name=s/^$(GNU_TARGET_NAME)-// install-strip
-#	$(INSTALL) -d $(AMULE_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(AMULE_SOURCE_DIR)/amule.conf $(AMULE_IPK_DIR)/opt/etc/amule.conf
-	$(INSTALL) -d $(AMULE_IPK_DIR)/opt/etc/init.d
-	$(INSTALL) -m 755 $(AMULE_SOURCE_DIR)/rc.amuled $(AMULE_IPK_DIR)/opt/etc/init.d/S57amuled
+#	$(INSTALL) -d $(AMULE_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(AMULE_SOURCE_DIR)/amule.conf $(AMULE_IPK_DIR)$(TARGET_PREFIX)/etc/amule.conf
+	$(INSTALL) -d $(AMULE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(INSTALL) -m 755 $(AMULE_SOURCE_DIR)/rc.amuled $(AMULE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S57amuled
 	$(MAKE) $(AMULE_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(AMULE_SOURCE_DIR)/postinst $(AMULE_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 755 $(AMULE_SOURCE_DIR)/prerm $(AMULE_IPK_DIR)/CONTROL/prerm

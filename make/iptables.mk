@@ -48,7 +48,7 @@ IPTABLES_IPK_VERSION=1
 
 #
 # IPTABLES_CONFFILES should be a list of user-editable files
-#IPTABLES_CONFFILES=/opt/etc/iptables.conf /opt/etc/init.d/SXXiptables
+#IPTABLES_CONFFILES=$(TARGET_PREFIX)/etc/iptables.conf $(TARGET_PREFIX)/etc/init.d/SXXiptables
 
 #
 # IPTABLES_PATCHES should list any patches, in the the order in
@@ -69,7 +69,7 @@ IPTABLES_BUILD_DIR=$(BUILD_DIR)/iptables
 IPTABLES_SOURCE_DIR=$(SOURCE_DIR)/iptables
 IPTABLES_IPK_DIR=$(BUILD_DIR)/iptables-$(IPTABLES_VERSION)-ipk
 IPTABLES_IPK=$(BUILD_DIR)/iptables_$(IPTABLES_VERSION)-$(IPTABLES_IPK_VERSION)_$(TARGET_ARCH).ipk
-IPTABLES_INST_DIR=/opt
+IPTABLES_INST_DIR=$(TARGET_PREFIX)
 
 .PHONY: iptables-source iptables-unpack iptables iptables-stage iptables-ipk iptables-clean iptables-dirclean iptables-check
 
@@ -134,7 +134,7 @@ iptables-unpack: $(IPTABLES_BUILD_DIR)/.configured
 $(IPTABLES_BUILD_DIR)/.built: $(IPTABLES_BUILD_DIR)/.configured
 	rm -f $@
 	$(MAKE) -C $(IPTABLES_BUILD_DIR) all \
-		$(TARGET_CONFIGURE_OPTS) PREFIX=/opt
+		$(TARGET_CONFIGURE_OPTS) PREFIX=$(TARGET_PREFIX)
 	touch $@
 
 #
@@ -189,12 +189,12 @@ $(IPTABLES_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(IPTABLES_IPK_DIR)/opt/sbin or $(IPTABLES_IPK_DIR)/opt/bin
+# Binaries should be installed into $(IPTABLES_IPK_DIR)$(TARGET_PREFIX)/sbin or $(IPTABLES_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(IPTABLES_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(IPTABLES_IPK_DIR)/opt/etc/iptables/...
-# Documentation files should be installed in $(IPTABLES_IPK_DIR)/opt/doc/iptables/...
-# Daemon startup scripts should be installed in $(IPTABLES_IPK_DIR)/opt/etc/init.d/S??iptables
+# Libraries and include files should be installed into $(IPTABLES_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(IPTABLES_IPK_DIR)$(TARGET_PREFIX)/etc/iptables/...
+# Documentation files should be installed in $(IPTABLES_IPK_DIR)$(TARGET_PREFIX)/doc/iptables/...
+# Daemon startup scripts should be installed in $(IPTABLES_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??iptables
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -202,8 +202,8 @@ $(IPTABLES_IPK): $(IPTABLES_BUILD_DIR)/.built
 	rm -rf $(IPTABLES_IPK_DIR) $(BUILD_DIR)/iptables_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(IPTABLES_BUILD_DIR) install \
 		$(TARGET_CONFIGURE_OPTS) PREFIX=$(TARGET_PREFIX) DESTDIR=$(IPTABLES_IPK_DIR)
-	$(STRIP_COMMAND) $(IPTABLES_IPK_DIR)/opt/lib/*.so* $(IPTABLES_IPK_DIR)/opt/sbin/* \
-		$(IPTABLES_IPK_DIR)/opt/lib/xtables/*.so*
+	$(STRIP_COMMAND) $(IPTABLES_IPK_DIR)$(TARGET_PREFIX)/lib/*.so* $(IPTABLES_IPK_DIR)$(TARGET_PREFIX)/sbin/* \
+		$(IPTABLES_IPK_DIR)$(TARGET_PREFIX)/lib/xtables/*.so*
 	$(MAKE) $(IPTABLES_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(IPTABLES_IPK_DIR)
 

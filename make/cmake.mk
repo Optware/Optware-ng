@@ -46,7 +46,7 @@ CMAKE_IPK_VERSION=1
 
 #
 # CMAKE_CONFFILES should be a list of user-editable files
-#CMAKE_CONFFILES=/opt/etc/cmake.conf /opt/etc/init.d/SXXcmake
+#CMAKE_CONFFILES=$(TARGET_PREFIX)/etc/cmake.conf $(TARGET_PREFIX)/etc/init.d/SXXcmake
 
 #
 # CMAKE_PATCHES should list any patches, in the the order in
@@ -178,23 +178,23 @@ $(CMAKE_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(CMAKE_IPK_DIR)/opt/sbin or $(CMAKE_IPK_DIR)/opt/bin
+# Binaries should be installed into $(CMAKE_IPK_DIR)$(TARGET_PREFIX)/sbin or $(CMAKE_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(CMAKE_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(CMAKE_IPK_DIR)/opt/etc/cmake/...
-# Documentation files should be installed in $(CMAKE_IPK_DIR)/opt/doc/cmake/...
-# Daemon startup scripts should be installed in $(CMAKE_IPK_DIR)/opt/etc/init.d/S??cmake
+# Libraries and include files should be installed into $(CMAKE_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(CMAKE_IPK_DIR)$(TARGET_PREFIX)/etc/cmake/...
+# Documentation files should be installed in $(CMAKE_IPK_DIR)$(TARGET_PREFIX)/doc/cmake/...
+# Daemon startup scripts should be installed in $(CMAKE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??cmake
 #
 # You may need to patch your application to make it use these locations.
 #
 $(CMAKE_IPK): $(CMAKE_BUILD_DIR)/.built
 	rm -rf $(CMAKE_IPK_DIR) $(BUILD_DIR)/cmake_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(CMAKE_BUILD_DIR) DESTDIR=$(CMAKE_IPK_DIR) install
-#	$(INSTALL) -d $(CMAKE_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(CMAKE_SOURCE_DIR)/cmake.conf $(CMAKE_IPK_DIR)/opt/etc/cmake.conf
-#	$(INSTALL) -d $(CMAKE_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(CMAKE_SOURCE_DIR)/rc.cmake $(CMAKE_IPK_DIR)/opt/etc/init.d/SXXcmake
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(CMAKE_IPK_DIR)/opt/etc/init.d/SXXcmake
+#	$(INSTALL) -d $(CMAKE_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(CMAKE_SOURCE_DIR)/cmake.conf $(CMAKE_IPK_DIR)$(TARGET_PREFIX)/etc/cmake.conf
+#	$(INSTALL) -d $(CMAKE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(CMAKE_SOURCE_DIR)/rc.cmake $(CMAKE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXcmake
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(CMAKE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXcmake
 	$(MAKE) $(CMAKE_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(CMAKE_SOURCE_DIR)/postinst $(CMAKE_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(CMAKE_IPK_DIR)/CONTROL/postinst

@@ -40,7 +40,7 @@ CUPS-PDF_IPK_VERSION=1
 
 #
 # CUPS-PDF_CONFFILES should be a list of user-editable files
-CUPS-PDF_CONFFILES=/opt/etc/cups/cups-pdf.conf
+CUPS-PDF_CONFFILES=$(TARGET_PREFIX)/etc/cups/cups-pdf.conf
 
 #
 # CUPS-PDF_PATCHES should list any patches, in the the order in
@@ -167,40 +167,40 @@ $(CUPS-PDF_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(CUPS-PDF_IPK_DIR)/opt/sbin or $(CUPS-PDF_IPK_DIR)/opt/bin
+# Binaries should be installed into $(CUPS-PDF_IPK_DIR)$(TARGET_PREFIX)/sbin or $(CUPS-PDF_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(CUPS-PDF_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(CUPS-PDF_IPK_DIR)/opt/etc/cups-pdf/...
-# Documentation files should be installed in $(CUPS-PDF_IPK_DIR)/opt/doc/cups-pdf/...
-# Daemon startup scripts should be installed in $(CUPS-PDF_IPK_DIR)/opt/etc/init.d/S??cups-pdf
+# Libraries and include files should be installed into $(CUPS-PDF_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(CUPS-PDF_IPK_DIR)$(TARGET_PREFIX)/etc/cups-pdf/...
+# Documentation files should be installed in $(CUPS-PDF_IPK_DIR)$(TARGET_PREFIX)/doc/cups-pdf/...
+# Daemon startup scripts should be installed in $(CUPS-PDF_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??cups-pdf
 #
 # You may need to patch your application to make it use these locations.
 #
 $(CUPS-PDF_IPK): $(CUPS-PDF_BUILD_DIR)/.built
 	rm -rf $(CUPS-PDF_IPK_DIR) $(BUILD_DIR)/cups-pdf_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(CUPS-PDF_BUILD_DIR) DESTDIR=$(CUPS-PDF_IPK_DIR) install-strip
-	$(INSTALL) -d $(CUPS-PDF_IPK_DIR)/opt/lib/cups/backend
+	$(INSTALL) -d $(CUPS-PDF_IPK_DIR)$(TARGET_PREFIX)/lib/cups/backend
 	$(STRIP_COMMAND) $(CUPS-PDF_BUILD_DIR)/src/cups-pdf \
-		-o $(CUPS-PDF_IPK_DIR)/opt/lib/cups/backend/cups-pdf
-	$(INSTALL) -d $(CUPS-PDF_IPK_DIR)/opt/etc/cups
-	$(INSTALL) -m 644 $(CUPS-PDF_BUILD_DIR)/extra/cups-pdf.conf $(CUPS-PDF_IPK_DIR)/opt/etc/cups
-	sed -i -e 's| /var/| /opt/var/|g' \
-	       -e 's|/usr/bin/gs|/opt/bin/gs|' \
-		$(CUPS-PDF_IPK_DIR)/opt/etc/cups/cups-pdf.conf
-	$(INSTALL) -d $(CUPS-PDF_IPK_DIR)/opt/var/tmp
-	$(INSTALL) -d $(CUPS-PDF_IPK_DIR)/opt/share/cups/model
+		-o $(CUPS-PDF_IPK_DIR)$(TARGET_PREFIX)/lib/cups/backend/cups-pdf
+	$(INSTALL) -d $(CUPS-PDF_IPK_DIR)$(TARGET_PREFIX)/etc/cups
+	$(INSTALL) -m 644 $(CUPS-PDF_BUILD_DIR)/extra/cups-pdf.conf $(CUPS-PDF_IPK_DIR)$(TARGET_PREFIX)/etc/cups
+	sed -i -e 's| /var/| $(TARGET_PREFIX)/var/|g' \
+	       -e 's|/usr/bin/gs|$(TARGET_PREFIX)/bin/gs|' \
+		$(CUPS-PDF_IPK_DIR)$(TARGET_PREFIX)/etc/cups/cups-pdf.conf
+	$(INSTALL) -d $(CUPS-PDF_IPK_DIR)$(TARGET_PREFIX)/var/tmp
+	$(INSTALL) -d $(CUPS-PDF_IPK_DIR)$(TARGET_PREFIX)/share/cups/model
 	$(INSTALL) -m 644 $(CUPS-PDF_BUILD_DIR)/extra/CUPS-PDF.ppd \
-		$(CUPS-PDF_IPK_DIR)/opt/share/cups/model/
-	$(INSTALL) -d $(CUPS-PDF_IPK_DIR)/opt/share/doc/cups-pdf/examples/
+		$(CUPS-PDF_IPK_DIR)$(TARGET_PREFIX)/share/cups/model/
+	$(INSTALL) -d $(CUPS-PDF_IPK_DIR)$(TARGET_PREFIX)/share/doc/cups-pdf/examples/
 	$(INSTALL) \
 		$(CUPS-PDF_BUILD_DIR)/ChangeLog \
 		$(CUPS-PDF_BUILD_DIR)/COPYING \
 		$(CUPS-PDF_BUILD_DIR)/README \
-		$(CUPS-PDF_IPK_DIR)/opt/share/doc/cups-pdf/
+		$(CUPS-PDF_IPK_DIR)$(TARGET_PREFIX)/share/doc/cups-pdf/
 	cp -rp \
 		$(CUPS-PDF_BUILD_DIR)/contrib/cups-pdf-dispatch* \
 		$(CUPS-PDF_BUILD_DIR)/contrib/pstitleiconv* \
-		$(CUPS-PDF_IPK_DIR)/opt/share/doc/cups-pdf/examples/
+		$(CUPS-PDF_IPK_DIR)$(TARGET_PREFIX)/share/doc/cups-pdf/examples/
 	$(MAKE) $(CUPS-PDF_IPK_DIR)/CONTROL/control
 	echo $(CUPS-PDF_CONFFILES) | sed -e 's/ /\n/g' > $(CUPS-PDF_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CUPS-PDF_IPK_DIR)

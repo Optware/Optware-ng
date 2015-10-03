@@ -46,7 +46,7 @@ ROX-FILER_IPK_VERSION=1
 
 #
 # ROX-FILER_CONFFILES should be a list of user-editable files
-#ROX-FILER_CONFFILES=/opt/etc/rox-filer.conf /opt/etc/init.d/SXXrox-filer
+#ROX-FILER_CONFFILES=$(TARGET_PREFIX)/etc/rox-filer.conf $(TARGET_PREFIX)/etc/init.d/SXXrox-filer
 
 #
 # ROX-FILER_PATCHES should list any patches, in the the order in
@@ -121,9 +121,9 @@ $(ROX-FILER_BUILD_DIR)/.configured: $(DL_DIR)/$(ROX-FILER_SOURCE) $(ROX-FILER_PA
 	if test "$(BUILD_DIR)/$(ROX-FILER_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(ROX-FILER_DIR) $(@D) ; \
 	fi
-	sed -i -e 's:/usr/share\|/usr/local/share:/opt/share:g' $(@D)/ROX-Filer/src/*.c
-	sed -i -e 's:g_strdup(getenv("APP_DIR")):"/opt/share/rox":' $(@D)/ROX-Filer/src/main.c
-	sed -i -e 's|/etc/xdg|/opt/etc/xdg|g' -e 's|g_build_filename(g_get_home_dir(), "\.config"|g_build_filename("/opt/etc"|' \
+	sed -i -e 's:/usr/share\|/usr/local/share:$(TARGET_PREFIX)/share:g' $(@D)/ROX-Filer/src/*.c
+	sed -i -e 's:g_strdup(getenv("APP_DIR")):"$(TARGET_PREFIX)/share/rox":' $(@D)/ROX-Filer/src/main.c
+	sed -i -e 's|/etc/xdg|$(TARGET_PREFIX)/etc/xdg|g' -e 's|g_build_filename(g_get_home_dir(), "\.config"|g_build_filename("$(TARGET_PREFIX)/etc"|' \
 									$(@D)/ROX-Filer/src/choices.c
 	(cd $(@D)/ROX-Filer; \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -191,26 +191,26 @@ $(ROX-FILER_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(ROX-FILER_IPK_DIR)/opt/sbin or $(ROX-FILER_IPK_DIR)/opt/bin
+# Binaries should be installed into $(ROX-FILER_IPK_DIR)$(TARGET_PREFIX)/sbin or $(ROX-FILER_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(ROX-FILER_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(ROX-FILER_IPK_DIR)/opt/etc/rox-filer/...
-# Documentation files should be installed in $(ROX-FILER_IPK_DIR)/opt/doc/rox-filer/...
-# Daemon startup scripts should be installed in $(ROX-FILER_IPK_DIR)/opt/etc/init.d/S??rox-filer
+# Libraries and include files should be installed into $(ROX-FILER_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(ROX-FILER_IPK_DIR)$(TARGET_PREFIX)/etc/rox-filer/...
+# Documentation files should be installed in $(ROX-FILER_IPK_DIR)$(TARGET_PREFIX)/doc/rox-filer/...
+# Daemon startup scripts should be installed in $(ROX-FILER_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??rox-filer
 #
 # You may need to patch your application to make it use these locations.
 #
 $(ROX-FILER_IPK): $(ROX-FILER_BUILD_DIR)/.built
 	rm -rf $(ROX-FILER_IPK_DIR) $(BUILD_DIR)/rox-filer_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(ROX-FILER_IPK_DIR)/opt/bin $(ROX-FILER_IPK_DIR)/opt/share/rox \
-			$(ROX-FILER_IPK_DIR)/opt/man/man1
+	$(INSTALL) -d $(ROX-FILER_IPK_DIR)$(TARGET_PREFIX)/bin $(ROX-FILER_IPK_DIR)$(TARGET_PREFIX)/share/rox \
+			$(ROX-FILER_IPK_DIR)$(TARGET_PREFIX)/man/man1
 	$(STRIP_COMMAND) $(ROX-FILER_BUILD_DIR)/ROX-Filer/ROX-Filer
-	cp -f $(ROX-FILER_BUILD_DIR)/ROX-Filer/ROX-Filer $(ROX-FILER_IPK_DIR)/opt/bin/rox
-	ln -s rox $(ROX-FILER_IPK_DIR)/opt/bin/rox-filer
+	cp -f $(ROX-FILER_BUILD_DIR)/ROX-Filer/ROX-Filer $(ROX-FILER_IPK_DIR)$(TARGET_PREFIX)/bin/rox
+	ln -s rox $(ROX-FILER_IPK_DIR)$(TARGET_PREFIX)/bin/rox-filer
 	cp -af $(addprefix $(ROX-FILER_BUILD_DIR)/ROX-Filer/, Help Messages Options.xml \
-			ROX images style.css .DirIcon) $(ROX-FILER_IPK_DIR)/opt/share/rox
-	cp -f $(ROX-FILER_BUILD_DIR)/rox.1 $(ROX-FILER_IPK_DIR)/opt/man/man1
-	cd $(ROX-FILER_IPK_DIR)/opt/share/rox/ROX/MIME      && \
+			ROX images style.css .DirIcon) $(ROX-FILER_IPK_DIR)$(TARGET_PREFIX)/share/rox
+	cp -f $(ROX-FILER_BUILD_DIR)/rox.1 $(ROX-FILER_IPK_DIR)$(TARGET_PREFIX)/man/man1
+	cd $(ROX-FILER_IPK_DIR)$(TARGET_PREFIX)/share/rox/ROX/MIME      && \
 	ln -s text-x-{diff,patch}.png                       && \
 	ln -s application-x-font-{afm,type1}.png            && \
 	ln -s application-xml{,-dtd}.png                    && \
@@ -225,11 +225,11 @@ $(ROX-FILER_IPK): $(ROX-FILER_BUILD_DIR)/.built
 	ln -s application-x-{gzip,lzma}.png                 && \
 	ln -s application-{msword,rtf}.png
 #	$(MAKE) -C $(ROX-FILER_BUILD_DIR)/ROX-Filer DESTDIR=$(ROX-FILER_IPK_DIR) install-strip
-#	$(INSTALL) -d $(ROX-FILER_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(ROX-FILER_SOURCE_DIR)/rox-filer.conf $(ROX-FILER_IPK_DIR)/opt/etc/rox-filer.conf
-#	$(INSTALL) -d $(ROX-FILER_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(ROX-FILER_SOURCE_DIR)/rc.rox-filer $(ROX-FILER_IPK_DIR)/opt/etc/init.d/SXXrox-filer
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(ROX-FILER_IPK_DIR)/opt/etc/init.d/SXXrox-filer
+#	$(INSTALL) -d $(ROX-FILER_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(ROX-FILER_SOURCE_DIR)/rox-filer.conf $(ROX-FILER_IPK_DIR)$(TARGET_PREFIX)/etc/rox-filer.conf
+#	$(INSTALL) -d $(ROX-FILER_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(ROX-FILER_SOURCE_DIR)/rc.rox-filer $(ROX-FILER_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXrox-filer
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(ROX-FILER_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXrox-filer
 	$(MAKE) $(ROX-FILER_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(ROX-FILER_SOURCE_DIR)/postinst $(ROX-FILER_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(ROX-FILER_IPK_DIR)/CONTROL/postinst

@@ -43,7 +43,7 @@ GTYPIST_IPK_VERSION=1
 
 #
 # GTYPIST_CONFFILES should be a list of user-editable files
-#GTYPIST_CONFFILES=/opt/etc/gtypist.conf /opt/etc/init.d/SXXgtypist
+#GTYPIST_CONFFILES=$(TARGET_PREFIX)/etc/gtypist.conf $(TARGET_PREFIX)/etc/init.d/SXXgtypist
 
 #
 # GTYPIST_PATCHES should list any patches, in the the order in
@@ -188,20 +188,20 @@ $(GTYPIST_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(GTYPIST_IPK_DIR)/opt/sbin or $(GTYPIST_IPK_DIR)/opt/bin
+# Binaries should be installed into $(GTYPIST_IPK_DIR)$(TARGET_PREFIX)/sbin or $(GTYPIST_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(GTYPIST_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(GTYPIST_IPK_DIR)/opt/etc/gtypist/...
-# Documentation files should be installed in $(GTYPIST_IPK_DIR)/opt/doc/gtypist/...
-# Daemon startup scripts should be installed in $(GTYPIST_IPK_DIR)/opt/etc/init.d/S??gtypist
+# Libraries and include files should be installed into $(GTYPIST_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(GTYPIST_IPK_DIR)$(TARGET_PREFIX)/etc/gtypist/...
+# Documentation files should be installed in $(GTYPIST_IPK_DIR)$(TARGET_PREFIX)/doc/gtypist/...
+# Daemon startup scripts should be installed in $(GTYPIST_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??gtypist
 #
 # You may need to patch your application to make it use these locations.
 #
 $(GTYPIST_IPK): $(GTYPIST_BUILD_DIR)/.built
 	rm -rf $(GTYPIST_IPK_DIR) $(BUILD_DIR)/gtypist_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GTYPIST_BUILD_DIR) DESTDIR=$(GTYPIST_IPK_DIR) install-strip
-	rm -f $(GTYPIST_IPK_DIR)/opt/share/info/dir
-	sed -i -e '/^#!/s|/usr/bin/perl|/opt/bin/perl|' $(GTYPIST_IPK_DIR)/opt/bin/typefortune
+	rm -f $(GTYPIST_IPK_DIR)$(TARGET_PREFIX)/share/info/dir
+	sed -i -e '/^#!/s|/usr/bin/perl|$(TARGET_PREFIX)/bin/perl|' $(GTYPIST_IPK_DIR)$(TARGET_PREFIX)/bin/typefortune
 	$(MAKE) $(GTYPIST_IPK_DIR)/CONTROL/control
 	echo $(GTYPIST_CONFFILES) | sed -e 's/ /\n/g' > $(GTYPIST_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GTYPIST_IPK_DIR)

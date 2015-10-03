@@ -30,7 +30,7 @@ TORRENTFLUX_DEPENDS=php, php-fcgi, python, sqlite2, coreutils, procps
 TORRENTFLUX_SUGGESTS=
 TORRENTFLUX_CONFLICTS=
 
-TORRENTFLUX_INSTALL_DIR=/opt/share/www/torrentflux
+TORRENTFLUX_INSTALL_DIR=$(TARGET_PREFIX)/share/www/torrentflux
 
 #
 # TORRENTFLUX_IPK_VERSION should be incremented when the ipk changes.
@@ -156,12 +156,12 @@ $(TORRENTFLUX_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(TORRENTFLUX_IPK_DIR)/opt/sbin or $(TORRENTFLUX_IPK_DIR)/opt/bin
+# Binaries should be installed into $(TORRENTFLUX_IPK_DIR)$(TARGET_PREFIX)/sbin or $(TORRENTFLUX_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(TORRENTFLUX_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(TORRENTFLUX_IPK_DIR)/opt/etc/torrentflux/...
-# Documentation files should be installed in $(TORRENTFLUX_IPK_DIR)/opt/doc/torrentflux/...
-# Daemon startup scripts should be installed in $(TORRENTFLUX_IPK_DIR)/opt/etc/init.d/S??torrentflux
+# Libraries and include files should be installed into $(TORRENTFLUX_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(TORRENTFLUX_IPK_DIR)$(TARGET_PREFIX)/etc/torrentflux/...
+# Documentation files should be installed in $(TORRENTFLUX_IPK_DIR)$(TARGET_PREFIX)/doc/torrentflux/...
+# Daemon startup scripts should be installed in $(TORRENTFLUX_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??torrentflux
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -171,16 +171,16 @@ $(TORRENTFLUX_IPK): $(TORRENTFLUX_BUILD_DIR)/.built
 	cp -a $(TORRENTFLUX_BUILD_DIR)/html/* $(TORRENTFLUX_IPK_DIR)$(TORRENTFLUX_INSTALL_DIR)
 	# fixes permissions, leaves execute bits only for .php files
 	find $(TORRENTFLUX_IPK_DIR)$(TORRENTFLUX_INSTALL_DIR) -type f ! -name \*php -exec chmod -x {} \;
-	$(INSTALL) -d $(TORRENTFLUX_IPK_DIR)/opt/doc/torrentflux
-	$(INSTALL) -m 755 $(TORRENTFLUX_BUILD_DIR)/README $(TORRENTFLUX_IPK_DIR)/opt/doc/torrentflux
-	$(INSTALL) -m 755 $(TORRENTFLUX_BUILD_DIR)/COPYING $(TORRENTFLUX_IPK_DIR)/opt/doc/torrentflux
-	$(INSTALL) -m 755 $(TORRENTFLUX_BUILD_DIR)/CHANGELOG $(TORRENTFLUX_IPK_DIR)/opt/doc/torrentflux
-	$(INSTALL) -m 755 $(TORRENTFLUX_BUILD_DIR)/INSTALL $(TORRENTFLUX_IPK_DIR)/opt/doc/torrentflux
-	$(INSTALL) -m 755 $(TORRENTFLUX_SOURCE_DIR)/README.Optware $(TORRENTFLUX_IPK_DIR)/opt/doc/torrentflux
-	$(INSTALL) -m 755 $(TORRENTFLUX_SOURCE_DIR)/sqlite_torrentflux.sql $(TORRENTFLUX_IPK_DIR)/opt/doc/torrentflux
-	$(INSTALL) -d $(TORRENTFLUX_IPK_DIR)/opt/var/torrentflux/db
-	$(INSTALL) -d $(TORRENTFLUX_IPK_DIR)/opt/var/torrentflux/downloads
-	$(INSTALL) -m 755 $(TORRENTFLUX_BUILD_DIR)/html/downloads/index.html $(TORRENTFLUX_IPK_DIR)/opt/var/torrentflux/downloads
+	$(INSTALL) -d $(TORRENTFLUX_IPK_DIR)$(TARGET_PREFIX)/doc/torrentflux
+	$(INSTALL) -m 755 $(TORRENTFLUX_BUILD_DIR)/README $(TORRENTFLUX_IPK_DIR)$(TARGET_PREFIX)/doc/torrentflux
+	$(INSTALL) -m 755 $(TORRENTFLUX_BUILD_DIR)/COPYING $(TORRENTFLUX_IPK_DIR)$(TARGET_PREFIX)/doc/torrentflux
+	$(INSTALL) -m 755 $(TORRENTFLUX_BUILD_DIR)/CHANGELOG $(TORRENTFLUX_IPK_DIR)$(TARGET_PREFIX)/doc/torrentflux
+	$(INSTALL) -m 755 $(TORRENTFLUX_BUILD_DIR)/INSTALL $(TORRENTFLUX_IPK_DIR)$(TARGET_PREFIX)/doc/torrentflux
+	$(INSTALL) -m 755 $(TORRENTFLUX_SOURCE_DIR)/README.Optware $(TORRENTFLUX_IPK_DIR)$(TARGET_PREFIX)/doc/torrentflux
+	$(INSTALL) -m 755 $(TORRENTFLUX_SOURCE_DIR)/sqlite_torrentflux.sql $(TORRENTFLUX_IPK_DIR)$(TARGET_PREFIX)/doc/torrentflux
+	$(INSTALL) -d $(TORRENTFLUX_IPK_DIR)$(TARGET_PREFIX)/var/torrentflux/db
+	$(INSTALL) -d $(TORRENTFLUX_IPK_DIR)$(TARGET_PREFIX)/var/torrentflux/downloads
+	$(INSTALL) -m 755 $(TORRENTFLUX_BUILD_DIR)/html/downloads/index.html $(TORRENTFLUX_IPK_DIR)$(TARGET_PREFIX)/var/torrentflux/downloads
 	$(MAKE) $(TORRENTFLUX_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 755 $(TORRENTFLUX_SOURCE_DIR)/postinst $(TORRENTFLUX_IPK_DIR)/CONTROL/postinst
 	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(TORRENTFLUX_IPK_DIR)/CONTROL/postinst

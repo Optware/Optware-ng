@@ -40,7 +40,7 @@ HTTPING_IPK_VERSION=1
 
 #
 # HTTPING_CONFFILES should be a list of user-editable files
-#HTTPING_CONFFILES=/opt/etc/httping.conf /opt/etc/init.d/SXXhttping
+#HTTPING_CONFFILES=$(TARGET_PREFIX)/etc/httping.conf $(TARGET_PREFIX)/etc/init.d/SXXhttping
 
 #
 # HTTPING_PATCHES should list any patches, in the the order in
@@ -115,7 +115,7 @@ $(HTTPING_BUILD_DIR)/.configured: $(DL_DIR)/$(HTTPING_SOURCE) $(HTTPING_PATCHES)
 	if test "$(BUILD_DIR)/$(HTTPING_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(HTTPING_DIR) $(@D) ; \
 	fi
-	sed -i -e 's:/usr/:/opt/:g' $(@D)/Makefile
+	sed -i -e 's:/usr/:$(TARGET_PREFIX)/:g' $(@D)/Makefile
 #	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(HTTPING_CPPFLAGS)" \
@@ -183,20 +183,20 @@ $(HTTPING_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(HTTPING_IPK_DIR)/opt/sbin or $(HTTPING_IPK_DIR)/opt/bin
+# Binaries should be installed into $(HTTPING_IPK_DIR)$(TARGET_PREFIX)/sbin or $(HTTPING_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(HTTPING_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(HTTPING_IPK_DIR)/opt/etc/httping/...
-# Documentation files should be installed in $(HTTPING_IPK_DIR)/opt/doc/httping/...
-# Daemon startup scripts should be installed in $(HTTPING_IPK_DIR)/opt/etc/init.d/S??httping
+# Libraries and include files should be installed into $(HTTPING_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(HTTPING_IPK_DIR)$(TARGET_PREFIX)/etc/httping/...
+# Documentation files should be installed in $(HTTPING_IPK_DIR)$(TARGET_PREFIX)/doc/httping/...
+# Daemon startup scripts should be installed in $(HTTPING_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??httping
 #
 # You may need to patch your application to make it use these locations.
 #
 $(HTTPING_IPK): $(HTTPING_BUILD_DIR)/.built
 	rm -rf $(HTTPING_IPK_DIR) $(BUILD_DIR)/httping_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(HTTPING_BUILD_DIR) DESTDIR=$(HTTPING_IPK_DIR) install \
-		STRIP=: PREFIX=/opt
-	$(STRIP_COMMAND) $(HTTPING_IPK_DIR)/opt/bin/*
+		STRIP=: PREFIX=$(TARGET_PREFIX)
+	$(STRIP_COMMAND) $(HTTPING_IPK_DIR)$(TARGET_PREFIX)/bin/*
 	$(MAKE) $(HTTPING_IPK_DIR)/CONTROL/control
 	echo $(HTTPING_CONFFILES) | sed -e 's/ /\n/g' > $(HTTPING_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(HTTPING_IPK_DIR)

@@ -64,7 +64,7 @@ $(PERL-DBD-SQLITE_BUILD_DIR)/.built: $(PERL-DBD-SQLITE_BUILD_DIR)/.configured
 	rm -f $@
 	$(MAKE) -C $(PERL-DBD-SQLITE_BUILD_DIR) \
 	    PASTHRU_INC="$(STAGING_CPPFLAGS) -I$(STAGING_LIB_DIR)/perl5/site_perl/$(PERL_VERSION)/$(PERL_ARCH)/auto/DBI" \
-	    LD_RUN_PATH=/opt/lib \
+	    LD_RUN_PATH=$(TARGET_PREFIX)/lib \
 	    CCFLAGS="$(PERL-DBD-SQLITE_CPPFLAGS) $(STAGING_CPPFLAGS)" \
 	    LDFLAGS="$(STAGING_LDFLAGS)" \
 	    LDDLFLAGS="-shared $(STAGING_LDFLAGS)" \
@@ -105,7 +105,7 @@ $(PERL-DBD-SQLITE_IPK): $(PERL-DBD-SQLITE_BUILD_DIR)/.built
 	rm -rf $(PERL-DBD-SQLITE_IPK_DIR) $(BUILD_DIR)/perl-dbd-sqlite_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PERL-DBD-SQLITE_BUILD_DIR) DESTDIR=$(PERL-DBD-SQLITE_IPK_DIR) install
 	find $(PERL-DBD-SQLITE_IPK_DIR)$(TARGET_PREFIX) -name 'perllocal.pod' -exec rm -f {} \;
-	(cd $(PERL-DBD-SQLITE_IPK_DIR)/opt/lib/perl5 ; \
+	(cd $(PERL-DBD-SQLITE_IPK_DIR)$(TARGET_PREFIX)/lib/perl5 ; \
 		find . -name '*.so' -exec chmod +w {} \; ; \
 		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
 		find . -name '*.so' -exec chmod -w {} \; ; \

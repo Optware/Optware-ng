@@ -153,12 +153,12 @@ xdmcp-stage: $(XDMCP_BUILD_DIR)/.staged
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(XDMCP_IPK_DIR)/opt/sbin or $(XDMCP_IPK_DIR)/opt/bin
+# Binaries should be installed into $(XDMCP_IPK_DIR)$(TARGET_PREFIX)/sbin or $(XDMCP_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(XDMCP_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(XDMCP_IPK_DIR)/opt/etc/xdmcp/...
-# Documentation files should be installed in $(XDMCP_IPK_DIR)/opt/doc/xdmcp/...
-# Daemon startup scripts should be installed in $(XDMCP_IPK_DIR)/opt/etc/init.d/S??xdmcp
+# Libraries and include files should be installed into $(XDMCP_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(XDMCP_IPK_DIR)$(TARGET_PREFIX)/etc/xdmcp/...
+# Documentation files should be installed in $(XDMCP_IPK_DIR)$(TARGET_PREFIX)/doc/xdmcp/...
+# Daemon startup scripts should be installed in $(XDMCP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??xdmcp
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -166,7 +166,7 @@ $(XDMCP_IPK): $(XDMCP_BUILD_DIR)/.built
 	rm -rf $(XDMCP_IPK_DIR) $(BUILD_DIR)/xdmcp_*_$(TARGET_ARCH).ipk $(XDMCP_SOURCE_DIR)/control
 	$(MAKE) -C $(XDMCP_BUILD_DIR) DESTDIR=$(XDMCP_IPK_DIR) install-strip
 	$(MAKE) $(XDMCP_IPK_DIR)/CONTROL/control
-	rm -f $(XDMCP_IPK_DIR)/opt/lib/*.la
+	rm -f $(XDMCP_IPK_DIR)$(TARGET_PREFIX)/lib/*.la
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XDMCP_IPK_DIR)
 
 #

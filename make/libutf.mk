@@ -40,7 +40,7 @@ LIBUTF_IPK_VERSION=1
 
 #
 # LIBUTF_CONFFILES should be a list of user-editable files
-#LIBUTF_CONFFILES=/opt/etc/libutf.conf /opt/etc/init.d/SXXlibutf
+#LIBUTF_CONFFILES=$(TARGET_PREFIX)/etc/libutf.conf $(TARGET_PREFIX)/etc/init.d/SXXlibutf
 
 #
 # LIBUTF_PATCHES should list any patches, in the the order in
@@ -177,12 +177,12 @@ $(LIBUTF_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LIBUTF_IPK_DIR)/opt/sbin or $(LIBUTF_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LIBUTF_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LIBUTF_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LIBUTF_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LIBUTF_IPK_DIR)/opt/etc/libutf/...
-# Documentation files should be installed in $(LIBUTF_IPK_DIR)/opt/doc/libutf/...
-# Daemon startup scripts should be installed in $(LIBUTF_IPK_DIR)/opt/etc/init.d/S??libutf
+# Libraries and include files should be installed into $(LIBUTF_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LIBUTF_IPK_DIR)$(TARGET_PREFIX)/etc/libutf/...
+# Documentation files should be installed in $(LIBUTF_IPK_DIR)$(TARGET_PREFIX)/doc/libutf/...
+# Daemon startup scripts should be installed in $(LIBUTF_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??libutf
 #
 # You may need to patch your application to make it use these locations.
 #

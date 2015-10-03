@@ -40,8 +40,8 @@ GNOKII_IPK_VERSION=1
 
 #
 # GNOKII_CONFFILES should be a list of user-editable files
-# GNOKII_CONFFILES=/opt/etc/gnokii.conf /opt/etc/init.d/SXXgnokii
-# GNOKII_SMSD_CONFFILES=/opt/etc/gnokii.conf /opt/etc/init.d/SXXgnokii
+# GNOKII_CONFFILES=$(TARGET_PREFIX)/etc/gnokii.conf $(TARGET_PREFIX)/etc/init.d/SXXgnokii
+# GNOKII_SMSD_CONFFILES=$(TARGET_PREFIX)/etc/gnokii.conf $(TARGET_PREFIX)/etc/init.d/SXXgnokii
 
 #
 # GNOKII_PATCHES should list any patches, in the the order in
@@ -144,7 +144,7 @@ $(GNOKII_BUILD_DIR)/.configured: $(DL_DIR)/$(GNOKII_SOURCE) $(GNOKII_PATCHES) ma
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=$(TARGET_PREFIX) \
-		--mandir=/opt/man \
+		--mandir=$(TARGET_PREFIX)/man \
 		--without-x \
 		--disable-nls \
 		--disable-static \
@@ -241,12 +241,12 @@ $(GNOKII_SMSD_MYSQL_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(GNOKII_IPK_DIR)/opt/sbin or $(GNOKII_IPK_DIR)/opt/bin
+# Binaries should be installed into $(GNOKII_IPK_DIR)$(TARGET_PREFIX)/sbin or $(GNOKII_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(GNOKII_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(GNOKII_IPK_DIR)/opt/etc/gnokii/...
-# Documentation files should be installed in $(GNOKII_IPK_DIR)/opt/doc/gnokii/...
-# Daemon startup scripts should be installed in $(GNOKII_IPK_DIR)/opt/etc/init.d/S??gnokii
+# Libraries and include files should be installed into $(GNOKII_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(GNOKII_IPK_DIR)$(TARGET_PREFIX)/etc/gnokii/...
+# Documentation files should be installed in $(GNOKII_IPK_DIR)$(TARGET_PREFIX)/doc/gnokii/...
+# Daemon startup scripts should be installed in $(GNOKII_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??gnokii
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -257,17 +257,17 @@ $(GNOKII_IPK): $(GNOKII_BUILD_DIR)/.built
 #
 # Remove documentation and development files
 #
-	rm $(GNOKII_IPK_DIR)/opt/lib/pkgconfig/*
-	rmdir $(GNOKII_IPK_DIR)/opt/lib/pkgconfig
-	rm -rf $(GNOKII_IPK_DIR)/opt/share/doc/gnokii 
-	rmdir $(GNOKII_IPK_DIR)/opt/share/doc
-	rm -rf $(GNOKII_IPK_DIR)/opt/include/gnokii*
-	rmdir  $(GNOKII_IPK_DIR)/opt/include
-	$(INSTALL) -d $(GNOKII_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(GNOKII_SOURCE_DIR)/gnokii.conf $(GNOKII_IPK_DIR)/opt/etc/gnokii.conf
-#	$(INSTALL) -d $(GNOKII_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(GNOKII_SOURCE_DIR)/rc.gnokii $(GNOKII_IPK_DIR)/opt/etc/init.d/SXXgnokii
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/opt/etc/init.d/SXXgnokii
+	rm $(GNOKII_IPK_DIR)$(TARGET_PREFIX)/lib/pkgconfig/*
+	rmdir $(GNOKII_IPK_DIR)$(TARGET_PREFIX)/lib/pkgconfig
+	rm -rf $(GNOKII_IPK_DIR)$(TARGET_PREFIX)/share/doc/gnokii 
+	rmdir $(GNOKII_IPK_DIR)$(TARGET_PREFIX)/share/doc
+	rm -rf $(GNOKII_IPK_DIR)$(TARGET_PREFIX)/include/gnokii*
+	rmdir  $(GNOKII_IPK_DIR)$(TARGET_PREFIX)/include
+	$(INSTALL) -d $(GNOKII_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(GNOKII_SOURCE_DIR)/gnokii.conf $(GNOKII_IPK_DIR)$(TARGET_PREFIX)/etc/gnokii.conf
+#	$(INSTALL) -d $(GNOKII_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(GNOKII_SOURCE_DIR)/rc.gnokii $(GNOKII_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXgnokii
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXgnokii
 	$(MAKE) $(GNOKII_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(GNOKII_SOURCE_DIR)/postinst $(GNOKII_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/postinst
@@ -279,8 +279,8 @@ $(GNOKII_IPK): $(GNOKII_BUILD_DIR)/.built
 $(GNOKII_SMSD_IPK): $(GNOKII_BUILD_DIR)/.smsd-built
 	rm -rf $(GNOKII_SMSD_IPK_DIR) $(BUILD_DIR)/gnokii-smsd_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GNOKII_BUILD_DIR)/smsd DESTDIR=$(GNOKII_SMSD_IPK_DIR) install-strip transform=''
-	rm -f $(GNOKII_SMSD_IPK_DIR)/opt/lib/smsd/libsmsd_file.la
-	rm -f $(GNOKII_SMSD_IPK_DIR)/opt/lib/smsd/libsmsd_mysql.*
+	rm -f $(GNOKII_SMSD_IPK_DIR)$(TARGET_PREFIX)/lib/smsd/libsmsd_file.la
+	rm -f $(GNOKII_SMSD_IPK_DIR)$(TARGET_PREFIX)/lib/smsd/libsmsd_mysql.*
 	$(MAKE) $(GNOKII_SMSD_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(GNOKII_SOURCE_DIR)/postinst $(GNOKII_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/postinst
@@ -292,12 +292,12 @@ $(GNOKII_SMSD_IPK): $(GNOKII_BUILD_DIR)/.smsd-built
 $(GNOKII_SMSD_MYSQL_IPK): $(GNOKII_BUILD_DIR)/.smsd-built
 	rm -rf $(GNOKII_SMSD_MYSQL_IPK_DIR) $(BUILD_DIR)/gnokii-smsd-mysql_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GNOKII_BUILD_DIR)/smsd DESTDIR=$(GNOKII_SMSD_MYSQL_IPK_DIR) install-strip transform=''
-	rm -rf $(GNOKII_SMSD_MYSQL_IPK_DIR)/opt/*bin
-	rm -rf $(GNOKII_SMSD_MYSQL_IPK_DIR)/opt/man
-	rm $(GNOKII_SMSD_MYSQL_IPK_DIR)/opt/lib/smsd/libsmsd_file.*
-	rm $(GNOKII_SMSD_MYSQL_IPK_DIR)/opt/lib/smsd/libsmsd_mysql.la
-	mkdir -p $(GNOKII_SMSD_MYSQL_IPK_DIR)/opt/share/doc/gnokii-smsd
-	cp $(GNOKII_BUILD_DIR)/smsd/sms.tables.mysql.sql $(GNOKII_SMSD_MYSQL_IPK_DIR)/opt/share/doc/gnokii-smsd
+	rm -rf $(GNOKII_SMSD_MYSQL_IPK_DIR)$(TARGET_PREFIX)/*bin
+	rm -rf $(GNOKII_SMSD_MYSQL_IPK_DIR)$(TARGET_PREFIX)/man
+	rm $(GNOKII_SMSD_MYSQL_IPK_DIR)$(TARGET_PREFIX)/lib/smsd/libsmsd_file.*
+	rm $(GNOKII_SMSD_MYSQL_IPK_DIR)$(TARGET_PREFIX)/lib/smsd/libsmsd_mysql.la
+	mkdir -p $(GNOKII_SMSD_MYSQL_IPK_DIR)$(TARGET_PREFIX)/share/doc/gnokii-smsd
+	cp $(GNOKII_BUILD_DIR)/smsd/sms.tables.mysql.sql $(GNOKII_SMSD_MYSQL_IPK_DIR)$(TARGET_PREFIX)/share/doc/gnokii-smsd
 	$(MAKE) $(GNOKII_SMSD_MYSQL_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(GNOKII_SOURCE_DIR)/postinst $(GNOKII_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/postinst

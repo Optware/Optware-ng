@@ -40,7 +40,7 @@ NBD_IPK_VERSION=1
 
 #
 # NBD_CONFFILES should be a list of user-editable files
-#NBD_CONFFILES=/opt/etc/nbd.conf /opt/etc/init.d/SXXnbd
+#NBD_CONFFILES=$(TARGET_PREFIX)/etc/nbd.conf $(TARGET_PREFIX)/etc/init.d/SXXnbd
 
 #
 # NBD_PATCHES should list any patches, in the the order in
@@ -197,12 +197,12 @@ $(NBD-SERVER_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(NBD_IPK_DIR)/opt/sbin or $(NBD_IPK_DIR)/opt/bin
+# Binaries should be installed into $(NBD_IPK_DIR)$(TARGET_PREFIX)/sbin or $(NBD_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(NBD_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(NBD_IPK_DIR)/opt/etc/nbd/...
-# Documentation files should be installed in $(NBD_IPK_DIR)/opt/doc/nbd/...
-# Daemon startup scripts should be installed in $(NBD_IPK_DIR)/opt/etc/init.d/S??nbd
+# Libraries and include files should be installed into $(NBD_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(NBD_IPK_DIR)$(TARGET_PREFIX)/etc/nbd/...
+# Documentation files should be installed in $(NBD_IPK_DIR)$(TARGET_PREFIX)/doc/nbd/...
+# Daemon startup scripts should be installed in $(NBD_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??nbd
 #
 # You may need to patch your application to make it use these locations.
 #

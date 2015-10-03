@@ -55,7 +55,7 @@ $(PERL-CRYPT-OPENSSL-RANDOM_BUILD_DIR)/.built: $(PERL-CRYPT-OPENSSL-RANDOM_BUILD
 	$(MAKE) -C $(PERL-CRYPT-OPENSSL-RANDOM_BUILD_DIR) \
 	$(TARGET_CONFIGURE_OPTS) LD=$(TARGET_CC) \
 	CPPFLAGS="$(STAGING_CPPFLAGS)" \
-        LDDLFLAGS="-shared -Wl,-rpath=/opt/lib" \
+        LDDLFLAGS="-shared -Wl,-rpath=$(TARGET_PREFIX)/lib" \
 	PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" 
 	touch $(PERL-CRYPT-OPENSSL-RANDOM_BUILD_DIR)/.built
 
@@ -87,7 +87,7 @@ $(PERL-CRYPT-OPENSSL-RANDOM_IPK): $(PERL-CRYPT-OPENSSL-RANDOM_BUILD_DIR)/.built
 	rm -rf $(PERL-CRYPT-OPENSSL-RANDOM_IPK_DIR) $(BUILD_DIR)/perl-crypt-openssl-random_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PERL-CRYPT-OPENSSL-RANDOM_BUILD_DIR) DESTDIR=$(PERL-CRYPT-OPENSSL-RANDOM_IPK_DIR) install
 	find $(PERL-CRYPT-OPENSSL-RANDOM_IPK_DIR)$(TARGET_PREFIX) -name 'perllocal.pod' -exec rm -f {} \;
-	(cd $(PERL-CRYPT-OPENSSL-RANDOM_IPK_DIR)/opt/lib/perl5 ; \
+	(cd $(PERL-CRYPT-OPENSSL-RANDOM_IPK_DIR)$(TARGET_PREFIX)/lib/perl5 ; \
 		find . -name '*.so' -exec chmod +w {} \; ; \
 		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
 		find . -name '*.so' -exec chmod -w {} \; ; \

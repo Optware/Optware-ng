@@ -46,7 +46,7 @@ AT-SPI2-CORE_IPK_VERSION=1
 
 #
 # AT-SPI2-CORE_CONFFILES should be a list of user-editable files
-#AT-SPI2-CORE_CONFFILES=/opt/etc/at-spi2-core.conf /opt/etc/init.d/SXXat-spi2-core
+#AT-SPI2-CORE_CONFFILES=$(TARGET_PREFIX)/etc/at-spi2-core.conf $(TARGET_PREFIX)/etc/init.d/SXXat-spi2-core
 
 #
 # AT-SPI2-CORE_PATCHES should list any patches, in the the order in
@@ -190,24 +190,24 @@ $(AT-SPI2-CORE_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(AT-SPI2-CORE_IPK_DIR)/opt/sbin or $(AT-SPI2-CORE_IPK_DIR)/opt/bin
+# Binaries should be installed into $(AT-SPI2-CORE_IPK_DIR)$(TARGET_PREFIX)/sbin or $(AT-SPI2-CORE_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(AT-SPI2-CORE_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(AT-SPI2-CORE_IPK_DIR)/opt/etc/at-spi2-core/...
-# Documentation files should be installed in $(AT-SPI2-CORE_IPK_DIR)/opt/doc/at-spi2-core/...
-# Daemon startup scripts should be installed in $(AT-SPI2-CORE_IPK_DIR)/opt/etc/init.d/S??at-spi2-core
+# Libraries and include files should be installed into $(AT-SPI2-CORE_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(AT-SPI2-CORE_IPK_DIR)$(TARGET_PREFIX)/etc/at-spi2-core/...
+# Documentation files should be installed in $(AT-SPI2-CORE_IPK_DIR)$(TARGET_PREFIX)/doc/at-spi2-core/...
+# Daemon startup scripts should be installed in $(AT-SPI2-CORE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??at-spi2-core
 #
 # You may need to patch your application to make it use these locations.
 #
 $(AT-SPI2-CORE_IPK): $(AT-SPI2-CORE_BUILD_DIR)/.built
 	rm -rf $(AT-SPI2-CORE_IPK_DIR) $(BUILD_DIR)/at-spi2-core_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(AT-SPI2-CORE_BUILD_DIR) DESTDIR=$(AT-SPI2-CORE_IPK_DIR) install-strip
-	rm -f $(AT-SPI2-CORE_IPK_DIR)/opt/lib/*.la
-#	$(INSTALL) -d $(AT-SPI2-CORE_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(AT-SPI2-CORE_SOURCE_DIR)/at-spi2-core.conf $(AT-SPI2-CORE_IPK_DIR)/opt/etc/at-spi2-core.conf
-#	$(INSTALL) -d $(AT-SPI2-CORE_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(AT-SPI2-CORE_SOURCE_DIR)/rc.at-spi2-core $(AT-SPI2-CORE_IPK_DIR)/opt/etc/init.d/SXXat-spi2-core
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(AT-SPI2-CORE_IPK_DIR)/opt/etc/init.d/SXXat-spi2-core
+	rm -f $(AT-SPI2-CORE_IPK_DIR)$(TARGET_PREFIX)/lib/*.la
+#	$(INSTALL) -d $(AT-SPI2-CORE_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(AT-SPI2-CORE_SOURCE_DIR)/at-spi2-core.conf $(AT-SPI2-CORE_IPK_DIR)$(TARGET_PREFIX)/etc/at-spi2-core.conf
+#	$(INSTALL) -d $(AT-SPI2-CORE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(AT-SPI2-CORE_SOURCE_DIR)/rc.at-spi2-core $(AT-SPI2-CORE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXat-spi2-core
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(AT-SPI2-CORE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXat-spi2-core
 	$(MAKE) $(AT-SPI2-CORE_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(AT-SPI2-CORE_SOURCE_DIR)/postinst $(AT-SPI2-CORE_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(AT-SPI2-CORE_IPK_DIR)/CONTROL/postinst

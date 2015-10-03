@@ -43,7 +43,7 @@ SILC_CLIENT_IPK_VERSION=1
 
 #
 # SILC_CLIENT_CONFFILES should be a list of user-editable files
-#SILC_CLIENT_CONFFILES=/opt/etc/silc-client.conf /opt/etc/init.d/SXXsilc-client
+#SILC_CLIENT_CONFFILES=$(TARGET_PREFIX)/etc/silc-client.conf $(TARGET_PREFIX)/etc/init.d/SXXsilc-client
 
 #
 # SILC_CLIENT_PATCHES should list any patches, in the the order in
@@ -192,23 +192,23 @@ $(SILC_CLIENT_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(SILC_CLIENT_IPK_DIR)/opt/sbin or $(SILC_CLIENT_IPK_DIR)/opt/bin
+# Binaries should be installed into $(SILC_CLIENT_IPK_DIR)$(TARGET_PREFIX)/sbin or $(SILC_CLIENT_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(SILC_CLIENT_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(SILC_CLIENT_IPK_DIR)/opt/etc/silc-client/...
-# Documentation files should be installed in $(SILC_CLIENT_IPK_DIR)/opt/doc/silc-client/...
-# Daemon startup scripts should be installed in $(SILC_CLIENT_IPK_DIR)/opt/etc/init.d/S??silc-client
+# Libraries and include files should be installed into $(SILC_CLIENT_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(SILC_CLIENT_IPK_DIR)$(TARGET_PREFIX)/etc/silc-client/...
+# Documentation files should be installed in $(SILC_CLIENT_IPK_DIR)$(TARGET_PREFIX)/doc/silc-client/...
+# Daemon startup scripts should be installed in $(SILC_CLIENT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??silc-client
 #
 # You may need to patch your application to make it use these locations.
 #
 $(SILC_CLIENT_IPK): $(SILC_CLIENT_BUILD_DIR)/.built
 	rm -rf $(SILC_CLIENT_IPK_DIR) $(BUILD_DIR)/silc-client_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SILC_CLIENT_BUILD_DIR) DESTDIR=$(SILC_CLIENT_IPK_DIR) install-strip
-#	$(INSTALL) -d $(SILC_CLIENT_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(SILC_CLIENT_SOURCE_DIR)/silc-client.conf $(SILC_CLIENT_IPK_DIR)/opt/etc/silc-client.conf
-#	$(INSTALL) -d $(SILC_CLIENT_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(SILC_CLIENT_SOURCE_DIR)/rc.silc-client $(SILC_CLIENT_IPK_DIR)/opt/etc/init.d/SXXsilc-client
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SILC_CLIENT_IPK_DIR)/opt/etc/init.d/SXXsilc-client
+#	$(INSTALL) -d $(SILC_CLIENT_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(SILC_CLIENT_SOURCE_DIR)/silc-client.conf $(SILC_CLIENT_IPK_DIR)$(TARGET_PREFIX)/etc/silc-client.conf
+#	$(INSTALL) -d $(SILC_CLIENT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(SILC_CLIENT_SOURCE_DIR)/rc.silc-client $(SILC_CLIENT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXsilc-client
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SILC_CLIENT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXsilc-client
 	$(MAKE) $(SILC_CLIENT_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(SILC_CLIENT_SOURCE_DIR)/postinst $(SILC_CLIENT_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SILC_CLIENT_IPK_DIR)/CONTROL/postinst

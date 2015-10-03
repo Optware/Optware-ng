@@ -43,7 +43,7 @@ PY-PLY_IPK_VERSION=1
 
 #
 # PY-PLY_CONFFILES should be a list of user-editable files
-#PY-PLY_CONFFILES=/opt/etc/py-ply.conf /opt/etc/init.d/SXXpy-ply
+#PY-PLY_CONFFILES=$(TARGET_PREFIX)/etc/py-ply.conf $(TARGET_PREFIX)/etc/init.d/SXXpy-ply
 
 #
 # PY-PLY_PATCHES should list any patches, in the the order in
@@ -132,9 +132,9 @@ $(PY-PLY_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PLY_SOURCE) $(PY-PLY_PATCHES) ma
 	(cd $(@D)/2.5; \
 	    ( \
 	    echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python2.5"; \
+	    echo "executable=$(TARGET_PREFIX)/bin/python2.5"; \
 	    echo "[install]"; \
-	    echo "install_scripts=/opt/bin"; \
+	    echo "install_scripts=$(TARGET_PREFIX)/bin"; \
 	    ) > setup.cfg \
 	)
 	# 2.6
@@ -147,9 +147,9 @@ $(PY-PLY_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PLY_SOURCE) $(PY-PLY_PATCHES) ma
 	(cd $(@D)/2.6; \
 	    ( \
 	    echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python2.6"; \
+	    echo "executable=$(TARGET_PREFIX)/bin/python2.6"; \
 	    echo "[install]"; \
-	    echo "install_scripts=/opt/bin"; \
+	    echo "install_scripts=$(TARGET_PREFIX)/bin"; \
 	    ) > setup.cfg \
 	)
 	# 2.7
@@ -162,9 +162,9 @@ $(PY-PLY_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PLY_SOURCE) $(PY-PLY_PATCHES) ma
 	(cd $(@D)/2.7; \
 	    ( \
 	    echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python2.7"; \
+	    echo "executable=$(TARGET_PREFIX)/bin/python2.7"; \
 	    echo "[install]"; \
-	    echo "install_scripts=/opt/bin"; \
+	    echo "install_scripts=$(TARGET_PREFIX)/bin"; \
 	    ) > setup.cfg \
 	)
 	# 3
@@ -177,9 +177,9 @@ $(PY-PLY_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PLY_SOURCE) $(PY-PLY_PATCHES) ma
 	(cd $(@D)/3; \
 	    ( \
 	    echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python$(PYTHON3_VERSION_MAJOR)"; \
+	    echo "executable=$(TARGET_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR)"; \
 	    echo "[install]"; \
-	    echo "install_scripts=/opt/bin"; \
+	    echo "install_scripts=$(TARGET_PREFIX)/bin"; \
 	    ) > setup.cfg \
 	)
 	touch $@
@@ -228,7 +228,7 @@ $(PY-PLY_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(PY-PLY_SOURCE) ma
 	    echo "[build_scripts]"; \
 	    echo "executable=$(HOST_STAGING_PREFIX)/bin/python2.5"; \
 	    echo "[install]"; \
-	    echo "install_scripts=/opt/bin"; \
+	    echo "install_scripts=$(TARGET_PREFIX)/bin"; \
 	    ) >> setup.cfg; \
 	)
 	$(PY-PLY_UNZIP) $(DL_DIR)/$(PY-PLY_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
@@ -241,7 +241,7 @@ $(PY-PLY_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(PY-PLY_SOURCE) ma
 	    echo "[build_scripts]"; \
 	    echo "executable=$(HOST_STAGING_PREFIX)/bin/python2.6"; \
 	    echo "[install]"; \
-	    echo "install_scripts=/opt/bin"; \
+	    echo "install_scripts=$(TARGET_PREFIX)/bin"; \
 	    ) >> setup.cfg; \
 	)
 	$(PY-PLY_UNZIP) $(DL_DIR)/$(PY-PLY_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
@@ -254,7 +254,7 @@ $(PY-PLY_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(PY-PLY_SOURCE) ma
 	    echo "[build_scripts]"; \
 	    echo "executable=$(HOST_STAGING_PREFIX)/bin/python2.7"; \
 	    echo "[install]"; \
-	    echo "install_scripts=/opt/bin"; \
+	    echo "install_scripts=$(TARGET_PREFIX)/bin"; \
 	    ) >> setup.cfg; \
 	)
 	$(PY-PLY_UNZIP) $(DL_DIR)/$(PY-PLY_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
@@ -267,17 +267,17 @@ $(PY-PLY_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(PY-PLY_SOURCE) ma
 	    echo "[build_scripts]"; \
 	    echo "executable=$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR)"; \
 	    echo "[install]"; \
-	    echo "install_scripts=/opt/bin"; \
+	    echo "install_scripts=$(TARGET_PREFIX)/bin"; \
 	    ) >> setup.cfg; \
 	)
 	(cd $(@D)/2.5; \
-		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(HOST_STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	(cd $(@D)/2.6; \
-		$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+		$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(HOST_STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	(cd $(@D)/2.7; \
-		$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+		$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(HOST_STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	(cd $(@D)/3; \
-		$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+		$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(HOST_STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	touch $@
 
 py-ply-host-stage: $(PY-PLY_HOST_BUILD_DIR)/.staged
@@ -347,12 +347,12 @@ $(PY3-PLY_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PY-PLY_IPK_DIR)/opt/sbin or $(PY-PLY_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PY-PLY_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PY-PLY_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PY-PLY_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PY-PLY_IPK_DIR)/opt/etc/py-ply/...
-# Documentation files should be installed in $(PY-PLY_IPK_DIR)/opt/doc/py-ply/...
-# Daemon startup scripts should be installed in $(PY-PLY_IPK_DIR)/opt/etc/init.d/S??py-ply
+# Libraries and include files should be installed into $(PY-PLY_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PY-PLY_IPK_DIR)$(TARGET_PREFIX)/etc/py-ply/...
+# Documentation files should be installed in $(PY-PLY_IPK_DIR)$(TARGET_PREFIX)/doc/py-ply/...
+# Daemon startup scripts should be installed in $(PY-PLY_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??py-ply
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -360,7 +360,7 @@ $(PY25-PLY_IPK): $(PY-PLY_BUILD_DIR)/.built
 	rm -rf $(BUILD_DIR)/py*-ply_*_$(TARGET_ARCH).ipk
 	rm -rf $(PY25-PLY_IPK_DIR) $(BUILD_DIR)/py25-ply_*_$(TARGET_ARCH).ipk
 	(cd $(PY-PLY_BUILD_DIR)/2.5; \
-	$(HOST_STAGING_PREFIX)/bin/python2.5 -c "import setuptools; execfile('setup.py')" install --root=$(PY25-PLY_IPK_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python2.5 -c "import setuptools; execfile('setup.py')" install --root=$(PY25-PLY_IPK_DIR) --prefix=$(TARGET_PREFIX))
 	$(MAKE) $(PY25-PLY_IPK_DIR)/CONTROL/control
 #	echo $(PY-PLY_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-PLY_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-PLY_IPK_DIR)
@@ -368,7 +368,7 @@ $(PY25-PLY_IPK): $(PY-PLY_BUILD_DIR)/.built
 $(PY26-PLY_IPK): $(PY-PLY_BUILD_DIR)/.built
 	rm -rf $(PY26-PLY_IPK_DIR) $(BUILD_DIR)/py26-ply_*_$(TARGET_ARCH).ipk
 	(cd $(PY-PLY_BUILD_DIR)/2.6; \
-	$(HOST_STAGING_PREFIX)/bin/python2.6 -c "import setuptools; execfile('setup.py')" install --root=$(PY26-PLY_IPK_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python2.6 -c "import setuptools; execfile('setup.py')" install --root=$(PY26-PLY_IPK_DIR) --prefix=$(TARGET_PREFIX))
 	$(MAKE) $(PY26-PLY_IPK_DIR)/CONTROL/control
 #	echo $(PY-PLY_CONFFILES) | sed -e 's/ /\n/g' > $(PY26-PLY_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-PLY_IPK_DIR)
@@ -376,7 +376,7 @@ $(PY26-PLY_IPK): $(PY-PLY_BUILD_DIR)/.built
 $(PY27-PLY_IPK): $(PY-PLY_BUILD_DIR)/.built
 	rm -rf $(PY27-PLY_IPK_DIR) $(BUILD_DIR)/py27-ply_*_$(TARGET_ARCH).ipk
 	(cd $(PY-PLY_BUILD_DIR)/2.7; \
-	$(HOST_STAGING_PREFIX)/bin/python2.7 -c "import setuptools; execfile('setup.py')" install --root=$(PY27-PLY_IPK_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python2.7 -c "import setuptools; execfile('setup.py')" install --root=$(PY27-PLY_IPK_DIR) --prefix=$(TARGET_PREFIX))
 	$(MAKE) $(PY27-PLY_IPK_DIR)/CONTROL/control
 #	echo $(PY-PLY_CONFFILES) | sed -e 's/ /\n/g' > $(PY27-PLY_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY27-PLY_IPK_DIR)
@@ -384,7 +384,7 @@ $(PY27-PLY_IPK): $(PY-PLY_BUILD_DIR)/.built
 $(PY3-PLY_IPK): $(PY-PLY_BUILD_DIR)/.built
 	rm -rf $(PY3-PLY_IPK_DIR) $(BUILD_DIR)/py3-ply_*_$(TARGET_ARCH).ipk
 	(cd $(PY-PLY_BUILD_DIR)/3; \
-	$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(PY3-PLY_IPK_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(PY3-PLY_IPK_DIR) --prefix=$(TARGET_PREFIX))
 	$(MAKE) $(PY3-PLY_IPK_DIR)/CONTROL/control
 #	echo $(PY-PLY_CONFFILES) | sed -e 's/ /\n/g' > $(PY3-PLY_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY3-PLY_IPK_DIR)

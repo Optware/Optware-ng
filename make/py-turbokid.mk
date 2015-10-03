@@ -43,7 +43,7 @@ PY-TURBOKID_IPK_VERSION=1
 
 #
 # PY-TURBOKID_CONFFILES should be a list of user-editable files
-#PY-TURBOKID_CONFFILES=/opt/etc/py-turbokid.conf /opt/etc/init.d/SXXpy-turbokid
+#PY-TURBOKID_CONFFILES=$(TARGET_PREFIX)/etc/py-turbokid.conf $(TARGET_PREFIX)/etc/init.d/SXXpy-turbokid
 
 #
 # PY-TURBOKID_PATCHES should list any patches, in the the order in
@@ -119,7 +119,7 @@ $(PY-TURBOKID_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-TURBOKID_SOURCE) $(PY-TURBO
 	mv $(BUILD_DIR)/$(PY-TURBOKID_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
 	    (echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python2.5") >> setup.cfg \
+	    echo "executable=$(TARGET_PREFIX)/bin/python2.5") >> setup.cfg \
 	)
 	# 2.6
 	rm -rf $(BUILD_DIR)/$(PY-TURBOKID_DIR)
@@ -128,7 +128,7 @@ $(PY-TURBOKID_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-TURBOKID_SOURCE) $(PY-TURBO
 	mv $(BUILD_DIR)/$(PY-TURBOKID_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
 	    (echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python2.6") >> setup.cfg \
+	    echo "executable=$(TARGET_PREFIX)/bin/python2.6") >> setup.cfg \
 	)
 	touch $@
 
@@ -197,12 +197,12 @@ $(PY26-TURBOKID_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PY-TURBOKID_IPK_DIR)/opt/sbin or $(PY-TURBOKID_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PY-TURBOKID_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PY-TURBOKID_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PY-TURBOKID_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PY-TURBOKID_IPK_DIR)/opt/etc/py-turbokid/...
-# Documentation files should be installed in $(PY-TURBOKID_IPK_DIR)/opt/doc/py-turbokid/...
-# Daemon startup scripts should be installed in $(PY-TURBOKID_IPK_DIR)/opt/etc/init.d/S??py-turbokid
+# Libraries and include files should be installed into $(PY-TURBOKID_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PY-TURBOKID_IPK_DIR)$(TARGET_PREFIX)/etc/py-turbokid/...
+# Documentation files should be installed in $(PY-TURBOKID_IPK_DIR)$(TARGET_PREFIX)/doc/py-turbokid/...
+# Daemon startup scripts should be installed in $(PY-TURBOKID_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??py-turbokid
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -212,7 +212,7 @@ $(PY25-TURBOKID_IPK): $(PY-TURBOKID_BUILD_DIR)/.built
 	(cd $(PY-TURBOKID_BUILD_DIR)/2.5; \
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
-		--root=$(PY25-TURBOKID_IPK_DIR) --prefix=/opt)
+		--root=$(PY25-TURBOKID_IPK_DIR) --prefix=$(TARGET_PREFIX))
 	$(MAKE) $(PY25-TURBOKID_IPK_DIR)/CONTROL/control
 	echo $(PY-TURBOKID_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-TURBOKID_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-TURBOKID_IPK_DIR)
@@ -222,7 +222,7 @@ $(PY26-TURBOKID_IPK): $(PY-TURBOKID_BUILD_DIR)/.built
 	(cd $(PY-TURBOKID_BUILD_DIR)/2.6; \
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install \
-		--root=$(PY26-TURBOKID_IPK_DIR) --prefix=/opt)
+		--root=$(PY26-TURBOKID_IPK_DIR) --prefix=$(TARGET_PREFIX))
 	$(MAKE) $(PY26-TURBOKID_IPK_DIR)/CONTROL/control
 	echo $(PY-TURBOKID_CONFFILES) | sed -e 's/ /\n/g' > $(PY26-TURBOKID_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-TURBOKID_IPK_DIR)

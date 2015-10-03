@@ -48,8 +48,8 @@ SAMBA35_ADDITIONAL_CODEPAGES=CP866
 
 #
 # SAMBA35_CONFFILES should be a list of user-editable files
-SAMBA35_CONFFILES=/opt/etc/init.d/S08samba
-SAMBA35-SWAT_CONFFILES=/opt/etc/xinetd.d/swat
+SAMBA35_CONFFILES=$(TARGET_PREFIX)/etc/init.d/S08samba
+SAMBA35-SWAT_CONFFILES=$(TARGET_PREFIX)/etc/xinetd.d/swat
 
 #
 # SAMBA35_PATCHES should list any patches, in the the order in
@@ -93,7 +93,7 @@ SAMBA35-SWAT_IPK=$(BUILD_DIR)/samba35-swat_$(SAMBA35_VERSION)-$(SAMBA35_IPK_VERS
 
 SAMBA35_BUILD_DIR_SRC=$(SAMBA35_BUILD_DIR)/source3
 
-SAMBA35_INST_DIR=/opt
+SAMBA35_INST_DIR=$(TARGET_PREFIX)
 SAMBA35_EXEC_PREFIX=$(SAMBA35_INST_DIR)
 SAMBA35_BIN_DIR=$(SAMBA35_INST_DIR)/bin
 SAMBA35_SBIN_DIR=$(SAMBA35_INST_DIR)/sbin
@@ -349,12 +349,12 @@ $(SAMBA35-SWAT_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(SAMBA35_IPK_DIR)/opt/sbin or $(SAMBA35_IPK_DIR)/opt/bin
+# Binaries should be installed into $(SAMBA35_IPK_DIR)$(TARGET_PREFIX)/sbin or $(SAMBA35_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(SAMBA35_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(SAMBA35_IPK_DIR)/opt/etc/samba/...
-# Documentation files should be installed in $(SAMBA35_IPK_DIR)/opt/doc/samba/...
-# Daemon startup scripts should be installed in $(SAMBA35_IPK_DIR)/opt/etc/init.d/S??samba
+# Libraries and include files should be installed into $(SAMBA35_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(SAMBA35_IPK_DIR)$(TARGET_PREFIX)/etc/samba/...
+# Documentation files should be installed in $(SAMBA35_IPK_DIR)$(TARGET_PREFIX)/doc/samba/...
+# Daemon startup scripts should be installed in $(SAMBA35_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??samba
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -364,13 +364,13 @@ $(SAMBA35_IPK) $(SAMBA35-DEV_IPK) $(SAMBA35-SWAT_IPK): $(SAMBA35_BUILD_DIR)/.bui
 	rm -rf $(SAMBA35-SWAT_IPK_DIR) $(BUILD_DIR)/samba35-swat_*_$(TARGET_ARCH).ipk
 	# samba3
 	$(MAKE) -C $(SAMBA35_BUILD_DIR)/source3/ DESTDIR=$(SAMBA35_IPK_DIR) install
-	$(STRIP_COMMAND) `ls $(SAMBA35_IPK_DIR)/opt/sbin/* | egrep -v 'mount.smbfs'`
-	$(STRIP_COMMAND) `ls $(SAMBA35_IPK_DIR)/opt/bin/* | egrep -v 'findsmb|smbtar'`
+	$(STRIP_COMMAND) `ls $(SAMBA35_IPK_DIR)$(TARGET_PREFIX)/sbin/* | egrep -v 'mount.smbfs'`
+	$(STRIP_COMMAND) `ls $(SAMBA35_IPK_DIR)$(TARGET_PREFIX)/bin/* | egrep -v 'findsmb|smbtar'`
 	cd $(SAMBA35_BUILD_DIR)/source3/bin/; for f in lib*.so.[01]; \
-		do cp -a $$f $(SAMBA35_IPK_DIR)/opt/lib/$$f; done
-	$(STRIP_COMMAND) `find $(SAMBA35_IPK_DIR)/opt/lib -name '*.so'`
-	$(INSTALL) -d $(SAMBA35_IPK_DIR)/opt/etc/init.d
-	$(INSTALL) -m 755 $(SAMBA35_SOURCE_DIR)/rc.samba $(SAMBA35_IPK_DIR)/opt/etc/init.d/S08samba
+		do cp -a $$f $(SAMBA35_IPK_DIR)$(TARGET_PREFIX)/lib/$$f; done
+	$(STRIP_COMMAND) `find $(SAMBA35_IPK_DIR)$(TARGET_PREFIX)/lib -name '*.so'`
+	$(INSTALL) -d $(SAMBA35_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(INSTALL) -m 755 $(SAMBA35_SOURCE_DIR)/rc.samba $(SAMBA35_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S08samba
 	$(MAKE) $(SAMBA35_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 644 $(SAMBA35_SOURCE_DIR)/postinst $(SAMBA35_IPK_DIR)/CONTROL/postinst
 	$(INSTALL) -m 644 $(SAMBA35_SOURCE_DIR)/preinst $(SAMBA35_IPK_DIR)/CONTROL/preinst
@@ -380,14 +380,14 @@ ifeq ($(OPTWARE_TARGET), $(filter ds101 ds101g, $(OPTWARE_TARGET)))
 endif
 	echo $(SAMBA35_CONFFILES) | sed -e 's/ /\n/g' > $(SAMBA35_IPK_DIR)/CONTROL/conffiles
 	# samba3-dev
-	$(INSTALL) -d $(SAMBA35-DEV_IPK_DIR)/opt
-	mv $(SAMBA35_IPK_DIR)/opt/include $(SAMBA35-DEV_IPK_DIR)/opt/
+	$(INSTALL) -d $(SAMBA35-DEV_IPK_DIR)$(TARGET_PREFIX)
+	mv $(SAMBA35_IPK_DIR)$(TARGET_PREFIX)/include $(SAMBA35-DEV_IPK_DIR)$(TARGET_PREFIX)/
 	# samba3-swat
-	$(INSTALL) -d $(SAMBA35-SWAT_IPK_DIR)/opt/share $(SAMBA35-SWAT_IPK_DIR)/opt/sbin
-	mv $(SAMBA35_IPK_DIR)/opt/share/swat $(SAMBA35-SWAT_IPK_DIR)/opt/share/
-	mv $(SAMBA35_IPK_DIR)/opt/sbin/swat $(SAMBA35-SWAT_IPK_DIR)/opt/sbin/
-	$(INSTALL) -d $(SAMBA35-SWAT_IPK_DIR)/opt/etc/xinetd.d
-	$(INSTALL) -m 755 $(SAMBA35_SOURCE_DIR)/swat $(SAMBA35-SWAT_IPK_DIR)/opt/etc/xinetd.d/swat
+	$(INSTALL) -d $(SAMBA35-SWAT_IPK_DIR)$(TARGET_PREFIX)/share $(SAMBA35-SWAT_IPK_DIR)$(TARGET_PREFIX)/sbin
+	mv $(SAMBA35_IPK_DIR)$(TARGET_PREFIX)/share/swat $(SAMBA35-SWAT_IPK_DIR)$(TARGET_PREFIX)/share/
+	mv $(SAMBA35_IPK_DIR)$(TARGET_PREFIX)/sbin/swat $(SAMBA35-SWAT_IPK_DIR)$(TARGET_PREFIX)/sbin/
+	$(INSTALL) -d $(SAMBA35-SWAT_IPK_DIR)$(TARGET_PREFIX)/etc/xinetd.d
+	$(INSTALL) -m 755 $(SAMBA35_SOURCE_DIR)/swat $(SAMBA35-SWAT_IPK_DIR)$(TARGET_PREFIX)/etc/xinetd.d/swat
 	# building ipk's
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SAMBA35_IPK_DIR)
 	$(MAKE) $(SAMBA35-DEV_IPK_DIR)/CONTROL/control

@@ -40,7 +40,7 @@ VARNISH_IPK_VERSION=1
 
 #
 # VARNISH_CONFFILES should be a list of user-editable files
-#VARNISH_CONFFILES=/opt/etc/varnish.conf /opt/etc/init.d/SXXvarnish
+#VARNISH_CONFFILES=$(TARGET_PREFIX)/etc/varnish.conf $(TARGET_PREFIX)/etc/init.d/SXXvarnish
 
 #
 # VARNISH_PATCHES should list any patches, in the the order in
@@ -191,23 +191,23 @@ $(VARNISH_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(VARNISH_IPK_DIR)/opt/sbin or $(VARNISH_IPK_DIR)/opt/bin
+# Binaries should be installed into $(VARNISH_IPK_DIR)$(TARGET_PREFIX)/sbin or $(VARNISH_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(VARNISH_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(VARNISH_IPK_DIR)/opt/etc/varnish/...
-# Documentation files should be installed in $(VARNISH_IPK_DIR)/opt/doc/varnish/...
-# Daemon startup scripts should be installed in $(VARNISH_IPK_DIR)/opt/etc/init.d/S??varnish
+# Libraries and include files should be installed into $(VARNISH_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(VARNISH_IPK_DIR)$(TARGET_PREFIX)/etc/varnish/...
+# Documentation files should be installed in $(VARNISH_IPK_DIR)$(TARGET_PREFIX)/doc/varnish/...
+# Daemon startup scripts should be installed in $(VARNISH_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??varnish
 #
 # You may need to patch your application to make it use these locations.
 #
 $(VARNISH_IPK): $(VARNISH_BUILD_DIR)/.built
 	rm -rf $(VARNISH_IPK_DIR) $(BUILD_DIR)/varnish_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(VARNISH_BUILD_DIR) DESTDIR=$(VARNISH_IPK_DIR) transform='' install-strip
-#	$(INSTALL) -d $(VARNISH_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(VARNISH_SOURCE_DIR)/varnish.conf $(VARNISH_IPK_DIR)/opt/etc/varnish.conf
-#	$(INSTALL) -d $(VARNISH_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(VARNISH_SOURCE_DIR)/rc.varnish $(VARNISH_IPK_DIR)/opt/etc/init.d/SXXvarnish
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(VARNISH_IPK_DIR)/opt/etc/init.d/SXXvarnish
+#	$(INSTALL) -d $(VARNISH_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(VARNISH_SOURCE_DIR)/varnish.conf $(VARNISH_IPK_DIR)$(TARGET_PREFIX)/etc/varnish.conf
+#	$(INSTALL) -d $(VARNISH_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(VARNISH_SOURCE_DIR)/rc.varnish $(VARNISH_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXvarnish
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(VARNISH_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXvarnish
 	$(MAKE) $(VARNISH_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(VARNISH_SOURCE_DIR)/postinst $(VARNISH_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(VARNISH_IPK_DIR)/CONTROL/postinst

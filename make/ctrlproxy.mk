@@ -180,12 +180,12 @@ $(CTRLPROXY_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(CTRLPROXY_IPK_DIR)/opt/sbin or $(CTRLPROXY_IPK_DIR)/opt/bin
+# Binaries should be installed into $(CTRLPROXY_IPK_DIR)$(TARGET_PREFIX)/sbin or $(CTRLPROXY_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(CTRLPROXY_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(CTRLPROXY_IPK_DIR)/opt/etc/ctrlproxy/...
-# Documentation files should be installed in $(CTRLPROXY_IPK_DIR)/opt/doc/ctrlproxy/...
-# Daemon startup scripts should be installed in $(CTRLPROXY_IPK_DIR)/opt/etc/init.d/S??ctrlproxy
+# Libraries and include files should be installed into $(CTRLPROXY_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(CTRLPROXY_IPK_DIR)$(TARGET_PREFIX)/etc/ctrlproxy/...
+# Documentation files should be installed in $(CTRLPROXY_IPK_DIR)$(TARGET_PREFIX)/doc/ctrlproxy/...
+# Daemon startup scripts should be installed in $(CTRLPROXY_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??ctrlproxy
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -193,7 +193,7 @@ $(CTRLPROXY_IPK): $(CTRLPROXY_BUILD_DIR)/.built
 	rm -rf $(CTRLPROXY_IPK_DIR) $(BUILD_DIR)/ctrlproxy_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(CTRLPROXY_BUILD_DIR) DESTDIR=$(CTRLPROXY_IPK_DIR) \
 		all install-dirs install-bin install-data install-doc
-	$(STRIP_COMMAND) $(CTRLPROXY_IPK_DIR)/opt/*bin/*
+	$(STRIP_COMMAND) $(CTRLPROXY_IPK_DIR)$(TARGET_PREFIX)/*bin/*
 	$(MAKE) $(CTRLPROXY_IPK_DIR)/CONTROL/control
 	echo $(CTRLPROXY_CONFFILES) | sed -e 's/ /\n/g' > $(CTRLPROXY_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CTRLPROXY_IPK_DIR)

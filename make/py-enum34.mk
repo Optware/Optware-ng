@@ -46,7 +46,7 @@ PY-ENUM34_IPK_VERSION=1
 
 #
 # PY-ENUM34_CONFFILES should be a list of user-editable files
-#PY-ENUM34_CONFFILES=/opt/etc/py-enum34.conf /opt/etc/init.d/SXXpy-enum34
+#PY-ENUM34_CONFFILES=$(TARGET_PREFIX)/etc/py-enum34.conf $(TARGET_PREFIX)/etc/init.d/SXXpy-enum34
 
 #
 # PY-ENUM34_PATCHES should list any patches, in the the order in
@@ -137,9 +137,9 @@ $(PY-ENUM34_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-ENUM34_SOURCE) $(DL_DIR)/$(PY
 	(cd $(@D)/2.4; \
 	    ( \
 		echo "[install]"; \
-		echo "install_scripts = /opt/bin"; \
+		echo "install_scripts = $(TARGET_PREFIX)/bin"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python2.4"; \
+		echo "executable=$(TARGET_PREFIX)/bin/python2.4"; \
 	    ) >> setup.cfg \
 	)
 #	cd $(BUILD_DIR); $(PY-ENUM34_UNZIP) $(DL_DIR)/$(PY-ENUM34_SOURCE)
@@ -149,9 +149,9 @@ $(PY-ENUM34_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-ENUM34_SOURCE) $(DL_DIR)/$(PY
 	(cd $(@D)/2.5; \
 	    ( \
 		echo "[install]"; \
-		echo "install_scripts = /opt/bin"; \
+		echo "install_scripts = $(TARGET_PREFIX)/bin"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python2.5"; \
+		echo "executable=$(TARGET_PREFIX)/bin/python2.5"; \
 	    ) >> setup.cfg \
 	)
 #	cd $(BUILD_DIR); $(PY-ENUM34_UNZIP) $(DL_DIR)/$(PY-ENUM34_SOURCE)
@@ -161,9 +161,9 @@ $(PY-ENUM34_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-ENUM34_SOURCE) $(DL_DIR)/$(PY
 	(cd $(@D)/2.6; \
 	    ( \
 		echo "[install]"; \
-		echo "install_scripts = /opt/bin"; \
+		echo "install_scripts = $(TARGET_PREFIX)/bin"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python2.6"; \
+		echo "executable=$(TARGET_PREFIX)/bin/python2.6"; \
 	    ) >> setup.cfg \
 	)
 #	cd $(BUILD_DIR); $(PY-ENUM34_UNZIP) $(DL_DIR)/$(PY-ENUM34_SOURCE)
@@ -173,9 +173,9 @@ $(PY-ENUM34_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-ENUM34_SOURCE) $(DL_DIR)/$(PY
 	(cd $(@D)/2.7; \
 	    ( \
 		echo "[install]"; \
-		echo "install_scripts = /opt/bin"; \
+		echo "install_scripts = $(TARGET_PREFIX)/bin"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python2.7"; \
+		echo "executable=$(TARGET_PREFIX)/bin/python2.7"; \
 	    ) >> setup.cfg \
 	)
 	touch $@
@@ -206,16 +206,16 @@ $(PY-ENUM34_BUILD_DIR)/.staged: $(PY-ENUM34_BUILD_DIR)/.built
 	$(MAKE) py-ordereddict-stage
 	rm -rf $(STAGING_LIB_DIR)/python2.4/site-packages/enum*
 	(cd $(@D)/2.4; \
-	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(STAGING_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	rm -rf $(STAGING_LIB_DIR)/python2.5/site-packages/enum*
 	(cd $(@D)/2.5; \
-	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(STAGING_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	rm -rf $(STAGING_LIB_DIR)/python2.6/site-packages/enum*
 	(cd $(@D)/2.6; \
-	$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(STAGING_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	rm -rf $(STAGING_LIB_DIR)/python2.7/site-packages/enum*
 	(cd $(@D)/2.7; \
-	$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(STAGING_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	touch $@
 
 $(PY-ENUM34_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(PY-ENUM34_SOURCE) $(DL_DIR)/$(PY-ENUM34_SOURCE_OLD) make/py-enum34.mk
@@ -233,16 +233,16 @@ $(PY-ENUM34_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(PY-ENUM34_SOUR
 	mv $(HOST_BUILD_DIR)/$(PY-ENUM34_DIR) $(@D)/2.7
 	(cd $(@D)/2.4; $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build)
 	(cd $(@D)/2.4; \
-	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(HOST_STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	(cd $(@D)/2.5; $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build)
 	(cd $(@D)/2.5; \
-	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(HOST_STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	(cd $(@D)/2.6; $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py build)
 	(cd $(@D)/2.6; \
-	$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(HOST_STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	(cd $(@D)/2.7; $(HOST_STAGING_PREFIX)/bin/python2.7 setup.py build)
 	(cd $(@D)/2.7; \
-	$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+	$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(HOST_STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	touch $@
 
 py-enum34-stage: $(PY-ENUM34_BUILD_DIR)/.staged
@@ -312,12 +312,12 @@ $(PY27-ENUM34_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PY-ENUM34_IPK_DIR)/opt/sbin or $(PY-ENUM34_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PY-ENUM34_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PY-ENUM34_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PY-ENUM34_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PY-ENUM34_IPK_DIR)/opt/etc/py-enum34/...
-# Documentation files should be installed in $(PY-ENUM34_IPK_DIR)/opt/doc/py-enum34/...
-# Daemon startup scripts should be installed in $(PY-ENUM34_IPK_DIR)/opt/etc/init.d/S??py-enum34
+# Libraries and include files should be installed into $(PY-ENUM34_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PY-ENUM34_IPK_DIR)$(TARGET_PREFIX)/etc/py-enum34/...
+# Documentation files should be installed in $(PY-ENUM34_IPK_DIR)$(TARGET_PREFIX)/doc/py-enum34/...
+# Daemon startup scripts should be installed in $(PY-ENUM34_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??py-enum34
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -326,8 +326,8 @@ $(PY24-ENUM34_IPK): $(PY-ENUM34_BUILD_DIR)/.built
 	rm -rf $(PY24-ENUM34_IPK_DIR) $(BUILD_DIR)/py-enum34_*_$(TARGET_ARCH).ipk
 	(cd $(PY-ENUM34_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(PY24-ENUM34_IPK_DIR) --prefix=/opt)
-	rm -f $(PY24-ENUM34_IPK_DIR)/opt/bin/easy_install
+	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install --root=$(PY24-ENUM34_IPK_DIR) --prefix=$(TARGET_PREFIX))
+	rm -f $(PY24-ENUM34_IPK_DIR)$(TARGET_PREFIX)/bin/easy_install
 	$(MAKE) $(PY24-ENUM34_IPK_DIR)/CONTROL/control
 	echo $(PY-ENUM34_CONFFILES) | sed -e 's/ /\n/g' > $(PY24-ENUM34_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-ENUM34_IPK_DIR)
@@ -337,8 +337,8 @@ $(PY25-ENUM34_IPK): $(PY-ENUM34_BUILD_DIR)/.built
 	rm -rf $(PY25-ENUM34_IPK_DIR) $(BUILD_DIR)/py25-enum34_*_$(TARGET_ARCH).ipk
 	(cd $(PY-ENUM34_BUILD_DIR)/2.5; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
-	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(PY25-ENUM34_IPK_DIR) --prefix=/opt)
-	rm -f $(PY25-ENUM34_IPK_DIR)/opt/bin/easy_install
+	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(PY25-ENUM34_IPK_DIR) --prefix=$(TARGET_PREFIX))
+	rm -f $(PY25-ENUM34_IPK_DIR)$(TARGET_PREFIX)/bin/easy_install
 	$(MAKE) $(PY25-ENUM34_IPK_DIR)/CONTROL/control
 	echo $(PY-ENUM34_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-ENUM34_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-ENUM34_IPK_DIR)
@@ -348,8 +348,8 @@ $(PY26-ENUM34_IPK): $(PY-ENUM34_BUILD_DIR)/.built
 	rm -rf $(PY26-ENUM34_IPK_DIR) $(BUILD_DIR)/py26-enum34_*_$(TARGET_ARCH).ipk
 	(cd $(PY-ENUM34_BUILD_DIR)/2.6; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
-	$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(PY26-ENUM34_IPK_DIR) --prefix=/opt)
-#	rm -f $(PY26-ENUM34_IPK_DIR)/opt/bin/easy_install
+	$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(PY26-ENUM34_IPK_DIR) --prefix=$(TARGET_PREFIX))
+#	rm -f $(PY26-ENUM34_IPK_DIR)$(TARGET_PREFIX)/bin/easy_install
 	$(MAKE) $(PY26-ENUM34_IPK_DIR)/CONTROL/control
 	echo $(PY-ENUM34_CONFFILES) | sed -e 's/ /\n/g' > $(PY26-ENUM34_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-ENUM34_IPK_DIR)
@@ -359,8 +359,8 @@ $(PY27-ENUM34_IPK): $(PY-ENUM34_BUILD_DIR)/.built
 	rm -rf $(PY27-ENUM34_IPK_DIR) $(BUILD_DIR)/py27-enum34_*_$(TARGET_ARCH).ipk
 	(cd $(PY-ENUM34_BUILD_DIR)/2.7; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.7/site-packages \
-	$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(PY27-ENUM34_IPK_DIR) --prefix=/opt)
-	rm -f $(PY27-ENUM34_IPK_DIR)/opt/bin/easy_install
+	$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(PY27-ENUM34_IPK_DIR) --prefix=$(TARGET_PREFIX))
+	rm -f $(PY27-ENUM34_IPK_DIR)$(TARGET_PREFIX)/bin/easy_install
 	$(MAKE) $(PY27-ENUM34_IPK_DIR)/CONTROL/control
 	echo $(PY-ENUM34_CONFFILES) | sed -e 's/ /\n/g' > $(PY27-ENUM34_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY27-ENUM34_IPK_DIR)

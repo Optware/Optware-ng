@@ -45,7 +45,7 @@ PY-REPORTLAB_IPK_VERSION=2
 
 #
 # PY-REPORTLAB_CONFFILES should be a list of user-editable files
-#PY-REPORTLAB_CONFFILES=/opt/etc/py-reportlab.conf /opt/etc/init.d/SXXpy-reportlab
+#PY-REPORTLAB_CONFFILES=$(TARGET_PREFIX)/etc/py-reportlab.conf $(TARGET_PREFIX)/etc/init.d/SXXpy-reportlab
 
 #
 # PY-REPORTLAB_PATCHES should list any patches, in the the order in
@@ -139,13 +139,13 @@ $(PY-REPORTLAB_PATCHES)
 		echo "[build_ext]"; \
 		echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.4"; \
 		echo "library-dirs=$(STAGING_LIB_DIR)"; \
-		echo "rpath=/opt/lib"; \
+		echo "rpath=$(TARGET_PREFIX)/lib"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python2.4"; \
+		echo "executable=$(TARGET_PREFIX)/bin/python2.4"; \
 		echo "[install]"; \
-		echo "install_scripts=/opt/bin"; \
+		echo "install_scripts=$(TARGET_PREFIX)/bin"; \
 	    ) > setup.cfg; \
-	    sed -i -e 's|^package_path.*|package_path = pjoin("/opt/share", "reportlab")|' setup.py; \
+	    sed -i -e 's|^package_path.*|package_path = pjoin("$(TARGET_PREFIX)/share", "reportlab")|' setup.py; \
 	)
 	cd $(@D)/2.4/reportlab; \
 		tar -xvzf $(DL_DIR)/$(PY-REPORTLAB-ACCEL_SOURCE); \
@@ -163,13 +163,13 @@ $(PY-REPORTLAB_PATCHES)
 		echo "[build_ext]"; \
 		echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.5"; \
 		echo "library-dirs=$(STAGING_LIB_DIR)"; \
-		echo "rpath=/opt/lib"; \
+		echo "rpath=$(TARGET_PREFIX)/lib"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python2.5"; \
+		echo "executable=$(TARGET_PREFIX)/bin/python2.5"; \
 		echo "[install]"; \
-		echo "install_scripts=/opt/bin"; \
+		echo "install_scripts=$(TARGET_PREFIX)/bin"; \
 	    ) > setup.cfg; \
-	    sed -i -e 's|^package_path.*|package_path = pjoin("/opt/share", "reportlab")|' setup.py; \
+	    sed -i -e 's|^package_path.*|package_path = pjoin("$(TARGET_PREFIX)/share", "reportlab")|' setup.py; \
 	)
 	cd $(@D)/2.5/reportlab; \
 		tar -xvzf $(DL_DIR)/$(PY-REPORTLAB-ACCEL_SOURCE); \
@@ -258,12 +258,12 @@ $(PY25-REPORTLAB_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PY-REPORTLAB_IPK_DIR)/opt/sbin or $(PY-REPORTLAB_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PY-REPORTLAB_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PY-REPORTLAB_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PY-REPORTLAB_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PY-REPORTLAB_IPK_DIR)/opt/etc/py-reportlab/...
-# Documentation files should be installed in $(PY-REPORTLAB_IPK_DIR)/opt/doc/py-reportlab/...
-# Daemon startup scripts should be installed in $(PY-REPORTLAB_IPK_DIR)/opt/etc/init.d/S??py-reportlab
+# Libraries and include files should be installed into $(PY-REPORTLAB_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PY-REPORTLAB_IPK_DIR)$(TARGET_PREFIX)/etc/py-reportlab/...
+# Documentation files should be installed in $(PY-REPORTLAB_IPK_DIR)$(TARGET_PREFIX)/doc/py-reportlab/...
+# Daemon startup scripts should be installed in $(PY-REPORTLAB_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??py-reportlab
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -272,9 +272,9 @@ $(PY24-REPORTLAB_IPK): $(PY-REPORTLAB_BUILD_DIR)/.built
 	(cd $(PY-REPORTLAB_BUILD_DIR)/2.4/reportlab; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.4 -c "import setuptools; execfile('setup.py')" \
-	$(INSTALL) --root=$(PY24-REPORTLAB_IPK_DIR) --prefix=/opt)
-	$(STRIP_COMMAND) `find $(PY24-REPORTLAB_IPK_DIR)/opt/lib -name '*.so'`
-	rm -rf $(PY24-REPORTLAB_IPK_DIR)/opt/share
+	$(INSTALL) --root=$(PY24-REPORTLAB_IPK_DIR) --prefix=$(TARGET_PREFIX))
+	$(STRIP_COMMAND) `find $(PY24-REPORTLAB_IPK_DIR)$(TARGET_PREFIX)/lib -name '*.so'`
+	rm -rf $(PY24-REPORTLAB_IPK_DIR)$(TARGET_PREFIX)/share
 	$(MAKE) $(PY24-REPORTLAB_IPK_DIR)/CONTROL/control
 #	echo $(PY-REPORTLAB_CONFFILES) | sed -e 's/ /\n/g' > $(PY24-REPORTLAB_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-REPORTLAB_IPK_DIR)
@@ -285,10 +285,10 @@ $(PY25-REPORTLAB_IPK) $(PY-REPORTLAB-COMMON_IPK): $(PY-REPORTLAB_BUILD_DIR)/.bui
 	(cd $(PY-REPORTLAB_BUILD_DIR)/2.5/reportlab; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.5 -c "import setuptools; execfile('setup.py')" \
-	$(INSTALL) --root=$(PY25-REPORTLAB_IPK_DIR) --prefix=/opt)
-	$(STRIP_COMMAND) `find $(PY25-REPORTLAB_IPK_DIR)/opt/lib -name '*.so'`
-	$(INSTALL) -d $(PY-REPORTLAB-COMMON_IPK_DIR)/opt/
-	mv $(PY25-REPORTLAB_IPK_DIR)/opt/share $(PY-REPORTLAB-COMMON_IPK_DIR)/opt/
+	$(INSTALL) --root=$(PY25-REPORTLAB_IPK_DIR) --prefix=$(TARGET_PREFIX))
+	$(STRIP_COMMAND) `find $(PY25-REPORTLAB_IPK_DIR)$(TARGET_PREFIX)/lib -name '*.so'`
+	$(INSTALL) -d $(PY-REPORTLAB-COMMON_IPK_DIR)$(TARGET_PREFIX)/
+	mv $(PY25-REPORTLAB_IPK_DIR)$(TARGET_PREFIX)/share $(PY-REPORTLAB-COMMON_IPK_DIR)$(TARGET_PREFIX)/
 #	echo $(PY-REPORTLAB_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-REPORTLAB_IPK_DIR)/CONTROL/conffiles
 	$(MAKE) $(PY-REPORTLAB-COMMON_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-REPORTLAB-COMMON_IPK_DIR)

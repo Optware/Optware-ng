@@ -249,21 +249,21 @@ endif
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LIBTORRENT_IPK_DIR)/opt/sbin or $(LIBTORRENT_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LIBTORRENT_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LIBTORRENT_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LIBTORRENT_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LIBTORRENT_IPK_DIR)/opt/etc/libtorrent/...
-# Documentation files should be installed in $(LIBTORRENT_IPK_DIR)/opt/doc/libtorrent/...
-# Daemon startup scripts should be installed in $(LIBTORRENT_IPK_DIR)/opt/etc/init.d/S??libtorrent
+# Libraries and include files should be installed into $(LIBTORRENT_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LIBTORRENT_IPK_DIR)$(TARGET_PREFIX)/etc/libtorrent/...
+# Documentation files should be installed in $(LIBTORRENT_IPK_DIR)$(TARGET_PREFIX)/doc/libtorrent/...
+# Daemon startup scripts should be installed in $(LIBTORRENT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??libtorrent
 #
 # You may need to patch your application to make it use these locations.
 #
 $(LIBTORRENT_IPK): $(LIBTORRENT_BUILD_DIR)/.built
 	rm -rf $(LIBTORRENT_IPK_DIR) $(BUILD_DIR)/libtorrent_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBTORRENT_BUILD_DIR) DESTDIR=$(LIBTORRENT_IPK_DIR) install-strip
-	rm -rf $(LIBTORRENT_IPK_DIR)/opt/include
-	rm -rf $(LIBTORRENT_IPK_DIR)/opt/lib/*.la
-	rm -rf $(LIBTORRENT_IPK_DIR)/opt/lib/pkgconfig
+	rm -rf $(LIBTORRENT_IPK_DIR)$(TARGET_PREFIX)/include
+	rm -rf $(LIBTORRENT_IPK_DIR)$(TARGET_PREFIX)/lib/*.la
+	rm -rf $(LIBTORRENT_IPK_DIR)$(TARGET_PREFIX)/lib/pkgconfig
 	$(MAKE) $(LIBTORRENT_IPK_DIR)/CONTROL/control
 	echo $(LIBTORRENT_CONFFILES) | sed -e 's/ /\n/g' > $(LIBTORRENT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBTORRENT_IPK_DIR)

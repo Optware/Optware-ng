@@ -42,7 +42,7 @@ GETMAIL_IPK_VERSION=1
 
 #
 # PY-GETMAIL_CONFFILES should be a list of user-editable files
-#PY-GETMAIL_CONFFILES=/opt/etc/getmail.conf /opt/etc/init.d/SXXgetmail
+#PY-GETMAIL_CONFFILES=$(TARGET_PREFIX)/etc/getmail.conf $(TARGET_PREFIX)/etc/init.d/SXXgetmail
 
 #
 # PY-GETMAIL_PATCHES should list any patches, in the the order in
@@ -122,7 +122,7 @@ $(PY-GETMAIL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-GETMAIL_SOURCE) $(PY-GETMAIL
 	(cd $(@D)/2.5; \
 	    ( \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python2.5" \
+		echo "executable=$(TARGET_PREFIX)/bin/python2.5" \
 	    ) >> setup.cfg; \
 	)
 	sed -i -e '/getmail.spec/d' $(@D)/2.5/setup.py
@@ -134,7 +134,7 @@ $(PY-GETMAIL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-GETMAIL_SOURCE) $(PY-GETMAIL
 	(cd $(@D)/2.6; \
 	    ( \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python2.6" \
+		echo "executable=$(TARGET_PREFIX)/bin/python2.6" \
 	    ) >> setup.cfg; \
 	)
 	sed -i -e '/getmail.spec/d' $(@D)/2.6/setup.py
@@ -222,12 +222,12 @@ $(PY26-GETMAIL_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PY-GETMAIL_IPK_DIR)/opt/sbin or $(PY-GETMAIL_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PY-GETMAIL_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PY-GETMAIL_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PY-GETMAIL_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PY-GETMAIL_IPK_DIR)/opt/etc/getmail/...
-# Documentation files should be installed in $(PY-GETMAIL_IPK_DIR)/opt/doc/getmail/...
-# Daemon startup scripts should be installed in $(PY-GETMAIL_IPK_DIR)/opt/etc/init.d/S??getmail
+# Libraries and include files should be installed into $(PY-GETMAIL_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PY-GETMAIL_IPK_DIR)$(TARGET_PREFIX)/etc/getmail/...
+# Documentation files should be installed in $(PY-GETMAIL_IPK_DIR)$(TARGET_PREFIX)/doc/getmail/...
+# Daemon startup scripts should be installed in $(PY-GETMAIL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??getmail
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -238,10 +238,10 @@ $(PY-GETMAIL-COMMON_IPK) $(PY25-GETMAIL_IPK) $(PY26-GETMAIL_IPK): $(PY-GETMAIL_B
 	rm -rf $(PY-GETMAIL-COMMON_IPK_DIR) $(BUILD_DIR)/py-getmail-common_*_$(TARGET_ARCH).ipk
 	(cd $(PY-GETMAIL_BUILD_DIR)/2.5; \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
-	    --root=$(PY25-GETMAIL_IPK_DIR) --prefix=/opt; \
+	    --root=$(PY25-GETMAIL_IPK_DIR) --prefix=$(TARGET_PREFIX); \
 	)
-	$(INSTALL) -d $(PY-GETMAIL-COMMON_IPK_DIR)/opt/
-	mv $(PY25-GETMAIL_IPK_DIR)/opt/share $(PY-GETMAIL-COMMON_IPK_DIR)/opt/
+	$(INSTALL) -d $(PY-GETMAIL-COMMON_IPK_DIR)$(TARGET_PREFIX)/
+	mv $(PY25-GETMAIL_IPK_DIR)$(TARGET_PREFIX)/share $(PY-GETMAIL-COMMON_IPK_DIR)$(TARGET_PREFIX)/
 	$(MAKE) $(PY25-GETMAIL_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-GETMAIL_IPK_DIR)
 	$(MAKE) $(PY-GETMAIL-COMMON_IPK_DIR)/CONTROL/control
@@ -250,11 +250,11 @@ $(PY-GETMAIL-COMMON_IPK) $(PY25-GETMAIL_IPK) $(PY26-GETMAIL_IPK): $(PY-GETMAIL_B
 	rm -rf $(PY26-GETMAIL_IPK_DIR) $(BUILD_DIR)/py26-getmail_*_$(TARGET_ARCH).ipk
 	(cd $(PY-GETMAIL_BUILD_DIR)/2.6; \
 	    $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install \
-	    --root=$(PY26-GETMAIL_IPK_DIR) --prefix=/opt; \
+	    --root=$(PY26-GETMAIL_IPK_DIR) --prefix=$(TARGET_PREFIX); \
 	)
-	for f in $(PY26-GETMAIL_IPK_DIR)/opt/*bin/*; \
+	for f in $(PY26-GETMAIL_IPK_DIR)$(TARGET_PREFIX)/*bin/*; \
 		do mv $$f `echo $$f | sed 's|$$|-py2.6|'`; done
-	rm -rf $(PY26-GETMAIL_IPK_DIR)/opt/share
+	rm -rf $(PY26-GETMAIL_IPK_DIR)$(TARGET_PREFIX)/share
 	$(MAKE) $(PY26-GETMAIL_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-GETMAIL_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(PY-GETMAIL-COMMON_IPK_DIR) $(PY25-GETMAIL_IPK_DIR) $(PY26-GETMAIL_IPK_DIR)

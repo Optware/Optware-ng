@@ -15,6 +15,7 @@
 # You should change all these variables to suit your package.
 #
 GIFT_OPENNAP_REPOSITORY=:pserver:anonymous@cvs.gift-opennap.berlios.de:/cvsroot/gift-opennap
+GIFT_OPENNAP_SITE=$(SOURCES_NLO_SITE)
 GIFT_OPENNAP_VERSION=20050212
 GIFT_OPENNAP_SOURCE=gift-opennap-$(GIFT_OPENNAP_VERSION).tar.gz
 GIFT_OPENNAP_TAG=-D 2005-02-12
@@ -63,11 +64,18 @@ GIFT_OPENNAP_IPK=$(BUILD_DIR)/gift-opennap_$(GIFT_OPENNAP_VERSION)-$(GIFT_OPENNA
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from cvs.
 #
+#$(DL_DIR)/$(GIFT_OPENNAP_SOURCE):
+#	cd $(DL_DIR) ; $(CVS) -z3 -d $(GIFT_OPENNAP_REPOSITORY) co $(GIFT_OPENNAP_TAG) $(GIFT_OPENNAP_MODULE)
+#	mv $(DL_DIR)/$(GIFT_OPENNAP_MODULE) $(DL_DIR)/$(GIFT_OPENNAP_DIR)
+#	cd $(DL_DIR) ; tar zcvf $(GIFT_OPENNAP_SOURCE) $(GIFT_OPENNAP_DIR)
+#	rm -rf $(DL_DIR)/$(GIFT_OPENNAP_DIR)
+
+#
+# This is the dependency on the source code.  If the source is missing,
+# then it will be fetched from the site using wget.
+#
 $(DL_DIR)/$(GIFT_OPENNAP_SOURCE):
-	cd $(DL_DIR) ; $(CVS) -z3 -d $(GIFT_OPENNAP_REPOSITORY) co $(GIFT_OPENNAP_TAG) $(GIFT_OPENNAP_MODULE)
-	mv $(DL_DIR)/$(GIFT_OPENNAP_MODULE) $(DL_DIR)/$(GIFT_OPENNAP_DIR)
-	cd $(DL_DIR) ; tar zcvf $(GIFT_OPENNAP_SOURCE) $(GIFT_OPENNAP_DIR)
-	rm -rf $(DL_DIR)/$(GIFT_OPENNAP_DIR)
+	$(WGET) -P $(@D) $(GIFT_OPENNAP_SITE)/$(@F)
 
 
 
@@ -160,7 +168,7 @@ gift-opennap-stage: $(STAGING_LIB_DIR)/libgift-opennap.so.$(GIFT_OPENNAP_VERSION
 # necessary to create a seperate control file under sources/gift-opennap
 #
 $(GIFT_OPENNAP_IPK_DIR)/CONTROL/control:
-	@$(INSTALL) -d $(GIFT_OPENNAP_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: gift-opennap" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -176,23 +184,23 @@ $(GIFT_OPENNAP_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(GIFT_OPENNAP_IPK_DIR)/opt/sbin or $(GIFT_OPENNAP_IPK_DIR)/opt/bin
+# Binaries should be installed into $(GIFT_OPENNAP_IPK_DIR)$(TARGET_PREFIX)/sbin or $(GIFT_OPENNAP_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(GIFT_OPENNAP_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(GIFT_OPENNAP_IPK_DIR)/opt/etc/gift-opennap/...
-# Documentation files should be installed in $(GIFT_OPENNAP_IPK_DIR)/opt/doc/gift-opennap/...
-# Daemon startup scripts should be installed in $(GIFT_OPENNAP_IPK_DIR)/opt/etc/init.d/S??gift-opennap
+# Libraries and include files should be installed into $(GIFT_OPENNAP_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(GIFT_OPENNAP_IPK_DIR)$(TARGET_PREFIX)/etc/gift-opennap/...
+# Documentation files should be installed in $(GIFT_OPENNAP_IPK_DIR)$(TARGET_PREFIX)/doc/gift-opennap/...
+# Daemon startup scripts should be installed in $(GIFT_OPENNAP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??gift-opennap
 #
 # You may need to patch your application to make it use these locations.
 #
 $(GIFT_OPENNAP_IPK): $(GIFT_OPENNAP_BUILD_DIR)/.built
 	rm -rf $(GIFT_OPENNAP_IPK_DIR) $(BUILD_DIR)/gift-opennap_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(GIFT_OPENNAP_IPK_DIR)/opt/lib/giFT
-	$(STRIP_COMMAND) $(GIFT_OPENNAP_BUILD_DIR)/src/.libs/libOpenNap.so -o $(GIFT_OPENNAP_IPK_DIR)/opt/lib/giFT/libOpenNap.so
-	$(INSTALL) -m 644 $(GIFT_OPENNAP_BUILD_DIR)/src/.libs/libOpenNap.la $(GIFT_OPENNAP_IPK_DIR)/opt/lib/giFT/libOpenNap.la
-	$(INSTALL) -d $(GIFT_OPENNAP_IPK_DIR)/opt/share/giFT/OpenNap
-	$(INSTALL) -m 644 $(GIFT_OPENNAP_BUILD_DIR)/data/OpenNap.conf.template $(GIFT_OPENNAP_IPK_DIR)/opt/share/giFT/OpenNap/OpenNap.conf.template
-	$(INSTALL) -m 644 $(GIFT_OPENNAP_BUILD_DIR)/data/nodelist $(GIFT_OPENNAP_IPK_DIR)/opt/share/giFT/OpenNap/nodelist
+	$(INSTALL) -d $(GIFT_OPENNAP_IPK_DIR)$(TARGET_PREFIX)/lib/giFT
+	$(STRIP_COMMAND) $(GIFT_OPENNAP_BUILD_DIR)/src/.libs/libOpenNap.so -o $(GIFT_OPENNAP_IPK_DIR)$(TARGET_PREFIX)/lib/giFT/libOpenNap.so
+	$(INSTALL) -m 644 $(GIFT_OPENNAP_BUILD_DIR)/src/.libs/libOpenNap.la $(GIFT_OPENNAP_IPK_DIR)$(TARGET_PREFIX)/lib/giFT/libOpenNap.la
+	$(INSTALL) -d $(GIFT_OPENNAP_IPK_DIR)$(TARGET_PREFIX)/share/giFT/OpenNap
+	$(INSTALL) -m 644 $(GIFT_OPENNAP_BUILD_DIR)/data/OpenNap.conf.template $(GIFT_OPENNAP_IPK_DIR)$(TARGET_PREFIX)/share/giFT/OpenNap/OpenNap.conf.template
+	$(INSTALL) -m 644 $(GIFT_OPENNAP_BUILD_DIR)/data/nodelist $(GIFT_OPENNAP_IPK_DIR)$(TARGET_PREFIX)/share/giFT/OpenNap/nodelist
 	$(INSTALL) -d $(GIFT_OPENNAP_IPK_DIR)/CONTROL
 	$(MAKE) $(GIFT_OPENNAP_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GIFT_OPENNAP_IPK_DIR)

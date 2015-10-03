@@ -50,7 +50,7 @@ FUPPES_IPK_VERSION=1
 
 #
 # FUPPES_CONFFILES should be a list of user-editable files
-#FUPPES_CONFFILES=/opt/etc/fuppes.conf /opt/etc/init.d/SXXfuppes
+#FUPPES_CONFFILES=$(TARGET_PREFIX)/etc/fuppes.conf $(TARGET_PREFIX)/etc/init.d/SXXfuppes
 
 #
 # FUPPES_PATCHES should list any patches, in the the order in
@@ -167,7 +167,7 @@ endif
 		--disable-static \
 		--disable-ffmpegthumbnailer \
 	)
-	sed -i -e 's|-I/opt/include | |g' $(@D)/Makefile $(@D)/src/Makefile
+	sed -i -e 's|-I$(TARGET_PREFIX)/include | |g' $(@D)/Makefile $(@D)/src/Makefile
 	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
@@ -218,23 +218,23 @@ $(FUPPES_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(FUPPES_IPK_DIR)/opt/sbin or $(FUPPES_IPK_DIR)/opt/bin
+# Binaries should be installed into $(FUPPES_IPK_DIR)$(TARGET_PREFIX)/sbin or $(FUPPES_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(FUPPES_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(FUPPES_IPK_DIR)/opt/etc/fuppes/...
-# Documentation files should be installed in $(FUPPES_IPK_DIR)/opt/doc/fuppes/...
-# Daemon startup scripts should be installed in $(FUPPES_IPK_DIR)/opt/etc/init.d/S??fuppes
+# Libraries and include files should be installed into $(FUPPES_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(FUPPES_IPK_DIR)$(TARGET_PREFIX)/etc/fuppes/...
+# Documentation files should be installed in $(FUPPES_IPK_DIR)$(TARGET_PREFIX)/doc/fuppes/...
+# Daemon startup scripts should be installed in $(FUPPES_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??fuppes
 #
 # You may need to patch your application to make it use these locations.
 #
 $(FUPPES_IPK): $(FUPPES_BUILD_DIR)/.built
 	rm -rf $(FUPPES_IPK_DIR) $(BUILD_DIR)/fuppes_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(FUPPES_BUILD_DIR) DESTDIR=$(FUPPES_IPK_DIR) install-strip
-#	$(INSTALL) -d $(FUPPES_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(FUPPES_SOURCE_DIR)/fuppes.conf $(FUPPES_IPK_DIR)/opt/etc/fuppes.conf
-#	$(INSTALL) -d $(FUPPES_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(FUPPES_SOURCE_DIR)/rc.fuppes $(FUPPES_IPK_DIR)/opt/etc/init.d/SXXfuppes
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(FUPPES_IPK_DIR)/opt/etc/init.d/SXXfuppes
+#	$(INSTALL) -d $(FUPPES_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(FUPPES_SOURCE_DIR)/fuppes.conf $(FUPPES_IPK_DIR)$(TARGET_PREFIX)/etc/fuppes.conf
+#	$(INSTALL) -d $(FUPPES_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(FUPPES_SOURCE_DIR)/rc.fuppes $(FUPPES_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXfuppes
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(FUPPES_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXfuppes
 	$(MAKE) $(FUPPES_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(FUPPES_SOURCE_DIR)/postinst $(FUPPES_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(FUPPES_IPK_DIR)/CONTROL/postinst

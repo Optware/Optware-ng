@@ -89,13 +89,13 @@ $(PERL-MODULE-BUILD_IPK): $(PERL-MODULE-BUILD_BUILD_DIR)/.built
        		./Build --prefix $(PERL-MODULE-BUILD_IPK_DIR)$(TARGET_PREFIX) install \
 	)
 	find $(PERL-MODULE-BUILD_IPK_DIR)$(TARGET_PREFIX) -name 'perllocal.pod' -exec rm -f {} \;
-	(cd $(PERL-MODULE-BUILD_IPK_DIR)/opt/lib/perl5 ; \
+	(cd $(PERL-MODULE-BUILD_IPK_DIR)$(TARGET_PREFIX)/lib/perl5 ; \
 		find . -name '*.so' -exec chmod +w {} \; ; \
 		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
 		find . -name '*.so' -exec chmod -w {} \; ; \
 	)
 	find $(PERL-MODULE-BUILD_IPK_DIR)$(TARGET_PREFIX) -type d -exec chmod go+rx {} \;
-	sed -i -e 's|$(PERL_HOSTPERL)|/opt/bin/perl|g' $(PERL-MODULE-BUILD_IPK_DIR)/opt/bin/*
+	sed -i -e 's|$(PERL_HOSTPERL)|$(TARGET_PREFIX)/bin/perl|g' $(PERL-MODULE-BUILD_IPK_DIR)$(TARGET_PREFIX)/bin/*
 	$(MAKE) $(PERL-MODULE-BUILD_IPK_DIR)/CONTROL/control
 	echo $(PERL-MODULE-BUILD_CONFFILES) | sed -e 's/ /\n/g' > $(PERL-MODULE-BUILD_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PERL-MODULE-BUILD_IPK_DIR)

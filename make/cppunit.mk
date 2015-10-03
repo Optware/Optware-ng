@@ -46,7 +46,7 @@ CPPUNIT_IPK_VERSION=1
 
 #
 # CPPUNIT_CONFFILES should be a list of user-editable files
-#CPPUNIT_CONFFILES=/opt/etc/cppunit.conf /opt/etc/init.d/SXXcppunit
+#CPPUNIT_CONFFILES=$(TARGET_PREFIX)/etc/cppunit.conf $(TARGET_PREFIX)/etc/init.d/SXXcppunit
 
 #
 # CPPUNIT_PATCHES should list any patches, in the the order in
@@ -186,24 +186,24 @@ $(CPPUNIT_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(CPPUNIT_IPK_DIR)/opt/sbin or $(CPPUNIT_IPK_DIR)/opt/bin
+# Binaries should be installed into $(CPPUNIT_IPK_DIR)$(TARGET_PREFIX)/sbin or $(CPPUNIT_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(CPPUNIT_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(CPPUNIT_IPK_DIR)/opt/etc/cppunit/...
-# Documentation files should be installed in $(CPPUNIT_IPK_DIR)/opt/doc/cppunit/...
-# Daemon startup scripts should be installed in $(CPPUNIT_IPK_DIR)/opt/etc/init.d/S??cppunit
+# Libraries and include files should be installed into $(CPPUNIT_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(CPPUNIT_IPK_DIR)$(TARGET_PREFIX)/etc/cppunit/...
+# Documentation files should be installed in $(CPPUNIT_IPK_DIR)$(TARGET_PREFIX)/doc/cppunit/...
+# Daemon startup scripts should be installed in $(CPPUNIT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??cppunit
 #
 # You may need to patch your application to make it use these locations.
 #
 $(CPPUNIT_IPK): $(CPPUNIT_BUILD_DIR)/.built
 	rm -rf $(CPPUNIT_IPK_DIR) $(BUILD_DIR)/cppunit_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(CPPUNIT_BUILD_DIR) DESTDIR=$(CPPUNIT_IPK_DIR) install-strip
-	rm -f $(CPPUNIT_IPK_DIR)/opt/lib/*.la
-#	$(INSTALL) -d $(CPPUNIT_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(CPPUNIT_SOURCE_DIR)/cppunit.conf $(CPPUNIT_IPK_DIR)/opt/etc/cppunit.conf
-#	$(INSTALL) -d $(CPPUNIT_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(CPPUNIT_SOURCE_DIR)/rc.cppunit $(CPPUNIT_IPK_DIR)/opt/etc/init.d/SXXcppunit
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(CPPUNIT_IPK_DIR)/opt/etc/init.d/SXXcppunit
+	rm -f $(CPPUNIT_IPK_DIR)$(TARGET_PREFIX)/lib/*.la
+#	$(INSTALL) -d $(CPPUNIT_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(CPPUNIT_SOURCE_DIR)/cppunit.conf $(CPPUNIT_IPK_DIR)$(TARGET_PREFIX)/etc/cppunit.conf
+#	$(INSTALL) -d $(CPPUNIT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(CPPUNIT_SOURCE_DIR)/rc.cppunit $(CPPUNIT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXcppunit
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(CPPUNIT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXcppunit
 	$(MAKE) $(CPPUNIT_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(CPPUNIT_SOURCE_DIR)/postinst $(CPPUNIT_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(CPPUNIT_IPK_DIR)/CONTROL/postinst

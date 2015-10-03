@@ -83,7 +83,7 @@ $(PERL-ALGORITHM-DIFF_IPK): $(PERL-ALGORITHM-DIFF_BUILD_DIR)/.built
 	rm -rf $(PERL-ALGORITHM-DIFF_IPK_DIR) $(BUILD_DIR)/perl-algorithm-diff_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PERL-ALGORITHM-DIFF_BUILD_DIR) DESTDIR=$(PERL-ALGORITHM-DIFF_IPK_DIR) install
 	find $(PERL-ALGORITHM-DIFF_IPK_DIR)$(TARGET_PREFIX) -name 'perllocal.pod' -exec rm -f {} \;
-	(cd $(PERL-ALGORITHM-DIFF_IPK_DIR)/opt/lib/perl5 ; \
+	(cd $(PERL-ALGORITHM-DIFF_IPK_DIR)$(TARGET_PREFIX)/lib/perl5 ; \
 		find . -name '*.so' -exec chmod +w {} \; ; \
 		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
 		find . -name '*.so' -exec chmod -w {} \; ; \

@@ -40,7 +40,7 @@ TMUX_IPK_VERSION=1
 
 #
 # TMUX_CONFFILES should be a list of user-editable files
-#TMUX_CONFFILES=/opt/etc/tmux.conf /opt/etc/init.d/SXXtmux
+#TMUX_CONFFILES=$(TARGET_PREFIX)/etc/tmux.conf $(TARGET_PREFIX)/etc/init.d/SXXtmux
 
 #
 # TMUX_PATCHES should list any patches, in the the order in
@@ -124,7 +124,7 @@ $(TMUX_BUILD_DIR)/.configured: $(DL_DIR)/$(TMUX_SOURCE) $(TMUX_PATCHES) make/tmu
 	if test `$(TARGET_CC) -dumpversion | cut -c1` = 3; then \
 	    sed -i -e 's| -I-||' $(@D)/Makefile.in; \
 	fi
-	sed -i -e 's|/etc/tmux.conf|/opt&|' $(@D)/tmux.h
+	sed -i -e 's|/etc/tmux.conf|$(TARGET_PREFIX)&|' $(@D)/tmux.h
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(TMUX_CPPFLAGS)" \
@@ -186,23 +186,23 @@ $(TMUX_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(TMUX_IPK_DIR)/opt/sbin or $(TMUX_IPK_DIR)/opt/bin
+# Binaries should be installed into $(TMUX_IPK_DIR)$(TARGET_PREFIX)/sbin or $(TMUX_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(TMUX_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(TMUX_IPK_DIR)/opt/etc/tmux/...
-# Documentation files should be installed in $(TMUX_IPK_DIR)/opt/doc/tmux/...
-# Daemon startup scripts should be installed in $(TMUX_IPK_DIR)/opt/etc/init.d/S??tmux
+# Libraries and include files should be installed into $(TMUX_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(TMUX_IPK_DIR)$(TARGET_PREFIX)/etc/tmux/...
+# Documentation files should be installed in $(TMUX_IPK_DIR)$(TARGET_PREFIX)/doc/tmux/...
+# Daemon startup scripts should be installed in $(TMUX_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??tmux
 #
 # You may need to patch your application to make it use these locations.
 #
 $(TMUX_IPK): $(TMUX_BUILD_DIR)/.built
 	rm -rf $(TMUX_IPK_DIR) $(BUILD_DIR)/tmux_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(TMUX_BUILD_DIR) DESTDIR=$(TMUX_IPK_DIR) install-strip
-#	$(INSTALL) -d $(TMUX_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(TMUX_SOURCE_DIR)/tmux.conf $(TMUX_IPK_DIR)/opt/etc/tmux.conf
-#	$(INSTALL) -d $(TMUX_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(TMUX_SOURCE_DIR)/rc.tmux $(TMUX_IPK_DIR)/opt/etc/init.d/SXXtmux
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(TMUX_IPK_DIR)/opt/etc/init.d/SXXtmux
+#	$(INSTALL) -d $(TMUX_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(TMUX_SOURCE_DIR)/tmux.conf $(TMUX_IPK_DIR)$(TARGET_PREFIX)/etc/tmux.conf
+#	$(INSTALL) -d $(TMUX_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(TMUX_SOURCE_DIR)/rc.tmux $(TMUX_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXtmux
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(TMUX_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXtmux
 	$(MAKE) $(TMUX_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(TMUX_SOURCE_DIR)/postinst $(TMUX_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(TMUX_IPK_DIR)/CONTROL/postinst

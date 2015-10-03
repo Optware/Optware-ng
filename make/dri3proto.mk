@@ -149,12 +149,12 @@ dri3proto-stage: $(DRI3PROTO_BUILD_DIR)/.staged
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(DRI3PROTO_IPK_DIR)/opt/sbin or $(DRI3PROTO_IPK_DIR)/opt/bin
+# Binaries should be installed into $(DRI3PROTO_IPK_DIR)$(TARGET_PREFIX)/sbin or $(DRI3PROTO_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(DRI3PROTO_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(DRI3PROTO_IPK_DIR)/opt/etc/dri3proto/...
-# Documentation files should be installed in $(DRI3PROTO_IPK_DIR)/opt/doc/dri3proto/...
-# Daemon startup scripts should be installed in $(DRI3PROTO_IPK_DIR)/opt/etc/init.d/S??dri3proto
+# Libraries and include files should be installed into $(DRI3PROTO_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(DRI3PROTO_IPK_DIR)$(TARGET_PREFIX)/etc/dri3proto/...
+# Documentation files should be installed in $(DRI3PROTO_IPK_DIR)$(TARGET_PREFIX)/doc/dri3proto/...
+# Daemon startup scripts should be installed in $(DRI3PROTO_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??dri3proto
 #
 # You may need to patch your application to make it use these locations.
 #

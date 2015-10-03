@@ -146,27 +146,27 @@ $(TAR_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(TAR_IPK_DIR)/opt/sbin or $(TAR_IPK_DIR)/opt/bin
+# Binaries should be installed into $(TAR_IPK_DIR)$(TARGET_PREFIX)/sbin or $(TAR_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(TAR_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(TAR_IPK_DIR)/opt/etc/tar/...
-# Documentation files should be installed in $(TAR_IPK_DIR)/opt/doc/tar/...
-# Daemon startup scripts should be installed in $(TAR_IPK_DIR)/opt/etc/init.d/S??tar
+# Libraries and include files should be installed into $(TAR_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(TAR_IPK_DIR)$(TARGET_PREFIX)/etc/tar/...
+# Documentation files should be installed in $(TAR_IPK_DIR)$(TARGET_PREFIX)/doc/tar/...
+# Daemon startup scripts should be installed in $(TAR_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??tar
 #
 # You may need to patch your application to make it use these locations.
 #
 $(TAR_IPK): $(TAR_BUILD_DIR)/.built
 	rm -rf $(TAR_IPK_DIR) $(BUILD_DIR)/tar_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(TAR_BUILD_DIR) DESTDIR=$(TAR_IPK_DIR) install-strip
-	rm -f $(TAR_IPK_DIR)/opt/share/info/dir
-	mv $(TAR_IPK_DIR)/opt/bin/tar $(TAR_IPK_DIR)/opt/bin/gnutar
-	mv $(TAR_IPK_DIR)/opt/libexec/rmt $(TAR_IPK_DIR)/opt/libexec/rmt-tar
+	rm -f $(TAR_IPK_DIR)$(TARGET_PREFIX)/share/info/dir
+	mv $(TAR_IPK_DIR)$(TARGET_PREFIX)/bin/tar $(TAR_IPK_DIR)$(TARGET_PREFIX)/bin/gnutar
+	mv $(TAR_IPK_DIR)$(TARGET_PREFIX)/libexec/rmt $(TAR_IPK_DIR)$(TARGET_PREFIX)/libexec/rmt-tar
 	$(MAKE) $(TAR_IPK_DIR)/CONTROL/control
 	(echo "#!/bin/sh"; \
-	 echo "update-alternatives --install /opt/bin/tar tar /opt/bin/gnutar 80"; \
+	 echo "update-alternatives --install $(TARGET_PREFIX)/bin/tar tar $(TARGET_PREFIX)/bin/gnutar 80"; \
 	) > $(TAR_IPK_DIR)/CONTROL/postinst
 	(echo "#!/bin/sh"; \
-	 echo "update-alternatives --remove tar /opt/bin/gnutar"; \
+	 echo "update-alternatives --remove tar $(TARGET_PREFIX)/bin/gnutar"; \
 	) > $(TAR_IPK_DIR)/CONTROL/prerm
 	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

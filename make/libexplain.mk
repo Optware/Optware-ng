@@ -48,7 +48,7 @@ LIBEXPLAIN_IPK_VERSION=1
 
 #
 # LIBEXPLAIN_CONFFILES should be a list of user-editable files
-#LIBEXPLAIN_CONFFILES=/opt/etc/libexplain.conf /opt/etc/init.d/SXXlibexplain
+#LIBEXPLAIN_CONFFILES=$(TARGET_PREFIX)/etc/libexplain.conf $(TARGET_PREFIX)/etc/init.d/SXXlibexplain
 
 #
 # LIBEXPLAIN_PATCHES should list any patches, in the the order in
@@ -172,7 +172,7 @@ $(LIBEXPLAIN_BUILD_DIR)/.staged: $(LIBEXPLAIN_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) clean-misc install
 	rm -f $(STAGING_LIB_DIR)/libexplain.la
-	sed -i -e 's|/opt/|$(STAGING_PREFIX)/|' $(STAGING_LIB_DIR)/pkgconfig/libexplain.pc
+	sed -i -e 's|$(TARGET_PREFIX)/|$(STAGING_PREFIX)/|' $(STAGING_LIB_DIR)/pkgconfig/libexplain.pc
 	touch $@
 
 libexplain-stage: $(LIBEXPLAIN_BUILD_DIR)/.staged
@@ -198,24 +198,24 @@ $(LIBEXPLAIN_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LIBEXPLAIN_IPK_DIR)/opt/sbin or $(LIBEXPLAIN_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LIBEXPLAIN_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LIBEXPLAIN_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LIBEXPLAIN_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LIBEXPLAIN_IPK_DIR)/opt/etc/libexplain/...
-# Documentation files should be installed in $(LIBEXPLAIN_IPK_DIR)/opt/doc/libexplain/...
-# Daemon startup scripts should be installed in $(LIBEXPLAIN_IPK_DIR)/opt/etc/init.d/S??libexplain
+# Libraries and include files should be installed into $(LIBEXPLAIN_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LIBEXPLAIN_IPK_DIR)$(TARGET_PREFIX)/etc/libexplain/...
+# Documentation files should be installed in $(LIBEXPLAIN_IPK_DIR)$(TARGET_PREFIX)/doc/libexplain/...
+# Daemon startup scripts should be installed in $(LIBEXPLAIN_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??libexplain
 #
 # You may need to patch your application to make it use these locations.
 #
 $(LIBEXPLAIN_IPK): $(LIBEXPLAIN_BUILD_DIR)/.built
 	rm -rf $(LIBEXPLAIN_IPK_DIR) $(BUILD_DIR)/libexplain_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBEXPLAIN_BUILD_DIR) DESTDIR=$(LIBEXPLAIN_IPK_DIR) clean-misc install
-	$(STRIP_COMMAND) $(LIBEXPLAIN_IPK_DIR)/opt/bin/* $(LIBEXPLAIN_IPK_DIR)/opt/lib/*.so
-	rm -f $(LIBEXPLAIN_IPK_DIR)/opt/lib/*.la
-#	$(INSTALL) -d $(LIBEXPLAIN_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(LIBEXPLAIN_SOURCE_DIR)/libexplain.conf $(LIBEXPLAIN_IPK_DIR)/opt/etc/libexplain.conf
-#	$(INSTALL) -d $(LIBEXPLAIN_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(LIBEXPLAIN_SOURCE_DIR)/rc.libexplain $(LIBEXPLAIN_IPK_DIR)/opt/etc/init.d/SXXlibexplain
+	$(STRIP_COMMAND) $(LIBEXPLAIN_IPK_DIR)$(TARGET_PREFIX)/bin/* $(LIBEXPLAIN_IPK_DIR)$(TARGET_PREFIX)/lib/*.so
+	rm -f $(LIBEXPLAIN_IPK_DIR)$(TARGET_PREFIX)/lib/*.la
+#	$(INSTALL) -d $(LIBEXPLAIN_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(LIBEXPLAIN_SOURCE_DIR)/libexplain.conf $(LIBEXPLAIN_IPK_DIR)$(TARGET_PREFIX)/etc/libexplain.conf
+#	$(INSTALL) -d $(LIBEXPLAIN_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(LIBEXPLAIN_SOURCE_DIR)/rc.libexplain $(LIBEXPLAIN_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibexplain
 	$(MAKE) $(LIBEXPLAIN_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(LIBEXPLAIN_SOURCE_DIR)/postinst $(LIBEXPLAIN_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 755 $(LIBEXPLAIN_SOURCE_DIR)/prerm $(LIBEXPLAIN_IPK_DIR)/CONTROL/prerm

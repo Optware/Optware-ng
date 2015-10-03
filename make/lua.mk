@@ -47,7 +47,7 @@ LUA_IPK_VERSION=1
 
 #
 # LUA_CONFFILES should be a list of user-editable files
-# LUA_CONFFILES=/opt/etc/lua.conf /opt/etc/init.d/SXXlua
+# LUA_CONFFILES=$(TARGET_PREFIX)/etc/lua.conf $(TARGET_PREFIX)/etc/init.d/SXXlua
 
 #
 # LUA_PATCHES should list any patches, in the the order in
@@ -100,7 +100,7 @@ $(LUA_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(LUA_SOURCE) $(LUA_PAT
 	rm -rf $(@D)
 	$(LUA_UNZIP) $(DL_DIR)/$(LUA_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
 	mv $(HOST_BUILD_DIR)/$(LUA_DIR) $(@D)
-	sed -i -e 's|/usr/local|/opt|' $(@D)/src/luaconf.h
+	sed -i -e 's|/usr/local|$(TARGET_PREFIX)|' $(@D)/src/luaconf.h
 	$(MAKE) -C $(@D)/src \
 		MYCFLAGS="-DLUA_ANSI" \
 		MYLDFLAGS="$(LUA_LDFLAGS)" \
@@ -141,7 +141,7 @@ $(LUA_BUILD_DIR)/.configured: $(DL_DIR)/$(LUA_SOURCE) $(LUA_PATCHES) make/lua.mk
 		$(PATCH) -d $(BUILD_DIR)/$(LUA_DIR) -p0 ; \
 	fi
 	mv $(BUILD_DIR)/$(LUA_DIR) $(@D)
-	sed -i -e 's|/usr/local|/opt|' $(@D)/src/luaconf.h
+	sed -i -e 's|/usr/local|$(TARGET_PREFIX)|' $(@D)/src/luaconf.h
 	touch $@
 
 lua-unpack: $(LUA_BUILD_DIR)/.configured
@@ -209,22 +209,22 @@ $(LUA_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LUA_IPK_DIR)/opt/sbin or $(LUA_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LUA_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LUA_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LUA_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LUA_IPK_DIR)/opt/etc/lua/...
-# Documentation files should be installed in $(LUA_IPK_DIR)/opt/doc/lua/...
-# Daemon startup scripts should be installed in $(LUA_IPK_DIR)/opt/etc/init.d/S??lua
+# Libraries and include files should be installed into $(LUA_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LUA_IPK_DIR)$(TARGET_PREFIX)/etc/lua/...
+# Documentation files should be installed in $(LUA_IPK_DIR)$(TARGET_PREFIX)/doc/lua/...
+# Daemon startup scripts should be installed in $(LUA_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??lua
 #
 # You may need to patch your application to make it use these locations.
 #
 $(LUA_IPK): $(LUA_BUILD_DIR)/.built
 	rm -rf $(LUA_IPK_DIR) $(BUILD_DIR)/lua_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LUA_BUILD_DIR) INSTALL_TOP=$(LUA_IPK_DIR)$(TARGET_PREFIX) install
-	$(STRIP_COMMAND) $(LUA_IPK_DIR)/opt/bin/*
-	$(STRIP_COMMAND) $(LUA_IPK_DIR)/opt/lib/liblua.so
-	$(INSTALL) -d $(LUA_IPK_DIR)/opt/lib/pkgconfig
-	sed -e 's|^prefix=.*|prefix=/opt|' $(LUA_BUILD_DIR)/etc/lua.pc > $(LUA_IPK_DIR)/opt/lib/pkgconfig/lua.pc
+	$(STRIP_COMMAND) $(LUA_IPK_DIR)$(TARGET_PREFIX)/bin/*
+	$(STRIP_COMMAND) $(LUA_IPK_DIR)$(TARGET_PREFIX)/lib/liblua.so
+	$(INSTALL) -d $(LUA_IPK_DIR)$(TARGET_PREFIX)/lib/pkgconfig
+	sed -e 's|^prefix=.*|prefix=$(TARGET_PREFIX)|' $(LUA_BUILD_DIR)/etc/lua.pc > $(LUA_IPK_DIR)$(TARGET_PREFIX)/lib/pkgconfig/lua.pc
 	$(MAKE) $(LUA_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LUA_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(LUA_IPK_DIR)

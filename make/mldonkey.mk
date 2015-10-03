@@ -40,7 +40,7 @@ MLDONKEY_IPK_VERSION=1
 
 #
 # MLDONKEY_CONFFILES should be a list of user-editable files
-#MLDONKEY_CONFFILES=/opt/etc/mldonkey.conf /opt/etc/init.d/SXXmldonkey
+#MLDONKEY_CONFFILES=$(TARGET_PREFIX)/etc/mldonkey.conf $(TARGET_PREFIX)/etc/init.d/SXXmldonkey
 
 #
 # MLDONKEY_PATCHES should list any patches, in the the order in
@@ -180,23 +180,23 @@ $(MLDONKEY_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(MLDONKEY_IPK_DIR)/opt/sbin or $(MLDONKEY_IPK_DIR)/opt/bin
+# Binaries should be installed into $(MLDONKEY_IPK_DIR)$(TARGET_PREFIX)/sbin or $(MLDONKEY_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(MLDONKEY_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(MLDONKEY_IPK_DIR)/opt/etc/mldonkey/...
-# Documentation files should be installed in $(MLDONKEY_IPK_DIR)/opt/doc/mldonkey/...
-# Daemon startup scripts should be installed in $(MLDONKEY_IPK_DIR)/opt/etc/init.d/S??mldonkey
+# Libraries and include files should be installed into $(MLDONKEY_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(MLDONKEY_IPK_DIR)$(TARGET_PREFIX)/etc/mldonkey/...
+# Documentation files should be installed in $(MLDONKEY_IPK_DIR)$(TARGET_PREFIX)/doc/mldonkey/...
+# Daemon startup scripts should be installed in $(MLDONKEY_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??mldonkey
 #
 # You may need to patch your application to make it use these locations.
 #
 $(MLDONKEY_IPK): $(MLDONKEY_BUILD_DIR)/.built
 	rm -rf $(MLDONKEY_IPK_DIR) $(BUILD_DIR)/mldonkey_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(MLDONKEY_BUILD_DIR) DESTDIR=$(MLDONKEY_IPK_DIR) install
-	$(INSTALL) -d $(MLDONKEY_IPK_DIR)/opt/bin
+	$(INSTALL) -d $(MLDONKEY_IPK_DIR)$(TARGET_PREFIX)/bin
 	for f in mlnet copysources get_range make_torrent mld_hash subconv; \
-		do install $(MLDONKEY_BUILD_DIR)/$${f}.byte $(MLDONKEY_IPK_DIR)/opt/bin/; done
+		do install $(MLDONKEY_BUILD_DIR)/$${f}.byte $(MLDONKEY_IPK_DIR)$(TARGET_PREFIX)/bin/; done
 	for l in mlslsk mldonkey mlgnut mldc mlbt; \
-		do ln -s mlnet.byte $(MLDONKEY_IPK_DIR)/opt/bin/$${l}.byte; done
+		do ln -s mlnet.byte $(MLDONKEY_IPK_DIR)$(TARGET_PREFIX)/bin/$${l}.byte; done
 	$(MAKE) $(MLDONKEY_IPK_DIR)/CONTROL/control
 	echo $(MLDONKEY_CONFFILES) | sed -e 's/ /\n/g' > $(MLDONKEY_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MLDONKEY_IPK_DIR)

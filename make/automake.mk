@@ -109,17 +109,17 @@ $(AUTOMAKE_IPK_DIR)/CONTROL/control:
 
 $(AUTOMAKE_IPK): $(AUTOMAKE_BUILD_DIR)/.built
 	rm -rf $(AUTOMAKE_IPK_DIR) $(BUILD_DIR)/automake_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(AUTOMAKE_IPK_DIR)/opt/bin
-	$(INSTALL) -d $(AUTOMAKE_IPK_DIR)/opt/info
-	$(INSTALL) -d $(AUTOMAKE_IPK_DIR)/opt/share/aclocal-$(AUTOMAKE_VER)
-	$(INSTALL) -d $(AUTOMAKE_IPK_DIR)/opt/share/automake-$(AUTOMAKE_VER)/Automake
-	$(INSTALL) -d $(AUTOMAKE_IPK_DIR)/opt/share/automake-$(AUTOMAKE_VER)/am
+	$(INSTALL) -d $(AUTOMAKE_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(INSTALL) -d $(AUTOMAKE_IPK_DIR)$(TARGET_PREFIX)/info
+	$(INSTALL) -d $(AUTOMAKE_IPK_DIR)$(TARGET_PREFIX)/share/aclocal-$(AUTOMAKE_VER)
+	$(INSTALL) -d $(AUTOMAKE_IPK_DIR)$(TARGET_PREFIX)/share/automake-$(AUTOMAKE_VER)/Automake
+	$(INSTALL) -d $(AUTOMAKE_IPK_DIR)$(TARGET_PREFIX)/share/automake-$(AUTOMAKE_VER)/am
 	$(MAKE) -C $(AUTOMAKE_BUILD_DIR) DESTDIR=$(AUTOMAKE_IPK_DIR) install
-	rm -f $(AUTOMAKE_IPK_DIR)/opt/share/info/dir
-	sed -i -e 's|/usr/bin/perl|/opt/bin/perl|g' $(AUTOMAKE_IPK_DIR)/opt/bin/*
+	rm -f $(AUTOMAKE_IPK_DIR)$(TARGET_PREFIX)/share/info/dir
+	sed -i -e 's|/usr/bin/perl|$(TARGET_PREFIX)/bin/perl|g' $(AUTOMAKE_IPK_DIR)$(TARGET_PREFIX)/bin/*
 	$(MAKE) $(AUTOMAKE_IPK_DIR)/CONTROL/control
-	rm -f $(AUTOMAKE_IPK_DIR)/opt/info/dir
-	(cd $(AUTOMAKE_IPK_DIR)/opt/bin; \
+	rm -f $(AUTOMAKE_IPK_DIR)$(TARGET_PREFIX)/info/dir
+	(cd $(AUTOMAKE_IPK_DIR)$(TARGET_PREFIX)/bin; \
 		rm automake aclocal; \
 		ln -s automake-$(AUTOMAKE_VER) automake; \
 		ln -s aclocal-$(AUTOMAKE_VER) aclocal; \

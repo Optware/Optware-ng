@@ -41,7 +41,7 @@ BPALOGIN_IPK_VERSION=3
 
 #
 # BPALOGIN_CONFFILES should be a list of user-editable files
-BPALOGIN_CONFFILES=/opt/etc/bpalogin.conf /opt/etc/init.d/S05bpalogin
+BPALOGIN_CONFFILES=$(TARGET_PREFIX)/etc/bpalogin.conf $(TARGET_PREFIX)/etc/init.d/S05bpalogin
 
 #
 # BPALOGIN_PATCHES should list any patches, in the the order in
@@ -175,23 +175,23 @@ $(BPALOGIN_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(BPALOGIN_IPK_DIR)/opt/sbin or $(BPALOGIN_IPK_DIR)/opt/bin
+# Binaries should be installed into $(BPALOGIN_IPK_DIR)$(TARGET_PREFIX)/sbin or $(BPALOGIN_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(BPALOGIN_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(BPALOGIN_IPK_DIR)/opt/etc/bpalogin/...
-# Documentation files should be installed in $(BPALOGIN_IPK_DIR)/opt/doc/bpalogin/...
-# Daemon startup scripts should be installed in $(BPALOGIN_IPK_DIR)/opt/etc/init.d/S??bpalogin
+# Libraries and include files should be installed into $(BPALOGIN_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(BPALOGIN_IPK_DIR)$(TARGET_PREFIX)/etc/bpalogin/...
+# Documentation files should be installed in $(BPALOGIN_IPK_DIR)$(TARGET_PREFIX)/doc/bpalogin/...
+# Daemon startup scripts should be installed in $(BPALOGIN_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??bpalogin
 #
 # You may need to patch your application to make it use these locations.
 #
 $(BPALOGIN_IPK): $(BPALOGIN_BUILD_DIR)/.built
 	rm -rf $(BPALOGIN_IPK_DIR) $(BUILD_DIR)/bpalogin_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(BPALOGIN_IPK_DIR)/opt/sbin/
-	$(INSTALL) -m 755 $(BPALOGIN_BUILD_DIR)/bpalogin $(BPALOGIN_IPK_DIR)/opt/sbin/bpalogin
-	$(INSTALL) -d $(BPALOGIN_IPK_DIR)/opt/etc/
-	$(INSTALL) -m 644 $(BPALOGIN_SOURCE_DIR)/bpalogin.conf $(BPALOGIN_IPK_DIR)/opt/etc/bpalogin.conf
-	$(INSTALL) -d $(BPALOGIN_IPK_DIR)/opt/etc/init.d
-	$(INSTALL) -m 755 $(BPALOGIN_SOURCE_DIR)/rc.bpalogin $(BPALOGIN_IPK_DIR)/opt/etc/init.d/S05bpalogin
+	$(INSTALL) -d $(BPALOGIN_IPK_DIR)$(TARGET_PREFIX)/sbin/
+	$(INSTALL) -m 755 $(BPALOGIN_BUILD_DIR)/bpalogin $(BPALOGIN_IPK_DIR)$(TARGET_PREFIX)/sbin/bpalogin
+	$(INSTALL) -d $(BPALOGIN_IPK_DIR)$(TARGET_PREFIX)/etc/
+	$(INSTALL) -m 644 $(BPALOGIN_SOURCE_DIR)/bpalogin.conf $(BPALOGIN_IPK_DIR)$(TARGET_PREFIX)/etc/bpalogin.conf
+	$(INSTALL) -d $(BPALOGIN_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(INSTALL) -m 755 $(BPALOGIN_SOURCE_DIR)/rc.bpalogin $(BPALOGIN_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S05bpalogin
 	$(MAKE) $(BPALOGIN_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 755 $(BPALOGIN_SOURCE_DIR)/postinst $(BPALOGIN_IPK_DIR)/CONTROL/postinst
 	$(INSTALL) -m 755 $(BPALOGIN_SOURCE_DIR)/prerm $(BPALOGIN_IPK_DIR)/CONTROL/prerm

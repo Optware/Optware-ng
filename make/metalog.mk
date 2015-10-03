@@ -39,7 +39,7 @@ METALOG_IPK_VERSION=7
 
 #
 # METALOG_CONFFILES should be a list of user-editable files
-METALOG_CONFFILES=/opt/etc/metalog.conf
+METALOG_CONFFILES=$(TARGET_PREFIX)/etc/metalog.conf
 
 #
 # METALOG_PATCHES should list any patches, in the the order in
@@ -165,26 +165,26 @@ $(METALOG_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(METALOG_IPK_DIR)/opt/sbin or $(METALOG_IPK_DIR)/opt/bin
+# Binaries should be installed into $(METALOG_IPK_DIR)$(TARGET_PREFIX)/sbin or $(METALOG_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(METALOG_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(METALOG_IPK_DIR)/opt/etc/metalog/...
-# Documentation files should be installed in $(METALOG_IPK_DIR)/opt/doc/metalog/...
-# Daemon startup scripts should be installed in $(METALOG_IPK_DIR)/opt/etc/init.d/S??metalog
+# Libraries and include files should be installed into $(METALOG_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(METALOG_IPK_DIR)$(TARGET_PREFIX)/etc/metalog/...
+# Documentation files should be installed in $(METALOG_IPK_DIR)$(TARGET_PREFIX)/doc/metalog/...
+# Daemon startup scripts should be installed in $(METALOG_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??metalog
 #
 # You may need to patch your application to make it use these locations.
 #
 $(METALOG_IPK): $(METALOG_BUILD_DIR)/.built
 	rm -rf $(METALOG_IPK_DIR) $(BUILD_DIR)/metalog_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(METALOG_BUILD_DIR) DESTDIR=$(METALOG_IPK_DIR) install
-	$(STRIP_COMMAND) $(METALOG_IPK_DIR)/opt/sbin/metalog
+	$(STRIP_COMMAND) $(METALOG_IPK_DIR)$(TARGET_PREFIX)/sbin/metalog
 	$(MAKE) -C $(METALOG_BUILD_DIR) DESTDIR=$(METALOG_IPK_DIR) install-man
-	$(INSTALL) -d $(METALOG_IPK_DIR)/opt/etc/
-	$(INSTALL) -m 755 $(METALOG_SOURCE_DIR)/metalog.conf $(METALOG_IPK_DIR)/opt/etc/metalog.conf
-	$(INSTALL) -d $(METALOG_IPK_DIR)/opt/doc/metalog
-	$(INSTALL) -m 755 $(METALOG_SOURCE_DIR)/rc.sysinit $(METALOG_IPK_DIR)/opt/doc/metalog
+	$(INSTALL) -d $(METALOG_IPK_DIR)$(TARGET_PREFIX)/etc/
+	$(INSTALL) -m 755 $(METALOG_SOURCE_DIR)/metalog.conf $(METALOG_IPK_DIR)$(TARGET_PREFIX)/etc/metalog.conf
+	$(INSTALL) -d $(METALOG_IPK_DIR)$(TARGET_PREFIX)/doc/metalog
+	$(INSTALL) -m 755 $(METALOG_SOURCE_DIR)/rc.sysinit $(METALOG_IPK_DIR)$(TARGET_PREFIX)/doc/metalog
 	# Make log directory on HD
-	$(INSTALL) -d $(METALOG_IPK_DIR)/opt/var/log
+	$(INSTALL) -d $(METALOG_IPK_DIR)$(TARGET_PREFIX)/var/log
 	$(MAKE) $(METALOG_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 644 $(METALOG_SOURCE_DIR)/postinst $(METALOG_IPK_DIR)/CONTROL/postinst
 	$(INSTALL) -m 644 $(METALOG_SOURCE_DIR)/prerm $(METALOG_IPK_DIR)/CONTROL/prerm

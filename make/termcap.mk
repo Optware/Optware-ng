@@ -45,7 +45,7 @@ $(TERMCAP_BUILD_DIR)/.configured: $(DL_DIR)/$(TERMCAP_SOURCE)
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=$(TARGET_PREFIX) \
 		--enable-install-termcap \
-		--with-termcap=/opt/etc/termcap \
+		--with-termcap=$(TARGET_PREFIX)/etc/termcap \
 	)
 	touch $(TERMCAP_BUILD_DIR)/.configured
 
@@ -79,12 +79,12 @@ $(TERMCAP_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(TERMCAP_CONFLICTS)" >>$@
 
 $(TERMCAP_IPK): $(TERMCAP_BUILD_DIR)/libtermcap.a
-	$(INSTALL) -d $(TERMCAP_IPK_DIR)/opt/include
-	$(INSTALL) -m 644 $(TERMCAP_BUILD_DIR)/termcap.h $(TERMCAP_IPK_DIR)/opt/include/termcap.h
-	$(INSTALL) -d $(TERMCAP_IPK_DIR)/opt/lib
-	$(INSTALL) -m 644 $(TERMCAP_BUILD_DIR)/libtermcap.a $(TERMCAP_IPK_DIR)/opt/lib/libtermcap.a
-	$(INSTALL) -d $(TERMCAP_IPK_DIR)/opt/etc
-	$(INSTALL) -m 644 $(TERMCAP_BUILD_DIR)/termcap.src $(TERMCAP_IPK_DIR)/opt/etc/termcap
+	$(INSTALL) -d $(TERMCAP_IPK_DIR)$(TARGET_PREFIX)/include
+	$(INSTALL) -m 644 $(TERMCAP_BUILD_DIR)/termcap.h $(TERMCAP_IPK_DIR)$(TARGET_PREFIX)/include/termcap.h
+	$(INSTALL) -d $(TERMCAP_IPK_DIR)$(TARGET_PREFIX)/lib
+	$(INSTALL) -m 644 $(TERMCAP_BUILD_DIR)/libtermcap.a $(TERMCAP_IPK_DIR)$(TARGET_PREFIX)/lib/libtermcap.a
+	$(INSTALL) -d $(TERMCAP_IPK_DIR)$(TARGET_PREFIX)/etc
+	$(INSTALL) -m 644 $(TERMCAP_BUILD_DIR)/termcap.src $(TERMCAP_IPK_DIR)$(TARGET_PREFIX)/etc/termcap
 	$(MAKE) $(TERMCAP_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TERMCAP_IPK_DIR)
 

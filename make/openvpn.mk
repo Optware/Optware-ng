@@ -45,8 +45,8 @@ OPENVPN_IPK_VERSION=1
 
 #
 # OPENVPN_CONFFILES should be a list of user-editable files
-OPENVPN_CONFFILES=/opt/etc/openvpn/openvpn.conf /opt/etc/openvpn/openvpn.up \
-/opt/etc/init.d/S20openvpn /opt/etc/xinetd.d/openvpn
+OPENVPN_CONFFILES=$(TARGET_PREFIX)/etc/openvpn/openvpn.conf $(TARGET_PREFIX)/etc/openvpn/openvpn.up \
+$(TARGET_PREFIX)/etc/init.d/S20openvpn $(TARGET_PREFIX)/etc/xinetd.d/openvpn
 
 #
 # OPENVPN_PATCHES should list any patches, in the the order in
@@ -183,52 +183,52 @@ $(OPENVPN_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(OPENVPN_IPK_DIR)/opt/sbin or $(OPENVPN_IPK_DIR)/opt/bin
+# Binaries should be installed into $(OPENVPN_IPK_DIR)$(TARGET_PREFIX)/sbin or $(OPENVPN_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(OPENVPN_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(OPENVPN_IPK_DIR)/opt/etc/openvpn/...
-# Documentation files should be installed in $(OPENVPN_IPK_DIR)/opt/doc/openvpn/...
-# Daemon startup scripts should be installed in $(OPENVPN_IPK_DIR)/opt/etc/init.d/S??openvpn
+# Libraries and include files should be installed into $(OPENVPN_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(OPENVPN_IPK_DIR)$(TARGET_PREFIX)/etc/openvpn/...
+# Documentation files should be installed in $(OPENVPN_IPK_DIR)$(TARGET_PREFIX)/doc/openvpn/...
+# Daemon startup scripts should be installed in $(OPENVPN_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??openvpn
 #
 # You may need to patch your application to make it use these locations.
 #
 $(OPENVPN_IPK): $(OPENVPN_BUILD_DIR)/.built
 	rm -rf $(OPENVPN_IPK_DIR) $(BUILD_DIR)/openvpn_*_$(TARGET_ARCH).ipk
-	# Install server to /opt/sbin
-	$(INSTALL) -d $(OPENVPN_IPK_DIR)/opt/sbin
-	$(STRIP_COMMAND) $(OPENVPN_BUILD_DIR)/openvpn -o $(OPENVPN_IPK_DIR)/opt/sbin/openvpn
+	# Install server to $(TARGET_PREFIX)/sbin
+	$(INSTALL) -d $(OPENVPN_IPK_DIR)$(TARGET_PREFIX)/sbin
+	$(STRIP_COMMAND) $(OPENVPN_BUILD_DIR)/openvpn -o $(OPENVPN_IPK_DIR)$(TARGET_PREFIX)/sbin/openvpn
 
 	# xinetd startup file
-	$(INSTALL) -d $(OPENVPN_IPK_DIR)/opt/etc/xinetd.d
-	$(INSTALL) -m 755 $(OPENVPN_SOURCE_DIR)/openvpn.xinetd $(OPENVPN_IPK_DIR)/opt/etc/xinetd.d/openvpn
+	$(INSTALL) -d $(OPENVPN_IPK_DIR)$(TARGET_PREFIX)/etc/xinetd.d
+	$(INSTALL) -m 755 $(OPENVPN_SOURCE_DIR)/openvpn.xinetd $(OPENVPN_IPK_DIR)$(TARGET_PREFIX)/etc/xinetd.d/openvpn
 
 	# init.d startup file
-	$(INSTALL) -d $(OPENVPN_IPK_DIR)/opt/etc/init.d
-	$(INSTALL) -m 755 $(OPENVPN_SOURCE_DIR)/S20openvpn $(OPENVPN_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -d $(OPENVPN_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(INSTALL) -m 755 $(OPENVPN_SOURCE_DIR)/S20openvpn $(OPENVPN_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
 
 	# openvpn config files
-	$(INSTALL) -d $(OPENVPN_IPK_DIR)/opt/etc/openvpn
-	$(INSTALL) -m 644 $(OPENVPN_SOURCE_DIR)/openvpn.conf $(OPENVPN_IPK_DIR)/opt/etc/openvpn
-	$(INSTALL) -m 755 $(OPENVPN_SOURCE_DIR)/openvpn.up $(OPENVPN_IPK_DIR)/opt/etc/openvpn
+	$(INSTALL) -d $(OPENVPN_IPK_DIR)$(TARGET_PREFIX)/etc/openvpn
+	$(INSTALL) -m 644 $(OPENVPN_SOURCE_DIR)/openvpn.conf $(OPENVPN_IPK_DIR)$(TARGET_PREFIX)/etc/openvpn
+	$(INSTALL) -m 755 $(OPENVPN_SOURCE_DIR)/openvpn.up $(OPENVPN_IPK_DIR)$(TARGET_PREFIX)/etc/openvpn
 
 	# openvpn loopback test 
-	$(INSTALL) -d $(OPENVPN_IPK_DIR)/opt/etc/openvpn/sample-config-files
-	$(INSTALL) -m 644 $(OPENVPN_BUILD_DIR)/sample-config-files/* $(OPENVPN_IPK_DIR)/opt/etc/openvpn/sample-config-files
+	$(INSTALL) -d $(OPENVPN_IPK_DIR)$(TARGET_PREFIX)/etc/openvpn/sample-config-files
+	$(INSTALL) -m 644 $(OPENVPN_BUILD_DIR)/sample-config-files/* $(OPENVPN_IPK_DIR)$(TARGET_PREFIX)/etc/openvpn/sample-config-files
 
 	# openvpn sample keys
-	$(INSTALL) -d $(OPENVPN_IPK_DIR)/opt/etc/openvpn/sample-keys
-	$(INSTALL) -m 644 $(OPENVPN_BUILD_DIR)/sample-keys/* $(OPENVPN_IPK_DIR)/opt/etc/openvpn/sample-keys
+	$(INSTALL) -d $(OPENVPN_IPK_DIR)$(TARGET_PREFIX)/etc/openvpn/sample-keys
+	$(INSTALL) -m 644 $(OPENVPN_BUILD_DIR)/sample-keys/* $(OPENVPN_IPK_DIR)$(TARGET_PREFIX)/etc/openvpn/sample-keys
 
 	# openvpn sample scripts
-	$(INSTALL) -d $(OPENVPN_IPK_DIR)/opt/etc/openvpn/sample-scripts
-	$(INSTALL) -m 644 $(OPENVPN_BUILD_DIR)/sample-scripts/* $(OPENVPN_IPK_DIR)/opt/etc/openvpn/sample-scripts
+	$(INSTALL) -d $(OPENVPN_IPK_DIR)$(TARGET_PREFIX)/etc/openvpn/sample-scripts
+	$(INSTALL) -m 644 $(OPENVPN_BUILD_DIR)/sample-scripts/* $(OPENVPN_IPK_DIR)$(TARGET_PREFIX)/etc/openvpn/sample-scripts
 
 	# Install man pages
-	$(INSTALL) -d $(OPENVPN_IPK_DIR)/opt/man/man8
-	$(INSTALL) -m 644 $(OPENVPN_BUILD_DIR)/openvpn.8 $(OPENVPN_IPK_DIR)/opt/man/man8
+	$(INSTALL) -d $(OPENVPN_IPK_DIR)$(TARGET_PREFIX)/man/man8
+	$(INSTALL) -m 644 $(OPENVPN_BUILD_DIR)/openvpn.8 $(OPENVPN_IPK_DIR)$(TARGET_PREFIX)/man/man8
 
 	# Create log directory
-	$(INSTALL) -d $(OPENVPN_IPK_DIR)/opt/var/log/openvpn
+	$(INSTALL) -d $(OPENVPN_IPK_DIR)$(TARGET_PREFIX)/var/log/openvpn
 
 	# Install control files
 	make  $(OPENVPN_IPK_DIR)/CONTROL/control

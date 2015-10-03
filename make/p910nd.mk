@@ -40,7 +40,7 @@ P910ND_IPK_VERSION=1
 
 #
 # P910ND_CONFFILES should be a list of user-editable files
-P910ND_CONFFILES=/opt/etc/p910nd /opt/etc/init.d/S95p910nd
+P910ND_CONFFILES=$(TARGET_PREFIX)/etc/p910nd $(TARGET_PREFIX)/etc/init.d/S95p910nd
 
 #
 # P910ND_PATCHES should list any patches, in the the order in
@@ -143,10 +143,10 @@ $(P910ND_BUILD_DIR)/.built: $(P910ND_BUILD_DIR)/.configured
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(P910ND_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(P910ND_LDFLAGS)" \
 		LIBWRAP=-lwrap \
-		BINDIR=/opt/bin \
-		CONFIGDIR=/opt/etc \
-		SCRIPTDIR=/opt/etc/init.d \
-		MANDIR=/opt/share/man/man8 \
+		BINDIR=$(TARGET_PREFIX)/bin \
+		CONFIGDIR=$(TARGET_PREFIX)/etc \
+		SCRIPTDIR=$(TARGET_PREFIX)/etc/init.d \
+		MANDIR=$(TARGET_PREFIX)/share/man/man8 \
 		;
 	touch $@
 
@@ -187,12 +187,12 @@ $(P910ND_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(P910ND_IPK_DIR)/opt/sbin or $(P910ND_IPK_DIR)/opt/bin
+# Binaries should be installed into $(P910ND_IPK_DIR)$(TARGET_PREFIX)/sbin or $(P910ND_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(P910ND_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(P910ND_IPK_DIR)/opt/etc/p910nd/...
-# Documentation files should be installed in $(P910ND_IPK_DIR)/opt/doc/p910nd/...
-# Daemon startup scripts should be installed in $(P910ND_IPK_DIR)/opt/etc/init.d/S??p910nd
+# Libraries and include files should be installed into $(P910ND_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(P910ND_IPK_DIR)$(TARGET_PREFIX)/etc/p910nd/...
+# Documentation files should be installed in $(P910ND_IPK_DIR)$(TARGET_PREFIX)/doc/p910nd/...
+# Daemon startup scripts should be installed in $(P910ND_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??p910nd
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -200,13 +200,13 @@ $(P910ND_IPK): $(P910ND_BUILD_DIR)/.built
 	rm -rf $(P910ND_IPK_DIR) $(BUILD_DIR)/p910nd_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(P910ND_BUILD_DIR) install \
 		DESTDIR=$(P910ND_IPK_DIR) \
-		BINDIR=/opt/bin \
-		CONFIGDIR=/opt/etc \
-		SCRIPTDIR=/opt/etc/init.d \
-		MANDIR=/opt/share/man/man8 \
+		BINDIR=$(TARGET_PREFIX)/bin \
+		CONFIGDIR=$(TARGET_PREFIX)/etc \
+		SCRIPTDIR=$(TARGET_PREFIX)/etc/init.d \
+		MANDIR=$(TARGET_PREFIX)/share/man/man8 \
 		;
-	$(STRIP_COMMAND) $(P910ND_IPK_DIR)/opt/bin/p910nd
-	mv $(P910ND_IPK_DIR)/opt/etc/init.d/p910nd $(P910ND_IPK_DIR)/opt/etc/init.d/S95p910nd
+	$(STRIP_COMMAND) $(P910ND_IPK_DIR)$(TARGET_PREFIX)/bin/p910nd
+	mv $(P910ND_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/p910nd $(P910ND_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S95p910nd
 	$(MAKE) $(P910ND_IPK_DIR)/CONTROL/control
 	echo $(P910ND_CONFFILES) | sed -e 's/ /\n/g' > $(P910ND_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(P910ND_IPK_DIR)

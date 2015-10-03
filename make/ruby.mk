@@ -51,7 +51,7 @@ RUBY_DEPENDS=zlib, readline, openssl, ncurses
 
 #
 # RUBY_CONFFILES should be a list of user-editable files
-#RUBY_CONFFILES=/opt/etc/ruby.conf /opt/etc/init.d/SXXruby
+#RUBY_CONFFILES=$(TARGET_PREFIX)/etc/ruby.conf $(TARGET_PREFIX)/etc/init.d/SXXruby
 
 #
 # RUBY_PATCHES should list any patches, in the the order in
@@ -146,7 +146,7 @@ endif
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=$(TARGET_PREFIX) \
-		--with-sitedir=/opt/local/lib/ruby/site_ruby \
+		--with-sitedir=$(TARGET_PREFIX)/local/lib/ruby/site_ruby \
 		--disable-nls \
                 --with-opt-dir=$(STAGING_PREFIX) \
                 --with-target-dir=$(STAGING_PREFIX) \
@@ -232,12 +232,12 @@ $(RUBY_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(RUBY_IPK_DIR)/opt/sbin or $(RUBY_IPK_DIR)/opt/bin
+# Binaries should be installed into $(RUBY_IPK_DIR)$(TARGET_PREFIX)/sbin or $(RUBY_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(RUBY_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(RUBY_IPK_DIR)/opt/etc/ruby/...
-# Documentation files should be installed in $(RUBY_IPK_DIR)/opt/doc/ruby/...
-# Daemon startup scripts should be installed in $(RUBY_IPK_DIR)/opt/etc/init.d/S??ruby
+# Libraries and include files should be installed into $(RUBY_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(RUBY_IPK_DIR)$(TARGET_PREFIX)/etc/ruby/...
+# Documentation files should be installed in $(RUBY_IPK_DIR)$(TARGET_PREFIX)/doc/ruby/...
+# Daemon startup scripts should be installed in $(RUBY_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??ruby
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -245,18 +245,18 @@ $(RUBY_IPK): $(RUBY_BUILD_DIR)/.built
 	rm -rf $(RUBY_IPK_DIR) $(BUILD_DIR)/ruby_*_$(TARGET_ARCH).ipk
 	PATH=`dirname $(RUBY_HOST_RUBY)`:$$PATH \
 	$(MAKE) -C $(RUBY_BUILD_DIR) DESTDIR=$(RUBY_IPK_DIR) install
-	for so in $(RUBY_IPK_DIR)/opt/bin/ruby \
-	    $(RUBY_IPK_DIR)/opt/lib/libruby.so.[0-9]*.[0-9]*.[0-9]* \
-	    `find $(RUBY_IPK_DIR)/opt/lib/ruby/$(RUBY_VERSION)/ -name '*.so'`; \
+	for so in $(RUBY_IPK_DIR)$(TARGET_PREFIX)/bin/ruby \
+	    $(RUBY_IPK_DIR)$(TARGET_PREFIX)/lib/libruby.so.[0-9]*.[0-9]*.[0-9]* \
+	    `find $(RUBY_IPK_DIR)$(TARGET_PREFIX)/lib/ruby/$(RUBY_VERSION)/ -name '*.so'`; \
 	do $(STRIP_COMMAND) $$so; \
 	done
-	$(INSTALL) -d $(RUBY_IPK_DIR)/opt/etc/
+	$(INSTALL) -d $(RUBY_IPK_DIR)$(TARGET_PREFIX)/etc/
 	$(MAKE) $(RUBY_IPK_DIR)/CONTROL/control
-	if [ -f $(RUBY_IPK_DIR)/opt/bin/gem ] ; then \
-		mv -f $(RUBY_IPK_DIR)/opt/bin/gem $(RUBY_IPK_DIR)/opt/bin/ruby-gem; \
-		echo "#!/bin/sh\n/opt/bin/update-alternatives --install '/opt/bin/gem' 'gem' /opt/bin/ruby-gem 30" > \
+	if [ -f $(RUBY_IPK_DIR)$(TARGET_PREFIX)/bin/gem ] ; then \
+		mv -f $(RUBY_IPK_DIR)$(TARGET_PREFIX)/bin/gem $(RUBY_IPK_DIR)$(TARGET_PREFIX)/bin/ruby-gem; \
+		echo "#!/bin/sh\n$(TARGET_PREFIX)/bin/update-alternatives --install '$(TARGET_PREFIX)/bin/gem' 'gem' $(TARGET_PREFIX)/bin/ruby-gem 30" > \
 								$(RUBY_IPK_DIR)/CONTROL/postinst; \
-		echo "#!/bin/sh\n/opt/bin/update-alternatives --remove 'gem' /opt/bin/ruby-gem" > \
+		echo "#!/bin/sh\n$(TARGET_PREFIX)/bin/update-alternatives --remove 'gem' $(TARGET_PREFIX)/bin/ruby-gem" > \
 								$(RUBY_IPK_DIR)/CONTROL/prerm; \
 		chmod 755 $(RUBY_IPK_DIR)/CONTROL/postinst; \
 		chmod 755 $(RUBY_IPK_DIR)/CONTROL/prerm; \

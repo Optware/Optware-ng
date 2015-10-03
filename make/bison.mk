@@ -48,7 +48,7 @@ BISON_IPK_DIR=$(BUILD_DIR)/bison-$(BISON_VERSION)-ipk
 BISON_IPK=$(BUILD_DIR)/bison_$(BISON_VERSION)-$(BISON_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 ifneq ($(HOSTCC), $(TARGET_CC))
-BISON_CROSS_CONFIGURE_ENV=ac_cv_func_malloc_0_nonnull=yes ac_cv_func_strnlen_working=yes ac_cv_prog_gnu_m4_gnu=\"/opt/bin/m4\"
+BISON_CROSS_CONFIGURE_ENV=ac_cv_func_malloc_0_nonnull=yes ac_cv_func_strnlen_working=yes ac_cv_prog_gnu_m4_gnu=\"$(TARGET_PREFIX)/bin/m4\"
 ifeq (uclibc,$(LIBC_STYLE))
 BISON_CROSS_CONFIGURE_SIGNBIT=gl_cv_func_signbit_gcc=no gl_cv_func_signbit=no
 else
@@ -159,33 +159,33 @@ $(BISON_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(BISON_IPK_DIR)/opt/sbin or $(BISON_IPK_DIR)/opt/bin
+# Binaries should be installed into $(BISON_IPK_DIR)$(TARGET_PREFIX)/sbin or $(BISON_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(BISON_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(BISON_IPK_DIR)/opt/etc/ushare/...
-# Documentation files should be installed in $(BISON_IPK_DIR)/opt/doc/ushare/...
-# Daemon startup scripts should be installed in $(BISON_IPK_DIR)/opt/etc/init.d/S??ushare
+# Libraries and include files should be installed into $(BISON_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(BISON_IPK_DIR)$(TARGET_PREFIX)/etc/ushare/...
+# Documentation files should be installed in $(BISON_IPK_DIR)$(TARGET_PREFIX)/doc/ushare/...
+# Daemon startup scripts should be installed in $(BISON_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??ushare
 #
 # You may need to patch your application to make it use these locations.
 #
-	$(INSTALL) -d $(BISON_IPK_DIR)/opt/bin/
+	$(INSTALL) -d $(BISON_IPK_DIR)$(TARGET_PREFIX)/bin/
 
 
 $(BISON_IPK): $(BISON_BUILD_DIR)/.built
 	rm -rf $(BISON_IPK_DIR) $(BUILD_DIR)/bison_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(BISON_IPK_DIR)/opt/bin $(BISON_IPK_DIR)/opt/share/bison
+	$(INSTALL) -d $(BISON_IPK_DIR)$(TARGET_PREFIX)/bin $(BISON_IPK_DIR)$(TARGET_PREFIX)/share/bison
 	$(MAKE) -C $(BISON_BUILD_DIR) DESTDIR=$(BISON_IPK_DIR) install-strip
-	rm -f $(BISON_IPK_DIR)/opt/share/info/dir
+	rm -f $(BISON_IPK_DIR)$(TARGET_PREFIX)/share/info/dir
 # for now ignore the locale files
-#	$(STRIP_COMMAND) $(BISON_DIR)/src/bison -o $(BISON_IPK_DIR)/opt/bin/bison
-	cp $(BISON_BUILD_DIR)/src/yacc $(BISON_IPK_DIR)/opt/bin/yacc
-	cp $(BISON_BUILD_DIR)/data/README   $(BISON_IPK_DIR)/opt/share/bison
-	cp $(BISON_BUILD_DIR)/data/c.m4     $(BISON_IPK_DIR)/opt/share/bison
-	cp $(BISON_BUILD_DIR)/data/glr.c    $(BISON_IPK_DIR)/opt/share/bison
-	cp $(BISON_BUILD_DIR)/data/lalr1.cc $(BISON_IPK_DIR)/opt/share/bison
-	cp $(BISON_BUILD_DIR)/data/yacc.c   $(BISON_IPK_DIR)/opt/share/bison
-	$(INSTALL) -d $(BISON_IPK_DIR)/opt/share/bison/m4
-	cp -a $(BISON_BUILD_DIR)/m4 $(BISON_IPK_DIR)/opt/share/bison/m4
+#	$(STRIP_COMMAND) $(BISON_DIR)/src/bison -o $(BISON_IPK_DIR)$(TARGET_PREFIX)/bin/bison
+	cp $(BISON_BUILD_DIR)/src/yacc $(BISON_IPK_DIR)$(TARGET_PREFIX)/bin/yacc
+	cp $(BISON_BUILD_DIR)/data/README   $(BISON_IPK_DIR)$(TARGET_PREFIX)/share/bison
+	cp $(BISON_BUILD_DIR)/data/c.m4     $(BISON_IPK_DIR)$(TARGET_PREFIX)/share/bison
+	cp $(BISON_BUILD_DIR)/data/glr.c    $(BISON_IPK_DIR)$(TARGET_PREFIX)/share/bison
+	cp $(BISON_BUILD_DIR)/data/lalr1.cc $(BISON_IPK_DIR)$(TARGET_PREFIX)/share/bison
+	cp $(BISON_BUILD_DIR)/data/yacc.c   $(BISON_IPK_DIR)$(TARGET_PREFIX)/share/bison
+	$(INSTALL) -d $(BISON_IPK_DIR)$(TARGET_PREFIX)/share/bison/m4
+	cp -a $(BISON_BUILD_DIR)/m4 $(BISON_IPK_DIR)$(TARGET_PREFIX)/share/bison/m4
 	$(MAKE) $(BISON_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BISON_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(BISON_IPK_DIR)

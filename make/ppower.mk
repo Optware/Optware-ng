@@ -46,9 +46,9 @@ PPOWER_IPK_VERSION=1
 
 #
 # PPOWER_CONFFILES should be a list of user-editable files
-PPOWER_CONFFILES=/opt/etc/ppower.conf
+PPOWER_CONFFILES=$(TARGET_PREFIX)/etc/ppower.conf
 #/etc/ppower.init
-# /opt/etc/init.d/SXXppower
+# $(TARGET_PREFIX)/etc/init.d/SXXppower
 
 #
 # PPOWER_PATCHES should list any patches, in the the order in
@@ -185,24 +185,24 @@ $(PPOWER_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PPOWER_IPK_DIR)/opt/sbin or $(PPOWER_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PPOWER_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PPOWER_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PPOWER_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PPOWER_IPK_DIR)/opt/etc/ppower/...
-# Documentation files should be installed in $(PPOWER_IPK_DIR)/opt/doc/ppower/...
-# Daemon startup scripts should be installed in $(PPOWER_IPK_DIR)/opt/etc/init.d/S??ppower
+# Libraries and include files should be installed into $(PPOWER_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PPOWER_IPK_DIR)$(TARGET_PREFIX)/etc/ppower/...
+# Documentation files should be installed in $(PPOWER_IPK_DIR)$(TARGET_PREFIX)/doc/ppower/...
+# Daemon startup scripts should be installed in $(PPOWER_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??ppower
 #
 # You may need to patch your application to make it use these locations.
 #
 $(PPOWER_IPK): $(PPOWER_BUILD_DIR)/.built
 	rm -rf $(PPOWER_IPK_DIR) $(BUILD_DIR)/ppower_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PPOWER_BUILD_DIR) DESTDIR=$(PPOWER_IPK_DIR) install
-	$(STRIP_COMMAND) $(PPOWER_IPK_DIR)/opt/*bin/*
-	$(INSTALL) -d $(PPOWER_IPK_DIR)/opt/etc/
-	$(INSTALL) -m 644 $(PPOWER_BUILD_DIR)/etc/ppower.conf $(PPOWER_IPK_DIR)/opt/etc/ppower.conf
-#	$(INSTALL) -d $(PPOWER_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(PPOWER_SOURCE_DIR)/rc.ppower $(PPOWER_IPK_DIR)/opt/etc/init.d/SXXppower
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(PPOWER_IPK_DIR)/opt/etc/init.d/SXXppower
+	$(STRIP_COMMAND) $(PPOWER_IPK_DIR)$(TARGET_PREFIX)/*bin/*
+	$(INSTALL) -d $(PPOWER_IPK_DIR)$(TARGET_PREFIX)/etc/
+	$(INSTALL) -m 644 $(PPOWER_BUILD_DIR)/etc/ppower.conf $(PPOWER_IPK_DIR)$(TARGET_PREFIX)/etc/ppower.conf
+#	$(INSTALL) -d $(PPOWER_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(PPOWER_SOURCE_DIR)/rc.ppower $(PPOWER_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXppower
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(PPOWER_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXppower
 	$(MAKE) $(PPOWER_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(PPOWER_SOURCE_DIR)/postinst $(PPOWER_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(PPOWER_IPK_DIR)/CONTROL/postinst

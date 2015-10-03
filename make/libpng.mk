@@ -171,20 +171,20 @@ $(LIBPNG_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LIBPNG_IPK_DIR)/opt/sbin or $(LIBPNG_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LIBPNG_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LIBPNG_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LIBPNG_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LIBPNG_IPK_DIR)/opt/etc/libpng/...
-# Documentation files should be installed in $(LIBPNG_IPK_DIR)/opt/doc/libpng/...
-# Daemon startup scripts should be installed in $(LIBPNG_IPK_DIR)/opt/etc/init.d/S??libpng
+# Libraries and include files should be installed into $(LIBPNG_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LIBPNG_IPK_DIR)$(TARGET_PREFIX)/etc/libpng/...
+# Documentation files should be installed in $(LIBPNG_IPK_DIR)$(TARGET_PREFIX)/doc/libpng/...
+# Daemon startup scripts should be installed in $(LIBPNG_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??libpng
 #
 # You may need to patch your application to make it use these locations.
 #
 $(LIBPNG_IPK): $(LIBPNG_BUILD_DIR)/.built
 	rm -rf $(LIBPNG_IPK_DIR) $(LIBPNG_IPK)
-	$(INSTALL) -d $(LIBPNG_IPK_DIR)/opt
+	$(INSTALL) -d $(LIBPNG_IPK_DIR)$(TARGET_PREFIX)
 	$(MAKE) -C $(LIBPNG_BUILD_DIR) prefix=$(LIBPNG_IPK_DIR)$(TARGET_PREFIX) install-strip
-	rm -f $(LIBPNG_IPK_DIR)/opt/lib/*.la
+	rm -f $(LIBPNG_IPK_DIR)$(TARGET_PREFIX)/lib/*.la
 	$(MAKE) $(LIBPNG_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBPNG_IPK_DIR)
 

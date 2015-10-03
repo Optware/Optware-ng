@@ -160,26 +160,26 @@ $(PATCH_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PATCH_IPK_DIR)/opt/sbin or $(PATCH_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PATCH_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PATCH_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PATCH_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PATCH_IPK_DIR)/opt/etc/patch/...
-# Documentation files should be installed in $(PATCH_IPK_DIR)/opt/doc/patch/...
-# Daemon startup scripts should be installed in $(PATCH_IPK_DIR)/opt/etc/init.d/S??patch
+# Libraries and include files should be installed into $(PATCH_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PATCH_IPK_DIR)$(TARGET_PREFIX)/etc/patch/...
+# Documentation files should be installed in $(PATCH_IPK_DIR)$(TARGET_PREFIX)/doc/patch/...
+# Daemon startup scripts should be installed in $(PATCH_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??patch
 #
 # You may need to patch your application to make it use these locations.
 #
 $(PATCH_IPK): $(PATCH_BUILD_DIR)/.built
 	rm -rf $(PATCH_IPK_DIR) $(BUILD_DIR)/patch_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PATCH_BUILD_DIR) prefix=$(PATCH_IPK_DIR)$(TARGET_PREFIX) install
-	$(STRIP_COMMAND) $(PATCH_IPK_DIR)/opt/bin/patch
-	mv $(PATCH_IPK_DIR)/opt/bin/patch $(PATCH_IPK_DIR)/opt/bin/patch-patch
+	$(STRIP_COMMAND) $(PATCH_IPK_DIR)$(TARGET_PREFIX)/bin/patch
+	mv $(PATCH_IPK_DIR)$(TARGET_PREFIX)/bin/patch $(PATCH_IPK_DIR)$(TARGET_PREFIX)/bin/patch-patch
 	$(MAKE) $(PATCH_IPK_DIR)/CONTROL/control
 	(echo "#!/bin/sh"; \
-	 echo "update-alternatives --install /opt/bin/patch patch /opt/bin/patch-patch 80"; \
+	 echo "update-alternatives --install $(TARGET_PREFIX)/bin/patch patch $(TARGET_PREFIX)/bin/patch-patch 80"; \
 	) > $(PATCH_IPK_DIR)/CONTROL/postinst
 	(echo "#!/bin/sh"; \
-	 echo "update-alternatives --remove patch /opt/bin/patch-patch"; \
+	 echo "update-alternatives --remove patch $(TARGET_PREFIX)/bin/patch-patch"; \
 	) > $(PATCH_IPK_DIR)/CONTROL/prerm
 	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

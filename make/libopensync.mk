@@ -43,7 +43,7 @@ LIBOPENSYNC_IPK_VERSION=1
 
 #
 # LIBOPENSYNC_CONFFILES should be a list of user-editable files
-#LIBOPENSYNC_CONFFILES=/opt/etc/libopensync.conf /opt/etc/init.d/SXXlibopensync
+#LIBOPENSYNC_CONFFILES=$(TARGET_PREFIX)/etc/libopensync.conf $(TARGET_PREFIX)/etc/init.d/SXXlibopensync
 
 #
 # LIBOPENSYNC_PATCHES should list any patches, in the the order in
@@ -193,24 +193,24 @@ $(LIBOPENSYNC_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LIBOPENSYNC_IPK_DIR)/opt/sbin or $(LIBOPENSYNC_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LIBOPENSYNC_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LIBOPENSYNC_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LIBOPENSYNC_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LIBOPENSYNC_IPK_DIR)/opt/etc/libopensync/...
-# Documentation files should be installed in $(LIBOPENSYNC_IPK_DIR)/opt/doc/libopensync/...
-# Daemon startup scripts should be installed in $(LIBOPENSYNC_IPK_DIR)/opt/etc/init.d/S??libopensync
+# Libraries and include files should be installed into $(LIBOPENSYNC_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LIBOPENSYNC_IPK_DIR)$(TARGET_PREFIX)/etc/libopensync/...
+# Documentation files should be installed in $(LIBOPENSYNC_IPK_DIR)$(TARGET_PREFIX)/doc/libopensync/...
+# Daemon startup scripts should be installed in $(LIBOPENSYNC_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??libopensync
 #
 # You may need to patch your application to make it use these locations.
 #
 $(LIBOPENSYNC_IPK): $(LIBOPENSYNC_BUILD_DIR)/.built
 	rm -rf $(LIBOPENSYNC_IPK_DIR) $(BUILD_DIR)/libopensync_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBOPENSYNC_BUILD_DIR) DESTDIR=$(LIBOPENSYNC_IPK_DIR) install-strip
-	rm -f $(LIBOPENSYNC_IPK_DIR)/opt/lib/*.la
-#	$(INSTALL) -d $(LIBOPENSYNC_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(LIBOPENSYNC_SOURCE_DIR)/libopensync.conf $(LIBOPENSYNC_IPK_DIR)/opt/etc/libopensync.conf
-#	$(INSTALL) -d $(LIBOPENSYNC_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(LIBOPENSYNC_SOURCE_DIR)/rc.libopensync $(LIBOPENSYNC_IPK_DIR)/opt/etc/init.d/SXXlibopensync
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBOPENSYNC_IPK_DIR)/opt/etc/init.d/SXXlibopensync
+	rm -f $(LIBOPENSYNC_IPK_DIR)$(TARGET_PREFIX)/lib/*.la
+#	$(INSTALL) -d $(LIBOPENSYNC_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(LIBOPENSYNC_SOURCE_DIR)/libopensync.conf $(LIBOPENSYNC_IPK_DIR)$(TARGET_PREFIX)/etc/libopensync.conf
+#	$(INSTALL) -d $(LIBOPENSYNC_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(LIBOPENSYNC_SOURCE_DIR)/rc.libopensync $(LIBOPENSYNC_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibopensync
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBOPENSYNC_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibopensync
 	$(MAKE) $(LIBOPENSYNC_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(LIBOPENSYNC_SOURCE_DIR)/postinst $(LIBOPENSYNC_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBOPENSYNC_IPK_DIR)/CONTROL/postinst

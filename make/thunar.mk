@@ -46,7 +46,7 @@ THUNAR_IPK_VERSION=1
 
 #
 # THUNAR_CONFFILES should be a list of user-editable files
-#THUNAR_CONFFILES=/opt/etc/thunar.conf /opt/etc/init.d/SXXthunar
+#THUNAR_CONFFILES=$(TARGET_PREFIX)/etc/thunar.conf $(TARGET_PREFIX)/etc/init.d/SXXthunar
 
 #
 # THUNAR_PATCHES should list any patches, in the the order in
@@ -134,7 +134,7 @@ $(THUNAR_BUILD_DIR)/.configured: $(DL_DIR)/$(THUNAR_SOURCE) $(THUNAR_PATCHES) ma
 		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
-		--docdir=/opt/share/doc/Thunar-$(THUNAR_VERSION) \
+		--docdir=$(TARGET_PREFIX)/share/doc/Thunar-$(THUNAR_VERSION) \
 		--program-transform-name='s&^&&' \
 	)
 	$(PATCH_LIBTOOL) $(@D)/libtool
@@ -187,24 +187,24 @@ $(THUNAR_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(THUNAR_IPK_DIR)/opt/sbin or $(THUNAR_IPK_DIR)/opt/bin
+# Binaries should be installed into $(THUNAR_IPK_DIR)$(TARGET_PREFIX)/sbin or $(THUNAR_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(THUNAR_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(THUNAR_IPK_DIR)/opt/etc/thunar/...
-# Documentation files should be installed in $(THUNAR_IPK_DIR)/opt/doc/thunar/...
-# Daemon startup scripts should be installed in $(THUNAR_IPK_DIR)/opt/etc/init.d/S??thunar
+# Libraries and include files should be installed into $(THUNAR_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(THUNAR_IPK_DIR)$(TARGET_PREFIX)/etc/thunar/...
+# Documentation files should be installed in $(THUNAR_IPK_DIR)$(TARGET_PREFIX)/doc/thunar/...
+# Daemon startup scripts should be installed in $(THUNAR_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??thunar
 #
 # You may need to patch your application to make it use these locations.
 #
 $(THUNAR_IPK): $(THUNAR_BUILD_DIR)/.built
 	rm -rf $(THUNAR_IPK_DIR) $(BUILD_DIR)/thunar_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(THUNAR_BUILD_DIR) DESTDIR=$(THUNAR_IPK_DIR) install-strip
-	rm -f $(THUNAR_IPK_DIR)/opt/lib/*.la
-#	$(INSTALL) -d $(THUNAR_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(THUNAR_SOURCE_DIR)/thunar.conf $(THUNAR_IPK_DIR)/opt/etc/thunar.conf
-#	$(INSTALL) -d $(THUNAR_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(THUNAR_SOURCE_DIR)/rc.thunar $(THUNAR_IPK_DIR)/opt/etc/init.d/SXXthunar
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(THUNAR_IPK_DIR)/opt/etc/init.d/SXXthunar
+	rm -f $(THUNAR_IPK_DIR)$(TARGET_PREFIX)/lib/*.la
+#	$(INSTALL) -d $(THUNAR_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(THUNAR_SOURCE_DIR)/thunar.conf $(THUNAR_IPK_DIR)$(TARGET_PREFIX)/etc/thunar.conf
+#	$(INSTALL) -d $(THUNAR_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(THUNAR_SOURCE_DIR)/rc.thunar $(THUNAR_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXthunar
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(THUNAR_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXthunar
 	$(MAKE) $(THUNAR_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(THUNAR_SOURCE_DIR)/postinst $(THUNAR_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(THUNAR_IPK_DIR)/CONTROL/postinst

@@ -30,7 +30,7 @@ SISPMCTL_IPK_VERSION=1
 
 #
 # SISPMCTL_CONFFILES should be a list of user-editable files
-#SISPMCTL_CONFFILES=/opt/etc/sispmctl.conf /opt/etc/init.d/SXXsispmctl
+#SISPMCTL_CONFFILES=$(TARGET_PREFIX)/etc/sispmctl.conf $(TARGET_PREFIX)/etc/init.d/SXXsispmctl
 
 #
 # SISPMCTL_PATCHES should list any patches, in the the order in
@@ -170,12 +170,12 @@ $(SISPMCTL_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(SISPMCTL_IPK_DIR)/opt/sbin or $(SISPMCTL_IPK_DIR)/opt/bin
+# Binaries should be installed into $(SISPMCTL_IPK_DIR)$(TARGET_PREFIX)/sbin or $(SISPMCTL_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(SISPMCTL_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(SISPMCTL_IPK_DIR)/opt/etc/sispmctl/...
-# Documentation files should be installed in $(SISPMCTL_IPK_DIR)/opt/doc/sispmctl/...
-# Daemon startup scripts should be installed in $(SISPMCTL_IPK_DIR)/opt/etc/init.d/S??sispmctl
+# Libraries and include files should be installed into $(SISPMCTL_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(SISPMCTL_IPK_DIR)$(TARGET_PREFIX)/etc/sispmctl/...
+# Documentation files should be installed in $(SISPMCTL_IPK_DIR)$(TARGET_PREFIX)/doc/sispmctl/...
+# Daemon startup scripts should be installed in $(SISPMCTL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??sispmctl
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -183,11 +183,11 @@ $(SISPMCTL_IPK): $(SISPMCTL_BUILD_DIR)/.built
 	rm -rf $(SISPMCTL_IPK_DIR) $(BUILD_DIR)/sispmctl_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SISPMCTL_BUILD_DIR) transform='' \
 		DESTDIR=$(SISPMCTL_IPK_DIR) install-strip
-	$(INSTALL) -d $(SISPMCTL_IPK_DIR)/opt/etc/
-	# $(INSTALL) -m 644 $(SISPMCTL_SOURCE_DIR)/sispmctl.conf $(SISPMCTL_IPK_DIR)/opt/etc/sispmctl.conf
-	# $(INSTALL) -d $(SISPMCTL_IPK_DIR)/opt/etc/init.d
-	# $(INSTALL) -m 755 $(SISPMCTL_SOURCE_DIR)/rc.sispmctl $(SISPMCTL_IPK_DIR)/opt/etc/init.d/SXXsispmctl
-	# sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SISPMCTL_IPK_DIR)/opt/etc/init.d/SXXsispmctl
+	$(INSTALL) -d $(SISPMCTL_IPK_DIR)$(TARGET_PREFIX)/etc/
+	# $(INSTALL) -m 644 $(SISPMCTL_SOURCE_DIR)/sispmctl.conf $(SISPMCTL_IPK_DIR)$(TARGET_PREFIX)/etc/sispmctl.conf
+	# $(INSTALL) -d $(SISPMCTL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	# $(INSTALL) -m 755 $(SISPMCTL_SOURCE_DIR)/rc.sispmctl $(SISPMCTL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXsispmctl
+	# sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SISPMCTL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXsispmctl
 	$(MAKE) $(SISPMCTL_IPK_DIR)/CONTROL/control
 	# $(INSTALL) -m 755 $(SISPMCTL_SOURCE_DIR)/postinst $(SISPMCTL_IPK_DIR)/CONTROL/postinst
 	# sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SISPMCTL_IPK_DIR)/CONTROL/postinst

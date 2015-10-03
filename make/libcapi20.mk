@@ -169,20 +169,20 @@ $(LIBCAPI20_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LIBCAPI20_IPK_DIR)/opt/sbin or $(LIBCAPI20_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LIBCAPI20_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LIBCAPI20_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LIBCAPI20_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LIBCAPI20_IPK_DIR)/opt/etc/libcapi20/...
-# Documentation files should be installed in $(LIBCAPI20_IPK_DIR)/opt/doc/libcapi20/...
-# Daemon startup scripts should be installed in $(LIBCAPI20_IPK_DIR)/opt/etc/init.d/S??libcapi20
+# Libraries and include files should be installed into $(LIBCAPI20_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LIBCAPI20_IPK_DIR)$(TARGET_PREFIX)/etc/libcapi20/...
+# Documentation files should be installed in $(LIBCAPI20_IPK_DIR)$(TARGET_PREFIX)/doc/libcapi20/...
+# Daemon startup scripts should be installed in $(LIBCAPI20_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??libcapi20
 #
 # You may need to patch your application to make it use these locations.
 #
 $(LIBCAPI20_IPK): $(LIBCAPI20_BUILD_DIR)/.built
 	rm -rf $(LIBCAPI20_IPK_DIR) $(LIBCAPI20_IPK)
-	$(INSTALL) -d $(LIBCAPI20_IPK_DIR)/opt
+	$(INSTALL) -d $(LIBCAPI20_IPK_DIR)$(TARGET_PREFIX)
 	$(MAKE) -C $(LIBCAPI20_BUILD_DIR) prefix=$(LIBCAPI20_IPK_DIR)$(TARGET_PREFIX) install-strip
-	rm -f $(LIBCAPI20_IPK_DIR)/opt/lib/*.la
+	rm -f $(LIBCAPI20_IPK_DIR)$(TARGET_PREFIX)/lib/*.la
 	$(MAKE) $(LIBCAPI20_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBCAPI20_IPK_DIR)
 

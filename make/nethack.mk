@@ -142,25 +142,25 @@ $(NETHACK_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(NETHACK_IPK_DIR)/opt/sbin or $(NETHACK_IPK_DIR)/opt/bin
+# Binaries should be installed into $(NETHACK_IPK_DIR)$(TARGET_PREFIX)/sbin or $(NETHACK_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(NETHACK_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(NETHACK_IPK_DIR)/opt/etc/nethack/...
-# Documentation files should be installed in $(NETHACK_IPK_DIR)/opt/doc/nethack/...
-# Daemon startup scripts should be installed in $(NETHACK_IPK_DIR)/opt/etc/init.d/S??nethack
+# Libraries and include files should be installed into $(NETHACK_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(NETHACK_IPK_DIR)$(TARGET_PREFIX)/etc/nethack/...
+# Documentation files should be installed in $(NETHACK_IPK_DIR)$(TARGET_PREFIX)/doc/nethack/...
+# Daemon startup scripts should be installed in $(NETHACK_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??nethack
 #
 # You may need to patch your application to make it use these locations.
 #
 $(NETHACK_IPK): $(NETHACK_BUILD_DIR)/.built
 	rm -rf $(NETHACK_IPK_DIR) $(BUILD_DIR)/nethack_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(NETHACK_IPK_DIR)/opt/bin
-	$(INSTALL) -m 755 $(NETHACK_BUILD_DIR)/install/nethack $(NETHACK_IPK_DIR)/opt/bin/
-	$(INSTALL) -d $(NETHACK_IPK_DIR)/opt/share/nethackdir/
-	cp -r $(NETHACK_BUILD_DIR)/install/nethackdir/* $(NETHACK_IPK_DIR)/opt/share/nethackdir/
+	$(INSTALL) -d $(NETHACK_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(INSTALL) -m 755 $(NETHACK_BUILD_DIR)/install/nethack $(NETHACK_IPK_DIR)$(TARGET_PREFIX)/bin/
+	$(INSTALL) -d $(NETHACK_IPK_DIR)$(TARGET_PREFIX)/share/nethackdir/
+	cp -r $(NETHACK_BUILD_DIR)/install/nethackdir/* $(NETHACK_IPK_DIR)$(TARGET_PREFIX)/share/nethackdir/
 	$(STRIP_COMMAND) \
-		$(NETHACK_IPK_DIR)/opt/share/nethackdir/nethack \
-		$(NETHACK_IPK_DIR)/opt/share/nethackdir/recover \
-		$(NETHACK_IPK_DIR)/opt/share/nethackdir/util/*
+		$(NETHACK_IPK_DIR)$(TARGET_PREFIX)/share/nethackdir/nethack \
+		$(NETHACK_IPK_DIR)$(TARGET_PREFIX)/share/nethackdir/recover \
+		$(NETHACK_IPK_DIR)$(TARGET_PREFIX)/share/nethackdir/util/*
 	$(MAKE) $(NETHACK_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 755 $(NETHACK_SOURCE_DIR)/postinst $(NETHACK_IPK_DIR)/CONTROL/postinst
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NETHACK_IPK_DIR)

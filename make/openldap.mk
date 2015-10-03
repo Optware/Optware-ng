@@ -38,7 +38,7 @@ OPENLDAP_IPK_VERSION=1
 
 #
 # OPENLDAP_CONFFILES should be a list of user-editable files
-#OPENLDAP_CONFFILES=/opt/etc/openldap.conf /opt/etc/init.d/SXXopenldap
+#OPENLDAP_CONFFILES=$(TARGET_PREFIX)/etc/openldap.conf $(TARGET_PREFIX)/etc/init.d/SXXopenldap
 
 #
 # OPENLDAP_PATCHES should list any patches, in the the order in
@@ -194,12 +194,12 @@ $(OPENLDAP_LIBS_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(OPENLDAP_IPK_DIR)/opt/sbin or $(OPENLDAP_IPK_DIR)/opt/bin
+# Binaries should be installed into $(OPENLDAP_IPK_DIR)$(TARGET_PREFIX)/sbin or $(OPENLDAP_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(OPENLDAP_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(OPENLDAP_IPK_DIR)/opt/etc/openldap/...
-# Documentation files should be installed in $(OPENLDAP_IPK_DIR)/opt/doc/openldap/...
-# Daemon startup scripts should be installed in $(OPENLDAP_IPK_DIR)/opt/etc/init.d/S??openldap
+# Libraries and include files should be installed into $(OPENLDAP_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(OPENLDAP_IPK_DIR)$(TARGET_PREFIX)/etc/openldap/...
+# Documentation files should be installed in $(OPENLDAP_IPK_DIR)$(TARGET_PREFIX)/doc/openldap/...
+# Daemon startup scripts should be installed in $(OPENLDAP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??openldap
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -207,22 +207,22 @@ $(OPENLDAP_IPK): $(OPENLDAP_BUILD_DIR)/.built
 	rm -rf $(OPENLDAP_IPK_DIR) $(BUILD_DIR)/openldap_*_$(TARGET_ARCH).ipk
 	rm -rf $(OPENLDAP_LIBS_IPK_DIR) $(BUILD_DIR)/openldap-libs_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(OPENLDAP_BUILD_DIR) DESTDIR=$(OPENLDAP_IPK_DIR) STRIP="" install
-	$(INSTALL) -d $(OPENLDAP_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 755 $(OPENLDAP_SOURCE_DIR)/openldap.conf $(OPENLDAP_IPK_DIR)/opt/etc/openldap.conf
-	$(INSTALL) -d $(OPENLDAP_IPK_DIR)/opt/etc/init.d
-	$(INSTALL) -m 755 $(OPENLDAP_SOURCE_DIR)/rc.openldap $(OPENLDAP_IPK_DIR)/opt/etc/init.d/S58slapd
+	$(INSTALL) -d $(OPENLDAP_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 755 $(OPENLDAP_SOURCE_DIR)/openldap.conf $(OPENLDAP_IPK_DIR)$(TARGET_PREFIX)/etc/openldap.conf
+	$(INSTALL) -d $(OPENLDAP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(INSTALL) -m 755 $(OPENLDAP_SOURCE_DIR)/rc.openldap $(OPENLDAP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S58slapd
 	$(MAKE)  $(OPENLDAP_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 644 $(OPENLDAP_SOURCE_DIR)/postinst $(OPENLDAP_IPK_DIR)/CONTROL/postinst
 	$(INSTALL) -m 644 $(OPENLDAP_SOURCE_DIR)/prerm $(OPENLDAP_IPK_DIR)/CONTROL/prerm
 	echo $(OPENLDAP_CONFFILES) | sed -e 's/ /\n/g' > $(OPENLDAP_IPK_DIR)/CONTROL/conffiles
-	rm -f $(OPENLDAP_IPK_DIR)/opt/lib/*.a
-	rm -f $(OPENLDAP_IPK_DIR)/opt/lib/*.la
-	$(STRIP_COMMAND) $(OPENLDAP_IPK_DIR)/opt/lib/*.so
-	$(STRIP_COMMAND) $(OPENLDAP_IPK_DIR)/opt/bin/*
-	$(STRIP_COMMAND) $(OPENLDAP_IPK_DIR)/opt/libexec/*
-	$(INSTALL) -d $(OPENLDAP_LIBS_IPK_DIR)/opt
-	mv $(OPENLDAP_IPK_DIR)/opt/include  $(OPENLDAP_LIBS_IPK_DIR)/opt
-	mv $(OPENLDAP_IPK_DIR)/opt/lib  $(OPENLDAP_LIBS_IPK_DIR)/opt
+	rm -f $(OPENLDAP_IPK_DIR)$(TARGET_PREFIX)/lib/*.a
+	rm -f $(OPENLDAP_IPK_DIR)$(TARGET_PREFIX)/lib/*.la
+	$(STRIP_COMMAND) $(OPENLDAP_IPK_DIR)$(TARGET_PREFIX)/lib/*.so
+	$(STRIP_COMMAND) $(OPENLDAP_IPK_DIR)$(TARGET_PREFIX)/bin/*
+	$(STRIP_COMMAND) $(OPENLDAP_IPK_DIR)$(TARGET_PREFIX)/libexec/*
+	$(INSTALL) -d $(OPENLDAP_LIBS_IPK_DIR)$(TARGET_PREFIX)
+	mv $(OPENLDAP_IPK_DIR)$(TARGET_PREFIX)/include  $(OPENLDAP_LIBS_IPK_DIR)$(TARGET_PREFIX)
+	mv $(OPENLDAP_IPK_DIR)$(TARGET_PREFIX)/lib  $(OPENLDAP_LIBS_IPK_DIR)$(TARGET_PREFIX)
 	$(MAKE)  $(OPENLDAP_LIBS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(OPENLDAP_IPK_DIR)
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(OPENLDAP_LIBS_IPK_DIR)

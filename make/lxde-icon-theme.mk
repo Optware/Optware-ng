@@ -46,7 +46,7 @@ LXDE-ICON-THEME_IPK_VERSION=1
 
 #
 # LXDE-ICON-THEME_CONFFILES should be a list of user-editable files
-#LXDE-ICON-THEME_CONFFILES=/opt/etc/lxde-icon-theme.conf /opt/etc/init.d/SXXlxde-icon-theme
+#LXDE-ICON-THEME_CONFFILES=$(TARGET_PREFIX)/etc/lxde-icon-theme.conf $(TARGET_PREFIX)/etc/init.d/SXXlxde-icon-theme
 
 #
 # LXDE-ICON-THEME_PATCHES should list any patches, in the the order in
@@ -183,23 +183,23 @@ $(LXDE-ICON-THEME_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LXDE-ICON-THEME_IPK_DIR)/opt/sbin or $(LXDE-ICON-THEME_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LXDE-ICON-THEME_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LXDE-ICON-THEME_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LXDE-ICON-THEME_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LXDE-ICON-THEME_IPK_DIR)/opt/etc/lxde-icon-theme/...
-# Documentation files should be installed in $(LXDE-ICON-THEME_IPK_DIR)/opt/doc/lxde-icon-theme/...
-# Daemon startup scripts should be installed in $(LXDE-ICON-THEME_IPK_DIR)/opt/etc/init.d/S??lxde-icon-theme
+# Libraries and include files should be installed into $(LXDE-ICON-THEME_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LXDE-ICON-THEME_IPK_DIR)$(TARGET_PREFIX)/etc/lxde-icon-theme/...
+# Documentation files should be installed in $(LXDE-ICON-THEME_IPK_DIR)$(TARGET_PREFIX)/doc/lxde-icon-theme/...
+# Daemon startup scripts should be installed in $(LXDE-ICON-THEME_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??lxde-icon-theme
 #
 # You may need to patch your application to make it use these locations.
 #
 $(LXDE-ICON-THEME_IPK): $(LXDE-ICON-THEME_BUILD_DIR)/.built
 	rm -rf $(LXDE-ICON-THEME_IPK_DIR) $(BUILD_DIR)/lxde-icon-theme_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LXDE-ICON-THEME_BUILD_DIR) DESTDIR=$(LXDE-ICON-THEME_IPK_DIR) install
-#	$(INSTALL) -d $(LXDE-ICON-THEME_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(LXDE-ICON-THEME_SOURCE_DIR)/lxde-icon-theme.conf $(LXDE-ICON-THEME_IPK_DIR)/opt/etc/lxde-icon-theme.conf
-#	$(INSTALL) -d $(LXDE-ICON-THEME_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(LXDE-ICON-THEME_SOURCE_DIR)/rc.lxde-icon-theme $(LXDE-ICON-THEME_IPK_DIR)/opt/etc/init.d/SXXlxde-icon-theme
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LXDE-ICON-THEME_IPK_DIR)/opt/etc/init.d/SXXlxde-icon-theme
+#	$(INSTALL) -d $(LXDE-ICON-THEME_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(LXDE-ICON-THEME_SOURCE_DIR)/lxde-icon-theme.conf $(LXDE-ICON-THEME_IPK_DIR)$(TARGET_PREFIX)/etc/lxde-icon-theme.conf
+#	$(INSTALL) -d $(LXDE-ICON-THEME_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(LXDE-ICON-THEME_SOURCE_DIR)/rc.lxde-icon-theme $(LXDE-ICON-THEME_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlxde-icon-theme
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LXDE-ICON-THEME_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlxde-icon-theme
 	$(MAKE) $(LXDE-ICON-THEME_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 755 $(LXDE-ICON-THEME_SOURCE_DIR)/postinst $(LXDE-ICON-THEME_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LXDE-ICON-THEME_IPK_DIR)/CONTROL/postinst

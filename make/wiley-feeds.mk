@@ -107,18 +107,18 @@ $(WILEY-FEEDS_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(WILEY-FEEDS_IPK_DIR)/opt/sbin or $(WILEY-FEEDS_IPK_DIR)/opt/bin
+# Binaries should be installed into $(WILEY-FEEDS_IPK_DIR)$(TARGET_PREFIX)/sbin or $(WILEY-FEEDS_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(WILEY-FEEDS_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(WILEY-FEEDS_IPK_DIR)/opt/etc/wiley-feeds/...
-# Documentation files should be installed in $(WILEY-FEEDS_IPK_DIR)/opt/doc/wiley-feeds/...
-# Daemon startup scripts should be installed in $(WILEY-FEEDS_IPK_DIR)/opt/etc/init.d/S??wiley-feeds
+# Libraries and include files should be installed into $(WILEY-FEEDS_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(WILEY-FEEDS_IPK_DIR)$(TARGET_PREFIX)/etc/wiley-feeds/...
+# Documentation files should be installed in $(WILEY-FEEDS_IPK_DIR)$(TARGET_PREFIX)/doc/wiley-feeds/...
+# Daemon startup scripts should be installed in $(WILEY-FEEDS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??wiley-feeds
 #
 # You may need to patch your application to make it use these locations.
 #
 $(WILEY-FEEDS_IPK): $(WILEY-FEEDS_BUILD_DIR)/.built
 	rm -rf $(WILEY-FEEDS_IPK_DIR) $(BUILD_DIR)/wiley-feeds_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(WILEY-FEEDS_IPK_DIR)/opt/etc
+	$(INSTALL) -d $(WILEY-FEEDS_IPK_DIR)$(TARGET_PREFIX)/etc
 	$(MAKE) $(WILEY-FEEDS_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 644 $(WILEY-FEEDS_SOURCE_DIR)/postinst $(WILEY-FEEDS_IPK_DIR)/CONTROL/postinst
 	$(INSTALL) -m 644 $(WILEY-FEEDS_SOURCE_DIR)/prerm $(WILEY-FEEDS_IPK_DIR)/CONTROL/prerm

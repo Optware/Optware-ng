@@ -73,18 +73,18 @@ $(SPAMASSASSIN_BUILD_DIR)/.configured: $(DL_DIR)/$(SPAMASSASSIN_SOURCE) $(SPAMAS
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SPAMASSASSIN_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(SPAMASSASSIN_LDFLAGS)" \
                 $(PERL_HOSTPERL) Makefile.PL \
-                LD_RUN_PATH=/opt/lib \
+                LD_RUN_PATH=$(TARGET_PREFIX)/lib \
                 PREFIX=$(TARGET_PREFIX) \
- 		SYSCONFDIR=/opt/etc \
-		CONFDIR=/opt/etc/spamassassin \
+ 		SYSCONFDIR=$(TARGET_PREFIX)/etc \
+		CONFDIR=$(TARGET_PREFIX)/etc/spamassassin \
 		CONTACT_ADDRESS="postmaster@local.domain" \
-		LOCALSTATEDIR=/opt/var/lib/spamassassin \
+		LOCALSTATEDIR=$(TARGET_PREFIX)/var/lib/spamassassin \
 		< /dev/null && \
 		(cd spamc; \
 		  $(TARGET_CONFIGURE_OPTS) \
                   ./configure --prefix=$(TARGET_PREFIX) \
-                    --sysconfdir=/opt/etc/spamassassin \
-                    --datadir=/opt/share/spamassassin \
+                    --sysconfdir=$(TARGET_PREFIX)/etc/spamassassin \
+                    --datadir=$(TARGET_PREFIX)/share/spamassassin \
                     --enable-ssl=no \
                     --host=$(GNU_TARGET_NAME); \
                   echo "#define VERSION_STRING \"$(SPAMASSASSIN_VERSION)\"" \
@@ -103,7 +103,7 @@ $(SPAMASSASSIN_BUILD_DIR)/.built: $(SPAMASSASSIN_BUILD_DIR)/.configured
 	$(MAKE) -C $(SPAMASSASSIN_BUILD_DIR)
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
-		LD_RUN_PATH=/opt/lib \
+		LD_RUN_PATH=$(TARGET_PREFIX)/lib \
 		$(PERL_INC) \
 	PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl"
 	touch $(SPAMASSASSIN_BUILD_DIR)/.built
@@ -145,20 +145,20 @@ $(SPAMASSASSIN_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(SPAMASSASSIN_IPK_DIR)/opt/sbin or $(SPAMASSASSIN_IPK_DIR)/opt/bin
+# Binaries should be installed into $(SPAMASSASSIN_IPK_DIR)$(TARGET_PREFIX)/sbin or $(SPAMASSASSIN_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(SPAMASSASSIN_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(SPAMASSASSIN_IPK_DIR)/opt/etc/spamassassin/...
-# Documentation files should be installed in $(SPAMASSASSIN_IPK_DIR)/opt/doc/spamassassin/...
-# Daemon startup scripts should be installed in $(SPAMASSASSIN_IPK_DIR)/opt/etc/init.d/S??spamassassin
+# Libraries and include files should be installed into $(SPAMASSASSIN_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(SPAMASSASSIN_IPK_DIR)$(TARGET_PREFIX)/etc/spamassassin/...
+# Documentation files should be installed in $(SPAMASSASSIN_IPK_DIR)$(TARGET_PREFIX)/doc/spamassassin/...
+# Daemon startup scripts should be installed in $(SPAMASSASSIN_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??spamassassin
 #
 # You may need to patch your application to make it use these locations.
 #
 $(SPAMASSASSIN_IPK): $(SPAMASSASSIN_BUILD_DIR)/.built
 	rm -rf $(SPAMASSASSIN_IPK_DIR) $(BUILD_DIR)/spamassassin_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SPAMASSASSIN_BUILD_DIR) DESTDIR=$(SPAMASSASSIN_IPK_DIR) install
-	perl -pi -e 's|$(PERL_HOSTPERL)|/opt/bin/perl|g' $(SPAMASSASSIN_IPK_DIR)/*
-	$(INSTALL) -d $(SPAMASSASSIN_IPK_DIR)/opt/etc/
+	perl -pi -e 's|$(PERL_HOSTPERL)|$(TARGET_PREFIX)/bin/perl|g' $(SPAMASSASSIN_IPK_DIR)/*
+	$(INSTALL) -d $(SPAMASSASSIN_IPK_DIR)$(TARGET_PREFIX)/etc/
 	$(MAKE) $(SPAMASSASSIN_IPK_DIR)/CONTROL/control
 	echo $(SPAMASSASSIN_CONFFILES) | sed -e 's/ /\n/g' > $(SPAMASSASSIN_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SPAMASSASSIN_IPK_DIR)

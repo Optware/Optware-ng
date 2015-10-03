@@ -46,7 +46,7 @@ NMON_IPK_VERSION=1
 
 #
 # NMON_CONFFILES should be a list of user-editable files
-#NMON_CONFFILES=/opt/etc/nmon.conf /opt/etc/init.d/SXXnmon
+#NMON_CONFFILES=$(TARGET_PREFIX)/etc/nmon.conf $(TARGET_PREFIX)/etc/init.d/SXXnmon
 
 #
 # NMON_PATCHES should list any patches, in the the order in
@@ -169,20 +169,20 @@ $(NMON_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(NMON_IPK_DIR)/opt/sbin or $(NMON_IPK_DIR)/opt/bin
+# Binaries should be installed into $(NMON_IPK_DIR)$(TARGET_PREFIX)/sbin or $(NMON_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(NMON_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(NMON_IPK_DIR)/opt/etc/nmon/...
-# Documentation files should be installed in $(NMON_IPK_DIR)/opt/doc/nmon/...
-# Daemon startup scripts should be installed in $(NMON_IPK_DIR)/opt/etc/init.d/S??nmon
+# Libraries and include files should be installed into $(NMON_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(NMON_IPK_DIR)$(TARGET_PREFIX)/etc/nmon/...
+# Documentation files should be installed in $(NMON_IPK_DIR)$(TARGET_PREFIX)/doc/nmon/...
+# Daemon startup scripts should be installed in $(NMON_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??nmon
 #
 # You may need to patch your application to make it use these locations.
 #
 $(NMON_IPK): $(NMON_BUILD_DIR)/.built
 	rm -rf $(NMON_IPK_DIR) $(BUILD_DIR)/nmon_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(NMON_IPK_DIR)/opt/bin
-	$(INSTALL) -m 755 $(NMON_BUILD_DIR)/nmon $(NMON_IPK_DIR)/opt/bin
-	$(STRIP_COMMAND) $(NMON_IPK_DIR)/opt/bin/nmon
+	$(INSTALL) -d $(NMON_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(INSTALL) -m 755 $(NMON_BUILD_DIR)/nmon $(NMON_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(STRIP_COMMAND) $(NMON_IPK_DIR)$(TARGET_PREFIX)/bin/nmon
 	$(MAKE) $(NMON_IPK_DIR)/CONTROL/control
 	echo $(NMON_CONFFILES) | sed -e 's/ /\n/g' > $(NMON_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NMON_IPK_DIR)

@@ -19,7 +19,7 @@
 #
 # You should change all these variables to suit your package.
 #
-GIFTFASTTRACK_SITE=http://download.berlios.de/gift-fasttrack
+GIFTFASTTRACK_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/gift-fasttrack.berlios
 GIFTFASTTRACK_VERSION=0.8.9
 GIFTFASTTRACK_SOURCE=giFT-FastTrack-$(GIFTFASTTRACK_VERSION).tar.gz
 GIFTFASTTRACK_DIR_REMOTE=giFT-FastTrack-$(GIFTFASTTRACK_VERSION)
@@ -38,7 +38,7 @@ GIFTFASTTRACK_IPK_VERSION=1
 
 #
 # GIFTFASTTRACK_CONFFILES should be a list of user-editable files
-GIFTFASTTRACK_CONFFILES=/opt/etc/giFT-FastTrack.conf /opt/etc/init.d/SXXgiFT-FastTrack
+GIFTFASTTRACK_CONFFILES=$(TARGET_PREFIX)/etc/giFT-FastTrack.conf $(TARGET_PREFIX)/etc/init.d/SXXgiFT-FastTrack
 
 #
 # GIFTFASTTRACK_PATCHES should list any patches, in the the order in
@@ -163,24 +163,24 @@ $(GIFTFASTTRACK_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(GIFTFASTTRACK_IPK_DIR)/opt/sbin or $(GIFTFASTTRACK_IPK_DIR)/opt/bin
+# Binaries should be installed into $(GIFTFASTTRACK_IPK_DIR)$(TARGET_PREFIX)/sbin or $(GIFTFASTTRACK_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(GIFTFASTTRACK_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(GIFTFASTTRACK_IPK_DIR)/opt/etc/giFT-FastTrack/...
-# Documentation files should be installed in $(GIFTFASTTRACK_IPK_DIR)/opt/doc/giFT-FastTrack/...
-# Daemon startup scripts should be installed in $(GIFTFASTTRACK_IPK_DIR)/opt/etc/init.d/S??giFT-FastTrack
+# Libraries and include files should be installed into $(GIFTFASTTRACK_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(GIFTFASTTRACK_IPK_DIR)$(TARGET_PREFIX)/etc/giFT-FastTrack/...
+# Documentation files should be installed in $(GIFTFASTTRACK_IPK_DIR)$(TARGET_PREFIX)/doc/giFT-FastTrack/...
+# Daemon startup scripts should be installed in $(GIFTFASTTRACK_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??giFT-FastTrack
 #
 # You may need to patch your application to make it use these locations.
 #
 $(GIFTFASTTRACK_IPK): $(GIFTFASTTRACK_BUILD_DIR)/.built
 	rm -rf $(GIFTFASTTRACK_IPK_DIR) $(BUILD_DIR)/gift-fasttrack_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(GIFTFASTTRACK_IPK_DIR)/opt/lib/giFT
-	$(STRIP_COMMAND) $(GIFTFASTTRACK_BUILD_DIR)/src/.libs/libFastTrack.so -o $(GIFTFASTTRACK_IPK_DIR)/opt/lib/giFT/libFastTrack.so
-	$(INSTALL) -m 644 $(GIFTFASTTRACK_BUILD_DIR)/src/.libs/libFastTrack.la $(GIFTFASTTRACK_IPK_DIR)/opt/lib/giFT/libFastTrack.la
-	$(INSTALL) -d $(GIFTFASTTRACK_IPK_DIR)/opt/share/giFT/FastTrack
-	$(INSTALL) -m 644 $(GIFTFASTTRACK_BUILD_DIR)/data/FastTrack.conf.template $(GIFTFASTTRACK_IPK_DIR)/opt/share/giFT/FastTrack/FastTrack.conf.template
-	$(INSTALL) -m 644 $(GIFTFASTTRACK_BUILD_DIR)/data/banlist $(GIFTFASTTRACK_IPK_DIR)/opt/share/giFT/FastTrack/banlist
-	$(INSTALL) -m 644 $(GIFTFASTTRACK_BUILD_DIR)/data/nodes $(GIFTFASTTRACK_IPK_DIR)/opt/share/giFT/FastTrack/nodes
+	$(INSTALL) -d $(GIFTFASTTRACK_IPK_DIR)$(TARGET_PREFIX)/lib/giFT
+	$(STRIP_COMMAND) $(GIFTFASTTRACK_BUILD_DIR)/src/.libs/libFastTrack.so -o $(GIFTFASTTRACK_IPK_DIR)$(TARGET_PREFIX)/lib/giFT/libFastTrack.so
+	$(INSTALL) -m 644 $(GIFTFASTTRACK_BUILD_DIR)/src/.libs/libFastTrack.la $(GIFTFASTTRACK_IPK_DIR)$(TARGET_PREFIX)/lib/giFT/libFastTrack.la
+	$(INSTALL) -d $(GIFTFASTTRACK_IPK_DIR)$(TARGET_PREFIX)/share/giFT/FastTrack
+	$(INSTALL) -m 644 $(GIFTFASTTRACK_BUILD_DIR)/data/FastTrack.conf.template $(GIFTFASTTRACK_IPK_DIR)$(TARGET_PREFIX)/share/giFT/FastTrack/FastTrack.conf.template
+	$(INSTALL) -m 644 $(GIFTFASTTRACK_BUILD_DIR)/data/banlist $(GIFTFASTTRACK_IPK_DIR)$(TARGET_PREFIX)/share/giFT/FastTrack/banlist
+	$(INSTALL) -m 644 $(GIFTFASTTRACK_BUILD_DIR)/data/nodes $(GIFTFASTTRACK_IPK_DIR)$(TARGET_PREFIX)/share/giFT/FastTrack/nodes
 	$(INSTALL) -d $(GIFTFASTTRACK_IPK_DIR)/CONTROL
 	$(MAKE) $(GIFTFASTTRACK_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GIFTFASTTRACK_IPK_DIR)

@@ -52,7 +52,7 @@ IPYTHON_IPK_VERSION=1
 
 #
 # IPYTHON_CONFFILES should be a list of user-editable files
-#IPYTHON_CONFFILES=/opt/etc/ipython.conf /opt/etc/init.d/SXXipython
+#IPYTHON_CONFFILES=$(TARGET_PREFIX)/etc/ipython.conf $(TARGET_PREFIX)/etc/init.d/SXXipython
 
 #
 # IPYTHON_PATCHES should list any patches, in the the order in
@@ -149,7 +149,7 @@ $(IPYTHON_BUILD_DIR)/.configured: $(DL_DIR)/$(IPYTHON_SOURCE) $(DL_DIR)/$(IPYTHO
 	mv $(BUILD_DIR)/$(IPYTHON_DIR_OLD) $(@D)/2.5
 	(cd $(@D)/2.5; \
 	    (echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python2.5") >> setup.cfg \
+	    echo "executable=$(TARGET_PREFIX)/bin/python2.5") >> setup.cfg \
 	)
 	# 2.6
 	rm -rf $(BUILD_DIR)/$(IPYTHON_DIR)
@@ -158,7 +158,7 @@ $(IPYTHON_BUILD_DIR)/.configured: $(DL_DIR)/$(IPYTHON_SOURCE) $(DL_DIR)/$(IPYTHO
 	mv $(BUILD_DIR)/$(IPYTHON_DIR_OLD) $(@D)/2.6
 	(cd $(@D)/2.6; \
 	    (echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python2.6") >> setup.cfg \
+	    echo "executable=$(TARGET_PREFIX)/bin/python2.6") >> setup.cfg \
 	)
 	# 2.7
 	rm -rf $(BUILD_DIR)/$(IPYTHON_DIR)
@@ -167,7 +167,7 @@ $(IPYTHON_BUILD_DIR)/.configured: $(DL_DIR)/$(IPYTHON_SOURCE) $(DL_DIR)/$(IPYTHO
 	mv $(BUILD_DIR)/$(IPYTHON_DIR) $(@D)/2.7
 	(cd $(@D)/2.7; \
 	    (echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python2.7") >> setup.cfg \
+	    echo "executable=$(TARGET_PREFIX)/bin/python2.7") >> setup.cfg \
 	)
 	# 3
 	rm -rf $(BUILD_DIR)/$(IPYTHON_DIR)
@@ -176,7 +176,7 @@ $(IPYTHON_BUILD_DIR)/.configured: $(DL_DIR)/$(IPYTHON_SOURCE) $(DL_DIR)/$(IPYTHO
 	mv $(BUILD_DIR)/$(IPYTHON_DIR) $(@D)/3
 	(cd $(@D)/3; \
 	    (echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python$(PYTHON3_VERSION_MAJOR)") >> setup.cfg \
+	    echo "executable=$(TARGET_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR)") >> setup.cfg \
 	)
 #	see http://stackoverflow.com/questions/16771894/python-nameerror-global-name-file-is-not-defined
 	sed -i -e 's/__file__/"&"/' $(@D)/2.7/setup.py $(@D)/3/setup.py
@@ -311,12 +311,12 @@ $(IPYTHON_PY3_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(IPYTHON_IPK_DIR)/opt/sbin or $(IPYTHON_IPK_DIR)/opt/bin
+# Binaries should be installed into $(IPYTHON_IPK_DIR)$(TARGET_PREFIX)/sbin or $(IPYTHON_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(IPYTHON_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(IPYTHON_IPK_DIR)/opt/etc/ipython/...
-# Documentation files should be installed in $(IPYTHON_IPK_DIR)/opt/doc/ipython/...
-# Daemon startup scripts should be installed in $(IPYTHON_IPK_DIR)/opt/etc/init.d/S??ipython
+# Libraries and include files should be installed into $(IPYTHON_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(IPYTHON_IPK_DIR)$(TARGET_PREFIX)/etc/ipython/...
+# Documentation files should be installed in $(IPYTHON_IPK_DIR)$(TARGET_PREFIX)/doc/ipython/...
+# Daemon startup scripts should be installed in $(IPYTHON_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??ipython
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -325,9 +325,9 @@ $(IPYTHON_PY25_IPK): $(IPYTHON_BUILD_DIR)/.built
 	rm -rf $(IPYTHON_PY25_IPK_DIR) $(BUILD_DIR)/py25-ipython_*_$(TARGET_ARCH).ipk
 	(cd $(IPYTHON_BUILD_DIR)/2.5; \
 		$(HOST_STAGING_PREFIX)/bin/python2.5 -c "import setuptools; execfile('setup.py')" \
-		$(INSTALL) --root=$(IPYTHON_PY25_IPK_DIR) --prefix=/opt)
-	rm -rf $(IPYTHON_PY25_IPK_DIR)/opt/share
-	for f in $(IPYTHON_PY25_IPK_DIR)/opt/bin/*; \
+		$(INSTALL) --root=$(IPYTHON_PY25_IPK_DIR) --prefix=$(TARGET_PREFIX))
+	rm -rf $(IPYTHON_PY25_IPK_DIR)$(TARGET_PREFIX)/share
+	for f in $(IPYTHON_PY25_IPK_DIR)$(TARGET_PREFIX)/bin/*; \
 		do mv $$f `echo $$f | sed 's|$$|-2.5|'`; done
 	$(MAKE) $(IPYTHON_PY25_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(IPYTHON_PY25_IPK_DIR)
@@ -338,8 +338,8 @@ $(IPYTHON_PY26_IPK): $(IPYTHON_BUILD_DIR)/.built
 	rm -rf $(IPYTHON-COMMON_IPK_DIR) $(BUILD_DIR)/ipython-common_*_$(TARGET_ARCH).ipk
 	(cd $(IPYTHON_BUILD_DIR)/2.6; \
 		$(HOST_STAGING_PREFIX)/bin/python2.6 -c "import setuptools; execfile('setup.py')" \
-		$(INSTALL) --root=$(IPYTHON_PY26_IPK_DIR) --prefix=/opt)
-	rm -rf $(IPYTHON_PY26_IPK_DIR)/opt/share
+		$(INSTALL) --root=$(IPYTHON_PY26_IPK_DIR) --prefix=$(TARGET_PREFIX))
+	rm -rf $(IPYTHON_PY26_IPK_DIR)$(TARGET_PREFIX)/share
 	$(MAKE) $(IPYTHON_PY26_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(IPYTHON_PY26_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(IPYTHON_PY26_IPK_DIR)
@@ -349,8 +349,8 @@ $(IPYTHON_PY27_IPK): $(IPYTHON_BUILD_DIR)/.built
 	rm -rf $(IPYTHON-COMMON_IPK_DIR) $(BUILD_DIR)/ipython-common_*_$(TARGET_ARCH).ipk
 	(cd $(IPYTHON_BUILD_DIR)/2.7; \
 		$(HOST_STAGING_PREFIX)/bin/python2.7 -c "import setuptools; execfile('setup.py')" \
-		$(INSTALL) --root=$(IPYTHON_PY27_IPK_DIR) --prefix=/opt)
-	rm -rf $(IPYTHON_PY27_IPK_DIR)/opt/share
+		$(INSTALL) --root=$(IPYTHON_PY27_IPK_DIR) --prefix=$(TARGET_PREFIX))
+	rm -rf $(IPYTHON_PY27_IPK_DIR)$(TARGET_PREFIX)/share
 	$(MAKE) $(IPYTHON_PY27_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(IPYTHON_PY27_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(IPYTHON_PY27_IPK_DIR)
@@ -360,8 +360,8 @@ $(IPYTHON_PY3_IPK): $(IPYTHON_BUILD_DIR)/.built
 	rm -rf $(IPYTHON-COMMON_IPK_DIR) $(BUILD_DIR)/ipython-common_*_$(TARGET_ARCH).ipk
 	(cd $(IPYTHON_BUILD_DIR)/3; \
 		$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py \
-		$(INSTALL) --root=$(IPYTHON_PY3_IPK_DIR) --prefix=/opt)
-	rm -rf $(IPYTHON_PY3_IPK_DIR)/opt/share
+		$(INSTALL) --root=$(IPYTHON_PY3_IPK_DIR) --prefix=$(TARGET_PREFIX))
+	rm -rf $(IPYTHON_PY3_IPK_DIR)$(TARGET_PREFIX)/share
 	$(MAKE) $(IPYTHON_PY3_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(IPYTHON_PY3_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(IPYTHON_PY3_IPK_DIR)
@@ -369,8 +369,8 @@ $(IPYTHON_PY3_IPK): $(IPYTHON_BUILD_DIR)/.built
 $(IPYTHON-COMMON_IPK): $(IPYTHON_BUILD_DIR)/.built
 	(cd $(IPYTHON_BUILD_DIR)/2.7; \
 		$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py \
-		$(INSTALL) --root=$(IPYTHON-COMMON_IPK_DIR) --prefix=/opt)
-	rm -rf $(IPYTHON-COMMON_IPK_DIR)/opt/bin $(IPYTHON-COMMON_IPK_DIR)/opt/lib
+		$(INSTALL) --root=$(IPYTHON-COMMON_IPK_DIR) --prefix=$(TARGET_PREFIX))
+	rm -rf $(IPYTHON-COMMON_IPK_DIR)$(TARGET_PREFIX)/bin $(IPYTHON-COMMON_IPK_DIR)$(TARGET_PREFIX)/lib
 	$(MAKE) $(IPYTHON-COMMON_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(IPYTHON-COMMON_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(IPYTHON-COMMON_IPK_DIR)
@@ -379,8 +379,8 @@ ifneq ($(IPYTHON_VERSION), $(IPYTHON_VERSION_OLD))
 $(IPYTHON-COMMON-OLD_IPK): $(IPYTHON_BUILD_DIR)/.built
 	(cd $(IPYTHON_BUILD_DIR)/2.6; \
 		$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py \
-		$(INSTALL) --root=$(IPYTHON-COMMON-OLD_IPK_DIR) --prefix=/opt)
-	rm -rf $(IPYTHON-COMMON-OLD_IPK_DIR)/opt/bin $(IPYTHON-COMMON-OLD_IPK_DIR)/opt/lib
+		$(INSTALL) --root=$(IPYTHON-COMMON-OLD_IPK_DIR) --prefix=$(TARGET_PREFIX))
+	rm -rf $(IPYTHON-COMMON-OLD_IPK_DIR)$(TARGET_PREFIX)/bin $(IPYTHON-COMMON-OLD_IPK_DIR)$(TARGET_PREFIX)/lib
 	$(MAKE) $(IPYTHON-COMMON-OLD_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(IPYTHON-COMMON-OLD_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(IPYTHON-COMMON-OLD_IPK_DIR)

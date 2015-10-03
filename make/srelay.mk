@@ -40,7 +40,7 @@ SRELAY_IPK_VERSION=1
 
 #
 # SRELAY_CONFFILES should be a list of user-editable files
-SRELAY_CONFFILES=/opt/etc/srelay.conf
+SRELAY_CONFFILES=$(TARGET_PREFIX)/etc/srelay.conf
 
 #
 # SRELAY_PATCHES should list any patches, in the the order in
@@ -178,26 +178,26 @@ $(SRELAY_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(SRELAY_IPK_DIR)/opt/sbin or $(SRELAY_IPK_DIR)/opt/bin
+# Binaries should be installed into $(SRELAY_IPK_DIR)$(TARGET_PREFIX)/sbin or $(SRELAY_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(SRELAY_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(SRELAY_IPK_DIR)/opt/etc/srelay/...
-# Documentation files should be installed in $(SRELAY_IPK_DIR)/opt/doc/srelay/...
-# Daemon startup scripts should be installed in $(SRELAY_IPK_DIR)/opt/etc/init.d/S??srelay
+# Libraries and include files should be installed into $(SRELAY_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(SRELAY_IPK_DIR)$(TARGET_PREFIX)/etc/srelay/...
+# Documentation files should be installed in $(SRELAY_IPK_DIR)$(TARGET_PREFIX)/doc/srelay/...
+# Daemon startup scripts should be installed in $(SRELAY_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??srelay
 #
 # You may need to patch your application to make it use these locations.
 #
 $(SRELAY_IPK): $(SRELAY_BUILD_DIR)/.built
 	rm -rf $(SRELAY_IPK_DIR) $(BUILD_DIR)/srelay_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(SRELAY_BUILD_DIR) DESTDIR=$(SRELAY_IPK_DIR) install
-	$(INSTALL) -d $(SRELAY_IPK_DIR)/opt/etc/ $(SRELAY_IPK_DIR)/opt/bin/ $(SRELAY_IPK_DIR)/opt/share/man/man8/
-	$(INSTALL) -m 644 $(SRELAY_BUILD_DIR)/srelay.conf $(SRELAY_IPK_DIR)/opt/etc/
-	$(INSTALL) -m 755 $(SRELAY_BUILD_DIR)/srelay $(SRELAY_IPK_DIR)/opt/bin/
-	$(STRIP_COMMAND) $(SRELAY_IPK_DIR)/opt/bin/srelay
-	$(INSTALL) -m 644 $(SRELAY_BUILD_DIR)/srelay.8 $(SRELAY_IPK_DIR)/opt/share/man/man8/
-#	$(INSTALL) -d $(SRELAY_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(SRELAY_SOURCE_DIR)/rc.srelay $(SRELAY_IPK_DIR)/opt/etc/init.d/SXXsrelay
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/opt/etc/init.d/SXXsrelay
+	$(INSTALL) -d $(SRELAY_IPK_DIR)$(TARGET_PREFIX)/etc/ $(SRELAY_IPK_DIR)$(TARGET_PREFIX)/bin/ $(SRELAY_IPK_DIR)$(TARGET_PREFIX)/share/man/man8/
+	$(INSTALL) -m 644 $(SRELAY_BUILD_DIR)/srelay.conf $(SRELAY_IPK_DIR)$(TARGET_PREFIX)/etc/
+	$(INSTALL) -m 755 $(SRELAY_BUILD_DIR)/srelay $(SRELAY_IPK_DIR)$(TARGET_PREFIX)/bin/
+	$(STRIP_COMMAND) $(SRELAY_IPK_DIR)$(TARGET_PREFIX)/bin/srelay
+	$(INSTALL) -m 644 $(SRELAY_BUILD_DIR)/srelay.8 $(SRELAY_IPK_DIR)$(TARGET_PREFIX)/share/man/man8/
+#	$(INSTALL) -d $(SRELAY_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(SRELAY_SOURCE_DIR)/rc.srelay $(SRELAY_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXsrelay
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXsrelay
 	$(MAKE) $(SRELAY_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(SRELAY_SOURCE_DIR)/postinst $(SRELAY_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/postinst

@@ -166,24 +166,24 @@ $(FICY_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(FICY_IPK_DIR)/opt/sbin or $(FICY_IPK_DIR)/opt/bin
+# Binaries should be installed into $(FICY_IPK_DIR)$(TARGET_PREFIX)/sbin or $(FICY_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(FICY_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(FICY_IPK_DIR)/opt/etc/ficy/...
-# Documentation files should be installed in $(FICY_IPK_DIR)/opt/doc/ficy/...
-# Daemon startup scripts should be installed in $(FICY_IPK_DIR)/opt/etc/init.d/S??ficy
+# Libraries and include files should be installed into $(FICY_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(FICY_IPK_DIR)$(TARGET_PREFIX)/etc/ficy/...
+# Documentation files should be installed in $(FICY_IPK_DIR)$(TARGET_PREFIX)/doc/ficy/...
+# Daemon startup scripts should be installed in $(FICY_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??ficy
 #
 # You may need to patch your application to make it use these locations.
 #
 $(FICY_IPK): $(FICY_BUILD_DIR)/.built
 	rm -rf $(FICY_IPK_DIR) $(BUILD_DIR)/ficy_*_$(TARGET_ARCH).ipk
-	mkdir -p $(FICY_IPK_DIR)/opt/bin
-	$(INSTALL) -m 755 $(FICY_BUILD_DIR)/fIcy $(FICY_IPK_DIR)/opt/bin
-	$(INSTALL) -m 755 $(FICY_BUILD_DIR)/fPls $(FICY_IPK_DIR)/opt/bin
-	$(INSTALL) -m 755 $(FICY_BUILD_DIR)/fResync $(FICY_IPK_DIR)/opt/bin
-	$(STRIP_COMMAND) $(FICY_IPK_DIR)/opt/bin/fIcy 
-	$(STRIP_COMMAND) $(FICY_IPK_DIR)/opt/bin/fPls
-	$(STRIP_COMMAND) $(FICY_IPK_DIR)/opt/bin/fResync
+	mkdir -p $(FICY_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(INSTALL) -m 755 $(FICY_BUILD_DIR)/fIcy $(FICY_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(INSTALL) -m 755 $(FICY_BUILD_DIR)/fPls $(FICY_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(INSTALL) -m 755 $(FICY_BUILD_DIR)/fResync $(FICY_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(STRIP_COMMAND) $(FICY_IPK_DIR)$(TARGET_PREFIX)/bin/fIcy 
+	$(STRIP_COMMAND) $(FICY_IPK_DIR)$(TARGET_PREFIX)/bin/fPls
+	$(STRIP_COMMAND) $(FICY_IPK_DIR)$(TARGET_PREFIX)/bin/fResync
 	$(MAKE) $(FICY_IPK_DIR)/CONTROL/control
 	echo $(FICY_CONFFILES) | sed -e 's/ /\n/g' > $(FICY_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(FICY_IPK_DIR)

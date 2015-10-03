@@ -145,21 +145,21 @@ netpbm-stage: $(STAGING_LIB_DIR)/libnetpbm.so.$(NETPBM_VERSION)
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(NETPBM_IPK_DIR)/opt/sbin or $(NETPBM_IPK_DIR)/opt/bin
+# Binaries should be installed into $(NETPBM_IPK_DIR)$(TARGET_PREFIX)/sbin or $(NETPBM_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(NETPBM_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(NETPBM_IPK_DIR)/opt/etc/netpbm/...
-# Documentation files should be installed in $(NETPBM_IPK_DIR)/opt/doc/netpbm/...
-# Daemon startup scripts should be installed in $(NETPBM_IPK_DIR)/opt/etc/init.d/S??netpbm
+# Libraries and include files should be installed into $(NETPBM_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(NETPBM_IPK_DIR)$(TARGET_PREFIX)/etc/netpbm/...
+# Documentation files should be installed in $(NETPBM_IPK_DIR)$(TARGET_PREFIX)/doc/netpbm/...
+# Daemon startup scripts should be installed in $(NETPBM_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??netpbm
 #
 # You may need to patch your application to make it use these locations.
 #
 $(NETPBM_IPK): $(NETPBM_BUILD_DIR)/.built
 	rm -rf $(NETPBM_IPK_DIR) $(NETPBM_IPK)
-	$(INSTALL) -d $(NETPBM_IPK_DIR)/opt/bin
-	$(STRIP_COMMAND) $(NETPBM_BUILD_DIR)/netpbm -o $(NETPBM_IPK_DIR)/opt/bin/netpbm
-	$(INSTALL) -d $(NETPBM_IPK_DIR)/opt/etc/init.d
-	$(INSTALL) -m 755 $(NETPBM_SOURCE_DIR)/rc.netpbm $(NETPBM_IPK_DIR)/opt/etc/init.d/SXXnetpbm
+	$(INSTALL) -d $(NETPBM_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(STRIP_COMMAND) $(NETPBM_BUILD_DIR)/netpbm -o $(NETPBM_IPK_DIR)$(TARGET_PREFIX)/bin/netpbm
+	$(INSTALL) -d $(NETPBM_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(INSTALL) -m 755 $(NETPBM_SOURCE_DIR)/rc.netpbm $(NETPBM_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXnetpbm
 	$(INSTALL) -d $(NETPBM_IPK_DIR)/CONTROL
 	$(INSTALL) -m 644 $(NETPBM_SOURCE_DIR)/control $(NETPBM_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 644 $(NETPBM_SOURCE_DIR)/postinst $(NETPBM_IPK_DIR)/CONTROL/postinst

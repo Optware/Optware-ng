@@ -46,7 +46,7 @@ PYTHON3_IPK_VERSION=2
 
 #
 # PYTHON3_CONFFILES should be a list of user-editable files
-#PYTHON3_CONFFILES=/opt/etc/python.conf /opt/etc/init.d/SXXpython
+#PYTHON3_CONFFILES=$(TARGET_PREFIX)/etc/python.conf $(TARGET_PREFIX)/etc/init.d/SXXpython
 
 #
 # If the compilation of the package requires additional
@@ -152,7 +152,7 @@ endif
 	echo "[build_ext]"; \
 	echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/ncurses"; \
 	echo "library-dirs=$(STAGING_LIB_DIR)"; \
-	echo "rpath=/opt/lib") > $(@D)/setup.cfg
+	echo "rpath=$(TARGET_PREFIX)/lib") > $(@D)/setup.cfg
 	(cd $(@D); \
 	 $(TARGET_CONFIGURE_OPTS) \
 	 READELF=$(TARGET_CROSS)readelf \
@@ -172,7 +172,7 @@ endif
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=$(TARGET_PREFIX) \
-		--mandir=/opt/man \
+		--mandir=$(TARGET_PREFIX)/man \
 		--enable-shared \
 		--with-system-ffi \
 	)
@@ -230,26 +230,26 @@ $(PYTHON3_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PYTHON3_IPK_DIR)/opt/sbin or $(PYTHON3_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PYTHON3_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PYTHON3_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PYTHON3_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PYTHON3_IPK_DIR)/opt/etc/python/...
-# Documentation files should be installed in $(PYTHON3_IPK_DIR)/opt/doc/python/...
-# Daemon startup scripts should be installed in $(PYTHON3_IPK_DIR)/opt/etc/init.d/S??python
+# Libraries and include files should be installed into $(PYTHON3_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PYTHON3_IPK_DIR)$(TARGET_PREFIX)/etc/python/...
+# Documentation files should be installed in $(PYTHON3_IPK_DIR)$(TARGET_PREFIX)/doc/python/...
+# Daemon startup scripts should be installed in $(PYTHON3_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??python
 #
 # You may need to patch your application to make it use these locations.
 #
 $(PYTHON3_IPK): $(PYTHON3_BUILD_DIR)/.built
 	rm -rf $(PYTHON3_IPK_DIR) $(BUILD_DIR)/python3*_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PYTHON3_BUILD_DIR) DESTDIR=$(PYTHON3_IPK_DIR) install
-	$(STRIP_COMMAND) $(PYTHON3_IPK_DIR)/opt/bin/python$(PYTHON3_VERSION_MAJOR)
-	$(STRIP_COMMAND) $(PYTHON3_IPK_DIR)/opt/lib/python$(PYTHON3_VERSION_MAJOR)/lib-dynload/*.so
-	for f in $(PYTHON3_IPK_DIR)/opt/lib/libpython$(PYTHON3_VERSION_MAJOR)*.so.1.0 $(PYTHON3_IPK_DIR)/opt/lib/libpython3.so; \
+	$(STRIP_COMMAND) $(PYTHON3_IPK_DIR)$(TARGET_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR)
+	$(STRIP_COMMAND) $(PYTHON3_IPK_DIR)$(TARGET_PREFIX)/lib/python$(PYTHON3_VERSION_MAJOR)/lib-dynload/*.so
+	for f in $(PYTHON3_IPK_DIR)$(TARGET_PREFIX)/lib/libpython$(PYTHON3_VERSION_MAJOR)*.so.1.0 $(PYTHON3_IPK_DIR)$(TARGET_PREFIX)/lib/libpython3.so; \
 		do chmod 755 $$f; $(STRIP_COMMAND) $$f; chmod 555 $$f; done
 	for f in bin/2to3 ; \
-	    do mv $(PYTHON3_IPK_DIR)/opt/$$f $(PYTHON3_IPK_DIR)/opt/`echo $$f | sed -e 's/\(\.\|$$\)/-3.1\1/'`; done
-	$(INSTALL) -d $(PYTHON3_IPK_DIR)/opt/local/bin
-	$(INSTALL) -d $(PYTHON3_IPK_DIR)/opt/local/lib/python$(PYTHON3_VERSION_MAJOR)/site-packages
+	    do mv $(PYTHON3_IPK_DIR)$(TARGET_PREFIX)/$$f $(PYTHON3_IPK_DIR)$(TARGET_PREFIX)/`echo $$f | sed -e 's/\(\.\|$$\)/-3.1\1/'`; done
+	$(INSTALL) -d $(PYTHON3_IPK_DIR)$(TARGET_PREFIX)/local/bin
+	$(INSTALL) -d $(PYTHON3_IPK_DIR)$(TARGET_PREFIX)/local/lib/python$(PYTHON3_VERSION_MAJOR)/site-packages
 	$(MAKE) $(PYTHON3_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(PYTHON3_SOURCE_DIR)/postinst $(PYTHON3_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 755 $(PYTHON3_SOURCE_DIR)/prerm $(PYTHON3_IPK_DIR)/CONTROL/prerm

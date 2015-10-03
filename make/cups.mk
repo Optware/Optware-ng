@@ -51,9 +51,9 @@ CUPS-DEV_DESCRIPTION=Development files for CUPS
 
 #
 # CUPS_CONFFILES should be a list of user-editable files
-CUPS_CONFFILES=/opt/etc/cups/cupsd.conf /opt/etc/cups/printers.conf \
-		/opt/etc/cups/cups-files.conf /opt/etc/cups/printers.conf \
-		/opt/etc/cups/snmp.conf /opt/etc/cups/mime.types /opt/etc/cups/mime.convs
+CUPS_CONFFILES=$(TARGET_PREFIX)/etc/cups/cupsd.conf $(TARGET_PREFIX)/etc/cups/printers.conf \
+		$(TARGET_PREFIX)/etc/cups/cups-files.conf $(TARGET_PREFIX)/etc/cups/printers.conf \
+		$(TARGET_PREFIX)/etc/cups/snmp.conf $(TARGET_PREFIX)/etc/cups/mime.types $(TARGET_PREFIX)/etc/cups/mime.convs
 
 #
 # CUPS_PATCHES should list any patches, in the the order in
@@ -159,9 +159,9 @@ $(CUPS_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(CUPS_SOURCE) make/cu
 		--target=$(GNU_HOST_NAME) \
 		--prefix=$(TARGET_PREFIX) \
 		--exec_prefix=$(TARGET_PREFIX) \
-		--with-icondir=/opt/share/icons \
-		--with-menudir=/opt/share/applications \
-		--libdir=/opt/lib \
+		--with-icondir=$(TARGET_PREFIX)/share/icons \
+		--with-menudir=$(TARGET_PREFIX)/share/applications \
+		--libdir=$(TARGET_PREFIX)/lib \
 		--disable-nls \
 		--disable-dbus \
 		--disable-tiff \
@@ -184,7 +184,7 @@ $(CUPS_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(CUPS_SOURCE) make/cu
 $(CUPS_HOST_BUILD_DIR)/.staged: $(CUPS_HOST_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(@D) install DSTROOT=$(HOST_STAGING_DIR)
-	sed -i -e 's|=/opt|=$(HOST_STAGING_PREFIX)|' $(HOST_STAGING_PREFIX)/bin/cups-config
+	sed -i -e 's|=$(TARGET_PREFIX)|=$(HOST_STAGING_PREFIX)|' $(HOST_STAGING_PREFIX)/bin/cups-config
 	touch $@
 
 cups-host-stage: $(CUPS_HOST_BUILD_DIR)/.staged
@@ -224,9 +224,9 @@ endif
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=$(TARGET_PREFIX) \
 		--exec_prefix=$(TARGET_PREFIX) \
-		--with-icondir=/opt/share/icons \
-		--with-menudir=/opt/share/applications \
-		--libdir=/opt/lib \
+		--with-icondir=$(TARGET_PREFIX)/share/icons \
+		--with-menudir=$(TARGET_PREFIX)/share/applications \
+		--libdir=$(TARGET_PREFIX)/lib \
 		--disable-nls \
 		--disable-dbus \
 		$(CUPS_CONFIG_OPTS) \
@@ -244,7 +244,7 @@ ifdef CUPS_GCC_DOES_NOT_SUPPORT_PIE
 endif
 #	sed -i -e '/^GENSTRINGS_DIR/s|=.*| = $(CUPS_HOST_BUILD_DIR)/ppdc|' $(@D)/ppdc/Makefile
 	sed -i -e "s/-Wno-tautological-compare//" -e\
-		"s|^DSOFLAGS\t=\t|DSOFLAGS\t=\t-L$(STAGING_LIB_DIR) -Wl,-rpath,/opt/lib -Wl,-rpath-link,$(STAGING_LIB_DIR) |" $(@D)/Makedefs
+		"s|^DSOFLAGS\t=\t|DSOFLAGS\t=\t-L$(STAGING_LIB_DIR) -Wl,-rpath,$(TARGET_PREFIX)/lib -Wl,-rpath-link,$(STAGING_LIB_DIR) |" $(@D)/Makedefs
 	sed -i -e "s/^DIRS\t=.*/DIRS\t=\tcups \$$(BUILDDIRS)/" $(@D)/Makefile
 	sed -i -e 's|\./genstrings|$(CUPS_HOST_BUILD_DIR)/ppdc/genstrings|' $(@D)/ppdc/Makefile
 	sed -i -e 's|\./mantohtml|$(CUPS_HOST_BUILD_DIR)/man/mantohtml|' $(@D)/man/Makefile
@@ -286,10 +286,10 @@ $(CUPS_BUILD_DIR)/.staged: $(CUPS_BUILD_DIR)/.built
 	$(INSTALL) -m 644 $(CUPS_BUILD_DIR)/filter/*.h \
 		$(STAGING_INCLUDE_DIR)/cups
 	$(INSTALL) -d $(STAGING_LIB_DIR)
-	$(INSTALL) -m 755 $(CUPS_BUILD_DIR)/install/opt/bin/cups-config \
+	$(INSTALL) -m 755 $(CUPS_BUILD_DIR)/install$(TARGET_PREFIX)/bin/cups-config \
 		$(STAGING_PREFIX)/bin
-	sed -i -e 's|^prefix=/opt|prefix=$(STAGING_PREFIX)|' \
-	       -e 's|^libdir=/opt|libdir=$${prefix}|' \
+	sed -i -e 's|^prefix=$(TARGET_PREFIX)|prefix=$(STAGING_PREFIX)|' \
+	       -e 's|^libdir=$(TARGET_PREFIX)|libdir=$${prefix}|' \
 		$(STAGING_PREFIX)/bin/cups-config
 	$(INSTALL) -m 644 $(CUPS_BUILD_DIR)/filter/libcupsimage.a \
 		$(STAGING_LIB_DIR)
@@ -373,12 +373,12 @@ $(CUPS_IPK_DIR)-dev/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(CUPS_IPK_DIR)/opt/sbin or $(CUPS_IPK_DIR)/opt/bin
+# Binaries should be installed into $(CUPS_IPK_DIR)$(TARGET_PREFIX)/sbin or $(CUPS_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(CUPS_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(CUPS_IPK_DIR)/opt/etc/cups/...
-# Documentation files should be installed in $(CUPS_IPK_DIR)/opt/doc/cups/...
-# Daemon startup scripts should be installed in $(CUPS_IPK_DIR)/opt/etc/init.d/S??cups
+# Libraries and include files should be installed into $(CUPS_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(CUPS_IPK_DIR)$(TARGET_PREFIX)/etc/cups/...
+# Documentation files should be installed in $(CUPS_IPK_DIR)$(TARGET_PREFIX)/doc/cups/...
+# Daemon startup scripts should be installed in $(CUPS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??cups
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -386,50 +386,50 @@ $(CUPS_IPK) $(CUPS-DEV_IPK): $(CUPS_BUILD_DIR)/.locales
 	rm -rf $(CUPS_IPK_DIR) $(BUILD_DIR)/cups_*_$(TARGET_ARCH).ipk
 	rm -rf $(CUPS_IPK_DIR)-dev $(BUILD_DIR)/cups-dev_*_$(TARGET_ARCH).ipk
 	$(INSTALL) -d $(CUPS_IPK_DIR)
-	$(INSTALL) -d $(CUPS_IPK_DIR)-dev/opt
-# Make sure /opt/var/spool has correct permissions
-	$(INSTALL) -m 0755 -d $(CUPS_IPK_DIR)/opt/var/spool
+	$(INSTALL) -d $(CUPS_IPK_DIR)-dev$(TARGET_PREFIX)
+# Make sure $(TARGET_PREFIX)/var/spool has correct permissions
+	$(INSTALL) -m 0755 -d $(CUPS_IPK_DIR)$(TARGET_PREFIX)/var/spool
 	cp -rf $(CUPS_BUILD_DIR)/install/* $(CUPS_IPK_DIR)
-	rm -f $(CUPS_IPK_DIR)/opt/lib/*.a
+	rm -f $(CUPS_IPK_DIR)$(TARGET_PREFIX)/lib/*.a
 	rm -rf $(CUPS_IPK_DIR)/etc
-	rm -rf $(CUPS_IPK_DIR)/opt/share/doc/cups
-	rm -rf $(CUPS_IPK_DIR)/opt/man
-	rm -rf `find $(CUPS_IPK_DIR)/opt/share/cups/templates -mindepth 1 -type d`
-	rm -rf $(CUPS_IPK_DIR)/opt/share/locale/*
+	rm -rf $(CUPS_IPK_DIR)$(TARGET_PREFIX)/share/doc/cups
+	rm -rf $(CUPS_IPK_DIR)$(TARGET_PREFIX)/man
+	rm -rf `find $(CUPS_IPK_DIR)$(TARGET_PREFIX)/share/cups/templates -mindepth 1 -type d`
+	rm -rf $(CUPS_IPK_DIR)$(TARGET_PREFIX)/share/locale/*
 # Create binary directories
-	$(INSTALL) -d $(CUPS_IPK_DIR)/opt/sbin
-	$(INSTALL) -d $(CUPS_IPK_DIR)/opt/bin
-	$(INSTALL) -d $(CUPS_IPK_DIR)/opt/doc/cups
-	chmod u+w $(CUPS_IPK_DIR)/opt/sbin/cupsd && \
-	$(STRIP_COMMAND) $(CUPS_IPK_DIR)/opt/sbin/* && \
-	chmod u-w $(CUPS_IPK_DIR)/opt/sbin/cupsd
-	mv $(CUPS_IPK_DIR)/opt/bin/cups-config $(CUPS_IPK_DIR)/opt/sbin/
-	$(STRIP_COMMAND) $(CUPS_IPK_DIR)/opt/bin/*
-	mv $(CUPS_IPK_DIR)/opt/sbin/cups-config $(CUPS_IPK_DIR)/opt/bin/
-	chmod u+w $(CUPS_IPK_DIR)/opt/lib/lib*.so.* && \
-	$(STRIP_COMMAND) $(CUPS_IPK_DIR)/opt/lib/lib*.so.* && \
-	chmod u+w $(CUPS_IPK_DIR)/opt/lib/lib*.so.*
+	$(INSTALL) -d $(CUPS_IPK_DIR)$(TARGET_PREFIX)/sbin
+	$(INSTALL) -d $(CUPS_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(INSTALL) -d $(CUPS_IPK_DIR)$(TARGET_PREFIX)/doc/cups
+	chmod u+w $(CUPS_IPK_DIR)$(TARGET_PREFIX)/sbin/cupsd && \
+	$(STRIP_COMMAND) $(CUPS_IPK_DIR)$(TARGET_PREFIX)/sbin/* && \
+	chmod u-w $(CUPS_IPK_DIR)$(TARGET_PREFIX)/sbin/cupsd
+	mv $(CUPS_IPK_DIR)$(TARGET_PREFIX)/bin/cups-config $(CUPS_IPK_DIR)$(TARGET_PREFIX)/sbin/
+	$(STRIP_COMMAND) $(CUPS_IPK_DIR)$(TARGET_PREFIX)/bin/*
+	mv $(CUPS_IPK_DIR)$(TARGET_PREFIX)/sbin/cups-config $(CUPS_IPK_DIR)$(TARGET_PREFIX)/bin/
+	chmod u+w $(CUPS_IPK_DIR)$(TARGET_PREFIX)/lib/lib*.so.* && \
+	$(STRIP_COMMAND) $(CUPS_IPK_DIR)$(TARGET_PREFIX)/lib/lib*.so.* && \
+	chmod u+w $(CUPS_IPK_DIR)$(TARGET_PREFIX)/lib/lib*.so.*
 	for d in backend cgi-bin daemon filter monitor notifier; do \
-	$(STRIP_COMMAND) $(CUPS_IPK_DIR)/opt/lib/cups/$$d/*; \
+	$(STRIP_COMMAND) $(CUPS_IPK_DIR)$(TARGET_PREFIX)/lib/cups/$$d/*; \
 	done
 # Copy the configuration file
-	cp $(CUPS_SOURCE_DIR)/cupsd.conf $(CUPS_IPK_DIR)/opt/etc/cups
-	cp $(CUPS_SOURCE_DIR)/printers.conf $(CUPS_IPK_DIR)/opt/etc/cups
-	cp $(CUPS_SOURCE_DIR)/mime.types $(CUPS_IPK_DIR)/opt/etc/cups
-	cp $(CUPS_SOURCE_DIR)/mime.convs $(CUPS_IPK_DIR)/opt/etc/cups
+	cp $(CUPS_SOURCE_DIR)/cupsd.conf $(CUPS_IPK_DIR)$(TARGET_PREFIX)/etc/cups
+	cp $(CUPS_SOURCE_DIR)/printers.conf $(CUPS_IPK_DIR)$(TARGET_PREFIX)/etc/cups
+	cp $(CUPS_SOURCE_DIR)/mime.types $(CUPS_IPK_DIR)$(TARGET_PREFIX)/etc/cups
+	cp $(CUPS_SOURCE_DIR)/mime.convs $(CUPS_IPK_DIR)$(TARGET_PREFIX)/etc/cups
 # Copy the init.d startup file
-	$(INSTALL) -m 755 $(CUPS_SOURCE_DIR)/S88cups $(CUPS_IPK_DIR)/opt/doc/cups
+	$(INSTALL) -m 755 $(CUPS_SOURCE_DIR)/S88cups $(CUPS_IPK_DIR)$(TARGET_PREFIX)/doc/cups
 # Copy lpd startup files
 	$(INSTALL) -m 755 $(CUPS_SOURCE_DIR)/S89cups-lpd \
-		$(CUPS_IPK_DIR)/opt/doc/cups
+		$(CUPS_IPK_DIR)$(TARGET_PREFIX)/doc/cups
 	$(INSTALL) -m 755 $(CUPS_SOURCE_DIR)/rc.xinetd.linksys \
-		$(CUPS_IPK_DIR)/opt/doc/cups
+		$(CUPS_IPK_DIR)$(TARGET_PREFIX)/doc/cups
 	$(INSTALL) -m 644 $(CUPS_SOURCE_DIR)/cups-install.doc \
-		$(CUPS_IPK_DIR)/opt/doc/cups
-	$(INSTALL) -m 755 $(CUPS_SOURCE_DIR)/cups-lpd $(CUPS_IPK_DIR)/opt/doc/cups
-	$(INSTALL) -m 755 $(CUPS_SOURCE_DIR)/rc.samba $(CUPS_IPK_DIR)/opt/doc/cups
-	mv $(CUPS_IPK_DIR)/opt/include $(CUPS_IPK_DIR)-dev/opt/
-	sed -i -e '/^SystemGroup/s/^/#/' $(CUPS_IPK_DIR)/opt/etc/cups/cups-files.conf
+		$(CUPS_IPK_DIR)$(TARGET_PREFIX)/doc/cups
+	$(INSTALL) -m 755 $(CUPS_SOURCE_DIR)/cups-lpd $(CUPS_IPK_DIR)$(TARGET_PREFIX)/doc/cups
+	$(INSTALL) -m 755 $(CUPS_SOURCE_DIR)/rc.samba $(CUPS_IPK_DIR)$(TARGET_PREFIX)/doc/cups
+	mv $(CUPS_IPK_DIR)$(TARGET_PREFIX)/include $(CUPS_IPK_DIR)-dev$(TARGET_PREFIX)/
+	sed -i -e '/^SystemGroup/s/^/#/' $(CUPS_IPK_DIR)$(TARGET_PREFIX)/etc/cups/cups-files.conf
 	$(MAKE) $(CUPS_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 644 $(CUPS_SOURCE_DIR)/postinst $(CUPS_IPK_DIR)/CONTROL/postinst
 	$(INSTALL) -m 644 $(CUPS_SOURCE_DIR)/prerm $(CUPS_IPK_DIR)/CONTROL/prerm
@@ -440,19 +440,19 @@ $(CUPS_IPK) $(CUPS-DEV_IPK): $(CUPS_BUILD_DIR)/.locales
 
 $(CUPS_BUILD_DIR)/.locales: $(CUPS_BUILD_DIR)/.built
 	rm -f $@
-	for l in `find builds/cups/install/opt/share/locale/ -mindepth 1 -type d | xargs -l1 basename`; do \
+	for l in `find builds/cups/install$(TARGET_PREFIX)/share/locale/ -mindepth 1 -type d | xargs -l1 basename`; do \
 	    p=`echo $$l | tr [A-Z_] [a-z-]`; \
 	    rm -rf $(CUPS_IPK_DIR)-locale-$$p \
 		$(BUILD_DIR)/cups-locale-$${p}_*_$(TARGET_ARCH).ipk; \
-	    $(INSTALL) -d $(CUPS_IPK_DIR)-locale-$$p/opt/share/locale/; \
-	    cp -rf $(@D)/install/opt/share/locale/$$l \
-		$(CUPS_IPK_DIR)-locale-$$p/opt/share/locale/; \
-	    $(INSTALL) -d $(CUPS_IPK_DIR)-locale-$$p/opt/share/doc/cups/$$l; \
-	    cp -rf $(@D)/install/opt/share/doc/cups/$$l \
-		$(CUPS_IPK_DIR)-locale-$$p/opt/share/doc/cups/; \
-	    $(INSTALL) -d $(CUPS_IPK_DIR)-locale-$$p/opt/share/cups/templates; \
-	    cp -rf $(@D)/install/opt/share/cups/templates/$$l \
-		$(CUPS_IPK_DIR)-locale-$$p/opt/share/cups/templates/; \
+	    $(INSTALL) -d $(CUPS_IPK_DIR)-locale-$$p$(TARGET_PREFIX)/share/locale/; \
+	    cp -rf $(@D)/install$(TARGET_PREFIX)/share/locale/$$l \
+		$(CUPS_IPK_DIR)-locale-$$p$(TARGET_PREFIX)/share/locale/; \
+	    $(INSTALL) -d $(CUPS_IPK_DIR)-locale-$$p$(TARGET_PREFIX)/share/doc/cups/$$l; \
+	    cp -rf $(@D)/install$(TARGET_PREFIX)/share/doc/cups/$$l \
+		$(CUPS_IPK_DIR)-locale-$$p$(TARGET_PREFIX)/share/doc/cups/; \
+	    $(INSTALL) -d $(CUPS_IPK_DIR)-locale-$$p$(TARGET_PREFIX)/share/cups/templates; \
+	    cp -rf $(@D)/install$(TARGET_PREFIX)/share/cups/templates/$$l \
+		$(CUPS_IPK_DIR)-locale-$$p$(TARGET_PREFIX)/share/cups/templates/; \
 	    $(MAKE) $(CUPS_IPK_DIR)-locale-$$p/CONTROL/control; \
 	    cd $(BUILD_DIR); $(IPKG_BUILD) $(CUPS_IPK_DIR)-locale-$$p; cd -; \
 	done
@@ -463,24 +463,24 @@ cups-locales: $(CUPS_BUILD_DIR)/.locales
 $(CUPS_DOC_IPK): $(CUPS_BUILD_DIR)/.built
 	rm -rf $(CUPS_IPK_DIR)-doc* $(BUILD_DIR)/cups-doc*_*_$(TARGET_ARCH).ipk
 	$(INSTALL) -d $(CUPS_IPK_DIR)-doc
-	$(INSTALL) -d $(CUPS_IPK_DIR)-doc/opt/share/doc/cups
-	$(INSTALL) -d $(CUPS_IPK_DIR)-doc/opt/man
-	cp -rf $(CUPS_BUILD_DIR)/install/opt/man/man1 \
-		$(CUPS_IPK_DIR)-doc/opt/man
-	cp -rf $(CUPS_BUILD_DIR)/install/opt/man/man5 \
-		$(CUPS_IPK_DIR)-doc/opt/man
-	cp -rf $(CUPS_BUILD_DIR)/install/opt/man/man8 \
-		$(CUPS_IPK_DIR)-doc/opt/man
-	cp -rf $(CUPS_BUILD_DIR)/install/opt/share/doc/cups/*.css \
-		$(CUPS_IPK_DIR)-doc/opt/share/doc/cups
-	cp -rf $(CUPS_BUILD_DIR)/install/opt/share/doc/cups/*.*html \
-		$(CUPS_IPK_DIR)-doc/opt/share/doc/cups
-#	cp -rf $(CUPS_BUILD_DIR)/install/opt/share/doc/cups/*.pdf \
-#		$(CUPS_IPK_DIR)-doc/opt/share/doc/cups
-	cp -rf $(CUPS_BUILD_DIR)/install/opt/share/doc/cups/*.txt \
-		$(CUPS_IPK_DIR)-doc/opt/share/doc/cups
-	cp -rf $(CUPS_BUILD_DIR)/install/opt/share/doc/cups/images \
-		$(CUPS_IPK_DIR)-doc/opt/share/doc/cups
+	$(INSTALL) -d $(CUPS_IPK_DIR)-doc$(TARGET_PREFIX)/share/doc/cups
+	$(INSTALL) -d $(CUPS_IPK_DIR)-doc$(TARGET_PREFIX)/man
+	cp -rf $(CUPS_BUILD_DIR)/install$(TARGET_PREFIX)/man/man1 \
+		$(CUPS_IPK_DIR)-doc$(TARGET_PREFIX)/man
+	cp -rf $(CUPS_BUILD_DIR)/install$(TARGET_PREFIX)/man/man5 \
+		$(CUPS_IPK_DIR)-doc$(TARGET_PREFIX)/man
+	cp -rf $(CUPS_BUILD_DIR)/install$(TARGET_PREFIX)/man/man8 \
+		$(CUPS_IPK_DIR)-doc$(TARGET_PREFIX)/man
+	cp -rf $(CUPS_BUILD_DIR)/install$(TARGET_PREFIX)/share/doc/cups/*.css \
+		$(CUPS_IPK_DIR)-doc$(TARGET_PREFIX)/share/doc/cups
+	cp -rf $(CUPS_BUILD_DIR)/install$(TARGET_PREFIX)/share/doc/cups/*.*html \
+		$(CUPS_IPK_DIR)-doc$(TARGET_PREFIX)/share/doc/cups
+#	cp -rf $(CUPS_BUILD_DIR)/install$(TARGET_PREFIX)/share/doc/cups/*.pdf \
+#		$(CUPS_IPK_DIR)-doc$(TARGET_PREFIX)/share/doc/cups
+	cp -rf $(CUPS_BUILD_DIR)/install$(TARGET_PREFIX)/share/doc/cups/*.txt \
+		$(CUPS_IPK_DIR)-doc$(TARGET_PREFIX)/share/doc/cups
+	cp -rf $(CUPS_BUILD_DIR)/install$(TARGET_PREFIX)/share/doc/cups/images \
+		$(CUPS_IPK_DIR)-doc$(TARGET_PREFIX)/share/doc/cups
 	$(MAKE) $(CUPS_IPK_DIR)-doc/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CUPS_IPK_DIR)-doc
 

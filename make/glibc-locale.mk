@@ -13,7 +13,7 @@ GLIBC_LOCALE_IPK_VERSION=2
 GLIBC_LOCALE_SOURCE=toolchain
 GLIBC_LOCALE_DIR=glibc-locale-$(GLIBC_LOCALE_VERSION)
 GLIBC_LOCALE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
-GLIBC_LOCALE_DESCRIPTION=glibc locale tools and data. Useful for targets with glibc patched to use /opt/lib/locale and /opt/share/i18n
+GLIBC_LOCALE_DESCRIPTION=glibc locale tools and data. Useful for targets with glibc patched to use $(TARGET_PREFIX)/lib/locale and $(TARGET_PREFIX)/share/i18n
 GLIBC_LOCALE_SECTION=lib
 GLIBC_LOCALE_PRIORITY=optional
 GLIBC_LOCALE_DEPENDS=gconv-modules
@@ -74,12 +74,12 @@ $(GLIBC_LOCALE_IPK_DIR)/CONTROL/control:
 $(GLIBC_LOCALE_IPK): $(GLIBC_LOCALE_BUILD_DIR)/.built
 	rm -rf $(GLIBC_LOCALE_IPK_DIR) $(BUILD_DIR)/glibc-locale_*_$(TARGET_ARCH).ipk
 ifneq ($(LIBC_STYLE),uclibc)
-	$(INSTALL) -d $(GLIBC_LOCALE_IPK_DIR)/opt/lib/locale \
-		$(GLIBC_LOCALE_IPK_DIR)/opt/share/i18n \
-		$(GLIBC_LOCALE_IPK_DIR)/opt/bin
-	$(INSTALL) -m 755 $(GLIBC_LOCALE_BIN)/locale $(GLIBC_LOCALE_IPK_DIR)/opt/bin
-	$(INSTALL) -m 755 $(GLIBC_LOCALE_BIN)/localedef $(GLIBC_LOCALE_IPK_DIR)/opt/bin
-	cp -af $(GLIBC_LOCALE_SHARE)/i18n/* $(GLIBC_LOCALE_IPK_DIR)/opt/share/i18n
+	$(INSTALL) -d $(GLIBC_LOCALE_IPK_DIR)$(TARGET_PREFIX)/lib/locale \
+		$(GLIBC_LOCALE_IPK_DIR)$(TARGET_PREFIX)/share/i18n \
+		$(GLIBC_LOCALE_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(INSTALL) -m 755 $(GLIBC_LOCALE_BIN)/locale $(GLIBC_LOCALE_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(INSTALL) -m 755 $(GLIBC_LOCALE_BIN)/localedef $(GLIBC_LOCALE_IPK_DIR)$(TARGET_PREFIX)/bin
+	cp -af $(GLIBC_LOCALE_SHARE)/i18n/* $(GLIBC_LOCALE_IPK_DIR)$(TARGET_PREFIX)/share/i18n
 	$(INSTALL) -d $(GLIBC_LOCALE_IPK_DIR)/CONTROL
 	$(INSTALL) -m 755 $(GLIBC_LOCALE_SOURCE_DIR)/postinst $(GLIBC_LOCALE_IPK_DIR)/CONTROL/postinst
 endif

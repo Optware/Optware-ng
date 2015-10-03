@@ -34,7 +34,7 @@ MOTION_IPK_VERSION=1
 
 #
 # MOTION_CONFFILES should be a list of user-editable files
-MOTION_CONFFILES=/opt/etc/motion.conf /opt/etc/init.d/S99motion
+MOTION_CONFFILES=$(TARGET_PREFIX)/etc/motion.conf $(TARGET_PREFIX)/etc/init.d/S99motion
 
 #
 # MOTION_PATCHES should list any patches, in the the order in
@@ -50,7 +50,7 @@ MOTION_CPPFLAGS=-DFFMPEG_AVWRITEFRAME_NEWAPI
 ifeq ($(OPTWARE_TARGET),ds101g)
 MOTION_LDFLAGS="-Wl,-rpath,/usr/syno/mysql/lib/mysql"
 else
-MOTION_LDFLAGS="-Wl,-rpath,/opt/lib/mysql" -L$(STAGING_LIB_DIR)/mysql
+MOTION_LDFLAGS="-Wl,-rpath,$(TARGET_PREFIX)/lib/mysql" -L$(STAGING_LIB_DIR)/mysql
 endif
 
 #
@@ -172,22 +172,22 @@ endif
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(MOTION_IPK_DIR)/opt/sbin or $(MOTION_IPK_DIR)/opt/bin
+# Binaries should be installed into $(MOTION_IPK_DIR)$(TARGET_PREFIX)/sbin or $(MOTION_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(MOTION_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(MOTION_IPK_DIR)/opt/etc/motion/...
-# Documentation files should be installed in $(MOTION_IPK_DIR)/opt/doc/motion/...
+# Libraries and include files should be installed into $(MOTION_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(MOTION_IPK_DIR)$(TARGET_PREFIX)/etc/motion/...
+# Documentation files should be installed in $(MOTION_IPK_DIR)$(TARGET_PREFIX)/doc/motion/...
 #
 # You may need to patch your application to make it use these locations.
 #
 $(MOTION_IPK): $(MOTION_BUILD_DIR)/.built
 	rm -rf $(MOTION_IPK_DIR) $(BUILD_DIR)/motion_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MOTION_BUILD_DIR) DESTDIR=$(MOTION_IPK_DIR) install
-	$(STRIP_COMMAND) $(MOTION_IPK_DIR)/opt/bin/motion
-	$(INSTALL) -d $(MOTION_IPK_DIR)/opt/etc/
-	$(INSTALL) -m 644 $(MOTION_SOURCE_DIR)/motion.conf $(MOTION_IPK_DIR)/opt/etc/motion.conf
-	$(INSTALL) -d $(MOTION_IPK_DIR)/opt/etc/init.d
-	$(INSTALL) -m 755 $(MOTION_SOURCE_DIR)/rc.motion $(MOTION_IPK_DIR)/opt/etc/init.d/S99motion
+	$(STRIP_COMMAND) $(MOTION_IPK_DIR)$(TARGET_PREFIX)/bin/motion
+	$(INSTALL) -d $(MOTION_IPK_DIR)$(TARGET_PREFIX)/etc/
+	$(INSTALL) -m 644 $(MOTION_SOURCE_DIR)/motion.conf $(MOTION_IPK_DIR)$(TARGET_PREFIX)/etc/motion.conf
+	$(INSTALL) -d $(MOTION_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(INSTALL) -m 755 $(MOTION_SOURCE_DIR)/rc.motion $(MOTION_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S99motion
 	$(MAKE) $(MOTION_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 755 $(MOTION_SOURCE_DIR)/postinst $(MOTION_IPK_DIR)/CONTROL/postinst
 	$(INSTALL) -m 755 $(MOTION_SOURCE_DIR)/prerm $(MOTION_IPK_DIR)/CONTROL/prerm

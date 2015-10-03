@@ -41,7 +41,7 @@ RHTVISION_IPK_VERSION=1
 
 #
 # RHTVISION_CONFFILES should be a list of user-editable files
-#RHTVISION_CONFFILES=/opt/etc/rhtvision.conf /opt/etc/init.d/SXXrhtvision
+#RHTVISION_CONFFILES=$(TARGET_PREFIX)/etc/rhtvision.conf $(TARGET_PREFIX)/etc/init.d/SXXrhtvision
 
 #
 # RHTVISION_PATCHES should list any patches, in the the order in
@@ -203,30 +203,30 @@ $(RHTVISION_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(RHTVISION_IPK_DIR)/opt/sbin or $(RHTVISION_IPK_DIR)/opt/bin
+# Binaries should be installed into $(RHTVISION_IPK_DIR)$(TARGET_PREFIX)/sbin or $(RHTVISION_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(RHTVISION_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(RHTVISION_IPK_DIR)/opt/etc/rhtvision/...
-# Documentation files should be installed in $(RHTVISION_IPK_DIR)/opt/doc/rhtvision/...
-# Daemon startup scripts should be installed in $(RHTVISION_IPK_DIR)/opt/etc/init.d/S??rhtvision
+# Libraries and include files should be installed into $(RHTVISION_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(RHTVISION_IPK_DIR)$(TARGET_PREFIX)/etc/rhtvision/...
+# Documentation files should be installed in $(RHTVISION_IPK_DIR)$(TARGET_PREFIX)/doc/rhtvision/...
+# Daemon startup scripts should be installed in $(RHTVISION_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??rhtvision
 #
 # You may need to patch your application to make it use these locations.
 #
 $(RHTVISION_IPK): $(RHTVISION_BUILD_DIR)/.built
 	rm -rf $(RHTVISION_IPK_DIR) $(BUILD_DIR)/rhtvision_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(RHTVISION_BUILD_DIR) install \
-		prefix=$(RHTVISION_IPK_DIR)/opt
-	rm -f $(RHTVISION_IPK_DIR)/opt/lib/librhtv.a
-	$(INSTALL) $(RHTVISION_BUILD_DIR)/examples/demo/demo.exe $(RHTVISION_IPK_DIR)/opt/bin/rhtv-demo
+		prefix=$(RHTVISION_IPK_DIR)$(TARGET_PREFIX)
+	rm -f $(RHTVISION_IPK_DIR)$(TARGET_PREFIX)/lib/librhtv.a
+	$(INSTALL) $(RHTVISION_BUILD_DIR)/examples/demo/demo.exe $(RHTVISION_IPK_DIR)$(TARGET_PREFIX)/bin/rhtv-demo
 	$(STRIP_COMMAND) \
-		$(RHTVISION_IPK_DIR)/opt/bin/rhtv-config \
-		$(RHTVISION_IPK_DIR)/opt/bin/rhtv-demo \
-		$(RHTVISION_IPK_DIR)/opt/lib/librhtv.so.[0-9]*.[0-9]*.[0-9]*
-#	$(INSTALL) -d $(RHTVISION_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(RHTVISION_SOURCE_DIR)/rhtvision.conf $(RHTVISION_IPK_DIR)/opt/etc/rhtvision.conf
-#	$(INSTALL) -d $(RHTVISION_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(RHTVISION_SOURCE_DIR)/rc.rhtvision $(RHTVISION_IPK_DIR)/opt/etc/init.d/SXXrhtvision
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(RHTVISION_IPK_DIR)/opt/etc/init.d/SXXrhtvision
+		$(RHTVISION_IPK_DIR)$(TARGET_PREFIX)/bin/rhtv-config \
+		$(RHTVISION_IPK_DIR)$(TARGET_PREFIX)/bin/rhtv-demo \
+		$(RHTVISION_IPK_DIR)$(TARGET_PREFIX)/lib/librhtv.so.[0-9]*.[0-9]*.[0-9]*
+#	$(INSTALL) -d $(RHTVISION_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(RHTVISION_SOURCE_DIR)/rhtvision.conf $(RHTVISION_IPK_DIR)$(TARGET_PREFIX)/etc/rhtvision.conf
+#	$(INSTALL) -d $(RHTVISION_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(RHTVISION_SOURCE_DIR)/rc.rhtvision $(RHTVISION_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXrhtvision
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(RHTVISION_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXrhtvision
 	$(MAKE) $(RHTVISION_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(RHTVISION_SOURCE_DIR)/postinst $(RHTVISION_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(RHTVISION_IPK_DIR)/CONTROL/postinst

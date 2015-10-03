@@ -40,7 +40,7 @@ NOSTROMO_IPK_VERSION=1
 
 #
 # NOSTROMO_CONFFILES should be a list of user-editable files
-#NOSTROMO_CONFFILES=/opt/etc/nostromo.conf /opt/etc/init.d/SXXnostromo
+#NOSTROMO_CONFFILES=$(TARGET_PREFIX)/etc/nostromo.conf $(TARGET_PREFIX)/etc/init.d/SXXnostromo
 
 #
 # NOSTROMO_PATCHES should list any patches, in the the order in
@@ -128,11 +128,11 @@ $(NOSTROMO_BUILD_DIR)/.configured: $(DL_DIR)/$(NOSTROMO_SOURCE) $(NOSTROMO_PATCH
 		-e 's| -o root||' \
 		-e 's| -g bin||' \
 		-e 's| -g daemon||' \
-		-e 's|/usr/local/|$$(DESTDIR)/opt/|' \
-		-e 's|/usr/share/|$$(DESTDIR)/opt/share/|' \
-		-e 's|/var/|$$(DESTDIR)/opt/var/|' \
+		-e 's|/usr/local/|$$(DESTDIR)$(TARGET_PREFIX)/|' \
+		-e 's|/usr/share/|$$(DESTDIR)$(TARGET_PREFIX)/share/|' \
+		-e 's|/var/|$$(DESTDIR)$(TARGET_PREFIX)/var/|' \
 		$(@D)/GNUmakefile
-	sed -i.orig -e 's|/var/nostromo|/opt&|' \
+	sed -i.orig -e 's|/var/nostromo|$(TARGET_PREFIX)&|' \
 		$(@D)/conf/nhttpd.conf-dist \
 		$(@D)/src/nhttpd/main.c
 #	(cd $(@D); \
@@ -201,25 +201,25 @@ $(NOSTROMO_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(NOSTROMO_IPK_DIR)/opt/sbin or $(NOSTROMO_IPK_DIR)/opt/bin
+# Binaries should be installed into $(NOSTROMO_IPK_DIR)$(TARGET_PREFIX)/sbin or $(NOSTROMO_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(NOSTROMO_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(NOSTROMO_IPK_DIR)/opt/etc/nostromo/...
-# Documentation files should be installed in $(NOSTROMO_IPK_DIR)/opt/doc/nostromo/...
-# Daemon startup scripts should be installed in $(NOSTROMO_IPK_DIR)/opt/etc/init.d/S??nostromo
+# Libraries and include files should be installed into $(NOSTROMO_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(NOSTROMO_IPK_DIR)$(TARGET_PREFIX)/etc/nostromo/...
+# Documentation files should be installed in $(NOSTROMO_IPK_DIR)$(TARGET_PREFIX)/doc/nostromo/...
+# Daemon startup scripts should be installed in $(NOSTROMO_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??nostromo
 #
 # You may need to patch your application to make it use these locations.
 #
 $(NOSTROMO_IPK): $(NOSTROMO_BUILD_DIR)/.built
 	rm -rf $(NOSTROMO_IPK_DIR) $(BUILD_DIR)/nostromo_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(NOSTROMO_IPK_DIR)/opt/sbin
-	$(INSTALL) -d $(NOSTROMO_IPK_DIR)/opt/share/man/man8
+	$(INSTALL) -d $(NOSTROMO_IPK_DIR)$(TARGET_PREFIX)/sbin
+	$(INSTALL) -d $(NOSTROMO_IPK_DIR)$(TARGET_PREFIX)/share/man/man8
 	$(MAKE) -C $(NOSTROMO_BUILD_DIR) DESTDIR=$(NOSTROMO_IPK_DIR) install
-#	$(INSTALL) -d $(NOSTROMO_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(NOSTROMO_SOURCE_DIR)/nostromo.conf $(NOSTROMO_IPK_DIR)/opt/etc/nostromo.conf
-#	$(INSTALL) -d $(NOSTROMO_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(NOSTROMO_SOURCE_DIR)/rc.nostromo $(NOSTROMO_IPK_DIR)/opt/etc/init.d/SXXnostromo
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(NOSTROMO_IPK_DIR)/opt/etc/init.d/SXXnostromo
+#	$(INSTALL) -d $(NOSTROMO_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(NOSTROMO_SOURCE_DIR)/nostromo.conf $(NOSTROMO_IPK_DIR)$(TARGET_PREFIX)/etc/nostromo.conf
+#	$(INSTALL) -d $(NOSTROMO_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(NOSTROMO_SOURCE_DIR)/rc.nostromo $(NOSTROMO_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXnostromo
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(NOSTROMO_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXnostromo
 	$(MAKE) $(NOSTROMO_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(NOSTROMO_SOURCE_DIR)/postinst $(NOSTROMO_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(NOSTROMO_IPK_DIR)/CONTROL/postinst

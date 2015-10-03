@@ -40,7 +40,7 @@ IOZONE_IPK_VERSION=1
 
 #
 # IOZONE_CONFFILES should be a list of user-editable files
-#IOZONE_CONFFILES=/opt/etc/iozone.conf /opt/etc/init.d/SXXiozone
+#IOZONE_CONFFILES=$(TARGET_PREFIX)/etc/iozone.conf $(TARGET_PREFIX)/etc/init.d/SXXiozone
 
 #
 # IOZONE_PATCHES should list any patches, in the the order in
@@ -150,30 +150,30 @@ $(IOZONE_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(IOZONE_IPK_DIR)/opt/sbin or $(IOZONE_IPK_DIR)/opt/bin
+# Binaries should be installed into $(IOZONE_IPK_DIR)$(TARGET_PREFIX)/sbin or $(IOZONE_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(IOZONE_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(IOZONE_IPK_DIR)/opt/etc/iozone/...
-# Documentation files should be installed in $(IOZONE_IPK_DIR)/opt/doc/iozone/...
-# Daemon startup scripts should be installed in $(IOZONE_IPK_DIR)/opt/etc/init.d/S??iozone
+# Libraries and include files should be installed into $(IOZONE_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(IOZONE_IPK_DIR)$(TARGET_PREFIX)/etc/iozone/...
+# Documentation files should be installed in $(IOZONE_IPK_DIR)$(TARGET_PREFIX)/doc/iozone/...
+# Daemon startup scripts should be installed in $(IOZONE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??iozone
 #
 # You may need to patch your application to make it use these locations.
 #
 $(IOZONE_IPK): $(IOZONE_BUILD_DIR)/.built
 	rm -rf $(IOZONE_IPK_DIR) $(BUILD_DIR)/iozone_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(IOZONE_IPK_DIR)/opt/bin/
+	$(INSTALL) -d $(IOZONE_IPK_DIR)$(TARGET_PREFIX)/bin/
 	$(STRIP_COMMAND) $(IOZONE_BUILD_DIR)/src/current/iozone
-	$(INSTALL) -m 755 $(IOZONE_BUILD_DIR)/src/current/iozone $(IOZONE_IPK_DIR)/opt/bin
-	$(INSTALL) -d $(IOZONE_IPK_DIR)/opt/lib/iozone/
-	$(INSTALL) -m 755 $(IOZONE_BUILD_DIR)/src/current/Generate_Graphs $(IOZONE_IPK_DIR)/opt/lib/iozone
-	$(INSTALL) -m 755 $(IOZONE_BUILD_DIR)/src/current/gengnuplot.sh $(IOZONE_IPK_DIR)/opt/lib/iozone
-	$(INSTALL) -m 755 $(IOZONE_BUILD_DIR)/src/current/gnu3d.dem $(IOZONE_IPK_DIR)/opt/lib/iozone
-	$(INSTALL) -d $(IOZONE_IPK_DIR)/opt/share/doc/iozone
-	$(INSTALL) -m 644 $(IOZONE_BUILD_DIR)/docs/IOzone_msword_98.pdf $(IOZONE_IPK_DIR)/opt/share/doc/iozone
-	$(INSTALL) -m 644 $(IOZONE_BUILD_DIR)/docs/Run_rules.doc $(IOZONE_IPK_DIR)/opt/share/doc/iozone
-	$(INSTALL) -m 644 $(IOZONE_BUILD_DIR)/docs/Iozone_ps.gz $(IOZONE_IPK_DIR)/opt/share/doc/iozone
-	$(INSTALL) -d $(IOZONE_IPK_DIR)/opt/man1/
-	$(INSTALL) -m 644 $(IOZONE_BUILD_DIR)/docs/iozone.1 $(IOZONE_IPK_DIR)/opt/man1
+	$(INSTALL) -m 755 $(IOZONE_BUILD_DIR)/src/current/iozone $(IOZONE_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(INSTALL) -d $(IOZONE_IPK_DIR)$(TARGET_PREFIX)/lib/iozone/
+	$(INSTALL) -m 755 $(IOZONE_BUILD_DIR)/src/current/Generate_Graphs $(IOZONE_IPK_DIR)$(TARGET_PREFIX)/lib/iozone
+	$(INSTALL) -m 755 $(IOZONE_BUILD_DIR)/src/current/gengnuplot.sh $(IOZONE_IPK_DIR)$(TARGET_PREFIX)/lib/iozone
+	$(INSTALL) -m 755 $(IOZONE_BUILD_DIR)/src/current/gnu3d.dem $(IOZONE_IPK_DIR)$(TARGET_PREFIX)/lib/iozone
+	$(INSTALL) -d $(IOZONE_IPK_DIR)$(TARGET_PREFIX)/share/doc/iozone
+	$(INSTALL) -m 644 $(IOZONE_BUILD_DIR)/docs/IOzone_msword_98.pdf $(IOZONE_IPK_DIR)$(TARGET_PREFIX)/share/doc/iozone
+	$(INSTALL) -m 644 $(IOZONE_BUILD_DIR)/docs/Run_rules.doc $(IOZONE_IPK_DIR)$(TARGET_PREFIX)/share/doc/iozone
+	$(INSTALL) -m 644 $(IOZONE_BUILD_DIR)/docs/Iozone_ps.gz $(IOZONE_IPK_DIR)$(TARGET_PREFIX)/share/doc/iozone
+	$(INSTALL) -d $(IOZONE_IPK_DIR)$(TARGET_PREFIX)/man1/
+	$(INSTALL) -m 644 $(IOZONE_BUILD_DIR)/docs/iozone.1 $(IOZONE_IPK_DIR)$(TARGET_PREFIX)/man1
 	$(MAKE) $(IOZONE_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(IOZONE_BUILD_DIR)/postinst $(IOZONE_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 755 $(IOZONE_BUILD_DIR)/prerm $(IOZONE_IPK_DIR)/CONTROL/prerm

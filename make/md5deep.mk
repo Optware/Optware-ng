@@ -40,7 +40,7 @@ MD5DEEP_IPK_VERSION=1
 
 #
 # MD5DEEP_CONFFILES should be a list of user-editable files
-#MD5DEEP_CONFFILES=/opt/etc/md5deep.conf /opt/etc/init.d/SXXmd5deep
+#MD5DEEP_CONFFILES=$(TARGET_PREFIX)/etc/md5deep.conf $(TARGET_PREFIX)/etc/init.d/SXXmd5deep
 
 #
 # MD5DEEP_PATCHES should list any patches, in the the order in
@@ -180,19 +180,19 @@ $(MD5DEEP_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(MD5DEEP_IPK_DIR)/opt/sbin or $(MD5DEEP_IPK_DIR)/opt/bin
+# Binaries should be installed into $(MD5DEEP_IPK_DIR)$(TARGET_PREFIX)/sbin or $(MD5DEEP_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(MD5DEEP_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(MD5DEEP_IPK_DIR)/opt/etc/md5deep/...
-# Documentation files should be installed in $(MD5DEEP_IPK_DIR)/opt/doc/md5deep/...
-# Daemon startup scripts should be installed in $(MD5DEEP_IPK_DIR)/opt/etc/init.d/S??md5deep
+# Libraries and include files should be installed into $(MD5DEEP_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(MD5DEEP_IPK_DIR)$(TARGET_PREFIX)/etc/md5deep/...
+# Documentation files should be installed in $(MD5DEEP_IPK_DIR)$(TARGET_PREFIX)/doc/md5deep/...
+# Daemon startup scripts should be installed in $(MD5DEEP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??md5deep
 #
 # You may need to patch your application to make it use these locations.
 #
 $(MD5DEEP_IPK): $(MD5DEEP_BUILD_DIR)/.built
 	rm -rf $(MD5DEEP_IPK_DIR) $(BUILD_DIR)/md5deep_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MD5DEEP_BUILD_DIR) install DESTDIR=$(MD5DEEP_IPK_DIR)
-	$(STRIP_COMMAND) $(MD5DEEP_IPK_DIR)/opt/bin/*
+	$(STRIP_COMMAND) $(MD5DEEP_IPK_DIR)$(TARGET_PREFIX)/bin/*
 	$(MAKE) $(MD5DEEP_IPK_DIR)/CONTROL/control
 	echo $(MD5DEEP_CONFFILES) | sed -e 's/ /\n/g' > $(MD5DEEP_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MD5DEEP_IPK_DIR)

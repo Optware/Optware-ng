@@ -18,7 +18,7 @@ XZ_UTILS_CONFLICTS=
 
 XZ_UTILS_IPK_VERSION=1
 
-#XZ_UTILS_CONFFILES=/opt/etc/xz-utils.conf /opt/etc/init.d/SXXxz-utils
+#XZ_UTILS_CONFFILES=$(TARGET_PREFIX)/etc/xz-utils.conf $(TARGET_PREFIX)/etc/init.d/SXXxz-utils
 
 #XZ_UTILS_PATCHES=$(XZ_UTILS_SOURCE_DIR)/configure.patch
 
@@ -152,8 +152,8 @@ $(XZ_UTILS_IPK) $(LIBLZMA0_IPK): $(XZ_UTILS_BUILD_DIR)/.built
 		$(BUILD_DIR)/xz-utils_*_$(TARGET_ARCH).ipk \
 		$(BUILD_DIR)/liblzma0_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(XZ_UTILS_BUILD_DIR) DESTDIR=$(XZ_UTILS_IPK_DIR) install-strip
-	$(INSTALL) -d $(LIBLZMA0_IPK_DIR)/opt
-	mv $(XZ_UTILS_IPK_DIR)/opt/include $(XZ_UTILS_IPK_DIR)/opt/lib $(LIBLZMA0_IPK_DIR)/opt/
+	$(INSTALL) -d $(LIBLZMA0_IPK_DIR)$(TARGET_PREFIX)
+	mv $(XZ_UTILS_IPK_DIR)$(TARGET_PREFIX)/include $(XZ_UTILS_IPK_DIR)$(TARGET_PREFIX)/lib $(LIBLZMA0_IPK_DIR)$(TARGET_PREFIX)/
 	$(MAKE) $(XZ_UTILS_IPK_DIR)/CONTROL/control $(LIBLZMA0_IPK_DIR)/CONTROL/control
 #	echo $(XZ_UTILS_CONFFILES) | sed -e 's/ /\n/g' > $(XZ_UTILS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XZ_UTILS_IPK_DIR)

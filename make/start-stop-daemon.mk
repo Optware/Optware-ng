@@ -46,7 +46,7 @@ START-STOP-DAEMON_IPK_VERSION=2
 
 #
 # START-STOP-DAEMON_CONFFILES should be a list of user-editable files
-#START-STOP-DAEMON_CONFFILES=/opt/etc/start-stop-daemon.conf /opt/etc/init.d/SXXstart-stop-daemon
+#START-STOP-DAEMON_CONFFILES=$(TARGET_PREFIX)/etc/start-stop-daemon.conf $(TARGET_PREFIX)/etc/init.d/SXXstart-stop-daemon
 
 #
 # START-STOP-DAEMON_PATCHES should list any patches, in the the order in
@@ -190,26 +190,26 @@ $(START-STOP-DAEMON_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(START-STOP-DAEMON_IPK_DIR)/opt/sbin or $(START-STOP-DAEMON_IPK_DIR)/opt/bin
+# Binaries should be installed into $(START-STOP-DAEMON_IPK_DIR)$(TARGET_PREFIX)/sbin or $(START-STOP-DAEMON_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(START-STOP-DAEMON_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(START-STOP-DAEMON_IPK_DIR)/opt/etc/start-stop-daemon/...
-# Documentation files should be installed in $(START-STOP-DAEMON_IPK_DIR)/opt/doc/start-stop-daemon/...
-# Daemon startup scripts should be installed in $(START-STOP-DAEMON_IPK_DIR)/opt/etc/init.d/S??start-stop-daemon
+# Libraries and include files should be installed into $(START-STOP-DAEMON_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(START-STOP-DAEMON_IPK_DIR)$(TARGET_PREFIX)/etc/start-stop-daemon/...
+# Documentation files should be installed in $(START-STOP-DAEMON_IPK_DIR)$(TARGET_PREFIX)/doc/start-stop-daemon/...
+# Daemon startup scripts should be installed in $(START-STOP-DAEMON_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??start-stop-daemon
 #
 # You may need to patch your application to make it use these locations.
 #
 $(START-STOP-DAEMON_IPK): $(START-STOP-DAEMON_BUILD_DIR)/.built
 	rm -rf $(START-STOP-DAEMON_IPK_DIR) $(BUILD_DIR)/start-stop-daemon_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(START-STOP-DAEMON_BUILD_DIR) DESTDIR=$(START-STOP-DAEMON_IPK_DIR) install-strip
-	$(INSTALL) -d $(START-STOP-DAEMON_IPK_DIR)/opt/sbin/
+	$(INSTALL) -d $(START-STOP-DAEMON_IPK_DIR)$(TARGET_PREFIX)/sbin/
 	$(STRIP_COMMAND) $(START-STOP-DAEMON_BUILD_DIR)/utils/start-stop-daemon -o \
-		$(START-STOP-DAEMON_IPK_DIR)/opt/sbin/start-stop-daemon-start-stop-daemon
-#	$(INSTALL) -d $(START-STOP-DAEMON_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(START-STOP-DAEMON_SOURCE_DIR)/start-stop-daemon.conf $(START-STOP-DAEMON_IPK_DIR)/opt/etc/start-stop-daemon.conf
-#	$(INSTALL) -d $(START-STOP-DAEMON_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(START-STOP-DAEMON_SOURCE_DIR)/rc.start-stop-daemon $(START-STOP-DAEMON_IPK_DIR)/opt/etc/init.d/SXXstart-stop-daemon
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(START-STOP-DAEMON_IPK_DIR)/opt/etc/init.d/SXXstart-stop-daemon
+		$(START-STOP-DAEMON_IPK_DIR)$(TARGET_PREFIX)/sbin/start-stop-daemon-start-stop-daemon
+#	$(INSTALL) -d $(START-STOP-DAEMON_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(START-STOP-DAEMON_SOURCE_DIR)/start-stop-daemon.conf $(START-STOP-DAEMON_IPK_DIR)$(TARGET_PREFIX)/etc/start-stop-daemon.conf
+#	$(INSTALL) -d $(START-STOP-DAEMON_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(START-STOP-DAEMON_SOURCE_DIR)/rc.start-stop-daemon $(START-STOP-DAEMON_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXstart-stop-daemon
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(START-STOP-DAEMON_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXstart-stop-daemon
 	$(MAKE) $(START-STOP-DAEMON_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(START-STOP-DAEMON_SOURCE_DIR)/postinst $(START-STOP-DAEMON_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(START-STOP-DAEMON_IPK_DIR)/CONTROL/postinst
@@ -220,9 +220,9 @@ $(START-STOP-DAEMON_IPK): $(START-STOP-DAEMON_BUILD_DIR)/.built
 			$(START-STOP-DAEMON_IPK_DIR)/CONTROL/postinst $(START-STOP-DAEMON_IPK_DIR)/CONTROL/prerm; \
 	fi
 	echo $(START-STOP-DAEMON_CONFFILES) | sed -e 's/ /\n/g' > $(START-STOP-DAEMON_IPK_DIR)/CONTROL/conffiles
-	echo -e "#!/bin/sh\n/opt/bin/update-alternatives --install '/opt/sbin/start-stop-daemon' 'start-stop-daemon' /opt/sbin/start-stop-daemon-start-stop-daemon 40" > \
+	echo -e "#!/bin/sh\n$(TARGET_PREFIX)/bin/update-alternatives --install '$(TARGET_PREFIX)/sbin/start-stop-daemon' 'start-stop-daemon' $(TARGET_PREFIX)/sbin/start-stop-daemon-start-stop-daemon 40" > \
 		$(START-STOP-DAEMON_IPK_DIR)/CONTROL/postinst
-	echo -e "#!/bin/sh\n/opt/bin/update-alternatives --remove 'start-stop-daemon' /opt/sbin/start-stop-daemon-start-stop-daemon" > \
+	echo -e "#!/bin/sh\n$(TARGET_PREFIX)/bin/update-alternatives --remove 'start-stop-daemon' $(TARGET_PREFIX)/sbin/start-stop-daemon-start-stop-daemon" > \
 		$(START-STOP-DAEMON_IPK_DIR)/CONTROL/prerm
 	chmod 755 $(START-STOP-DAEMON_IPK_DIR)/CONTROL/postinst
 	chmod 755 $(START-STOP-DAEMON_IPK_DIR)/CONTROL/prerm

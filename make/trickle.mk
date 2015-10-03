@@ -159,12 +159,12 @@ $(TRICKLE_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(TRICKLE_IPK_DIR)/opt/sbin or $(TRICKLE_IPK_DIR)/opt/bin
+# Binaries should be installed into $(TRICKLE_IPK_DIR)$(TARGET_PREFIX)/sbin or $(TRICKLE_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(TRICKLE_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(TRICKLE_IPK_DIR)/opt/etc/trickle/...
-# Documentation files should be installed in $(TRICKLE_IPK_DIR)/opt/doc/trickle/...
-# Daemon startup scripts should be installed in $(TRICKLE_IPK_DIR)/opt/etc/init.d/S??trickle
+# Libraries and include files should be installed into $(TRICKLE_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(TRICKLE_IPK_DIR)$(TARGET_PREFIX)/etc/trickle/...
+# Documentation files should be installed in $(TRICKLE_IPK_DIR)$(TARGET_PREFIX)/doc/trickle/...
+# Daemon startup scripts should be installed in $(TRICKLE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??trickle
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -172,10 +172,10 @@ $(TRICKLE_IPK): $(TRICKLE_BUILD_DIR)/.built
 	rm -rf $(TRICKLE_IPK_DIR) $(BUILD_DIR)/trickle_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(TRICKLE_BUILD_DIR) DESTDIR=$(TRICKLE_IPK_DIR) transform='' \
 		$(INSTALL)-binPROGRAMS install-trickleoverloadDATA install-man
-#	$(INSTALL) -d $(TRICKLE_IPK_DIR)/opt/bin
-	$(STRIP_COMMAND) $(TRICKLE_IPK_DIR)/opt/bin/trickle* $(TRICKLE_IPK_DIR)/opt/lib/trickle/*
-#	$(INSTALL) -d $(TRICKLE_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(TRICKLE_SOURCE_DIR)/rc.trickle $(TRICKLE_IPK_DIR)/opt/etc/init.d/SXXtrickle
+#	$(INSTALL) -d $(TRICKLE_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(STRIP_COMMAND) $(TRICKLE_IPK_DIR)$(TARGET_PREFIX)/bin/trickle* $(TRICKLE_IPK_DIR)$(TARGET_PREFIX)/lib/trickle/*
+#	$(INSTALL) -d $(TRICKLE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(TRICKLE_SOURCE_DIR)/rc.trickle $(TRICKLE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXtrickle
 	$(MAKE) $(TRICKLE_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 644 $(TRICKLE_SOURCE_DIR)/postinst $(TRICKLE_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 644 $(TRICKLE_SOURCE_DIR)/prerm $(TRICKLE_IPK_DIR)/CONTROL/prerm

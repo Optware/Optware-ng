@@ -46,7 +46,7 @@ XDG-UTILS_IPK_VERSION=1
 
 #
 # XDG-UTILS_CONFFILES should be a list of user-editable files
-#XDG-UTILS_CONFFILES=/opt/etc/xdg-utils.conf /opt/etc/init.d/SXXxdg-utils
+#XDG-UTILS_CONFFILES=$(TARGET_PREFIX)/etc/xdg-utils.conf $(TARGET_PREFIX)/etc/init.d/SXXxdg-utils
 
 #
 # XDG-UTILS_PATCHES should list any patches, in the the order in
@@ -130,7 +130,7 @@ $(XDG-UTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(XDG-UTILS_SOURCE) $(XDG-UTILS_PA
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=$(TARGET_PREFIX) \
-		--mandir=/opt/share/man \
+		--mandir=$(TARGET_PREFIX)/share/man \
 		--disable-nls \
 		--disable-static \
 	)
@@ -183,24 +183,24 @@ $(XDG-UTILS_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(XDG-UTILS_IPK_DIR)/opt/sbin or $(XDG-UTILS_IPK_DIR)/opt/bin
+# Binaries should be installed into $(XDG-UTILS_IPK_DIR)$(TARGET_PREFIX)/sbin or $(XDG-UTILS_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(XDG-UTILS_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(XDG-UTILS_IPK_DIR)/opt/etc/xdg-utils/...
-# Documentation files should be installed in $(XDG-UTILS_IPK_DIR)/opt/doc/xdg-utils/...
-# Daemon startup scripts should be installed in $(XDG-UTILS_IPK_DIR)/opt/etc/init.d/S??xdg-utils
+# Libraries and include files should be installed into $(XDG-UTILS_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(XDG-UTILS_IPK_DIR)$(TARGET_PREFIX)/etc/xdg-utils/...
+# Documentation files should be installed in $(XDG-UTILS_IPK_DIR)$(TARGET_PREFIX)/doc/xdg-utils/...
+# Daemon startup scripts should be installed in $(XDG-UTILS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??xdg-utils
 #
 # You may need to patch your application to make it use these locations.
 #
 $(XDG-UTILS_IPK): $(XDG-UTILS_BUILD_DIR)/.built
 	rm -rf $(XDG-UTILS_IPK_DIR) $(BUILD_DIR)/xdg-utils_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(XDG-UTILS_BUILD_DIR) DESTDIR=$(XDG-UTILS_IPK_DIR) install
-	sed -i -e 's|/usr/local/share:/usr/share|/opt/share|g' -e 's|\$$PATH|/opt/bin:/opt/sbin:&|g' $(XDG-UTILS_IPK_DIR)/opt/bin/*
-#	$(INSTALL) -d $(XDG-UTILS_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(XDG-UTILS_SOURCE_DIR)/xdg-utils.conf $(XDG-UTILS_IPK_DIR)/opt/etc/xdg-utils.conf
-#	$(INSTALL) -d $(XDG-UTILS_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(XDG-UTILS_SOURCE_DIR)/rc.xdg-utils $(XDG-UTILS_IPK_DIR)/opt/etc/init.d/SXXxdg-utils
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XDG-UTILS_IPK_DIR)/opt/etc/init.d/SXXxdg-utils
+	sed -i -e 's|/usr/local/share:/usr/share|$(TARGET_PREFIX)/share|g' -e 's|\$$PATH|$(TARGET_PREFIX)/bin:$(TARGET_PREFIX)/sbin:&|g' $(XDG-UTILS_IPK_DIR)$(TARGET_PREFIX)/bin/*
+#	$(INSTALL) -d $(XDG-UTILS_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(XDG-UTILS_SOURCE_DIR)/xdg-utils.conf $(XDG-UTILS_IPK_DIR)$(TARGET_PREFIX)/etc/xdg-utils.conf
+#	$(INSTALL) -d $(XDG-UTILS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(XDG-UTILS_SOURCE_DIR)/rc.xdg-utils $(XDG-UTILS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXxdg-utils
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XDG-UTILS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXxdg-utils
 	$(MAKE) $(XDG-UTILS_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(XDG-UTILS_SOURCE_DIR)/postinst $(XDG-UTILS_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XDG-UTILS_IPK_DIR)/CONTROL/postinst

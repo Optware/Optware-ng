@@ -32,7 +32,7 @@ TORRENT_SUGGESTS=cron, coreutils
 TORRENT_IPK_VERSION=7
 
 # TORRENT_CONFFILES should be a list of user-editable files
-TORRENT_CONFFILES=/opt/etc/torrent.conf /opt/etc/init.d/S80busybox_httpd
+TORRENT_CONFFILES=$(TARGET_PREFIX)/etc/torrent.conf $(TARGET_PREFIX)/etc/init.d/S80busybox_httpd
 
 #
 # TORRENT_BUILD_DIR is the directory in which the build is done.
@@ -109,12 +109,12 @@ $(TORRENT_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(TORRENT_IPK_DIR)/opt/sbin or $(TORRENT_IPK_DIR)/opt/bin
+# Binaries should be installed into $(TORRENT_IPK_DIR)$(TARGET_PREFIX)/sbin or $(TORRENT_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(TORRENT_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(TORRENT_IPK_DIR)/opt/etc/torrent/...
-# Documentation files should be installed in $(TORRENT_IPK_DIR)/opt/doc/torrent/...
-# Daemon startup scripts should be installed in $(TORRENT_IPK_DIR)/opt/etc/init.d/S??torrent
+# Libraries and include files should be installed into $(TORRENT_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(TORRENT_IPK_DIR)$(TARGET_PREFIX)/etc/torrent/...
+# Documentation files should be installed in $(TORRENT_IPK_DIR)$(TARGET_PREFIX)/doc/torrent/...
+# Daemon startup scripts should be installed in $(TORRENT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??torrent
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -123,16 +123,16 @@ $(TORRENT_IPK): $(TORRENT_BUILD_DIR)/.configured
 	mkdir -p $(TORRENT_IPK_DIR)/CONTROL
 	$(MAKE) $(TORRENT_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 644 $(SOURCE_DIR)/torrent/postinst $(TORRENT_IPK_DIR)/CONTROL/postinst
-	$(INSTALL) -d $(TORRENT_IPK_DIR)/opt/bin
-	$(INSTALL) -d $(TORRENT_IPK_DIR)/opt/sbin
-	$(INSTALL) -d $(TORRENT_IPK_DIR)/opt/etc/init.d
-	$(INSTALL) -d $(TORRENT_IPK_DIR)/opt/share/www/cgi-bin
-	$(INSTALL) -m 700 $(SOURCE_DIR)/torrent/torrent_watchdog $(TORRENT_IPK_DIR)/opt/sbin
-	$(INSTALL) -m 755 $(SOURCE_DIR)/torrent/torrent_admin $(TORRENT_IPK_DIR)/opt/sbin
-	$(INSTALL) -m 755 $(SOURCE_DIR)/torrent/btcheck-target $(TORRENT_IPK_DIR)/opt/bin
-	$(INSTALL) -m 755 $(SOURCE_DIR)/torrent/torrent.cgi $(TORRENT_IPK_DIR)/opt/share/www/cgi-bin
-	$(INSTALL) -m 644 $(SOURCE_DIR)/torrent/torrent.conf $(TORRENT_IPK_DIR)/opt/etc
-	$(INSTALL) -m 755 $(SOURCE_DIR)/torrent/S80busybox_httpd $(TORRENT_IPK_DIR)/opt/etc/init.d
+	$(INSTALL) -d $(TORRENT_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(INSTALL) -d $(TORRENT_IPK_DIR)$(TARGET_PREFIX)/sbin
+	$(INSTALL) -d $(TORRENT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(INSTALL) -d $(TORRENT_IPK_DIR)$(TARGET_PREFIX)/share/www/cgi-bin
+	$(INSTALL) -m 700 $(SOURCE_DIR)/torrent/torrent_watchdog $(TORRENT_IPK_DIR)$(TARGET_PREFIX)/sbin
+	$(INSTALL) -m 755 $(SOURCE_DIR)/torrent/torrent_admin $(TORRENT_IPK_DIR)$(TARGET_PREFIX)/sbin
+	$(INSTALL) -m 755 $(SOURCE_DIR)/torrent/btcheck-target $(TORRENT_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(INSTALL) -m 755 $(SOURCE_DIR)/torrent/torrent.cgi $(TORRENT_IPK_DIR)$(TARGET_PREFIX)/share/www/cgi-bin
+	$(INSTALL) -m 644 $(SOURCE_DIR)/torrent/torrent.conf $(TORRENT_IPK_DIR)$(TARGET_PREFIX)/etc
+	$(INSTALL) -m 755 $(SOURCE_DIR)/torrent/S80busybox_httpd $(TORRENT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
 	echo $(TORRENT_CONFFILES) | sed -e 's/ /\n/g' > $(TORRENT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TORRENT_IPK_DIR)
 

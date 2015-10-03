@@ -39,7 +39,7 @@ SQUID_IPK_VERSION ?= 1
 
 #
 ## SQUID_CONFFILES should be a list of user-editable files
-SQUID_CONFFILES=/opt/etc/squid/squid.conf /opt/etc/init.d/S80squid
+SQUID_CONFFILES=$(TARGET_PREFIX)/etc/squid/squid.conf $(TARGET_PREFIX)/etc/init.d/S80squid
 
 #
 # SQUID_PATCHES should list any patches, in the the order in
@@ -75,7 +75,7 @@ SQUID_HOST_BUILD_DIR=$(HOST_BUILD_DIR)/squid
 SQUID_IPK_DIR=$(BUILD_DIR)/squid-$(SQUID_VERSION)-ipk
 SQUID_IPK=$(BUILD_DIR)/squid_$(SQUID_VERSION)-$(SQUID_IPK_VERSION)_$(TARGET_ARCH).ipk
 
-SQUID_INST_DIR=/opt
+SQUID_INST_DIR=$(TARGET_PREFIX)
 SQUID_BIN_DIR=$(SQUID_INST_DIR)/bin
 SQUID_SBIN_DIR=$(SQUID_INST_DIR)/sbin
 SQUID_LIBEXEC_DIR=$(SQUID_INST_DIR)/libexec
@@ -249,24 +249,24 @@ $(SQUID_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(SQUID_IPK_DIR)/opt/sbin or $(SQUID_IPK_DIR)/opt/bin
+# Binaries should be installed into $(SQUID_IPK_DIR)$(TARGET_PREFIX)/sbin or $(SQUID_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(SQUID_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(SQUID_IPK_DIR)/opt/etc/squid/...
-# Documentation files should be installed in $(SQUID_IPK_DIR)/opt/doc/squid/...
-# Daemon startup scripts should be installed in $(SQUID_IPK_DIR)/opt/etc/init.d/S??squid
+# Libraries and include files should be installed into $(SQUID_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(SQUID_IPK_DIR)$(TARGET_PREFIX)/etc/squid/...
+# Documentation files should be installed in $(SQUID_IPK_DIR)$(TARGET_PREFIX)/doc/squid/...
+# Daemon startup scripts should be installed in $(SQUID_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??squid
 #
 # You may need to patch your application to make it use these locations.
 #
 $(SQUID_IPK): $(SQUID_BUILD_DIR)/.built
 	rm -rf $(SQUID_IPK_DIR) $(BUILD_DIR)/squid_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SQUID_BUILD_DIR) DESTDIR=$(SQUID_IPK_DIR) install
-	cd $(SQUID_IPK_DIR)/opt; \
+	cd $(SQUID_IPK_DIR)$(TARGET_PREFIX); \
 	$(STRIP_COMMAND) bin/squidclient sbin/squid \
 		libexec/cachemgr.cgi libexec/ncsa_auth libexec/unlinkd
-	$(INSTALL) -d $(SQUID_IPK_DIR)/opt/etc/init.d
-	$(INSTALL) -m 755 $(SQUID_SOURCE_DIR)/rc.squid $(SQUID_IPK_DIR)/opt/etc/init.d/S80squid
-	ln -sf /opt/etc/init.d/S80squid $(SQUID_IPK_DIR)/opt/etc/init.d/K80squid 
+	$(INSTALL) -d $(SQUID_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(INSTALL) -m 755 $(SQUID_SOURCE_DIR)/rc.squid $(SQUID_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S80squid
+	ln -sf $(TARGET_PREFIX)/etc/init.d/S80squid $(SQUID_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/K80squid 
 	$(INSTALL) -m 755 $(SQUID_SOURCE_DIR)/squid.delay-start.sh $(SQUID_IPK_DIR)$(SQUID_SYSCONF_DIR)/squid.delay-start.sh
 	$(INSTALL) -d $(SQUID_IPK_DIR)/CONTROL
 	$(MAKE) $(SQUID_IPK_DIR)/CONTROL/control

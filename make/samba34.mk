@@ -48,8 +48,8 @@ SAMBA34_ADDITIONAL_CODEPAGES=CP866
 
 #
 # SAMBA34_CONFFILES should be a list of user-editable files
-SAMBA34_CONFFILES=/opt/etc/init.d/S08samba
-SAMBA34-SWAT_CONFFILES=/opt/etc/xinetd.d/swat
+SAMBA34_CONFFILES=$(TARGET_PREFIX)/etc/init.d/S08samba
+SAMBA34-SWAT_CONFFILES=$(TARGET_PREFIX)/etc/xinetd.d/swat
 
 #
 # SAMBA34_PATCHES should list any patches, in the the order in
@@ -91,7 +91,7 @@ SAMBA34-SWAT_IPK=$(BUILD_DIR)/samba34-swat_$(SAMBA34_VERSION)-$(SAMBA34_IPK_VERS
 
 SAMBA34_BUILD_DIR_SRC=$(SAMBA34_BUILD_DIR)/source3
 
-SAMBA34_INST_DIR=/opt
+SAMBA34_INST_DIR=$(TARGET_PREFIX)
 SAMBA34_EXEC_PREFIX=$(SAMBA34_INST_DIR)
 SAMBA34_BIN_DIR=$(SAMBA34_INST_DIR)/bin
 SAMBA34_SBIN_DIR=$(SAMBA34_INST_DIR)/sbin
@@ -347,12 +347,12 @@ $(SAMBA34-SWAT_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(SAMBA34_IPK_DIR)/opt/sbin or $(SAMBA34_IPK_DIR)/opt/bin
+# Binaries should be installed into $(SAMBA34_IPK_DIR)$(TARGET_PREFIX)/sbin or $(SAMBA34_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(SAMBA34_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(SAMBA34_IPK_DIR)/opt/etc/samba/...
-# Documentation files should be installed in $(SAMBA34_IPK_DIR)/opt/doc/samba/...
-# Daemon startup scripts should be installed in $(SAMBA34_IPK_DIR)/opt/etc/init.d/S??samba
+# Libraries and include files should be installed into $(SAMBA34_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(SAMBA34_IPK_DIR)$(TARGET_PREFIX)/etc/samba/...
+# Documentation files should be installed in $(SAMBA34_IPK_DIR)$(TARGET_PREFIX)/doc/samba/...
+# Daemon startup scripts should be installed in $(SAMBA34_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??samba
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -362,13 +362,13 @@ $(SAMBA34_IPK) $(SAMBA34-DEV_IPK) $(SAMBA34-SWAT_IPK): $(SAMBA34_BUILD_DIR)/.bui
 	rm -rf $(SAMBA34-SWAT_IPK_DIR) $(BUILD_DIR)/samba34-swat_*_$(TARGET_ARCH).ipk
 	# samba3
 	$(MAKE) -C $(SAMBA34_BUILD_DIR)/source3/ DESTDIR=$(SAMBA34_IPK_DIR) install
-	$(STRIP_COMMAND) `ls $(SAMBA34_IPK_DIR)/opt/sbin/* | egrep -v 'mount.smbfs'`
-	$(STRIP_COMMAND) `ls $(SAMBA34_IPK_DIR)/opt/bin/* | egrep -v 'findsmb|smbtar'`
+	$(STRIP_COMMAND) `ls $(SAMBA34_IPK_DIR)$(TARGET_PREFIX)/sbin/* | egrep -v 'mount.smbfs'`
+	$(STRIP_COMMAND) `ls $(SAMBA34_IPK_DIR)$(TARGET_PREFIX)/bin/* | egrep -v 'findsmb|smbtar'`
 	cd $(SAMBA34_BUILD_DIR)/source3/bin/; for f in lib*.so.[01]; \
-		do cp -a $$f $(SAMBA34_IPK_DIR)/opt/lib/$$f; done
-	$(STRIP_COMMAND) `find $(SAMBA34_IPK_DIR)/opt/lib -name '*.so'`
-	$(INSTALL) -d $(SAMBA34_IPK_DIR)/opt/etc/init.d
-	$(INSTALL) -m 755 $(SAMBA34_SOURCE_DIR)/rc.samba $(SAMBA34_IPK_DIR)/opt/etc/init.d/S08samba
+		do cp -a $$f $(SAMBA34_IPK_DIR)$(TARGET_PREFIX)/lib/$$f; done
+	$(STRIP_COMMAND) `find $(SAMBA34_IPK_DIR)$(TARGET_PREFIX)/lib -name '*.so'`
+	$(INSTALL) -d $(SAMBA34_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(INSTALL) -m 755 $(SAMBA34_SOURCE_DIR)/rc.samba $(SAMBA34_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S08samba
 	$(MAKE) $(SAMBA34_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 644 $(SAMBA34_SOURCE_DIR)/postinst $(SAMBA34_IPK_DIR)/CONTROL/postinst
 	$(INSTALL) -m 644 $(SAMBA34_SOURCE_DIR)/preinst $(SAMBA34_IPK_DIR)/CONTROL/preinst
@@ -378,14 +378,14 @@ ifeq ($(OPTWARE_TARGET), $(filter ds101 ds101g, $(OPTWARE_TARGET)))
 endif
 	echo $(SAMBA34_CONFFILES) | sed -e 's/ /\n/g' > $(SAMBA34_IPK_DIR)/CONTROL/conffiles
 	# samba3-dev
-	$(INSTALL) -d $(SAMBA34-DEV_IPK_DIR)/opt
-	mv $(SAMBA34_IPK_DIR)/opt/include $(SAMBA34-DEV_IPK_DIR)/opt/
+	$(INSTALL) -d $(SAMBA34-DEV_IPK_DIR)$(TARGET_PREFIX)
+	mv $(SAMBA34_IPK_DIR)$(TARGET_PREFIX)/include $(SAMBA34-DEV_IPK_DIR)$(TARGET_PREFIX)/
 	# samba3-swat
-	$(INSTALL) -d $(SAMBA34-SWAT_IPK_DIR)/opt/share $(SAMBA34-SWAT_IPK_DIR)/opt/sbin
-	mv $(SAMBA34_IPK_DIR)/opt/share/swat $(SAMBA34-SWAT_IPK_DIR)/opt/share/
-	mv $(SAMBA34_IPK_DIR)/opt/sbin/swat $(SAMBA34-SWAT_IPK_DIR)/opt/sbin/
-	$(INSTALL) -d $(SAMBA34-SWAT_IPK_DIR)/opt/etc/xinetd.d
-	$(INSTALL) -m 755 $(SAMBA34_SOURCE_DIR)/swat $(SAMBA34-SWAT_IPK_DIR)/opt/etc/xinetd.d/swat
+	$(INSTALL) -d $(SAMBA34-SWAT_IPK_DIR)$(TARGET_PREFIX)/share $(SAMBA34-SWAT_IPK_DIR)$(TARGET_PREFIX)/sbin
+	mv $(SAMBA34_IPK_DIR)$(TARGET_PREFIX)/share/swat $(SAMBA34-SWAT_IPK_DIR)$(TARGET_PREFIX)/share/
+	mv $(SAMBA34_IPK_DIR)$(TARGET_PREFIX)/sbin/swat $(SAMBA34-SWAT_IPK_DIR)$(TARGET_PREFIX)/sbin/
+	$(INSTALL) -d $(SAMBA34-SWAT_IPK_DIR)$(TARGET_PREFIX)/etc/xinetd.d
+	$(INSTALL) -m 755 $(SAMBA34_SOURCE_DIR)/swat $(SAMBA34-SWAT_IPK_DIR)$(TARGET_PREFIX)/etc/xinetd.d/swat
 	# building ipk's
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SAMBA34_IPK_DIR)
 	$(MAKE) $(SAMBA34-DEV_IPK_DIR)/CONTROL/control

@@ -18,7 +18,7 @@ NANO_CONFLICTS=
 
 NANO_IPK_VERSION=2
 
-#NANO_CONFFILES=/opt/etc/nanorc
+#NANO_CONFFILES=$(TARGET_PREFIX)/etc/nanorc
 
 #NANO_PATCHES=$(NANO_SOURCE_DIR)/broken_regex.patch
 
@@ -96,9 +96,9 @@ $(NANO_IPK_DIR)/CONTROL/control:
 $(NANO_IPK): $(NANO_BUILD_DIR)/.built
 	rm -rf $(NANO_IPK_DIR) $(BUILD_DIR)/nano_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(NANO_BUILD_DIR) DESTDIR=$(NANO_IPK_DIR) program_transform_name="" install-strip
-	$(INSTALL) -d $(NANO_IPK_DIR)/opt/etc/
-	$(INSTALL) -m 644 $(NANO_BUILD_DIR)/doc/nanorc.sample $(NANO_IPK_DIR)/opt/etc/nanorc
-	rm -f $(NANO_IPK_DIR)/opt/share/info/dir
+	$(INSTALL) -d $(NANO_IPK_DIR)$(TARGET_PREFIX)/etc/
+	$(INSTALL) -m 644 $(NANO_BUILD_DIR)/doc/nanorc.sample $(NANO_IPK_DIR)$(TARGET_PREFIX)/etc/nanorc
+	rm -f $(NANO_IPK_DIR)$(TARGET_PREFIX)/share/info/dir
 	$(MAKE) $(NANO_IPK_DIR)/CONTROL/control
 	echo $(NANO_CONFFILES) | sed -e 's/ /\n/g' > $(NANO_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NANO_IPK_DIR)

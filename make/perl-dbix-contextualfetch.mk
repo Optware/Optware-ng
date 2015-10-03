@@ -83,7 +83,7 @@ $(PERL-DBIX-CONTEXTUALFETCH_IPK): $(PERL-DBIX-CONTEXTUALFETCH_BUILD_DIR)/.built
 	rm -rf $(PERL-DBIX-CONTEXTUALFETCH_IPK_DIR) $(BUILD_DIR)/perl-dbix-contextualfetch_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PERL-DBIX-CONTEXTUALFETCH_BUILD_DIR) DESTDIR=$(PERL-DBIX-CONTEXTUALFETCH_IPK_DIR) install
 	find $(PERL-DBIX-CONTEXTUALFETCH_IPK_DIR)$(TARGET_PREFIX) -name 'perllocal.pod' -exec rm -f {} \;
-	(cd $(PERL-DBIX-CONTEXTUALFETCH_IPK_DIR)/opt/lib/perl5 ; \
+	(cd $(PERL-DBIX-CONTEXTUALFETCH_IPK_DIR)$(TARGET_PREFIX)/lib/perl5 ; \
 		find . -name '*.so' -exec chmod +w {} \; ; \
 		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
 		find . -name '*.so' -exec chmod -w {} \; ; \

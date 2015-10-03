@@ -40,7 +40,7 @@ LSOF_IPK_VERSION=1
 
 #
 # LSOF_CONFFILES should be a list of user-editable files
-#LSOF_CONFFILES=/opt/etc/lsof.conf /opt/etc/init.d/SXXlsof
+#LSOF_CONFFILES=$(TARGET_PREFIX)/etc/lsof.conf $(TARGET_PREFIX)/etc/init.d/SXXlsof
 
 #
 # LSOF_PATCHES should list any patches, in the the order in
@@ -179,22 +179,22 @@ $(LSOF_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LSOF_IPK_DIR)/opt/sbin or $(LSOF_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LSOF_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LSOF_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LSOF_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LSOF_IPK_DIR)/opt/etc/lsof/...
-# Documentation files should be installed in $(LSOF_IPK_DIR)/opt/doc/lsof/...
-# Daemon startup scripts should be installed in $(LSOF_IPK_DIR)/opt/etc/init.d/S??lsof
+# Libraries and include files should be installed into $(LSOF_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LSOF_IPK_DIR)$(TARGET_PREFIX)/etc/lsof/...
+# Documentation files should be installed in $(LSOF_IPK_DIR)$(TARGET_PREFIX)/doc/lsof/...
+# Daemon startup scripts should be installed in $(LSOF_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??lsof
 #
 # You may need to patch your application to make it use these locations.
 #
 $(LSOF_IPK): $(LSOF_BUILD_DIR)/.built
 	rm -rf $(LSOF_IPK_DIR) $(BUILD_DIR)/lsof_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(LSOF_BUILD_DIR) DESTDIR=$(LSOF_IPK_DIR) install-strip
-	$(INSTALL) -d $(LSOF_IPK_DIR)/opt/sbin
-	$(STRIP_COMMAND) $(LSOF_BUILD_DIR)/lsof -o $(LSOF_IPK_DIR)/opt/sbin/lsof
-	$(INSTALL) -d $(LSOF_IPK_DIR)/opt/share/man/man8
-	$(INSTALL) $(LSOF_BUILD_DIR)/lsof.8 $(LSOF_IPK_DIR)/opt/share/man/man8
+	$(INSTALL) -d $(LSOF_IPK_DIR)$(TARGET_PREFIX)/sbin
+	$(STRIP_COMMAND) $(LSOF_BUILD_DIR)/lsof -o $(LSOF_IPK_DIR)$(TARGET_PREFIX)/sbin/lsof
+	$(INSTALL) -d $(LSOF_IPK_DIR)$(TARGET_PREFIX)/share/man/man8
+	$(INSTALL) $(LSOF_BUILD_DIR)/lsof.8 $(LSOF_IPK_DIR)$(TARGET_PREFIX)/share/man/man8
 	$(MAKE) $(LSOF_IPK_DIR)/CONTROL/control
 	echo $(LSOF_CONFFILES) | sed -e 's/ /\n/g' > $(LSOF_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LSOF_IPK_DIR)

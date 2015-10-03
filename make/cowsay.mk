@@ -105,8 +105,8 @@ $(COWSAY_BUILD_DIR)/.configured: $(DL_DIR)/$(COWSAY_SOURCE) $(COWSAY_PATCHES) ma
 	if test "$(BUILD_DIR)/$(COWSAY_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(COWSAY_DIR) $(@D) ; \
 	fi
-	sed -i -e '/%BANGPERL%/s|$$usethisperl|/opt/bin/perl|' \
-	       -e '/%PREFIX%/s|$$PREFIX|/opt|' \
+	sed -i -e '/%BANGPERL%/s|$$usethisperl|$(TARGET_PREFIX)/bin/perl|' \
+	       -e '/%PREFIX%/s|$$PREFIX|$(TARGET_PREFIX)|' \
 	       $(@D)/install.sh
 	touch $@
 
@@ -154,19 +154,19 @@ $(COWSAY_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(COWSAY_IPK_DIR)/opt/sbin or $(COWSAY_IPK_DIR)/opt/bin
+# Binaries should be installed into $(COWSAY_IPK_DIR)$(TARGET_PREFIX)/sbin or $(COWSAY_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(COWSAY_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(COWSAY_IPK_DIR)/opt/etc/cowsay/...
-# Documentation files should be installed in $(COWSAY_IPK_DIR)/opt/doc/cowsay/...
-# Daemon startup scripts should be installed in $(COWSAY_IPK_DIR)/opt/etc/init.d/S??cowsay
+# Libraries and include files should be installed into $(COWSAY_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(COWSAY_IPK_DIR)$(TARGET_PREFIX)/etc/cowsay/...
+# Documentation files should be installed in $(COWSAY_IPK_DIR)$(TARGET_PREFIX)/doc/cowsay/...
+# Daemon startup scripts should be installed in $(COWSAY_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??cowsay
 #
 # You may need to patch your application to make it use these locations.
 #
 $(COWSAY_IPK): $(COWSAY_BUILD_DIR)/.built
 	rm -rf $(COWSAY_IPK_DIR) $(BUILD_DIR)/cowsay_*_$(TARGET_ARCH).ipk
 	$(INSTALL) -m 644 $(COWSAY_SOURCE_DIR)/nslu2.cow $(COWSAY_BUILD_DIR)/cows/nslu2.cow
-	cd $(COWSAY_BUILD_DIR); sh ./install.sh $(COWSAY_IPK_DIR)/opt
+	cd $(COWSAY_BUILD_DIR); sh ./install.sh $(COWSAY_IPK_DIR)$(TARGET_PREFIX)
 	$(MAKE) $(COWSAY_IPK_DIR)/CONTROL/control
 	echo $(COWSAY_CONFFILES) | sed -e 's/ /\n/g' > $(COWSAY_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(COWSAY_IPK_DIR)

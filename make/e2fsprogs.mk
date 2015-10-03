@@ -37,7 +37,7 @@ E2FSPROGS_CONFLICTS=
 
 #
 # E2FSPROGS_CONFFILES should be a list of user-editable files
-E2FSPROGS_CONFFILES=/opt/etc/mke2fs.conf
+E2FSPROGS_CONFFILES=$(TARGET_PREFIX)/etc/mke2fs.conf
 
 #
 # E2FSPROGS_PATCHES should list any patches, in the the order in
@@ -116,7 +116,7 @@ $(E2FSPROGS_BUILD_DIR)/.configured: $(DL_DIR)/$(E2FSPROGS_SOURCE) $(E2FSPROGS_PA
 	$(E2FSPROGS_UNZIP) $(DL_DIR)/$(E2FSPROGS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(E2FSPROGS_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(E2FSPROGS_DIR) -p1
 	mv $(BUILD_DIR)/$(E2FSPROGS_DIR) $(@D)
-	sed -i -e 's|(DESTDIR)/etc|(DESTDIR)/opt/etc|g' $(@D)/misc/Makefile.in
+	sed -i -e 's|(DESTDIR)/etc|(DESTDIR)$(TARGET_PREFIX)/etc|g' $(@D)/misc/Makefile.in
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(E2FSPROGS_CPPFLAGS)" \
@@ -215,80 +215,80 @@ $(E2FSLIBS-DEV_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(E2FSPROGS_IPK_DIR)/opt/sbin or $(E2FSPROGS_IPK_DIR)/opt/bin
+# Binaries should be installed into $(E2FSPROGS_IPK_DIR)$(TARGET_PREFIX)/sbin or $(E2FSPROGS_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(E2FSPROGS_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(E2FSPROGS_IPK_DIR)/opt/etc/e2fsprogs/...
-# Documentation files should be installed in $(E2FSPROGS_IPK_DIR)/opt/doc/e2fsprogs/...
-# Daemon startup scripts should be installed in $(E2FSPROGS_IPK_DIR)/opt/etc/init.d/S??e2fsprogs
+# Libraries and include files should be installed into $(E2FSPROGS_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(E2FSPROGS_IPK_DIR)$(TARGET_PREFIX)/etc/e2fsprogs/...
+# Documentation files should be installed in $(E2FSPROGS_IPK_DIR)$(TARGET_PREFIX)/doc/e2fsprogs/...
+# Daemon startup scripts should be installed in $(E2FSPROGS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??e2fsprogs
 #
 # You may need to patch your application to make it use these locations.
 #
 $(E2FSPROGS_IPK) $(E2FSLIBS_IPK) $(E2FSLIBS-DEV_IPK): $(E2FSPROGS_BUILD_DIR)/.built
 	rm -rf $(E2FSPROGS_IPK_DIR) $(BUILD_DIR)/e2fsprogs_*_$(TARGET_ARCH).ipk
 	rm -rf $(E2FSLIBS_IPK_DIR) $(BUILD_DIR)/e2fslibs_*_$(TARGET_ARCH).ipk
-	# We place files in /opt/lib and /opt/sbin only
-	$(INSTALL) -d $(E2FSPROGS_IPK_DIR)/opt/etc
-	$(INSTALL) -d $(E2FSPROGS_IPK_DIR)/opt/lib
-	$(INSTALL) -d $(E2FSPROGS_IPK_DIR)/opt/sbin
-	$(INSTALL) -d $(E2FSPROGS_IPK_DIR)/opt/bin
-	$(INSTALL) -d $(E2FSPROGS_IPK_DIR)/opt/man/man8
-	$(INSTALL) -d $(E2FSPROGS_IPK_DIR)/opt/man/man1
+	# We place files in $(TARGET_PREFIX)/lib and $(TARGET_PREFIX)/sbin only
+	$(INSTALL) -d $(E2FSPROGS_IPK_DIR)$(TARGET_PREFIX)/etc
+	$(INSTALL) -d $(E2FSPROGS_IPK_DIR)$(TARGET_PREFIX)/lib
+	$(INSTALL) -d $(E2FSPROGS_IPK_DIR)$(TARGET_PREFIX)/sbin
+	$(INSTALL) -d $(E2FSPROGS_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(INSTALL) -d $(E2FSPROGS_IPK_DIR)$(TARGET_PREFIX)/man/man8
+	$(INSTALL) -d $(E2FSPROGS_IPK_DIR)$(TARGET_PREFIX)/man/man1
 	DESTDIR=$(E2FSPROGS_IPK_DIR) LDCONFIG=true \
 	$(MAKE) -C $(E2FSPROGS_BUILD_DIR) install
 	# Strip in the 3 executables - take both e2fsck versions for now
-	$(STRIP_COMMAND) $(E2FSPROGS_BUILD_DIR)/debugfs/debugfs -o $(E2FSPROGS_IPK_DIR)/opt/sbin/debugfs
-	-$(STRIP_COMMAND) $(E2FSPROGS_BUILD_DIR)/e2fsck/e2fsck.shared -o $(E2FSPROGS_IPK_DIR)/opt/sbin/e2fsck
-	$(STRIP_COMMAND) $(E2FSPROGS_BUILD_DIR)/resize/resize2fs -o $(E2FSPROGS_IPK_DIR)/opt/sbin/resize2fs
-	$(STRIP_COMMAND) $(E2FSPROGS_BUILD_DIR)/misc/tune2fs -o $(E2FSPROGS_IPK_DIR)/opt/sbin/tune2fs
-	$(STRIP_COMMAND) $(E2FSPROGS_BUILD_DIR)/misc/dumpe2fs -o $(E2FSPROGS_IPK_DIR)/opt/sbin/dumpe2fs
-	$(STRIP_COMMAND) $(E2FSPROGS_BUILD_DIR)/misc/chattr -o $(E2FSPROGS_IPK_DIR)/opt/bin/chattr
-	$(STRIP_COMMAND) $(E2FSPROGS_BUILD_DIR)/misc/lsattr -o $(E2FSPROGS_IPK_DIR)/opt/bin/lsattr
-	$(STRIP_COMMAND) $(E2FSPROGS_IPK_DIR)/opt/bin/uuidgen $(E2FSPROGS_IPK_DIR)/opt/lib/e2initrd_helper
+	$(STRIP_COMMAND) $(E2FSPROGS_BUILD_DIR)/debugfs/debugfs -o $(E2FSPROGS_IPK_DIR)$(TARGET_PREFIX)/sbin/debugfs
+	-$(STRIP_COMMAND) $(E2FSPROGS_BUILD_DIR)/e2fsck/e2fsck.shared -o $(E2FSPROGS_IPK_DIR)$(TARGET_PREFIX)/sbin/e2fsck
+	$(STRIP_COMMAND) $(E2FSPROGS_BUILD_DIR)/resize/resize2fs -o $(E2FSPROGS_IPK_DIR)$(TARGET_PREFIX)/sbin/resize2fs
+	$(STRIP_COMMAND) $(E2FSPROGS_BUILD_DIR)/misc/tune2fs -o $(E2FSPROGS_IPK_DIR)$(TARGET_PREFIX)/sbin/tune2fs
+	$(STRIP_COMMAND) $(E2FSPROGS_BUILD_DIR)/misc/dumpe2fs -o $(E2FSPROGS_IPK_DIR)$(TARGET_PREFIX)/sbin/dumpe2fs
+	$(STRIP_COMMAND) $(E2FSPROGS_BUILD_DIR)/misc/chattr -o $(E2FSPROGS_IPK_DIR)$(TARGET_PREFIX)/bin/chattr
+	$(STRIP_COMMAND) $(E2FSPROGS_BUILD_DIR)/misc/lsattr -o $(E2FSPROGS_IPK_DIR)$(TARGET_PREFIX)/bin/lsattr
+	$(STRIP_COMMAND) $(E2FSPROGS_IPK_DIR)$(TARGET_PREFIX)/bin/uuidgen $(E2FSPROGS_IPK_DIR)$(TARGET_PREFIX)/lib/e2initrd_helper
 ifeq ($(OPTWARE_TARGET),ts72xx)
-	$(STRIP_COMMAND) $(E2FSPROGS_BUILD_DIR)/misc/mke2fs -o $(E2FSPROGS_IPK_DIR)/opt/sbin/mke2fs
+	$(STRIP_COMMAND) $(E2FSPROGS_BUILD_DIR)/misc/mke2fs -o $(E2FSPROGS_IPK_DIR)$(TARGET_PREFIX)/sbin/mke2fs
 else
-	rm -f $(E2FSPROGS_IPK_DIR)/opt/sbin/mke2fs
+	rm -f $(E2FSPROGS_IPK_DIR)$(TARGET_PREFIX)/sbin/mke2fs
 endif
 	# e2fslibs
-	$(INSTALL) -d $(E2FSLIBS_IPK_DIR)/opt/share
-	mv $(E2FSPROGS_IPK_DIR)/opt/lib $(E2FSLIBS_IPK_DIR)/opt/
-	$(STRIP_COMMAND) $(E2FSLIBS_IPK_DIR)/opt/lib/*.so
-	mv $(E2FSPROGS_IPK_DIR)/opt/share/info $(E2FSLIBS_IPK_DIR)/opt/share/
+	$(INSTALL) -d $(E2FSLIBS_IPK_DIR)$(TARGET_PREFIX)/share
+	mv $(E2FSPROGS_IPK_DIR)$(TARGET_PREFIX)/lib $(E2FSLIBS_IPK_DIR)$(TARGET_PREFIX)/
+	$(STRIP_COMMAND) $(E2FSLIBS_IPK_DIR)$(TARGET_PREFIX)/lib/*.so
+	mv $(E2FSPROGS_IPK_DIR)$(TARGET_PREFIX)/share/info $(E2FSLIBS_IPK_DIR)$(TARGET_PREFIX)/share/
 	$(MAKE) $(E2FSLIBS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(E2FSLIBS_IPK_DIR)
 	# e2fslibs-dev
 	for l in ext2fs et blkid uuid; \
 		do $(MAKE) -C $(E2FSPROGS_BUILD_DIR)/lib/$$l DESTDIR=$(E2FSLIBS-DEV_IPK_DIR) install; done
-	rm -f $(E2FSLIBS-DEV_IPK_DIR)/opt/lib/lib*
+	rm -f $(E2FSLIBS-DEV_IPK_DIR)$(TARGET_PREFIX)/lib/lib*
 	$(MAKE) $(E2FSLIBS-DEV_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(E2FSLIBS-DEV_IPK_DIR)
 	# e2fsprogs
-	$(INSTALL) -m 644  $(E2FSPROGS_BUILD_DIR)/resize/resize2fs.8 $(E2FSPROGS_IPK_DIR)/opt/man/man8/resize2fs.8
-	$(INSTALL) -m 644  $(E2FSPROGS_BUILD_DIR)/e2fsck/e2fsck.8 $(E2FSPROGS_IPK_DIR)/opt/man/man8/e2fsck.8
-	$(INSTALL) -m 644  $(E2FSPROGS_BUILD_DIR)/debugfs/debugfs.8 $(E2FSPROGS_IPK_DIR)/opt/man/man8/debugfs.8
-	$(INSTALL) -m 644  $(E2FSPROGS_BUILD_DIR)/misc/tune2fs.8 $(E2FSPROGS_IPK_DIR)/opt/man/man8/tune2fs.8
-	$(INSTALL) -m 644  $(E2FSPROGS_BUILD_DIR)/misc/dumpe2fs.8 $(E2FSPROGS_IPK_DIR)/opt/man/man8/dumpe2fs.8
-	$(INSTALL) -m 644  $(E2FSPROGS_BUILD_DIR)/misc/lsattr.1 $(E2FSPROGS_IPK_DIR)/opt/man/man1/lsattr.1
-	$(INSTALL) -m 644  $(E2FSPROGS_BUILD_DIR)/misc/chattr.1 $(E2FSPROGS_IPK_DIR)/opt/man/man1/chattr.1
+	$(INSTALL) -m 644  $(E2FSPROGS_BUILD_DIR)/resize/resize2fs.8 $(E2FSPROGS_IPK_DIR)$(TARGET_PREFIX)/man/man8/resize2fs.8
+	$(INSTALL) -m 644  $(E2FSPROGS_BUILD_DIR)/e2fsck/e2fsck.8 $(E2FSPROGS_IPK_DIR)$(TARGET_PREFIX)/man/man8/e2fsck.8
+	$(INSTALL) -m 644  $(E2FSPROGS_BUILD_DIR)/debugfs/debugfs.8 $(E2FSPROGS_IPK_DIR)$(TARGET_PREFIX)/man/man8/debugfs.8
+	$(INSTALL) -m 644  $(E2FSPROGS_BUILD_DIR)/misc/tune2fs.8 $(E2FSPROGS_IPK_DIR)$(TARGET_PREFIX)/man/man8/tune2fs.8
+	$(INSTALL) -m 644  $(E2FSPROGS_BUILD_DIR)/misc/dumpe2fs.8 $(E2FSPROGS_IPK_DIR)$(TARGET_PREFIX)/man/man8/dumpe2fs.8
+	$(INSTALL) -m 644  $(E2FSPROGS_BUILD_DIR)/misc/lsattr.1 $(E2FSPROGS_IPK_DIR)$(TARGET_PREFIX)/man/man1/lsattr.1
+	$(INSTALL) -m 644  $(E2FSPROGS_BUILD_DIR)/misc/chattr.1 $(E2FSPROGS_IPK_DIR)$(TARGET_PREFIX)/man/man1/chattr.1
 	# strip
-	$(STRIP_COMMAND) $(E2FSPROGS_IPK_DIR)/opt/sbin/*
+	$(STRIP_COMMAND) $(E2FSPROGS_IPK_DIR)$(TARGET_PREFIX)/sbin/*
 	# Package files
 	$(MAKE) $(E2FSPROGS_IPK_DIR)/CONTROL/control
 	echo "#!/bin/sh" > $(E2FSPROGS_IPK_DIR)/CONTROL/postinst
 	echo "#!/bin/sh" > $(E2FSPROGS_IPK_DIR)/CONTROL/prerm
 	for f in chattr lsattr; do \
-	    mv $(E2FSPROGS_IPK_DIR)/opt/bin/$$f $(E2FSPROGS_IPK_DIR)/opt/bin/e2fsprogs-$$f; \
-	    echo "update-alternatives --install /opt/bin/$$f $$f /opt/bin/e2fsprogs-$$f 80" \
+	    mv $(E2FSPROGS_IPK_DIR)$(TARGET_PREFIX)/bin/$$f $(E2FSPROGS_IPK_DIR)$(TARGET_PREFIX)/bin/e2fsprogs-$$f; \
+	    echo "update-alternatives --install $(TARGET_PREFIX)/bin/$$f $$f $(TARGET_PREFIX)/bin/e2fsprogs-$$f 80" \
 		>> $(E2FSPROGS_IPK_DIR)/CONTROL/postinst; \
-	    echo "update-alternatives --remove $$f /opt/bin/e2fsprogs-$$f" \
+	    echo "update-alternatives --remove $$f $(TARGET_PREFIX)/bin/e2fsprogs-$$f" \
 		>> $(E2FSPROGS_IPK_DIR)/CONTROL/prerm; \
 	done
 	for f in fsck; do \
-	    mv $(E2FSPROGS_IPK_DIR)/opt/sbin/$$f $(E2FSPROGS_IPK_DIR)/opt/sbin/e2fsprogs-$$f; \
-	    echo "update-alternatives --install /opt/sbin/$$f $$f /opt/sbin/e2fsprogs-$$f 80" \
+	    mv $(E2FSPROGS_IPK_DIR)$(TARGET_PREFIX)/sbin/$$f $(E2FSPROGS_IPK_DIR)$(TARGET_PREFIX)/sbin/e2fsprogs-$$f; \
+	    echo "update-alternatives --install $(TARGET_PREFIX)/sbin/$$f $$f $(TARGET_PREFIX)/sbin/e2fsprogs-$$f 80" \
 		>> $(E2FSPROGS_IPK_DIR)/CONTROL/postinst; \
-	    echo "update-alternatives --remove $$f /opt/sbin/e2fsprogs-$$f" \
+	    echo "update-alternatives --remove $$f $(TARGET_PREFIX)/sbin/e2fsprogs-$$f" \
 		>> $(E2FSPROGS_IPK_DIR)/CONTROL/prerm; \
 	done
 	if test -n "$(UPD-ALT_PREFIX)"; then \

@@ -54,7 +54,7 @@ IRSSI_IPK_VERSION=1
 
 #
 # IRSSI_CONFFILES should be a list of user-editable files
-#IRSSI_CONFFILES=/opt/etc/irssi.conf /opt/etc/init.d/SXXirssi
+#IRSSI_CONFFILES=$(TARGET_PREFIX)/etc/irssi.conf $(TARGET_PREFIX)/etc/init.d/SXXirssi
 
 #
 # IRSSI_PATCHES should list any patches, in the the order in
@@ -70,9 +70,9 @@ IRSSI_PATCHES=$(IRSSI_SOURCE_DIR)/configure.in.patch \
 IRSSI_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/glib-2.0 -I$(STAGING_LIB_DIR)/glib-2.0/include
 IRSSI_LDFLAGS=
 IRSSI_PERL_CFLAGS=-fomit-frame-pointer  -I$(STAGING_LIB_DIR)/$(PERL_LIB_CORE_DIR)
-IRSSI_PERL_LDFLAGS=-Wl,-rpath,/opt/lib/$(PERL_LIB_CORE_DIR) \
+IRSSI_PERL_LDFLAGS=-Wl,-rpath,$(TARGET_PREFIX)/lib/$(PERL_LIB_CORE_DIR) \
 	-L$(STAGING_LIB_DIR)/$(PERL_LIB_CORE_DIR) \
-	-L/opt/lib/perl5/$(PERL_VERSION)/$(PERL_ARCH)/CORE \
+	-L$(TARGET_PREFIX)/lib/perl5/$(PERL_VERSION)/$(PERL_ARCH)/CORE \
 	-lperl -lnsl -ldl -lm -lcrypt -lutil -lc -lgcc_s \
 
 IRSSI_PERL_LDFLAGS += $(if $(filter 5.8, $(PERL_MAJOR_VER)), \
@@ -257,12 +257,12 @@ $(IRSSI-DEV_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(IRSSI_IPK_DIR)/opt/sbin or $(IRSSI_IPK_DIR)/opt/bin
+# Binaries should be installed into $(IRSSI_IPK_DIR)$(TARGET_PREFIX)/sbin or $(IRSSI_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(IRSSI_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(IRSSI_IPK_DIR)/opt/etc/irssi/...
-# Documentation files should be installed in $(IRSSI_IPK_DIR)/opt/doc/irssi/...
-# Daemon startup scripts should be installed in $(IRSSI_IPK_DIR)/opt/etc/init.d/S??irssi
+# Libraries and include files should be installed into $(IRSSI_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(IRSSI_IPK_DIR)$(TARGET_PREFIX)/etc/irssi/...
+# Documentation files should be installed in $(IRSSI_IPK_DIR)$(TARGET_PREFIX)/doc/irssi/...
+# Daemon startup scripts should be installed in $(IRSSI_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??irssi
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -270,22 +270,22 @@ $(IRSSI_IPK) $(IRSSI-DEV_IPK): $(IRSSI_BUILD_DIR)/.built
 	rm -rf $(IRSSI_IPK_DIR) $(BUILD_DIR)/irssi_*_$(TARGET_ARCH).ipk
 	rm -rf $(IRSSI-DEV_IPK_DIR) $(BUILD_DIR)/irssi-dev_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(IRSSI_BUILD_DIR) DESTDIR=$(IRSSI_IPK_DIR) install-strip
-	$(INSTALL) -d $(IRSSI_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(IRSSI_SOURCE_DIR)/irssi.conf $(IRSSI_IPK_DIR)/opt/etc/irssi.conf
-#	$(INSTALL) -d $(IRSSI_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(IRSSI_SOURCE_DIR)/rc.irssi $(IRSSI_IPK_DIR)/opt/etc/init.d/SXXirssi
+	$(INSTALL) -d $(IRSSI_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(IRSSI_SOURCE_DIR)/irssi.conf $(IRSSI_IPK_DIR)$(TARGET_PREFIX)/etc/irssi.conf
+#	$(INSTALL) -d $(IRSSI_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(IRSSI_SOURCE_DIR)/rc.irssi $(IRSSI_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXirssi
 ifneq (,$(filter perl, $(PACKAGES)))
-	(cd $(IRSSI_IPK_DIR)/opt/lib/perl5 ; \
+	(cd $(IRSSI_IPK_DIR)$(TARGET_PREFIX)/lib/perl5 ; \
 		find . -name '*.so' -exec chmod +w {} \; ; \
 		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
 		find . -name '*.so' -exec chmod -w {} \; ; \
 	)
-	mv $(IRSSI_IPK_DIR)/opt/lib/perl5/$(PERL_VERSION)/$(PERL_ARCH)/perllocal.pod \
-	   $(IRSSI_IPK_DIR)/opt/lib/perl5/$(PERL_VERSION)/$(PERL_ARCH)/perllocal.pod.irssi
+	mv $(IRSSI_IPK_DIR)$(TARGET_PREFIX)/lib/perl5/$(PERL_VERSION)/$(PERL_ARCH)/perllocal.pod \
+	   $(IRSSI_IPK_DIR)$(TARGET_PREFIX)/lib/perl5/$(PERL_VERSION)/$(PERL_ARCH)/perllocal.pod.irssi
 endif
 	$(MAKE) $(IRSSI_IPK_DIR)/CONTROL/control
-	$(INSTALL) -d $(IRSSI-DEV_IPK_DIR)/opt
-	mv $(IRSSI_IPK_DIR)/opt/include $(IRSSI-DEV_IPK_DIR)/opt/
+	$(INSTALL) -d $(IRSSI-DEV_IPK_DIR)$(TARGET_PREFIX)
+	mv $(IRSSI_IPK_DIR)$(TARGET_PREFIX)/include $(IRSSI-DEV_IPK_DIR)$(TARGET_PREFIX)/
 	$(MAKE) $(IRSSI-DEV_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(IRSSI_SOURCE_DIR)/postinst $(IRSSI_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 755 $(IRSSI_SOURCE_DIR)/prerm $(IRSSI_IPK_DIR)/CONTROL/prerm

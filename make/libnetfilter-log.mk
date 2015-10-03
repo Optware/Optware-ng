@@ -40,7 +40,7 @@ LIBNETFILTER_LOG_IPK_VERSION=1
 
 #
 # LIBNETFILTER_LOG_CONFFILES should be a list of user-editable files
-#LIBNETFILTER_LOG_CONFFILES=/opt/etc/libnetfilter-log.conf /opt/etc/init.d/SXXlibnetfilter-log
+#LIBNETFILTER_LOG_CONFFILES=$(TARGET_PREFIX)/etc/libnetfilter-log.conf $(TARGET_PREFIX)/etc/init.d/SXXlibnetfilter-log
 
 #
 # LIBNETFILTER_LOG_PATCHES should list any patches, in the the order in
@@ -181,24 +181,24 @@ $(LIBNETFILTER_LOG_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LIBNETFILTER_LOG_IPK_DIR)/opt/sbin or $(LIBNETFILTER_LOG_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LIBNETFILTER_LOG_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LIBNETFILTER_LOG_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LIBNETFILTER_LOG_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LIBNETFILTER_LOG_IPK_DIR)/opt/etc/libnetfilter-log/...
-# Documentation files should be installed in $(LIBNETFILTER_LOG_IPK_DIR)/opt/doc/libnetfilter-log/...
-# Daemon startup scripts should be installed in $(LIBNETFILTER_LOG_IPK_DIR)/opt/etc/init.d/S??libnetfilter-log
+# Libraries and include files should be installed into $(LIBNETFILTER_LOG_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LIBNETFILTER_LOG_IPK_DIR)$(TARGET_PREFIX)/etc/libnetfilter-log/...
+# Documentation files should be installed in $(LIBNETFILTER_LOG_IPK_DIR)$(TARGET_PREFIX)/doc/libnetfilter-log/...
+# Daemon startup scripts should be installed in $(LIBNETFILTER_LOG_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??libnetfilter-log
 #
 # You may need to patch your application to make it use these locations.
 #
 $(LIBNETFILTER_LOG_IPK): $(LIBNETFILTER_LOG_BUILD_DIR)/.built
 	rm -rf $(LIBNETFILTER_LOG_IPK_DIR) $(BUILD_DIR)/libnetfilter-log_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBNETFILTER_LOG_BUILD_DIR) DESTDIR=$(LIBNETFILTER_LOG_IPK_DIR) install-strip
-	rm -rf $(LIBNETFILTER_LOG_IPK_DIR)/opt/include
-#	$(INSTALL) -d $(LIBNETFILTER_LOG_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(LIBNETFILTER_LOG_SOURCE_DIR)/libnetfilter-log.conf $(LIBNETFILTER_LOG_IPK_DIR)/opt/etc/libnetfilter-log.conf
-#	$(INSTALL) -d $(LIBNETFILTER_LOG_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(LIBNETFILTER_LOG_SOURCE_DIR)/rc.libnetfilter-log $(LIBNETFILTER_LOG_IPK_DIR)/opt/etc/init.d/SXXlibnetfilter-log
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBNETFILTER_LOG_IPK_DIR)/opt/etc/init.d/SXXlibnetfilter-log
+	rm -rf $(LIBNETFILTER_LOG_IPK_DIR)$(TARGET_PREFIX)/include
+#	$(INSTALL) -d $(LIBNETFILTER_LOG_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(LIBNETFILTER_LOG_SOURCE_DIR)/libnetfilter-log.conf $(LIBNETFILTER_LOG_IPK_DIR)$(TARGET_PREFIX)/etc/libnetfilter-log.conf
+#	$(INSTALL) -d $(LIBNETFILTER_LOG_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(LIBNETFILTER_LOG_SOURCE_DIR)/rc.libnetfilter-log $(LIBNETFILTER_LOG_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibnetfilter-log
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBNETFILTER_LOG_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibnetfilter-log
 	$(MAKE) $(LIBNETFILTER_LOG_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(LIBNETFILTER_LOG_SOURCE_DIR)/postinst $(LIBNETFILTER_LOG_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBNETFILTER_LOG_IPK_DIR)/CONTROL/postinst

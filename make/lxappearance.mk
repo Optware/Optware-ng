@@ -46,7 +46,7 @@ LXAPPEARANCE_IPK_VERSION=1
 
 #
 # LXAPPEARANCE_CONFFILES should be a list of user-editable files
-#LXAPPEARANCE_CONFFILES=/opt/etc/lxappearance.conf /opt/etc/init.d/SXXlxappearance
+#LXAPPEARANCE_CONFFILES=$(TARGET_PREFIX)/etc/lxappearance.conf $(TARGET_PREFIX)/etc/init.d/SXXlxappearance
 
 #
 # LXAPPEARANCE_PATCHES should list any patches, in the the order in
@@ -185,23 +185,23 @@ $(LXAPPEARANCE_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LXAPPEARANCE_IPK_DIR)/opt/sbin or $(LXAPPEARANCE_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LXAPPEARANCE_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LXAPPEARANCE_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LXAPPEARANCE_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LXAPPEARANCE_IPK_DIR)/opt/etc/lxappearance/...
-# Documentation files should be installed in $(LXAPPEARANCE_IPK_DIR)/opt/doc/lxappearance/...
-# Daemon startup scripts should be installed in $(LXAPPEARANCE_IPK_DIR)/opt/etc/init.d/S??lxappearance
+# Libraries and include files should be installed into $(LXAPPEARANCE_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LXAPPEARANCE_IPK_DIR)$(TARGET_PREFIX)/etc/lxappearance/...
+# Documentation files should be installed in $(LXAPPEARANCE_IPK_DIR)$(TARGET_PREFIX)/doc/lxappearance/...
+# Daemon startup scripts should be installed in $(LXAPPEARANCE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??lxappearance
 #
 # You may need to patch your application to make it use these locations.
 #
 $(LXAPPEARANCE_IPK): $(LXAPPEARANCE_BUILD_DIR)/.built
 	rm -rf $(LXAPPEARANCE_IPK_DIR) $(BUILD_DIR)/lxappearance_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LXAPPEARANCE_BUILD_DIR) DESTDIR=$(LXAPPEARANCE_IPK_DIR) install-strip
-#	$(INSTALL) -d $(LXAPPEARANCE_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(LXAPPEARANCE_SOURCE_DIR)/lxappearance.conf $(LXAPPEARANCE_IPK_DIR)/opt/etc/lxappearance.conf
-#	$(INSTALL) -d $(LXAPPEARANCE_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(LXAPPEARANCE_SOURCE_DIR)/rc.lxappearance $(LXAPPEARANCE_IPK_DIR)/opt/etc/init.d/SXXlxappearance
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LXAPPEARANCE_IPK_DIR)/opt/etc/init.d/SXXlxappearance
+#	$(INSTALL) -d $(LXAPPEARANCE_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(LXAPPEARANCE_SOURCE_DIR)/lxappearance.conf $(LXAPPEARANCE_IPK_DIR)$(TARGET_PREFIX)/etc/lxappearance.conf
+#	$(INSTALL) -d $(LXAPPEARANCE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(LXAPPEARANCE_SOURCE_DIR)/rc.lxappearance $(LXAPPEARANCE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlxappearance
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LXAPPEARANCE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlxappearance
 	$(MAKE) $(LXAPPEARANCE_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(LXAPPEARANCE_SOURCE_DIR)/postinst $(LXAPPEARANCE_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LXAPPEARANCE_IPK_DIR)/CONTROL/postinst

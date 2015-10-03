@@ -27,7 +27,7 @@ USHARE_IPK_VERSION=2
 
 #
 # USHARE_CONFFILES should be a list of user-editable files
-USHARE_CONFFILES=/opt/etc/ushare.conf
+USHARE_CONFFILES=$(TARGET_PREFIX)/etc/ushare.conf
 
 #
 # USHARE_PATCHES should list any patches, in the the order in
@@ -175,22 +175,22 @@ $(USHARE_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(USHARE_IPK_DIR)/opt/sbin or $(USHARE_IPK_DIR)/opt/bin
+# Binaries should be installed into $(USHARE_IPK_DIR)$(TARGET_PREFIX)/sbin or $(USHARE_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(USHARE_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(USHARE_IPK_DIR)/opt/etc/ushare/...
-# Documentation files should be installed in $(USHARE_IPK_DIR)/opt/doc/ushare/...
-# Daemon startup scripts should be installed in $(USHARE_IPK_DIR)/opt/etc/init.d/S??ushare
+# Libraries and include files should be installed into $(USHARE_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(USHARE_IPK_DIR)$(TARGET_PREFIX)/etc/ushare/...
+# Documentation files should be installed in $(USHARE_IPK_DIR)$(TARGET_PREFIX)/doc/ushare/...
+# Daemon startup scripts should be installed in $(USHARE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??ushare
 #
 # You may need to patch your application to make it use these locations.
 #
 $(USHARE_IPK): $(USHARE_BUILD_DIR)/.built
 	rm -rf $(USHARE_IPK_DIR) $(BUILD_DIR)/ushare_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(USHARE_BUILD_DIR) DESTDIR=$(USHARE_IPK_DIR) install
-	$(INSTALL) -d $(USHARE_IPK_DIR)/opt/etc/
-	$(INSTALL) -m 644 $(USHARE_BUILD_DIR)/scripts/ushare.conf $(USHARE_IPK_DIR)/opt/etc/ushare.conf
-	$(INSTALL) -d $(USHARE_IPK_DIR)/opt/etc/init.d
-	$(INSTALL) -m 755 $(USHARE_SOURCE_DIR)/ushare $(USHARE_IPK_DIR)/opt/etc/init.d/S99ushare
+	$(INSTALL) -d $(USHARE_IPK_DIR)$(TARGET_PREFIX)/etc/
+	$(INSTALL) -m 644 $(USHARE_BUILD_DIR)/scripts/ushare.conf $(USHARE_IPK_DIR)$(TARGET_PREFIX)/etc/ushare.conf
+	$(INSTALL) -d $(USHARE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(INSTALL) -m 755 $(USHARE_SOURCE_DIR)/ushare $(USHARE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S99ushare
 	$(MAKE) $(USHARE_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 755 $(USHARE_SOURCE_DIR)/postinst $(USHARE_IPK_DIR)/CONTROL/postinst
 	$(INSTALL) -m 755 $(USHARE_SOURCE_DIR)/prerm $(USHARE_IPK_DIR)/CONTROL/prerm

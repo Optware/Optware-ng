@@ -42,7 +42,7 @@ ADDUSER_IPK_VERSION=2
 
 #
 # ADDUSER_CONFFILES should be a list of user-editable files
-#ADDUSER_CONFFILES=/opt/etc/adduser.conf /opt/etc/init.d/SXXadduser
+#ADDUSER_CONFFILES=$(TARGET_PREFIX)/etc/adduser.conf $(TARGET_PREFIX)/etc/init.d/SXXadduser
 
 #
 # ADDUSER_PATCHES should list any patches, in the the order in
@@ -135,7 +135,7 @@ $(ADDUSER_BUILD_DIR)/.built: $(ADDUSER_BUILD_DIR)/.configured
 	CPPFLAGS="$(STAGING_CPPFLAGS) $(ADDUSER_CPPFLAGS)" \
 	LDFLAGS="$(STAGING_LDFLAGS) $(ADDUSER_LDFLAGS)" \
 	$(BUSYBOX_BUILD_EXTRA_ENV) \
-	$(MAKE) CROSS="$(TARGET_CROSS)" PREFIX="/opt" \
+	$(MAKE) CROSS="$(TARGET_CROSS)" PREFIX="$(TARGET_PREFIX)" \
 		HOSTCC=$(HOSTCC) CC=$(TARGET_CC) STRIP=$(TARGET_STRIP) \
 		EXTRA_CFLAGS="$(TARGET_CFLAGS) -fomit-frame-pointer" \
 		-C $(ADDUSER_BUILD_DIR)
@@ -167,22 +167,22 @@ $(ADDUSER_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(ADDUSER_IPK_DIR)/opt/sbin or $(ADDUSER_IPK_DIR)/opt/bin
+# Binaries should be installed into $(ADDUSER_IPK_DIR)$(TARGET_PREFIX)/sbin or $(ADDUSER_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(ADDUSER_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(ADDUSER_IPK_DIR)/opt/etc/adduser/...
-# Documentation files should be installed in $(ADDUSER_IPK_DIR)/opt/doc/adduser/...
-# Daemon startup scripts should be installed in $(ADDUSER_IPK_DIR)/opt/etc/init.d/S??adduser
+# Libraries and include files should be installed into $(ADDUSER_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(ADDUSER_IPK_DIR)$(TARGET_PREFIX)/etc/adduser/...
+# Documentation files should be installed in $(ADDUSER_IPK_DIR)$(TARGET_PREFIX)/doc/adduser/...
+# Daemon startup scripts should be installed in $(ADDUSER_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??adduser
 #
 # You may need to patch your application to make it use these locations.
 #
 $(ADDUSER_IPK): $(ADDUSER_BUILD_DIR)/.built
 	rm -rf $(ADDUSER_IPK_DIR) $(BUILD_DIR)/adduser_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(ADDUSER_IPK_DIR)/opt/bin
-	$(INSTALL) -m 755 $(ADDUSER_BUILD_DIR)/busybox $(ADDUSER_IPK_DIR)/opt/bin/adduser
-	cd $(ADDUSER_IPK_DIR)/opt/bin && ln -fs adduser addgroup
-	cd $(ADDUSER_IPK_DIR)/opt/bin && ln -fs adduser delgroup
-	cd $(ADDUSER_IPK_DIR)/opt/bin && ln -fs adduser deluser
+	$(INSTALL) -d $(ADDUSER_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(INSTALL) -m 755 $(ADDUSER_BUILD_DIR)/busybox $(ADDUSER_IPK_DIR)$(TARGET_PREFIX)/bin/adduser
+	cd $(ADDUSER_IPK_DIR)$(TARGET_PREFIX)/bin && ln -fs adduser addgroup
+	cd $(ADDUSER_IPK_DIR)$(TARGET_PREFIX)/bin && ln -fs adduser delgroup
+	cd $(ADDUSER_IPK_DIR)$(TARGET_PREFIX)/bin && ln -fs adduser deluser
 	$(MAKE) $(ADDUSER_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 644 $(ADDUSER_SOURCE_DIR)/postinst $(ADDUSER_IPK_DIR)/CONTROL/postinst
 	$(INSTALL) -m 644 $(ADDUSER_SOURCE_DIR)/prerm $(ADDUSER_IPK_DIR)/CONTROL/prerm

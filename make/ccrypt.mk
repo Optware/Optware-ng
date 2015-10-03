@@ -40,7 +40,7 @@ CCRYPT_IPK_VERSION=1
 
 #
 # CCRYPT_CONFFILES should be a list of user-editable files
-#CCRYPT_CONFFILES=/opt/etc/ccrypt.conf /opt/etc/init.d/SXXccrypt
+#CCRYPT_CONFFILES=$(TARGET_PREFIX)/etc/ccrypt.conf $(TARGET_PREFIX)/etc/init.d/SXXccrypt
 
 #
 # CCRYPT_PATCHES should list any patches, in the the order in
@@ -177,20 +177,20 @@ $(CCRYPT_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(CCRYPT_IPK_DIR)/opt/sbin or $(CCRYPT_IPK_DIR)/opt/bin
+# Binaries should be installed into $(CCRYPT_IPK_DIR)$(TARGET_PREFIX)/sbin or $(CCRYPT_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(CCRYPT_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(CCRYPT_IPK_DIR)/opt/etc/ccrypt/...
-# Documentation files should be installed in $(CCRYPT_IPK_DIR)/opt/doc/ccrypt/...
-# Daemon startup scripts should be installed in $(CCRYPT_IPK_DIR)/opt/etc/init.d/S??ccrypt
+# Libraries and include files should be installed into $(CCRYPT_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(CCRYPT_IPK_DIR)$(TARGET_PREFIX)/etc/ccrypt/...
+# Documentation files should be installed in $(CCRYPT_IPK_DIR)$(TARGET_PREFIX)/doc/ccrypt/...
+# Daemon startup scripts should be installed in $(CCRYPT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??ccrypt
 #
 # You may need to patch your application to make it use these locations.
 #
 $(CCRYPT_IPK): $(CCRYPT_BUILD_DIR)/.built
 	rm -rf $(CCRYPT_IPK_DIR) $(BUILD_DIR)/ccrypt_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(CCRYPT_BUILD_DIR) DESTDIR=$(CCRYPT_IPK_DIR) install-strip
-	$(INSTALL) -d $(CCRYPT_IPK_DIR)/opt/share/doc/ccrypt
-	$(INSTALL) $(CCRYPT_BUILD_DIR)/[ACNR]* $(CCRYPT_IPK_DIR)/opt/share/doc/ccrypt
+	$(INSTALL) -d $(CCRYPT_IPK_DIR)$(TARGET_PREFIX)/share/doc/ccrypt
+	$(INSTALL) $(CCRYPT_BUILD_DIR)/[ACNR]* $(CCRYPT_IPK_DIR)$(TARGET_PREFIX)/share/doc/ccrypt
 	$(MAKE) $(CCRYPT_IPK_DIR)/CONTROL/control
 	echo $(CCRYPT_CONFFILES) | sed -e 's/ /\n/g' > $(CCRYPT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CCRYPT_IPK_DIR)

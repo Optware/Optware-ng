@@ -159,29 +159,29 @@ $(DIFFUTILS_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(DIFFUTILS_IPK_DIR)/opt/sbin or $(DIFFUTILS_IPK_DIR)/opt/bin
+# Binaries should be installed into $(DIFFUTILS_IPK_DIR)$(TARGET_PREFIX)/sbin or $(DIFFUTILS_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(DIFFUTILS_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(DIFFUTILS_IPK_DIR)/opt/etc/diffutils/...
-# Documentation files should be installed in $(DIFFUTILS_IPK_DIR)/opt/doc/diffutils/...
-# Daemon startup scripts should be installed in $(DIFFUTILS_IPK_DIR)/opt/etc/init.d/S??diffutils
+# Libraries and include files should be installed into $(DIFFUTILS_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(DIFFUTILS_IPK_DIR)$(TARGET_PREFIX)/etc/diffutils/...
+# Documentation files should be installed in $(DIFFUTILS_IPK_DIR)$(TARGET_PREFIX)/doc/diffutils/...
+# Daemon startup scripts should be installed in $(DIFFUTILS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??diffutils
 #
 # You may need to patch your application to make it use these locations.
 #
 $(DIFFUTILS_IPK): $(DIFFUTILS_BUILD_DIR)/.built
 	rm -rf $(DIFFUTILS_IPK_DIR) $(BUILD_DIR)/diffutils_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(DIFFUTILS_IPK_DIR)/opt/bin
-	$(STRIP_COMMAND) $(DIFFUTILS_BUILD_DIR)/src/cmp -o $(DIFFUTILS_IPK_DIR)/opt/bin/diffutils-cmp
-	$(STRIP_COMMAND) $(DIFFUTILS_BUILD_DIR)/src/diff -o $(DIFFUTILS_IPK_DIR)/opt/bin/diffutils-diff
-	$(STRIP_COMMAND) $(DIFFUTILS_BUILD_DIR)/src/diff3 -o $(DIFFUTILS_IPK_DIR)/opt/bin/diffutils-diff3
-	$(STRIP_COMMAND) $(DIFFUTILS_BUILD_DIR)/src/sdiff -o $(DIFFUTILS_IPK_DIR)/opt/bin/diffutils-sdiff
+	$(INSTALL) -d $(DIFFUTILS_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(STRIP_COMMAND) $(DIFFUTILS_BUILD_DIR)/src/cmp -o $(DIFFUTILS_IPK_DIR)$(TARGET_PREFIX)/bin/diffutils-cmp
+	$(STRIP_COMMAND) $(DIFFUTILS_BUILD_DIR)/src/diff -o $(DIFFUTILS_IPK_DIR)$(TARGET_PREFIX)/bin/diffutils-diff
+	$(STRIP_COMMAND) $(DIFFUTILS_BUILD_DIR)/src/diff3 -o $(DIFFUTILS_IPK_DIR)$(TARGET_PREFIX)/bin/diffutils-diff3
+	$(STRIP_COMMAND) $(DIFFUTILS_BUILD_DIR)/src/sdiff -o $(DIFFUTILS_IPK_DIR)$(TARGET_PREFIX)/bin/diffutils-sdiff
 	$(MAKE) $(DIFFUTILS_IPK_DIR)/CONTROL/control
 	echo "#!/bin/sh" > $(DIFFUTILS_IPK_DIR)/CONTROL/postinst
 	echo "#!/bin/sh" > $(DIFFUTILS_IPK_DIR)/CONTROL/prerm
 	for f in cmp diff diff3 sdiff; do \
-	    echo "update-alternatives --install /opt/bin/$$f $$f /opt/bin/diffutils-$$f 80" \
+	    echo "update-alternatives --install $(TARGET_PREFIX)/bin/$$f $$f $(TARGET_PREFIX)/bin/diffutils-$$f 80" \
 		>> $(DIFFUTILS_IPK_DIR)/CONTROL/postinst; \
-	    echo "update-alternatives --remove $$f /opt/bin/diffutils-$$f" \
+	    echo "update-alternatives --remove $$f $(TARGET_PREFIX)/bin/diffutils-$$f" \
 		>> $(DIFFUTILS_IPK_DIR)/CONTROL/prerm; \
 	done
 	if test -n "$(UPD-ALT_PREFIX)"; then \

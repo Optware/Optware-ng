@@ -41,7 +41,7 @@ PY-MARKDOWN_IPK_VERSION=1
 
 #
 # PY-MARKDOWN_CONFFILES should be a list of user-editable files
-#PY-MARKDOWN_CONFFILES=/opt/etc/py-markdown.conf /opt/etc/init.d/SXXpy-markdown
+#PY-MARKDOWN_CONFFILES=$(TARGET_PREFIX)/etc/py-markdown.conf $(TARGET_PREFIX)/etc/init.d/SXXpy-markdown
 
 #
 # PY-MARKDOWN_PATCHES should list any patches, in the the order in
@@ -116,14 +116,14 @@ $(PY-MARKDOWN_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MARKDOWN_SOURCE) $(PY-MARKD
 #	cat $(PY-MARKDOWN_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-MARKDOWN_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-MARKDOWN_DIR) $(@D)/2.5
 	(echo "[build_scripts]"; \
-         echo "executable=/opt/bin/python2.5") >> $(@D)/2.5/setup.cfg
+         echo "executable=$(TARGET_PREFIX)/bin/python2.5") >> $(@D)/2.5/setup.cfg
 	# 2.6
 	rm -rf $(BUILD_DIR)/$(PY-MARKDOWN_DIR)
 	$(PY-MARKDOWN_UNZIP) $(DL_DIR)/$(PY-MARKDOWN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-MARKDOWN_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-MARKDOWN_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-MARKDOWN_DIR) $(@D)/2.6
 	(echo "[build_scripts]"; \
-         echo "executable=/opt/bin/python2.6") >> $(@D)/2.6/setup.cfg
+         echo "executable=$(TARGET_PREFIX)/bin/python2.6") >> $(@D)/2.6/setup.cfg
 	touch $@
 
 py-markdown-unpack: $(PY-MARKDOWN_BUILD_DIR)/.configured
@@ -189,12 +189,12 @@ $(PY26-MARKDOWN_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PY-MARKDOWN_IPK_DIR)/opt/sbin or $(PY-MARKDOWN_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PY-MARKDOWN_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PY-MARKDOWN_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PY-MARKDOWN_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PY-MARKDOWN_IPK_DIR)/opt/etc/py-markdown/...
-# Documentation files should be installed in $(PY-MARKDOWN_IPK_DIR)/opt/doc/py-markdown/...
-# Daemon startup scripts should be installed in $(PY-MARKDOWN_IPK_DIR)/opt/etc/init.d/S??py-markdown
+# Libraries and include files should be installed into $(PY-MARKDOWN_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PY-MARKDOWN_IPK_DIR)$(TARGET_PREFIX)/etc/py-markdown/...
+# Documentation files should be installed in $(PY-MARKDOWN_IPK_DIR)$(TARGET_PREFIX)/doc/py-markdown/...
+# Daemon startup scripts should be installed in $(PY-MARKDOWN_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??py-markdown
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -202,7 +202,7 @@ $(PY25-MARKDOWN_IPK): $(PY-MARKDOWN_BUILD_DIR)/.built
 	rm -rf $(PY25-MARKDOWN_IPK_DIR) $(BUILD_DIR)/py25-markdown_*_$(TARGET_ARCH).ipk
 	cd $(PY-MARKDOWN_BUILD_DIR)/2.5; \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
-	    --root=$(PY25-MARKDOWN_IPK_DIR) --prefix=/opt;
+	    --root=$(PY25-MARKDOWN_IPK_DIR) --prefix=$(TARGET_PREFIX);
 	$(MAKE) $(PY25-MARKDOWN_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-MARKDOWN_IPK_DIR)
 
@@ -210,8 +210,8 @@ $(PY26-MARKDOWN_IPK): $(PY-MARKDOWN_BUILD_DIR)/.built
 	rm -rf $(PY26-MARKDOWN_IPK_DIR) $(BUILD_DIR)/py26-markdown_*_$(TARGET_ARCH).ipk
 	cd $(PY-MARKDOWN_BUILD_DIR)/2.6; \
 	    $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install \
-	    --root=$(PY26-MARKDOWN_IPK_DIR) --prefix=/opt;
-	for f in $(PY26-MARKDOWN_IPK_DIR)/opt/bin/*; \
+	    --root=$(PY26-MARKDOWN_IPK_DIR) --prefix=$(TARGET_PREFIX);
+	for f in $(PY26-MARKDOWN_IPK_DIR)$(TARGET_PREFIX)/bin/*; \
 		do mv $$f `echo $$f | sed 's|$$|-2.6|'`; done
 	$(MAKE) $(PY26-MARKDOWN_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-MARKDOWN_IPK_DIR)

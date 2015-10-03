@@ -46,7 +46,7 @@ HRKTORRENT_IPK_VERSION=1
 
 #
 # HRKTORRENT_CONFFILES should be a list of user-editable files
-#HRKTORRENT_CONFFILES=/opt/etc/hrktorrent.conf /opt/etc/init.d/SXXhrktorrent
+#HRKTORRENT_CONFFILES=$(TARGET_PREFIX)/etc/hrktorrent.conf $(TARGET_PREFIX)/etc/init.d/SXXhrktorrent
 
 #
 # HRKTORRENT_PATCHES should list any patches, in the the order in
@@ -123,7 +123,7 @@ $(HRKTORRENT_BUILD_DIR)/.configured: $(DL_DIR)/$(HRKTORRENT_SOURCE) $(HRKTORRENT
 	if test "$(BUILD_DIR)/$(HRKTORRENT_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(HRKTORRENT_DIR) $(@D) ; \
 	fi
-	sed -i -e "s|^PREFIX.*|PREFIX = /opt|" -e "s|^CXX?.*|CXX = $(TARGET_CXX)|" \
+	sed -i -e "s|^PREFIX.*|PREFIX = $(TARGET_PREFIX)|" -e "s|^CXX?.*|CXX = $(TARGET_CXX)|" \
 		-e "s|^CXXFLAGS.*|CXXFLAGS = $(STAGING_CPPFLAGS) $(HRKTORRENT_CPPFLAGS)|" \
 		-e "s|^LIBS.*|LIBS = $(STAGING_LDFLAGS) $(HRKTORRENT_LDFLAGS)|" $(@D)/vars.mk
 	touch $@
@@ -175,23 +175,23 @@ $(HRKTORRENT_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(HRKTORRENT_IPK_DIR)/opt/sbin or $(HRKTORRENT_IPK_DIR)/opt/bin
+# Binaries should be installed into $(HRKTORRENT_IPK_DIR)$(TARGET_PREFIX)/sbin or $(HRKTORRENT_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(HRKTORRENT_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(HRKTORRENT_IPK_DIR)/opt/etc/hrktorrent/...
-# Documentation files should be installed in $(HRKTORRENT_IPK_DIR)/opt/doc/hrktorrent/...
-# Daemon startup scripts should be installed in $(HRKTORRENT_IPK_DIR)/opt/etc/init.d/S??hrktorrent
+# Libraries and include files should be installed into $(HRKTORRENT_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(HRKTORRENT_IPK_DIR)$(TARGET_PREFIX)/etc/hrktorrent/...
+# Documentation files should be installed in $(HRKTORRENT_IPK_DIR)$(TARGET_PREFIX)/doc/hrktorrent/...
+# Daemon startup scripts should be installed in $(HRKTORRENT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??hrktorrent
 #
 # You may need to patch your application to make it use these locations.
 #
 $(HRKTORRENT_IPK): $(HRKTORRENT_BUILD_DIR)/.built
 	rm -rf $(HRKTORRENT_IPK_DIR) $(BUILD_DIR)/hrktorrent_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(HRKTORRENT_BUILD_DIR) DESTDIR=$(HRKTORRENT_IPK_DIR) install-strip
-#	$(INSTALL) -d $(HRKTORRENT_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(HRKTORRENT_SOURCE_DIR)/hrktorrent.conf $(HRKTORRENT_IPK_DIR)/opt/etc/hrktorrent.conf
-#	$(INSTALL) -d $(HRKTORRENT_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(HRKTORRENT_SOURCE_DIR)/rc.hrktorrent $(HRKTORRENT_IPK_DIR)/opt/etc/init.d/SXXhrktorrent
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(HRKTORRENT_IPK_DIR)/opt/etc/init.d/SXXhrktorrent
+#	$(INSTALL) -d $(HRKTORRENT_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(HRKTORRENT_SOURCE_DIR)/hrktorrent.conf $(HRKTORRENT_IPK_DIR)$(TARGET_PREFIX)/etc/hrktorrent.conf
+#	$(INSTALL) -d $(HRKTORRENT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(HRKTORRENT_SOURCE_DIR)/rc.hrktorrent $(HRKTORRENT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXhrktorrent
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(HRKTORRENT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXhrktorrent
 	$(MAKE) $(HRKTORRENT_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(HRKTORRENT_SOURCE_DIR)/postinst $(HRKTORRENT_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(HRKTORRENT_IPK_DIR)/CONTROL/postinst

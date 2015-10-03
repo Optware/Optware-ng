@@ -186,7 +186,7 @@ endif
 		--prefix=$(TARGET_PREFIX) \
 		--with-neon=$(STAGING_PREFIX) \
 		--with-apr=$(STAGING_PREFIX) \
-		--with-ruby-sitedir=/opt/local/lib/ruby/site_ruby/$(RUBY_VERSION) \
+		--with-ruby-sitedir=$(TARGET_PREFIX)/local/lib/ruby/site_ruby/$(RUBY_VERSION) \
 		--with-apr-util=$(STAGING_PREFIX) \
 		--with-apxs=$(STAGING_PREFIX)/bin/apxs \
 		--without-swig \
@@ -202,9 +202,9 @@ endif
 	    -e '/^SWIG_PY_LINK/s|.*|SWIG_PY_LINK = $(TARGET_CC) -pthread -shared|' \
 	    -e '/^SWIG_RB/s|= *gcc|= $(TARGET_CC)|' \
 	    -e '/^SWIG_RB_INCLUDES/s|.*|SWIG_RB_INCLUDES =  \$$(SWIG_INCLUDES) -I. -I$(STAGING_INCLUDE_DIR)/ruby-$(RUBY_VERSION) -I$(STAGING_INCLUDE_DIR)/ruby-$(RUBY_VERSION)/ruby -I$(STAGING_INCLUDE_DIR)/ruby-$(RUBY_VERSION)/ruby/backward -I$(shell ls -d $(STAGING_INCLUDE_DIR)/ruby-$(RUBY_VERSION)/*|grep "\-linux"|head -n 1) -I\$$(SWIG_SRC_DIR)/ruby/libsvn_swig_ruby|' \
-	    -e '/^SWIG_RB_LIBS/s|.*|SWIG_RB_LIBS = -Wl,-R/opt/lib -L$(STAGING_LIB_DIR) -lruby -lpthread -ldl -lcrypt -lm|' \
+	    -e '/^SWIG_RB_LIBS/s|.*|SWIG_RB_LIBS = -Wl,-R$(TARGET_PREFIX)/lib -L$(STAGING_LIB_DIR) -lruby -lpthread -ldl -lcrypt -lm|' \
 	    -e '/^SWIG_RB_SITE_ARCH_DIR/s|.*|SWIG_RB_SITE_ARCH_DIR = /$(shell cd $(STAGING_DIR); ls -d opt/local/lib/ruby/site_ruby/$(RUBY_VERSION)/*|grep "\-linux"|head -n 1)|' \
-	    -e 's|-L/opt/lib||g' \
+	    -e 's|-L$(TARGET_PREFIX)/lib||g' \
 	    -e '/^SVN_APRUTIL_LIBS/s/=/= -lpthread /' \
 	    $(@D)/Makefile
 ifneq (wl500g, $(OPTWARE_TARGET))
@@ -212,7 +212,7 @@ ifneq (wl500g, $(OPTWARE_TARGET))
 endif
 	$(PATCH_LIBTOOL) $(@D)/libtool
 #	sed -i -e '/^runpath_var=/s/LD_RUN_PATH//' $(SVN_BUILD_DIR)/libtool
-	sed -i -e '/export $$runpath_var/'"s|'.*'|'/opt/lib'|" $(@D)/libtool
+	sed -i -e '/export $$runpath_var/'"s|'.*'|'$(TARGET_PREFIX)/lib'|" $(@D)/libtool
 	touch $@
 
 svn-unpack: $(SVN_BUILD_DIR)/.configured
@@ -247,7 +247,7 @@ ifneq (,$(filter perl, $(PACKAGES)))
 		$(PERL_HOSTPERL) Makefile.PL \
 		;
 	sed -i \
-	    -e '/^INSTALL.*=.*staging-install/s|= *$(PERL_HOST_BUILD_DIR)/staging-install|= /opt|' \
+	    -e '/^INSTALL.*=.*staging-install/s|= *$(PERL_HOST_BUILD_DIR)/staging-install|= $(TARGET_PREFIX)|' \
 	    $(@D)/subversion/bindings/swig/perl/native/Makefile \
 	    ;
 	$(MAKE) -C $(@D) swig-pl \
@@ -256,7 +256,7 @@ ifneq (,$(filter perl, $(PACKAGES)))
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SVN_CPPFLAGS)" \
 		PASTHRU_INC="$(STAGING_CPPFLAGS) $(SVN_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(SVN_LDFLAGS)" \
-		LDDLFLAGS="-shared -L$(STAGING_LIB_DIR) -Wl,-rpath,/opt/lib -Wl,-rpath-link,$(STAGING_LIB_DIR)" \
+		LDDLFLAGS="-shared -L$(STAGING_LIB_DIR) -Wl,-rpath,$(TARGET_PREFIX)/lib -Wl,-rpath-link,$(STAGING_LIB_DIR)" \
 		OTHERLDFLAGS="-L$(SVN_BUILD_DIR)/subversion/bindings/swig/perl/libsvn_swig_perl/.libs" \
 		$(PERL_INC) \
 		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
@@ -352,12 +352,12 @@ endif
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(SVN_IPK_DIR)/opt/sbin or $(SVN_IPK_DIR)/opt/bin
+# Binaries should be installed into $(SVN_IPK_DIR)$(TARGET_PREFIX)/sbin or $(SVN_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(SVN_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(SVN_IPK_DIR)/opt/etc/svn/...
-# Documentation files should be installed in $(SVN_IPK_DIR)/opt/doc/svn/...
-# Daemon startup scripts should be installed in $(SVN_IPK_DIR)/opt/etc/init.d/S??svn
+# Libraries and include files should be installed into $(SVN_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(SVN_IPK_DIR)$(TARGET_PREFIX)/etc/svn/...
+# Documentation files should be installed in $(SVN_IPK_DIR)$(TARGET_PREFIX)/doc/svn/...
+# Daemon startup scripts should be installed in $(SVN_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??svn
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -367,10 +367,10 @@ else
 $(SVN_IPK) $(SVN-PY_IPK) $(SVN-RB_IPK): $(SVN_BUILD_DIR)/.built $(SVN_BUILD_DIR)/.py-built $(SVN_BUILD_DIR)/.rb-built
 endif
 	rm -rf $(SVN_IPK_DIR) $(BUILD_DIR)/svn_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(SVN_IPK_DIR)/opt/lib/svn-python/libsvn
+	$(INSTALL) -d $(SVN_IPK_DIR)$(TARGET_PREFIX)/lib/svn-python/libsvn
 	$(MAKE) -C $(SVN_BUILD_DIR) DESTDIR=$(SVN_IPK_DIR) \
 		local-install $(SVN_INSTALL_SWIG_TARGETS)
-	$(STRIP_COMMAND) $(SVN_IPK_DIR)/opt/bin/*
+	$(STRIP_COMMAND) $(SVN_IPK_DIR)$(TARGET_PREFIX)/bin/*
 	for f in `find $(SVN_IPK_DIR)$(TARGET_PREFIX) -name '*.so'`; do \
 		chmod +w $$f; \
 		$(STRIP_COMMAND) $$f;\
@@ -380,34 +380,34 @@ endif
 ifneq (,$(filter perl, $(PACKAGES)))
 	# mv to svn-pl
 	rm -rf $(SVN-PL_IPK_DIR) $(BUILD_DIR)/svn-pl_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(SVN-PL_IPK_DIR)/opt/lib
-	mv -f $(SVN_IPK_DIR)/opt/lib/perl5 $(SVN-PL_IPK_DIR)/opt/lib/
-	mv -f $(SVN_IPK_DIR)/opt/lib/libsvn_swig_perl* $(SVN-PL_IPK_DIR)/opt/lib/
-	$(INSTALL) -d $(SVN-PL_IPK_DIR)/opt/man
-	mv -f $(SVN_IPK_DIR)/opt/man/man3 $(SVN-PL_IPK_DIR)/opt/man/
-	rm -f `find $(SVN-PL_IPK_DIR)/opt/lib/perl5/ -name perllocal.pod`
+	$(INSTALL) -d $(SVN-PL_IPK_DIR)$(TARGET_PREFIX)/lib
+	mv -f $(SVN_IPK_DIR)$(TARGET_PREFIX)/lib/perl5 $(SVN-PL_IPK_DIR)$(TARGET_PREFIX)/lib/
+	mv -f $(SVN_IPK_DIR)$(TARGET_PREFIX)/lib/libsvn_swig_perl* $(SVN-PL_IPK_DIR)$(TARGET_PREFIX)/lib/
+	$(INSTALL) -d $(SVN-PL_IPK_DIR)$(TARGET_PREFIX)/man
+	mv -f $(SVN_IPK_DIR)$(TARGET_PREFIX)/man/man3 $(SVN-PL_IPK_DIR)$(TARGET_PREFIX)/man/
+	rm -f `find $(SVN-PL_IPK_DIR)$(TARGET_PREFIX)/lib/perl5/ -name perllocal.pod`
 	# svn-pl ipk
 	$(MAKE) $(SVN-PL_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SVN-PL_IPK_DIR)
 endif
 	# mv to svn-py
 	rm -rf $(SVN-PY_IPK_DIR) $(BUILD_DIR)/svn-py_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(SVN-PY_IPK_DIR)/opt/lib
-	mv -f $(SVN_IPK_DIR)/opt/lib/svn-python $(SVN-PY_IPK_DIR)/opt/lib/
-	mv -f $(SVN_IPK_DIR)/opt/lib/libsvn_swig_py* $(SVN-PY_IPK_DIR)/opt/lib/
+	$(INSTALL) -d $(SVN-PY_IPK_DIR)$(TARGET_PREFIX)/lib
+	mv -f $(SVN_IPK_DIR)$(TARGET_PREFIX)/lib/svn-python $(SVN-PY_IPK_DIR)$(TARGET_PREFIX)/lib/
+	mv -f $(SVN_IPK_DIR)$(TARGET_PREFIX)/lib/libsvn_swig_py* $(SVN-PY_IPK_DIR)$(TARGET_PREFIX)/lib/
 	# mv to svn-rb
 	rm -rf $(SVN-RB_IPK_DIR) $(BUILD_DIR)/svn-rb_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(SVN-RB_IPK_DIR)/opt/lib
-	mv -f $(SVN_IPK_DIR)/opt/local $(SVN-RB_IPK_DIR)/opt/
-	mv -f $(SVN_IPK_DIR)/opt/lib/libsvn_swig_ruby* $(SVN-RB_IPK_DIR)/opt/lib/
+	$(INSTALL) -d $(SVN-RB_IPK_DIR)$(TARGET_PREFIX)/lib
+	mv -f $(SVN_IPK_DIR)$(TARGET_PREFIX)/local $(SVN-RB_IPK_DIR)$(TARGET_PREFIX)/
+	mv -f $(SVN_IPK_DIR)$(TARGET_PREFIX)/lib/libsvn_swig_ruby* $(SVN-RB_IPK_DIR)$(TARGET_PREFIX)/lib/
 	# svn ipk
-	$(INSTALL) -d $(SVN_IPK_DIR)/opt/etc/apache2/conf.d
-	$(INSTALL) -m 644 $(SVN_SOURCE_DIR)/mod_dav_svn.conf $(SVN_IPK_DIR)/opt/etc/apache2/conf.d/mod_dav_svn.conf
+	$(INSTALL) -d $(SVN_IPK_DIR)$(TARGET_PREFIX)/etc/apache2/conf.d
+	$(INSTALL) -m 644 $(SVN_SOURCE_DIR)/mod_dav_svn.conf $(SVN_IPK_DIR)$(TARGET_PREFIX)/etc/apache2/conf.d/mod_dav_svn.conf
 	$(MAKE) $(SVN_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SVN_IPK_DIR)
 	# svn-py ipk
-	$(INSTALL) -d $(SVN-PY_IPK_DIR)/opt/lib/python2.7/site-packages
-	echo /opt/lib/svn-python > $(SVN-PY_IPK_DIR)/opt/lib/python2.7/site-packages/subversion.pth
+	$(INSTALL) -d $(SVN-PY_IPK_DIR)$(TARGET_PREFIX)/lib/python2.7/site-packages
+	echo $(TARGET_PREFIX)/lib/svn-python > $(SVN-PY_IPK_DIR)$(TARGET_PREFIX)/lib/python2.7/site-packages/subversion.pth
 	$(MAKE) $(SVN-PY_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SVN-PY_IPK_DIR)
 	# svn-rb ipk

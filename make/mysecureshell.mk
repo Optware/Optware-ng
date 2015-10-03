@@ -46,7 +46,7 @@ MYSECURESHELL_IPK_VERSION=1
 
 #
 # MYSECURESHELL_CONFFILES should be a list of user-editable files
-MYSECURESHELL_CONFFILES=/opt/etc/ssh/sftp_config
+MYSECURESHELL_CONFFILES=$(TARGET_PREFIX)/etc/ssh/sftp_config
 
 #
 # MYSECURESHELL_PATCHES should list any patches, in the the order in
@@ -122,10 +122,10 @@ $(MYSECURESHELL_BUILD_DIR)/.configured: $(DL_DIR)/$(MYSECURESHELL_SOURCE) $(MYSE
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MYSECURESHELL_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MYSECURESHELL_LDFLAGS)" \
-		BINDIR="/opt/bin" \
-		MSS_LOG="/opt/var/log/sftp-server.log" \
-		MSS_CONF="/opt/etc/ssh/sftp_config" \
-		MSS_SHUT="/opt/etc/sftp.shut" \
+		BINDIR="$(TARGET_PREFIX)/bin" \
+		MSS_LOG="$(TARGET_PREFIX)/var/log/sftp-server.log" \
+		MSS_CONF="$(TARGET_PREFIX)/etc/ssh/sftp_config" \
+		MSS_SHUT="$(TARGET_PREFIX)/etc/sftp.shut" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -184,27 +184,27 @@ $(MYSECURESHELL_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(MYSECURESHELL_IPK_DIR)/opt/sbin or $(MYSECURESHELL_IPK_DIR)/opt/bin
+# Binaries should be installed into $(MYSECURESHELL_IPK_DIR)$(TARGET_PREFIX)/sbin or $(MYSECURESHELL_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(MYSECURESHELL_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(MYSECURESHELL_IPK_DIR)/opt/etc/mysecureshell/...
-# Documentation files should be installed in $(MYSECURESHELL_IPK_DIR)/opt/doc/mysecureshell/...
-# Daemon startup scripts should be installed in $(MYSECURESHELL_IPK_DIR)/opt/etc/init.d/S??mysecureshell
+# Libraries and include files should be installed into $(MYSECURESHELL_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(MYSECURESHELL_IPK_DIR)$(TARGET_PREFIX)/etc/mysecureshell/...
+# Documentation files should be installed in $(MYSECURESHELL_IPK_DIR)$(TARGET_PREFIX)/doc/mysecureshell/...
+# Daemon startup scripts should be installed in $(MYSECURESHELL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??mysecureshell
 #
 # You may need to patch your application to make it use these locations.
 #
 $(MYSECURESHELL_IPK): $(MYSECURESHELL_BUILD_DIR)/.built
 	rm -rf $(MYSECURESHELL_IPK_DIR) $(BUILD_DIR)/mysecureshell_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(MYSECURESHELL_IPK_DIR)/opt/etc/
-	$(INSTALL) -d $(MYSECURESHELL_IPK_DIR)/opt/bin/
-	$(INSTALL) -d $(MYSECURESHELL_IPK_DIR)/opt/libexec/
+	$(INSTALL) -d $(MYSECURESHELL_IPK_DIR)$(TARGET_PREFIX)/etc/
+	$(INSTALL) -d $(MYSECURESHELL_IPK_DIR)$(TARGET_PREFIX)/bin/
+	$(INSTALL) -d $(MYSECURESHELL_IPK_DIR)$(TARGET_PREFIX)/libexec/
 	DESTDIR="$(MYSECURESHELL_IPK_DIR)" ; $(MAKE) -C $(MYSECURESHELL_BUILD_DIR)  install
-	$(INSTALL) -d $(MYSECURESHELL_IPK_DIR)/opt/doc/mysecureshell/
-	$(INSTALL) -m 644 $(MYSECURESHELL_BUILD_DIR)/README-en $(MYSECURESHELL_IPK_DIR)/opt/doc/mysecureshell/
-	$(INSTALL) -m 644 $(MYSECURESHELL_BUILD_DIR)/README-fr $(MYSECURESHELL_IPK_DIR)/opt/doc/mysecureshell/
-# 	$(INSTALL) -m 644 $(MYSECURESHELL_SOURCE_DIR)/mysecureshell.conf $(MYSECURESHELL_IPK_DIR)/opt/etc/mysecureshell.conf
-#	$(INSTALL) -d $(MYSECURESHELL_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(MYSECURESHELL_SOURCE_DIR)/rc.mysecureshell $(MYSECURESHELL_IPK_DIR)/opt/etc/init.d/SXXmysecureshell
+	$(INSTALL) -d $(MYSECURESHELL_IPK_DIR)$(TARGET_PREFIX)/doc/mysecureshell/
+	$(INSTALL) -m 644 $(MYSECURESHELL_BUILD_DIR)/README-en $(MYSECURESHELL_IPK_DIR)$(TARGET_PREFIX)/doc/mysecureshell/
+	$(INSTALL) -m 644 $(MYSECURESHELL_BUILD_DIR)/README-fr $(MYSECURESHELL_IPK_DIR)$(TARGET_PREFIX)/doc/mysecureshell/
+# 	$(INSTALL) -m 644 $(MYSECURESHELL_SOURCE_DIR)/mysecureshell.conf $(MYSECURESHELL_IPK_DIR)$(TARGET_PREFIX)/etc/mysecureshell.conf
+#	$(INSTALL) -d $(MYSECURESHELL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(MYSECURESHELL_SOURCE_DIR)/rc.mysecureshell $(MYSECURESHELL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXmysecureshell
 	$(MAKE) $(MYSECURESHELL_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(MYSECURESHELL_SOURCE_DIR)/postinst $(MYSECURESHELL_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 755 $(MYSECURESHELL_SOURCE_DIR)/prerm $(MYSECURESHELL_IPK_DIR)/CONTROL/prerm

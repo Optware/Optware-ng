@@ -211,10 +211,10 @@ $(SDL_IPK): $(SDL_BUILD_DIR)/.built
 	$(MAKE) -C $(SDL_BUILD_DIR) DESTDIR=$(SDL_DEV_IPK_DIR) install
 	$(MAKE) $(SDL_DEV_IPK_DIR)/CONTROL/control
 	$(MAKE) $(SDL_IPK_DIR)/CONTROL/control
-	mkdir -p $(SDL_IPK_DIR)/opt
-	mv $(SDL_DEV_IPK_DIR)/opt/lib $(SDL_IPK_DIR)/opt
-	rm -f $(SDL_IPK_DIR)/opt/lib/libSDL.la
-	-$(STRIP_COMMAND) $(SDL_IPK_DIR)/opt/lib/*.so.*
+	mkdir -p $(SDL_IPK_DIR)$(TARGET_PREFIX)
+	mv $(SDL_DEV_IPK_DIR)$(TARGET_PREFIX)/lib $(SDL_IPK_DIR)$(TARGET_PREFIX)
+	rm -f $(SDL_IPK_DIR)$(TARGET_PREFIX)/lib/libSDL.la
+	-$(STRIP_COMMAND) $(SDL_IPK_DIR)$(TARGET_PREFIX)/lib/*.so.*
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SDL_DEV_IPK_DIR)
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SDL_IPK_DIR)
 

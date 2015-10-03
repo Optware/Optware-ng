@@ -46,7 +46,7 @@ ESOUND_IPK_VERSION=2
 
 #
 # ESOUND_CONFFILES should be a list of user-editable files
-ESOUND_CONFFILES=#/opt/etc/esound.conf /opt/etc/init.d/SXXesound
+ESOUND_CONFFILES=#$(TARGET_PREFIX)/etc/esound.conf $(TARGET_PREFIX)/etc/init.d/SXXesound
 
 #
 # ESOUND_PATCHES should list any patches, in the the order in
@@ -196,28 +196,28 @@ $(ESOUND_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(ESOUND_IPK_DIR)/opt/sbin or $(ESOUND_IPK_DIR)/opt/bin
+# Binaries should be installed into $(ESOUND_IPK_DIR)$(TARGET_PREFIX)/sbin or $(ESOUND_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(ESOUND_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(ESOUND_IPK_DIR)/opt/etc/esound/...
-# Documentation files should be installed in $(ESOUND_IPK_DIR)/opt/doc/esound/...
-# Daemon startup scripts should be installed in $(ESOUND_IPK_DIR)/opt/etc/init.d/S??esound
+# Libraries and include files should be installed into $(ESOUND_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(ESOUND_IPK_DIR)$(TARGET_PREFIX)/etc/esound/...
+# Documentation files should be installed in $(ESOUND_IPK_DIR)$(TARGET_PREFIX)/doc/esound/...
+# Daemon startup scripts should be installed in $(ESOUND_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??esound
 #
 # You may need to patch your application to make it use these locations.
 #
 $(ESOUND_IPK): $(ESOUND_BUILD_DIR)/.built
 	rm -rf $(ESOUND_IPK_DIR) $(BUILD_DIR)/esound_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(ESOUND_BUILD_DIR) DESTDIR=$(ESOUND_IPK_DIR) install-strip
-	#$(INSTALL) -d $(ESOUND_IPK_DIR)/opt/etc/
-	#$(INSTALL) -m 644 $(ESOUND_SOURCE_DIR)/esound.conf $(ESOUND_IPK_DIR)/opt/etc/esound.conf
-	#$(INSTALL) -d $(ESOUND_IPK_DIR)/opt/etc/init.d
-	#$(INSTALL) -m 755 $(ESOUND_SOURCE_DIR)/rc.esound $(ESOUND_IPK_DIR)/opt/etc/init.d/SXXesound
+	#$(INSTALL) -d $(ESOUND_IPK_DIR)$(TARGET_PREFIX)/etc/
+	#$(INSTALL) -m 644 $(ESOUND_SOURCE_DIR)/esound.conf $(ESOUND_IPK_DIR)$(TARGET_PREFIX)/etc/esound.conf
+	#$(INSTALL) -d $(ESOUND_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	#$(INSTALL) -m 755 $(ESOUND_SOURCE_DIR)/rc.esound $(ESOUND_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXesound
 	$(MAKE) $(ESOUND_IPK_DIR)/CONTROL/control
 	#$(INSTALL) -m 755 $(ESOUND_SOURCE_DIR)/postinst $(ESOUND_IPK_DIR)/CONTROL/postinst
 	#$(INSTALL) -m 755 $(ESOUND_SOURCE_DIR)/prerm $(ESOUND_IPK_DIR)/CONTROL/prerm
 	echo $(ESOUND_CONFFILES) | sed -e 's/ /\n/g' > $(ESOUND_IPK_DIR)/CONTROL/conffiles
-	rm -f $(ESOUND_IPK_DIR)/opt/lib/libesd.la
-	rm -f $(ESOUND_IPK_DIR)/opt/lib/libesddsp.la
+	rm -f $(ESOUND_IPK_DIR)$(TARGET_PREFIX)/lib/libesd.la
+	rm -f $(ESOUND_IPK_DIR)$(TARGET_PREFIX)/lib/libesddsp.la
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ESOUND_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(ESOUND_IPK_DIR)
 

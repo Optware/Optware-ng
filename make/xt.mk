@@ -162,7 +162,7 @@ $(XT_IPK): $(XT_BUILD_DIR)/.built
 	rm -rf $(XT_IPK_DIR) $(BUILD_DIR)/xt_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(XT_BUILD_DIR) DESTDIR=$(XT_IPK_DIR) install-strip
 	$(MAKE) $(XT_IPK_DIR)/CONTROL/control
-	rm -f $(XT_IPK_DIR)/opt/lib/*.la
+	rm -f $(XT_IPK_DIR)$(TARGET_PREFIX)/lib/*.la
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XT_IPK_DIR)
 
 #

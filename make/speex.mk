@@ -40,7 +40,7 @@ SPEEX_IPK_VERSION ?= 2
 
 #
 # SPEEX_CONFFILES should be a list of user-editable files
-#SPEEX_CONFFILES=/opt/etc/speex.conf /opt/etc/init.d/SXXspeex
+#SPEEX_CONFFILES=$(TARGET_PREFIX)/etc/speex.conf $(TARGET_PREFIX)/etc/init.d/SXXspeex
 
 #
 # SPEEX_PATCHES should list any patches, in the the order in
@@ -200,23 +200,23 @@ $(SPEEX_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(SPEEX_IPK_DIR)/opt/sbin or $(SPEEX_IPK_DIR)/opt/bin
+# Binaries should be installed into $(SPEEX_IPK_DIR)$(TARGET_PREFIX)/sbin or $(SPEEX_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(SPEEX_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(SPEEX_IPK_DIR)/opt/etc/speex/...
-# Documentation files should be installed in $(SPEEX_IPK_DIR)/opt/doc/speex/...
-# Daemon startup scripts should be installed in $(SPEEX_IPK_DIR)/opt/etc/init.d/S??speex
+# Libraries and include files should be installed into $(SPEEX_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(SPEEX_IPK_DIR)$(TARGET_PREFIX)/etc/speex/...
+# Documentation files should be installed in $(SPEEX_IPK_DIR)$(TARGET_PREFIX)/doc/speex/...
+# Daemon startup scripts should be installed in $(SPEEX_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??speex
 #
 # You may need to patch your application to make it use these locations.
 #
 $(SPEEX_IPK): $(SPEEX_BUILD_DIR)/.built
 	rm -rf $(SPEEX_IPK_DIR) $(BUILD_DIR)/speex_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SPEEX_BUILD_DIR) DESTDIR=$(SPEEX_IPK_DIR) install-strip
-#	$(INSTALL) -d $(SPEEX_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(SPEEX_SOURCE_DIR)/speex.conf $(SPEEX_IPK_DIR)/opt/etc/speex.conf
-#	$(INSTALL) -d $(SPEEX_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(SPEEX_SOURCE_DIR)/rc.speex $(SPEEX_IPK_DIR)/opt/etc/init.d/SXXspeex
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SPEEX_IPK_DIR)/opt/etc/init.d/SXXspeex
+#	$(INSTALL) -d $(SPEEX_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(SPEEX_SOURCE_DIR)/speex.conf $(SPEEX_IPK_DIR)$(TARGET_PREFIX)/etc/speex.conf
+#	$(INSTALL) -d $(SPEEX_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(SPEEX_SOURCE_DIR)/rc.speex $(SPEEX_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXspeex
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SPEEX_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXspeex
 	$(MAKE) $(SPEEX_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(SPEEX_SOURCE_DIR)/postinst $(SPEEX_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SPEEX_IPK_DIR)/CONTROL/postinst

@@ -40,7 +40,7 @@ AUTOSSH_IPK_VERSION=1
 
 #
 # AUTOSSH_CONFFILES should be a list of user-editable files
-#AUTOSSH_CONFFILES=/opt/etc/autossh.conf /opt/etc/init.d/SXXautossh
+#AUTOSSH_CONFFILES=$(TARGET_PREFIX)/etc/autossh.conf $(TARGET_PREFIX)/etc/init.d/SXXautossh
 
 #
 # AUTOSSH_PATCHES should list any patches, in the the order in
@@ -179,12 +179,12 @@ $(AUTOSSH_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(AUTOSSH_IPK_DIR)/opt/sbin or $(AUTOSSH_IPK_DIR)/opt/bin
+# Binaries should be installed into $(AUTOSSH_IPK_DIR)$(TARGET_PREFIX)/sbin or $(AUTOSSH_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(AUTOSSH_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(AUTOSSH_IPK_DIR)/opt/etc/autossh/...
-# Documentation files should be installed in $(AUTOSSH_IPK_DIR)/opt/doc/autossh/...
-# Daemon startup scripts should be installed in $(AUTOSSH_IPK_DIR)/opt/etc/init.d/S??autossh
+# Libraries and include files should be installed into $(AUTOSSH_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(AUTOSSH_IPK_DIR)$(TARGET_PREFIX)/etc/autossh/...
+# Documentation files should be installed in $(AUTOSSH_IPK_DIR)$(TARGET_PREFIX)/doc/autossh/...
+# Daemon startup scripts should be installed in $(AUTOSSH_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??autossh
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -192,8 +192,8 @@ $(AUTOSSH_IPK): $(AUTOSSH_BUILD_DIR)/.built
 	rm -rf $(AUTOSSH_IPK_DIR) $(BUILD_DIR)/autossh_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(AUTOSSH_BUILD_DIR) install \
 		DESTDIR=$(AUTOSSH_IPK_DIR) \
-		prefix=$(AUTOSSH_IPK_DIR)/opt
-	$(STRIP_COMMAND) $(AUTOSSH_IPK_DIR)/opt/bin/*
+		prefix=$(AUTOSSH_IPK_DIR)$(TARGET_PREFIX)
+	$(STRIP_COMMAND) $(AUTOSSH_IPK_DIR)$(TARGET_PREFIX)/bin/*
 	$(MAKE) $(AUTOSSH_IPK_DIR)/CONTROL/control
 	echo $(AUTOSSH_CONFFILES) | sed -e 's/ /\n/g' > $(AUTOSSH_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(AUTOSSH_IPK_DIR)

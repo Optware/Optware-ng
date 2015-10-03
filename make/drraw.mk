@@ -24,7 +24,7 @@ DRRAW_IPK_VERSION=2
 
 #
 # DRRAW_CONFFILES should be a list of user-editable files
-DRRAW_CONFFILES=/opt/etc/drraw.conf
+DRRAW_CONFFILES=$(TARGET_PREFIX)/etc/drraw.conf
 
 #
 # DRRAW_PATCHES should list any patches, in the the order in
@@ -139,25 +139,25 @@ $(DRRAW_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(DRRAW_IPK_DIR)/opt/sbin or $(DRRAW_IPK_DIR)/opt/bin
+# Binaries should be installed into $(DRRAW_IPK_DIR)$(TARGET_PREFIX)/sbin or $(DRRAW_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(DRRAW_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(DRRAW_IPK_DIR)/opt/etc/drraw/...
-# Documentation files should be installed in $(DRRAW_IPK_DIR)/opt/doc/drraw/...
-# Daemon startup scripts should be installed in $(DRRAW_IPK_DIR)/opt/etc/init.d/S??drraw
+# Libraries and include files should be installed into $(DRRAW_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(DRRAW_IPK_DIR)$(TARGET_PREFIX)/etc/drraw/...
+# Documentation files should be installed in $(DRRAW_IPK_DIR)$(TARGET_PREFIX)/doc/drraw/...
+# Daemon startup scripts should be installed in $(DRRAW_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??drraw
 #
 # You may need to patch your application to make it use these locations.
 #
 $(DRRAW_IPK): $(DRRAW_BUILD_DIR)/.built
 	rm -rf $(DRRAW_IPK_DIR) $(BUILD_DIR)/drraw_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(DRRAW_IPK_DIR)/opt/share/www/cgi-bin
-	$(INSTALL) -m 644 $(DRRAW_BUILD_DIR)/drraw.cgi $(DRRAW_IPK_DIR)/opt/share/www/cgi-bin/drraw.cgi
+	$(INSTALL) -d $(DRRAW_IPK_DIR)$(TARGET_PREFIX)/share/www/cgi-bin
+	$(INSTALL) -m 644 $(DRRAW_BUILD_DIR)/drraw.cgi $(DRRAW_IPK_DIR)$(TARGET_PREFIX)/share/www/cgi-bin/drraw.cgi
 ifeq ($(OPTWARE_TARGET), fsg3v4)
 	$(INSTALL) -d $(DRRAW_IPK_DIR)/var/www/cgi-bin
-	ln -s /opt/share/www/cgi-bin/drraw.cgi $(DRRAW_IPK_DIR)/var/www/cgi-bin/drraw.cgi
+	ln -s $(TARGET_PREFIX)/share/www/cgi-bin/drraw.cgi $(DRRAW_IPK_DIR)/var/www/cgi-bin/drraw.cgi
 endif
-	$(INSTALL) -d $(DRRAW_IPK_DIR)/opt/etc/
-	$(INSTALL) -m 644 $(DRRAW_SOURCE_DIR)/drraw.conf $(DRRAW_IPK_DIR)/opt/etc/drraw.conf
+	$(INSTALL) -d $(DRRAW_IPK_DIR)$(TARGET_PREFIX)/etc/
+	$(INSTALL) -m 644 $(DRRAW_SOURCE_DIR)/drraw.conf $(DRRAW_IPK_DIR)$(TARGET_PREFIX)/etc/drraw.conf
 	$(MAKE) $(DRRAW_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 755 $(DRRAW_SOURCE_DIR)/postinst $(DRRAW_IPK_DIR)/CONTROL/postinst
 	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(DRRAW_IPK_DIR)/CONTROL/postinst

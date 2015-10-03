@@ -90,10 +90,10 @@ $(PERL-COMPRESS-ZLIB_IPK): $(PERL-COMPRESS-ZLIB_BUILD_DIR)/.built
 	rm -rf $(PERL-COMPRESS-ZLIB_IPK_DIR) $(BUILD_DIR)/perl-compress-zlib_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PERL-COMPRESS-ZLIB_BUILD_DIR) DESTDIR=$(PERL-COMPRESS-ZLIB_IPK_DIR) install
 ifeq (5.10, $(PERL_MAJOR_VER))
-	rm -f $(PERL-COMPRESS-ZLIB_IPK_DIR)/opt/man/man3/Compress::Zlib.3
+	rm -f $(PERL-COMPRESS-ZLIB_IPK_DIR)$(TARGET_PREFIX)/man/man3/Compress::Zlib.3
 endif
 	find $(PERL-COMPRESS-ZLIB_IPK_DIR)$(TARGET_PREFIX) -name 'perllocal.pod' -exec rm -f {} \;
-	(cd $(PERL-COMPRESS-ZLIB_IPK_DIR)/opt/lib/perl5 ; \
+	(cd $(PERL-COMPRESS-ZLIB_IPK_DIR)$(TARGET_PREFIX)/lib/perl5 ; \
 		find . -name '*.so' -exec chmod +w {} \; ; \
 		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
 		find . -name '*.so' -exec chmod -w {} \; ; \

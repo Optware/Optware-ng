@@ -42,7 +42,7 @@ MTOOLS_IPK_VERSION=1
 
 #
 # MTOOLS_CONFFILES should be a list of user-editable files
-#MTOOLS_CONFFILES=/opt/etc/mtools.conf /opt/etc/init.d/SXXmtools
+#MTOOLS_CONFFILES=$(TARGET_PREFIX)/etc/mtools.conf $(TARGET_PREFIX)/etc/init.d/SXXmtools
 
 #
 # MTOOLS_PATCHES should list any patches, in the the order in
@@ -185,24 +185,24 @@ $(MTOOLS_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(MTOOLS_IPK_DIR)/opt/sbin or $(MTOOLS_IPK_DIR)/opt/bin
+# Binaries should be installed into $(MTOOLS_IPK_DIR)$(TARGET_PREFIX)/sbin or $(MTOOLS_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(MTOOLS_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(MTOOLS_IPK_DIR)/opt/etc/mtools/...
-# Documentation files should be installed in $(MTOOLS_IPK_DIR)/opt/doc/mtools/...
-# Daemon startup scripts should be installed in $(MTOOLS_IPK_DIR)/opt/etc/init.d/S??mtools
+# Libraries and include files should be installed into $(MTOOLS_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(MTOOLS_IPK_DIR)$(TARGET_PREFIX)/etc/mtools/...
+# Documentation files should be installed in $(MTOOLS_IPK_DIR)$(TARGET_PREFIX)/doc/mtools/...
+# Daemon startup scripts should be installed in $(MTOOLS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??mtools
 #
 # You may need to patch your application to make it use these locations.
 #
 $(MTOOLS_IPK): $(MTOOLS_BUILD_DIR)/.built
 	rm -rf $(MTOOLS_IPK_DIR) $(BUILD_DIR)/mtools_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MTOOLS_BUILD_DIR) prefix=$(MTOOLS_IPK_DIR)$(TARGET_PREFIX) install INSTALL_INFO=:
-	$(STRIP_COMMAND) $(MTOOLS_IPK_DIR)/opt/bin/mtools $(MTOOLS_IPK_DIR)/opt/bin/mkmanifest
-#	$(INSTALL) -d $(MTOOLS_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(MTOOLS_SOURCE_DIR)/mtools.conf $(MTOOLS_IPK_DIR)/opt/etc/mtools.conf
-#	$(INSTALL) -d $(MTOOLS_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(MTOOLS_SOURCE_DIR)/rc.mtools $(MTOOLS_IPK_DIR)/opt/etc/init.d/SXXmtools
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/opt/etc/init.d/SXXmtools
+	$(STRIP_COMMAND) $(MTOOLS_IPK_DIR)$(TARGET_PREFIX)/bin/mtools $(MTOOLS_IPK_DIR)$(TARGET_PREFIX)/bin/mkmanifest
+#	$(INSTALL) -d $(MTOOLS_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(MTOOLS_SOURCE_DIR)/mtools.conf $(MTOOLS_IPK_DIR)$(TARGET_PREFIX)/etc/mtools.conf
+#	$(INSTALL) -d $(MTOOLS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(MTOOLS_SOURCE_DIR)/rc.mtools $(MTOOLS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXmtools
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXmtools
 	$(MAKE) $(MTOOLS_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(MTOOLS_SOURCE_DIR)/postinst $(MTOOLS_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(XINETD_IPK_DIR)/CONTROL/postinst

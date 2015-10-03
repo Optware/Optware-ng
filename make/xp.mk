@@ -151,12 +151,12 @@ xp-stage: $(XP_BUILD_DIR)/.staged
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(XP_IPK_DIR)/opt/sbin or $(XP_IPK_DIR)/opt/bin
+# Binaries should be installed into $(XP_IPK_DIR)$(TARGET_PREFIX)/sbin or $(XP_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(XP_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(XP_IPK_DIR)/opt/etc/xp/...
-# Documentation files should be installed in $(XP_IPK_DIR)/opt/doc/xp/...
-# Daemon startup scripts should be installed in $(XP_IPK_DIR)/opt/etc/init.d/S??xp
+# Libraries and include files should be installed into $(XP_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(XP_IPK_DIR)$(TARGET_PREFIX)/etc/xp/...
+# Documentation files should be installed in $(XP_IPK_DIR)$(TARGET_PREFIX)/doc/xp/...
+# Daemon startup scripts should be installed in $(XP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??xp
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -165,7 +165,7 @@ $(XP_IPK): $(XP_BUILD_DIR)/.built
 	$(MAKE) -C $(XP_BUILD_DIR) DESTDIR=$(XP_IPK_DIR) install-strip
 	$(MAKE) $(XP_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 644 $(XP_SOURCE_DIR)/postinst $(XP_IPK_DIR)/CONTROL/postinst
-	rm -f $(XP_IPK_DIR)/opt/lib/*.la
+	rm -f $(XP_IPK_DIR)$(TARGET_PREFIX)/lib/*.la
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XP_IPK_DIR)
 
 #

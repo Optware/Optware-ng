@@ -44,7 +44,7 @@ STFL_IPK_VERSION=1
 
 #
 # STFL_CONFFILES should be a list of user-editable files
-#STFL_CONFFILES=/opt/etc/stfl.conf /opt/etc/init.d/SXXstfl
+#STFL_CONFFILES=$(TARGET_PREFIX)/etc/stfl.conf $(TARGET_PREFIX)/etc/init.d/SXXstfl
 
 #
 # STFL_PATCHES should list any patches, in the the order in
@@ -197,23 +197,23 @@ $(STFL_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(STFL_IPK_DIR)/opt/sbin or $(STFL_IPK_DIR)/opt/bin
+# Binaries should be installed into $(STFL_IPK_DIR)$(TARGET_PREFIX)/sbin or $(STFL_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(STFL_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(STFL_IPK_DIR)/opt/etc/stfl/...
-# Documentation files should be installed in $(STFL_IPK_DIR)/opt/doc/stfl/...
-# Daemon startup scripts should be installed in $(STFL_IPK_DIR)/opt/etc/init.d/S??stfl
+# Libraries and include files should be installed into $(STFL_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(STFL_IPK_DIR)$(TARGET_PREFIX)/etc/stfl/...
+# Documentation files should be installed in $(STFL_IPK_DIR)$(TARGET_PREFIX)/doc/stfl/...
+# Daemon startup scripts should be installed in $(STFL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??stfl
 #
 # You may need to patch your application to make it use these locations.
 #
 $(STFL_IPK): $(STFL_BUILD_DIR)/.built
 	rm -rf $(STFL_IPK_DIR) $(BUILD_DIR)/stfl_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(STFL_BUILD_DIR) DESTDIR=$(STFL_IPK_DIR) prefix=$(TARGET_PREFIX) install
-#	$(INSTALL) -d $(STFL_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(STFL_SOURCE_DIR)/stfl.conf $(STFL_IPK_DIR)/opt/etc/stfl.conf
-#	$(INSTALL) -d $(STFL_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(STFL_SOURCE_DIR)/rc.stfl $(STFL_IPK_DIR)/opt/etc/init.d/SXXstfl
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(STFL_IPK_DIR)/opt/etc/init.d/SXXstfl
+#	$(INSTALL) -d $(STFL_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(STFL_SOURCE_DIR)/stfl.conf $(STFL_IPK_DIR)$(TARGET_PREFIX)/etc/stfl.conf
+#	$(INSTALL) -d $(STFL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(STFL_SOURCE_DIR)/rc.stfl $(STFL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXstfl
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(STFL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXstfl
 	$(MAKE) $(STFL_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(STFL_SOURCE_DIR)/postinst $(STFL_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(STFL_IPK_DIR)/CONTROL/postinst

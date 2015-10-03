@@ -46,7 +46,7 @@ MOUSEPAD_IPK_VERSION=1
 
 #
 # MOUSEPAD_CONFFILES should be a list of user-editable files
-#MOUSEPAD_CONFFILES=/opt/etc/mousepad.conf /opt/etc/init.d/SXXmousepad
+#MOUSEPAD_CONFFILES=$(TARGET_PREFIX)/etc/mousepad.conf $(TARGET_PREFIX)/etc/init.d/SXXmousepad
 
 #
 # MOUSEPAD_PATCHES should list any patches, in the the order in
@@ -121,7 +121,7 @@ $(MOUSEPAD_BUILD_DIR)/.configured: $(DL_DIR)/$(MOUSEPAD_SOURCE) $(MOUSEPAD_PATCH
 	if test "$(BUILD_DIR)/$(MOUSEPAD_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(MOUSEPAD_DIR) $(@D) ; \
 	fi
-	sed -i -e 's|g_get_user_config_dir ()|"/opt/etc"|' $(@D)/mousepad/*.[ch]
+	sed -i -e 's|g_get_user_config_dir ()|"$(TARGET_PREFIX)/etc"|' $(@D)/mousepad/*.[ch]
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MOUSEPAD_CPPFLAGS)" \
@@ -189,23 +189,23 @@ $(MOUSEPAD_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(MOUSEPAD_IPK_DIR)/opt/sbin or $(MOUSEPAD_IPK_DIR)/opt/bin
+# Binaries should be installed into $(MOUSEPAD_IPK_DIR)$(TARGET_PREFIX)/sbin or $(MOUSEPAD_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(MOUSEPAD_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(MOUSEPAD_IPK_DIR)/opt/etc/mousepad/...
-# Documentation files should be installed in $(MOUSEPAD_IPK_DIR)/opt/doc/mousepad/...
-# Daemon startup scripts should be installed in $(MOUSEPAD_IPK_DIR)/opt/etc/init.d/S??mousepad
+# Libraries and include files should be installed into $(MOUSEPAD_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(MOUSEPAD_IPK_DIR)$(TARGET_PREFIX)/etc/mousepad/...
+# Documentation files should be installed in $(MOUSEPAD_IPK_DIR)$(TARGET_PREFIX)/doc/mousepad/...
+# Daemon startup scripts should be installed in $(MOUSEPAD_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??mousepad
 #
 # You may need to patch your application to make it use these locations.
 #
 $(MOUSEPAD_IPK): $(MOUSEPAD_BUILD_DIR)/.built
 	rm -rf $(MOUSEPAD_IPK_DIR) $(BUILD_DIR)/mousepad_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MOUSEPAD_BUILD_DIR) DESTDIR=$(MOUSEPAD_IPK_DIR) install-strip
-#	$(INSTALL) -d $(MOUSEPAD_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(MOUSEPAD_SOURCE_DIR)/mousepad.conf $(MOUSEPAD_IPK_DIR)/opt/etc/mousepad.conf
-#	$(INSTALL) -d $(MOUSEPAD_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(MOUSEPAD_SOURCE_DIR)/rc.mousepad $(MOUSEPAD_IPK_DIR)/opt/etc/init.d/SXXmousepad
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MOUSEPAD_IPK_DIR)/opt/etc/init.d/SXXmousepad
+#	$(INSTALL) -d $(MOUSEPAD_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(MOUSEPAD_SOURCE_DIR)/mousepad.conf $(MOUSEPAD_IPK_DIR)$(TARGET_PREFIX)/etc/mousepad.conf
+#	$(INSTALL) -d $(MOUSEPAD_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(MOUSEPAD_SOURCE_DIR)/rc.mousepad $(MOUSEPAD_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXmousepad
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MOUSEPAD_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXmousepad
 	$(MAKE) $(MOUSEPAD_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 755 $(MOUSEPAD_SOURCE_DIR)/postinst $(MOUSEPAD_IPK_DIR)/CONTROL/postinst
 	$(INSTALL) -m 755 $(MOUSEPAD_SOURCE_DIR)/postrm $(MOUSEPAD_IPK_DIR)/CONTROL/postrm

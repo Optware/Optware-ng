@@ -46,7 +46,7 @@ CLAMAV_IPK_VERSION=1
 
 #
 # CLAMAV_CONFFILES should be a list of user-editable files
-CLAMAV_CONFFILES=/opt/etc/clamd.conf /opt/etc/freshclam.conf /opt/etc/init.d/S98clamav
+CLAMAV_CONFFILES=$(TARGET_PREFIX)/etc/clamd.conf $(TARGET_PREFIX)/etc/freshclam.conf $(TARGET_PREFIX)/etc/init.d/S98clamav
 
 #
 # CLAMAV_PATCHES should list any patches, in the the order in
@@ -135,9 +135,9 @@ $(CLAMAV_BUILD_DIR)/.configured: $(DL_DIR)/$(CLAMAV_SOURCE) $(CLAMAV_PATCHES) ma
 		--disable-nls \
 		--disable-clamav \
 		--disable-static \
-		--sysconfdir=/opt/etc \
+		--sysconfdir=$(TARGET_PREFIX)/etc \
 		--with-zlib=$(STAGING_PREFIX) \
-		--mandir=/opt/man	\
+		--mandir=$(TARGET_PREFIX)/man	\
 	)
 	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
@@ -150,7 +150,7 @@ clamav-unpack: $(CLAMAV_BUILD_DIR)/.configured
 $(CLAMAV_BUILD_DIR)/.built: $(CLAMAV_BUILD_DIR)/.configured
 	rm -f $@
 	$(MAKE) -C $(@D) \
-		CPPFLAGS="$(STAGING_CPPFLAGS) $(CLAMAV_CPPFLAGS) -DCLAMAV_tmpdir='\"/opt/tmp\"'"
+		CPPFLAGS="$(STAGING_CPPFLAGS) $(CLAMAV_CPPFLAGS) -DCLAMAV_tmpdir='\"$(TARGET_PREFIX)/tmp\"'"
 	touch $@
 
 #
@@ -190,12 +190,12 @@ $(CLAMAV_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(CLAMAV_IPK_DIR)/opt/sbin or $(CLAMAV_IPK_DIR)/opt/bin
+# Binaries should be installed into $(CLAMAV_IPK_DIR)$(TARGET_PREFIX)/sbin or $(CLAMAV_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(CLAMAV_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(CLAMAV_IPK_DIR)/opt/etc/clamav/...
-# Documentation files should be installed in $(CLAMAV_IPK_DIR)/opt/doc/clamav/...
-# Daemon startup scripts should be installed in $(CLAMAV_IPK_DIR)/opt/etc/init.d/S??clamav
+# Libraries and include files should be installed into $(CLAMAV_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(CLAMAV_IPK_DIR)$(TARGET_PREFIX)/etc/clamav/...
+# Documentation files should be installed in $(CLAMAV_IPK_DIR)$(TARGET_PREFIX)/doc/clamav/...
+# Daemon startup scripts should be installed in $(CLAMAV_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??clamav
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -203,19 +203,19 @@ $(CLAMAV_IPK): $(CLAMAV_BUILD_DIR)/.built
 	rm -rf $(CLAMAV_IPK_DIR) $(BUILD_DIR)/clamav_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(CLAMAV_BUILD_DIR) install-strip \
 		DESTDIR=$(CLAMAV_IPK_DIR) transform=""
-	$(INSTALL) -d $(CLAMAV_IPK_DIR)/opt/tmp/
-	$(INSTALL) -d $(CLAMAV_IPK_DIR)/opt/etc/
-	$(INSTALL) -m 644 $(CLAMAV_SOURCE_DIR)/clamd.conf $(CLAMAV_IPK_DIR)/opt/etc/clamd.conf
-	$(INSTALL) -m 644 $(CLAMAV_SOURCE_DIR)/freshclam.conf $(CLAMAV_IPK_DIR)/opt/etc/freshclam.conf
-	$(INSTALL) -d $(CLAMAV_IPK_DIR)/opt/etc/init.d
-	$(INSTALL) -m 755 $(CLAMAV_SOURCE_DIR)/rc.clamav $(CLAMAV_IPK_DIR)/opt/etc/init.d/S98clamav
+	$(INSTALL) -d $(CLAMAV_IPK_DIR)$(TARGET_PREFIX)/tmp/
+	$(INSTALL) -d $(CLAMAV_IPK_DIR)$(TARGET_PREFIX)/etc/
+	$(INSTALL) -m 644 $(CLAMAV_SOURCE_DIR)/clamd.conf $(CLAMAV_IPK_DIR)$(TARGET_PREFIX)/etc/clamd.conf
+	$(INSTALL) -m 644 $(CLAMAV_SOURCE_DIR)/freshclam.conf $(CLAMAV_IPK_DIR)$(TARGET_PREFIX)/etc/freshclam.conf
+	$(INSTALL) -d $(CLAMAV_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(INSTALL) -m 755 $(CLAMAV_SOURCE_DIR)/rc.clamav $(CLAMAV_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S98clamav
 	$(MAKE) $(CLAMAV_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 755 $(CLAMAV_SOURCE_DIR)/postinst $(CLAMAV_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 755 $(CLAMAV_SOURCE_DIR)/prerm $(CLAMAV_IPK_DIR)/CONTROL/prerm
 	echo $(CLAMAV_CONFFILES) | sed -e 's/ /\n/g' > $(CLAMAV_IPK_DIR)/CONTROL/conffiles
-	rm $(CLAMAV_IPK_DIR)/opt/bin/clamav-config # contains staging paths
-	rm $(CLAMAV_IPK_DIR)/opt/lib/libclamav.la # contains staging paths
-	rm -rf $(CLAMAV_IPK_DIR)/opt/lib/pkgconfig/ # contains staging paths
+	rm $(CLAMAV_IPK_DIR)$(TARGET_PREFIX)/bin/clamav-config # contains staging paths
+	rm $(CLAMAV_IPK_DIR)$(TARGET_PREFIX)/lib/libclamav.la # contains staging paths
+	rm -rf $(CLAMAV_IPK_DIR)$(TARGET_PREFIX)/lib/pkgconfig/ # contains staging paths
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CLAMAV_IPK_DIR)
 
 #

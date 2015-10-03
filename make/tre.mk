@@ -40,7 +40,7 @@ TRE_IPK_VERSION=1
 
 #
 # TRE_CONFFILES should be a list of user-editable files
-#TRE_CONFFILES=/opt/etc/tre.conf /opt/etc/init.d/SXXtre
+#TRE_CONFFILES=$(TARGET_PREFIX)/etc/tre.conf $(TARGET_PREFIX)/etc/init.d/SXXtre
 
 #
 # TRE_PATCHES should list any patches, in the the order in
@@ -179,19 +179,19 @@ $(TRE_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(TRE_IPK_DIR)/opt/sbin or $(TRE_IPK_DIR)/opt/bin
+# Binaries should be installed into $(TRE_IPK_DIR)$(TARGET_PREFIX)/sbin or $(TRE_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(TRE_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(TRE_IPK_DIR)/opt/etc/tre/...
-# Documentation files should be installed in $(TRE_IPK_DIR)/opt/doc/tre/...
-# Daemon startup scripts should be installed in $(TRE_IPK_DIR)/opt/etc/init.d/S??tre
+# Libraries and include files should be installed into $(TRE_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(TRE_IPK_DIR)$(TARGET_PREFIX)/etc/tre/...
+# Documentation files should be installed in $(TRE_IPK_DIR)$(TARGET_PREFIX)/doc/tre/...
+# Daemon startup scripts should be installed in $(TRE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??tre
 #
 # You may need to patch your application to make it use these locations.
 #
 $(TRE_IPK): $(TRE_BUILD_DIR)/.built
 	rm -rf $(TRE_IPK_DIR) $(BUILD_DIR)/tre_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(TRE_BUILD_DIR) install-strip DESTDIR=$(TRE_IPK_DIR)
-	rm -f $(TRE_IPK_DIR)/opt/lib/libtre.la
+	rm -f $(TRE_IPK_DIR)$(TARGET_PREFIX)/lib/libtre.la
 	$(MAKE) $(TRE_IPK_DIR)/CONTROL/control
 	echo $(TRE_CONFFILES) | sed -e 's/ /\n/g' > $(TRE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TRE_IPK_DIR)

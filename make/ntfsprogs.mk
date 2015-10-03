@@ -30,7 +30,7 @@ NTFSPROGS_IPK_VERSION=1
 
 #
 # NTFSPROGS_CONFFILES should be a list of user-editable files
-# NTFSPROGS_CONFFILES=/opt/etc/ntfsprogs.conf /opt/etc/init.d/SXXntfsprogs
+# NTFSPROGS_CONFFILES=$(TARGET_PREFIX)/etc/ntfsprogs.conf $(TARGET_PREFIX)/etc/init.d/SXXntfsprogs
 
 #
 # NTFSPROGS_PATCHES should list any patches, in the the order in
@@ -167,29 +167,29 @@ $(NTFSPROGS_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(NTFSPROGS_IPK_DIR)/opt/sbin or $(NTFSPROGS_IPK_DIR)/opt/bin
+# Binaries should be installed into $(NTFSPROGS_IPK_DIR)$(TARGET_PREFIX)/sbin or $(NTFSPROGS_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(NTFSPROGS_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(NTFSPROGS_IPK_DIR)/opt/etc/ntfsprogs/...
-# Documentation files should be installed in $(NTFSPROGS_IPK_DIR)/opt/doc/ntfsprogs/...
-# Daemon startup scripts should be installed in $(NTFSPROGS_IPK_DIR)/opt/etc/init.d/S??ntfsprogs
+# Libraries and include files should be installed into $(NTFSPROGS_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(NTFSPROGS_IPK_DIR)$(TARGET_PREFIX)/etc/ntfsprogs/...
+# Documentation files should be installed in $(NTFSPROGS_IPK_DIR)$(TARGET_PREFIX)/doc/ntfsprogs/...
+# Daemon startup scripts should be installed in $(NTFSPROGS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??ntfsprogs
 #
 # You may need to patch your application to make it use these locations.
 #
 $(NTFSPROGS_IPK): $(NTFSPROGS_BUILD_DIR)/.built
 	rm -rf $(NTFSPROGS_IPK_DIR) $(BUILD_DIR)/ntfsprogs_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(NTFSPROGS_BUILD_DIR) DESTDIR=$(NTFSPROGS_IPK_DIR) install-strip
-#	$(INSTALL) -d $(NTFSPROGS_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(NTFSPROGS_SOURCE_DIR)/ntfsprogs.conf $(NTFSPROGS_IPK_DIR)/opt/etc/ntfsprogs.conf
-#	$(INSTALL) -d $(NTFSPROGS_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(NTFSPROGS_SOURCE_DIR)/rc.ntfsprogs $(NTFSPROGS_IPK_DIR)/opt/etc/init.d/SXXntfsprogs
+#	$(INSTALL) -d $(NTFSPROGS_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(NTFSPROGS_SOURCE_DIR)/ntfsprogs.conf $(NTFSPROGS_IPK_DIR)$(TARGET_PREFIX)/etc/ntfsprogs.conf
+#	$(INSTALL) -d $(NTFSPROGS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(NTFSPROGS_SOURCE_DIR)/rc.ntfsprogs $(NTFSPROGS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXntfsprogs
 	$(MAKE) $(NTFSPROGS_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(NTFSPROGS_SOURCE_DIR)/postinst $(NTFSPROGS_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 755 $(NTFSPROGS_SOURCE_DIR)/prerm $(NTFSPROGS_IPK_DIR)/CONTROL/prerm
 #	echo $(NTFSPROGS_CONFFILES) | sed -e 's/ /\n/g' > $(NTFSPROGS_IPK_DIR)/CONTROL/conffiles
-	rm -f $(NTFSPROGS_IPK_DIR)/opt/lib/*.la
+	rm -f $(NTFSPROGS_IPK_DIR)$(TARGET_PREFIX)/lib/*.la
 	rm -rf $(NTFSPROGS_IPK_DIR)/sbin
-	rm -rf $(NTFSPROGS_IPK_DIR)/opt/include
+	rm -rf $(NTFSPROGS_IPK_DIR)$(TARGET_PREFIX)/include
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NTFSPROGS_IPK_DIR)
 
 #

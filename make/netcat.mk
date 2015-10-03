@@ -43,7 +43,7 @@ NETCAT_IPK_VERSION=5
 
 #
 # NETCAT_CONFFILES should be a list of user-editable files
-#NETCAT_CONFFILES=/opt/etc/netcat.conf /opt/etc/init.d/SXXnetcat
+#NETCAT_CONFFILES=$(TARGET_PREFIX)/etc/netcat.conf $(TARGET_PREFIX)/etc/init.d/SXXnetcat
 
 #
 # NETCAT_PATCHES should list any patches, in the the order in
@@ -121,7 +121,7 @@ $(NETCAT_BUILD_DIR)/.configured: $(DL_DIR)/$(NETCAT_SOURCE) $(DL_DIR)/$(NETCAT_D
 		mkdir -p debian; \
 		zcat $(DL_DIR)/$(NETCAT_DEBIAN_PATCH) | $(PATCH) -d debian; \
 		for i in `cat debian/series`; do cat debian/$$i | $(PATCH) -p1; done; \
-		sed -i -e 's|/usr/share|/opt/share|g' debian/nc.1; \
+		sed -i -e 's|/usr/share|$(TARGET_PREFIX)/share|g' debian/nc.1; \
 	)
 	touch $@
 
@@ -175,30 +175,30 @@ $(NETCAT_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(NETCAT_IPK_DIR)/opt/sbin or $(NETCAT_IPK_DIR)/opt/bin
+# Binaries should be installed into $(NETCAT_IPK_DIR)$(TARGET_PREFIX)/sbin or $(NETCAT_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(NETCAT_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(NETCAT_IPK_DIR)/opt/etc/netcat/...
-# Documentation files should be installed in $(NETCAT_IPK_DIR)/opt/doc/netcat/...
-# Daemon startup scripts should be installed in $(NETCAT_IPK_DIR)/opt/etc/init.d/S??netcat
+# Libraries and include files should be installed into $(NETCAT_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(NETCAT_IPK_DIR)$(TARGET_PREFIX)/etc/netcat/...
+# Documentation files should be installed in $(NETCAT_IPK_DIR)$(TARGET_PREFIX)/doc/netcat/...
+# Daemon startup scripts should be installed in $(NETCAT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??netcat
 #
 # You may need to patch your application to make it use these locations.
 #
 $(NETCAT_IPK): $(NETCAT_BUILD_DIR)/.built
 	rm -rf $(NETCAT_IPK_DIR) $(BUILD_DIR)/netcat_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(NETCAT_IPK_DIR)/opt/bin
-	$(INSTALL) $(NETCAT_BUILD_DIR)/nc $(NETCAT_IPK_DIR)/opt/bin/netcat-nc
-	$(INSTALL) -d $(NETCAT_IPK_DIR)/opt/man/man1
-	$(INSTALL) $(NETCAT_BUILD_DIR)/debian/nc.1 $(NETCAT_IPK_DIR)/opt/man/man1
-	$(INSTALL) -d $(NETCAT_IPK_DIR)/opt/share/doc/netcat
-	gzip -c $(NETCAT_BUILD_DIR)/README > $(NETCAT_IPK_DIR)/opt/share/doc/netcat/README.gz
-	$(STRIP_COMMAND) $(NETCAT_IPK_DIR)/opt/bin/netcat-nc
+	$(INSTALL) -d $(NETCAT_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(INSTALL) $(NETCAT_BUILD_DIR)/nc $(NETCAT_IPK_DIR)$(TARGET_PREFIX)/bin/netcat-nc
+	$(INSTALL) -d $(NETCAT_IPK_DIR)$(TARGET_PREFIX)/man/man1
+	$(INSTALL) $(NETCAT_BUILD_DIR)/debian/nc.1 $(NETCAT_IPK_DIR)$(TARGET_PREFIX)/man/man1
+	$(INSTALL) -d $(NETCAT_IPK_DIR)$(TARGET_PREFIX)/share/doc/netcat
+	gzip -c $(NETCAT_BUILD_DIR)/README > $(NETCAT_IPK_DIR)$(TARGET_PREFIX)/share/doc/netcat/README.gz
+	$(STRIP_COMMAND) $(NETCAT_IPK_DIR)$(TARGET_PREFIX)/bin/netcat-nc
 	$(MAKE) $(NETCAT_IPK_DIR)/CONTROL/control
 	(echo "#!/bin/sh"; \
-	 echo "update-alternatives --install /opt/bin/nc nc /opt/bin/netcat-nc 80"; \
+	 echo "update-alternatives --install $(TARGET_PREFIX)/bin/nc nc $(TARGET_PREFIX)/bin/netcat-nc 80"; \
 	) > $(NETCAT_IPK_DIR)/CONTROL/postinst
 	(echo "#!/bin/sh"; \
-	 echo "update-alternatives --remove nc /opt/bin/netcat-nc"; \
+	 echo "update-alternatives --remove nc $(TARGET_PREFIX)/bin/netcat-nc"; \
 	) > $(NETCAT_IPK_DIR)/CONTROL/prerm
 	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \

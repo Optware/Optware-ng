@@ -44,7 +44,7 @@ GNUPG_IPK_VERSION=1
 
 #
 # GNUPG_CONFFILES should be a list of user-editable files
-#GNUPG_CONFFILES=/opt/etc/gnupg.conf /opt/etc/init.d/SXXgnupg
+#GNUPG_CONFFILES=$(TARGET_PREFIX)/etc/gnupg.conf $(TARGET_PREFIX)/etc/init.d/SXXgnupg
 
 #
 # GNUPG_PATCHES should list any patches, in the the order in
@@ -196,19 +196,19 @@ $(GNUPG_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(GNUPG_IPK_DIR)/opt/sbin or $(GNUPG_IPK_DIR)/opt/bin
+# Binaries should be installed into $(GNUPG_IPK_DIR)$(TARGET_PREFIX)/sbin or $(GNUPG_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(GNUPG_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(GNUPG_IPK_DIR)/opt/etc/gnupg/...
-# Documentation files should be installed in $(GNUPG_IPK_DIR)/opt/doc/gnupg/...
-# Daemon startup scripts should be installed in $(GNUPG_IPK_DIR)/opt/etc/init.d/S??gnupg
+# Libraries and include files should be installed into $(GNUPG_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(GNUPG_IPK_DIR)$(TARGET_PREFIX)/etc/gnupg/...
+# Documentation files should be installed in $(GNUPG_IPK_DIR)$(TARGET_PREFIX)/doc/gnupg/...
+# Daemon startup scripts should be installed in $(GNUPG_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??gnupg
 #
 # You may need to patch your application to make it use these locations.
 #
 $(GNUPG_IPK): $(GNUPG_BUILD_DIR)/.built
 	rm -rf $(GNUPG_IPK_DIR) $(BUILD_DIR)/gnupg_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GNUPG_BUILD_DIR) DESTDIR=$(GNUPG_IPK_DIR) install-strip
-	rm -f $(GNUPG_IPK_DIR)/opt/share/info/dir
+	rm -f $(GNUPG_IPK_DIR)$(TARGET_PREFIX)/share/info/dir
 	$(MAKE) $(GNUPG_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GNUPG_IPK_DIR)
 

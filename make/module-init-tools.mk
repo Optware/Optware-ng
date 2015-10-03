@@ -40,7 +40,7 @@ MODULE_INIT_TOOLS_IPK_VERSION=1
 
 #
 # MODULE_INIT_TOOLS_CONFFILES should be a list of user-editable files
-#MODULE_INIT_TOOLS_CONFFILES=/opt/etc/module-init-tools.conf /opt/etc/init.d/SXXmodule-init-tools
+#MODULE_INIT_TOOLS_CONFFILES=$(TARGET_PREFIX)/etc/module-init-tools.conf $(TARGET_PREFIX)/etc/init.d/SXXmodule-init-tools
 
 #
 # MODULE_INIT_TOOLS_PATCHES should list any patches, in the the order in
@@ -59,7 +59,7 @@ endif
 MODULE_INIT_TOOLS_LDFLAGS=
 
 ifeq ($(OPTWARE_TARGET), $(filter cs05q3armel cs08q1armel i686g25 syno-x07 syno-e500 ts509, $(OPTWARE_TARGET)))
-MODULE_INIT_TOOLS_CONFIGURE_OPTIONS=--with-moddir=/opt/lib/modules
+MODULE_INIT_TOOLS_CONFIGURE_OPTIONS=--with-moddir=$(TARGET_PREFIX)/lib/modules
 endif
 
 #
@@ -185,12 +185,12 @@ $(MODULE_INIT_TOOLS_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(MODULE_INIT_TOOLS_IPK_DIR)/opt/sbin or $(MODULE_INIT_TOOLS_IPK_DIR)/opt/bin
+# Binaries should be installed into $(MODULE_INIT_TOOLS_IPK_DIR)$(TARGET_PREFIX)/sbin or $(MODULE_INIT_TOOLS_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(MODULE_INIT_TOOLS_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(MODULE_INIT_TOOLS_IPK_DIR)/opt/etc/module-init-tools/...
-# Documentation files should be installed in $(MODULE_INIT_TOOLS_IPK_DIR)/opt/doc/module-init-tools/...
-# Daemon startup scripts should be installed in $(MODULE_INIT_TOOLS_IPK_DIR)/opt/etc/init.d/S??module-init-tools
+# Libraries and include files should be installed into $(MODULE_INIT_TOOLS_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(MODULE_INIT_TOOLS_IPK_DIR)$(TARGET_PREFIX)/etc/module-init-tools/...
+# Documentation files should be installed in $(MODULE_INIT_TOOLS_IPK_DIR)$(TARGET_PREFIX)/doc/module-init-tools/...
+# Daemon startup scripts should be installed in $(MODULE_INIT_TOOLS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??module-init-tools
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -201,12 +201,12 @@ $(MODULE_INIT_TOOLS_IPK): $(MODULE_INIT_TOOLS_BUILD_DIR)/.built
 	$(MAKE) $(MODULE_INIT_TOOLS_IPK_DIR)/CONTROL/control
 	echo "#!/bin/sh" > $(MODULE_INIT_TOOLS_IPK_DIR)/CONTROL/postinst
 	echo "#!/bin/sh" > $(MODULE_INIT_TOOLS_IPK_DIR)/CONTROL/prerm
-	cd $(MODULE_INIT_TOOLS_IPK_DIR)/opt/sbin; \
+	cd $(MODULE_INIT_TOOLS_IPK_DIR)$(TARGET_PREFIX)/sbin; \
 	for f in depmod insmod modprobe rmmod; do \
 	    mv $$f module-init-tools-$$f; \
-	    echo "update-alternatives --install /opt/sbin/$$f $$f /opt/sbin/module-init-tools-$$f 80" \
+	    echo "update-alternatives --install $(TARGET_PREFIX)/sbin/$$f $$f $(TARGET_PREFIX)/sbin/module-init-tools-$$f 80" \
 		>> $(MODULE_INIT_TOOLS_IPK_DIR)/CONTROL/postinst; \
-	    echo "update-alternatives --remove $$f /opt/sbin/module-init-tools-$$f" \
+	    echo "update-alternatives --remove $$f $(TARGET_PREFIX)/sbin/module-init-tools-$$f" \
 		>> $(MODULE_INIT_TOOLS_IPK_DIR)/CONTROL/prerm; \
 	done
 	if test -n "$(UPD-ALT_PREFIX)"; then \

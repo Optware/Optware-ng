@@ -174,19 +174,19 @@ $(TAGED_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(TAGED_IPK_DIR)/opt/sbin or $(TAGED_IPK_DIR)/opt/bin
+# Binaries should be installed into $(TAGED_IPK_DIR)$(TARGET_PREFIX)/sbin or $(TAGED_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(TAGED_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(TAGED_IPK_DIR)/opt/etc/taged/...
-# Documentation files should be installed in $(TAGED_IPK_DIR)/opt/doc/taged/...
-# Daemon startup scripts should be installed in $(TAGED_IPK_DIR)/opt/etc/init.d/S??taged
+# Libraries and include files should be installed into $(TAGED_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(TAGED_IPK_DIR)$(TARGET_PREFIX)/etc/taged/...
+# Documentation files should be installed in $(TAGED_IPK_DIR)$(TARGET_PREFIX)/doc/taged/...
+# Daemon startup scripts should be installed in $(TAGED_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??taged
 #
 # You may need to patch your application to make it use these locations.
 #
 $(TAGED_IPK): $(TAGED_BUILD_DIR)/.built
 	rm -rf $(TAGED_IPK_DIR) $(BUILD_DIR)/taged_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(TAGED_BUILD_DIR) DESTDIR=$(TAGED_IPK_DIR) install-strip
-	rm -rf $(TAGED_IPK_DIR)/opt/lib $(TAGED_IPK_DIR)/opt/include
+	rm -rf $(TAGED_IPK_DIR)$(TARGET_PREFIX)/lib $(TAGED_IPK_DIR)$(TARGET_PREFIX)/include
 	$(MAKE) $(TAGED_IPK_DIR)/CONTROL/control
 	echo $(TAGED_CONFFILES) | sed -e 's/ /\n/g' > $(TAGED_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(TAGED_IPK_DIR)

@@ -41,7 +41,7 @@ GNUPG1_IPK_VERSION=1
 
 #
 # GNUPG1_CONFFILES should be a list of user-editable files
-#GNUPG1_CONFFILES=/opt/etc/gnupg1.conf /opt/etc/init.d/SXXgnupg1
+#GNUPG1_CONFFILES=$(TARGET_PREFIX)/etc/gnupg1.conf $(TARGET_PREFIX)/etc/init.d/SXXgnupg1
 
 #
 # GNUPG1_PATCHES should list any patches, in the the order in
@@ -183,20 +183,20 @@ $(GNUPG1_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(GNUPG1_IPK_DIR)/opt/sbin or $(GNUPG1_IPK_DIR)/opt/bin
+# Binaries should be installed into $(GNUPG1_IPK_DIR)$(TARGET_PREFIX)/sbin or $(GNUPG1_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(GNUPG1_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(GNUPG1_IPK_DIR)/opt/etc/gnupg1/...
-# Documentation files should be installed in $(GNUPG1_IPK_DIR)/opt/doc/gnupg1/...
-# Daemon startup scripts should be installed in $(GNUPG1_IPK_DIR)/opt/etc/init.d/S??gnupg1
+# Libraries and include files should be installed into $(GNUPG1_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(GNUPG1_IPK_DIR)$(TARGET_PREFIX)/etc/gnupg1/...
+# Documentation files should be installed in $(GNUPG1_IPK_DIR)$(TARGET_PREFIX)/doc/gnupg1/...
+# Daemon startup scripts should be installed in $(GNUPG1_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??gnupg1
 #
 # You may need to patch your application to make it use these locations.
 #
 $(GNUPG1_IPK): $(GNUPG1_BUILD_DIR)/.built
 	rm -rf $(GNUPG1_IPK_DIR) $(BUILD_DIR)/gnupg1_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(<D) DESTDIR=$(GNUPG1_IPK_DIR) install-strip
-	rm -f $(GNUPG1_IPK_DIR)/opt/share/info/dir
-	mv $(GNUPG1_IPK_DIR)/opt/share/gnupg $(GNUPG1_IPK_DIR)/opt/share/gnupg1
+	rm -f $(GNUPG1_IPK_DIR)$(TARGET_PREFIX)/share/info/dir
+	mv $(GNUPG1_IPK_DIR)$(TARGET_PREFIX)/share/gnupg $(GNUPG1_IPK_DIR)$(TARGET_PREFIX)/share/gnupg1
 	$(MAKE) $(GNUPG1_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GNUPG1_IPK_DIR)
 

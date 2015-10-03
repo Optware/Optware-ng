@@ -41,7 +41,7 @@ PY-MOIN_IPK_VERSION=1
 
 #
 # PY-MOIN_CONFFILES should be a list of user-editable files
-#PY-MOIN_CONFFILES=/opt/etc/py-moin.conf /opt/etc/init.d/SXXpy-moin
+#PY-MOIN_CONFFILES=$(TARGET_PREFIX)/etc/py-moin.conf $(TARGET_PREFIX)/etc/init.d/SXXpy-moin
 
 #
 # PY-MOIN_PATCHES should list any patches, in the the order in
@@ -120,17 +120,17 @@ $(PY-MOIN_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MOIN_SOURCE) $(PY-MOIN_PATCHES)
 	$(PY-MOIN_UNZIP) $(DL_DIR)/$(PY-MOIN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(PY-MOIN_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-MOIN_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-MOIN_DIR) $(@D)/2.6
-	sed -i -e 's|/usr/lib/python/|/opt/lib/python2.6/|' $(@D)/2.6/setup.py
+	sed -i -e 's|/usr/lib/python/|$(TARGET_PREFIX)/lib/python2.6/|' $(@D)/2.6/setup.py
 	(echo "[build_scripts]"; \
-         echo "executable=/opt/bin/python2.6") >> $(@D)/2.6/setup.cfg
+         echo "executable=$(TARGET_PREFIX)/bin/python2.6") >> $(@D)/2.6/setup.cfg
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-MOIN_DIR)
 	$(PY-MOIN_UNZIP) $(DL_DIR)/$(PY-MOIN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(PY-MOIN_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-MOIN_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-MOIN_DIR) $(@D)/2.5
-	sed -i -e 's|/usr/lib/python/|/opt/lib/python2.5/|' $(@D)/2.5/setup.py
+	sed -i -e 's|/usr/lib/python/|$(TARGET_PREFIX)/lib/python2.5/|' $(@D)/2.5/setup.py
 	(echo "[build_scripts]"; \
-         echo "executable=/opt/bin/python2.5") >> $(@D)/2.5/setup.cfg
+         echo "executable=$(TARGET_PREFIX)/bin/python2.5") >> $(@D)/2.5/setup.cfg
 	touch $@
 
 py-moin-unpack: $(PY-MOIN_BUILD_DIR)/.configured
@@ -210,12 +210,12 @@ $(PY25-MOIN_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PY-MOIN_IPK_DIR)/opt/sbin or $(PY-MOIN_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PY-MOIN_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PY-MOIN_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PY-MOIN_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PY-MOIN_IPK_DIR)/opt/etc/py-moin/...
-# Documentation files should be installed in $(PY-MOIN_IPK_DIR)/opt/doc/py-moin/...
-# Daemon startup scripts should be installed in $(PY-MOIN_IPK_DIR)/opt/etc/init.d/S??py-moin
+# Libraries and include files should be installed into $(PY-MOIN_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PY-MOIN_IPK_DIR)$(TARGET_PREFIX)/etc/py-moin/...
+# Documentation files should be installed in $(PY-MOIN_IPK_DIR)$(TARGET_PREFIX)/doc/py-moin/...
+# Daemon startup scripts should be installed in $(PY-MOIN_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??py-moin
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -224,13 +224,13 @@ $(PY26-MOIN_IPK): $(PY-MOIN_BUILD_DIR)/.built
 	rm -rf $(PY26-MOIN_IPK_DIR) $(BUILD_DIR)/py26-moin_*_$(TARGET_ARCH).ipk
 	cd $(PY-MOIN_BUILD_DIR)/2.6; \
 	    $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install \
-	    --root=$(PY26-MOIN_IPK_DIR) --prefix=/opt;
-	for f in $(PY26-MOIN_IPK_DIR)/opt/bin/*; \
+	    --root=$(PY26-MOIN_IPK_DIR) --prefix=$(TARGET_PREFIX);
+	for f in $(PY26-MOIN_IPK_DIR)$(TARGET_PREFIX)/bin/*; \
 		do mv $$f `echo $$f | sed 's|$$|-2.6|'`; done
-	rm -rf $(PY26-MOIN_IPK_DIR)/opt/share/
+	rm -rf $(PY26-MOIN_IPK_DIR)$(TARGET_PREFIX)/share/
 	sed -e 's|python2.[4-9]|python2.6|' $(PY-MOIN_SOURCE_DIR)/createinstance.sh \
-		> $(PY26-MOIN_IPK_DIR)/opt/bin/py26-moin-createinstance.sh
-	chmod 755 $(PY26-MOIN_IPK_DIR)/opt/bin/py26-moin-createinstance.sh
+		> $(PY26-MOIN_IPK_DIR)$(TARGET_PREFIX)/bin/py26-moin-createinstance.sh
+	chmod 755 $(PY26-MOIN_IPK_DIR)$(TARGET_PREFIX)/bin/py26-moin-createinstance.sh
 	$(MAKE) $(PY26-MOIN_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-MOIN_IPK_DIR)
 
@@ -239,20 +239,20 @@ $(PY25-MOIN_IPK) $(PY-MOIN-COMMON_IPK): $(PY-MOIN_BUILD_DIR)/.built
 	rm -rf $(PY-MOIN-COMMON_IPK_DIR) $(BUILD_DIR)/py-moin*_*_$(TARGET_ARCH).ipk
 	cd $(PY-MOIN_BUILD_DIR)/2.5; \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
-	    --root=$(PY25-MOIN_IPK_DIR) --prefix=/opt;
-	cd $(PY25-MOIN_IPK_DIR)/opt/share/moin; \
+	    --root=$(PY25-MOIN_IPK_DIR) --prefix=$(TARGET_PREFIX);
+	cd $(PY25-MOIN_IPK_DIR)$(TARGET_PREFIX)/share/moin; \
 	    tar --remove-files -cvzf underlay.tar.gz underlay; \
 	    rm -rf underlay
 	sed -e 's|python2.[4-9]|python2.5|' $(PY-MOIN_SOURCE_DIR)/createinstance.sh \
-		> $(PY25-MOIN_IPK_DIR)/opt/bin/py25-moin-createinstance.sh
-	chmod 755 $(PY25-MOIN_IPK_DIR)/opt/bin/py25-moin-createinstance.sh
+		> $(PY25-MOIN_IPK_DIR)$(TARGET_PREFIX)/bin/py25-moin-createinstance.sh
+	chmod 755 $(PY25-MOIN_IPK_DIR)$(TARGET_PREFIX)/bin/py25-moin-createinstance.sh
 	$(MAKE) $(PY25-MOIN_IPK_DIR)/CONTROL/control
 	$(MAKE) $(PY-MOIN-COMMON_IPK_DIR)/CONTROL/control
-	$(INSTALL) -d $(PY-MOIN-COMMON_IPK_DIR)/opt/
-	mv $(PY25-MOIN_IPK_DIR)/opt/share $(PY-MOIN-COMMON_IPK_DIR)/opt/
-#	chmod o+r $(PY-MOIN-COMMON_IPK_DIR)/opt/share/moin/data/*-log
+	$(INSTALL) -d $(PY-MOIN-COMMON_IPK_DIR)$(TARGET_PREFIX)/
+	mv $(PY25-MOIN_IPK_DIR)$(TARGET_PREFIX)/share $(PY-MOIN-COMMON_IPK_DIR)$(TARGET_PREFIX)/
+#	chmod o+r $(PY-MOIN-COMMON_IPK_DIR)$(TARGET_PREFIX)/share/moin/data/*-log
 	for f in wikiserver.py wikiserverconfig.py wikiserverlogging.conf; \
-	do install $(PY-MOIN_BUILD_DIR)/2.5/$${f} $(PY-MOIN-COMMON_IPK_DIR)/opt/share/moin/$${f}; done
+	do install $(PY-MOIN_BUILD_DIR)/2.5/$${f} $(PY-MOIN-COMMON_IPK_DIR)$(TARGET_PREFIX)/share/moin/$${f}; done
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-MOIN-COMMON_IPK_DIR)
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-MOIN_IPK_DIR)
 

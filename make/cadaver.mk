@@ -40,7 +40,7 @@ CADAVER_IPK_VERSION=1
 
 #
 # CADAVER_CONFFILES should be a list of user-editable files
-#CADAVER_CONFFILES=/opt/etc/cadaver.conf /opt/etc/init.d/SXXcadaver
+#CADAVER_CONFFILES=$(TARGET_PREFIX)/etc/cadaver.conf $(TARGET_PREFIX)/etc/init.d/SXXcadaver
 
 #
 # CADAVER_PATCHES should list any patches, in the the order in
@@ -182,19 +182,19 @@ $(CADAVER_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(CADAVER_IPK_DIR)/opt/sbin or $(CADAVER_IPK_DIR)/opt/bin
+# Binaries should be installed into $(CADAVER_IPK_DIR)$(TARGET_PREFIX)/sbin or $(CADAVER_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(CADAVER_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(CADAVER_IPK_DIR)/opt/etc/cadaver/...
-# Documentation files should be installed in $(CADAVER_IPK_DIR)/opt/doc/cadaver/...
-# Daemon startup scripts should be installed in $(CADAVER_IPK_DIR)/opt/etc/init.d/S??cadaver
+# Libraries and include files should be installed into $(CADAVER_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(CADAVER_IPK_DIR)$(TARGET_PREFIX)/etc/cadaver/...
+# Documentation files should be installed in $(CADAVER_IPK_DIR)$(TARGET_PREFIX)/doc/cadaver/...
+# Daemon startup scripts should be installed in $(CADAVER_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??cadaver
 #
 # You may need to patch your application to make it use these locations.
 #
 $(CADAVER_IPK): $(CADAVER_BUILD_DIR)/.built
 	rm -rf $(CADAVER_IPK_DIR) $(BUILD_DIR)/cadaver_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(CADAVER_BUILD_DIR) DESTDIR=$(CADAVER_IPK_DIR) install
-	$(STRIP_COMMAND) $(CADAVER_IPK_DIR)/opt/bin/cadaver
+	$(STRIP_COMMAND) $(CADAVER_IPK_DIR)$(TARGET_PREFIX)/bin/cadaver
 	$(MAKE) $(CADAVER_IPK_DIR)/CONTROL/control
 	echo $(CADAVER_CONFFILES) | sed -e 's/ /\n/g' > $(CADAVER_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CADAVER_IPK_DIR)

@@ -63,8 +63,8 @@ endif
 #
 # OPENSER_CONFFILES should be a list of user-editable files
 OPENSER_CONFFILES=\
-/opt/etc/openser/openser.cfg \
-/opt/etc/openser/openserctlrc
+$(TARGET_PREFIX)/etc/openser/openser.cfg \
+$(TARGET_PREFIX)/etc/openser/openserctlrc
 
 #
 # OPENSER_PATCHES should list any patches, in the the order in
@@ -266,12 +266,12 @@ $(OPENSER_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(OPENSER_IPK_DIR)/opt/sbin or $(OPENSER_IPK_DIR)/opt/bin
+# Binaries should be installed into $(OPENSER_IPK_DIR)$(TARGET_PREFIX)/sbin or $(OPENSER_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(OPENSER_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(OPENSER_IPK_DIR)/opt/etc/openser/...
-# Documentation files should be installed in $(OPENSER_IPK_DIR)/opt/doc/openser/...
-# Daemon startup scripts should be installed in $(OPENSER_IPK_DIR)/opt/etc/init.d/S??openser
+# Libraries and include files should be installed into $(OPENSER_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(OPENSER_IPK_DIR)$(TARGET_PREFIX)/etc/openser/...
+# Documentation files should be installed in $(OPENSER_IPK_DIR)$(TARGET_PREFIX)/doc/openser/...
+# Daemon startup scripts should be installed in $(OPENSER_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??openser
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -290,44 +290,44 @@ $(OPENSER_IPK): $(OPENSER_BUILD_DIR)/.built
 	$(MAKE) $(OPENSER_IPK_DIR)/CONTROL/control
 	echo $(OPENSER_CONFFILES) | sed -e 's/ /\n/g' > $(OPENSER_IPK_DIR)/CONTROL/conffiles
 
-	for f in `find $(OPENSER_IPK_DIR)/opt/lib/openser/modules -name '*.so'`; do $(STRIP_COMMAND) $$f; done
-	$(STRIP_COMMAND) $(OPENSER_IPK_DIR)/opt/sbin/openser
-	$(STRIP_COMMAND) $(OPENSER_IPK_DIR)/opt/sbin/openserunix
+	for f in `find $(OPENSER_IPK_DIR)$(TARGET_PREFIX)/lib/openser/modules -name '*.so'`; do $(STRIP_COMMAND) $$f; done
+	$(STRIP_COMMAND) $(OPENSER_IPK_DIR)$(TARGET_PREFIX)/sbin/openser
+	$(STRIP_COMMAND) $(OPENSER_IPK_DIR)$(TARGET_PREFIX)/sbin/openserunix
 
-	sed -i -e 's#$(OPENSER_IPK_DIR)##g' $(OPENSER_IPK_DIR)/opt/sbin/openserdbctl
-	sed -i -e 's#PATH=$$PATH:/opt/sbin/#PATH=$$PATH:/opt/sbin/:/opt/bin/#' $(OPENSER_IPK_DIR)/opt/sbin/openserdbctl
+	sed -i -e 's#$(OPENSER_IPK_DIR)##g' $(OPENSER_IPK_DIR)$(TARGET_PREFIX)/sbin/openserdbctl
+	sed -i -e 's#PATH=$$PATH:$(TARGET_PREFIX)/sbin/#PATH=$$PATH:$(TARGET_PREFIX)/sbin/:$(TARGET_PREFIX)/bin/#' $(OPENSER_IPK_DIR)$(TARGET_PREFIX)/sbin/openserdbctl
 
-	sed -i -e 's#$(OPENSER_IPK_DIR)##g' $(OPENSER_IPK_DIR)/opt/sbin/openserctl
-	sed -i -e 's#PATH=$$PATH:/opt/sbin/#PATH=$$PATH:/opt/sbin/:/opt/bin/#' $(OPENSER_IPK_DIR)/opt/sbin/openserctl
+	sed -i -e 's#$(OPENSER_IPK_DIR)##g' $(OPENSER_IPK_DIR)$(TARGET_PREFIX)/sbin/openserctl
+	sed -i -e 's#PATH=$$PATH:$(TARGET_PREFIX)/sbin/#PATH=$$PATH:$(TARGET_PREFIX)/sbin/:$(TARGET_PREFIX)/bin/#' $(OPENSER_IPK_DIR)$(TARGET_PREFIX)/sbin/openserctl
 
-	sed -i -e 's#$(OPENSER_IPK_DIR)##g' $(OPENSER_IPK_DIR)/opt/lib/openser/openserctl/openserctl.base
-	sed -i -e 's#PATH=$$PATH:/opt/sbin/#PATH=$$PATH:/opt/sbin/:/opt/bin/#' $(OPENSER_IPK_DIR)/opt/lib/openser/openserctl/openserctl.base
+	sed -i -e 's#$(OPENSER_IPK_DIR)##g' $(OPENSER_IPK_DIR)$(TARGET_PREFIX)/lib/openser/openserctl/openserctl.base
+	sed -i -e 's#PATH=$$PATH:$(TARGET_PREFIX)/sbin/#PATH=$$PATH:$(TARGET_PREFIX)/sbin/:$(TARGET_PREFIX)/bin/#' $(OPENSER_IPK_DIR)$(TARGET_PREFIX)/lib/openser/openserctl/openserctl.base
 
-	sed -i -e 's#$(OPENSER_IPK_DIR)##g' $(OPENSER_IPK_DIR)/opt/lib/openser/openserctl/openserdbctl.base
-	sed -i -e 's#PATH=$$PATH:/opt/sbin/#PATH=$$PATH:/opt/sbin/:/opt/bin/#' $(OPENSER_IPK_DIR)/opt/lib/openser/openserctl/openserdbctl.base
+	sed -i -e 's#$(OPENSER_IPK_DIR)##g' $(OPENSER_IPK_DIR)$(TARGET_PREFIX)/lib/openser/openserctl/openserdbctl.base
+	sed -i -e 's#PATH=$$PATH:$(TARGET_PREFIX)/sbin/#PATH=$$PATH:$(TARGET_PREFIX)/sbin/:$(TARGET_PREFIX)/bin/#' $(OPENSER_IPK_DIR)$(TARGET_PREFIX)/lib/openser/openserctl/openserdbctl.base
 
 	############################
 	# $(INSTALL)ing example files #
 	############################
-	sed -i -e 's#$(OPENSER_IPK_DIR)##g' -e 's#/usr/local#/opt#g' $(OPENSER_IPK_DIR)/opt/etc/openser/openser.cfg
-	cp -r $(OPENSER_BUILD_DIR)/examples $(OPENSER_IPK_DIR)/opt/etc/openser/
-	for f in $(OPENSER_IPK_DIR)/opt/etc/openser/*cfg ; do sed -i -e 's#$(OPENSER_IPK_DIR)##g' -e 's#/usr/local#/opt#g' $$f; done
-	cp $(OPENSER_IPK_DIR)/opt/etc/openser/openser.cfg $(OPENSER_IPK_DIR)/opt/etc/openser/examples
-	cp $(OPENSER_IPK_DIR)/opt/etc/openser/openserctlrc $(OPENSER_IPK_DIR)/opt/etc/openser/examples
+	sed -i -e 's#$(OPENSER_IPK_DIR)##g' -e 's#/usr/local#$(TARGET_PREFIX)#g' $(OPENSER_IPK_DIR)$(TARGET_PREFIX)/etc/openser/openser.cfg
+	cp -r $(OPENSER_BUILD_DIR)/examples $(OPENSER_IPK_DIR)$(TARGET_PREFIX)/etc/openser/
+	for f in $(OPENSER_IPK_DIR)$(TARGET_PREFIX)/etc/openser/*cfg ; do sed -i -e 's#$(OPENSER_IPK_DIR)##g' -e 's#/usr/local#$(TARGET_PREFIX)#g' $$f; done
+	cp $(OPENSER_IPK_DIR)$(TARGET_PREFIX)/etc/openser/openser.cfg $(OPENSER_IPK_DIR)$(TARGET_PREFIX)/etc/openser/examples
+	cp $(OPENSER_IPK_DIR)$(TARGET_PREFIX)/etc/openser/openserctlrc $(OPENSER_IPK_DIR)$(TARGET_PREFIX)/etc/openser/examples
 
 	############################
 	# $(INSTALL)ing perl examples #
 	############################
-	mkdir $(OPENSER_IPK_DIR)/opt/etc/openser/examples/perl
-	cp -r $(OPENSER_BUILD_DIR)/modules/perl/doc/samples/* $(OPENSER_IPK_DIR)/opt/etc/openser/examples/perl
+	mkdir $(OPENSER_IPK_DIR)$(TARGET_PREFIX)/etc/openser/examples/perl
+	cp -r $(OPENSER_BUILD_DIR)/modules/perl/doc/samples/* $(OPENSER_IPK_DIR)$(TARGET_PREFIX)/etc/openser/examples/perl
 
 	####################
 	# fixing man files #
 	####################
-	sed -i -e 's#$(OPENSER_IPK_DIR)##g' -e 's#/usr/local#/opt#g' $(OPENSER_IPK_DIR)/opt/share/man/man8/openser.8
-	sed -i -e 's#$(OPENSER_IPK_DIR)##g' -e 's#/usr/local#/opt#g' $(OPENSER_IPK_DIR)/opt/share/man/man8/openserunix.8
-	sed -i -e 's#$(OPENSER_IPK_DIR)##g' -e 's#/usr/local#/opt#g' $(OPENSER_IPK_DIR)/opt/share/man/man5/openser.cfg.5
-	for f in $(OPENSER_IPK_DIR)/opt/share/doc/openser/README* ; do sed -i -e 's#$(OPENSER_IPK_DIR)##g' -e 's#/usr/local#/opt#g' $$f; done
+	sed -i -e 's#$(OPENSER_IPK_DIR)##g' -e 's#/usr/local#$(TARGET_PREFIX)#g' $(OPENSER_IPK_DIR)$(TARGET_PREFIX)/share/man/man8/openser.8
+	sed -i -e 's#$(OPENSER_IPK_DIR)##g' -e 's#/usr/local#$(TARGET_PREFIX)#g' $(OPENSER_IPK_DIR)$(TARGET_PREFIX)/share/man/man8/openserunix.8
+	sed -i -e 's#$(OPENSER_IPK_DIR)##g' -e 's#/usr/local#$(TARGET_PREFIX)#g' $(OPENSER_IPK_DIR)$(TARGET_PREFIX)/share/man/man5/openser.cfg.5
+	for f in $(OPENSER_IPK_DIR)$(TARGET_PREFIX)/share/doc/openser/README* ; do sed -i -e 's#$(OPENSER_IPK_DIR)##g' -e 's#/usr/local#$(TARGET_PREFIX)#g' $$f; done
 	
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(OPENSER_IPK_DIR)
 

@@ -45,7 +45,7 @@ LIBATOMIC_OPS_IPK_VERSION=1
 
 #
 # LIBATOMIC_OPS_CONFFILES should be a list of user-editable files
-#LIBATOMIC_OPS_CONFFILES=/opt/etc/libatomic-ops.conf /opt/etc/init.d/SXXlibatomic-ops
+#LIBATOMIC_OPS_CONFFILES=$(TARGET_PREFIX)/etc/libatomic-ops.conf $(TARGET_PREFIX)/etc/init.d/SXXlibatomic-ops
 
 #
 # LIBATOMIC_OPS_PATCHES should list any patches, in the the order in
@@ -178,22 +178,22 @@ $(LIBATOMIC_OPS_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LIBATOMIC_OPS_IPK_DIR)/opt/sbin or $(LIBATOMIC_OPS_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LIBATOMIC_OPS_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LIBATOMIC_OPS_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LIBATOMIC_OPS_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LIBATOMIC_OPS_IPK_DIR)/opt/etc/libatomic-ops/...
-# Documentation files should be installed in $(LIBATOMIC_OPS_IPK_DIR)/opt/doc/libatomic-ops/...
-# Daemon startup scripts should be installed in $(LIBATOMIC_OPS_IPK_DIR)/opt/etc/init.d/S??libatomic-ops
+# Libraries and include files should be installed into $(LIBATOMIC_OPS_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LIBATOMIC_OPS_IPK_DIR)$(TARGET_PREFIX)/etc/libatomic-ops/...
+# Documentation files should be installed in $(LIBATOMIC_OPS_IPK_DIR)$(TARGET_PREFIX)/doc/libatomic-ops/...
+# Daemon startup scripts should be installed in $(LIBATOMIC_OPS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??libatomic-ops
 #
 # You may need to patch your application to make it use these locations.
 #
 $(LIBATOMIC_OPS_IPK): $(LIBATOMIC_OPS_BUILD_DIR)/.built
 	rm -rf $(LIBATOMIC_OPS_IPK_DIR) $(BUILD_DIR)/libatomic-ops_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBATOMIC_OPS_BUILD_DIR) DESTDIR=$(LIBATOMIC_OPS_IPK_DIR) install-strip
-#	$(INSTALL) -d $(LIBATOMIC_OPS_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(LIBATOMIC_OPS_SOURCE_DIR)/libatomic-ops.conf $(LIBATOMIC_OPS_IPK_DIR)/opt/etc/libatomic-ops.conf
-#	$(INSTALL) -d $(LIBATOMIC_OPS_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(LIBATOMIC_OPS_SOURCE_DIR)/rc.libatomic-ops $(LIBATOMIC_OPS_IPK_DIR)/opt/etc/init.d/SXXlibatomic-ops
+#	$(INSTALL) -d $(LIBATOMIC_OPS_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(LIBATOMIC_OPS_SOURCE_DIR)/libatomic-ops.conf $(LIBATOMIC_OPS_IPK_DIR)$(TARGET_PREFIX)/etc/libatomic-ops.conf
+#	$(INSTALL) -d $(LIBATOMIC_OPS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(LIBATOMIC_OPS_SOURCE_DIR)/rc.libatomic-ops $(LIBATOMIC_OPS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibatomic-ops
 	$(MAKE) $(LIBATOMIC_OPS_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(LIBATOMIC_OPS_SOURCE_DIR)/postinst $(LIBATOMIC_OPS_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 755 $(LIBATOMIC_OPS_SOURCE_DIR)/prerm $(LIBATOMIC_OPS_IPK_DIR)/CONTROL/prerm

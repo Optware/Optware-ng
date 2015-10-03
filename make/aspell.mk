@@ -42,7 +42,7 @@ ASPELL_IPK_VERSION=1
 
 #
 # ASPELL_CONFFILES should be a list of user-editable files
-ASPELL_CONFFILES=/opt/etc/aspell.conf
+ASPELL_CONFFILES=$(TARGET_PREFIX)/etc/aspell.conf
 
 #
 # ASPELL_PATCHES should list any patches, in the the order in
@@ -180,24 +180,24 @@ $(ASPELL_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(ASPELL_IPK_DIR)/opt/sbin or $(ASPELL_IPK_DIR)/opt/bin
+# Binaries should be installed into $(ASPELL_IPK_DIR)$(TARGET_PREFIX)/sbin or $(ASPELL_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(ASPELL_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(ASPELL_IPK_DIR)/opt/etc/aspell/...
-# Documentation files should be installed in $(ASPELL_IPK_DIR)/opt/doc/aspell/...
-# Daemon startup scripts should be installed in $(ASPELL_IPK_DIR)/opt/etc/init.d/S??aspell
+# Libraries and include files should be installed into $(ASPELL_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(ASPELL_IPK_DIR)$(TARGET_PREFIX)/etc/aspell/...
+# Documentation files should be installed in $(ASPELL_IPK_DIR)$(TARGET_PREFIX)/doc/aspell/...
+# Daemon startup scripts should be installed in $(ASPELL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??aspell
 #
 # You may need to patch your application to make it use these locations.
 #
 $(ASPELL_IPK): $(ASPELL_BUILD_DIR)/.built
 	rm -rf $(ASPELL_IPK_DIR) $(BUILD_DIR)/aspell_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(ASPELL_BUILD_DIR) DESTDIR=$(ASPELL_IPK_DIR) install-strip
-	rm -f $(ASPELL_IPK_DIR)/opt/share/info/dir
-	$(INSTALL) -d $(ASPELL_IPK_DIR)/opt/etc/
-	$(INSTALL) -m 644 $(ASPELL_SOURCE_DIR)/aspell.conf $(ASPELL_IPK_DIR)/opt/etc/aspell.conf
-#	$(INSTALL) -d $(ASPELL_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(ASPELL_SOURCE_DIR)/rc.aspell $(ASPELL_IPK_DIR)/opt/etc/init.d/SXXaspell
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(ASPELL_IPK_DIR)/opt/etc/init.d/SXXaspell
+	rm -f $(ASPELL_IPK_DIR)$(TARGET_PREFIX)/share/info/dir
+	$(INSTALL) -d $(ASPELL_IPK_DIR)$(TARGET_PREFIX)/etc/
+	$(INSTALL) -m 644 $(ASPELL_SOURCE_DIR)/aspell.conf $(ASPELL_IPK_DIR)$(TARGET_PREFIX)/etc/aspell.conf
+#	$(INSTALL) -d $(ASPELL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(ASPELL_SOURCE_DIR)/rc.aspell $(ASPELL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXaspell
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(ASPELL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXaspell
 	$(MAKE) $(ASPELL_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 755 $(ASPELL_SOURCE_DIR)/postinst $(ASPELL_IPK_DIR)/CONTROL/postinst
 	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(ASPELL_IPK_DIR)/CONTROL/postinst

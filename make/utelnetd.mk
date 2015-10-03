@@ -40,7 +40,7 @@ UTELNETD_IPK_VERSION=2
 
 #
 # UTELNETD_CONFFILES should be a list of user-editable files
-#UTELNETD_CONFFILES=/opt/etc/utelnetd.conf /opt/etc/init.d/SXXutelnetd
+#UTELNETD_CONFFILES=$(TARGET_PREFIX)/etc/utelnetd.conf $(TARGET_PREFIX)/etc/init.d/SXXutelnetd
 
 #
 # UTELNETD_PATCHES should list any patches, in the the order in
@@ -141,7 +141,7 @@ $(UTELNETD_BUILD_DIR)/.built: $(UTELNETD_BUILD_DIR)/.configured
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(UTELNETD_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(UTELNETD_LDFLAGS)" \
-		LOGIN=/bin/login INSTDIR=/opt/bin \
+		LOGIN=/bin/login INSTDIR=$(TARGET_PREFIX)/bin \
 ;
 	touch $@
 
@@ -182,12 +182,12 @@ $(UTELNETD_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(UTELNETD_IPK_DIR)/opt/sbin or $(UTELNETD_IPK_DIR)/opt/bin
+# Binaries should be installed into $(UTELNETD_IPK_DIR)$(TARGET_PREFIX)/sbin or $(UTELNETD_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(UTELNETD_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(UTELNETD_IPK_DIR)/opt/etc/utelnetd/...
-# Documentation files should be installed in $(UTELNETD_IPK_DIR)/opt/doc/utelnetd/...
-# Daemon startup scripts should be installed in $(UTELNETD_IPK_DIR)/opt/etc/init.d/S??utelnetd
+# Libraries and include files should be installed into $(UTELNETD_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(UTELNETD_IPK_DIR)$(TARGET_PREFIX)/etc/utelnetd/...
+# Documentation files should be installed in $(UTELNETD_IPK_DIR)$(TARGET_PREFIX)/doc/utelnetd/...
+# Daemon startup scripts should be installed in $(UTELNETD_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??utelnetd
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -197,7 +197,7 @@ $(UTELNETD_IPK): $(UTELNETD_BUILD_DIR)/.built
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(UTELNETD_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(UTELNETD_LDFLAGS)" \
-		LOGIN=/bin/login INSTDIR=$(UTELNETD_IPK_DIR)/opt/bin \
+		LOGIN=/bin/login INSTDIR=$(UTELNETD_IPK_DIR)$(TARGET_PREFIX)/bin \
 		INSTOWNER=`id -u` INSTGROUP=`id -g` \
 ;
 	$(MAKE) $(UTELNETD_IPK_DIR)/CONTROL/control

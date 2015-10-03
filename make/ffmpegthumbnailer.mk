@@ -41,7 +41,7 @@ FFMPEGTHUMBNAILER_IPK_VERSION=1
 
 #
 # FFMPEGTHUMBNAILER_CONFFILES should be a list of user-editable files
-#FFMPEGTHUMBNAILER_CONFFILES=/opt/etc/ffmpegthumbnailer.conf /opt/etc/init.d/SXXffmpegthumbnailer
+#FFMPEGTHUMBNAILER_CONFFILES=$(TARGET_PREFIX)/etc/ffmpegthumbnailer.conf $(TARGET_PREFIX)/etc/init.d/SXXffmpegthumbnailer
 
 #
 # FFMPEGTHUMBNAILER_PATCHES should list any patches, in the the order in
@@ -184,25 +184,25 @@ $(FFMPEGTHUMBNAILER_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(FFMPEGTHUMBNAILER_IPK_DIR)/opt/sbin or $(FFMPEGTHUMBNAILER_IPK_DIR)/opt/bin
+# Binaries should be installed into $(FFMPEGTHUMBNAILER_IPK_DIR)$(TARGET_PREFIX)/sbin or $(FFMPEGTHUMBNAILER_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(FFMPEGTHUMBNAILER_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(FFMPEGTHUMBNAILER_IPK_DIR)/opt/etc/ffmpegthumbnailer/...
-# Documentation files should be installed in $(FFMPEGTHUMBNAILER_IPK_DIR)/opt/doc/ffmpegthumbnailer/...
-# Daemon startup scripts should be installed in $(FFMPEGTHUMBNAILER_IPK_DIR)/opt/etc/init.d/S??ffmpegthumbnailer
+# Libraries and include files should be installed into $(FFMPEGTHUMBNAILER_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(FFMPEGTHUMBNAILER_IPK_DIR)$(TARGET_PREFIX)/etc/ffmpegthumbnailer/...
+# Documentation files should be installed in $(FFMPEGTHUMBNAILER_IPK_DIR)$(TARGET_PREFIX)/doc/ffmpegthumbnailer/...
+# Daemon startup scripts should be installed in $(FFMPEGTHUMBNAILER_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??ffmpegthumbnailer
 #
 # You may need to patch your application to make it use these locations.
 #
 $(FFMPEGTHUMBNAILER_IPK): $(FFMPEGTHUMBNAILER_BUILD_DIR)/.built
 	rm -rf $(FFMPEGTHUMBNAILER_IPK_DIR) $(BUILD_DIR)/ffmpegthumbnailer_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(FFMPEGTHUMBNAILER_BUILD_DIR) DESTDIR=$(FFMPEGTHUMBNAILER_IPK_DIR) install
-	$(STRIP_COMMAND) $(FFMPEGTHUMBNAILER_IPK_DIR)/opt/{bin/*,lib/*.so}
-	rm -f $(FFMPEGTHUMBNAILER_IPK_DIR)/opt/lib/*.la
-#	$(INSTALL) -d $(FFMPEGTHUMBNAILER_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(FFMPEGTHUMBNAILER_SOURCE_DIR)/ffmpegthumbnailer.conf $(FFMPEGTHUMBNAILER_IPK_DIR)/opt/etc/ffmpegthumbnailer.conf
-#	$(INSTALL) -d $(FFMPEGTHUMBNAILER_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(FFMPEGTHUMBNAILER_SOURCE_DIR)/rc.ffmpegthumbnailer $(FFMPEGTHUMBNAILER_IPK_DIR)/opt/etc/init.d/SXXffmpegthumbnailer
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(FFMPEGTHUMBNAILER_IPK_DIR)/opt/etc/init.d/SXXffmpegthumbnailer
+	$(STRIP_COMMAND) $(FFMPEGTHUMBNAILER_IPK_DIR)$(TARGET_PREFIX)/{bin/*,lib/*.so}
+	rm -f $(FFMPEGTHUMBNAILER_IPK_DIR)$(TARGET_PREFIX)/lib/*.la
+#	$(INSTALL) -d $(FFMPEGTHUMBNAILER_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(FFMPEGTHUMBNAILER_SOURCE_DIR)/ffmpegthumbnailer.conf $(FFMPEGTHUMBNAILER_IPK_DIR)$(TARGET_PREFIX)/etc/ffmpegthumbnailer.conf
+#	$(INSTALL) -d $(FFMPEGTHUMBNAILER_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(FFMPEGTHUMBNAILER_SOURCE_DIR)/rc.ffmpegthumbnailer $(FFMPEGTHUMBNAILER_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXffmpegthumbnailer
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(FFMPEGTHUMBNAILER_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXffmpegthumbnailer
 	$(MAKE) $(FFMPEGTHUMBNAILER_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(FFMPEGTHUMBNAILER_SOURCE_DIR)/postinst $(FFMPEGTHUMBNAILER_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(FFMPEGTHUMBNAILER_IPK_DIR)/CONTROL/postinst

@@ -40,7 +40,7 @@ SHNTOOL_IPK_VERSION=1
 
 #
 # SHNTOOL_CONFFILES should be a list of user-editable files
-#SHNTOOL_CONFFILES=/opt/etc/shntool.conf /opt/etc/init.d/SXXshntool
+#SHNTOOL_CONFFILES=$(TARGET_PREFIX)/etc/shntool.conf $(TARGET_PREFIX)/etc/init.d/SXXshntool
 
 #
 # SHNTOOL_PATCHES should list any patches, in the the order in
@@ -177,23 +177,23 @@ $(SHNTOOL_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(SHNTOOL_IPK_DIR)/opt/sbin or $(SHNTOOL_IPK_DIR)/opt/bin
+# Binaries should be installed into $(SHNTOOL_IPK_DIR)$(TARGET_PREFIX)/sbin or $(SHNTOOL_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(SHNTOOL_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(SHNTOOL_IPK_DIR)/opt/etc/shntool/...
-# Documentation files should be installed in $(SHNTOOL_IPK_DIR)/opt/doc/shntool/...
-# Daemon startup scripts should be installed in $(SHNTOOL_IPK_DIR)/opt/etc/init.d/S??shntool
+# Libraries and include files should be installed into $(SHNTOOL_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(SHNTOOL_IPK_DIR)$(TARGET_PREFIX)/etc/shntool/...
+# Documentation files should be installed in $(SHNTOOL_IPK_DIR)$(TARGET_PREFIX)/doc/shntool/...
+# Daemon startup scripts should be installed in $(SHNTOOL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??shntool
 #
 # You may need to patch your application to make it use these locations.
 #
 $(SHNTOOL_IPK): $(SHNTOOL_BUILD_DIR)/.built
 	rm -rf $(SHNTOOL_IPK_DIR) $(BUILD_DIR)/shntool_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SHNTOOL_BUILD_DIR) DESTDIR=$(SHNTOOL_IPK_DIR) install-strip
-#	$(INSTALL) -d $(SHNTOOL_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(SHNTOOL_SOURCE_DIR)/shntool.conf $(SHNTOOL_IPK_DIR)/opt/etc/shntool.conf
-#	$(INSTALL) -d $(SHNTOOL_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(SHNTOOL_SOURCE_DIR)/rc.shntool $(SHNTOOL_IPK_DIR)/opt/etc/init.d/SXXshntool
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SHNTOOL_IPK_DIR)/opt/etc/init.d/SXXshntool
+#	$(INSTALL) -d $(SHNTOOL_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(SHNTOOL_SOURCE_DIR)/shntool.conf $(SHNTOOL_IPK_DIR)$(TARGET_PREFIX)/etc/shntool.conf
+#	$(INSTALL) -d $(SHNTOOL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(SHNTOOL_SOURCE_DIR)/rc.shntool $(SHNTOOL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXshntool
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SHNTOOL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXshntool
 	$(MAKE) $(SHNTOOL_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(SHNTOOL_SOURCE_DIR)/postinst $(SHNTOOL_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SHNTOOL_IPK_DIR)/CONTROL/postinst

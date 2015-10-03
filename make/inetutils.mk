@@ -124,8 +124,8 @@ $(INETUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(INETUTILS_SOURCE) $(INETUTILS_PA
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=$(TARGET_PREFIX) \
-		--infodir=/opt/doc/inetutils \
-		--mandir=/opt/share/man \
+		--infodir=$(TARGET_PREFIX)/doc/inetutils \
+		--mandir=$(TARGET_PREFIX)/share/man \
 		--with-ncurses \
 		--with-ncurses-include-dir=$(STAGING_INCLUDE_DIR)/ncurses \
 		--program-prefix="" \
@@ -176,12 +176,12 @@ $(INETUTILS_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(INETUTILS_IPK_DIR)/opt/sbin or $(INETUTILS_IPK_DIR)/opt/bin
+# Binaries should be installed into $(INETUTILS_IPK_DIR)$(TARGET_PREFIX)/sbin or $(INETUTILS_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(INETUTILS_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(INETUTILS_IPK_DIR)/opt/etc/inetutils/...
-# Documentation files should be installed in $(INETUTILS_IPK_DIR)/opt/doc/inetutils/...
-# Daemon startup scripts should be installed in $(INETUTILS_IPK_DIR)/opt/etc/init.d/S??inetutils
+# Libraries and include files should be installed into $(INETUTILS_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(INETUTILS_IPK_DIR)$(TARGET_PREFIX)/etc/inetutils/...
+# Documentation files should be installed in $(INETUTILS_IPK_DIR)$(TARGET_PREFIX)/doc/inetutils/...
+# Daemon startup scripts should be installed in $(INETUTILS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??inetutils
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -190,19 +190,19 @@ $(INETUTILS_IPK): $(INETUTILS_BUILD_DIR)/.built
 	# Install everything
 	$(MAKE) -C $(INETUTILS_BUILD_DIR) DESTDIR=$(INETUTILS_IPK_DIR) install
 	# Remove the stuff we don't want: inetd, whois, ftpd
-	rm -f $(INETUTILS_IPK_DIR)/opt/libexec/inetd
-	rm -f $(INETUTILS_IPK_DIR)/opt/share/man/man8/inetd.8
-	rm -f $(INETUTILS_IPK_DIR)/opt/bin/whois
-	rm -f $(INETUTILS_IPK_DIR)/opt/share/man/man8/ftpd.8
-	rm -f $(INETUTILS_IPK_DIR)/opt/libexec/ftpd
-	$(STRIP_COMMAND) $(INETUTILS_IPK_DIR)/opt/bin/* $(INETUTILS_IPK_DIR)/opt/libexec/*
-#	$(INSTALL) -d $(INETUTILS_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(INETUTILS_SOURCE_DIR)/rc.inetutils $(INETUTILS_IPK_DIR)/opt/etc/init.d/S52inetd
+	rm -f $(INETUTILS_IPK_DIR)$(TARGET_PREFIX)/libexec/inetd
+	rm -f $(INETUTILS_IPK_DIR)$(TARGET_PREFIX)/share/man/man8/inetd.8
+	rm -f $(INETUTILS_IPK_DIR)$(TARGET_PREFIX)/bin/whois
+	rm -f $(INETUTILS_IPK_DIR)$(TARGET_PREFIX)/share/man/man8/ftpd.8
+	rm -f $(INETUTILS_IPK_DIR)$(TARGET_PREFIX)/libexec/ftpd
+	$(STRIP_COMMAND) $(INETUTILS_IPK_DIR)$(TARGET_PREFIX)/bin/* $(INETUTILS_IPK_DIR)$(TARGET_PREFIX)/libexec/*
+#	$(INSTALL) -d $(INETUTILS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(INETUTILS_SOURCE_DIR)/rc.inetutils $(INETUTILS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S52inetd
 	$(MAKE) $(INETUTILS_IPK_DIR)/CONTROL/control
 	# Setuid stuff doesn't work as non-root, but we fix it in the postinst script.
 	$(INSTALL) -m 644 $(INETUTILS_SOURCE_DIR)/postinst  $(INETUTILS_IPK_DIR)/CONTROL/postinst 
 	echo "#!/bin/sh" > $(INETUTILS_IPK_DIR)/CONTROL/prerm
-	for d in /opt/bin /opt/libexec /opt/share/man/man1 /opt/share/man/man8; do \
+	for d in $(TARGET_PREFIX)/bin $(TARGET_PREFIX)/libexec $(TARGET_PREFIX)/share/man/man1 $(TARGET_PREFIX)/share/man/man8; do \
 	    cd $(INETUTILS_IPK_DIR)/$$d; \
 	    for f in *; do \
 		mv $$f inetutils-$$f; \

@@ -46,7 +46,7 @@ LIBEXIF_IPK_VERSION=1
 
 #
 # LIBEXIF_CONFFILES should be a list of user-editable files
-#LIBEXIF_CONFFILES=/opt/etc/libexif.conf /opt/etc/init.d/SXXlibexif
+#LIBEXIF_CONFFILES=$(TARGET_PREFIX)/etc/libexif.conf $(TARGET_PREFIX)/etc/init.d/SXXlibexif
 
 #
 # LIBEXIF_PATCHES should list any patches, in the the order in
@@ -185,22 +185,22 @@ $(LIBEXIF_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LIBEXIF_IPK_DIR)/opt/sbin or $(LIBEXIF_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LIBEXIF_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LIBEXIF_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LIBEXIF_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LIBEXIF_IPK_DIR)/opt/etc/libexif/...
-# Documentation files should be installed in $(LIBEXIF_IPK_DIR)/opt/doc/libexif/...
-# Daemon startup scripts should be installed in $(LIBEXIF_IPK_DIR)/opt/etc/init.d/S??libexif
+# Libraries and include files should be installed into $(LIBEXIF_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LIBEXIF_IPK_DIR)$(TARGET_PREFIX)/etc/libexif/...
+# Documentation files should be installed in $(LIBEXIF_IPK_DIR)$(TARGET_PREFIX)/doc/libexif/...
+# Daemon startup scripts should be installed in $(LIBEXIF_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??libexif
 #
 # You may need to patch your application to make it use these locations.
 #
 $(LIBEXIF_IPK): $(LIBEXIF_BUILD_DIR)/.built
 	rm -rf $(LIBEXIF_IPK_DIR) $(BUILD_DIR)/libexif_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBEXIF_BUILD_DIR)/libexif DESTDIR=$(LIBEXIF_IPK_DIR) install-strip
-#	$(INSTALL) -d $(LIBEXIF_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(LIBEXIF_SOURCE_DIR)/libexif.conf $(LIBEXIF_IPK_DIR)/opt/etc/libexif.conf
-#	$(INSTALL) -d $(LIBEXIF_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(LIBEXIF_SOURCE_DIR)/rc.libexif $(LIBEXIF_IPK_DIR)/opt/etc/init.d/SXXlibexif
+#	$(INSTALL) -d $(LIBEXIF_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(LIBEXIF_SOURCE_DIR)/libexif.conf $(LIBEXIF_IPK_DIR)$(TARGET_PREFIX)/etc/libexif.conf
+#	$(INSTALL) -d $(LIBEXIF_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(LIBEXIF_SOURCE_DIR)/rc.libexif $(LIBEXIF_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibexif
 	$(MAKE) $(LIBEXIF_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(LIBEXIF_SOURCE_DIR)/postinst $(LIBEXIF_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 755 $(LIBEXIF_SOURCE_DIR)/prerm $(LIBEXIF_IPK_DIR)/CONTROL/prerm

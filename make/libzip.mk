@@ -35,7 +35,7 @@ LIBZIP_LOCALES=
 
 #
 # LIBZIP_CONFFILES should be a list of user-editable files
-#LIBZIP_CONFFILES=/opt/etc/libzip.conf /opt/etc/init.d/SXXlibzip
+#LIBZIP_CONFFILES=$(TARGET_PREFIX)/etc/libzip.conf $(TARGET_PREFIX)/etc/init.d/SXXlibzip
 
 #
 # LIBZIP_PATCHES should list any patches, in the the order in
@@ -156,23 +156,23 @@ libzip-stage: $(LIBZIP_BUILD_DIR)/.staged
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(LIBZIP_IPK_DIR)/opt/sbin or $(LIBZIP_IPK_DIR)/opt/bin
+# Binaries should be installed into $(LIBZIP_IPK_DIR)$(TARGET_PREFIX)/sbin or $(LIBZIP_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(LIBZIP_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(LIBZIP_IPK_DIR)/opt/etc/libzip/...
-# Documentation files should be installed in $(LIBZIP_IPK_DIR)/opt/doc/libzip/...
-# Daemon startup scripts should be installed in $(LIBZIP_IPK_DIR)/opt/etc/init.d/S??libzip
+# Libraries and include files should be installed into $(LIBZIP_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(LIBZIP_IPK_DIR)$(TARGET_PREFIX)/etc/libzip/...
+# Documentation files should be installed in $(LIBZIP_IPK_DIR)$(TARGET_PREFIX)/doc/libzip/...
+# Daemon startup scripts should be installed in $(LIBZIP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??libzip
 #
 # You may need to patch your application to make it use these locations.
 #
 $(LIBZIP_IPK): $(LIBZIP_BUILD_DIR)/.built
 	rm -rf $(LIBZIP_IPK_DIR) $(BUILD_DIR)/libzip_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBZIP_BUILD_DIR) DESTDIR=$(LIBZIP_IPK_DIR) install-strip
-	cp -f $(LIBZIP_BUILD_DIR)/lib/*.h $(LIBZIP_IPK_DIR)/opt/include/
-	rm -f $(LIBZIP_IPK_DIR)/opt/lib/libzip.la
-	rm -rf $(LIBZIP_IPK_DIR)/opt/lib/libzip
+	cp -f $(LIBZIP_BUILD_DIR)/lib/*.h $(LIBZIP_IPK_DIR)$(TARGET_PREFIX)/include/
+	rm -f $(LIBZIP_IPK_DIR)$(TARGET_PREFIX)/lib/libzip.la
+	rm -rf $(LIBZIP_IPK_DIR)$(TARGET_PREFIX)/lib/libzip
 	sed -i -e 's|libincludedir=.*||' -e 's|Cflags:.*|Cflags: -I\$${includedir}|' \
-					$(LIBZIP_IPK_DIR)/opt/lib/pkgconfig/libzip.pc
+					$(LIBZIP_IPK_DIR)$(TARGET_PREFIX)/lib/pkgconfig/libzip.pc
 	$(MAKE) $(LIBZIP_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBZIP_IPK_DIR)
 

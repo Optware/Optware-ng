@@ -34,7 +34,7 @@ MUTT_IPK_VERSION=1
 
 #
 # MUTT_CONFFILES should be a list of user-editable files
-#MUTT_CONFFILES=/opt/etc/mutt.conf /opt/etc/init.d/SXXmutt
+#MUTT_CONFFILES=$(TARGET_PREFIX)/etc/mutt.conf $(TARGET_PREFIX)/etc/init.d/SXXmutt
 
 #
 # MUTT_PATCHES should list any patches, in the the order in
@@ -111,14 +111,14 @@ $(MUTT_BUILD_DIR)/.configured: $(DL_DIR)/$(MUTT_SOURCE) $(MUTT_PATCHES) make/mut
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MUTT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MUTT_LDFLAGS)" \
-		ac_cv_path_SENDMAIL=/opt/sbin/sendmail \
+		ac_cv_path_SENDMAIL=$(TARGET_PREFIX)/sbin/sendmail \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
-		--with-mailpath=/opt/var/spool/mail \
+		--with-mailpath=$(TARGET_PREFIX)/var/spool/mail \
 		--enable-imap \
 		--with-ssl \
 		--with-sasl2 \
@@ -175,12 +175,12 @@ $(MUTT_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(MUTT_IPK_DIR)/opt/sbin or $(MUTT_IPK_DIR)/opt/bin
+# Binaries should be installed into $(MUTT_IPK_DIR)$(TARGET_PREFIX)/sbin or $(MUTT_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(MUTT_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(MUTT_IPK_DIR)/opt/etc/mutt/...
-# Documentation files should be installed in $(MUTT_IPK_DIR)/opt/doc/mutt/...
-# Daemon startup scripts should be installed in $(MUTT_IPK_DIR)/opt/etc/init.d/S??mutt
+# Libraries and include files should be installed into $(MUTT_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(MUTT_IPK_DIR)$(TARGET_PREFIX)/etc/mutt/...
+# Documentation files should be installed in $(MUTT_IPK_DIR)$(TARGET_PREFIX)/doc/mutt/...
+# Daemon startup scripts should be installed in $(MUTT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??mutt
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -188,11 +188,11 @@ $(MUTT_IPK): $(MUTT_BUILD_DIR)/.built
 	rm -rf $(MUTT_IPK_DIR) $(BUILD_DIR)/mutt_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MUTT_BUILD_DIR) DESTDIR=$(MUTT_IPK_DIR) install
 	# $(INSTALL)-strip doesn't work for some reason
-	$(STRIP_COMMAND) $(MUTT_IPK_DIR)/opt/bin/mutt $(MUTT_IPK_DIR)/opt/bin/pgpewrap $(MUTT_IPK_DIR)/opt/bin/pgpring
-#	$(INSTALL) -d $(MUTT_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 755 $(MUTT_SOURCE_DIR)/mutt.conf $(MUTT_IPK_DIR)/opt/etc/mutt.conf
-#	$(INSTALL) -d $(MUTT_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(MUTT_SOURCE_DIR)/rc.mutt $(MUTT_IPK_DIR)/opt/etc/init.d/SXXmutt
+	$(STRIP_COMMAND) $(MUTT_IPK_DIR)$(TARGET_PREFIX)/bin/mutt $(MUTT_IPK_DIR)$(TARGET_PREFIX)/bin/pgpewrap $(MUTT_IPK_DIR)$(TARGET_PREFIX)/bin/pgpring
+#	$(INSTALL) -d $(MUTT_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 755 $(MUTT_SOURCE_DIR)/mutt.conf $(MUTT_IPK_DIR)$(TARGET_PREFIX)/etc/mutt.conf
+#	$(INSTALL) -d $(MUTT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(MUTT_SOURCE_DIR)/rc.mutt $(MUTT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXmutt
 	$(MAKE) $(MUTT_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 644 $(MUTT_SOURCE_DIR)/postinst $(MUTT_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 644 $(MUTT_SOURCE_DIR)/prerm $(MUTT_IPK_DIR)/CONTROL/prerm

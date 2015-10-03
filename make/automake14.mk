@@ -106,16 +106,16 @@ $(AUTOMAKE14_IPK_DIR)/CONTROL/control:
 
 $(AUTOMAKE14_IPK): $(AUTOMAKE14_BUILD_DIR)/.built
 	rm -rf $(AUTOMAKE14_IPK_DIR) $(BUILD_DIR)/automake14_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(AUTOMAKE14_IPK_DIR)/opt/bin
-	$(INSTALL) -d $(AUTOMAKE14_IPK_DIR)/opt/info
-	$(INSTALL) -d $(AUTOMAKE14_IPK_DIR)/opt/share/aclocal-1.4
-	$(INSTALL) -d $(AUTOMAKE14_IPK_DIR)/opt/share/automake-1.4/Automake
-	$(INSTALL) -d $(AUTOMAKE14_IPK_DIR)/opt/share/automake-1.4/am
+	$(INSTALL) -d $(AUTOMAKE14_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(INSTALL) -d $(AUTOMAKE14_IPK_DIR)$(TARGET_PREFIX)/info
+	$(INSTALL) -d $(AUTOMAKE14_IPK_DIR)$(TARGET_PREFIX)/share/aclocal-1.4
+	$(INSTALL) -d $(AUTOMAKE14_IPK_DIR)$(TARGET_PREFIX)/share/automake-1.4/Automake
+	$(INSTALL) -d $(AUTOMAKE14_IPK_DIR)$(TARGET_PREFIX)/share/automake-1.4/am
 	$(MAKE) -C $(AUTOMAKE14_BUILD_DIR) DESTDIR=$(AUTOMAKE14_IPK_DIR) install
-	sed -i -e 's|/usr/bin/perl|/opt/bin/perl|g' $(AUTOMAKE14_IPK_DIR)/opt/bin/*
+	sed -i -e 's|/usr/bin/perl|$(TARGET_PREFIX)/bin/perl|g' $(AUTOMAKE14_IPK_DIR)$(TARGET_PREFIX)/bin/*
 	$(MAKE) $(AUTOMAKE14_IPK_DIR)/CONTROL/control
-	rm -f $(AUTOMAKE14_IPK_DIR)/opt/info/dir
-	(cd $(AUTOMAKE14_IPK_DIR)/opt/bin; \
+	rm -f $(AUTOMAKE14_IPK_DIR)$(TARGET_PREFIX)/info/dir
+	(cd $(AUTOMAKE14_IPK_DIR)$(TARGET_PREFIX)/bin; \
 		rm automake aclocal; \
 		ln -s automake-1.4 automake; \
 		ln -s aclocal-1.4 aclocal; \

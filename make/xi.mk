@@ -159,12 +159,12 @@ xi-stage: $(XI_BUILD_DIR)/.staged
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(XI_IPK_DIR)/opt/sbin or $(XI_IPK_DIR)/opt/bin
+# Binaries should be installed into $(XI_IPK_DIR)$(TARGET_PREFIX)/sbin or $(XI_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(XI_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(XI_IPK_DIR)/opt/etc/xi/...
-# Documentation files should be installed in $(XI_IPK_DIR)/opt/doc/xi/...
-# Daemon startup scripts should be installed in $(XI_IPK_DIR)/opt/etc/init.d/S??xi
+# Libraries and include files should be installed into $(XI_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(XI_IPK_DIR)$(TARGET_PREFIX)/etc/xi/...
+# Documentation files should be installed in $(XI_IPK_DIR)$(TARGET_PREFIX)/doc/xi/...
+# Daemon startup scripts should be installed in $(XI_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??xi
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -173,7 +173,7 @@ $(XI_IPK): $(XI_BUILD_DIR)/.built
 	$(MAKE) -C $(XI_BUILD_DIR) DESTDIR=$(XI_IPK_DIR) install-strip
 	$(MAKE) $(XI_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 644 $(XI_SOURCE_DIR)/postinst $(XI_IPK_DIR)/CONTROL/postinst
-	rm -f $(XI_IPK_DIR)/opt/lib/*.la
+	rm -f $(XI_IPK_DIR)$(TARGET_PREFIX)/lib/*.la
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XI_IPK_DIR)
 
 #

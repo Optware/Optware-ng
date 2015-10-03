@@ -40,7 +40,7 @@ SABNZBDPLUS_IPK_VERSION=1
 
 #
 # SABNZBDPLUS_CONFFILES should be a list of user-editable files
-SABNZBDPLUS_CONFFILES=/opt/etc/SABnzbd.ini /opt/etc/init.d/S70sabnzbdplus
+SABNZBDPLUS_CONFFILES=$(TARGET_PREFIX)/etc/SABnzbd.ini $(TARGET_PREFIX)/etc/init.d/S70sabnzbdplus
 
 #
 # SABNZBDPLUS_PATCHES should list any patches, in the the order in
@@ -120,14 +120,14 @@ $(SABNZBDPLUS_BUILD_DIR)/.configured: $(DL_DIR)/$(SABNZBDPLUS_SOURCE) $(SABNZBDP
 	        echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python2.5"; \
 	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
-	        echo "rpath=/opt/lib"; \
+	        echo "rpath=$(TARGET_PREFIX)/lib"; \
 	        echo "[build_scripts]"; \
-	        echo "executable=/opt/bin/python2.5"; \
+	        echo "executable=$(TARGET_PREFIX)/bin/python2.5"; \
 	        echo "[install]"; \
-	        echo "install_scripts=/opt/bin"; \
+	        echo "install_scripts=$(TARGET_PREFIX)/bin"; \
 	    ) >> setup.cfg; \
 	)
-	sed -i -e 's|/usr/bin/python|/opt/bin/python2.5|g' $(@D)/2.5/SABnzbd.py
+	sed -i -e 's|/usr/bin/python|$(TARGET_PREFIX)/bin/python2.5|g' $(@D)/2.5/SABnzbd.py
 	touch $@
 
 sabnzbdplus-unpack: $(SABNZBDPLUS_BUILD_DIR)/.configured
@@ -175,12 +175,12 @@ $(SABNZBDPLUS_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(SABNZBDPLUS_IPK_DIR)/opt/sbin or $(SABNZBDPLUS_IPK_DIR)/opt/bin
+# Binaries should be installed into $(SABNZBDPLUS_IPK_DIR)$(TARGET_PREFIX)/sbin or $(SABNZBDPLUS_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(SABNZBDPLUS_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(SABNZBDPLUS_IPK_DIR)/opt/etc/sabnzbdplus/...
-# Documentation files should be installed in $(SABNZBDPLUS_IPK_DIR)/opt/doc/sabnzbdplus/...
-# Daemon startup scripts should be installed in $(SABNZBDPLUS_IPK_DIR)/opt/etc/init.d/S70sabnzbdplus
+# Libraries and include files should be installed into $(SABNZBDPLUS_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(SABNZBDPLUS_IPK_DIR)$(TARGET_PREFIX)/etc/sabnzbdplus/...
+# Documentation files should be installed in $(SABNZBDPLUS_IPK_DIR)$(TARGET_PREFIX)/doc/sabnzbdplus/...
+# Daemon startup scripts should be installed in $(SABNZBDPLUS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S70sabnzbdplus
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -191,20 +191,20 @@ $(SABNZBDPLUS_IPK): $(SABNZBDPLUS_BUILD_DIR)/.built
 	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	    $(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
-	    --root=$(SABNZBDPLUS_IPK_DIR) --prefix=/opt
-	$(INSTALL) -d $(SABNZBDPLUS_IPK_DIR)/opt/share/SABnzbd
-	cp -rp $(SABNZBDPLUS_BUILD_DIR)/2.5/* $(SABNZBDPLUS_IPK_DIR)/opt/share/SABnzbd
+	    --root=$(SABNZBDPLUS_IPK_DIR) --prefix=$(TARGET_PREFIX)
+	$(INSTALL) -d $(SABNZBDPLUS_IPK_DIR)$(TARGET_PREFIX)/share/SABnzbd
+	cp -rp $(SABNZBDPLUS_BUILD_DIR)/2.5/* $(SABNZBDPLUS_IPK_DIR)$(TARGET_PREFIX)/share/SABnzbd
 	#
-#	$(INSTALL) -d $(SABNZBDPLUS_IPK_DIR)/opt/etc
-#	$(INSTALL) -m 644 $(SABNZBDPLUS_SOURCE_DIR)/SABnzbd.ini $(SABNZBDPLUS_IPK_DIR)/opt/etc/SABnzbd.ini
-#	$(INSTALL) -d $(SABNZBDPLUS_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(SABNZBDPLUS_SOURCE_DIR)/rc.sabnzbdplus $(SABNZBDPLUS_IPK_DIR)/opt/etc/init.d/S70sabnzbdplus
-#	$(INSTALL) -d $(SABNZBDPLUS_IPK_DIR)/opt/tmp/downloads
-#	$(INSTALL) -d $(SABNZBDPLUS_IPK_DIR)/opt/tmp/SABnzbd/cache
-#	$(INSTALL) -d $(SABNZBDPLUS_IPK_DIR)/opt/tmp/SABnzbd/tmp
-#	$(INSTALL) -d $(SABNZBDPLUS_IPK_DIR)/opt/tmp/SABnzbd/nzb
-#	$(INSTALL) -d $(SABNZBDPLUS_IPK_DIR)/opt/tmp/SABnzbd/nzb/backup
-#	$(INSTALL) -d $(SABNZBDPLUS_IPK_DIR)/opt/var/log
+#	$(INSTALL) -d $(SABNZBDPLUS_IPK_DIR)$(TARGET_PREFIX)/etc
+#	$(INSTALL) -m 644 $(SABNZBDPLUS_SOURCE_DIR)/SABnzbd.ini $(SABNZBDPLUS_IPK_DIR)$(TARGET_PREFIX)/etc/SABnzbd.ini
+#	$(INSTALL) -d $(SABNZBDPLUS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(SABNZBDPLUS_SOURCE_DIR)/rc.sabnzbdplus $(SABNZBDPLUS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S70sabnzbdplus
+#	$(INSTALL) -d $(SABNZBDPLUS_IPK_DIR)$(TARGET_PREFIX)/tmp/downloads
+#	$(INSTALL) -d $(SABNZBDPLUS_IPK_DIR)$(TARGET_PREFIX)/tmp/SABnzbd/cache
+#	$(INSTALL) -d $(SABNZBDPLUS_IPK_DIR)$(TARGET_PREFIX)/tmp/SABnzbd/tmp
+#	$(INSTALL) -d $(SABNZBDPLUS_IPK_DIR)$(TARGET_PREFIX)/tmp/SABnzbd/nzb
+#	$(INSTALL) -d $(SABNZBDPLUS_IPK_DIR)$(TARGET_PREFIX)/tmp/SABnzbd/nzb/backup
+#	$(INSTALL) -d $(SABNZBDPLUS_IPK_DIR)$(TARGET_PREFIX)/var/log
 	$(MAKE) $(SABNZBDPLUS_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 644 $(SABNZBDPLUS_SOURCE_DIR)/postinst $(SABNZBDPLUS_IPK_DIR)/CONTROL/postinst
 #	echo $(SABNZBDPLUS_CONFFILES) | sed -e 's/ /\n/g' > $(SABNZBDPLUS_IPK_DIR)/CONTROL/conffiles

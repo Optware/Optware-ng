@@ -57,7 +57,7 @@ PY-CAIRO_IPK_VERSION=1
 
 #
 # PY-CAIRO_CONFFILES should be a list of user-editable files
-#PY-CAIRO_CONFFILES=/opt/etc/py-cairo.conf /opt/etc/init.d/SXXpy-cairo
+#PY-CAIRO_CONFFILES=$(TARGET_PREFIX)/etc/py-cairo.conf $(TARGET_PREFIX)/etc/init.d/SXXpy-cairo
 
 #
 # PY-CAIRO_PATCHES should list any patches, in the the order in
@@ -167,8 +167,8 @@ $(PY-CAIRO_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CAIRO_SOURCE2) $(DL_DIR)/$(PY-
 		CPPFLAGS="$(STAGING_CPPFLAGS) -I$(STAGING_INCLUDE_DIR)/python2.6 $(PY-CAIRO_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(PY-CAIRO_LDFLAGS)" \
 		PYTHON=$(HOST_STAGING_PREFIX)/bin/python2.6 \
-		am_cv_python_pythondir=/opt/lib/python2.6/site-packages \
-		am_cv_python_pyexecdir=/opt/lib/python2.6/site-packages \
+		am_cv_python_pythondir=$(TARGET_PREFIX)/lib/python2.6/site-packages \
+		am_cv_python_pyexecdir=$(TARGET_PREFIX)/lib/python2.6/site-packages \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
 		./configure \
@@ -187,8 +187,8 @@ $(PY-CAIRO_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CAIRO_SOURCE2) $(DL_DIR)/$(PY-
 		CPPFLAGS="$(STAGING_CPPFLAGS) -I$(STAGING_INCLUDE_DIR)/python2.7 $(PY-CAIRO_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(PY-CAIRO_LDFLAGS)" \
 		PYTHON=$(HOST_STAGING_PREFIX)/bin/python2.7 \
-		am_cv_python_pythondir=/opt/lib/python2.7/site-packages \
-		am_cv_python_pyexecdir=/opt/lib/python2.7/site-packages \
+		am_cv_python_pythondir=$(TARGET_PREFIX)/lib/python2.7/site-packages \
+		am_cv_python_pyexecdir=$(TARGET_PREFIX)/lib/python2.7/site-packages \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
 		./configure \
@@ -205,11 +205,11 @@ $(PY-CAIRO_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CAIRO_SOURCE2) $(DL_DIR)/$(PY-
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python$(PYTHON3_VERSION_MAJOR)m"; \
 	        echo "library-dirs=$(STAGING_LIB_DIR)"; \
-	        echo "rpath=/opt/lib"; \
+	        echo "rpath=$(TARGET_PREFIX)/lib"; \
 		echo "[build_scripts]"; \
-		echo "executable=/opt/bin/python$(PYTHON3_VERSION_MAJOR)"; \
+		echo "executable=$(TARGET_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR)"; \
 		echo "[install]"; \
-		echo "install_scripts=/opt/bin"; \
+		echo "install_scripts=$(TARGET_PREFIX)/bin"; \
 	    ) >> setup.cfg; \
 		$(TARGET_CONFIGURE_OPTS) CC="$(TARGET_CC) -L$(STAGING_LIB_DIR)" \
 		LDSHARED='$(TARGET_CC) -pthread -shared' \
@@ -218,7 +218,7 @@ $(PY-CAIRO_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CAIRO_SOURCE2) $(DL_DIR)/$(PY-
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
 		PYTHON=$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) \
-		$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) waf configure --prefix=/opt; \
+		$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) waf configure --prefix=$(TARGET_PREFIX); \
 	)
 	touch $@
 
@@ -253,7 +253,7 @@ $(PY-CAIRO_BUILD_DIR)/.staged: $(PY-CAIRO_BUILD_DIR)/.built
 	(cd $(@D)/3; \
 		$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) waf install --destdir=$(STAGING_DIR); \
 	)
-	sed -i -e '/^prefix=/s|=.*|=$(STAGING_PREFIX)|' -e 's|\(-[IL]\)/opt/|\1$(STAGING_PREFIX)/|g' \
+	sed -i -e '/^prefix=/s|=.*|=$(STAGING_PREFIX)|' -e 's|\(-[IL]\)$(TARGET_PREFIX)/|\1$(STAGING_PREFIX)/|g' \
 		$(STAGING_LIB_DIR)/pkgconfig/pycairo.pc $(STAGING_LIB_DIR)/pkgconfig/py3cairo.pc
 	touch $@
 
@@ -326,12 +326,12 @@ $(PY2-CAIRO_DEV_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PY-CAIRO_IPK_DIR)/opt/sbin or $(PY-CAIRO_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PY-CAIRO_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PY-CAIRO_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PY-CAIRO_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PY-CAIRO_IPK_DIR)/opt/etc/py-cairo/...
-# Documentation files should be installed in $(PY-CAIRO_IPK_DIR)/opt/doc/py-cairo/...
-# Daemon startup scripts should be installed in $(PY-CAIRO_IPK_DIR)/opt/etc/init.d/S??py-cairo
+# Libraries and include files should be installed into $(PY-CAIRO_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PY-CAIRO_IPK_DIR)$(TARGET_PREFIX)/etc/py-cairo/...
+# Documentation files should be installed in $(PY-CAIRO_IPK_DIR)$(TARGET_PREFIX)/doc/py-cairo/...
+# Daemon startup scripts should be installed in $(PY-CAIRO_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??py-cairo
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -339,9 +339,9 @@ $(PY26-CAIRO_IPK) $(PY2-CAIRO_DEV_IPK): $(PY-CAIRO_BUILD_DIR)/.built
 	rm -rf $(PY26-CAIRO_IPK_DIR) $(BUILD_DIR)/py26-cairo_*_$(TARGET_ARCH).ipk \
 		$(PY2-CAIRO_DEV_IPK_DIR) $(BUILD_DIR)/py2-cairo-dev_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PY-CAIRO_BUILD_DIR)/2.6 DESTDIR=$(PY26-CAIRO_IPK_DIR) install-strip
-	$(INSTALL) -d $(PY2-CAIRO_DEV_IPK_DIR)/opt/lib
-	mv -f $(PY26-CAIRO_IPK_DIR)/opt/include $(PY2-CAIRO_DEV_IPK_DIR)/opt/
-	mv -f $(PY26-CAIRO_IPK_DIR)/opt/lib/pkgconfig $(PY2-CAIRO_DEV_IPK_DIR)/opt/lib/
+	$(INSTALL) -d $(PY2-CAIRO_DEV_IPK_DIR)$(TARGET_PREFIX)/lib
+	mv -f $(PY26-CAIRO_IPK_DIR)$(TARGET_PREFIX)/include $(PY2-CAIRO_DEV_IPK_DIR)$(TARGET_PREFIX)/
+	mv -f $(PY26-CAIRO_IPK_DIR)$(TARGET_PREFIX)/lib/pkgconfig $(PY2-CAIRO_DEV_IPK_DIR)$(TARGET_PREFIX)/lib/
 	$(MAKE) $(PY26-CAIRO_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-CAIRO_IPK_DIR)
 	$(MAKE) $(PY2-CAIRO_DEV_IPK_DIR)/CONTROL/control
@@ -350,7 +350,7 @@ $(PY26-CAIRO_IPK) $(PY2-CAIRO_DEV_IPK): $(PY-CAIRO_BUILD_DIR)/.built
 $(PY27-CAIRO_IPK): $(PY-CAIRO_BUILD_DIR)/.built
 	rm -rf $(PY27-CAIRO_IPK_DIR) $(BUILD_DIR)/py27-cairo_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PY-CAIRO_BUILD_DIR)/2.7 DESTDIR=$(PY27-CAIRO_IPK_DIR) install-strip
-	rm -rf $(PY27-CAIRO_IPK_DIR)/opt/include $(PY27-CAIRO_IPK_DIR)/opt/lib/pkgconfig
+	rm -rf $(PY27-CAIRO_IPK_DIR)$(TARGET_PREFIX)/include $(PY27-CAIRO_IPK_DIR)$(TARGET_PREFIX)/lib/pkgconfig
 	$(MAKE) $(PY27-CAIRO_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY27-CAIRO_IPK_DIR)
 
@@ -359,7 +359,7 @@ $(PY3-CAIRO_IPK): $(PY-CAIRO_BUILD_DIR)/.built
 	(cd $(PY-CAIRO_BUILD_DIR)/3; \
 		$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) waf install --destdir=$(PY3-CAIRO_IPK_DIR); \
 	)
-	$(STRIP_COMMAND) $(PY3-CAIRO_IPK_DIR)/opt/lib/python$(PYTHON3_VERSION_MAJOR)/site-packages/cairo/*.so
+	$(STRIP_COMMAND) $(PY3-CAIRO_IPK_DIR)$(TARGET_PREFIX)/lib/python$(PYTHON3_VERSION_MAJOR)/site-packages/cairo/*.so
 	$(MAKE) $(PY3-CAIRO_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY3-CAIRO_IPK_DIR)
 

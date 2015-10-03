@@ -38,7 +38,7 @@ PY-LXML_CONFLICTS=
 
 #
 # PY-LXML_CONFFILES should be a list of user-editable files
-#PY-LXML_CONFFILES=/opt/etc/py-lxml.conf /opt/etc/init.d/SXXpy-lxml
+#PY-LXML_CONFFILES=$(TARGET_PREFIX)/etc/py-lxml.conf $(TARGET_PREFIX)/etc/init.d/SXXpy-lxml
 
 #
 # PY-LXML_PATCHES should list any patches, in the the order in
@@ -118,9 +118,9 @@ $(PY-LXML_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-LXML_SOURCE) $(PY-LXML_PATCHES)
 	    echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/libxml2:$(STAGING_INCLUDE_DIR)/libxslt:$(STAGING_INCLUDE_DIR)/python2.5"; \
 	    echo "library-dirs=$(STAGING_LIB_DIR)"; \
 	    echo "libraries=xslt"; \
-	    echo "rpath=/opt/lib"; \
+	    echo "rpath=$(TARGET_PREFIX)/lib"; \
 	    echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python2.5") >> setup.cfg; \
+	    echo "executable=$(TARGET_PREFIX)/bin/python2.5") >> setup.cfg; \
 	)
 	# 2.6
 	rm -rf $(BUILD_DIR)/$(PY-LXML_DIR)
@@ -133,9 +133,9 @@ $(PY-LXML_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-LXML_SOURCE) $(PY-LXML_PATCHES)
 	    echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/libxml2:$(STAGING_INCLUDE_DIR)/libxslt:$(STAGING_INCLUDE_DIR)/python2.6"; \
 	    echo "library-dirs=$(STAGING_LIB_DIR)"; \
 	    echo "libraries=xslt"; \
-	    echo "rpath=/opt/lib"; \
+	    echo "rpath=$(TARGET_PREFIX)/lib"; \
 	    echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python2.6") >> setup.cfg; \
+	    echo "executable=$(TARGET_PREFIX)/bin/python2.6") >> setup.cfg; \
 	)
 	touch $@
 
@@ -210,12 +210,12 @@ $(PY26-LXML_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PY-LXML_IPK_DIR)/opt/sbin or $(PY-LXML_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PY-LXML_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PY-LXML_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PY-LXML_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PY-LXML_IPK_DIR)/opt/etc/py-lxml/...
-# Documentation files should be installed in $(PY-LXML_IPK_DIR)/opt/doc/py-lxml/...
-# Daemon startup scripts should be installed in $(PY-LXML_IPK_DIR)/opt/etc/init.d/S??py-lxml
+# Libraries and include files should be installed into $(PY-LXML_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PY-LXML_IPK_DIR)$(TARGET_PREFIX)/etc/py-lxml/...
+# Documentation files should be installed in $(PY-LXML_IPK_DIR)$(TARGET_PREFIX)/doc/py-lxml/...
+# Daemon startup scripts should be installed in $(PY-LXML_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??py-lxml
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -228,7 +228,7 @@ $(PY25-LXML_IPK): $(PY-LXML_BUILD_DIR)/.built
 		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py \
 		$(INSTALL) --root=$(PY25-LXML_IPK_DIR) --prefix=$(TARGET_PREFIX) \
 		--with-xslt-config=$(STAGING_PREFIX)/bin/xslt-config)
-	$(STRIP_COMMAND) `find $(PY25-LXML_IPK_DIR)/opt/lib/ -name '*.so'`
+	$(STRIP_COMMAND) `find $(PY25-LXML_IPK_DIR)$(TARGET_PREFIX)/lib/ -name '*.so'`
 	$(MAKE) $(PY25-LXML_IPK_DIR)/CONTROL/control
 #	echo $(PY-LXML_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-LXML_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-LXML_IPK_DIR)
@@ -241,7 +241,7 @@ $(PY26-LXML_IPK): $(PY-LXML_BUILD_DIR)/.built
 		$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py \
 		$(INSTALL) --root=$(PY26-LXML_IPK_DIR) --prefix=$(TARGET_PREFIX) \
 		--with-xslt-config=$(STAGING_PREFIX)/bin/xslt-config)
-	$(STRIP_COMMAND) `find $(PY26-LXML_IPK_DIR)/opt/lib/ -name '*.so'`
+	$(STRIP_COMMAND) `find $(PY26-LXML_IPK_DIR)$(TARGET_PREFIX)/lib/ -name '*.so'`
 	$(MAKE) $(PY26-LXML_IPK_DIR)/CONTROL/control
 #	echo $(PY-LXML_CONFFILES) | sed -e 's/ /\n/g' > $(PY26-LXML_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-LXML_IPK_DIR)

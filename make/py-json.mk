@@ -43,7 +43,7 @@ PY-JSON_IPK_VERSION=1
 
 #
 # PY-JSON_CONFFILES should be a list of user-editable files
-#PY-JSON_CONFFILES=/opt/etc/py-json.conf /opt/etc/init.d/SXXpy-json
+#PY-JSON_CONFFILES=$(TARGET_PREFIX)/etc/py-json.conf $(TARGET_PREFIX)/etc/init.d/SXXpy-json
 
 #
 # PY-JSON_PATCHES should list any patches, in the the order in
@@ -71,7 +71,7 @@ PY-JSON_BUILD_DIR=$(BUILD_DIR)/py-json
 PY-JSON_SOURCE_DIR=$(SOURCE_DIR)/py-json
 PY-JSON_IPK_DIR=$(BUILD_DIR)/py-json-$(PY-JSON_VERSION)-ipk
 PY-JSON_IPK=$(BUILD_DIR)/py-json_$(PY-JSON_VERSION)-$(PY-JSON_IPK_VERSION)_$(TARGET_ARCH).ipk
-PY-JSON_PYLIBDIR=$(PY-JSON_IPK_DIR)/opt/lib/python2.4/site-packages
+PY-JSON_PYLIBDIR=$(PY-JSON_IPK_DIR)$(TARGET_PREFIX)/lib/python2.4/site-packages
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -110,7 +110,7 @@ $(PY-JSON_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-JSON_EGG) $(PY-JSON_PATCHES)
 #	mv $(BUILD_DIR)/$(PY-JSON_DIR) $(PY-JSON_BUILD_DIR)
 #	(cd $(PY-JSON_BUILD_DIR); \
 	    (echo "[build_scripts]"; \
-	    echo "executable=/opt/bin/python") >> setup.cfg \
+	    echo "executable=$(TARGET_PREFIX)/bin/python") >> setup.cfg \
 	)
 	touch $(PY-JSON_BUILD_DIR)/.configured
 
@@ -160,12 +160,12 @@ $(PY-JSON_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(PY-JSON_IPK_DIR)/opt/sbin or $(PY-JSON_IPK_DIR)/opt/bin
+# Binaries should be installed into $(PY-JSON_IPK_DIR)$(TARGET_PREFIX)/sbin or $(PY-JSON_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(PY-JSON_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(PY-JSON_IPK_DIR)/opt/etc/py-json/...
-# Documentation files should be installed in $(PY-JSON_IPK_DIR)/opt/doc/py-json/...
-# Daemon startup scripts should be installed in $(PY-JSON_IPK_DIR)/opt/etc/init.d/S??py-json
+# Libraries and include files should be installed into $(PY-JSON_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(PY-JSON_IPK_DIR)$(TARGET_PREFIX)/etc/py-json/...
+# Documentation files should be installed in $(PY-JSON_IPK_DIR)$(TARGET_PREFIX)/doc/py-json/...
+# Daemon startup scripts should be installed in $(PY-JSON_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??py-json
 #
 # You may need to patch your application to make it use these locations.
 #
@@ -173,7 +173,7 @@ $(PY-JSON_IPK): $(PY-JSON_BUILD_DIR)/.built
 	rm -rf $(PY-JSON_IPK_DIR) $(BUILD_DIR)/py-json_*_$(TARGET_ARCH).ipk
 #	$(MAKE) -C $(PY-JSON_BUILD_DIR) DESTDIR=$(PY-JSON_IPK_DIR) install
 #	(cd $(PY-JSON_BUILD_DIR); \
-		python2.4 setup.py install --root=$(PY-JSON_IPK_DIR) --prefix=/opt)
+		python2.4 setup.py install --root=$(PY-JSON_IPK_DIR) --prefix=$(TARGET_PREFIX))
 	$(INSTALL) -d $(PY-JSON_PYLIBDIR)
 	$(INSTALL) $(PY-JSON_BUILD_DIR)/*.py* $(PY-JSON_PYLIBDIR)
 	$(INSTALL) -d $(PY-JSON_PYLIBDIR)/$(PY-JSON_EGG)-info

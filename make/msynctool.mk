@@ -40,7 +40,7 @@ MSYNCTOOL_IPK_VERSION=1
 
 #
 # MSYNCTOOL_CONFFILES should be a list of user-editable files
-#MSYNCTOOL_CONFFILES=/opt/etc/msynctool.conf /opt/etc/init.d/SXXmsynctool
+#MSYNCTOOL_CONFFILES=$(TARGET_PREFIX)/etc/msynctool.conf $(TARGET_PREFIX)/etc/init.d/SXXmsynctool
 
 #
 # MSYNCTOOL_PATCHES should list any patches, in the the order in
@@ -182,23 +182,23 @@ $(MSYNCTOOL_IPK_DIR)/CONTROL/control:
 #
 # This builds the IPK file.
 #
-# Binaries should be installed into $(MSYNCTOOL_IPK_DIR)/opt/sbin or $(MSYNCTOOL_IPK_DIR)/opt/bin
+# Binaries should be installed into $(MSYNCTOOL_IPK_DIR)$(TARGET_PREFIX)/sbin or $(MSYNCTOOL_IPK_DIR)$(TARGET_PREFIX)/bin
 # (use the location in a well-known Linux distro as a guide for choosing sbin or bin).
-# Libraries and include files should be installed into $(MSYNCTOOL_IPK_DIR)/opt/{lib,include}
-# Configuration files should be installed in $(MSYNCTOOL_IPK_DIR)/opt/etc/msynctool/...
-# Documentation files should be installed in $(MSYNCTOOL_IPK_DIR)/opt/doc/msynctool/...
-# Daemon startup scripts should be installed in $(MSYNCTOOL_IPK_DIR)/opt/etc/init.d/S??msynctool
+# Libraries and include files should be installed into $(MSYNCTOOL_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
+# Configuration files should be installed in $(MSYNCTOOL_IPK_DIR)$(TARGET_PREFIX)/etc/msynctool/...
+# Documentation files should be installed in $(MSYNCTOOL_IPK_DIR)$(TARGET_PREFIX)/doc/msynctool/...
+# Daemon startup scripts should be installed in $(MSYNCTOOL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S??msynctool
 #
 # You may need to patch your application to make it use these locations.
 #
 $(MSYNCTOOL_IPK): $(MSYNCTOOL_BUILD_DIR)/.built
 	rm -rf $(MSYNCTOOL_IPK_DIR) $(BUILD_DIR)/msynctool_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MSYNCTOOL_BUILD_DIR) DESTDIR=$(MSYNCTOOL_IPK_DIR) install-strip
-#	$(INSTALL) -d $(MSYNCTOOL_IPK_DIR)/opt/etc/
-#	$(INSTALL) -m 644 $(MSYNCTOOL_SOURCE_DIR)/msynctool.conf $(MSYNCTOOL_IPK_DIR)/opt/etc/msynctool.conf
-#	$(INSTALL) -d $(MSYNCTOOL_IPK_DIR)/opt/etc/init.d
-#	$(INSTALL) -m 755 $(MSYNCTOOL_SOURCE_DIR)/rc.msynctool $(MSYNCTOOL_IPK_DIR)/opt/etc/init.d/SXXmsynctool
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MSYNCTOOL_IPK_DIR)/opt/etc/init.d/SXXmsynctool
+#	$(INSTALL) -d $(MSYNCTOOL_IPK_DIR)$(TARGET_PREFIX)/etc/
+#	$(INSTALL) -m 644 $(MSYNCTOOL_SOURCE_DIR)/msynctool.conf $(MSYNCTOOL_IPK_DIR)$(TARGET_PREFIX)/etc/msynctool.conf
+#	$(INSTALL) -d $(MSYNCTOOL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+#	$(INSTALL) -m 755 $(MSYNCTOOL_SOURCE_DIR)/rc.msynctool $(MSYNCTOOL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXmsynctool
+#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MSYNCTOOL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXmsynctool
 	$(MAKE) $(MSYNCTOOL_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(MSYNCTOOL_SOURCE_DIR)/postinst $(MSYNCTOOL_IPK_DIR)/CONTROL/postinst
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(MSYNCTOOL_IPK_DIR)/CONTROL/postinst
