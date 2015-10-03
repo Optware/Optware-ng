@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MOREUTILS_SITE=http://ftp.debian.org/debian/pool/main/m/moreutils
-MOREUTILS_VERSION=0.55
+MOREUTILS_VERSION=0.57
 MOREUTILS_SOURCE=moreutils_$(MOREUTILS_VERSION).orig.tar.gz
 MOREUTILS_DIR=moreutils-$(MOREUTILS_VERSION)
 MOREUTILS_UNZIP=zcat
