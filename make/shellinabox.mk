@@ -128,7 +128,6 @@ $(SHELLINABOX_BUILD_DIR)/.configured: $(DL_DIR)/$(SHELLINABOX_SOURCE_SAVE) $(SHE
 		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
-		--enable-thumbnailer \
 	)
 	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
