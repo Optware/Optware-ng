@@ -20,8 +20,14 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-ASTERISK_GUI_SITE=http://downloads.asterisk.org/pub/telephony/asterisk-gui/releases/
+ASTERISK_GUI_SITE=http://downloads.asterisk.org/pub/telephony/asterisk-gui
+ASTERISK_GUI_SVN=http://svn.digium.com/svn/asterisk-gui/trunk
+ASTERISK_GUI_SVN_REV=5220
+ifndef ASTERISK_GUI_SVN_REV
 ASTERISK_GUI_VERSION=2.1.0-rc1
+else
+ASTERISK_GUI_VERSION=2.1.0-rc1+svn$(ASTERISK_GUI_SVN_REV)
+endif
 ASTERISK_GUI_SOURCE=asterisk-gui-$(ASTERISK_GUI_VERSION).tar.gz
 ASTERISK_GUI_DIR=asterisk-gui-$(ASTERISK_GUI_VERSION)
 ASTERISK_GUI_UNZIP=zcat
@@ -73,7 +79,18 @@ ASTERISK_GUI_IPK=$(BUILD_DIR)/asterisk-gui_$(ASTERISK_GUI_VERSION)-$(ASTERISK_GU
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(ASTERISK_GUI_SOURCE):
-	$(WGET) -P $(DL_DIR) $(ASTERISK_GUI_SITE)/$(ASTERISK_GUI_SOURCE)
+ifdef ASTERISK_GUI_SVN_REV
+	( cd $(BUILD_DIR) ; \
+		rm -rf $(ASTERISK_GUI_DIR) && \
+		svn co -r $(ASTERISK_GUI_SVN_REV) $(ASTERISK_GUI_SVN) \
+			$(ASTERISK_GUI_DIR) && \
+		tar -czf $@ $(ASTERISK_GUI_DIR) && \
+		rm -rf $(ASTERISK_GUI_DIR) \
+	)
+else
+	$(WGET) -P $(@D) $(ASTERISK_GUI_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
+endif
 
 #
 # The source code depends on it existing within the download directory.
