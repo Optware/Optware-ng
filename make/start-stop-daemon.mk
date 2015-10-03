@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 START-STOP-DAEMON_SITE=http://ftp.debian.org/debian/pool/main/d/dpkg
-START-STOP-DAEMON_VERSION=1.17.23
+START-STOP-DAEMON_VERSION=1.18.3
 START-STOP-DAEMON_SOURCE=dpkg_$(START-STOP-DAEMON_VERSION).tar.xz
 START-STOP-DAEMON_DIR=dpkg-$(START-STOP-DAEMON_VERSION)
 START-STOP-DAEMON_UNZIP=xzcat
@@ -42,7 +42,7 @@ START-STOP-DAEMON_CONFLICTS=
 #
 # START-STOP-DAEMON_IPK_VERSION should be incremented when the ipk changes.
 #
-START-STOP-DAEMON_IPK_VERSION=2
+START-STOP-DAEMON_IPK_VERSION=1
 
 #
 # START-STOP-DAEMON_CONFFILES should be a list of user-editable files
@@ -121,7 +121,6 @@ $(START-STOP-DAEMON_BUILD_DIR)/.configured: $(DL_DIR)/$(START-STOP-DAEMON_SOURCE
 	if test "$(BUILD_DIR)/$(START-STOP-DAEMON_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(START-STOP-DAEMON_DIR) $(@D) ; \
 	fi
-	sed -i.bak -e 's/#ifndef HAVE_DECL_SYS_SIGLIST/#if !HAVE_DECL_SYS_SIGLIST/' $(@D)/lib/compat/strsignal.c
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(START-STOP-DAEMON_CPPFLAGS)" \
