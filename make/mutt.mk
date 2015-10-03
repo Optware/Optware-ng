@@ -116,7 +116,7 @@ $(MUTT_BUILD_DIR)/.configured: $(DL_DIR)/$(MUTT_SOURCE) $(MUTT_PATCHES) make/mut
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--with-mailpath=/opt/var/spool/mail \
 		--enable-imap \

@@ -127,7 +127,7 @@ $(SLSC_BUILD_DIR)/.configured: $(DL_DIR)/$(SLSC_SOURCE) $(SLSC_PATCHES) make/sls
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--with-slang-includes=$(STAGING_INCLUDE_DIR)/slang1 \
 		--with-slang-libraries=$(STAGING_LIB_DIR)/slang1 \
 		--disable-nls \

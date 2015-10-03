@@ -135,7 +135,7 @@ endif
 		STAGING_DIR=$(STAGING_DIR) \
 		PATH=$(STAGING_PREFIX)/bin:$(PATH) \
 		./configure \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--cpu=$(TARGET_ARCH) \
 		--ssl=gnutls \
 		--msn=1 \

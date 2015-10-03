@@ -220,7 +220,7 @@ $(LUA_IPK_DIR)/CONTROL/control:
 #
 $(LUA_IPK): $(LUA_BUILD_DIR)/.built
 	rm -rf $(LUA_IPK_DIR) $(BUILD_DIR)/lua_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(LUA_BUILD_DIR) INSTALL_TOP=$(LUA_IPK_DIR)/opt install
+	$(MAKE) -C $(LUA_BUILD_DIR) INSTALL_TOP=$(LUA_IPK_DIR)$(TARGET_PREFIX) install
 	$(STRIP_COMMAND) $(LUA_IPK_DIR)/opt/bin/*
 	$(STRIP_COMMAND) $(LUA_IPK_DIR)/opt/lib/liblua.so
 	$(INSTALL) -d $(LUA_IPK_DIR)/opt/lib/pkgconfig

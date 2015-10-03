@@ -131,7 +131,7 @@ $(QUAGGA_BUILD_DIR)/.configured: $(DL_DIR)/$(QUAGGA_SOURCE) $(QUAGGA_PATCHES) ma
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--sysconfdir=/opt/etc/quagga \
 		--localstatedir=/opt/var/run/quagga \
 		--disable-nls \

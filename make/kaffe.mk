@@ -128,7 +128,7 @@ $(KAFFE_BUILD_DIR)/.hostbuilt: $(KAFFE_BUILD_DIR)/.unpacked
 	mv $(BUILD_DIR)/$(KAFFE_DIR) $(KAFFE_HOST_BUILD_DIR) ; \
 	(cd $(KAFFE_HOST_BUILD_DIR); \
 		./configure \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
 		--disable-gtk-peer \
@@ -148,7 +148,7 @@ $(KAFFE_BUILD_DIR)/.configured: $(KAFFE_BUILD_DIR)/.hostbuilt
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-gtk-peer \
 		--without-x \
 		--enable-binreloc \

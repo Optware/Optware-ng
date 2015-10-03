@@ -128,7 +128,7 @@ $(OLEO_BUILD_DIR)/.configured: $(DL_DIR)/$(OLEO_SOURCE) $(OLEO_PATCHES) make/ole
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--without-x \
 		--disable-nls \
 		--disable-static \
@@ -194,7 +194,7 @@ $(OLEO_IPK_DIR)/CONTROL/control:
 #
 $(OLEO_IPK): $(OLEO_BUILD_DIR)/.built
 	rm -rf $(OLEO_IPK_DIR) $(BUILD_DIR)/oleo_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(OLEO_BUILD_DIR) prefix=$(OLEO_IPK_DIR)/opt install
+	$(MAKE) -C $(OLEO_BUILD_DIR) prefix=$(OLEO_IPK_DIR)$(TARGET_PREFIX) install
 	rm -f $(OLEO_IPK_DIR)/opt/info/dir
 	$(STRIP_COMMAND) $(OLEO_IPK_DIR)/opt/bin/oleo
 #	$(INSTALL) -d $(OLEO_IPK_DIR)/opt/etc/

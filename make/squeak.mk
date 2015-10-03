@@ -155,7 +155,7 @@ $(SQUEAK_BUILD_DIR)/.configured: $(DL_DIR)/$(SQUEAK_VM_SRC) $(DL_DIR)/$(SQUEAK_I
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--CFLAGS="$(STAGING_CPPFLAGS) $(SQUEAK_CPPFLAGS)" \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
 		--with-rfb \
@@ -163,7 +163,7 @@ $(SQUEAK_BUILD_DIR)/.configured: $(DL_DIR)/$(SQUEAK_VM_SRC) $(DL_DIR)/$(SQUEAK_I
 		--without-ffi \
 		--without-npsqueak \
 	)
-	sed -i -e 's|\(-P .*cmake_install\.cmake\)|-DCMAKE_INSTALL_PREFIX=$$(ROOT)/opt \1|' $(@D)/bld/Makefile
+	sed -i -e 's|\(-P .*cmake_install\.cmake\)|-DCMAKE_INSTALL_PREFIX=$$(ROOT)$(TARGET_PREFIX) \1|' $(@D)/bld/Makefile
 #	$(PATCH_LIBTOOL) \
 		-e 's|^sys_lib_search_path_spec=.*"$$|sys_lib_search_path_spec="$(STAGING_LIB_DIR)"|' \
 		$(@D)/bld/libtool

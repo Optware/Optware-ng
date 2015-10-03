@@ -128,7 +128,7 @@ $(MOST_BUILD_DIR)/.configured: $(DL_DIR)/$(MOST_SOURCE) $(MOST_PATCHES) make/mos
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--with-slang=$(STAGING_PREFIX) \
 		--without-x \
 		--disable-nls \

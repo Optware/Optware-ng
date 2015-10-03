@@ -188,7 +188,7 @@ $(APACHE_BUILD_DIR)/.configured: $(DL_DIR)/$(APACHE_SOURCE) $(APACHE_PATCHES) ma
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--enable-layout=GNU \
 		--with-mpm=$(APACHE_MPM) \
 		--enable-mods-shared=all \
@@ -205,7 +205,7 @@ $(APACHE_BUILD_DIR)/.configured: $(DL_DIR)/$(APACHE_SOURCE) $(APACHE_PATCHES) ma
 		--with-apr=$(STAGING_PREFIX) \
 		--with-apr-util=$(STAGING_PREFIX) \
 		--with-pcre=$(STAGING_PREFIX) \
-		--with-expat=/opt \
+		--with-expat=$(TARGET_PREFIX) \
 		--with-port=8000 \
 	)
 	sed -i -e "s|-L/opt/lib -R/opt/lib|$(STAGING_LDFLAGS)|g" $(@D)/build/config_vars.mk

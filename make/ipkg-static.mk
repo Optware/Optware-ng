@@ -132,7 +132,7 @@ $(IPKG-STATIC_BUILD_DIR)/.configured: make/ipkg-static.mk #$(DL_DIR)/ipkg-static
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--with-ipkglibdir=/opt/lib \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-shared \
 	)

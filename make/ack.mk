@@ -48,7 +48,7 @@ $(ACK_BUILD_DIR)/.configured: $(DL_DIR)/$(ACK_SOURCE) $(ACK_PATCHES) make/ack.mk
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		$(PERL_HOSTPERL) Makefile.PL \
-		PREFIX=/opt \
+		PREFIX=$(TARGET_PREFIX) \
 	)
 	touch $@
 
@@ -86,13 +86,13 @@ $(ACK_IPK_DIR)/CONTROL/control:
 $(ACK_IPK): $(ACK_BUILD_DIR)/.built
 	rm -rf $(ACK_IPK_DIR) $(BUILD_DIR)/ack_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(ACK_BUILD_DIR) DESTDIR=$(ACK_IPK_DIR) install
-	find $(ACK_IPK_DIR)/opt -name 'perllocal.pod' -exec rm -f {} \;
+	find $(ACK_IPK_DIR)$(TARGET_PREFIX) -name 'perllocal.pod' -exec rm -f {} \;
 	(cd $(ACK_IPK_DIR)/opt/lib/perl5 ; \
 		find . -name '*.so' -exec chmod +w {} \; ; \
 		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
 		find . -name '*.so' -exec chmod -w {} \; ; \
 	)
-	find $(ACK_IPK_DIR)/opt -type d -exec chmod go+rx {} \;
+	find $(ACK_IPK_DIR)$(TARGET_PREFIX) -type d -exec chmod go+rx {} \;
 	$(MAKE) $(ACK_IPK_DIR)/CONTROL/control
 	echo $(ACK_CONFFILES) | sed -e 's/ /\n/g' > $(ACK_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ACK_IPK_DIR)

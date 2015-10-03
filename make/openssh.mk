@@ -114,7 +114,7 @@ $(OPENSSH_BUILD_DIR)/.configured: $(DL_DIR)/$(OPENSSH_SOURCE) $(OPENSSH_PATCHES)
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		$(OPENSSH_CONFIG_OPTS) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--with-pid-dir=/opt/var/run \
 		--with-prngd-socket=/opt/var/run/egd-pool \
 		--with-privsep-path=/opt/var/empty \

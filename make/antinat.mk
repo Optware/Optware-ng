@@ -119,7 +119,7 @@ $(ANTINAT_BUILD_DIR)/.configured: $(DL_DIR)/$(ANTINAT_SOURCE) $(ANTINAT_PATCHES)
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
 	)
@@ -188,7 +188,7 @@ $(ANTINAT_IPK_DIR)/CONTROL/control:
 #
 $(ANTINAT_IPK): $(ANTINAT_BUILD_DIR)/.built
 	rm -rf $(ANTINAT_IPK_DIR) $(BUILD_DIR)/antinat_*_$(TARGET_ARCH).ipk
-	( cd $(ANTINAT_BUILD_DIR) ; make install prefix=$(ANTINAT_IPK_DIR)/opt )
+	( cd $(ANTINAT_BUILD_DIR) ; make install prefix=$(ANTINAT_IPK_DIR)$(TARGET_PREFIX) )
 	rm -f $(ANTINAT_IPK_DIR)/opt/lib/libantinat.a
 	$(STRIP_COMMAND) $(ANTINAT_IPK_DIR)/opt/lib/libantinat.so.0.0.0
 	$(STRIP_COMMAND) $(ANTINAT_IPK_DIR)/opt/bin/antinat

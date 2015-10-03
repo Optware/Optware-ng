@@ -127,7 +127,7 @@ $(INADYN_BUILD_DIR)/.configured: $(DL_DIR)/$(INADYN_SOURCE) $(INADYN_PATCHES) ma
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
 	)
@@ -145,7 +145,7 @@ $(INADYN_BUILD_DIR)/.built: $(INADYN_BUILD_DIR)/.configured
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(INADYN_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(INADYN_LDFLAGS)" \
-		prefix=/opt sysconfdir=/opt/etc \
+		prefix=$(TARGET_PREFIX) sysconfdir=/opt/etc \
 		TARGET_ARCH=linux
 	touch $@
 

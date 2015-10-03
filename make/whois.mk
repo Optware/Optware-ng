@@ -185,7 +185,7 @@ $(WHOIS_IPK): $(WHOIS_BUILD_DIR)/.built
 	rm -rf $(WHOIS_IPK_DIR) $(BUILD_DIR)/whois_*_$(TARGET_ARCH).ipk
 	$(INSTALL) -d $(WHOIS_IPK_DIR)/opt/bin/
 	$(INSTALL) -d $(WHOIS_IPK_DIR)/opt/share/man/man1
-	$(MAKE) -C $(WHOIS_BUILD_DIR) BASEDIR=$(WHOIS_IPK_DIR) prefix=/opt install
+	$(MAKE) -C $(WHOIS_BUILD_DIR) BASEDIR=$(WHOIS_IPK_DIR) prefix=$(TARGET_PREFIX) install
 	$(STRIP_COMMAND) $(WHOIS_IPK_DIR)/opt/bin/*
 #	$(INSTALL) -d $(WHOIS_IPK_DIR)/opt/etc/init.d
 	$(MAKE) $(WHOIS_IPK_DIR)/CONTROL/control

@@ -124,7 +124,7 @@ $(LIBTHEORA_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBTHEORA_SOURCE) $(LIBTHEORA_PA
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-examples \
 		$(if $(filter i686, $(TARGET_ARCH)),--enable-float,--disable--float) \
 		--disable-nls \

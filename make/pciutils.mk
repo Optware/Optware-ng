@@ -128,7 +128,7 @@ $(PCIUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(PCIUTILS_SOURCE) $(PCIUTILS_PATCH
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
 	)
@@ -146,7 +146,7 @@ $(PCIUTILS_BUILD_DIR)/.built: $(PCIUTILS_BUILD_DIR)/.configured
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PCIUTILS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(PCIUTILS_LDFLAGS)" \
-		PREFIX=/opt \
+		PREFIX=$(TARGET_PREFIX) \
 		HOST=`$(SOURCE_DIR)/common/config.sub $(GNU_TARGET_NAME)` \
 	;
 	touch $@
@@ -201,7 +201,7 @@ $(PCIUTILS_IPK): $(PCIUTILS_BUILD_DIR)/.built
 	rm -rf $(PCIUTILS_IPK_DIR) $(BUILD_DIR)/pciutils_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PCIUTILS_BUILD_DIR) install \
 		DESTDIR=$(PCIUTILS_IPK_DIR) \
-		PREFIX=/opt \
+		PREFIX=$(TARGET_PREFIX) \
 		STRIP="" \
 	;
 	$(STRIP_COMMAND) $(PCIUTILS_IPK_DIR)/opt/sbin/lspci $(PCIUTILS_IPK_DIR)/opt/sbin/setpci

@@ -120,7 +120,7 @@ $(THTTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(THTTPD_SOURCE) $(THTTPD_PATCHES)
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--mandir=/opt/share/man \
 		--disable-nls \
 	)

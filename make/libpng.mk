@@ -112,7 +112,7 @@ $(LIBPNG_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBPNG_SOURCE) $(LIBPNG_PATCHES) ma
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
 	)
@@ -183,7 +183,7 @@ $(LIBPNG_IPK_DIR)/CONTROL/control:
 $(LIBPNG_IPK): $(LIBPNG_BUILD_DIR)/.built
 	rm -rf $(LIBPNG_IPK_DIR) $(LIBPNG_IPK)
 	$(INSTALL) -d $(LIBPNG_IPK_DIR)/opt
-	$(MAKE) -C $(LIBPNG_BUILD_DIR) prefix=$(LIBPNG_IPK_DIR)/opt install-strip
+	$(MAKE) -C $(LIBPNG_BUILD_DIR) prefix=$(LIBPNG_IPK_DIR)$(TARGET_PREFIX) install-strip
 	rm -f $(LIBPNG_IPK_DIR)/opt/lib/*.la
 	$(MAKE) $(LIBPNG_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBPNG_IPK_DIR)

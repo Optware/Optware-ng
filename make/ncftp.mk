@@ -178,7 +178,7 @@ $(NCFTP_IPK_DIR)/CONTROL/control:
 $(NCFTP_IPK): $(NCFTP_BUILD_DIR)/.built
 	rm -rf $(NCFTP_IPK_DIR) $(BUILD_DIR)/ncftp_*_$(TARGET_ARCH).ipk
 	$(INSTALL) -d $(NCFTP_IPK_DIR)/opt/bin
-	$(MAKE) -C $(NCFTP_BUILD_DIR) DESTDIR=$(NCFTP_IPK_DIR) prefix=/opt install
+	$(MAKE) -C $(NCFTP_BUILD_DIR) DESTDIR=$(NCFTP_IPK_DIR) prefix=$(TARGET_PREFIX) install
 	$(MAKE) $(NCFTP_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 644 $(NCFTP_SOURCE_DIR)/postinst $(NCFTP_IPK_DIR)/CONTROL/postinst
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NCFTP_IPK_DIR)

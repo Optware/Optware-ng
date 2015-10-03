@@ -121,7 +121,7 @@ $(TSOCKS_BUILD_DIR)/.configured: $(DL_DIR)/$(TSOCKS_SOURCE) $(TSOCKS_PATCHES)
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--with-conf=/opt/etc/tsocks.conf \
 		--disable-nls \
 	)

@@ -186,7 +186,7 @@ $(PY-WAREWEB_IPK): $(PY-WAREWEB_BUILD_DIR)/.built
 	(cd $(PY-WAREWEB_BUILD_DIR); \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 		python2.4 setup.py install\
-		--root=$(PY-WAREWEB_IPK_DIR) --prefix=/opt --single-version-externally-managed)
+		--root=$(PY-WAREWEB_IPK_DIR) --prefix=$(TARGET_PREFIX) --single-version-externally-managed)
 	$(MAKE) $(PY-WAREWEB_IPK_DIR)/CONTROL/control
 #	echo $(PY-WAREWEB_CONFFILES) | sed -e 's/ /\n/g' > $(PY-WAREWEB_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-WAREWEB_IPK_DIR)

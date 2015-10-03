@@ -169,7 +169,7 @@ $(PY-TESTGEARS_IPK): $(PY-TESTGEARS_BUILD_DIR)/.built
 	rm -rf $(PY-TESTGEARS_IPK_DIR) $(BUILD_DIR)/py-testgears_*_$(TARGET_ARCH).ipk
 	(cd $(PY-TESTGEARS_BUILD_DIR); \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-	python2.4 setup.py install --root=$(PY-TESTGEARS_IPK_DIR) --prefix=/opt --single-version-externally-managed)
+	python2.4 setup.py install --root=$(PY-TESTGEARS_IPK_DIR) --prefix=$(TARGET_PREFIX) --single-version-externally-managed)
 	$(MAKE) $(PY-TESTGEARS_IPK_DIR)/CONTROL/control
 	echo $(PY-TESTGEARS_CONFFILES) | sed -e 's/ /\n/g' > $(PY-TESTGEARS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-TESTGEARS_IPK_DIR)

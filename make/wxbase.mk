@@ -119,7 +119,7 @@ $(WXBASE_BUILD_DIR)/.configured: $(DL_DIR)/$(WXBASE_SOURCE) $(WXBASE_PATCHES)
 		LDFLAGS="$(STAGING_LDFLAGS) $(WXBASE_LDFLAGS)" \
 		ac_cv_path_SDL_CONFIG=no \
 		./configure \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \

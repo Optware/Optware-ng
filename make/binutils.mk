@@ -133,7 +133,7 @@ $(BINUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(BINUTILS_SOURCE) $(BINUTILS_PATCH
 		--build=$(GNU_HOST_NAME) \
 		--host=$(BINUTILS_TARGET_NAME) \
 		--target=$(BINUTILS_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
 		--disable-werror \

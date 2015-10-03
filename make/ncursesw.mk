@@ -42,7 +42,7 @@ ifneq ($(HOSTCC), $(TARGET_CC))
 	# configure without wide char just to make two build tools
 	(cd $(@D); \
 		./configure \
-		--prefix=/opt	\
+		--prefix=$(TARGET_PREFIX)	\
 		--with-shared		\
 		--disable-big-core	\
 		--with-build-cc=gcc	\
@@ -61,7 +61,7 @@ endif
 		./configure \
 		--host=$(GNU_TARGET_NAME) \
 		--build=$(GNU_HOST_NAME) \
-		--prefix=/opt	\
+		--prefix=$(TARGET_PREFIX)	\
 		--with-shared		\
 		--disable-big-core	\
 		--with-build-cc=gcc	\

@@ -179,7 +179,7 @@ $(MPAGE_IPK_DIR)/CONTROL/control:
 #
 $(MPAGE_IPK): $(MPAGE_BUILD_DIR)/.built
 	rm -rf $(MPAGE_IPK_DIR) $(BUILD_DIR)/mpage_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(MPAGE_BUILD_DIR) PREFIX=$(MPAGE_IPK_DIR)/opt install
+	$(MAKE) -C $(MPAGE_BUILD_DIR) PREFIX=$(MPAGE_IPK_DIR)$(TARGET_PREFIX) install
 	$(STRIP_COMMAND) $(MPAGE_IPK_DIR)/opt/bin/mpage
 #	$(INSTALL) -d $(MPAGE_IPK_DIR)/opt/etc/
 #	$(INSTALL) -m 644 $(MPAGE_SOURCE_DIR)/mpage.conf $(MPAGE_IPK_DIR)/opt/etc/mpage.conf

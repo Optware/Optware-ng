@@ -127,7 +127,7 @@ $(ULOGD_BUILD_DIR)/.configured: $(DL_DIR)/$(ULOGD_SOURCE) $(ULOGD_PATCHES) make/
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--with-sqlite3=$(STAGING_PREFIX) \
 		--disable-nls \
 		--disable-static \
@@ -198,7 +198,7 @@ $(ULOGD_IPK): $(ULOGD_BUILD_DIR)/.built
 	rm -rf $(ULOGD_IPK_DIR) $(BUILD_DIR)/ulogd_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(ULOGD_BUILD_DIR) DESTDIR=$(ULOGD_IPK_DIR) install
 	$(STRIP_COMMAND) $(ULOGD_IPK_DIR)/opt/sbin/* $(ULOGD_IPK_DIR)/opt/lib/ulogd/*.so
-	find $(ULOGD_IPK_DIR)/opt -type f -name '*.la' -exec rm -f {} \;
+	find $(ULOGD_IPK_DIR)$(TARGET_PREFIX) -type f -name '*.la' -exec rm -f {} \;
 	$(MAKE) $(ULOGD_IPK_DIR)/CONTROL/control
 	echo $(ULOGD_CONFFILES) | sed -e 's/ /\n/g' > $(ULOGD_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ULOGD_IPK_DIR)

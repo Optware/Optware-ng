@@ -112,10 +112,10 @@ $(ION_BUILD_DIR)/.configured: $(DL_DIR)/$(ION_SOURCE) $(ION_PATCHES)
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
                 --x-includes=$(STAGING_INCLUDE_DIR) \
                 --x-libraries=$(STAGING_LIB_DIR) \
-		--with-lua-prefix=$(LUA_HOST_BUILD_DIR)/opt \
+		--with-lua-prefix=$(LUA_HOST_BUILD_DIR)$(TARGET_PREFIX) \
 		--with-lua-includes=$(STAGING_INCLUDE_DIR) \
 		--with-lua-libraries=$(STAGING_LIB_DIR) \
 		--disable-nls \
@@ -179,7 +179,7 @@ $(ION_IPK_DIR)/CONTROL/control:
 $(ION_IPK): $(ION_BUILD_DIR)/.built
 	rm -rf $(ION_IPK_DIR) $(BUILD_DIR)/ion_*_$(TARGET_ARCH).ipk
 	$(TARGET_CONFIGURE_OPTS) \
-	$(MAKE) -C $(ION_BUILD_DIR) prefix=$(ION_IPK_DIR)/opt LOCALEDIR=$(ION_IPK_DIR)/opt/share/locale install
+	$(MAKE) -C $(ION_BUILD_DIR) prefix=$(ION_IPK_DIR)$(TARGET_PREFIX) LOCALEDIR=$(ION_IPK_DIR)/opt/share/locale install
 	$(MAKE) $(ION_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ION_IPK_DIR)
 

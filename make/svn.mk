@@ -183,7 +183,7 @@ endif
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--with-neon=$(STAGING_PREFIX) \
 		--with-apr=$(STAGING_PREFIX) \
 		--with-ruby-sitedir=/opt/local/lib/ruby/site_ruby/$(RUBY_VERSION) \
@@ -371,12 +371,12 @@ endif
 	$(MAKE) -C $(SVN_BUILD_DIR) DESTDIR=$(SVN_IPK_DIR) \
 		local-install $(SVN_INSTALL_SWIG_TARGETS)
 	$(STRIP_COMMAND) $(SVN_IPK_DIR)/opt/bin/*
-	for f in `find $(SVN_IPK_DIR)/opt -name '*.so'`; do \
+	for f in `find $(SVN_IPK_DIR)$(TARGET_PREFIX) -name '*.so'`; do \
 		chmod +w $$f; \
 		$(STRIP_COMMAND) $$f;\
 		chmod -w $$f; \
 	done
-	find $(SVN_IPK_DIR)/opt -name '*.la' -exec rm -f {} \;
+	find $(SVN_IPK_DIR)$(TARGET_PREFIX) -name '*.la' -exec rm -f {} \;
 ifneq (,$(filter perl, $(PACKAGES)))
 	# mv to svn-pl
 	rm -rf $(SVN-PL_IPK_DIR) $(BUILD_DIR)/svn-pl_*_$(TARGET_ARCH).ipk

@@ -193,7 +193,7 @@ $(KERNEL_BUILD_DIR)/.ipkdone: $(KERNEL_BUILD_DIR)/.built
 	rm -rf $(KERNEL-MODULES_IPK_DIR)* $(KERNEL-MODULE_IPKS_DIR)
 	mkdir -p $(KERNEL-MODULES_IPK_DIR)/opt/lib/modules
 	$(MAKE) -C $(KERNEL_BUILD_DIR) $(KERNEL-MODULES-FLAGS) \
-		INSTALL_MOD_PATH=$(KERNEL-MODULES_IPK_DIR)/opt modules_install
+		INSTALL_MOD_PATH=$(KERNEL-MODULES_IPK_DIR)$(TARGET_PREFIX) modules_install
 	for m in $(KERNEL-MODULES); do \
 	  m=`basename $$m .ko`; \
 	  n=`echo $$m | sed -e 's/_/-/g' | tr '[A-Z]' '[a-z]'`; \

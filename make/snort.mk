@@ -128,7 +128,7 @@ $(SNORT_BUILD_DIR)/.configured: $(DL_DIR)/$(SNORT_SOURCE) $(SNORT_PATCHES) make/
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--with-libpcap-includes=$(STAGING_INCLUDE_DIR) \
 		--with-libpcap-libraries=$(STAGING_LIB_DIR) \
 		--with-libpcre-includes=$(STAGING_INCLUDE_DIR) \

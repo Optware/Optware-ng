@@ -79,7 +79,7 @@ endif
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--with-included-popt \
 		--with-rsyncd-conf=/opt/etc/rsyncd.conf \
 		--disable-nls \
@@ -121,7 +121,7 @@ $(RSYNC_IPK): $(RSYNC_BUILD_DIR)/.built
 	rm -rf $(RSYNC_IPK_DIR) $(BUILD_DIR)/rsync_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(RSYNC_BUILD_DIR) DESTDIR=$(RSYNC_IPK_DIR) install
 	$(STRIP_COMMAND) $(RSYNC_IPK_DIR)/opt/bin/rsync
-	find $(RSYNC_IPK_DIR)/opt -type d -exec chmod go+rx {} \;
+	find $(RSYNC_IPK_DIR)$(TARGET_PREFIX) -type d -exec chmod go+rx {} \;
 	$(INSTALL) -d $(RSYNC_IPK_DIR)/opt/etc
 	$(INSTALL) -m 644 $(RSYNC_SOURCE_DIR)/rsyncd.conf $(RSYNC_IPK_DIR)/opt/etc/rsyncd.conf
 	$(INSTALL) -d $(RSYNC_IPK_DIR)/opt/etc/default

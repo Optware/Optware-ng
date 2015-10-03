@@ -125,7 +125,7 @@ $(LIBUSB1_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBUSB1_SOURCE) $(LIBUSB1_PATCHES)
 		--target=$(GNU_TARGET_NAME) \
 		--disable-build-docs \
 		--disable-udev \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 	)
 	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@

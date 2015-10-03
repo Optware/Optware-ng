@@ -144,7 +144,7 @@ $(UDEV_BUILD_DIR)/.configured: $(DL_DIR)/$(UDEV_SOURCE) $(UDEV_PATCHES) make/ude
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
 		--disable-introspection \
@@ -248,7 +248,7 @@ $(UDEV_IPK) $(LIBUDEV_IPK) $(LIBGUDEV_IPK): $(UDEV_BUILD_DIR)/.built
 		$(LIBGUDEV_IPK_DIR) $(BUILD_DIR)/libgudev_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(UDEV_BUILD_DIR) DESTDIR=$(UDEV_IPK_DIR) install-strip
 	rm -f $(UDEV_IPK_DIR)/opt/lib/*.la
-	$(INSTALL) -d $(LIBUDEV_IPK_DIR)/opt $(LIBGUDEV_IPK_DIR)/opt/lib/pkgconfig
+	$(INSTALL) -d $(LIBUDEV_IPK_DIR)$(TARGET_PREFIX) $(LIBGUDEV_IPK_DIR)/opt/lib/pkgconfig
 	mv -f $(UDEV_IPK_DIR)/opt/lib $(LIBUDEV_IPK_DIR)/opt
 	mv -f $(LIBUDEV_IPK_DIR)/opt/lib/libgudev-1.0.* $(LIBGUDEV_IPK_DIR)/opt/lib
 	mv -f $(LIBUDEV_IPK_DIR)/opt/lib/pkgconfig/gudev-1.0.pc $(LIBGUDEV_IPK_DIR)/opt/lib/pkgconfig

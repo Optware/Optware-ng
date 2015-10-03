@@ -128,7 +128,7 @@ $(PAL_BUILD_DIR)/.configured: $(DL_DIR)/$(PAL_SOURCE) $(PAL_PATCHES) make/pal.mk
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
 	)
@@ -147,7 +147,7 @@ $(PAL_BUILD_DIR)/.built: $(PAL_BUILD_DIR)/.configured
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PAL_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(PAL_LDFLAGS)" \
 		LIBDIR="$(STAGING_LDFLAGS) $(PAL_LDFLAGS)" \
-		prefix=/opt \
+		prefix=$(TARGET_PREFIX) \
 		;
 	touch $@
 
@@ -201,7 +201,7 @@ $(PAL_IPK): $(PAL_BUILD_DIR)/.built
 	rm -rf $(PAL_IPK_DIR) $(BUILD_DIR)/pal_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PAL_BUILD_DIR)/src install-no-rm \
 		DESTDIR=$(PAL_IPK_DIR) \
-		prefix=/opt \
+		prefix=$(TARGET_PREFIX) \
 		;
 	$(STRIP_COMMAND) $(PAL_IPK_DIR)/opt/bin/pal
 #	$(INSTALL) -d $(PAL_IPK_DIR)/opt/etc/

@@ -124,7 +124,7 @@ $(PROXYTUNNEL_BUILD_DIR)/.configured: $(DL_DIR)/$(PROXYTUNNEL_SOURCE) $(PROXYTUN
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
 	)
@@ -143,7 +143,7 @@ $(PROXYTUNNEL_BUILD_DIR)/.built: $(PROXYTUNNEL_BUILD_DIR)/.configured
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PROXYTUNNEL_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(PROXYTUNNEL_LDFLAGS)" \
-		PREFIX=/opt \
+		PREFIX=$(TARGET_PREFIX) \
 		;
 	touch $@
 
@@ -195,7 +195,7 @@ $(PROXYTUNNEL_IPK_DIR)/CONTROL/control:
 #
 $(PROXYTUNNEL_IPK): $(PROXYTUNNEL_BUILD_DIR)/.built
 	rm -rf $(PROXYTUNNEL_IPK_DIR) $(BUILD_DIR)/proxytunnel_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(PROXYTUNNEL_BUILD_DIR) DESTDIR=$(PROXYTUNNEL_IPK_DIR) PREFIX=/opt install
+	$(MAKE) -C $(PROXYTUNNEL_BUILD_DIR) DESTDIR=$(PROXYTUNNEL_IPK_DIR) PREFIX=$(TARGET_PREFIX) install
 	$(STRIP_COMMAND) $(PROXYTUNNEL_IPK_DIR)/opt/bin/proxytunnel
 	$(INSTALL) -d $(PROXYTUNNEL_IPK_DIR)/opt/share/doc/proxytunnel
 	$(INSTALL) $(PROXYTUNNEL_BUILD_DIR)/[CIKLRT]* $(PROXYTUNNEL_IPK_DIR)/opt/share/doc/proxytunnel

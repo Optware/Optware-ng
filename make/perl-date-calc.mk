@@ -49,7 +49,7 @@ $(PERL-DATE-CALC_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-DATE-CALC_SOURCE) $(PE
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		$(PERL_HOSTPERL) Makefile.PL \
-		PREFIX=/opt \
+		PREFIX=$(TARGET_PREFIX) \
 	)
 	touch $@
 
@@ -89,13 +89,13 @@ $(PERL-DATE-CALC_IPK_DIR)/CONTROL/control:
 $(PERL-DATE-CALC_IPK): $(PERL-DATE-CALC_BUILD_DIR)/.built
 	rm -rf $(PERL-DATE-CALC_IPK_DIR) $(BUILD_DIR)/perl-date-calc_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PERL-DATE-CALC_BUILD_DIR) DESTDIR=$(PERL-DATE-CALC_IPK_DIR) install
-	find $(PERL-DATE-CALC_IPK_DIR)/opt -name 'perllocal.pod' -exec rm -f {} \;
+	find $(PERL-DATE-CALC_IPK_DIR)$(TARGET_PREFIX) -name 'perllocal.pod' -exec rm -f {} \;
 	(cd $(PERL-DATE-CALC_IPK_DIR)/opt/lib/perl5 ; \
 		find . -name '*.so' -exec chmod +w {} \; ; \
 		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
 		find . -name '*.so' -exec chmod -w {} \; ; \
 	)
-	find $(PERL-DATE-CALC_IPK_DIR)/opt -type d -exec chmod go+rx {} \;
+	find $(PERL-DATE-CALC_IPK_DIR)$(TARGET_PREFIX) -type d -exec chmod go+rx {} \;
 	$(MAKE) $(PERL-DATE-CALC_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(PERL-DATE-CALC_SOURCE_DIR)/postinst $(PERL-DATE-CALC_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 755 $(PERL-DATE-CALC_SOURCE_DIR)/prerm $(PERL-DATE-CALC_IPK_DIR)/CONTROL/prerm

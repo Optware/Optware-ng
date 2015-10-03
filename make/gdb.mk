@@ -142,7 +142,7 @@ endif
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-tui \
 	)
@@ -232,7 +232,7 @@ $(GDB_IPK_DIR)/CONTROL/control:
 $(GDB_IPK): $(GDB_BUILD_DIR)/.built
 	ls -la $(GDB_BUILD_DIR)/.built
 	rm -rf $(GDB_IPK_DIR) $(BUILD_DIR)/gdb_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(GDB_BUILD_DIR) prefix=$(GDB_IPK_DIR)/opt install
+	$(MAKE) -C $(GDB_BUILD_DIR) prefix=$(GDB_IPK_DIR)$(TARGET_PREFIX) install
 	rm -f $(GDB_IPK_DIR)/opt/info/standards.info
 	-$(STRIP_COMMAND) $(GDB_IPK_DIR)/opt/bin/run
 	# rm the following files to avoid conflict with binutils

@@ -106,8 +106,8 @@ $(GUTENPRINT_HOST_BUILD_DIR)/.built: $(DL_DIR)/$(GUTENPRINT_SOURCE) make/gutenpr
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_HOST_NAME) \
 		--target=$(GNU_HOST_NAME) \
-		--prefix=/opt \
-		--with-cups=/opt \
+		--prefix=$(TARGET_PREFIX) \
+		--with-cups=$(TARGET_PREFIX) \
 		--enable-cups-ppds \
 		--enable-cups-level3-ppds \
 		--without-ghostscript \
@@ -146,8 +146,8 @@ $(GUTENPRINT_BUILD_DIR)/.configured: $(DL_DIR)/$(GUTENPRINT_SOURCE) $(GUTENPRINT
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
-		--with-cups=/opt \
+		--prefix=$(TARGET_PREFIX) \
+		--with-cups=$(TARGET_PREFIX) \
 		--disable-cups-ppds \
 		--without-foomatic \
 		--disable-libgutenprintui2 \

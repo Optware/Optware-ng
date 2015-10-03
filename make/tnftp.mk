@@ -132,7 +132,7 @@ $(TNFTP_BUILD_DIR)/.configured: $(DL_DIR)/$(TNFTP_SOURCE) $(TNFTP_PATCHES) make/
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
 	)
@@ -199,7 +199,7 @@ $(TNFTP_IPK): $(TNFTP_BUILD_DIR)/.built
 	rm -rf $(TNFTP_IPK_DIR) $(BUILD_DIR)/tnftp_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(TNFTP_BUILD_DIR) install \
 		transform='s:^ftp:tnftp:' \
-		prefix=$(TNFTP_IPK_DIR)/opt \
+		prefix=$(TNFTP_IPK_DIR)$(TARGET_PREFIX) \
 		mandircat1=$(TNFTP_IPK_DIR)/opt/share/man/man1 
 	chmod +w $(TNFTP_IPK_DIR)/opt/bin/tnftp && \
 	$(STRIP_COMMAND) $(TNFTP_IPK_DIR)/opt/bin/tnftp && \

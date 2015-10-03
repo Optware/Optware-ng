@@ -121,7 +121,7 @@ $(DISCOUNT_BUILD_DIR)/.configured: $(DL_DIR)/$(DISCOUNT_SOURCE) $(DISCOUNT_PATCH
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(DISCOUNT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(DISCOUNT_LDFLAGS)" \
 		./configure.sh \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--confdir=/opt/etc \
 		--enable-all-features \
 	)

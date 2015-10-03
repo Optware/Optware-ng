@@ -154,7 +154,7 @@ endif
 		--with-libtool \
 		--with-libpcap=$(STAGING_PREFIX) \
 		--with-libnet=$(STAGING_PREFIX) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
 		--disable-gtk \

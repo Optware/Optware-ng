@@ -135,7 +135,7 @@ $(TSHARK_BUILD_DIR)/.configured: $(DL_DIR)/$(TSHARK_SOURCE) $(TSHARK_PATCHES) ma
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-wireshark \
 		--with-glib-prefix=$(STAGING_PREFIX) \
 		--with-libgcrypt-prefix=$(STAGING_PREFIX) \

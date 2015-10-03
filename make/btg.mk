@@ -191,7 +191,7 @@ endif
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--program-prefix= \
 		--with-boost="$(STAGING_PREFIX)" \
 		--with-boost-libdir="$(STAGING_LIB_DIR)" \

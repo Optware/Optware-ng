@@ -149,7 +149,7 @@ endif
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
 	)
@@ -176,7 +176,7 @@ $(NEWSBEUTER_BUILD_DIR)/.built: $(NEWSBEUTER_BUILD_DIR)/.configured
 		PKG_CONFIG_PATH=$(STAGING_LIB_DIR)/pkgconfig \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(NEWSBEUTER_CPPFLAGS)" \
 		LDFLAGS="$(NEWSBEUTER_LDFLAGS) $(STAGING_LDFLAGS)" \
-		prefix=/opt \
+		prefix=$(TARGET_PREFIX) \
 		;
 	touch $@
 

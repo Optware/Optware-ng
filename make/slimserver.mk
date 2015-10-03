@@ -184,7 +184,7 @@ $(SLIMSERVER_BUILD_DIR)/.built: $(SLIMSERVER_BUILD_DIR)/.configured
 		$(PERL_INC) \
 		STAGINGDIR="${STAGING_DIR}" \
 		$(PERL_HOSTPERL) build-perl-modules.pl \
-		PREFIX=/opt \
+		PREFIX=$(TARGET_PREFIX) \
 	)
 	touch $@
 

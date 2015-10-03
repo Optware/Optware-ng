@@ -113,7 +113,7 @@ $(MEMTESTER_BUILD_DIR)/.configured: $(DL_DIR)/$(MEMTESTER_SOURCE) $(MEMTESTER_PA
 	#	--build=$(GNU_HOST_NAME) \
 	#	--host=$(GNU_TARGET_NAME) \
 	#	--target=$(GNU_TARGET_NAME) \
-	#	--prefix=/opt \
+	#	--prefix=$(TARGET_PREFIX) \
 	#	--disable-nls \
 	#	--disable-static \
 	#)
@@ -184,7 +184,7 @@ $(MEMTESTER_IPK_DIR)/CONTROL/control:
 #
 $(MEMTESTER_IPK): $(MEMTESTER_BUILD_DIR)/.built
 	rm -rf $(MEMTESTER_IPK_DIR) $(BUILD_DIR)/memtester_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(MEMTESTER_BUILD_DIR) INSTALLPATH=$(MEMTESTER_IPK_DIR)/opt install
+	$(MAKE) -C $(MEMTESTER_BUILD_DIR) INSTALLPATH=$(MEMTESTER_IPK_DIR)$(TARGET_PREFIX) install
 	#$(INSTALL) -d $(MEMTESTER_IPK_DIR)/opt/etc/
 	#$(INSTALL) -m 644 $(MEMTESTER_SOURCE_DIR)/memtester.conf $(MEMTESTER_IPK_DIR)/opt/etc/memtester.conf
 	#$(INSTALL) -d $(MEMTESTER_IPK_DIR)/opt/etc/init.d

@@ -124,7 +124,7 @@ $(MICROCOM_BUILD_DIR)/.configured: $(DL_DIR)/$(MICROCOM_SOURCE) $(MICROCOM_PATCH
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
 	)

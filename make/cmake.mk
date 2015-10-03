@@ -126,7 +126,7 @@ $(CMAKE_BUILD_DIR)/.configured: $(DL_DIR)/$(CMAKE_SOURCE) $(CMAKE_PATCHES) make/
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(CMAKE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(CMAKE_LDFLAGS)" \
 		./configure \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--no-qt-gui \
 	)
 	touch $@

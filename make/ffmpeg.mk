@@ -192,7 +192,7 @@ endif
 		--disable-static \
 		--enable-gpl \
 		--enable-postproc \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 	)
 ifneq (, $(filter glibc shibby-tomato-arm, $(LIBC_STYLE) $(OPTWARE_TARGET)))
 	for lib in CBRT CBRTF RINT LRINT LRINTF ROUND ROUNDF TRUNC TRUNCF ISINF ISNAN; do \
@@ -348,7 +348,7 @@ $(FFMPEG_IPK): $(FFMPEG_BUILD_DIR)/.built
 	rm -rf $(FFMPEG_IPK_DIR) $(BUILD_DIR)/ffmpeg_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(FFMPEG_BUILD_DIR) mandir=$(FFMPEG_IPK_DIR)/opt/share/man \
 		bindir=$(FFMPEG_IPK_DIR)/opt/bin libdir=$(FFMPEG_IPK_DIR)/opt/lib \
-		prefix=$(FFMPEG_IPK_DIR)/opt \
+		prefix=$(FFMPEG_IPK_DIR)$(TARGET_PREFIX) \
 		LDCONFIG='$$(warning ldconfig disabled when building package)' install
 	if [ -f $(FFMPEG_IPK_DIR)/opt/include/libavutil/time.h ]; then \
 		mv -f $(FFMPEG_IPK_DIR)/opt/include/libavutil/time.h $(FFMPEG_IPK_DIR)/opt/include/libavutil/time.h_; \

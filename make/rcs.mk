@@ -113,7 +113,7 @@ $(RCS_BUILD_DIR)/.configured: $(DL_DIR)/$(RCS_SOURCE) $(RCS_PATCHES)
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 	)
 ifneq ($(HOSTCC),$(TARGET_CC))
@@ -183,7 +183,7 @@ $(RCS_IPK_DIR)/CONTROL/control:
 #
 $(RCS_IPK): $(RCS_BUILD_DIR)/.built
 	rm -rf $(RCS_IPK_DIR) $(BUILD_DIR)/rcs_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(RCS_BUILD_DIR) DESTDIR=$(RCS_IPK_DIR) prefix=$(RCS_IPK_DIR)/opt install
+	$(MAKE) -C $(RCS_BUILD_DIR) DESTDIR=$(RCS_IPK_DIR) prefix=$(RCS_IPK_DIR)$(TARGET_PREFIX) install
 	$(STRIP_COMMAND) $(RCS_IPK_DIR)/opt/bin/*
 	$(MAKE) $(RCS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(RCS_IPK_DIR)

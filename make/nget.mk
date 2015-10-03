@@ -134,7 +134,7 @@ $(NGET_BUILD_DIR)/.configured: $(DL_DIR)/$(NGET_SOURCE) $(NGET_PATCHES) make/nge
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 	)
 	(cd $(@D); \
@@ -145,7 +145,7 @@ $(NGET_BUILD_DIR)/.configured: $(DL_DIR)/$(NGET_SOURCE) $(NGET_PATCHES) make/nge
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--without-gnugetopt \
 		--with-pcre \
 		--with-popt \
@@ -213,7 +213,7 @@ $(NGET_IPK_DIR)/CONTROL/control:
 $(NGET_IPK): $(NGET_BUILD_DIR)/.built
 	rm -rf $(NGET_IPK_DIR) $(BUILD_DIR)/nget_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(NGET_BUILD_DIR) \
-		prefix=$(NGET_IPK_DIR)/opt \
+		prefix=$(NGET_IPK_DIR)$(TARGET_PREFIX) \
 		$(INSTALL)_bin="install -m 0755" \
 		$(INSTALL)
 	$(STRIP_COMMAND) $(NGET_IPK_DIR)/opt/bin/*

@@ -122,7 +122,7 @@ $(WIRELESS-TOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(WIRELESS-TOOLS_SOURCE) $(WI
 	#	--build=$(GNU_HOST_NAME) \
 	#	--host=$(GNU_TARGET_NAME) \
 	#	--target=$(GNU_TARGET_NAME) \
-	#	--prefix=/opt \
+	#	--prefix=$(TARGET_PREFIX) \
 	#	--disable-nls \
 	#	--disable-static \
 	#)
@@ -136,7 +136,7 @@ wireless-tools-unpack: $(WIRELESS-TOOLS_BUILD_DIR)/.configured
 #
 $(WIRELESS-TOOLS_BUILD_DIR)/.built: $(WIRELESS-TOOLS_BUILD_DIR)/.configured
 	rm -f $(WIRELESS-TOOLS_BUILD_DIR)/.built
-	$(MAKE) -C $(WIRELESS-TOOLS_BUILD_DIR) CC=$(TARGET_CC) PREFIX=/opt LDFLAGS=-Wl,-rpath=/opt/lib
+	$(MAKE) -C $(WIRELESS-TOOLS_BUILD_DIR) CC=$(TARGET_CC) PREFIX=$(TARGET_PREFIX) LDFLAGS=-Wl,-rpath=/opt/lib
 	touch $(WIRELESS-TOOLS_BUILD_DIR)/.built
 
 #
@@ -187,7 +187,7 @@ $(WIRELESS-TOOLS_IPK_DIR)/CONTROL/control:
 #
 $(WIRELESS-TOOLS_IPK): $(WIRELESS-TOOLS_BUILD_DIR)/.built
 	rm -rf $(WIRELESS-TOOLS_IPK_DIR) $(BUILD_DIR)/wireless-tools_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(WIRELESS-TOOLS_BUILD_DIR) PREFIX=$(WIRELESS-TOOLS_IPK_DIR)/opt install
+	$(MAKE) -C $(WIRELESS-TOOLS_BUILD_DIR) PREFIX=$(WIRELESS-TOOLS_IPK_DIR)$(TARGET_PREFIX) install
 	$(STRIP_COMMAND) $(WIRELESS-TOOLS_IPK_DIR)/opt/bin/*
 	$(STRIP_COMMAND) $(WIRELESS-TOOLS_IPK_DIR)/opt/sbin/*
 	$(STRIP_COMMAND) $(WIRELESS-TOOLS_IPK_DIR)/opt/lib/*

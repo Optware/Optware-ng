@@ -136,7 +136,7 @@ $(ETTERCAP_BUILD_DIR)/.configured: $(DL_DIR)/$(ETTERCAP_SOURCE) $(ETTERCAP_PATCH
 		--includedir=$(STAGING_INCLUDE_DIR) \
 		--without-openssl \
 		--with-libtool \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
 		--disable-gtk \

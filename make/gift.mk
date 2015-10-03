@@ -109,7 +109,7 @@ $(GIFT_BUILD_DIR)/.configured: $(DL_DIR)/$(GIFT_SOURCE) $(GIFT_PATCHES)
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--with-ogg=$(STAGING_PREFIX) \
 		--with-vorbis=$(STAGING_PREFIX) \
 		--disable-nls \

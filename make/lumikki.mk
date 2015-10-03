@@ -123,7 +123,7 @@ $(LUMIKKI_BUILD_DIR)/.configured: $(DL_DIR)/$(LUMIKKI_SOURCE) $(LUMIKKI_PATCHES)
 #		--build=$(GNU_HOST_NAME) \
 #		--host=$(GNU_TARGET_NAME) \
 #		--target=$(GNU_TARGET_NAME) \
-#		--prefix=/opt \
+#		--prefix=$(TARGET_PREFIX) \
 #		--disable-nls \
 #		--disable-static \
 #	)
@@ -152,7 +152,7 @@ lumikki: $(LUMIKKI_BUILD_DIR)/.built
 $(LUMIKKI_BUILD_DIR)/.staged: $(LUMIKKI_BUILD_DIR)/.built
 	rm -f $(LUMIKKI_BUILD_DIR)/.staged
 	$(MAKE) -C $(LUMIKKI_BUILD_DIR) DESTDIR=$(STAGING_DIR) \
-		TRUE_DESTDIR=/opt MANDIR=$(DESTDIR)/man/man1 \
+		TRUE_DESTDIR=$(TARGET_PREFIX) MANDIR=$(DESTDIR)/man/man1 \
 		DOCDIR=$(STAGING_DIR)/shared/docs \
 		$(INSTALL)
 	touch $(LUMIKKI_BUILD_DIR)/.staged
@@ -193,7 +193,7 @@ $(LUMIKKI_IPK_DIR)/CONTROL/control:
 $(LUMIKKI_IPK): $(LUMIKKI_BUILD_DIR)/.built
 	rm -rf $(LUMIKKI_IPK_DIR) $(BUILD_DIR)/lumikki_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LUMIKKI_BUILD_DIR) DESTDIR=$(LUMIKKI_IPK_DIR) \
-		TRUE_DESTDIR=/opt MANDIR=$(LUMIKKI_IPK_DIR)/man/man1 \
+		TRUE_DESTDIR=$(TARGET_PREFIX) MANDIR=$(LUMIKKI_IPK_DIR)/man/man1 \
 		DOCDIR=$(LUMIKKI_IPK_DIR)/share/docs install-strip
 	#$(INSTALL) -d $(LUMIKKI_IPK_DIR)/opt/etc/
 	#$(INSTALL) -m 644 $(LUMIKKI_SOURCE_DIR)/lumikki.conf $(LUMIKKI_IPK_DIR)/opt/etc/lumikki.conf

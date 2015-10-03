@@ -50,7 +50,7 @@ $(PERL-DBD-SQLITE_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-DBD-SQLITE_SOURCE) $(
 		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		$(PERL_HOSTPERL) Makefile.PL  \
 		$(TARGET_CONFIGURE_OPTS) \
-		PREFIX=/opt \
+		PREFIX=$(TARGET_PREFIX) \
 		SQLITE_LOCATION=$(STAGING_PREFIX) \
 		; \
 		sed -e 's/~DRIVER~/SQLite/g' \
@@ -104,13 +104,13 @@ $(PERL-DBD-SQLITE_IPK_DIR)/CONTROL/control:
 $(PERL-DBD-SQLITE_IPK): $(PERL-DBD-SQLITE_BUILD_DIR)/.built
 	rm -rf $(PERL-DBD-SQLITE_IPK_DIR) $(BUILD_DIR)/perl-dbd-sqlite_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PERL-DBD-SQLITE_BUILD_DIR) DESTDIR=$(PERL-DBD-SQLITE_IPK_DIR) install
-	find $(PERL-DBD-SQLITE_IPK_DIR)/opt -name 'perllocal.pod' -exec rm -f {} \;
+	find $(PERL-DBD-SQLITE_IPK_DIR)$(TARGET_PREFIX) -name 'perllocal.pod' -exec rm -f {} \;
 	(cd $(PERL-DBD-SQLITE_IPK_DIR)/opt/lib/perl5 ; \
 		find . -name '*.so' -exec chmod +w {} \; ; \
 		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
 		find . -name '*.so' -exec chmod -w {} \; ; \
 	)
-	find $(PERL-DBD-SQLITE_IPK_DIR)/opt -type d -exec chmod go+rx {} \;
+	find $(PERL-DBD-SQLITE_IPK_DIR)$(TARGET_PREFIX) -type d -exec chmod go+rx {} \;
 	$(MAKE) $(PERL-DBD-SQLITE_IPK_DIR)/CONTROL/control
 	echo $(PERL-DBD-SQLITE_CONFFILES) | sed -e 's/ /\n/g' > $(PERL-DBD-SQLITE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PERL-DBD-SQLITE_IPK_DIR)

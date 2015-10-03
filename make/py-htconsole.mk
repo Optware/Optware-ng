@@ -171,7 +171,7 @@ $(PY-HTCONSOLE_IPK): $(PY-HTCONSOLE_BUILD_DIR)/.built
 	rm -rf $(PY-HTCONSOLE_IPK_DIR) $(BUILD_DIR)/py-htconsole_*_$(TARGET_ARCH).ipk
 	(cd $(PY-HTCONSOLE_BUILD_DIR); \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
-	python2.4 setup.py install --root=$(PY-HTCONSOLE_IPK_DIR) --prefix=/opt --single-version-externally-managed)
+	python2.4 setup.py install --root=$(PY-HTCONSOLE_IPK_DIR) --prefix=$(TARGET_PREFIX) --single-version-externally-managed)
 	$(MAKE) $(PY-HTCONSOLE_IPK_DIR)/CONTROL/control
 #	echo $(PY-HTCONSOLE_CONFFILES) | sed -e 's/ /\n/g' > $(PY-HTCONSOLE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-HTCONSOLE_IPK_DIR)

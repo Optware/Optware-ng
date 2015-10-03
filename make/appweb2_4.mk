@@ -123,7 +123,7 @@ $(APPWEB2_4_BUILD_DIR)/.configured: $(DL_DIR)/$(APPWEB2_4_SOURCE) $(APPWEB2_4_PA
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(APPWEB2_4_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(APPWEB2_4_LDFLAGS)" \
 		./configure \
-			--prefix=/opt \
+			--prefix=$(TARGET_PREFIX) \
 			--sbinDir=/opt/sbin \
 			--host=$(APPWEB2_4_TARGET_NAME) \
 			--buildNumber=$(APPWEB2_4_IPK_VERSION) \

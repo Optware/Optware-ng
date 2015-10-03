@@ -123,7 +123,7 @@ $(YOUGRABBER_BUILD_DIR)/.configured: $(DL_DIR)/$(YOUGRABBER_SOURCE) $(YOUGRABBER
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
 	)
@@ -196,7 +196,7 @@ $(YOUGRABBER_IPK): $(YOUGRABBER_BUILD_DIR)/.built
 	rm -rf $(YOUGRABBER_IPK_DIR) $(BUILD_DIR)/yougrabber_*_$(TARGET_ARCH).ipk
 	$(INSTALL) -d $(YOUGRABBER_IPK_DIR)/opt/bin
 	$(MAKE) -C $(YOUGRABBER_BUILD_DIR)/src install \
-		PREFIX=$(YOUGRABBER_IPK_DIR)/opt \
+		PREFIX=$(YOUGRABBER_IPK_DIR)$(TARGET_PREFIX) \
 		COPY=install
 	$(STRIP_COMMAND) $(YOUGRABBER_IPK_DIR)/opt/bin/yg
 	$(INSTALL) $(YOUGRABBER_BUILD_DIR)/CHANGELOG \

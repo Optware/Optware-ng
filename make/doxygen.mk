@@ -123,7 +123,7 @@ $(DOXYGEN_BUILD_DIR)/.configured: $(DL_DIR)/$(DOXYGEN_SOURCE) $(DOXYGEN_PATCHES)
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(DOXYGEN_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(DOXYGEN_LDFLAGS)" \
 		./configure \
-		--prefix /opt \
+		--prefix $(TARGET_PREFIX) \
 	)
 #	$(PATCH_LIBTOOL) $(DOXYGEN_BUILD_DIR)/libtool
 	touch $(DOXYGEN_BUILD_DIR)/.configured

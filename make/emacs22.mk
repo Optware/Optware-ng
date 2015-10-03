@@ -114,7 +114,7 @@ $(EMACS22_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(EMACS22_SOURCE) #
 ### they're usually in /usr/lib/<arch>
 	(cd $(@D); \
 		./configure \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--without-x \
 		--without-sound \
 		--disable-nls \
@@ -167,7 +167,7 @@ endif
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--without-x \
 		--without-sound \
 		--disable-nls \

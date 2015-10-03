@@ -106,7 +106,7 @@ $(DS101G-KERNEL-MODULES-FUSE_BUILD_DIR)/.configured: $(DL_DIR)/$(DS101G-KERNEL-M
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--program-prefix="" \
 		--disable-nls \
 		--disable-static \

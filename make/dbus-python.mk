@@ -129,7 +129,7 @@ $(DBUS-PYTHON_BUILD_DIR)/.configured: $(DL_DIR)/$(DBUS-PYTHON_SOURCE) $(DBUS-PYT
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
 	)
@@ -153,7 +153,7 @@ $(DBUS-PYTHON_BUILD_DIR)/.configured: $(DL_DIR)/$(DBUS-PYTHON_SOURCE) $(DBUS-PYT
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
 	)

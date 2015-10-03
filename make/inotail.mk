@@ -123,7 +123,7 @@ $(INOTAIL_BUILD_DIR)/.configured: $(DL_DIR)/$(INOTAIL_SOURCE) $(INOTAIL_PATCHES)
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
 	)
@@ -140,7 +140,7 @@ $(INOTAIL_BUILD_DIR)/.built: $(INOTAIL_BUILD_DIR)/.configured
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(INOTAIL_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(INOTAIL_LDFLAGS)" \
-		prefix=/opt \
+		prefix=$(TARGET_PREFIX) \
 		;
 	touch $@
 

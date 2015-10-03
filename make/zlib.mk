@@ -55,7 +55,7 @@ $(ZLIB_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(ZLIB_SOURCE) make/z
 	mv $(HOST_BUILD_DIR)/$(ZLIB_DIR) $(@D)
 	(cd $(@D); \
 	    	CFLAGS="-fPIC" \
-		prefix=/opt \
+		prefix=$(TARGET_PREFIX) \
 		./configure \
 		--shared \
 	)
@@ -80,7 +80,7 @@ ifeq (darwin,$(TARGET_OS))
 endif
 	(cd $(ZLIB_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
-		prefix=/opt \
+		prefix=$(TARGET_PREFIX) \
 		./configure \
 		--shared \
 	)

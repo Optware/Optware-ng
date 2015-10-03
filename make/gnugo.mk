@@ -105,7 +105,7 @@ $(GNUGO_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(GNUGO_SOURCE) make/
 	fi
 	(cd $(GNUGO_HOST_BUILD_DIR); \
 		./configure \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
 	)
@@ -156,7 +156,7 @@ endif
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
 	)

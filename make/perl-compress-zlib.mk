@@ -45,7 +45,7 @@ $(PERL-COMPRESS-ZLIB_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-COMPRESS-ZLIB_SOUR
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		$(PERL_HOSTPERL) Makefile.PL \
-		PREFIX=/opt \
+		PREFIX=$(TARGET_PREFIX) \
 	)
 	touch $@
 
@@ -92,13 +92,13 @@ $(PERL-COMPRESS-ZLIB_IPK): $(PERL-COMPRESS-ZLIB_BUILD_DIR)/.built
 ifeq (5.10, $(PERL_MAJOR_VER))
 	rm -f $(PERL-COMPRESS-ZLIB_IPK_DIR)/opt/man/man3/Compress::Zlib.3
 endif
-	find $(PERL-COMPRESS-ZLIB_IPK_DIR)/opt -name 'perllocal.pod' -exec rm -f {} \;
+	find $(PERL-COMPRESS-ZLIB_IPK_DIR)$(TARGET_PREFIX) -name 'perllocal.pod' -exec rm -f {} \;
 	(cd $(PERL-COMPRESS-ZLIB_IPK_DIR)/opt/lib/perl5 ; \
 		find . -name '*.so' -exec chmod +w {} \; ; \
 		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
 		find . -name '*.so' -exec chmod -w {} \; ; \
 	)
-	find $(PERL-COMPRESS-ZLIB_IPK_DIR)/opt -type d -exec chmod go+rx {} \;
+	find $(PERL-COMPRESS-ZLIB_IPK_DIR)$(TARGET_PREFIX) -type d -exec chmod go+rx {} \;
 	$(MAKE) $(PERL-COMPRESS-ZLIB_IPK_DIR)/CONTROL/control
 	echo $(PERL-COMPRESS-ZLIB_CONFFILES) | sed -e 's/ /\n/g' > $(PERL-COMPRESS-ZLIB_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PERL-COMPRESS-ZLIB_IPK_DIR)

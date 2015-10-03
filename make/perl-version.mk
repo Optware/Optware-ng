@@ -89,15 +89,15 @@ $(PERL-VERSION_IPK): $(PERL-VERSION_BUILD_DIR)/.built
 	rm -rf $(PERL-VERSION_IPK_DIR) $(BUILD_DIR)/perl-version_*_$(TARGET_ARCH).ipk
 	(cd $(PERL-VERSION_BUILD_DIR); \
 		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
-		./Build --prefix $(PERL-VERSION_IPK_DIR)/opt install \
+		./Build --prefix $(PERL-VERSION_IPK_DIR)$(TARGET_PREFIX) install \
 	)
-	find $(PERL-VERSION_IPK_DIR)/opt -name 'perllocal.pod' -exec rm -f {} \;
+	find $(PERL-VERSION_IPK_DIR)$(TARGET_PREFIX) -name 'perllocal.pod' -exec rm -f {} \;
 	(cd $(PERL-VERSION_IPK_DIR)/opt/lib/perl5 ; \
 		find . -name '*.so' -exec chmod +w {} \; ; \
 		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
 		find . -name '*.so' -exec chmod -w {} \; ; \
 	)
-	find $(PERL-VERSION_IPK_DIR)/opt -type d -exec chmod go+rx {} \;
+	find $(PERL-VERSION_IPK_DIR)$(TARGET_PREFIX) -type d -exec chmod go+rx {} \;
 	$(MAKE) $(PERL-VERSION_IPK_DIR)/CONTROL/control
 	echo $(PERL-VERSION_CONFFILES) | sed -e 's/ /\n/g' > $(PERL-VERSION_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PERL-VERSION_IPK_DIR)

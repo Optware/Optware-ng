@@ -132,7 +132,7 @@ $(RTMPDUMP_BUILD_DIR)/.built: $(RTMPDUMP_BUILD_DIR)/.configured
 			CRYPTO=OPENSSL \
 			XCFLAGS="$(STAGING_CPPFLAGS) $(RTMPDUMP_CPPFLAGS)" \
 			XLDFLAGS="$(STAGING_LDFLAGS) $(RTMPDUMP_LDFLAGS)" \
-			prefix=/opt \
+			prefix=$(TARGET_PREFIX) \
 		-C $(@D)
 	touch $@
 
@@ -146,7 +146,7 @@ rtmpdump: $(RTMPDUMP_BUILD_DIR)/.built
 #
 $(RTMPDUMP_BUILD_DIR)/.staged: $(RTMPDUMP_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(@D) prefix=/opt DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) prefix=$(TARGET_PREFIX) DESTDIR=$(STAGING_DIR) install
 	sed -i -e '/^prefix=/s|=.*|=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/librtmp.pc
 	touch $@
 
@@ -185,7 +185,7 @@ $(RTMPDUMP_IPK_DIR)/CONTROL/control:
 #
 $(RTMPDUMP_IPK): $(RTMPDUMP_BUILD_DIR)/.built
 	rm -rf $(RTMPDUMP_IPK_DIR) $(BUILD_DIR)/rtmpdump_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(RTMPDUMP_BUILD_DIR) prefix=/opt DESTDIR=$(RTMPDUMP_IPK_DIR) install
+	$(MAKE) -C $(RTMPDUMP_BUILD_DIR) prefix=$(TARGET_PREFIX) DESTDIR=$(RTMPDUMP_IPK_DIR) install
 	rm -f $(RTMPDUMP_IPK_DIR)/opt/lib/*.a
 	$(STRIP_COMMAND) $(RTMPDUMP_IPK_DIR)/opt/{{bin,sbin}/*,lib/*.so}
 #	$(INSTALL) -d $(RTMPDUMP_IPK_DIR)/opt/etc/

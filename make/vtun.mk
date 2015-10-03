@@ -126,7 +126,7 @@ $(VTUN_BUILD_DIR)/.configured: $(DL_DIR)/$(VTUN_SOURCE) $(VTUN_PATCHES) make/vtu
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--with-ssl-headers=$(STAGING_INCLUDE_DIR)/openssl \
 		--with-blowfish-headers=$(STAGING_INCLUDE_DIR)/openssl \
 		--with-ssl-lib=$(STAGING_LIB_DIR) \

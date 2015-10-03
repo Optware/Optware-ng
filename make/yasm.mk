@@ -103,7 +103,7 @@ $(YASM_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(YASM_SOURCE) $(YASM
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_HOST_NAME) \
 		--target=$(GNU_HOST_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
 	)
@@ -150,7 +150,7 @@ $(YASM_BUILD_DIR)/.configured: $(DL_DIR)/$(YASM_SOURCE) $(YASM_PATCHES) make/yas
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
 	)

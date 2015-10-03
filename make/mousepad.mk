@@ -132,7 +132,7 @@ $(MOUSEPAD_BUILD_DIR)/.configured: $(DL_DIR)/$(MOUSEPAD_SOURCE) $(MOUSEPAD_PATCH
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
 		--disable-gtk3 \

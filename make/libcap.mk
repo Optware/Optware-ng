@@ -130,7 +130,7 @@ $(LIBCAP_BUILD_DIR)/.built: $(LIBCAP_BUILD_DIR)/.configured
 		BUILD_CC=gcc LIBATTR=yes \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBCAP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBCAP_LDFLAGS)" \
-		prefix=/opt lib=lib
+		prefix=$(TARGET_PREFIX) lib=lib
 	touch $@
 
 #
@@ -143,7 +143,7 @@ libcap: $(LIBCAP_BUILD_DIR)/.built
 #
 $(LIBCAP_BUILD_DIR)/.staged: $(LIBCAP_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(@D)/libcap FAKEROOT=$(STAGING_DIR) prefix=/opt lib=lib install
+	$(MAKE) -C $(@D)/libcap FAKEROOT=$(STAGING_DIR) prefix=$(TARGET_PREFIX) lib=lib install
 	rm -f $(STAGING_LIB_DIR)/libcap.a
 	sed -i -e 's|/opt|$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/libcap.pc
 	touch $@
@@ -182,7 +182,7 @@ $(LIBCAP_IPK_DIR)/CONTROL/control:
 #
 $(LIBCAP_IPK): $(LIBCAP_BUILD_DIR)/.built
 	rm -rf $(LIBCAP_IPK_DIR) $(BUILD_DIR)/libcap_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(LIBCAP_BUILD_DIR)/libcap FAKEROOT=$(LIBCAP_IPK_DIR) prefix=/opt lib=lib install
+	$(MAKE) -C $(LIBCAP_BUILD_DIR)/libcap FAKEROOT=$(LIBCAP_IPK_DIR) prefix=$(TARGET_PREFIX) lib=lib install
 	rm -f $(LIBCAP_IPK_DIR)/opt/lib/libcap.a
 	$(STRIP_COMMAND) $(LIBCAP_IPK_DIR)/opt/lib/*.so
 #	$(INSTALL) -d $(LIBCAP_IPK_DIR)/opt/etc/

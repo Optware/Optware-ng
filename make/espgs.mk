@@ -120,7 +120,7 @@ $(ESPGS_BUILD_DIR)/.configured: $(DL_DIR)/$(ESPGS_SOURCE) $(ESPGS_PATCHES)
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--without-x \
 		--with-ijs \
 		--disable-nls \
@@ -190,7 +190,7 @@ $(ESPGS_IPK): $(ESPGS_BUILD_DIR)/.built
 	$(MAKE) -C $(ESPGS_BUILD_DIR) install \
 		DESTDIR=$(ESPGS_IPK_DIR) \
 		$(INSTALL)_prefix=$(ESPGS_IPK_DIR) \
-		prefix=/opt \
+		prefix=$(TARGET_PREFIX) \
 		ECHOGS_XE=$(ESPGS_BUILD_DIR)/obj/echogs.build \
 		GENARCH_XE=$(ESPGS_BUILD_DIR)/obj/genarch.build \
 		GENCONF_XE=$(ESPGS_BUILD_DIR)/obj/genconf.build \

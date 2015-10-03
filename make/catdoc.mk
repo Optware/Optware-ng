@@ -128,7 +128,7 @@ $(CATDOC_BUILD_DIR)/.configured: $(DL_DIR)/$(CATDOC_SOURCE) $(CATDOC_PATCHES) ma
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--without-wish \
 		--disable-nls \
 		--disable-static \
@@ -194,7 +194,7 @@ $(CATDOC_IPK_DIR)/CONTROL/control:
 #
 $(CATDOC_IPK): $(CATDOC_BUILD_DIR)/.built
 	rm -rf $(CATDOC_IPK_DIR) $(BUILD_DIR)/catdoc_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(CATDOC_BUILD_DIR) prefix=$(CATDOC_IPK_DIR)/opt install
+	$(MAKE) -C $(CATDOC_BUILD_DIR) prefix=$(CATDOC_IPK_DIR)$(TARGET_PREFIX) install
 	rm -f $(CATDOC_IPK_DIR)/opt/bin/wordview
 	$(STRIP_COMMAND) $(CATDOC_IPK_DIR)/opt/bin/*
 #	$(INSTALL) -d $(CATDOC_IPK_DIR)/opt/etc/

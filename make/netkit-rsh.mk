@@ -137,7 +137,7 @@ endif
 		LDFLAGS="$(STAGING_LDFLAGS) $(NETKIT-RSH_LDFLAGS)" \
 		CFLAGS="$(STAGING_CPPFLAGS) $(NETKIT-RSH_CPPFLAGS) $(STAGING_LDFLAGS) $(NETKIT_RSH_LDFLAGS)" \
 		./configure \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--$(INSTALL)root=$(NETKIT-RSH_IPK_DIR) \
 		--with-c-compiler="$(TARGET_CC)" \
 		; \

@@ -123,7 +123,7 @@ $(DNSTRACER_BUILD_DIR)/.configured: $(DL_DIR)/$(DNSTRACER_SOURCE) $(DNSTRACER_PA
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-ipv6 \
 		--disable-nls \
 		--disable-static \

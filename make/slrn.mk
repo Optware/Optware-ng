@@ -129,7 +129,7 @@ $(SLRN_BUILD_DIR)/.configured: $(DL_DIR)/$(SLRN_SOURCE) $(SLRN_PATCHES) make/slr
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--with-slang=$(STAGING_PREFIX) \
 		--with-ssl=$(STAGING_PREFIX) \
 		--disable-nls \

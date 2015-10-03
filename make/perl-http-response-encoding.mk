@@ -43,7 +43,7 @@ $(PERL-HTTP-RESPONSE-ENCODING_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-HTTP-RESP
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		$(PERL_HOSTPERL) Makefile.PL \
-		PREFIX=/opt \
+		PREFIX=$(TARGET_PREFIX) \
 	)
 	touch $@
 
@@ -82,13 +82,13 @@ $(PERL-HTTP-RESPONSE-ENCODING_IPK_DIR)/CONTROL/control:
 $(PERL-HTTP-RESPONSE-ENCODING_IPK): $(PERL-HTTP-RESPONSE-ENCODING_BUILD_DIR)/.built
 	rm -rf $(PERL-HTTP-RESPONSE-ENCODING_IPK_DIR) $(BUILD_DIR)/perl-http-response-encoding_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PERL-HTTP-RESPONSE-ENCODING_BUILD_DIR) DESTDIR=$(PERL-HTTP-RESPONSE-ENCODING_IPK_DIR) install
-	find $(PERL-HTTP-RESPONSE-ENCODING_IPK_DIR)/opt -name 'perllocal.pod' -exec rm -f {} \;
+	find $(PERL-HTTP-RESPONSE-ENCODING_IPK_DIR)$(TARGET_PREFIX) -name 'perllocal.pod' -exec rm -f {} \;
 	(cd $(PERL-HTTP-RESPONSE-ENCODING_IPK_DIR)/opt/lib/perl5 ; \
 		find . -name '*.so' -exec chmod +w {} \; ; \
 		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
 		find . -name '*.so' -exec chmod -w {} \; ; \
 	)
-	find $(PERL-HTTP-RESPONSE-ENCODING_IPK_DIR)/opt -type d -exec chmod go+rx {} \;
+	find $(PERL-HTTP-RESPONSE-ENCODING_IPK_DIR)$(TARGET_PREFIX) -type d -exec chmod go+rx {} \;
 	$(MAKE) $(PERL-HTTP-RESPONSE-ENCODING_IPK_DIR)/CONTROL/control
 	echo $(PERL-HTTP-RESPONSE-ENCODING_CONFFILES) | sed -e 's/ /\n/g' > $(PERL-HTTP-RESPONSE-ENCODING_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PERL-HTTP-RESPONSE-ENCODING_IPK_DIR)

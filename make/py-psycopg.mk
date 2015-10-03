@@ -124,10 +124,10 @@ $(PY-PSYCOPG_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PSYCOPG_SOURCE) $(PY-PSYCOPG
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--with-python=$(HOST_STAGING_PREFIX)/bin/python2.4 \
-		--with-python-prefix=/opt \
+		--with-python-prefix=$(TARGET_PREFIX) \
 		--with-postgres-includes=$(STAGING_INCLUDE_DIR)/postgresql \
 		--with-postgres-libraries=$(STAGING_LIB_DIR) \
 		--with-mxdatetime-includes=$(STAGING_LIB_DIR)/python2.4/site-packages/mx/DateTime/mxDateTime/ \
@@ -146,10 +146,10 @@ $(PY-PSYCOPG_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PSYCOPG_SOURCE) $(PY-PSYCOPG
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--with-python=$(HOST_STAGING_PREFIX)/bin/python2.5 \
-		--with-python-prefix=/opt \
+		--with-python-prefix=$(TARGET_PREFIX) \
 		--with-postgres-includes=$(STAGING_INCLUDE_DIR)/postgresql \
 		--with-postgres-libraries=$(STAGING_LIB_DIR) \
 		--with-mxdatetime-includes=$(STAGING_LIB_DIR)/python2.5/site-packages/mx/DateTime/mxDateTime/ \
@@ -238,8 +238,8 @@ $(PY24-PSYCOPG_IPK): $(PY-PSYCOPG_BUILD_DIR)/.built
 	$(INSTALL) -d $(PY24-PSYCOPG_IPK_DIR)/opt/lib/python2.4/site-packages
 	PATH="`dirname $(TARGET_CC)`:$$PATH" \
 	$(MAKE) -C $(PY-PSYCOPG_BUILD_DIR)/2.4 \
-		prefix=$(PY24-PSYCOPG_IPK_DIR)/opt \
-		exec_prefix=$(PY24-PSYCOPG_IPK_DIR)/opt \
+		prefix=$(PY24-PSYCOPG_IPK_DIR)$(TARGET_PREFIX) \
+		exec_prefix=$(PY24-PSYCOPG_IPK_DIR)$(TARGET_PREFIX) \
 		INSTALL=install install
 	for f in `find $(PY24-PSYCOPG_IPK_DIR)/opt/lib -name '*.so'`; do \
 		chmod u+w $$f; $(STRIP_COMMAND) $$f; chmod u-w $$f; \
@@ -254,8 +254,8 @@ $(PY25-PSYCOPG_IPK): $(PY-PSYCOPG_BUILD_DIR)/.built
 	$(INSTALL) -d $(PY25-PSYCOPG_IPK_DIR)/opt/lib/python2.5/site-packages
 	PATH="`dirname $(TARGET_CC)`:$$PATH" \
 	$(MAKE) -C $(PY-PSYCOPG_BUILD_DIR)/2.5 \
-		prefix=$(PY25-PSYCOPG_IPK_DIR)/opt \
-		exec_prefix=$(PY25-PSYCOPG_IPK_DIR)/opt \
+		prefix=$(PY25-PSYCOPG_IPK_DIR)$(TARGET_PREFIX) \
+		exec_prefix=$(PY25-PSYCOPG_IPK_DIR)$(TARGET_PREFIX) \
 		INSTALL=install install
 	for f in `find $(PY25-PSYCOPG_IPK_DIR)/opt/lib -name '*.so'`; do \
 		chmod u+w $$f; $(STRIP_COMMAND) $$f; chmod u-w $$f; \

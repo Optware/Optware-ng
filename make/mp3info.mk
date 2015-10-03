@@ -124,7 +124,7 @@ $(MP3INFO_BUILD_DIR)/.configured: $(DL_DIR)/$(MP3INFO_SOURCE) $(MP3INFO_PATCHES)
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
 	)
@@ -139,7 +139,7 @@ mp3info-unpack: $(MP3INFO_BUILD_DIR)/.configured
 $(MP3INFO_BUILD_DIR)/.built: $(MP3INFO_BUILD_DIR)/.configured
 	rm -f $@
 	$(MAKE) -C $(@D) mp3info doc \
-		prefix=/opt \
+		prefix=$(TARGET_PREFIX) \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MP3INFO_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MP3INFO_LDFLAGS)" \
@@ -196,7 +196,7 @@ $(MP3INFO_IPK): $(MP3INFO_BUILD_DIR)/.built
 	rm -rf $(MP3INFO_IPK_DIR) $(BUILD_DIR)/mp3info_*_$(TARGET_ARCH).ipk
 	$(INSTALL) -d $(MP3INFO_IPK_DIR)/opt/bin $(MP3INFO_IPK_DIR)/opt/man/man1
 	$(MAKE) -C $(<D) install-mp3info \
-		prefix=$(MP3INFO_IPK_DIR)/opt \
+		prefix=$(MP3INFO_IPK_DIR)$(TARGET_PREFIX) \
 		$(TARGET_CONFIGURE_OPTS) \
 		;
 #	$(INSTALL) -d $(MP3INFO_IPK_DIR)/opt/etc/

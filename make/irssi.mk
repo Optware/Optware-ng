@@ -155,7 +155,7 @@ endif
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		$(IRSSI_CONFIGURE_OPTIONS) \
 		--with-ncurses=$(STAGING_PREFIX) \
@@ -176,7 +176,7 @@ ifneq (,$(filter perl, $(PACKAGES)))
 		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		$(PERL_HOSTPERL) Makefile.PL \
 		$(TARGET_CONFIGURE_OPTS) \
-		PREFIX=/opt \
+		PREFIX=$(TARGET_PREFIX) \
 	    ) \
 	done
 endif

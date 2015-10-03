@@ -74,7 +74,7 @@ $(SPAMASSASSIN_BUILD_DIR)/.configured: $(DL_DIR)/$(SPAMASSASSIN_SOURCE) $(SPAMAS
 		LDFLAGS="$(STAGING_LDFLAGS) $(SPAMASSASSIN_LDFLAGS)" \
                 $(PERL_HOSTPERL) Makefile.PL \
                 LD_RUN_PATH=/opt/lib \
-                PREFIX=/opt \
+                PREFIX=$(TARGET_PREFIX) \
  		SYSCONFDIR=/opt/etc \
 		CONFDIR=/opt/etc/spamassassin \
 		CONTACT_ADDRESS="postmaster@local.domain" \
@@ -82,7 +82,7 @@ $(SPAMASSASSIN_BUILD_DIR)/.configured: $(DL_DIR)/$(SPAMASSASSIN_SOURCE) $(SPAMAS
 		< /dev/null && \
 		(cd spamc; \
 		  $(TARGET_CONFIGURE_OPTS) \
-                  ./configure --prefix=/opt \
+                  ./configure --prefix=$(TARGET_PREFIX) \
                     --sysconfdir=/opt/etc/spamassassin \
                     --datadir=/opt/share/spamassassin \
                     --enable-ssl=no \

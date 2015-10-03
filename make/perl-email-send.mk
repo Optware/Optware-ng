@@ -43,7 +43,7 @@ $(PERL-EMAIL-SEND_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-EMAIL-SEND_SOURCE) $(
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		$(PERL_HOSTPERL) Makefile.PL \
-		PREFIX=/opt \
+		PREFIX=$(TARGET_PREFIX) \
 	)
 	touch $@
 
@@ -82,7 +82,7 @@ $(PERL-EMAIL-SEND_IPK_DIR)/CONTROL/control:
 $(PERL-EMAIL-SEND_IPK): $(PERL-EMAIL-SEND_BUILD_DIR)/.built
 	rm -rf $(PERL-EMAIL-SEND_IPK_DIR) $(BUILD_DIR)/perl-email-send_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PERL-EMAIL-SEND_BUILD_DIR) DESTDIR=$(PERL-EMAIL-SEND_IPK_DIR) install
-	find $(PERL-EMAIL-SEND_IPK_DIR)/opt -name 'perllocal.pod' -exec rm -f {} \;
+	find $(PERL-EMAIL-SEND_IPK_DIR)$(TARGET_PREFIX) -name 'perllocal.pod' -exec rm -f {} \;
 	$(MAKE) $(PERL-EMAIL-SEND_IPK_DIR)/CONTROL/control
 	echo $(PERL-EMAIL-SEND_CONFFILES) | sed -e 's/ /\n/g' > $(PERL-EMAIL-SEND_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PERL-EMAIL-SEND_IPK_DIR)

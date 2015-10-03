@@ -119,7 +119,7 @@ $(HNB_BUILD_DIR)/.configured: $(DL_DIR)/$(HNB_SOURCE) $(HNB_PATCHES)
 #		--build=$(GNU_HOST_NAME) \
 #		--host=$(GNU_TARGET_NAME) \
 #		--target=$(GNU_TARGET_NAME) \
-#		--prefix=/opt \
+#		--prefix=$(TARGET_PREFIX) \
 #		--disable-nls \
 #	)
 	touch $(HNB_BUILD_DIR)/.configured
@@ -185,7 +185,7 @@ $(HNB_IPK_DIR)/CONTROL/control:
 #
 $(HNB_IPK): $(HNB_BUILD_DIR)/.built
 	rm -rf $(HNB_IPK_DIR) $(BUILD_DIR)/hnb_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(HNB_BUILD_DIR) DESTDIR=$(HNB_IPK_DIR)/opt install
+	$(MAKE) -C $(HNB_BUILD_DIR) DESTDIR=$(HNB_IPK_DIR)$(TARGET_PREFIX) install
 	$(MAKE) $(HNB_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(HNB_IPK_DIR)
 

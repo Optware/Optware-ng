@@ -186,7 +186,7 @@ $(DS101-KERNEL-MODULES_BUILD_DIR)/.ipkdone: $(DS101-KERNEL-MODULES_BUILD_DIR)/.b
 	rm -rf $(DS101-KERNEL-MODULES_IPK_DIR)* $(BUILD_DIR)/kernel-module_*_$(TARGET_ARCH).ipk
 	(cd $(DS101-KERNEL-MODULES_BUILD_DIR)/linux-2.4.x; \
 	  export ROOTDIR=$(DS101-KERNEL-MODULES_BUILD_DIR); \
-	  INSTALL_MOD_PATH=$(DS101-KERNEL-MODULES_IPK_DIR)/opt $(MAKE) modules_install \
+	  INSTALL_MOD_PATH=$(DS101-KERNEL-MODULES_IPK_DIR)$(TARGET_PREFIX) $(MAKE) modules_install \
 	)
 	rm -rf $(DS101-KERNEL-MODULES_IPK_DIR)/lib/modules/2.4.22-uc0/kernel/drivers/synobios
 	for m in $(DS101-KERNEL-MODULES); do \

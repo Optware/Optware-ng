@@ -124,7 +124,7 @@ $(TMSNC_BUILD_DIR)/.configured: $(DL_DIR)/$(TMSNC_SOURCE) $(TMSNC_PATCHES) make/
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--with-$(NCURSES_FOR_OPTWARE_TARGET)=$(STAGING_PREFIX) \
 		--with-openssl=$(STAGING_PREFIX) \
 		--disable-nls \

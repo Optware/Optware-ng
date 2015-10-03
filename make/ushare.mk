@@ -116,7 +116,7 @@ endif
 		ac_cv_func_malloc_0_nonnull=yes \
 		ac_cv_func_realloc_0_nonnull=yes \
 		./configure \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--cross-compile \
 		--cross-prefix=$(TARGET_CROSS) \
 		--with-libupnp-dir=$(STAGING_PREFIX) \

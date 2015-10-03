@@ -111,7 +111,7 @@ $(OPENSSL_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(OPENSSL_SOURCE) $
 		./Configure \
 			shared no-zlib \
 			--openssldir=/opt/share/openssl \
-			--prefix=/opt \
+			--prefix=$(TARGET_PREFIX) \
 			enable-md2 \
                         $(OPENSSL_HOST_ARCH) \
 	)
@@ -143,7 +143,7 @@ $(OPENSSL_BUILD_DIR)/.configured: $(DL_DIR)/$(OPENSSL_SOURCE) $(OPENSSL_PATCHES)
 			enable-md2 \
 			$(STAGING_CPPFLAGS) \
 			--openssldir=/opt/share/openssl \
-			--prefix=/opt \
+			--prefix=$(TARGET_PREFIX) \
 			$(OPENSSL_ARCH) \
 	)
 	sed -i -e 's|LIBDEPS=.|&$(STAGING_LDFLAGS) |' $(@D)/Makefile

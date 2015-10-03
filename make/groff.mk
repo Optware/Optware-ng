@@ -95,7 +95,7 @@ $(GROFF_BUILD_DIR)/.configured: $(DL_DIR)/$(GROFF_SOURCE) $(GROFF_PATCHES)
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=\$$\(DESTDIR\)/opt \
+		--prefix=\$$\(DESTDIR\)$(TARGET_PREFIX) \
 		--without-x \
 		--disable-nls \
 	)

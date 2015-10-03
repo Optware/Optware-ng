@@ -124,7 +124,7 @@ $(HTTPING_BUILD_DIR)/.configured: $(DL_DIR)/$(HTTPING_SOURCE) $(HTTPING_PATCHES)
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
 	)
@@ -142,7 +142,7 @@ $(HTTPING_BUILD_DIR)/.built: $(HTTPING_BUILD_DIR)/.configured
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(HTTPING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(HTTPING_LDFLAGS)" \
-		PREFIX=/opt \
+		PREFIX=$(TARGET_PREFIX) \
 		;
 	touch $@
 

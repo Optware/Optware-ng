@@ -142,7 +142,7 @@ $(SQUID3_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(SQUID3_SOURCE) mak
 	fi
 	(cd $(@D); \
 		./configure \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 	)
 	find $(@D) -type f -name "Makefile" -exec sed -i -e 's/ -Werror[$$ ]/ /' {} \;
 	$(MAKE) -C $(@D)

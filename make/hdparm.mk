@@ -125,7 +125,7 @@ hdparm-unpack: $(HDPARM_BUILD_DIR)/.configured
 $(HDPARM_BUILD_DIR)/.built: $(HDPARM_BUILD_DIR)/.configured
 	rm -f $@
 	$(MAKE) -C $(@D) \
-		binprefix=/opt manprefix=/opt \
+		binprefix=$(TARGET_PREFIX) manprefix=$(TARGET_PREFIX) \
 		CC=$(TARGET_CC) CFLAGS="$(CFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(HDPARM_LDFLAGS)" \
 		STRIP=$(TARGET_STRIP)
@@ -152,7 +152,7 @@ $(HDPARM_IPK): $(HDPARM_BUILD_DIR)/.built
 	rm -rf $(HDPARM_IPK_DIR) $(BUILD_DIR)/hdparm_*_$(TARGET_ARCH).ipk
 	$(INSTALL) -d $(HDPARM_IPK_DIR)/opt/sbin
 	$(MAKE) -C $(HDPARM_BUILD_DIR) DESTDIR=$(HDPARM_IPK_DIR) install \
-		binprefix=/opt manprefix=/opt \
+		binprefix=$(TARGET_PREFIX) manprefix=$(TARGET_PREFIX) \
 		CC=$(TARGET_CC) CFLAGS="$(CFLAGS)" LDFLAGS="$(LDFLAGS)"
 	$(STRIP_COMMAND) $(HDPARM_IPK_DIR)/opt/sbin/hdparm
 	mv $(HDPARM_IPK_DIR)/opt/sbin/hdparm $(HDPARM_IPK_DIR)/opt/sbin/hdparm-hdparm

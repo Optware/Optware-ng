@@ -52,7 +52,7 @@ $(MT_DAAPD_BUILD_DIR)/.configured: $(DL_DIR)/$(MT_DAAPD_SOURCE) make/mt-daapd.mk
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--with-gdbm-include=$(STAGING_INCLUDE_DIR) \
 		--enable-nslu2 \
 		--enable-browse \

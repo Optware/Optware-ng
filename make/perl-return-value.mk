@@ -43,7 +43,7 @@ $(PERL-RETURN-VALUE_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-RETURN-VALUE_SOURCE
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		$(PERL_HOSTPERL) Makefile.PL \
-		PREFIX=/opt \
+		PREFIX=$(TARGET_PREFIX) \
 	)
 	touch $@
 
@@ -82,7 +82,7 @@ $(PERL-RETURN-VALUE_IPK_DIR)/CONTROL/control:
 $(PERL-RETURN-VALUE_IPK): $(PERL-RETURN-VALUE_BUILD_DIR)/.built
 	rm -rf $(PERL-RETURN-VALUE_IPK_DIR) $(BUILD_DIR)/perl-return-value_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PERL-RETURN-VALUE_BUILD_DIR) DESTDIR=$(PERL-RETURN-VALUE_IPK_DIR) install
-	find $(PERL-RETURN-VALUE_IPK_DIR)/opt -name 'perllocal.pod' -exec rm -f {} \;
+	find $(PERL-RETURN-VALUE_IPK_DIR)$(TARGET_PREFIX) -name 'perllocal.pod' -exec rm -f {} \;
 	$(MAKE) $(PERL-RETURN-VALUE_IPK_DIR)/CONTROL/control
 	echo $(PERL-RETURN-VALUE_CONFFILES) | sed -e 's/ /\n/g' > $(PERL-RETURN-VALUE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PERL-RETURN-VALUE_IPK_DIR)

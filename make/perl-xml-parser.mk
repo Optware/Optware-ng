@@ -43,7 +43,7 @@ $(PERL-XML-PARSER_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-XML-PARSER_SOURCE) $(
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		$(PERL_HOSTPERL) Makefile.PL \
-		PREFIX=/opt \
+		PREFIX=$(TARGET_PREFIX) \
 	)
 	touch $(PERL-XML-PARSER_BUILD_DIR)/.configured
 
@@ -91,13 +91,13 @@ $(PERL-XML-PARSER_IPK_DIR)/CONTROL/control:
 $(PERL-XML-PARSER_IPK): $(PERL-XML-PARSER_BUILD_DIR)/.built
 	rm -rf $(PERL-XML-PARSER_IPK_DIR) $(BUILD_DIR)/perl-xml-parser_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PERL-XML-PARSER_BUILD_DIR) DESTDIR=$(PERL-XML-PARSER_IPK_DIR) install
-	find $(PERL-XML-PARSER_IPK_DIR)/opt -name 'perllocal.pod' -exec rm -f {} \;
+	find $(PERL-XML-PARSER_IPK_DIR)$(TARGET_PREFIX) -name 'perllocal.pod' -exec rm -f {} \;
 	(cd $(PERL-XML-PARSER_IPK_DIR)/opt/lib/perl5 ; \
 		find . -name '*.so' -exec chmod +w {} \; ; \
 		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
 		find . -name '*.so' -exec chmod -w {} \; ; \
 	)
-	find $(PERL-XML-PARSER_IPK_DIR)/opt -type d -exec chmod go+rx {} \;
+	find $(PERL-XML-PARSER_IPK_DIR)$(TARGET_PREFIX) -type d -exec chmod go+rx {} \;
 	$(MAKE) $(PERL-XML-PARSER_IPK_DIR)/CONTROL/control
 	echo $(PERL-XML-PARSER_CONFFILES) | sed -e 's/ /\n/g' > $(PERL-XML-PARSER_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PERL-XML-PARSER_IPK_DIR)

@@ -106,7 +106,7 @@ $(MONO_HOST_BUILD_DIR)/.built: $(DL_DIR)/$(MONO_SOURCE) # make/mono.mk
 	fi
 	(cd $(@D); \
 		./configure \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
 	)
@@ -162,7 +162,7 @@ endif
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		$(MONO_CONFIG_ARGS) \
 		--disable-nls \
 		--disable-static \

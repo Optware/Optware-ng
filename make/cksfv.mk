@@ -117,7 +117,7 @@ $(CKSFV_BUILD_DIR)/.configured: $(DL_DIR)/$(CKSFV_SOURCE) $(CKSFV_PATCHES) make/
 	fi
 	(cd $(@D); \
 		./configure \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--package-prefix=$(CKSFV_IPK_DIR) \
 	)
 #	$(PATCH_LIBTOOL) $(CKSFV_BUILD_DIR)/libtool

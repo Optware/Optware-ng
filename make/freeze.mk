@@ -81,7 +81,7 @@ $(FREEZE_BUILD_DIR)/.configured: $(DL_DIR)/$(FREEZE_SOURCE) $(FREEZE_PATCHES) ma
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
 	)
@@ -137,7 +137,7 @@ $(FREEZE_IPK): $(FREEZE_BUILD_DIR)/.built
 	rm -rf $(FREEZE_IPK_DIR) $(BUILD_DIR)/freeze_*_$(TARGET_ARCH).ipk
 	$(INSTALL) -d $(FREEZE_IPK_DIR)/opt/bin
 	$(INSTALL) -d $(FREEZE_IPK_DIR)/opt/share/man/man1
-	$(MAKE) -C $(FREEZE_BUILD_DIR) prefix=$(FREEZE_IPK_DIR)/opt install
+	$(MAKE) -C $(FREEZE_BUILD_DIR) prefix=$(FREEZE_IPK_DIR)$(TARGET_PREFIX) install
 	$(STRIP_COMMAND) $(FREEZE_IPK_DIR)/opt/bin/freeze
 	$(STRIP_COMMAND) $(FREEZE_IPK_DIR)/opt/bin/statist
 	$(MAKE) $(FREEZE_IPK_DIR)/CONTROL/control

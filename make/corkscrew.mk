@@ -123,7 +123,7 @@ $(CORKSCREW_BUILD_DIR)/.configured: $(DL_DIR)/$(CORKSCREW_SOURCE) $(CORKSCREW_PA
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
 	)

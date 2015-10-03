@@ -126,7 +126,7 @@ $(LM_SENSORS_BUILD_DIR)/.configured: $(DL_DIR)/$(LM_SENSORS_SOURCE) $(LM_SENSORS
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
 	)
@@ -146,7 +146,7 @@ $(LM_SENSORS_BUILD_DIR)/.built: $(LM_SENSORS_BUILD_DIR)/.configured
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LM_SENSORS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LM_SENSORS_LDFLAGS)" \
 		EXLDFLAGS="$(STAGING_LDFLAGS) $(LM_SENSORS_LDFLAGS)" \
-		PREFIX=/opt \
+		PREFIX=$(TARGET_PREFIX) \
 		ETCDIR=/opt/etc \
 		;
 	touch $@
@@ -205,7 +205,7 @@ $(LM_SENSORS_IPK): $(LM_SENSORS_BUILD_DIR)/.built
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LM_SENSORS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LM_SENSORS_LDFLAGS)" \
 		EXLDFLAGS="$(STAGING_LDFLAGS) $(LM_SENSORS_LDFLAGS)" \
-		PREFIX=/opt \
+		PREFIX=$(TARGET_PREFIX) \
 		ETCDIR=/opt/etc \
 		;
 	rm -f $(LM_SENSORS_IPK_DIR)/opt/lib/libsensors.a

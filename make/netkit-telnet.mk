@@ -131,7 +131,7 @@ $(NETKIT-TELNET_BUILD_DIR)/.configured: $(DL_DIR)/$(NETKIT-TELNET_SOURCE) $(NETK
 		CXXFLAGS="$(STAGING_CPPFLAGS) $(NETKIT-TELNET_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(NETKIT-TELNET_LDFLAGS)" \
 		./configure \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--$(INSTALL)root=$(NETKIT-TELNET_IPK_DIR) \
 		--with-c-compiler=$(TARGET_CC) \
 		--with-c++-compiler=$(TARGET_CPP) \

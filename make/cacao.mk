@@ -139,12 +139,12 @@ endif
 		--build=$(GNU_HOST_NAME) \
 		--host=$(CACAO_TARGET_NAME) \
 		--target=$(CACAO_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		$(CACAO_CONFIG_ARGS) \
 		--with-build-java-runtime-library-classes=$(STAGING_PREFIX)/share/classpath/glibj.zip \
 		--with-jni_md_h=$(STAGING_INCLUDE_DIR) \
 		--with-jni_h=$(STAGING_INCLUDE_DIR) \
-		--with-java-runtime-library-prefix=/opt \
+		--with-java-runtime-library-prefix=$(TARGET_PREFIX) \
 		--with-cacaoh=$(CACAO_HOST_BUILD_DIR)/src/cacaoh/cacaoh \
 		--disable-nls \
 		--disable-static \
@@ -164,7 +164,7 @@ $(CACAO_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(CACAO_SOURCE) make/
 	(cd $(@D); \
 		JAVAC="javac -bootclasspath $(STAGING_PREFIX)/share/classpath/glibj.zip" \
 		./configure \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--with-java-runtime-library-prefix=$(STAGING_PREFIX) \
 		--disable-nls \
 		--disable-static \

@@ -137,7 +137,7 @@ endif
 		LDFLAGS="$(STAGING_LDFLAGS) $(SNOWNEWS_LDFLAGS)" \
 		PATH=$(STAGING_PREFIX)/bin:$$PATH \
 		./configure \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		; \
 	)

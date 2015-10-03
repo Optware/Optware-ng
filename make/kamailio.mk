@@ -192,7 +192,7 @@ endif
 	LD_EXTRA_OPTS="$(STAGING_LDFLAGS)" CROSS_COMPILE="$(TARGET_CROSS)" \
 	LOCALBASE=$(STAGING_PREFIX) SYSBASE=$(STAGING_PREFIX) CC="$(TARGET_CC)" \
 	$(MAKE) $(KAMAILIO_NOISY_BUILD) -C $(KAMAILIO_BUILD_DIR) FLAVOUR=kamailio cfg $(KAMAILIO_MAKEFLAGS) \
-	include_modules="$(KAMAILIO_INCLUDE_MODULES)" exclude_modules="$(KAMAILIO_EXCLUDE_MODULES)" prefix=/opt \
+	include_modules="$(KAMAILIO_INCLUDE_MODULES)" exclude_modules="$(KAMAILIO_EXCLUDE_MODULES)" prefix=$(TARGET_PREFIX) \
 	modules_dirs="modules"
 ifeq ($(OPTWARE_TARGET), $(filter buildroot-mipsel buildroot-mipsel-ng, $(OPTWARE_TARGET)))
 	sed -i -e 's/-minline-all-stringops//' $(@D)/Makefile.defs
@@ -211,7 +211,7 @@ $(KAMAILIO_BUILD_DIR)/.built: $(KAMAILIO_BUILD_DIR)/.configured
 	LD_EXTRA_OPTS="$(STAGING_LDFLAGS)" CROSS_COMPILE="$(TARGET_CROSS)" \
 	LOCALBASE=$(STAGING_PREFIX) SYSBASE=$(STAGING_PREFIX) CC="$(TARGET_CC)" \
 	$(MAKE) $(KAMAILIO_NOISY_BUILD) -C $(KAMAILIO_BUILD_DIR) $(KAMAILIO_MAKEFLAGS) \
-	include_modules="$(KAMAILIO_INCLUDE_MODULES)" exclude_modules="$(KAMAILIO_EXCLUDE_MODULES)" prefix=/opt all \
+	include_modules="$(KAMAILIO_INCLUDE_MODULES)" exclude_modules="$(KAMAILIO_EXCLUDE_MODULES)" prefix=$(TARGET_PREFIX) all \
 	modules_dirs="modules"
 
 	touch $@
@@ -268,7 +268,7 @@ $(KAMAILIO_IPK): $(KAMAILIO_BUILD_DIR)/.built
 	LD_EXTRA_OPTS="$(STAGING_LDFLAGS)" CROSS_COMPILE="$(TARGET_CROSS)" \
 	LOCALBASE=$(STAGING_PREFIX) SYSBASE=$(STAGING_PREFIX) CC="$(TARGET_CC)" \
 	$(MAKE) $(KAMAILIO_NOISY_BUILD) -C $(KAMAILIO_BUILD_DIR) $(KAMAILIO_MAKEFLAGS) \
-	prefix=$(KAMAILIO_IPK_DIR)/opt cfg-prefix=$(KAMAILIO_IPK_DIR)/opt install
+	prefix=$(KAMAILIO_IPK_DIR)$(TARGET_PREFIX) cfg-prefix=$(KAMAILIO_IPK_DIR)$(TARGET_PREFIX) install
 
 	$(MAKE) $(KAMAILIO_IPK_DIR)/CONTROL/control
 	echo $(KAMAILIO_CONFFILES) | sed -e 's/ /\n/g' > $(KAMAILIO_IPK_DIR)/CONTROL/conffiles

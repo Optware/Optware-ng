@@ -145,7 +145,7 @@ $(LCD4LINUX_BUILD_DIR)/.configured: $(DL_DIR)/$(LCD4LINUX_SOURCE) $(LCD4LINUX_PA
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
 		--with-ncurses=$(STAGING_INCLUDE_DIR)/ncurses \

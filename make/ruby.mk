@@ -145,7 +145,7 @@ endif
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--with-sitedir=/opt/local/lib/ruby/site_ruby \
 		--disable-nls \
                 --with-opt-dir=$(STAGING_PREFIX) \

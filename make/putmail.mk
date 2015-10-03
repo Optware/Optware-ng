@@ -173,7 +173,7 @@ $(PUTMAIL_IPK): $(PUTMAIL_BUILD_DIR)/.built
 	rm -rf $(PUTMAIL_IPK_DIR) $(BUILD_DIR)/putmail_*_$(TARGET_ARCH).ipk
 	rm -rf $(PUTMAIL-COMMON_IPK_DIR) $(BUILD_DIR)/py-putmail-common_*_$(TARGET_ARCH).ipk
 	(cd $(PUTMAIL_BUILD_DIR); \
-		DESTDIR=$(PUTMAIL_IPK_DIR) PREFIX=/opt ./install.sh; \
+		DESTDIR=$(PUTMAIL_IPK_DIR) PREFIX=$(TARGET_PREFIX) ./install.sh; \
 	)
 	sed -i -e '1s|^#!.*|#!/opt/bin/python|' $(PUTMAIL_IPK_DIR)/opt/bin/putmail.py
 	$(MAKE) $(PUTMAIL_IPK_DIR)/CONTROL/control

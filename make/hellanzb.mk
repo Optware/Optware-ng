@@ -227,7 +227,7 @@ $(PY24-HELLANZB_IPK): $(HELLANZB_BUILD_DIR)/.built
 	rm -rf $(PY24-HELLANZB_IPK_DIR) $(BUILD_DIR)/py24-hellanzb_*_$(TARGET_ARCH).ipk
 	cd $(HELLANZB_BUILD_DIR)/2.4; \
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
-	    --root=$(PY24-HELLANZB_IPK_DIR) --prefix=/opt 
+	    --root=$(PY24-HELLANZB_IPK_DIR) --prefix=$(TARGET_PREFIX) 
 	$(INSTALL) -d $(PY24-HELLANZB_IPK_DIR)/opt/etc/
 	$(INSTALL) -m 644 $(HELLANZB_SOURCE_DIR)/hellanzb.conf $(PY24-HELLANZB_IPK_DIR)/opt/etc/hellanzb.conf
 	$(INSTALL) -d $(PY24-HELLANZB_IPK_DIR)/opt/etc/init.d
@@ -241,7 +241,7 @@ $(PY25-HELLANZB_IPK): $(HELLANZB_BUILD_DIR)/.built
 	rm -rf $(PY25-HELLANZB_IPK_DIR) $(BUILD_DIR)/py25-hellanzb_*_$(TARGET_ARCH).ipk
 	cd $(HELLANZB_BUILD_DIR)/2.5; \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
-	    --root=$(PY25-HELLANZB_IPK_DIR) --prefix=/opt 
+	    --root=$(PY25-HELLANZB_IPK_DIR) --prefix=$(TARGET_PREFIX) 
 	$(INSTALL) -d $(PY25-HELLANZB_IPK_DIR)/opt/etc/
 	$(INSTALL) -m 644 $(HELLANZB_SOURCE_DIR)/hellanzb.conf $(PY25-HELLANZB_IPK_DIR)/opt/etc/hellanzb.conf
 	$(INSTALL) -d $(PY25-HELLANZB_IPK_DIR)/opt/etc/init.d

@@ -123,7 +123,7 @@ $(LIBIDN_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBIDN_SOURCE) $(LIBIDN_PATCHES) ma
 		--target=$(GNU_TARGET_NAME) \
 		--disable-csharp \
 		--disable-java \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 	)
 	$(PATCH_LIBTOOL) $(@D)/libtool

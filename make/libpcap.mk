@@ -126,7 +126,7 @@ $(LIBPCAP_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBPCAP_SOURCE) $(LIBPCAP_PATCHES)
 		--target=$(GNU_TARGET_NAME) \
 		--enable-shared \
 		--with-pcap=linux \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--with-build-cc="$(HOSTCC)" \
 		$(LIBPCAP_CONFIGURE_OPTS) \
 	)

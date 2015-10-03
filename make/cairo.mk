@@ -129,7 +129,7 @@ $(CAIRO_BUILD_DIR)/.configured: $(DL_DIR)/$(CAIRO_SOURCE) $(CAIRO_PATCHES) make/
 		--target=$(GNU_TARGET_NAME) \
 		--x-includes=$(STAGING_INCLUDE_DIR) \
 		--x-libraries=$(STAGING_LIB_DIR) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-static \
 		--enable-ft=yes \
 		--enable-fc=yes \

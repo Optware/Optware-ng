@@ -132,7 +132,7 @@ endif
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBDLNA_LDFLAGS)" \
 		./configure \
 		--cross-compile \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--with-ffmpeg-dir=$(STAGING_INCLUDE_DIR) \
 	)
 	sed -i -e '/VERSION=/s|=.*|=$(LIBDLNA_VERSION)|' $(@D)/config.mak

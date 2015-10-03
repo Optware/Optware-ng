@@ -133,7 +133,7 @@ $(LZO_BUILD_DIR)/.configured: $(DL_DIR)/$(LZO_SOURCE) $(LZO_PATCHES) make/lzo.mk
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--enable-shared \
 		--disable-nls \
 	)

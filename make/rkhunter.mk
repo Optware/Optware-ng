@@ -185,7 +185,7 @@ $(RKHUNTER_IPK): $(RKHUNTER_BUILD_DIR)/.built
 	rm -rf $(RKHUNTER_IPK_DIR) $(BUILD_DIR)/rkhunter_*_$(TARGET_ARCH).ipk
 	mkdir -p $(RKHUNTER_IPK_DIR)/opt
 	(cd $(RKHUNTER_BUILD_DIR); \
-		./$(INSTALL)er.sh --layout custom $(RKHUNTER_IPK_DIR)/opt --striproot $(RKHUNTER_IPK_DIR) --install \
+		./$(INSTALL)er.sh --layout custom $(RKHUNTER_IPK_DIR)$(TARGET_PREFIX) --striproot $(RKHUNTER_IPK_DIR) --install \
 	)
 	$(MAKE) $(RKHUNTER_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 755 $(RKHUNTER_SOURCE_DIR)/postinst $(RKHUNTER_IPK_DIR)/CONTROL/postinst

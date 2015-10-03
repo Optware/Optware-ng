@@ -43,7 +43,7 @@ $(PERL-TIMEDATE_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-TIMEDATE_SOURCE) $(PERL
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		$(PERL_HOSTPERL) Makefile.PL \
-		PREFIX=/opt \
+		PREFIX=$(TARGET_PREFIX) \
 	)
 	touch $@
 

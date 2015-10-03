@@ -159,7 +159,7 @@ endif
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--oldincludedir=$(STAGING_INCLUDE_DIR) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-fork-process \
 		--without-gphoto2 \
 		--disable-translations \

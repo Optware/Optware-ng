@@ -161,7 +161,7 @@ $(ERLANG_HOST_BUILD_DIR)/.configured: host/.configured \
 		CPPFLAGS="-I$(ERLANG_HOST_BUILD_DIR)/termcap" \
 		LDFLAGS="-L$(ERLANG_HOST_BUILD_DIR)/termcap" \
 		./configure \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--without-ssl \
 		--disable-smp-support \
 		--disable-hipe \
@@ -230,7 +230,7 @@ ifeq ($(HOSTCC), $(TARGET_CC))
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
                 --with-ssl=$(STAGING_PREFIX) \
 		$(ERLANG_CONFIG_ARGS) \
 		--disable-nls \
@@ -253,7 +253,7 @@ else
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--with-ssl=$(STAGING_PREFIX) \
 		--with-odbc=$(STAGING_PREFIX) \
 		--disable-hipe \

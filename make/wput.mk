@@ -124,7 +124,7 @@ $(WPUT_BUILD_DIR)/.configured: $(DL_DIR)/$(WPUT_SOURCE) $(WPUT_PATCHES) make/wpu
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--with-ssl \
 		--with-gnutls-includes=$(STAGING_INCLUDE_DIR) \
 		--with-gnutls-libs=$(STAGING_LIB_DIR) \
@@ -202,7 +202,7 @@ $(WPUT_IPK): $(WPUT_BUILD_DIR)/.built
 	$(INSTALL) -d $(WPUT_IPK_DIR)/opt/share/man/man1
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(WPUT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(WPUT_LDFLAGS)" \
-	$(MAKE) -C $(WPUT_BUILD_DIR) prefix=$(WPUT_IPK_DIR)/opt install
+	$(MAKE) -C $(WPUT_BUILD_DIR) prefix=$(WPUT_IPK_DIR)$(TARGET_PREFIX) install
 	$(STRIP_COMMAND) $(WPUT_IPK_DIR)/opt/bin/*
 #	$(INSTALL) -d $(WPUT_IPK_DIR)/opt/etc/
 #	$(INSTALL) -m 644 $(WPUT_SOURCE_DIR)/wput.conf $(WPUT_IPK_DIR)/opt/etc/wput.conf

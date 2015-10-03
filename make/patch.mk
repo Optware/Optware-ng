@@ -111,7 +111,7 @@ $(PATCH_BUILD_DIR)/.configured: $(DL_DIR)/$(PATCH_SOURCE) $(PATCH_PATCHES) make/
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 	)
 	touch $@
 
@@ -171,7 +171,7 @@ $(PATCH_IPK_DIR)/CONTROL/control:
 #
 $(PATCH_IPK): $(PATCH_BUILD_DIR)/.built
 	rm -rf $(PATCH_IPK_DIR) $(BUILD_DIR)/patch_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(PATCH_BUILD_DIR) prefix=$(PATCH_IPK_DIR)/opt install
+	$(MAKE) -C $(PATCH_BUILD_DIR) prefix=$(PATCH_IPK_DIR)$(TARGET_PREFIX) install
 	$(STRIP_COMMAND) $(PATCH_IPK_DIR)/opt/bin/patch
 	mv $(PATCH_IPK_DIR)/opt/bin/patch $(PATCH_IPK_DIR)/opt/bin/patch-patch
 	$(MAKE) $(PATCH_IPK_DIR)/CONTROL/control

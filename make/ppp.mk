@@ -126,7 +126,7 @@ $(PPP_BUILD_DIR)/.configured: $(DL_DIR)/$(PPP_SOURCE) $(PPP_PATCHES) make/ppp.mk
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PPP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(PPP_LDFLAGS)" \
 		./configure \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--sysconfdir=/opt/etc \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \

@@ -42,7 +42,7 @@ $(PERL-PADWALKER_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-PADWALKER_SOURCE) $(PE
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		$(PERL_HOSTPERL) Makefile.PL \
-		PREFIX=/opt \
+		PREFIX=$(TARGET_PREFIX) \
 	)
 	touch $@
 
@@ -84,13 +84,13 @@ $(PERL-PADWALKER_IPK_DIR)/CONTROL/control:
 $(PERL-PADWALKER_IPK): $(PERL-PADWALKER_BUILD_DIR)/.built
 	rm -rf $(PERL-PADWALKER_IPK_DIR) $(BUILD_DIR)/perl-padwalker_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PERL-PADWALKER_BUILD_DIR) DESTDIR=$(PERL-PADWALKER_IPK_DIR) install
-	find $(PERL-PADWALKER_IPK_DIR)/opt -name 'perllocal.pod' -exec rm -f {} \;
+	find $(PERL-PADWALKER_IPK_DIR)$(TARGET_PREFIX) -name 'perllocal.pod' -exec rm -f {} \;
 	(cd $(PERL-PADWALKER_IPK_DIR)/opt/lib/perl5 ; \
 		find . -name '*.so' -exec chmod +w {} \; ; \
 		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
 		find . -name '*.so' -exec chmod -w {} \; ; \
 	)
-	find $(PERL-PADWALKER_IPK_DIR)/opt -type d -exec chmod go+rx {} \;
+	find $(PERL-PADWALKER_IPK_DIR)$(TARGET_PREFIX) -type d -exec chmod go+rx {} \;
 	$(MAKE) $(PERL-PADWALKER_IPK_DIR)/CONTROL/control
 	echo $(PERL-PADWALKER_CONFFILES) | sed -e 's/ /\n/g' > $(PERL-PADWALKER_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PERL-PADWALKER_IPK_DIR)

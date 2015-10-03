@@ -132,9 +132,9 @@ $(STRONGSWAN_BUILD_DIR)/.configured: $(DL_DIR)/$(STRONGSWAN_SOURCE) $(STRONGSWAN
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
-		--exec-prefix=/opt \
-		--datadir=/opt \
+		--prefix=$(TARGET_PREFIX) \
+		--exec-prefix=$(TARGET_PREFIX) \
+		--datadir=$(TARGET_PREFIX) \
 		--disable-static \
 		--enable-curl \
 		--enable-ldap \

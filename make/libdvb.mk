@@ -149,7 +149,7 @@ $(LIBDVB_BUILD_DIR)/.staged: $(LIBDVB_BUILD_DIR)/.built
 		$(TARGET_CONFIGURE_OPTS) \
 		INCLUDES="$(STAGING_CPPFLAGS) $(LIBDVB_CPPFLAGS)" \
 		LIBS="$(STAGING_LDFLAGS) $(LIBDVB_LDFLAGS) -L../ -ldvbmpegtools" \
-		PREFIX=/opt install
+		PREFIX=$(TARGET_PREFIX) install
 	touch $@
 
 libdvb-stage: $(LIBDVB_BUILD_DIR)/.staged
@@ -191,7 +191,7 @@ $(LIBDVB_IPK): $(LIBDVB_BUILD_DIR)/.built
 		$(TARGET_CONFIGURE_OPTS) \
 		INCLUDES="$(STAGING_CPPFLAGS) $(LIBDVB_CPPFLAGS)" \
 		LIBS="$(STAGING_LDFLAGS) $(LIBDVB_LDFLAGS) -L../ -ldvbmpegtools" \
-		PREFIX=/opt install
+		PREFIX=$(TARGET_PREFIX) install
 	$(MAKE) $(LIBDVB_IPK_DIR)/CONTROL/control
 	echo $(LIBDVB_CONFFILES) | sed -e 's/ /\n/g' > $(LIBDVB_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBDVB_IPK_DIR)

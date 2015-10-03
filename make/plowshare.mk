@@ -145,7 +145,7 @@ $(PLOWSHARE_BUILD_DIR)/.configured: $(DL_DIR)/$(PLOWSHARE_SOURCE) $(PLOWSHARE_PA
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
 	)
@@ -214,7 +214,7 @@ endif
 #
 $(PLOWSHARE_IPK): $(PLOWSHARE_BUILD_DIR)/.built
 	rm -rf $(PLOWSHARE_IPK_DIR) $(BUILD_DIR)/plowshare_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(<D) DESTDIR=$(PLOWSHARE_IPK_DIR) PREFIX=/opt install
+	$(MAKE) -C $(<D) DESTDIR=$(PLOWSHARE_IPK_DIR) PREFIX=$(TARGET_PREFIX) install
 	$(MAKE) $(PLOWSHARE_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m755 $(PLOWSHARE_SOURCE_DIR)/postinst $(PLOWSHARE_IPK_DIR)/CONTROL/
 	echo $(PLOWSHARE_CONFFILES) | sed -e 's/ /\n/g' > $(PLOWSHARE_IPK_DIR)/CONTROL/conffiles

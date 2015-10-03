@@ -130,7 +130,7 @@ endif
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--without-x \
 		--disable-nls \
 		--disable-static \
@@ -196,7 +196,7 @@ $(MTOOLS_IPK_DIR)/CONTROL/control:
 #
 $(MTOOLS_IPK): $(MTOOLS_BUILD_DIR)/.built
 	rm -rf $(MTOOLS_IPK_DIR) $(BUILD_DIR)/mtools_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(MTOOLS_BUILD_DIR) prefix=$(MTOOLS_IPK_DIR)/opt install INSTALL_INFO=:
+	$(MAKE) -C $(MTOOLS_BUILD_DIR) prefix=$(MTOOLS_IPK_DIR)$(TARGET_PREFIX) install INSTALL_INFO=:
 	$(STRIP_COMMAND) $(MTOOLS_IPK_DIR)/opt/bin/mtools $(MTOOLS_IPK_DIR)/opt/bin/mkmanifest
 #	$(INSTALL) -d $(MTOOLS_IPK_DIR)/opt/etc/
 #	$(INSTALL) -m 644 $(MTOOLS_SOURCE_DIR)/mtools.conf $(MTOOLS_IPK_DIR)/opt/etc/mtools.conf

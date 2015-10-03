@@ -120,7 +120,7 @@ $(SER_BUILD_DIR)/.configured: $(DL_DIR)/$(SER_SOURCE) $(SER_PATCHES)
 #		--build=$(GNU_HOST_NAME) \
 #		--host=$(GNU_TARGET_NAME) \
 #		--target=$(GNU_TARGET_NAME) \
-#		--prefix=/opt \
+#		--prefix=$(TARGET_PREFIX) \
 #		--disable-nls \
 	)
 	touch $(SER_BUILD_DIR)/.configured
@@ -135,7 +135,7 @@ $(SER_BUILD_DIR)/.built: $(SER_BUILD_DIR)/.configured
 	CC_EXTRA_OPTS="$(STAGING_CPPFLAGS) $(SER_CPPFLAGS)" \
 	LD_EXTRA_OPTS="$(STAGING_LDFLAGS) $(SER_LDFLAGS)" \
 	CC="$(TARGET_CC)" \
-	$(MAKE) -C $(SER_BUILD_DIR) DESTDIR=/opt \
+	$(MAKE) -C $(SER_BUILD_DIR) DESTDIR=$(TARGET_PREFIX) \
 		$(SER_MAKEFLAGS) all
 	touch $(SER_BUILD_DIR)/.built
 
@@ -151,7 +151,7 @@ $(SER_BUILD_DIR)/.staged: $(SER_BUILD_DIR)/.built
 	rm -f $(SER_BUILD_DIR)/.staged
 	LD_EXTRA_OPTS="$(STAGING_LDFLAGS) $(SER_LDFLAGS)" \
 	CC="$(TARGET_CC)" \
-	$(MAKE) -C $(SER_BUILD_DIR) DESTDIR=/opt \
+	$(MAKE) -C $(SER_BUILD_DIR) DESTDIR=$(TARGET_PREFIX) \
 	BASEDIR=$(STAGING_DIR) \
 	LOCALBASE=$(STAGING_DIR) \
 		$(SER_MAKEFLAGS) install
@@ -194,7 +194,7 @@ $(SER_IPK): $(SER_BUILD_DIR)/.built
 	rm -rf $(SER_IPK_DIR) $(BUILD_DIR)/ser_*_${TARGET_ARCH}.ipk
 	LD_EXTRA_OPTS="$(STAGING_LDFLAGS) $(SER_LDFLAGS)" \
 	CC="$(TARGET_CC)" \
-	$(MAKE) -C $(SER_BUILD_DIR) DESTDIR=/opt \
+	$(MAKE) -C $(SER_BUILD_DIR) DESTDIR=$(TARGET_PREFIX) \
 		BASEDIR=$(SER_IPK_DIR) LOCALBASE=$(SER_IPK_DIR) \
 		$(SER_MAKEFLAGS) install
 	$(STRIP_COMMAND) $(SER_IPK_DIR)/opt/sbin/ser $(SER_IPK_DIR)/opt/sbin/gen_ha1

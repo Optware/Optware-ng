@@ -114,7 +114,7 @@ $(RENDERPROTO_BUILD_DIR)/.configured: $(DL_DIR)/$(RENDERPROTO_SOURCE) $(RENDERPR
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-static \
 	)
 	touch $@

@@ -125,7 +125,7 @@ $(MG_BUILD_DIR)/.configured: $(DL_DIR)/$(MG_SOURCE) $(MG_PATCHES) make/mg.mk
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
 	)
@@ -152,7 +152,7 @@ mg-unpack: $(MG_BUILD_DIR)/.configured
 $(MG_BUILD_DIR)/.built: $(MG_BUILD_DIR)/.configured
 	rm -f $@
 	$(MAKE) -C $(@D) \
-		prefix=/opt \
+		prefix=$(TARGET_PREFIX) \
 		$(TARGET_CONFIGURE_OPTS) \
 		CFLAGS="$(STAGING_CPPFLAGS) $(MG_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MG_LDFLAGS)" \
@@ -208,7 +208,7 @@ $(MG_IPK_DIR)/CONTROL/control:
 $(MG_IPK): $(MG_BUILD_DIR)/.built
 	rm -rf $(MG_IPK_DIR) $(BUILD_DIR)/mg_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MG_BUILD_DIR) install \
-		prefix=$(MG_IPK_DIR)/opt \
+		prefix=$(MG_IPK_DIR)$(TARGET_PREFIX) \
 		;
 	$(STRIP_COMMAND) $(MG_IPK_DIR)/opt/bin/mg
 #	$(INSTALL) -d $(MG_IPK_DIR)/opt/etc/

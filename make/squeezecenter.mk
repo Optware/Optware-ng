@@ -113,7 +113,7 @@ $(SQUEEZECENTER_BUILD_DIR)/.built: $(SQUEEZECENTER_BUILD_DIR)/.configured
 		STAGING_PREFIX="$(STAGING_PREFIX)" \
 		PERL_ARCH_NAME=$(GNU_TARGET_NAME) \
 		$(PERL_HOSTPERL) build-perl-modules.pl \
-		PREFIX=/opt \
+		PREFIX=$(TARGET_PREFIX) \
 	)
 	touch $@
 

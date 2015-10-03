@@ -181,7 +181,7 @@ endif
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--cache-file=arm.cache \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		$(GLIB_CONFIG_OPT) \
 		--disable-nls \
 		--disable-static \

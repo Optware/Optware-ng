@@ -122,7 +122,7 @@ $(INK_BUILD_DIR)/.configured: $(DL_DIR)/$(INK_SOURCE) $(INK_PATCHES) make/ink.mk
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
 	)
@@ -137,7 +137,7 @@ ink-unpack: $(INK_BUILD_DIR)/.configured
 $(INK_BUILD_DIR)/.built: $(INK_BUILD_DIR)/.configured
 	rm -f $@
 	$(MAKE) -C $(@D) \
-		PREFIX=/opt \
+		PREFIX=$(TARGET_PREFIX) \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(INK_CPPFLAGS)" \
 		CFLAGS=-Wall \

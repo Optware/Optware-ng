@@ -188,7 +188,7 @@ $(STGIT_IPK): $(STGIT_BUILD_DIR)/.built
 	rm -rf $(STGIT_IPK_DIR) $(BUILD_DIR)/stgit_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(STGIT_BUILD_DIR) install \
 		PYTHON=$(HOST_STAGING_PREFIX)/bin/python2.5 \
-		prefix=/opt \
+		prefix=$(TARGET_PREFIX) \
 		DESTDIR=$(STGIT_IPK_DIR)
 	$(MAKE) $(STGIT_IPK_DIR)/CONTROL/control
 	echo $(STGIT_CONFFILES) | sed -e 's/ /\n/g' > $(STGIT_IPK_DIR)/CONTROL/conffiles

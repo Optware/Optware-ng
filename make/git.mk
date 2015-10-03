@@ -184,7 +184,7 @@ endif
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
 	)
@@ -210,7 +210,7 @@ $(GIT_BUILD_DIR)/.built: $(GIT_BUILD_DIR)/.configured
 		NO_TCLTK=true \
 		$$GIT_NSEC \
 		$(GIT_MAKE_FLAGS) \
-		prefix=/opt all strip
+		prefix=$(TARGET_PREFIX) all strip
 	touch $@
 
 #
@@ -247,7 +247,7 @@ endif
 		NO_TCLTK=true \
 		$$GIT_NSEC \
 		$(GIT_MAKE_FLAGS) \
-		prefix=/opt all strip
+		prefix=$(TARGET_PREFIX) all strip
 	touch $@
 #
 # If you are building a library, then you need to stage it too.
@@ -348,7 +348,7 @@ $(GIT_IPK): $(GIT_BUILD_DIR)/.built
 		NO_TCLTK=true \
 		$$GIT_NSEC \
 		$(GIT_MAKE_FLAGS) \
-		prefix=/opt \
+		prefix=$(TARGET_PREFIX) \
 		$(INSTALL)
 ifneq (,$(filter perl, $(PACKAGES)))
 	for f in `find $(GIT_IPK_DIR)/opt/lib -name perllocal.pod`; \
@@ -380,7 +380,7 @@ $(GIT-LITE_IPK): $(GIT-LITE_BUILD_DIR)/.built
 		BUILT_INS= \
 		$$GIT_NSEC \
 		$(GIT_MAKE_FLAGS) \
-		prefix=/opt \
+		prefix=$(TARGET_PREFIX) \
 		$(INSTALL)
 	( cd $(GIT-LITE_IPK_DIR)/opt/bin ; \
 	  rm -f git-cvsserver git-receive-pack git-shell git-upload-archive git-upload-pack git-remote-* )

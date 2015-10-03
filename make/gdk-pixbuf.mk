@@ -124,7 +124,7 @@ $(GDK-PIXBUF_BUILD_DIR)/.configured: $(DL_DIR)/$(GDK-PIXBUF_SOURCE) $(GDK-PIXBUF
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--with-x11 \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-static \
 		--disable-introspection \
 	)

@@ -129,7 +129,7 @@ $(MP3BLASTER_BUILD_DIR)/.configured: $(DL_DIR)/$(MP3BLASTER_SOURCE) $(MP3BLASTER
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
 	)

@@ -101,7 +101,7 @@ $(XEMACS_BUILD_DIR)/.configured: $(DL_DIR)/$(XEMACS_SOURCE) $(XEMACS_PATCHES)
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(XEMACS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(XEMACS_LDFLAGS)" \
 		./configure \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--without-x \
 		$(GNU_TARGET_NAME) \
 	)
@@ -155,7 +155,7 @@ $(XEMACS_IPK_DIR)/CONTROL/control:
 $(XEMACS_IPK): $(XEMACS_BUILD_DIR)/.built
 	rm -rf $(XEMACS_IPK_DIR) $(BUILD_DIR)/xemacs_*_$(TARGET_ARCH).ipk
 	$(INSTALL) -d $(XEMACS_IPK_DIR)/opt
-	$(MAKE) -C $(XEMACS_BUILD_DIR) prefix=$(XEMACS_IPK_DIR)/opt install
+	$(MAKE) -C $(XEMACS_BUILD_DIR) prefix=$(XEMACS_IPK_DIR)$(TARGET_PREFIX) install
 	rm -f $(XEMACS_IPK_DIR)/opt/bin/xemacs
 	ln -s /opt/bin/xemacs-$(XEMACS_VERSION) $(XEMACS_IPK_DIR)/opt/bin/xemacs
 	$(MAKE) $(XEMACS_IPK_DIR)/CONTROL/control

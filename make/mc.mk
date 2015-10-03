@@ -104,7 +104,7 @@ $(MC_BUILD_DIR)/.configured: $(DL_DIR)/$(MC_SOURCE) $(MC_PATCHES) make/mc.mk
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--with-screen=slang \
 		--with-slang-includes=$(STAGING_INCLUDE_DIR) \
 		--with-slang-libs=$(STAGING_LIB_DIR) \

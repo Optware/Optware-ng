@@ -123,7 +123,7 @@ $(TRE_BUILD_DIR)/.configured: $(DL_DIR)/$(TRE_SOURCE) $(TRE_PATCHES) make/tre.mk
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
 		--program-transform-name="" \

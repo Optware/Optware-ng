@@ -109,7 +109,7 @@ $(USBUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(USBUTILS_SOURCE) $(USBUTILS_PATCH
 		ac_cv_func_malloc_0_nonnull=yes \
 		./configure \
 		--host=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--datadir=/opt/share/misc \
 	)

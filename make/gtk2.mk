@@ -180,7 +180,7 @@ endif
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--bindir=\$${prefix}/bin/gtk-2.0 \
                 --without-libjasper \
 		--x-includes=$(STAGING_INCLUDE_DIR) \

@@ -138,7 +138,7 @@ $(ESOUND_BUILD_DIR)/.configured: $(DL_DIR)/$(ESOUND_SOURCE) $(ESOUND_PATCHES) ma
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		$(ESOUND_CONFIGURE_OPTIONS) \
 		--with-audiofile-prefix=$(STAGING_PREFIX) \
 		--disable-nls \

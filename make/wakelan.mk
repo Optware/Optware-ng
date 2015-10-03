@@ -109,7 +109,7 @@ $(WAKELAN_BUILD_DIR)/.configured: $(DL_DIR)/$(WAKELAN_SOURCE) $(WAKELAN_PATCHES)
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 	)
 	touch $(WAKELAN_BUILD_DIR)/.configured
@@ -163,7 +163,7 @@ $(WAKELAN_IPK): $(WAKELAN_BUILD_DIR)/.built
 	rm -rf $(WAKELAN_IPK_DIR) $(BUILD_DIR)/wakelan_*_$(TARGET_ARCH).ipk
 	$(INSTALL) -d $(WAKELAN_IPK_DIR)/opt/bin
 	$(INSTALL) -d $(WAKELAN_IPK_DIR)/opt/man/man1
-	$(MAKE) -C $(WAKELAN_BUILD_DIR) prefix=$(WAKELAN_IPK_DIR)/opt install
+	$(MAKE) -C $(WAKELAN_BUILD_DIR) prefix=$(WAKELAN_IPK_DIR)$(TARGET_PREFIX) install
 	$(MAKE) $(WAKELAN_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(WAKELAN_IPK_DIR)
 

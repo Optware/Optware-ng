@@ -143,7 +143,7 @@ $(NETATALK_BUILD_DIR)/.configured: $(DL_DIR)/$(NETATALK_SOURCE) $(NETATALK_PATCH
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--with-bdb=$(STAGING_PREFIX) \
 		--with-libgcrypt-dir=$(STAGING_PREFIX) \
 		--with-ssl-dir=$(STAGING_PREFIX) \

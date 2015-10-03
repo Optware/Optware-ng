@@ -309,7 +309,7 @@ $(PY24-4SUITE_IPK): $(PY-4SUITE_BUILD_DIR)/.built
 	rm -rf $(PY24-4SUITE_IPK_DIR) $(BUILD_DIR)/py24-4suite_*_$(TARGET_ARCH).ipk
 	(cd $(PY-4SUITE_BUILD_DIR)/2.4; \
 	$(HOST_STAGING_PREFIX)/bin/python2.4 setup.py install \
-	--root=$(PY24-4SUITE_IPK_DIR) --prefix=/opt --without-docs)
+	--root=$(PY24-4SUITE_IPK_DIR) --prefix=$(TARGET_PREFIX) --without-docs)
 	$(STRIP_COMMAND) `find $(PY24-4SUITE_IPK_DIR)/opt/lib/ -name '*.so'`
 	sed -i -e '1s|#!/usr/bin/env python|#!/opt/bin/python2.4|' $(PY24-4SUITE_IPK_DIR)/opt/bin/*
 	$(MAKE) $(PY24-4SUITE_IPK_DIR)/CONTROL/control
@@ -320,7 +320,7 @@ $(PY25-4SUITE_IPK): $(PY-4SUITE_BUILD_DIR)/.built
 	rm -rf $(PY25-4SUITE_IPK_DIR) $(BUILD_DIR)/py25-4suite_*_$(TARGET_ARCH).ipk
 	(cd $(PY-4SUITE_BUILD_DIR)/2.5; \
 	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
-	--root=$(PY25-4SUITE_IPK_DIR) --prefix=/opt --without-docs)
+	--root=$(PY25-4SUITE_IPK_DIR) --prefix=$(TARGET_PREFIX) --without-docs)
 	$(STRIP_COMMAND) `find $(PY25-4SUITE_IPK_DIR)/opt/lib/ -name '*.so'`
 	sed -i -e '1s|#!/usr/bin/env python|#!/opt/bin/python2.5|' $(PY25-4SUITE_IPK_DIR)/opt/bin/*
 	$(MAKE) $(PY25-4SUITE_IPK_DIR)/CONTROL/control
@@ -331,7 +331,7 @@ $(PY26-4SUITE_IPK): $(PY-4SUITE_BUILD_DIR)/.built
 	rm -rf $(PY26-4SUITE_IPK_DIR) $(BUILD_DIR)/py26-4suite_*_$(TARGET_ARCH).ipk
 	(cd $(PY-4SUITE_BUILD_DIR)/2.6; \
 	$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install \
-	--root=$(PY26-4SUITE_IPK_DIR) --prefix=/opt --without-docs)
+	--root=$(PY26-4SUITE_IPK_DIR) --prefix=$(TARGET_PREFIX) --without-docs)
 	$(STRIP_COMMAND) `find $(PY26-4SUITE_IPK_DIR)/opt/lib/ -name '*.so'`
 	sed -i -e '1s|#!/usr/bin/env python|#!/opt/bin/python2.6|' $(PY26-4SUITE_IPK_DIR)/opt/bin/*
 	$(MAKE) $(PY26-4SUITE_IPK_DIR)/CONTROL/control
@@ -342,7 +342,7 @@ $(PY27-4SUITE_IPK): $(PY-4SUITE_BUILD_DIR)/.built
 	rm -rf $(PY27-4SUITE_IPK_DIR) $(BUILD_DIR)/py27-4suite_*_$(TARGET_ARCH).ipk
 	(cd $(PY-4SUITE_BUILD_DIR)/2.7; \
 	$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install \
-	--root=$(PY27-4SUITE_IPK_DIR) --prefix=/opt --without-docs)
+	--root=$(PY27-4SUITE_IPK_DIR) --prefix=$(TARGET_PREFIX) --without-docs)
 	$(STRIP_COMMAND) `find $(PY27-4SUITE_IPK_DIR)/opt/lib/ -name '*.so'`
 	sed -i -e '1s|#!/usr/bin/env python|#!/opt/bin/python2.7|' $(PY27-4SUITE_IPK_DIR)/opt/bin/*
 	$(MAKE) $(PY27-4SUITE_IPK_DIR)/CONTROL/control

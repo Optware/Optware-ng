@@ -131,7 +131,7 @@ $(PRIVOXY_BUILD_DIR)/.configured: $(DL_DIR)/$(PRIVOXY_SOURCE) $(PRIVOXY_PATCHES)
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--sysconfdir='$${prefix}/etc/privoxy' \
 		--disable-nls \
 		--disable-static \
@@ -210,7 +210,7 @@ $(PRIVOXY_IPK_DIR)/CONTROL/control:
 #
 $(PRIVOXY_IPK): $(PRIVOXY_BUILD_DIR)/.built
 	rm -rf $(PRIVOXY_IPK_DIR) $(BUILD_DIR)/privoxy_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(PRIVOXY_BUILD_DIR) prefix=$(PRIVOXY_IPK_DIR)/opt install
+	$(MAKE) -C $(PRIVOXY_BUILD_DIR) prefix=$(PRIVOXY_IPK_DIR)$(TARGET_PREFIX) install
 	$(STRIP_COMMAND) $(PRIVOXY_IPK_DIR)/opt/sbin/privoxy
 #	$(INSTALL) -d $(PRIVOXY_IPK_DIR)/opt/etc/
 #	$(INSTALL) -m 644 $(PRIVOXY_SOURCE_DIR)/privoxy.conf $(PRIVOXY_IPK_DIR)/opt/etc/privoxy.conf

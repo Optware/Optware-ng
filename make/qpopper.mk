@@ -113,7 +113,7 @@ $(QPOPPER_BUILD_DIR)/.configured: $(DL_DIR)/$(QPOPPER_SOURCE) $(QPOPPER_PATCHES)
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--with-openssl=$(STAGING_PREFIX) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 	)
 	touch $@
@@ -183,7 +183,7 @@ $(QPOPPER_IPK): $(QPOPPER_BUILD_DIR)/.built
 	$(INSTALL) -m 644 $(QPOPPER_BUILD_DIR)/README  $(QPOPPER_IPK_DIR)/opt/doc/qpopper
 	$(INSTALL) -m 644 $(QPOPPER_BUILD_DIR)/License.txt  $(QPOPPER_IPK_DIR)/opt/doc/qpopper
 	$(INSTALL) -m 644 $(QPOPPER_BUILD_DIR)/GUIDE.pdf  $(QPOPPER_IPK_DIR)/opt/doc/qpopper
-#	$(MAKE) -C $(QPOPPER_BUILD_DIR) prefix=$(QPOPPER_IPK_DIR)/opt install
+#	$(MAKE) -C $(QPOPPER_BUILD_DIR) prefix=$(QPOPPER_IPK_DIR)$(TARGET_PREFIX) install
 #	$(INSTALL) -d $(QPOPPER_IPK_DIR)/opt/etc/
 #	$(INSTALL) -m 644 $(QPOPPER_SOURCE_DIR)/qpopper.conf $(QPOPPER_IPK_DIR)/opt/etc/qpopper.conf
 #	$(INSTALL) -d $(QPOPPER_IPK_DIR)/opt/etc/init.d

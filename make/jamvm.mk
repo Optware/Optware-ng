@@ -108,11 +108,11 @@ $(JAMVM_BUILD_DIR)/.configured: $(DL_DIR)/$(JAMVM_SOURCE) $(JAMVM_PATCHES)
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(JAMVM_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(JAMVM_LDFLAGS)" \
 		./configure \
-		--with-classpath-install-dir=/opt \
+		--with-classpath-install-dir=$(TARGET_PREFIX) \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 	)
 	touch $@

@@ -129,7 +129,7 @@ $(XDG-UTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(XDG-UTILS_SOURCE) $(XDG-UTILS_PA
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--mandir=/opt/share/man \
 		--disable-nls \
 		--disable-static \

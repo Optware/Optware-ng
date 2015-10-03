@@ -128,7 +128,7 @@ endif
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
 	)
@@ -146,7 +146,7 @@ $(DOS2UNIX_BUILD_DIR)/.built: $(DOS2UNIX_BUILD_DIR)/.configured
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(DOS2UNIX_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(DOS2UNIX_LDFLAGS)" \
-		prefix=/opt \
+		prefix=$(TARGET_PREFIX) \
 		;
 	touch $@
 
@@ -198,7 +198,7 @@ $(DOS2UNIX_IPK_DIR)/CONTROL/control:
 #
 $(DOS2UNIX_IPK): $(DOS2UNIX_BUILD_DIR)/.built
 	rm -rf $(DOS2UNIX_IPK_DIR) $(BUILD_DIR)/dos2unix_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(DOS2UNIX_BUILD_DIR) DESTDIR=$(DOS2UNIX_IPK_DIR) prefix=/opt install
+	$(MAKE) -C $(DOS2UNIX_BUILD_DIR) DESTDIR=$(DOS2UNIX_IPK_DIR) prefix=$(TARGET_PREFIX) install
 	$(STRIP_COMMAND) $(DOS2UNIX_IPK_DIR)/opt/bin/dos2unix $(DOS2UNIX_IPK_DIR)/opt/bin/unix2dos
 	$(MAKE) $(DOS2UNIX_IPK_DIR)/CONTROL/control
 	echo $(DOS2UNIX_CONFFILES) | sed -e 's/ /\n/g' > $(DOS2UNIX_IPK_DIR)/CONTROL/conffiles

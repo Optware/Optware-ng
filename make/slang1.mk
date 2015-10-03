@@ -126,7 +126,7 @@ $(SLANG1_BUILD_DIR)/.configured: $(DL_DIR)/$(SLANG1_SOURCE) $(SLANG1_PATCHES) ma
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--libdir='$${exec_prefix}/lib/slang1' \
 		--includedir='$${prefix}/include/slang1' \
 		--disable-nls \
@@ -194,7 +194,7 @@ $(SLANG1_IPK_DIR)/CONTROL/control:
 #
 $(SLANG1_IPK): $(SLANG1_BUILD_DIR)/.built
 	rm -rf $(SLANG1_IPK_DIR) $(BUILD_DIR)/slang1_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(SLANG1_BUILD_DIR)/src prefix=$(SLANG1_IPK_DIR)/opt install_basic_lib
+	$(MAKE) -C $(SLANG1_BUILD_DIR)/src prefix=$(SLANG1_IPK_DIR)$(TARGET_PREFIX) install_basic_lib
 	$(MAKE) $(SLANG1_IPK_DIR)/CONTROL/control
 	echo $(SLANG1_CONFFILES) | sed -e 's/ /\n/g' > $(SLANG1_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SLANG1_IPK_DIR)

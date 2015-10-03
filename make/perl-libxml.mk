@@ -43,7 +43,7 @@ $(PERL-LIBXML_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-LIBXML_SOURCE) $(PERL-LIB
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		$(PERL_HOSTPERL) Makefile.PL \
-		PREFIX=/opt \
+		PREFIX=$(TARGET_PREFIX) \
 	)
 	touch $@
 
@@ -82,7 +82,7 @@ $(PERL-LIBXML_IPK_DIR)/CONTROL/control:
 $(PERL-LIBXML_IPK): $(PERL-LIBXML_BUILD_DIR)/.built
 	rm -rf $(PERL-LIBXML_IPK_DIR) $(BUILD_DIR)/perl-libxml_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PERL-LIBXML_BUILD_DIR) DESTDIR=$(PERL-LIBXML_IPK_DIR) install
-	find $(PERL-LIBXML_IPK_DIR)/opt -name 'perllocal.pod' -exec rm -f {} \;
+	find $(PERL-LIBXML_IPK_DIR)$(TARGET_PREFIX) -name 'perllocal.pod' -exec rm -f {} \;
 	$(MAKE) $(PERL-LIBXML_IPK_DIR)/CONTROL/control
 	echo $(PERL-LIBXML_CONFFILES) | sed -e 's/ /\n/g' > $(PERL-LIBXML_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PERL-LIBXML_IPK_DIR)

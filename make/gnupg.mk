@@ -137,7 +137,7 @@ endif
 		--with-readline=$(STAGING_PREFIX) \
 		--with-libcurl=$(STAGING_PREFIX) \
 		--with-ldap=$(STAGING_PREFIX) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-rpath \
 		--with-gpg-error-prefix=$(STAGING_PREFIX) \
 		--with-libgcrypt-prefix=$(STAGING_PREFIX) \

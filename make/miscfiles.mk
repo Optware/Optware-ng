@@ -123,7 +123,7 @@ $(MISCFILES_BUILD_DIR)/.configured: $(DL_DIR)/$(MISCFILES_SOURCE) $(MISCFILES_PA
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
 	)
@@ -188,7 +188,7 @@ $(MISCFILES_IPK_DIR)/CONTROL/control:
 #
 $(MISCFILES_IPK): $(MISCFILES_BUILD_DIR)/.built
 	rm -rf $(MISCFILES_IPK_DIR) $(BUILD_DIR)/miscfiles_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(MISCFILES_BUILD_DIR) prefix=$(MISCFILES_IPK_DIR)/opt install-strip
+	$(MAKE) -C $(MISCFILES_BUILD_DIR) prefix=$(MISCFILES_IPK_DIR)$(TARGET_PREFIX) install-strip
 	$(MAKE) $(MISCFILES_IPK_DIR)/CONTROL/control
 	echo $(MISCFILES_CONFFILES) | sed -e 's/ /\n/g' > $(MISCFILES_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MISCFILES_IPK_DIR)

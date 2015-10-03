@@ -129,7 +129,7 @@ $(II_BUILD_DIR)/.configured: $(DL_DIR)/$(II_SOURCE) $(II_PATCHES) make/ii.mk
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
 	)
@@ -144,7 +144,7 @@ ii-unpack: $(II_BUILD_DIR)/.configured
 $(II_BUILD_DIR)/.built: $(II_BUILD_DIR)/.configured
 	rm -f $@
 	$(MAKE) -C $(@D) \
-		PREFIX=/opt \
+		PREFIX=$(TARGET_PREFIX) \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(II_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(II_LDFLAGS)" \

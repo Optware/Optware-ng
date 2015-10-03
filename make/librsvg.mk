@@ -132,7 +132,7 @@ $(LIBRSVG_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBRSVG_SOURCE) $(LIBRSVG_PATCHES)
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
 		--disable-introspection \
@@ -201,7 +201,7 @@ $(LIBRSVG_IPK_DIR)/CONTROL/control:
 $(LIBRSVG_IPK): $(LIBRSVG_BUILD_DIR)/.built
 	rm -rf $(LIBRSVG_IPK_DIR) $(BUILD_DIR)/librsvg_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBRSVG_BUILD_DIR) DESTDIR=$(LIBRSVG_IPK_DIR) install-strip
-	find $(LIBRSVG_IPK_DIR)/opt -type f -name *.la -exec rm -f {} \;
+	find $(LIBRSVG_IPK_DIR)$(TARGET_PREFIX) -type f -name *.la -exec rm -f {} \;
 	$(INSTALL) -d $(LIBRSVG_IPK_DIR)/opt/share/gir-1.0
 	$(INSTALL) -m 644 $(LIBRSVG_SOURCE_DIR)/$(LIBRSVG_VERSION)/Rsvg-2.0.gir \
 		$(LIBRSVG_IPK_DIR)/opt/share/gir-1.0/Rsvg-2.0.gir

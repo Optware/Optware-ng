@@ -125,7 +125,7 @@ $(TREE_BUILD_DIR)/.configured: $(DL_DIR)/$(TREE_SOURCE) $(TREE_PATCHES) make/tre
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
 	)
@@ -142,7 +142,7 @@ $(TREE_BUILD_DIR)/.built: $(TREE_BUILD_DIR)/.configured
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(TREE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(TREE_LDFLAGS)" \
-		prefix=/opt \
+		prefix=$(TARGET_PREFIX) \
 		;
 	touch $@
 

@@ -52,7 +52,7 @@ $(LYNX_BUILD_DIR)/.configured: $(DL_DIR)/$(LYNX_SOURCE) $(LYNX_PATCHES)
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--libdir=/opt/etc \
 		--without-libiconv-prefix \
 		--with-ssl=$(STAGING_PREFIX) \

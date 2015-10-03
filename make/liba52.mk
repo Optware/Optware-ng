@@ -122,7 +122,7 @@ $(LIBA52_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBA52_SOURCE) $(LIBA52_PATCHES) ma
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--enable-shared \
 		--disable-nls \
 		--disable-static \

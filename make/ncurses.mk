@@ -48,7 +48,7 @@ $(NCURSES_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(NCURSES_SOURCE) m
 	mv $(HOST_BUILD_DIR)/$(NCURSES) $(@D)
 	(cd $(@D); \
 		./configure \
-		--prefix=/opt	\
+		--prefix=$(TARGET_PREFIX)	\
 		--without-shared	\
 		--enable-symlinks	\
 		--with-build-cc=gcc	\
@@ -81,7 +81,7 @@ endif
 		./configure \
 		--host=$(GNU_TARGET_NAME) \
 		--build=$(GNU_HOST_NAME) \
-		--prefix=/opt	\
+		--prefix=$(TARGET_PREFIX)	\
 		--with-shared		\
 		--enable-symlinks	\
 		--disable-big-core	\

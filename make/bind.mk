@@ -60,7 +60,7 @@ $(BIND_BUILD_DIR)/.configured: $(DL_DIR)/$(BIND_SOURCE) make/bind.mk
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		$(BIND_CONFIG_ARGS) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--with-libtool \
 		--with-openssl=$(STAGING_PREFIX) \
 		--without-libxml2 \

@@ -125,7 +125,7 @@ $(LIBSHOUT_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBSHOUT_SOURCE) $(LIBSHOUT_PATCH
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--with-ogg=$(STAGING_PREFIX) \
 		--with-speex=$(STAGING_PREFIX) \
 		--with-vorbis=$(STAGING_PREFIX) \

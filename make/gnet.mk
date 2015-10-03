@@ -125,7 +125,7 @@ $(GNET_BUILD_DIR)/.configured: $(DL_DIR)/$(GNET_SOURCE) $(GNET_PATCHES) make/gne
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-pthreads \
 		--disable-nls \
 		--disable-static \

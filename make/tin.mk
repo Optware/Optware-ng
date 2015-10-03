@@ -122,7 +122,7 @@ ac_cv_header_unicode_unorm_h=no \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--with-build-cc=$(HOSTCC) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 	)
 	touch $@

@@ -93,15 +93,15 @@ $(PERL-ENCODE-DETECT_IPK): $(PERL-ENCODE-DETECT_BUILD_DIR)/.built
 	rm -rf $(PERL-ENCODE-DETECT_IPK_DIR) $(BUILD_DIR)/perl-encode-detect_*_$(TARGET_ARCH).ipk
 	(cd $(PERL-ENCODE-DETECT_BUILD_DIR); \
 		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
-		./Build --prefix $(PERL-ENCODE-DETECT_IPK_DIR)/opt install \
+		./Build --prefix $(PERL-ENCODE-DETECT_IPK_DIR)$(TARGET_PREFIX) install \
 	)
-	find $(PERL-ENCODE-DETECT_IPK_DIR)/opt -name 'perllocal.pod' -exec rm -f {} \;
+	find $(PERL-ENCODE-DETECT_IPK_DIR)$(TARGET_PREFIX) -name 'perllocal.pod' -exec rm -f {} \;
 	(cd $(PERL-ENCODE-DETECT_IPK_DIR)/opt/lib/perl5 ; \
 		find . -name '*.so' -exec chmod +w {} \; ; \
 		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
 		find . -name '*.so' -exec chmod -w {} \; ; \
 	)
-	find $(PERL-ENCODE-DETECT_IPK_DIR)/opt -type d -exec chmod go+rx {} \;
+	find $(PERL-ENCODE-DETECT_IPK_DIR)$(TARGET_PREFIX) -type d -exec chmod go+rx {} \;
 	$(MAKE) $(PERL-ENCODE-DETECT_IPK_DIR)/CONTROL/control
 	echo $(PERL-ENCODE-DETECT_CONFFILES) | sed -e 's/ /\n/g' > $(PERL-ENCODE-DETECT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PERL-ENCODE-DETECT_IPK_DIR)

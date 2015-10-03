@@ -129,7 +129,7 @@ $(HD2U_BUILD_DIR)/.configured: $(DL_DIR)/$(HD2U_SOURCE) $(HD2U_PATCHES) make/hd2
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
 	)
@@ -199,7 +199,7 @@ $(HD2U_IPK): $(HD2U_BUILD_DIR)/.built
 	rm -rf $(HD2U_IPK_DIR) $(BUILD_DIR)/hd2u_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(HD2U_BUILD_DIR) install \
 		DESTDIR=$(HD2U_IPK_DIR) \
-		prefix=$(HD2U_IPK_DIR)/opt \
+		prefix=$(HD2U_IPK_DIR)$(TARGET_PREFIX) \
 		;
 	$(STRIP_COMMAND) $(HD2U_IPK_DIR)/opt/bin/*
 	mv $(HD2U_IPK_DIR)/opt/bin/dos2unix $(HD2U_IPK_DIR)/opt/bin/hd2u-dos2unix

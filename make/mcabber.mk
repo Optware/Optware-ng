@@ -131,7 +131,7 @@ $(MCABBER_BUILD_DIR)/.configured: $(DL_DIR)/$(MCABBER_SOURCE) $(MCABBER_PATCHES)
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--with-gpgme-prefix=$(STAGING_PREFIX) \
 		--with-libgcrypt-prefix=$(STAGING_PREFIX) \
 		--with-libotr-prefix=$(STAGING_PREFIX) \

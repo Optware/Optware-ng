@@ -133,7 +133,7 @@ $(APPWEB_BUILD_DIR)/.configured: $(DL_DIR)/$(APPWEB_SOURCE) $(APPWEB_PATCHES)
 		--type=RELEASE \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--docDir=/opt/var/appWeb/doc \
 		--incDir=/opt/include \
 		--libDir=/opt/lib \

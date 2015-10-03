@@ -138,7 +138,7 @@ $(APCUPSD_BUILD_DIR)/.configured: $(DL_DIR)/$(APCUPSD_SOURCE) $(APCUPSD_PATCHES)
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--with-distname=unknown \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--sbindir=/opt/sbin \
 		--sysconfdir=/opt/etc/apcupsd \
 		--mandir=/opt/share/man \

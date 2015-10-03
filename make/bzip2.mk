@@ -44,7 +44,7 @@ bzip2-unpack: $(BZIP2_BUILD_DIR)/.configured
 $(BZIP2_BUILD_DIR)/.built: $(BZIP2_BUILD_DIR)/.configured
 	rm -f $@
 	$(MAKE) -C $(@D) \
-		PREFIX=/opt \
+		PREFIX=$(TARGET_PREFIX) \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(BZIP2_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(BZIP2_LDFLAGS)" \
@@ -52,7 +52,7 @@ $(BZIP2_BUILD_DIR)/.built: $(BZIP2_BUILD_DIR)/.configured
 		libbz2.a bzip2 bzip2recover
 	rm -f $(@D)/*.o
 	$(MAKE) -C $(@D) \
-		PREFIX=/opt \
+		PREFIX=$(TARGET_PREFIX) \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(BZIP2_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(BZIP2_LDFLAGS)" \

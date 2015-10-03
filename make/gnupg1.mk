@@ -130,7 +130,7 @@ $(GNUPG1_BUILD_DIR)/.configured: $(DL_DIR)/$(GNUPG1_SOURCE) $(GNUPG1_PATCHES) ma
 		--with-readline=$(STAGING_PREFIX) \
 		--with-libcurl=$(STAGING_PREFIX) \
 		--with-ldap=$(STAGING_PREFIX) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		$(GNUPG1_CFG_OPTS) \
 	)

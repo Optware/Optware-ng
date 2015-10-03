@@ -108,7 +108,7 @@ $(CYRUS-SASL_BUILD_DIR)/.configured: $(DL_DIR)/$(CYRUS-SASL_SOURCE) $(CYRUS-SASL
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--with-plugindir=/opt/lib/sasl2 \
 		--with-saslauthd=/opt/var/state/saslauthd \
 		--with-dbpath=/opt/etc/sasl2 \

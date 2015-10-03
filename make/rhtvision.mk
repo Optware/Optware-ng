@@ -140,7 +140,7 @@ $(RHTVISION_BUILD_DIR)/.configured: $(DL_DIR)/$(RHTVISION_SOURCE) $(RHTVISION_PA
 		TARGET_ARCH=$(TARGET_ARCH) \
 		LDExtraDirs=$(STAGING_LIB_DIR) \
 		./configure \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--with-debug \
 	)
 #		--build=$(GNU_HOST_NAME) \

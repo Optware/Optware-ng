@@ -126,7 +126,7 @@ $(FETCHMAIL_BUILD_DIR)/.configured: $(DL_DIR)/$(FETCHMAIL_SOURCE) $(FETCHMAIL_PA
 		--without-kerberos5 \
 		--without-kerberos \
 		--without-hesiod \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--program-prefix= \
 	)

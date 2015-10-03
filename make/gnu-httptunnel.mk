@@ -123,7 +123,7 @@ $(GNU_HTTPTUNNEL_BUILD_DIR)/.configured: $(DL_DIR)/$(GNU_HTTPTUNNEL_SOURCE) $(GN
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
 	)

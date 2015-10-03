@@ -43,7 +43,7 @@ $(DDCLIENT_BUILD_DIR)/.configured: $(DL_DIR)/$(DDCLIENT_SOURCE) $(DDCLIENT_PATCH
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		$(PERL_HOSTPERL) Makefile.PL \
-		PREFIX=/opt \
+		PREFIX=$(TARGET_PREFIX) \
 	)
 	touch $@
 
@@ -90,13 +90,13 @@ $(DDCLIENT_IPK): $(DDCLIENT_BUILD_DIR)/.built
 	$(INSTALL) -d $(DDCLIENT_IPK_DIR)/opt/tmp
 	$(INSTALL) -d $(DDCLIENT_IPK_DIR)/opt/share/doc/ddclient
 	$(INSTALL) $(DDCLIENT_BUILD_DIR)/README* $(DDCLIENT_IPK_DIR)/opt/share/doc/ddclient
-#	find $(DDCLIENT_IPK_DIR)/opt -name 'perllocal.pod' -exec rm -f {} \;
+#	find $(DDCLIENT_IPK_DIR)$(TARGET_PREFIX) -name 'perllocal.pod' -exec rm -f {} \;
 #	(cd $(DDCLIENT_IPK_DIR)/opt/lib/perl5 ; \
 		find . -name '*.so' -exec chmod +w {} \; ; \
 		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
 		find . -name '*.so' -exec chmod -w {} \; ; \
 	)
-#	find $(DDCLIENT_IPK_DIR)/opt -type d -exec chmod go+rx {} \;
+#	find $(DDCLIENT_IPK_DIR)$(TARGET_PREFIX) -type d -exec chmod go+rx {} \;
 	$(MAKE) $(DDCLIENT_IPK_DIR)/CONTROL/control
 	echo $(DDCLIENT_CONFFILES) | sed -e 's/ /\n/g' > $(DDCLIENT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(DDCLIENT_IPK_DIR)

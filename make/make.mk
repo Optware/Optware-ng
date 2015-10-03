@@ -108,7 +108,7 @@ $(MAKE_BUILD_DIR)/.configured: $(DL_DIR)/$(MAKE_SOURCE) $(MAKE_PATCHES) make/mak
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-rpath \
 		--disable-nls \
 		--disable-static \

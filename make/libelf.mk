@@ -126,7 +126,7 @@ $(LIBELF_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBELF_SOURCE) $(LIBELF_PATCHES) ma
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-shared \
 	)
@@ -193,7 +193,7 @@ $(LIBELF_IPK_DIR)/CONTROL/control:
 $(LIBELF_IPK): $(LIBELF_BUILD_DIR)/.built
 	rm -rf $(LIBELF_IPK_DIR) $(BUILD_DIR)/libelf_*_$(TARGET_ARCH).ipk
 #	$(INSTALL) -d $(LIBELF_IPK_DIR)/opt
-	$(MAKE) -C $(LIBELF_BUILD_DIR) prefix=$(LIBELF_IPK_DIR)/opt install
+	$(MAKE) -C $(LIBELF_BUILD_DIR) prefix=$(LIBELF_IPK_DIR)$(TARGET_PREFIX) install
 #	$(INSTALL) -d $(LIBELF_IPK_DIR)/opt/etc/
 #	$(INSTALL) -m 644 $(LIBELF_SOURCE_DIR)/libelf.conf $(LIBELF_IPK_DIR)/opt/etc/libelf.conf
 #	$(INSTALL) -d $(LIBELF_IPK_DIR)/opt/etc/init.d

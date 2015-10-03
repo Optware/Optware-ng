@@ -158,7 +158,7 @@ endif
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--enable-ltdl-install \
 		$(LIBEXTRACTOR_CONFIG_OPTS) \
 		--disable-glib \
@@ -192,7 +192,7 @@ $(LIBEXTRACTOR_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(LIBEXTRACTOR
 	mv $(HOST_BUILD_DIR)/$(LIBEXTRACTOR_DIR) $(@D)
 	(cd $(@D); \
 		./configure \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--enable-ltdl-install \
 		--disable-glib \
 		--disable-exiv2 \

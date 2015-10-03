@@ -130,7 +130,7 @@ $(XCHAT_BUILD_DIR)/.configured: $(DL_DIR)/$(XCHAT_SOURCE) \
 		--target=$(GNU_TARGET_NAME) \
 		--x-includes=$(STAGING_INCLUDE_DIR) \
 		--x-libraries=$(STAGING_LIB_DIR) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-gtk-doc \
 		--disable-static \
 		--disable-glibtest \

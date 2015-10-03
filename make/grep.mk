@@ -56,7 +56,7 @@ $(GREP_BUILD_DIR)/.configured: $(DL_DIR)/$(GREP_SOURCE) make/grep.mk
 		./configure \
 		--host=$(GNU_TARGET_NAME) \
 		--build=$(GNU_HOST_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		$(GREP_CONFIGURE_ARGS) \
 	);
 	sed -i -e '/^LIBS/s|-L/usr/lib||' $(@D)/src/Makefile

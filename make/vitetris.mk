@@ -122,7 +122,7 @@ $(VITETRIS_BUILD_DIR)/.configured: $(DL_DIR)/$(VITETRIS_SOURCE) $(VITETRIS_PATCH
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(VITETRIS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(VITETRIS_LDFLAGS)" \
 		./configure \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--without-x \
 	)
 #	$(PATCH_LIBTOOL) $(@D)/libtool

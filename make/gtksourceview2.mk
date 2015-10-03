@@ -131,7 +131,7 @@ $(GTKSOURCEVIEW2_BUILD_DIR)/.configured: $(DL_DIR)/$(GTKSOURCEVIEW2_SOURCE) $(GT
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
 		--disable-introspection \

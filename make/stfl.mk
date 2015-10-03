@@ -135,7 +135,7 @@ endif
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
 	)
@@ -154,7 +154,7 @@ $(STFL_BUILD_DIR)/.built: $(STFL_BUILD_DIR)/.configured
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(STFL_CPPFLAGS)" \
 		LDFLAGS="$(STFL_LDFLAGS) $(STAGING_LDFLAGS)" \
-		prefix=/opt \
+		prefix=$(TARGET_PREFIX) \
 		;
 	touch $@
 
@@ -170,7 +170,7 @@ $(STFL_BUILD_DIR)/.staged: $(STFL_BUILD_DIR)/.built
 	rm -f $@
 	rm -f $(STAGING_INCLUDE_DIR)/stfl.h
 	rm -f $(STAGING_LIB_DIR)/libstfl*.a
-	$(MAKE) -C $(STFL_BUILD_DIR) DESTDIR=$(STAGING_DIR) prefix=/opt install
+	$(MAKE) -C $(STFL_BUILD_DIR) DESTDIR=$(STAGING_DIR) prefix=$(TARGET_PREFIX) install
 	touch $@
 
 stfl-stage: $(STFL_BUILD_DIR)/.staged
@@ -208,7 +208,7 @@ $(STFL_IPK_DIR)/CONTROL/control:
 #
 $(STFL_IPK): $(STFL_BUILD_DIR)/.built
 	rm -rf $(STFL_IPK_DIR) $(BUILD_DIR)/stfl_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(STFL_BUILD_DIR) DESTDIR=$(STFL_IPK_DIR) prefix=/opt install
+	$(MAKE) -C $(STFL_BUILD_DIR) DESTDIR=$(STFL_IPK_DIR) prefix=$(TARGET_PREFIX) install
 #	$(INSTALL) -d $(STFL_IPK_DIR)/opt/etc/
 #	$(INSTALL) -m 644 $(STFL_SOURCE_DIR)/stfl.conf $(STFL_IPK_DIR)/opt/etc/stfl.conf
 #	$(INSTALL) -d $(STFL_IPK_DIR)/opt/etc/init.d

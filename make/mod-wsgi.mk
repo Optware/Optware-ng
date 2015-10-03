@@ -125,7 +125,7 @@ $(MOD_WSGI_BUILD_DIR)/.configured: $(DL_DIR)/$(MOD_WSGI_SOURCE) $(MOD_WSGI_PATCH
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--with-apxs=$(STAGING_PREFIX)/bin/apxs \
 		--with-python=$(HOST_STAGING_PREFIX)/bin/python2.7 \
 		--disable-nls \

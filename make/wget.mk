@@ -149,7 +149,7 @@ endif
 		--disable-pcre \
 		--disable-ntlm \
 		--disable-iri \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 	)
 	touch $@
@@ -183,7 +183,7 @@ endif
 		--with-libssl-prefix=$(STAGING_PREFIX) \
 		--with-libidn-prefix=$(STAGING_PREFIX) \
 		$(WGET-SSL_CONFIGURE_ARGS) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 	)
 	touch $@

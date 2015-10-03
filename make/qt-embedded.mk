@@ -183,7 +183,7 @@ endif
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(QT-EMBEDDED_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(QT-EMBEDDED_LDFLAGS)" \
 		./configure \
-		-prefix /opt \
+		-prefix $(TARGET_PREFIX) \
 		-force-pkg-config \
 		-no-pch \
 		-plugindir /opt/lib/qt4/plugins \

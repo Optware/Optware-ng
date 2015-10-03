@@ -86,7 +86,7 @@ $(CVS_BUILD_DIR)/.configured: $(DL_DIR)/$(CVS_SOURCE) $(CVS_PATCHES) make/cvs.mk
 		--host=$(GNU_TARGET_NAME) \
 		--build=$(GNU_HOST_NAME) \
 		--without-gssapi \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 	);
 	touch $@
 

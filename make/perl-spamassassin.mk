@@ -50,7 +50,7 @@ $(PERL-SPAMASSASSIN_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-SPAMASSASSIN_SOURCE
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		perl Makefile.PL \
-		PREFIX=/opt \
+		PREFIX=$(TARGET_PREFIX) \
 		SYSCONFDIR=/opt/etc \
 		CONFDIR=/opt/etc/spamassassin \
 		CONTACT_ADDRESS="postmaster@local.domain" \
@@ -91,13 +91,13 @@ $(PERL-SPAMASSASSIN_IPK_DIR)/CONTROL/control:
 $(PERL-SPAMASSASSIN_IPK): $(PERL-SPAMASSASSIN_BUILD_DIR)/.built
 	rm -rf $(PERL-SPAMASSASSIN_IPK_DIR) $(BUILD_DIR)/perl-spamassassin_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PERL-SPAMASSASSIN_BUILD_DIR) DESTDIR=$(PERL-SPAMASSASSIN_IPK_DIR) install
-	find $(PERL-SPAMASSASSIN_IPK_DIR)/opt -name 'perllocal.pod' -exec rm -f {} \;
+	find $(PERL-SPAMASSASSIN_IPK_DIR)$(TARGET_PREFIX) -name 'perllocal.pod' -exec rm -f {} \;
 	(cd $(PERL-SPAMASSASSIN_IPK_DIR)/opt/lib/perl5 ; \
 		find . -name '*.so' -exec chmod +w {} \; ; \
 		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
 		find . -name '*.so' -exec chmod -w {} \; ; \
 	)
-	find $(PERL-SPAMASSASSIN_IPK_DIR)/opt -type d -exec chmod go+rx {} \;
+	find $(PERL-SPAMASSASSIN_IPK_DIR)$(TARGET_PREFIX) -type d -exec chmod go+rx {} \;
 	chmod go+r $(PERL-SPAMASSASSIN_IPK_DIR)/opt/etc/*
 	$(INSTALL) -d $(PERL-SPAMASSASSIN_IPK_DIR)/opt/var/run
 	$(INSTALL) -d $(PERL-SPAMASSASSIN_IPK_DIR)/opt/etc/init.d

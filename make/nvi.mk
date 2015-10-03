@@ -137,7 +137,7 @@ $(NVI_BUILD_DIR)/.configured: $(DL_DIR)/$(NVI_SOURCE) $(NVI_PATCHES) # make/nvi.
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
 	)
@@ -205,7 +205,7 @@ $(NVI_IPK_DIR)/CONTROL/control:
 $(NVI_IPK): $(NVI_BUILD_DIR)/.built
 	rm -rf $(NVI_IPK_DIR) $(BUILD_DIR)/nvi_*_$(TARGET_ARCH).ipk
 	$(INSTALL) -d $(NVI_IPK_DIR)/opt
-	$(MAKE) -C $(NVI_BUILD_DIR) prefix=$(NVI_IPK_DIR)/opt transform=s/^/n/ strip=$(TARGET_STRIP) install
+	$(MAKE) -C $(NVI_BUILD_DIR) prefix=$(NVI_IPK_DIR)$(TARGET_PREFIX) transform=s/^/n/ strip=$(TARGET_STRIP) install
 	mv $(NVI_IPK_DIR)/opt/share/vi $(NVI_IPK_DIR)/opt/share/nvi
 	$(MAKE) $(NVI_IPK_DIR)/CONTROL/control
 	echo $(NVI_CONFFILES) | sed -e 's/ /\n/g' > $(NVI_IPK_DIR)/CONTROL/conffiles

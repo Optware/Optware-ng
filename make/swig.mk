@@ -100,7 +100,7 @@ $(SWIG_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(SWIG_SOURCE) $(SWIG_
 	fi
 	(cd $(@D); \
 		./configure \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
 	)
@@ -154,7 +154,7 @@ $(SWIG_BUILD_DIR)/.configured: $(DL_DIR)/$(SWIG_SOURCE) $(SWIG_PATCHES) make/swi
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
 	)

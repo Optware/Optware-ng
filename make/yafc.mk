@@ -128,7 +128,7 @@ $(YAFC_BUILD_DIR)/.configured: $(DL_DIR)/$(YAFC_SOURCE) $(YAFC_PATCHES) make/yaf
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--with-readline=$(STAGING_PREFIX) \
 		--without-krb4 \
 		--without-krb5 \

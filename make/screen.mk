@@ -119,7 +119,7 @@ $(SCREEN_BUILD_DIR)/.configured: $(DL_DIR)/$(SCREEN_SOURCE) $(SCREEN_PATCHES) ma
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--disable-pam \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 	)
 ifeq ($(LIBC_STYLE),uclibc)
 	sed -i -e '/stropts.h/d' $(@D)/pty.c

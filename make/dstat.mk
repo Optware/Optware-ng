@@ -115,7 +115,7 @@ dstat-unpack: $(DSTAT_BUILD_DIR)/.configured
 #
 $(DSTAT_BUILD_DIR)/.built: $(DSTAT_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(@D) prefix=/opt sysconfdir=/opt/etc
+	$(MAKE) -C $(@D) prefix=$(TARGET_PREFIX) sysconfdir=/opt/etc
 	touch $@
 
 #
@@ -167,7 +167,7 @@ $(DSTAT_IPK_DIR)/CONTROL/control:
 $(DSTAT_IPK): $(DSTAT_BUILD_DIR)/.built
 	rm -rf $(DSTAT_IPK_DIR) $(BUILD_DIR)/dstat_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(DSTAT_BUILD_DIR) install \
-		DESTDIR=$(DSTAT_IPK_DIR) prefix=/opt sysconfdir=/opt/etc
+		DESTDIR=$(DSTAT_IPK_DIR) prefix=$(TARGET_PREFIX) sysconfdir=/opt/etc
 	$(MAKE) $(DSTAT_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(DSTAT_IPK_DIR)
 

@@ -114,7 +114,7 @@ $(DRI3PROTO_BUILD_DIR)/.configured: $(DL_DIR)/$(DRI3PROTO_SOURCE) $(DRI3PROTO_PA
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-static \
 	)
 	touch $@

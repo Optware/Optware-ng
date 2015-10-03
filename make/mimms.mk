@@ -124,7 +124,7 @@ $(MIMMS_BUILD_DIR)/.configured: $(DL_DIR)/$(MIMMS_SOURCE) $(MIMMS_PATCHES) make/
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
 	)
@@ -142,7 +142,7 @@ $(MIMMS_BUILD_DIR)/.built: $(MIMMS_BUILD_DIR)/.configured
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MIMMS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MIMMS_LDFLAGS)" \
-		prefix=/opt \
+		prefix=$(TARGET_PREFIX) \
 		;
 	touch $@
 

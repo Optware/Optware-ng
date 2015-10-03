@@ -134,7 +134,7 @@ noip-unpack: $(NOIP_BUILD_DIR)/.configured
 #
 $(NOIP_BUILD_DIR)/.built: $(NOIP_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(NOIP_BUILD_DIR) PREFIX=/opt $(TARGET_CONFIGURE_OPTS)
+	$(MAKE) -C $(NOIP_BUILD_DIR) PREFIX=$(TARGET_PREFIX) $(TARGET_CONFIGURE_OPTS)
 	touch $@
 
 #

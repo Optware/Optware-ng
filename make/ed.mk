@@ -110,7 +110,7 @@ $(ED_BUILD_DIR)/.configured: $(DL_DIR)/$(ED_SOURCE) $(ED_PATCHES) make/ed.mk
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ED_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(ED_LDFLAGS)" \
@@ -164,9 +164,9 @@ $(ED_IPK_DIR)/CONTROL/control:
 #
 $(ED_IPK): $(ED_BUILD_DIR)/.built
 	rm -rf $(ED_IPK_DIR) $(BUILD_DIR)/ed_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(ED_BUILD_DIR) prefix=$(ED_IPK_DIR)/opt install INSTALL_DATA=:
+	$(MAKE) -C $(ED_BUILD_DIR) prefix=$(ED_IPK_DIR)$(TARGET_PREFIX) install INSTALL_DATA=:
 	$(STRIP_COMMAND) $(ED_IPK_DIR)/opt/bin/ed
-	$(MAKE) -C $(ED_BUILD_DIR) prefix=$(ED_IPK_DIR)/opt install-man
+	$(MAKE) -C $(ED_BUILD_DIR) prefix=$(ED_IPK_DIR)$(TARGET_PREFIX) install-man
 	$(MAKE) $(ED_IPK_DIR)/CONTROL/control
 #	echo $(ED_CONFFILES) | sed -e 's/ /\n/g' > $(ED_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ED_IPK_DIR)

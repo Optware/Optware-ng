@@ -125,7 +125,7 @@ $(QEMACS_BUILD_DIR)/.configured: $(DL_DIR)/$(QEMACS_SOURCE) $(QEMACS_PATCHES) ma
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--cpu=$(TARGET_ARCH) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-x11 \
 		--disable-xv \
 		--disable-xrender \
@@ -208,7 +208,7 @@ $(QEMACS_IPK): $(QEMACS_BUILD_DIR)/.built
 	$(INSTALL) -d $(QEMACS_IPK_DIR)/opt/bin/ $(QEMACS_IPK_DIR)/opt/share/ $(QEMACS_IPK_DIR)/opt/man/man1
 	$(MAKE) -C $(QEMACS_BUILD_DIR) install \
 		DESTDIR=$(QEMACS_IPK_DIR) \
-		prefix=$(QEMACS_IPK_DIR)/opt \
+		prefix=$(QEMACS_IPK_DIR)$(TARGET_PREFIX) \
 		;
 #	$(INSTALL) -d $(QEMACS_IPK_DIR)/opt/etc/
 #	$(INSTALL) -m 644 $(QEMACS_SOURCE_DIR)/qemacs.conf $(QEMACS_IPK_DIR)/opt/etc/qemacs.conf

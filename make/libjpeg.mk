@@ -115,7 +115,7 @@ $(LIBJPEG_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBJPEG_SOURCE) $(LIBJPEG_PATCHES)
 		--target=$(GNU_TARGET_NAME) \
 		--enable-shared \
 		--disable-static \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 	)
 	touch $@
 
@@ -187,7 +187,7 @@ $(LIBJPEG_IPK): $(LIBJPEG_BUILD_DIR)/.built
 	$(INSTALL) -d $(LIBJPEG_IPK_DIR)/opt/lib
 	$(INSTALL) -d $(LIBJPEG_IPK_DIR)/opt/bin
 	$(INSTALL) -d $(LIBJPEG_IPK_DIR)/opt/share/man/man1
-	$(MAKE) -C $(LIBJPEG_BUILD_DIR) prefix=$(LIBJPEG_IPK_DIR)/opt mandir=$(LIBJPEG_IPK_DIR)/opt/share/man/man1 install
+	$(MAKE) -C $(LIBJPEG_BUILD_DIR) prefix=$(LIBJPEG_IPK_DIR)$(TARGET_PREFIX) mandir=$(LIBJPEG_IPK_DIR)/opt/share/man/man1 install
 	rm -f $(LIBJPEG_IPK_DIR)/opt/lib/libjpeg.la
 	$(TARGET_STRIP) $(LIBJPEG_IPK_DIR)/opt/bin/*
 	$(TARGET_STRIP) $(LIBJPEG_IPK_DIR)/opt/lib/*.so

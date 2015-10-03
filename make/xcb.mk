@@ -113,7 +113,7 @@ $(XCB_BUILD_DIR)/.configured: $(DL_DIR)/$(XCB_SOURCE) $(XCB_PATCHES) make/xcb.mk
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-static \
 	)
 	touch $@

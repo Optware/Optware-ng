@@ -104,7 +104,7 @@ $(MAN_BUILD_DIR)/.configured: $(DL_DIR)/$(MAN_SOURCE) $(MAN_PATCHES)
 		LDFLAGS="$(STAGING_LDFLAGS) $(MAN_LDFLAGS)" \
 		BUILD_CC=$(HOSTCC) \
 		./configure \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		-confdir /opt/etc \
 	)
 	touch $@

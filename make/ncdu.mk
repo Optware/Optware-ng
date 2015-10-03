@@ -124,7 +124,7 @@ $(NCDU_BUILD_DIR)/.configured: $(DL_DIR)/$(NCDU_SOURCE) $(NCDU_PATCHES) make/ncd
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
 	)

@@ -152,7 +152,7 @@ endif
 		then mv $(BUILD_DIR)/$(LIBTORRENT-RASTERBAR_DIR) $(@D) ; \
 	fi
 	sed -i -e "s|/usr/local/ssl /usr/lib/ssl /usr/ssl /usr/pkg /usr/local /usr|$(STAGING_PREFIX)|" $(@D)/m4/ax_check_openssl.m4
-	sed -i -e "s|/usr /usr/local /opt /opt/local|$(STAGING_PREFIX)|" $(@D)/m4/ax_boost_base.m4 $(@D)/m4/ax_check_geoip.m4
+	sed -i -e "s|/usr /usr/local $(TARGET_PREFIX) /opt/local|$(STAGING_PREFIX)|" $(@D)/m4/ax_boost_base.m4 $(@D)/m4/ax_check_geoip.m4
 	sed -i -e "s|namespace libtorrent|#ifndef IPV6_V6ONLY\n#  define IPV6_V6ONLY 26\n#endif\n\nnamespace libtorrent|" $(@D)/include/libtorrent/socket.hpp
 	sed -i -e "s|namespace libtorrent { namespace|#ifndef IPV6_V6ONLY\n#  define IPV6_V6ONLY 26\n#endif\n\nnamespace libtorrent { namespace|" $(@D)/src/enum_net.cpp
 #	sed -i -e "s/#include <vector>/#include <vector>\n#include <list>/" $(@D)/include/libtorrent/udp_socket.hpp
@@ -175,7 +175,7 @@ endif
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--with-ssl \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
 		--disable-debug \

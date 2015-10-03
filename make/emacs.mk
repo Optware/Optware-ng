@@ -122,7 +122,7 @@ $(EMACS_BUILD_DIR)/.configured: $(DL_DIR)/$(EMACS_SOURCE) $(EMACS_PATCHES)
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--x-includes=$(STAGING_INCLUDE_DIR) \
 		--x-libraries=$(STAGING_LIB_DIR) \
 		--with-x \
@@ -201,7 +201,7 @@ $(EMACS_IPK): $(EMACS_BUILD_DIR)/.built
 	rm -rf $(EMACS_LISP_IPK_DIR) $(BUILD_DIR)/emacs-lisp_*_$(TARGET_ARCH).ipk
 	rm -rf $(EMACS_LISP_SRC_IPK_DIR) $(BUILD_DIR)/emacs-lisp-src_*_$(TARGET_ARCH).ipk
 	$(MAKE) $(EMACS_IPK_DIR)/CONTROL/control
-	$(MAKE) -C $(EMACS_BUILD_DIR) prefix=$(EMACS_IPK_DIR)/opt install TARGET_LIBDIR=$(TARGET_LIBDIR)
+	$(MAKE) -C $(EMACS_BUILD_DIR) prefix=$(EMACS_IPK_DIR)$(TARGET_PREFIX) install TARGET_LIBDIR=$(TARGET_LIBDIR)
 	rm -f $(EMACS_IPK_DIR)/opt/bin/emacs
 	for F in \
 		$(EMACS_IPK_DIR)/opt/bin/* \

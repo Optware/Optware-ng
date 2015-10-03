@@ -146,7 +146,7 @@ $(LIBXFCE4UI_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBXFCE4UI_SOURCE) $(LIBXFCE4UI
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
 		--enable-gtk3 \

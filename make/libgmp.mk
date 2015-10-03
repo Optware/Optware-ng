@@ -133,7 +133,7 @@ $(LIBGMP_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBGMP_SOURCE) $(LIBGMP_PATCHES) ma
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
 	)
@@ -175,7 +175,7 @@ $(LIBGMP_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(LIBGMP_SOURCE) ma
 	(cd $(@D); \
 	    CPPFLAGS="$(LIBGMP_M32)" \
 	    ./configure \
-		--prefix=/opt $(LIBGMP_HOST32) \
+		--prefix=$(TARGET_PREFIX) $(LIBGMP_HOST32) \
 		--disable-nls \
 		--disable-shared; \
 	    $(MAKE) DESTDIR=$(HOST_STAGING_DIR) install; \

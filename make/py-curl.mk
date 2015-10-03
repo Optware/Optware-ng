@@ -331,7 +331,7 @@ $(PY25-CURL_IPK): $(PY-CURL_BUILD_DIR)/.built
 	cd $(PY-CURL_BUILD_DIR)/2.5; \
 	    CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 -c "import setuptools; execfile('setup.py')" install \
-	    --root=$(PY25-CURL_IPK_DIR) --prefix=/opt \
+	    --root=$(PY25-CURL_IPK_DIR) --prefix=$(TARGET_PREFIX) \
 	    --curl-config=$(STAGING_PREFIX)/bin/curl-config
 	$(STRIP_COMMAND) `find $(PY25-CURL_IPK_DIR)/opt/lib/python2.5/site-packages -name '*.so'`
 	rm -rf $(PY25-CURL_IPK_DIR)/opt/share
@@ -343,7 +343,7 @@ $(PY26-CURL_IPK): $(PY-CURL_BUILD_DIR)/.built
 	cd $(PY-CURL_BUILD_DIR)/2.6; \
 	    CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.6 -c "import setuptools; execfile('setup.py')" install \
-	    --root=$(PY26-CURL_IPK_DIR) --prefix=/opt \
+	    --root=$(PY26-CURL_IPK_DIR) --prefix=$(TARGET_PREFIX) \
 	    --curl-config=$(STAGING_PREFIX)/bin/curl-config
 	$(STRIP_COMMAND) `find $(PY26-CURL_IPK_DIR)/opt/lib/python2.6/site-packages -name '*.so'`
 	rm -rf $(PY26-CURL_IPK_DIR)/opt/share
@@ -356,7 +356,7 @@ $(PY27-CURL_IPK) $(PY-CURL-DOC_IPK): $(PY-CURL_BUILD_DIR)/.built
 	cd $(PY-CURL_BUILD_DIR)/2.7; \
 	    CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.7 -c "import setuptools; execfile('setup.py')" install \
-	    --root=$(PY27-CURL_IPK_DIR) --prefix=/opt \
+	    --root=$(PY27-CURL_IPK_DIR) --prefix=$(TARGET_PREFIX) \
 	    --curl-config=$(STAGING_PREFIX)/bin/curl-config
 	$(STRIP_COMMAND) `find $(PY27-CURL_IPK_DIR)/opt/lib/python2.7/site-packages -name '*.so'`
 	$(MAKE) $(PY27-CURL_IPK_DIR)/CONTROL/control
@@ -371,7 +371,7 @@ $(PY3-CURL_IPK): $(PY-CURL_BUILD_DIR)/.built
 	cd $(PY-CURL_BUILD_DIR)/3; \
 	    CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install \
-	    --root=$(PY3-CURL_IPK_DIR) --prefix=/opt \
+	    --root=$(PY3-CURL_IPK_DIR) --prefix=$(TARGET_PREFIX) \
 	    --curl-config=$(STAGING_PREFIX)/bin/curl-config
 	$(STRIP_COMMAND) `find $(PY3-CURL_IPK_DIR)/opt/lib/python$(PYTHON3_VERSION_MAJOR)/site-packages -name '*.so'`
 	rm -rf $(PY3-CURL_IPK_DIR)/opt/share

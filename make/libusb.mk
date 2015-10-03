@@ -109,7 +109,7 @@ $(LIBUSB_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBUSB_SOURCE) $(LIBUSB_PATCHES) ma
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--disable-build-docs \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 	)
 	$(PATCH_LIBTOOL) $(LIBUSB_BUILD_DIR)/libtool
 	touch $(LIBUSB_BUILD_DIR)/.configured

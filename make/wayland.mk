@@ -135,7 +135,7 @@ $(WAYLAND_BUILD_DIR)/.configured: $(DL_DIR)/$(WAYLAND_SOURCE) $(WAYLAND_PATCHES)
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--disable-documentation \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
 	)

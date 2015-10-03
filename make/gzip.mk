@@ -109,7 +109,7 @@ $(GZIP_BUILD_DIR)/.configured: $(DL_DIR)/$(GZIP_SOURCE) $(GZIP_PATCHES) make/gzi
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		; \
 	else \
@@ -120,7 +120,7 @@ $(GZIP_BUILD_DIR)/.configured: $(DL_DIR)/$(GZIP_SOURCE) $(GZIP_PATCHES) make/gzi
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		; \
 	fi \
@@ -178,7 +178,7 @@ $(GZIP_IPK): $(GZIP_BUILD_DIR)/.built
 	$(INSTALL) -d $(GZIP_IPK_DIR)/opt/lib
 	$(INSTALL) -d $(GZIP_IPK_DIR)/opt/info
 	$(INSTALL) -d $(GZIP_IPK_DIR)/opt/man/man1
-	$(MAKE) -C $(GZIP_BUILD_DIR) prefix=$(GZIP_IPK_DIR)/opt install
+	$(MAKE) -C $(GZIP_BUILD_DIR) prefix=$(GZIP_IPK_DIR)$(TARGET_PREFIX) install
 	rm -f $(GZIP_IPK_DIR)/opt/share/info/dir
 	$(MAKE) $(GZIP_IPK_DIR)/CONTROL/control
 	echo "#!/bin/sh" > $(GZIP_IPK_DIR)/CONTROL/postinst

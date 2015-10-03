@@ -123,7 +123,7 @@ $(LUA50_BUILD_DIR)/.configured: $(DL_DIR)/$(LUA50_SOURCE) $(LUA50_PATCHES)
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 	)
 	touch $(LUA50_BUILD_DIR)/.configured
@@ -199,7 +199,7 @@ $(LUA50_IPK): $(LUA50_BUILD_DIR)/.built
 		$(INSTALL) -m 0644 lib/*.a $(LUA50_IPK_DIR)/opt/lib; \
 		$(INSTALL) -m 0644 doc/*.1 $(LUA50_IPK_DIR)/opt/man/man1; \
 	)
-	for f in `find $(LUA50_IPK_DIR)/opt -type f`; do \
+	for f in `find $(LUA50_IPK_DIR)$(TARGET_PREFIX) -type f`; do \
 		d=`dirname $$f`; \
 		b=`basename $$f`.; \
 		newb=`echo $$b | sed -e 's/\./50./; s/\.$$//'`; \

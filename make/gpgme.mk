@@ -124,7 +124,7 @@ $(GPGME_BUILD_DIR)/.configured: $(DL_DIR)/$(GPGME_SOURCE) $(GPGME_PATCHES) make/
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--with-gpg-error-prefix=$(STAGING_PREFIX) \
 		--with-gpg=/opt/bin/gpg \
 		--with-gpgsm=/opt/bin/gpgsm \

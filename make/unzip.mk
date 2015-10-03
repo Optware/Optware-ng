@@ -170,7 +170,7 @@ $(UNZIP_IPK_DIR)/CONTROL/control:
 #
 $(UNZIP_IPK): $(UNZIP_BUILD_DIR)/.built
 	rm -rf $(UNZIP_IPK_DIR) $(BUILD_DIR)/unzip_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(UNZIP_BUILD_DIR) -f unix/Makefile prefix=$(UNZIP_IPK_DIR)/opt install
+	$(MAKE) -C $(UNZIP_BUILD_DIR) -f unix/Makefile prefix=$(UNZIP_IPK_DIR)$(TARGET_PREFIX) install
 	mv $(UNZIP_IPK_DIR)/opt/bin/unzip $(UNZIP_IPK_DIR)/opt/bin/unzip-unzip
 	$(MAKE) $(UNZIP_IPK_DIR)/CONTROL/control
 	(echo "#!/bin/sh"; \

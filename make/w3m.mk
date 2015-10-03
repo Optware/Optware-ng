@@ -138,7 +138,7 @@ ifeq ($(HOSTCC), $(TARGET_CC))
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--with-ssl \
 		--disable-image \
 	)
@@ -152,7 +152,7 @@ else
 	cd $(W3M_LIBGC_HOSTBUILD_DIR)/build; \
 		CPPFLAGS="-fPIC" \
 		LDFLAGS="-pthread" \
-		./configure --prefix=/opt --disable-shared && \
+		./configure --prefix=$(TARGET_PREFIX) --disable-shared && \
 		make DESTDIR=$(W3M_LIBGC_HOSTBUILD_DIR) install
 	mkdir $(@D)/hostbuild
 	@echo "=============================== host w3m configure ======================="
@@ -180,7 +180,7 @@ else
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--with-ssl=$(STAGING_PREFIX) \
 		--with-gc=$(STAGING_PREFIX) \
 		--disable-image \

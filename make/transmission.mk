@@ -252,7 +252,7 @@ endif
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--datadir=/opt/share \
 		$(TRANSMISSION_CONFIGURE_ARGS) \
 	)
@@ -307,7 +307,7 @@ endif
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		$(TRANSMISSION_CONFIGURE_ARGS) \
 	)
 #	$(PATCH_LIBTOOL) $(@D)/libtool

@@ -165,7 +165,7 @@ endif
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--program-prefix='' \
 	)
@@ -190,7 +190,7 @@ endif
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--enable-thumbnail \
 		--program-prefix='' \
@@ -298,7 +298,7 @@ $(MINIDLNA_IPK): $(MINIDLNA_BUILD_DIR)/.built
 	$(MAKE) -C $(MINIDLNA_BUILD_DIR)/nothumbs install \
 		DESTDIR=$(MINIDLNA_IPK_DIR) \
 		PREFIX=$(MINIDLNA_IPK_DIR) \
-		INSTALLPREFIX=$(MINIDLNA_IPK_DIR)/opt \
+		INSTALLPREFIX=$(MINIDLNA_IPK_DIR)$(TARGET_PREFIX) \
 		ETCINSTALLDIR=$(MINIDLNA_IPK_DIR)/opt/etc \
 		;
 	$(STRIP_COMMAND) $(MINIDLNA_IPK_DIR)/opt/sbin/*
@@ -316,7 +316,7 @@ $(MINIDLNA_THUMBNAIL_IPK): $(MINIDLNA_BUILD_DIR)/.built
 	$(MAKE) -C $(MINIDLNA_BUILD_DIR)/thumbs install \
 		DESTDIR=$(MINIDLNA_THUMBNAIL_IPK_DIR) \
 		PREFIX=$(MINIDLNA_THUMBNAIL_IPK_DIR) \
-		INSTALLPREFIX=$(MINIDLNA_THUMBNAIL_IPK_DIR)/opt \
+		INSTALLPREFIX=$(MINIDLNA_THUMBNAIL_IPK_DIR)$(TARGET_PREFIX) \
 		ETCINSTALLDIR=$(MINIDLNA_THUMBNAIL_IPK_DIR)/opt/etc \
 		;
 	$(STRIP_COMMAND) $(MINIDLNA_THUMBNAIL_IPK_DIR)/opt/sbin/*

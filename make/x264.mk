@@ -163,7 +163,7 @@ endif
 		LDFLAGS="$(STAGING_LDFLAGS) $(X264_LDFLAGS)" \
 		./configure \
 		--host=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--enable-shared \
 		--disable-share \
 	)

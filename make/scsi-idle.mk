@@ -126,7 +126,7 @@ $(SCSI_IDLE_BUILD_DIR)/.configured: $(DL_DIR)/$(SCSI_IDLE_SOURCE) $(SCSI_IDLE_PA
 #		--build=$(GNU_HOST_NAME) \
 #		--host=$(GNU_TARGET_NAME) \
 #		--target=$(GNU_TARGET_NAME) \
-#		--prefix=/opt \
+#		--prefix=$(TARGET_PREFIX) \
 #		--disable-nls \
 #		--disable-static \
 #	)

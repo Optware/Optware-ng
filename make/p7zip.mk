@@ -125,7 +125,7 @@ $(P7ZIP_BUILD_DIR)/.configured: $(DL_DIR)/$(P7ZIP_SOURCE) $(P7ZIP_PATCHES) make/
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
 	)
@@ -198,7 +198,7 @@ $(P7ZIP_IPK): $(P7ZIP_BUILD_DIR)/.built
 	rm -rf $(P7ZIP_IPK_DIR) $(BUILD_DIR)/p7zip_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(P7ZIP_BUILD_DIR) install \
 		DEST_DIR=$(P7ZIP_IPK_DIR) \
-		DEST_HOME=/opt \
+		DEST_HOME=$(TARGET_PREFIX) \
 		DEST_BIN=/opt/bin \
 		DEST_BIN=/opt/bin \
 		DEST_SHARE=/opt/lib/p7zip \

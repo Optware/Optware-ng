@@ -128,7 +128,7 @@ $(EXIF_BUILD_DIR)/.configured: $(DL_DIR)/$(EXIF_SOURCE) $(EXIF_PATCHES) make/exi
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
 	)

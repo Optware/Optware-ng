@@ -123,7 +123,7 @@ $(POLIPO_BUILD_DIR)/.configured: $(DL_DIR)/$(POLIPO_SOURCE) $(POLIPO_PATCHES) ma
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
 	)
@@ -141,7 +141,7 @@ $(POLIPO_BUILD_DIR)/.built: $(POLIPO_BUILD_DIR)/.configured
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(POLIPO_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(POLIPO_LDFLAGS)" \
-		PREFIX=/opt \
+		PREFIX=$(TARGET_PREFIX) \
 		LOCAL_ROOT=/opt/share/polipo/www \
 		DISK_CACHE_ROOT=/opt/var/cache/polipo \
 		;
@@ -198,7 +198,7 @@ $(POLIPO_IPK): $(POLIPO_BUILD_DIR)/.built
 	PATH=/usr/sbin:$$PATH \
 	$(MAKE) -C $(POLIPO_BUILD_DIR) install \
 		TARGET=$(POLIPO_IPK_DIR) \
-		PREFIX=/opt \
+		PREFIX=$(TARGET_PREFIX) \
 		LOCAL_ROOT=/opt/share/polipo/www \
 		DISK_CACHE_ROOT=/opt/var/cache/polipo \
 		;

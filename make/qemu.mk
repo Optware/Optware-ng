@@ -110,7 +110,7 @@ $(QEMU_BUILD_DIR)/.configured: $(DL_DIR)/$(QEMU_SOURCE) $(QEMU_PATCHES)
 		--extra-ldflags="$(STAGING_LDFLAGS) $(QEMU_LDFLAGS)" \
 		--cpu=$(QEMU_CPU) \
 		--make="$(MAKE)" \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--interp-prefix=/opt/lib/gnemul/qemu-%M \
 		--target-list="$(QEMU_TARGET_LIST)" \
 		--disable-gfx-check \
@@ -175,7 +175,7 @@ $(QEMU_USER_IPK_DIR)/CONTROL/control:
 $(QEMU_IPK) $(QEMU_USER_IPK): $(QEMU_BUILD_DIR)/.built
 	rm -rf $(QEMU_IPK_DIR) $(BUILD_DIR)/qemu_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(QEMU_BUILD_DIR) \
-		prefix=$(QEMU_IPK_DIR)/opt \
+		prefix=$(QEMU_IPK_DIR)$(TARGET_PREFIX) \
 		bindir=$(QEMU_IPK_DIR)/opt/bin \
 		mandir=$(QEMU_IPK_DIR)/opt/share/man \
 		datadir=$(QEMU_IPK_DIR)/opt/share/qemu \

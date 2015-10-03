@@ -125,7 +125,7 @@ $(LIBFFI_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBFFI_SOURCE) $(LIBFFI_PATCHES) ma
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
 	)
@@ -171,7 +171,7 @@ $(LIBFFI_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(LIBFFI_SOURCE) ma
 	(cd $(@D); \
 	    CPPFLAGS="-fPIC" \
 	    ./configure \
-		--prefix=/opt $(LIBFFI_HOST32) \
+		--prefix=$(TARGET_PREFIX) $(LIBFFI_HOST32) \
 		--disable-nls \
 		--disable-shared; \
 	    $(MAKE) DESTDIR=$(HOST_STAGING_DIR) install; \

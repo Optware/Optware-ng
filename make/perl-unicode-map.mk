@@ -42,7 +42,7 @@ $(PERL-UNICODE-MAP_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-UNICODE-MAP_SOURCE) 
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		$(PERL_HOSTPERL) Makefile.PL -d\
-		PREFIX=/opt \
+		PREFIX=$(TARGET_PREFIX) \
 	)
 	touch $(PERL-UNICODE-MAP_BUILD_DIR)/.configured
 
@@ -86,13 +86,13 @@ $(PERL-UNICODE-MAP_IPK): $(PERL-UNICODE-MAP_BUILD_DIR)/.built
 	rm -rf $(PERL-UNICODE-MAP_IPK_DIR) $(BUILD_DIR)/perl-unicode-map_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PERL-UNICODE-MAP_BUILD_DIR) DESTDIR=$(PERL-UNICODE-MAP_IPK_DIR) install
 	perl -pi -e 's|$(PERL_HOSTPERL)|/opt/bin/perl|g' $(PERL-UNICODE-MAP_IPK_DIR)/*
-	find $(PERL-UNICODE-MAP_IPK_DIR)/opt -name 'perllocal.pod' -exec rm -f {} \;
+	find $(PERL-UNICODE-MAP_IPK_DIR)$(TARGET_PREFIX) -name 'perllocal.pod' -exec rm -f {} \;
 	(cd $(PERL-UNICODE-MAP_IPK_DIR)/opt/lib/perl5 ; \
 		find . -name '*.so' -exec chmod +w {} \; ; \
 		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
 		find . -name '*.so' -exec chmod -w {} \; ; \
 	)
-	find $(PERL-UNICODE-MAP_IPK_DIR)/opt -type d -exec chmod go+rx {} \;
+	find $(PERL-UNICODE-MAP_IPK_DIR)$(TARGET_PREFIX) -type d -exec chmod go+rx {} \;
 	$(MAKE) $(PERL-UNICODE-MAP_IPK_DIR)/CONTROL/control
 	echo $(PERL-UNICODE-MAP_CONFFILES) | sed -e 's/ /\n/g' > $(PERL-UNICODE-MAP_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PERL-UNICODE-MAP_IPK_DIR)

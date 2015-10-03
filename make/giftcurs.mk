@@ -115,7 +115,7 @@ $(GIFTCURS_BUILD_DIR)/.configured: $(DL_DIR)/$(GIFTCURS_SOURCE) $(GIFTCURS_PATCH
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--with-ncurses=$(STAGING_PREFIX) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 	)
 	touch $(GIFTCURS_BUILD_DIR)/.configured

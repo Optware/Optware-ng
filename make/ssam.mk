@@ -123,7 +123,7 @@ $(SSAM_BUILD_DIR)/.configured: $(DL_DIR)/$(SSAM_SOURCE) $(SSAM_PATCHES) make/ssa
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
 	)
@@ -188,7 +188,7 @@ $(SSAM_IPK_DIR)/CONTROL/control:
 #
 $(SSAM_IPK): $(SSAM_BUILD_DIR)/.built
 	rm -rf $(SSAM_IPK_DIR) $(BUILD_DIR)/ssam_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(SSAM_BUILD_DIR) DESTDIR=$(SSAM_IPK_DIR) prefix=$(SSAM_IPK_DIR)/opt install
+	$(MAKE) -C $(SSAM_BUILD_DIR) DESTDIR=$(SSAM_IPK_DIR) prefix=$(SSAM_IPK_DIR)$(TARGET_PREFIX) install
 	$(STRIP_COMMAND) $(SSAM_IPK_DIR)/opt/bin/ssam
 	$(MAKE) $(SSAM_IPK_DIR)/CONTROL/control
 	echo $(SSAM_CONFFILES) | sed -e 's/ /\n/g' > $(SSAM_IPK_DIR)/CONTROL/conffiles

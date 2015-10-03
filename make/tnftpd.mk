@@ -124,7 +124,7 @@ $(TNFTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(TNFTPD_SOURCE) $(TNFTPD_PATCHES) ma
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
 		--without-pam \
@@ -191,7 +191,7 @@ $(TNFTPD_IPK_DIR)/CONTROL/control:
 #
 $(TNFTPD_IPK): $(TNFTPD_BUILD_DIR)/.built
 	rm -rf $(TNFTPD_IPK_DIR) $(BUILD_DIR)/tnftpd_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(TNFTPD_BUILD_DIR) prefix=$(TNFTPD_IPK_DIR)/opt install
+	$(MAKE) -C $(TNFTPD_BUILD_DIR) prefix=$(TNFTPD_IPK_DIR)$(TARGET_PREFIX) install
 	chmod +w $(TNFTPD_IPK_DIR)/opt/libexec/tnftpd; \
 	$(STRIP_COMMAND) $(TNFTPD_IPK_DIR)/opt/libexec/tnftpd; \
 	chmod -w $(TNFTPD_IPK_DIR)/opt/libexec/tnftpd

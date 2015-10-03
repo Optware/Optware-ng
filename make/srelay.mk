@@ -122,7 +122,7 @@ $(SRELAY_BUILD_DIR)/.configured: $(DL_DIR)/$(SRELAY_SOURCE) $(SRELAY_PATCHES) ma
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-thread \
 		--with-libwrap=$(STAGING_PREFIX) \
 		--disable-nls \

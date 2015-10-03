@@ -110,7 +110,7 @@ $(LIBCAPI20_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBCAPI20_SOURCE) $(LIBCAPI20_PA
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
 	)
@@ -181,7 +181,7 @@ $(LIBCAPI20_IPK_DIR)/CONTROL/control:
 $(LIBCAPI20_IPK): $(LIBCAPI20_BUILD_DIR)/.built
 	rm -rf $(LIBCAPI20_IPK_DIR) $(LIBCAPI20_IPK)
 	$(INSTALL) -d $(LIBCAPI20_IPK_DIR)/opt
-	$(MAKE) -C $(LIBCAPI20_BUILD_DIR) prefix=$(LIBCAPI20_IPK_DIR)/opt install-strip
+	$(MAKE) -C $(LIBCAPI20_BUILD_DIR) prefix=$(LIBCAPI20_IPK_DIR)$(TARGET_PREFIX) install-strip
 	rm -f $(LIBCAPI20_IPK_DIR)/opt/lib/*.la
 	$(MAKE) $(LIBCAPI20_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBCAPI20_IPK_DIR)

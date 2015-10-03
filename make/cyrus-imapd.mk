@@ -117,7 +117,7 @@ endif
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--mandir=/opt/man \
 		--sysconfdir=/opt/etc \
 		--with-cyrus-prefix=/opt/libexec/cyrus \
@@ -144,7 +144,7 @@ ifneq (,$(filter perl, $(PACKAGES)))
 		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		$(PERL_HOSTPERL) Makefile.PL \
 		$(TARGET_CONFIGURE_OPTS) \
-		PREFIX=/opt \
+		PREFIX=$(TARGET_PREFIX) \
 	) \
 	done
 endif

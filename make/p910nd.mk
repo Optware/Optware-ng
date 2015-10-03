@@ -124,7 +124,7 @@ $(P910ND_BUILD_DIR)/.configured: $(DL_DIR)/$(P910ND_SOURCE) $(P910ND_PATCHES) ma
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
 	)

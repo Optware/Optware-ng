@@ -126,7 +126,7 @@ $(OPEN2300_BUILD_DIR)/.configured: $(DL_DIR)/$(OPEN2300_SOURCE) $(OPEN2300_PATCH
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
 	)
@@ -144,7 +144,7 @@ $(OPEN2300_BUILD_DIR)/.built: $(OPEN2300_BUILD_DIR)/.configured
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(OPEN2300_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(OPEN2300_LDFLAGS)" \
-		prefix=/opt \
+		prefix=$(TARGET_PREFIX) \
 		;
 	touch $@
 
@@ -197,7 +197,7 @@ $(OPEN2300_IPK_DIR)/CONTROL/control:
 $(OPEN2300_IPK): $(OPEN2300_BUILD_DIR)/.built
 	rm -rf $(OPEN2300_IPK_DIR) $(BUILD_DIR)/open2300_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(OPEN2300_BUILD_DIR) install \
-		prefix=$(OPEN2300_IPK_DIR)/opt \
+		prefix=$(OPEN2300_IPK_DIR)$(TARGET_PREFIX) \
 		;
 	$(INSTALL) -m 755 $(OPEN2300_BUILD_DIR)/mysql2300 $(OPEN2300_IPK_DIR)/opt/bin
 	$(INSTALL) -m 755 $(OPEN2300_BUILD_DIR)/pgsql2300 $(OPEN2300_IPK_DIR)/opt/bin

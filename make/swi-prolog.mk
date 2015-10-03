@@ -135,7 +135,7 @@ ifneq ($(HOSTCC), $(TARGET_CC))
 	    LDFLAGS="$(SWI-PROLOG_M32) -L$(HOST_STAGING_LIB_DIR)" \
 	    ac_cv_lib_ncursesw_main=no \
 	    ./configure \
-		--prefix=/opt $(SWI-PROLOG_HOST32) \
+		--prefix=$(TARGET_PREFIX) $(SWI-PROLOG_HOST32) \
 		--disable-readline \
 		--disable-nls \
 		--disable-shared; \
@@ -187,7 +187,7 @@ endif
 		--build=$(GNU_HOST_NAME) \
 		--host=$(SWI-PROLOG_TARGET_NAME) \
 		--target=$(SWI-PROLOG_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--enable-shared \
 		--disable-nls \
 		--disable-static \
@@ -229,7 +229,7 @@ $(SWI-PROLOG_BUILD_DIR)/.built: $(SWI-PROLOG_BUILD_DIR)/.core-built
 		--build=$(GNU_HOST_NAME) \
 		--host=$(SWI-PROLOG_TARGET_NAME) \
 		--target=$(SWI-PROLOG_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
 		--without-jpl \

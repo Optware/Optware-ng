@@ -128,7 +128,7 @@ $(ICU54_BUILD_DIR)/.configured: $(DL_DIR)/$(ICU54_SOURCE) $(ICU54_PATCHES) make/
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--with-library-suffix=54 \
 		--includedir=/opt/include/icu54 \
 		--disable-tools \

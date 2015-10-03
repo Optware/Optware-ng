@@ -193,7 +193,7 @@ endif
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GCC_TARGET_NAME) \
 		--target=$(GCC_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
 		--with-as=$(TARGET_AS) \

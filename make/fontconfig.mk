@@ -131,7 +131,7 @@ endif
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--with-default-fonts=/opt/share/fonts \
 		--without-add-fonts \
 		--with-freetype-config=$(STAGING_PREFIX)/bin/freetype-config \

@@ -157,8 +157,8 @@ $(CUPS_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(CUPS_SOURCE) make/cu
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_HOST_NAME) \
 		--target=$(GNU_HOST_NAME) \
-		--prefix=/opt \
-		--exec_prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
+		--exec_prefix=$(TARGET_PREFIX) \
 		--with-icondir=/opt/share/icons \
 		--with-menudir=/opt/share/applications \
 		--libdir=/opt/lib \
@@ -222,8 +222,8 @@ endif
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
-		--exec_prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
+		--exec_prefix=$(TARGET_PREFIX) \
 		--with-icondir=/opt/share/icons \
 		--with-menudir=/opt/share/applications \
 		--libdir=/opt/lib \

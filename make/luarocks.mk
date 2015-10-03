@@ -120,7 +120,7 @@ $(LUAROCKS_BUILD_DIR)/.configured: $(DL_DIR)/$(LUAROCKS_SOURCE) $(LUAROCKS_PATCH
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LUAROCKS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LUAROCKS_LDFLAGS)" \
 		./configure \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--rocks-tree=/opt/local/lib/luarocks \
 		--with-lua=$(STAGING_PREFIX) \
 		--with-downloader=wget \

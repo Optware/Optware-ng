@@ -49,7 +49,7 @@ $(PERL-HTML-TEMPLATE_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-HTML-TEMPLATE_SOUR
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		$(PERL_HOSTPERL) Makefile.PL \
-		PREFIX=/opt \
+		PREFIX=$(TARGET_PREFIX) \
 	)
 	touch $(PERL-HTML-TEMPLATE_BUILD_DIR)/.configured
 
@@ -86,13 +86,13 @@ $(PERL-HTML-TEMPLATE_IPK_DIR)/CONTROL/control:
 $(PERL-HTML-TEMPLATE_IPK): $(PERL-HTML-TEMPLATE_BUILD_DIR)/.built
 	rm -rf $(PERL-HTML-TEMPLATE_IPK_DIR) $(BUILD_DIR)/perl-html-template_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PERL-HTML-TEMPLATE_BUILD_DIR) DESTDIR=$(PERL-HTML-TEMPLATE_IPK_DIR) install
-	find $(PERL-HTML-TEMPLATE_IPK_DIR)/opt -name 'perllocal.pod' -exec rm -f {} \;
+	find $(PERL-HTML-TEMPLATE_IPK_DIR)$(TARGET_PREFIX) -name 'perllocal.pod' -exec rm -f {} \;
 	(cd $(PERL-HTML-TEMPLATE_IPK_DIR)/opt/lib/perl5 ; \
 		find . -name '*.so' -exec chmod +w {} \; ; \
 		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
 		find . -name '*.so' -exec chmod -w {} \; ; \
 	)
-	find $(PERL-HTML-TEMPLATE_IPK_DIR)/opt -type d -exec chmod go+rx {} \;
+	find $(PERL-HTML-TEMPLATE_IPK_DIR)$(TARGET_PREFIX) -type d -exec chmod go+rx {} \;
 	$(MAKE) $(PERL-HTML-TEMPLATE_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(PERL-HTML-TEMPLATE_SOURCE_DIR)/postinst $(PERL-HTML-TEMPLATE_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 755 $(PERL-HTML-TEMPLATE_SOURCE_DIR)/prerm $(PERL-HTML-TEMPLATE_IPK_DIR)/CONTROL/prerm

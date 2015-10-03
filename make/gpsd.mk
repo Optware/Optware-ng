@@ -132,7 +132,7 @@ $(GPSD_BUILD_DIR)/.configured: $(DL_DIR)/$(GPSD_SOURCE) $(GPSD_PATCHES) make/gps
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--without-x \
 		$(GPSD_CONFIG_ARGS) \
 		--disable-nls \

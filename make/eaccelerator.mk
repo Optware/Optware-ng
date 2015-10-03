@@ -145,7 +145,7 @@ make/eaccelerator.mk make/php.mk
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--enable-eaccelerator=shared \
 		--with-php-config=$(STAGING_PREFIX)/bin/php-config \
 		--with-eaccelerator-userid='"nobody"' \

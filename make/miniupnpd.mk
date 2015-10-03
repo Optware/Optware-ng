@@ -143,7 +143,7 @@ $(MINIUPNPD_BUILD_DIR)/.built: $(MINIUPNPD_BUILD_DIR)/.configured
 		LDFLAGS="$(STAGING_LDFLAGS) $(MINIUPNPD_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
-		PREFIX=/opt \
+		PREFIX=$(TARGET_PREFIX) \
 		$(MAKE) -f Makefile.optware all \
 	)
 	touch $@
@@ -194,7 +194,7 @@ $(MINIUPNPD_IPK_DIR)/CONTROL/control:
 #
 $(MINIUPNPD_IPK): $(MINIUPNPD_BUILD_DIR)/.built
 	rm -rf $(MINIUPNPD_IPK_DIR) $(BUILD_DIR)/miniupnpd_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(MINIUPNPD_BUILD_DIR) -f Makefile.optware STRIP="$(STRIP_COMMAND)" PREFIX=/opt DESTDIR=$(MINIUPNPD_IPK_DIR) install
+	$(MAKE) -C $(MINIUPNPD_BUILD_DIR) -f Makefile.optware STRIP="$(STRIP_COMMAND)" PREFIX=$(TARGET_PREFIX) DESTDIR=$(MINIUPNPD_IPK_DIR) install
 	rm -f $(MINIUPNPD_IPK_DIR)/opt/info/dir $(MINIUPNPD_IPK_DIR)/opt/info/dir.old
 	$(MAKE) $(MINIUPNPD_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MINIUPNPD_IPK_DIR)

@@ -127,7 +127,7 @@ $(SETSERIAL_BUILD_DIR)/.configured: $(DL_DIR)/$(SETSERIAL_SOURCE) $(SETSERIAL_PA
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
 	)
@@ -199,7 +199,7 @@ $(SETSERIAL_IPK): $(SETSERIAL_BUILD_DIR)/.built
 	$(TARGET_STRIP) $(SETSERIAL_IPK_DIR)/opt/sbin/setserial
 	$(INSTALL) $(SETSERIAL_BUILD_DIR)/setserial.8 $(SETSERIAL_IPK_DIR)/opt/man/man8
 
-#	$(MAKE) -C $(SETSERIAL_BUILD_DIR) DESTDIR=$(SETSERIAL_IPK_DIR)/opt install
+#	$(MAKE) -C $(SETSERIAL_BUILD_DIR) DESTDIR=$(SETSERIAL_IPK_DIR)$(TARGET_PREFIX) install
 #	$(INSTALL) -d $(SETSERIAL_IPK_DIR)/opt/etc/
 #	$(INSTALL) -m 644 $(SETSERIAL_SOURCE_DIR)/setserial.conf $(SETSERIAL_IPK_DIR)/opt/etc/setserial.conf
 #	$(INSTALL) -d $(SETSERIAL_IPK_DIR)/opt/etc/init.d

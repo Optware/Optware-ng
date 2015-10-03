@@ -137,7 +137,7 @@ $(SQSH_BUILD_DIR)/.configured: $(DL_DIR)/$(SQSH_SOURCE) $(SQSH_PATCHES) make/sqs
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
 		--with-readline \
@@ -207,7 +207,7 @@ $(SQSH_IPK_DIR)/CONTROL/control:
 #
 $(SQSH_IPK): $(SQSH_BUILD_DIR)/.built
 	rm -rf $(SQSH_IPK_DIR) $(BUILD_DIR)/sqsh_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(SQSH_BUILD_DIR) prefix=$(SQSH_IPK_DIR)/opt install install.man
+	$(MAKE) -C $(SQSH_BUILD_DIR) prefix=$(SQSH_IPK_DIR)$(TARGET_PREFIX) install install.man
 	$(STRIP_COMMAND) $(SQSH_IPK_DIR)/opt/bin/sqsh
 #	$(INSTALL) -d $(SQSH_IPK_DIR)/opt/etc/
 #	$(INSTALL) -m 644 $(SQSH_SOURCE_DIR)/sqsh.conf $(SQSH_IPK_DIR)/opt/etc/sqsh.conf

@@ -122,7 +122,7 @@ $(X11_BUILD_DIR)/.configured: $(DL_DIR)/$(X11_SOURCE) $(X11_PATCHES) make/x11.mk
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-static \
 		--enable-malloc0returnsnull \
 	)

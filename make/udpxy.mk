@@ -198,7 +198,7 @@ $(UDPXY_IPK_DIR)/CONTROL/control:
 $(UDPXY_IPK): $(UDPXY_BUILD_DIR)/.built
 	rm -rf $(UDPXY_IPK_DIR) $(BUILD_DIR)/udpxy_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(UDPXY_BUILD_DIR) install \
-		INSTALLROOT=$(UDPXY_IPK_DIR)/opt \
+		INSTALLROOT=$(UDPXY_IPK_DIR)$(TARGET_PREFIX) \
 		MANPAGE_DIR=$(UDPXY_IPK_DIR)/opt/share/man/man1
 	$(STRIP_COMMAND) $(UDPXY_IPK_DIR)/opt/bin/{udpxy,udpxrec}
 #	$(INSTALL) -d $(UDPXY_IPK_DIR)/opt/etc/

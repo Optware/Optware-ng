@@ -43,7 +43,7 @@ $(PERL-WWW-MECHANIZE_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-WWW-MECHANIZE_SOUR
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		$(PERL_HOSTPERL) Makefile.PL \
-		PREFIX=/opt \
+		PREFIX=$(TARGET_PREFIX) \
 	)
 	touch $@
 
@@ -82,13 +82,13 @@ $(PERL-WWW-MECHANIZE_IPK_DIR)/CONTROL/control:
 $(PERL-WWW-MECHANIZE_IPK): $(PERL-WWW-MECHANIZE_BUILD_DIR)/.built
 	rm -rf $(PERL-WWW-MECHANIZE_IPK_DIR) $(BUILD_DIR)/perl-www-mechanize_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PERL-WWW-MECHANIZE_BUILD_DIR) DESTDIR=$(PERL-WWW-MECHANIZE_IPK_DIR) install
-	find $(PERL-WWW-MECHANIZE_IPK_DIR)/opt -name 'perllocal.pod' -exec rm -f {} \;
+	find $(PERL-WWW-MECHANIZE_IPK_DIR)$(TARGET_PREFIX) -name 'perllocal.pod' -exec rm -f {} \;
 	(cd $(PERL-WWW-MECHANIZE_IPK_DIR)/opt/lib/perl5 ; \
 		find . -name '*.so' -exec chmod +w {} \; ; \
 		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
 		find . -name '*.so' -exec chmod -w {} \; ; \
 	)
-	find $(PERL-WWW-MECHANIZE_IPK_DIR)/opt -type d -exec chmod go+rx {} \;
+	find $(PERL-WWW-MECHANIZE_IPK_DIR)$(TARGET_PREFIX) -type d -exec chmod go+rx {} \;
 	$(MAKE) $(PERL-WWW-MECHANIZE_IPK_DIR)/CONTROL/control
 	echo $(PERL-WWW-MECHANIZE_CONFFILES) | sed -e 's/ /\n/g' > $(PERL-WWW-MECHANIZE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PERL-WWW-MECHANIZE_IPK_DIR)

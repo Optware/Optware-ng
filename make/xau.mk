@@ -113,7 +113,7 @@ $(XAU_BUILD_DIR)/.configured: $(DL_DIR)/$(XAU_SOURCE) $(XAU_PATCHES) make/xau.mk
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-static \
 	)
 	touch $@

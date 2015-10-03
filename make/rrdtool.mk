@@ -146,7 +146,7 @@ endif
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-tcl \
 		$(RRDTOOL_PERL) \
@@ -169,7 +169,7 @@ ifneq (,$(filter perl, $(PACKAGES)))
 		$(PERL_HOSTPERL) Makefile.PL \
 		$(TARGET_CONFIGURE_OPTS) \
 		LD=$(TARGET_CC) \
-		PREFIX=/opt \
+		PREFIX=$(TARGET_PREFIX) \
 		; \
 	    sed -i -e '/^PERLRUN *=/s|$$| -I$(STAGING_LIB_DIR)/perl5/site_perl/$(PERL_VERSION)|' \
 	           -e '/^LDDLFLAGS *=/s|=.*|= -shared -Wl,-rpath -Wl,/opt/lib -L$(STAGING_LIB_DIR) $(PERL_LDFLAGS_EXTRA)|' \

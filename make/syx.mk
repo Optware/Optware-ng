@@ -133,7 +133,7 @@ endif
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
 	)
@@ -154,7 +154,7 @@ $(SYX_BUILD_DIR)/.built: $(SYX_BUILD_DIR)/.configured
 		LDFLAGS="$(STAGING_LDFLAGS) $(SYX_LDFLAGS)" \
 	$(HOST_STAGING_PREFIX)/bin/scons \
 		-C $(SYX_BUILD_DIR) \
-		prefix=/opt \
+		prefix=$(TARGET_PREFIX) \
 		GTK=false \
 		host=`echo $(TARGET_CROSS) | sed 's/-$$//'` \
 		endianness=$$ENDIANNESS \
@@ -176,7 +176,7 @@ $(SYX_HOST_BUILD_DIR)/.built: host/.configured make/syx.mk
 	fi
 	$(HOST_STAGING_PREFIX)/bin/scons \
 		-C $(SYX_HOST_BUILD_DIR) \
-		prefix=/opt \
+		prefix=$(TARGET_PREFIX) \
 		GTK=false \
 		;
 	touch $@
@@ -232,11 +232,11 @@ $(SYX_IPK): $(SYX_BUILD_DIR)/.built
 		LDFLAGS="$(STAGING_LDFLAGS) $(SYX_LDFLAGS)" \
 	$(HOST_STAGING_PREFIX)/bin/scons \
 		-C $(SYX_BUILD_DIR) \
-		prefix=/opt \
+		prefix=$(TARGET_PREFIX) \
 		GTK=false \
 		bdist
 	$(INSTALL) -d $(SYX_IPK_DIR)
-	cp -rp $(SYX_BUILD_DIR)/syx-$(SYX_VERSION)/opt $(SYX_IPK_DIR)/
+	cp -rp $(SYX_BUILD_DIR)/syx-$(SYX_VERSION)$(TARGET_PREFIX) $(SYX_IPK_DIR)/
 	rm -f $(SYX_IPK_DIR)/opt/lib/libsyx.a
 	$(STRIP_COMMAND) $(SYX_IPK_DIR)/opt/lib/libsyx.so $(SYX_IPK_DIR)/opt/bin/syx
 	$(MAKE) $(SYX_IPK_DIR)/CONTROL/control

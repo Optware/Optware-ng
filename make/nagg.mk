@@ -181,7 +181,7 @@ $(NAGG_IPK_DIR)/CONTROL/control:
 #
 $(NAGG_IPK): $(NAGG_BUILD_DIR)/.built
 	rm -rf $(NAGG_IPK_DIR) $(BUILD_DIR)/nagg_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(NAGG_BUILD_DIR) DESTDIR=$(NAGG_IPK_DIR)/opt install
+	$(MAKE) -C $(NAGG_BUILD_DIR) DESTDIR=$(NAGG_IPK_DIR)$(TARGET_PREFIX) install
 #	$(INSTALL) -d $(NAGG_IPK_DIR)/opt/etc/
 #	$(INSTALL) -m 644 $(NAGG_SOURCE_DIR)/nagg.conf $(NAGG_IPK_DIR)/opt/etc/nagg.conf
 #	$(INSTALL) -d $(NAGG_IPK_DIR)/opt/etc/init.d

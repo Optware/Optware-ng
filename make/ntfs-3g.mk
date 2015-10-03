@@ -128,8 +128,8 @@ $(NTFS-3G_BUILD_DIR)/.configured: $(DL_DIR)/$(NTFS-3G_SOURCE) $(NTFS-3G_PATCHES)
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=$(NTFS-3G_IPK_DIR)/opt \
-		--exec_prefix=$(NTFS-3G_IPK_DIR)/opt \
+		--prefix=$(NTFS-3G_IPK_DIR)$(TARGET_PREFIX) \
+		--exec_prefix=$(NTFS-3G_IPK_DIR)$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
 		--disable-ldconfig \

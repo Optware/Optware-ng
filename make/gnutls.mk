@@ -129,7 +129,7 @@ $(GNUTLS_BUILD_DIR)/.configured: $(DL_DIR)/$(GNUTLS_SOURCE) $(GNUTLS_PATCHES) ma
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--with-libgcrypt-prefix=$(STAGING_PREFIX) \
 		--with-libtasn1-prefix=$(STAGING_PREFIX) \
 		--without-p11-kit \

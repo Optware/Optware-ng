@@ -99,7 +99,7 @@ $(TRICKLE_BUILD_DIR)/.configured: $(DL_DIR)/$(TRICKLE_SOURCE) $(TRICKLE_PATCHES)
 		--target=$(GNU_TARGET_NAME) \
 		--with-libevent=$(STAGING_PREFIX) \
 		--with-gnu-ld \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--enable-shared \
 	)

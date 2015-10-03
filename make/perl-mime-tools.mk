@@ -43,7 +43,7 @@ $(PERL-MIME-TOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-MIME-TOOLS_SOURCE) $(
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
 		$(PERL_HOSTPERL) Makefile.PL -d\
-		PREFIX=/opt \
+		PREFIX=$(TARGET_PREFIX) \
 	)
 	touch $(PERL-MIME-TOOLS_BUILD_DIR)/.configured
 
@@ -82,13 +82,13 @@ $(PERL-MIME-TOOLS_IPK_DIR)/CONTROL/control:
 $(PERL-MIME-TOOLS_IPK): $(PERL-MIME-TOOLS_BUILD_DIR)/.built
 	rm -rf $(PERL-MIME-TOOLS_IPK_DIR) $(BUILD_DIR)/perl-mime-tools_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(PERL-MIME-TOOLS_BUILD_DIR) DESTDIR=$(PERL-MIME-TOOLS_IPK_DIR) install
-	find $(PERL-MIME-TOOLS_IPK_DIR)/opt -name 'perllocal.pod' -exec rm -f {} \;
+	find $(PERL-MIME-TOOLS_IPK_DIR)$(TARGET_PREFIX) -name 'perllocal.pod' -exec rm -f {} \;
 	(cd $(PERL-MIME-TOOLS_IPK_DIR)/opt/lib/perl5 ; \
 		find . -name '*.so' -exec chmod +w {} \; ; \
 		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
 		find . -name '*.so' -exec chmod -w {} \; ; \
 	)
-	find $(PERL-MIME-TOOLS_IPK_DIR)/opt -type d -exec chmod go+rx {} \;
+	find $(PERL-MIME-TOOLS_IPK_DIR)$(TARGET_PREFIX) -type d -exec chmod go+rx {} \;
 	$(MAKE) $(PERL-MIME-TOOLS_IPK_DIR)/CONTROL/control
 	echo $(PERL-MIME-TOOLS_CONFFILES) | sed -e 's/ /\n/g' > $(PERL-MIME-TOOLS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PERL-MIME-TOOLS_IPK_DIR)

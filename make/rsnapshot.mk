@@ -70,7 +70,7 @@ $(RSNAPSHOT_BUILD_DIR)/.configured: $(DL_DIR)/$(RSNAPSHOT_SOURCE) $(RSNAPSHOT_PA
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--prefix=/opt \
+		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--without-logger \
 	)
@@ -98,7 +98,7 @@ $(RSNAPSHOT_IPK): $(RSNAPSHOT_BUILD_DIR)/.built
 	sed -i '/^=head1 USAGE$$/s/^/=back\n\n/' $(RSNAPSHOT_BUILD_DIR)/rsnapshot
 	$(MAKE) -C $(RSNAPSHOT_BUILD_DIR) DESTDIR=$(RSNAPSHOT_IPK_DIR) install
 	sed -i -e '/\/usr\/bin\/perl -w/d' -e 's|/usr/local/|/opt/|g' $(RSNAPSHOT_IPK_DIR)/opt/bin/*
-	find $(RSNAPSHOT_IPK_DIR)/opt -type d -exec chmod go+rx {} \;
+	find $(RSNAPSHOT_IPK_DIR)$(TARGET_PREFIX) -type d -exec chmod go+rx {} \;
 	$(INSTALL) -m 644 $(RSNAPSHOT_SOURCE_DIR)/rsnapshot.conf $(RSNAPSHOT_IPK_DIR)/opt/etc/rsnapshot.conf
 	$(INSTALL) -d $(RSNAPSHOT_IPK_DIR)/opt/var/rsnapshot/
 	$(INSTALL) -d $(RSNAPSHOT_IPK_DIR)/opt/var/run/
