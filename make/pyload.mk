@@ -27,7 +27,14 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PYLOAD_SITE=http://get.pyload.org/get/src
+PYLOAD_REPOSITORY=https://github.com/pyload/pyload.git
+ifndef PYLOAD_REPOSITORY
 PYLOAD_VERSION=0.4.9
+else
+PYLOAD_GIT_DATE=20151002
+PYLOAD_TREEISH=`git rev-list --max-count=1 --until=2015-10-02 HEAD`
+PYLOAD_VERSION=0.4.9+git$(GITOSIS_GIT_DATE)
+endif
 PYLOAD_SOURCE=pyload-src-v$(PYLOAD_VERSION).zip
 PYLOAD_DIR=pyload
 PYLOAD_UNZIP=unzip
@@ -83,8 +90,18 @@ PYLOAD_IPK=$(BUILD_DIR)/pyload_$(PYLOAD_VERSION)-$(PYLOAD_IPK_VERSION)_$(TARGET_
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PYLOAD_SOURCE):
+ifndef PYLOAD_REPOSITORY
 	$(WGET) -P $(@D) $(PYLOAD_SITE)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
+else
+	(cd $(BUILD_DIR) ; \
+		rm -rf pyload && \
+		git clone --bare $(PYLOAD_REPOSITORY) pyload && \
+		(cd pyload && \
+		git archive --format=zip --prefix=$(PYLOAD_DIR)/ $(PYLOAD_TREEISH) > $@) && \
+		rm -rf pyload ; \
+	)
+endif
 
 #
 # The source code depends on it existing within the download directory.
