@@ -20,8 +20,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PV_SITE=http://pipeviewer.googlecode.com/files
-PV_VERSION=1.2.0
+PV_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/pipeviewer
+PV_VERSION=1.6.0
 PV_SOURCE=pv-$(PV_VERSION).tar.bz2
 PV_DIR=pv-$(PV_VERSION)
 PV_UNZIP=bzcat
