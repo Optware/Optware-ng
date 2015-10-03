@@ -14,10 +14,10 @@
 #
 # You should change all these variables to suit your package.
 #
-#LOGROTATE_SITE=http://ftp.debian.org/debian/pool/main/l/logrotate
-LOGROTATE_VERSION=3.7.5
+LOGROTATE_SITE=http://ftp.debian.org/debian/pool/main/l/logrotate
+LOGROTATE_VERSION=3.9.1
 LOGROTATE_CVS_REPO=:pserver:anonymous@rhlinux.redhat.com:/usr/local/CVS
-LOGROTATE_CVS_TAG=r3-7-5
+#LOGROTATE_CVS_TAG=r3-7-5
 ifdef LOGROTATE_CVS_TAG
 LOGROTATE_SOURCE=logrotate-cvs-$(LOGROTATE_VERSION).tar.gz
 else
@@ -34,7 +34,7 @@ LOGROTATE_DEPENDS=popt
 #
 # LOGROTATE_IPK_VERSION should be incremented when the ipk changes.
 #
-LOGROTATE_IPK_VERSION=2
+LOGROTATE_IPK_VERSION=1
 
 #
 # LOGROTATE_CONFFILES should be a list of user-editable files
@@ -108,7 +108,7 @@ logrotate-source: $(DL_DIR)/$(LOGROTATE_SOURCE) $(LOGROTATE_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(LOGROTATE_BUILD_DIR)/.configured: $(DL_DIR)/$(LOGROTATE_SOURCE) $(LOGROTATE_PATCHES)
+$(LOGROTATE_BUILD_DIR)/.configured: $(DL_DIR)/$(LOGROTATE_SOURCE) $(LOGROTATE_PATCHES) make/logrotate.mk
 	$(MAKE) popt-stage
 	rm -rf $(BUILD_DIR)/$(LOGROTATE_DIR) $(LOGROTATE_BUILD_DIR)
 	$(LOGROTATE_UNZIP) $(DL_DIR)/$(LOGROTATE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
