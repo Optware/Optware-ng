@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-FLIP_SITE=http://www-ccrma.stanford.edu/~craig/utility/flip
+FLIP_SITE=$(SOURCES_NLO_SITE)
 FLIP_VERSION=20050821
 FLIP_SOURCE=flip.cpp
 FLIP_DIR=flip-$(FLIP_VERSION)

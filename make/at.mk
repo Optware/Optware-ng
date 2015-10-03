@@ -20,7 +20,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-AT_SITE=http://ftp.freestandards.org/pub/lsb/impl/packages
+AT_SITE=http://pkgs.fedoraproject.org/repo/pkgs/at/$(AT_SOURCE)/f5194baac29a30b0d90604422dad7037
 AT_VERSION=3.1.8
 AT_SOURCE=at-$(AT_VERSION).tar.bz2
 AT_DIR=at-$(AT_VERSION)

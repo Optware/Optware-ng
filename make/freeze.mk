@@ -4,7 +4,7 @@
 #
 ###########################################################
 
-FREEZE_SITE=ftp://sunsite.unc.edu/pub/Linux/utils/compress
+FREEZE_SITE=$(SOURCES_NLO_SITE)
 FREEZE_VERSION=2.5.0
 FREEZE_SOURCE=freeze-$(FREEZE_VERSION).tar.gz
 FREEZE_DIR=freeze-$(FREEZE_VERSION)

@@ -20,7 +20,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-BSDGAMES_SITE=ftp://metalab.unc.edu/pub/Linux/games
+BSDGAMES_SITE=http://pkgs.fedoraproject.org/repo/pkgs/bsd-games/$(BSDGAMES_SOURCE)/238a38a3a017ca9b216fc42bde405639
 BSDGAMES_VERSION=2.17
 BSDGAMES_SOURCE=bsd-games-$(BSDGAMES_VERSION).tar.gz
 BSDGAMES_DIR=bsd-games-$(BSDGAMES_VERSION)

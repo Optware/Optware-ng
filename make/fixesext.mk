@@ -10,8 +10,8 @@
 # FIXESEXT_DIR is the directory which is created when the source
 # archive is unpacked.
 #
-FIXESEXT_SITE=http://freedesktop.org/
-FIXESEXT_SOURCE=# none - available from CVS only
+FIXESEXT_SITE=$(SOURCES_NLO_SITE)
+FIXESEXT_SOURCE=fixesext-$(FIXESEXT_VERSION).tar.gz
 FIXESEXT_VERSION=2.0.1+cvs20050130
 FIXESEXT_REPOSITORY=:pserver:anoncvs@freedesktop.org:/cvs/xlibs
 FIXESEXT_DIR=FixesExt
@@ -76,13 +76,20 @@ $(FIXESEXT_IPK_DIR)/CONTROL/control:
 # In this case there is no tarball, instead we fetch the sources
 # directly to the builddir with CVS
 #
-$(DL_DIR)/fixesext-$(FIXESEXT_VERSION).tar.gz:
-	( cd $(BUILD_DIR) ; \
-		rm -rf $(FIXESEXT_DIR) && \
-		cvs -d $(FIXESEXT_REPOSITORY) -z3 co $(FIXESEXT_CVS_OPTS) $(FIXESEXT_DIR) && \
-		tar -czf $@ $(FIXESEXT_DIR) && \
-		rm -rf $(FIXESEXT_DIR) \
-	)
+#$(DL_DIR)/fixesext-$(FIXESEXT_VERSION).tar.gz:
+#	( cd $(BUILD_DIR) ; \
+#		rm -rf $(FIXESEXT_DIR) && \
+#		cvs -d $(FIXESEXT_REPOSITORY) -z3 co $(FIXESEXT_CVS_OPTS) $(FIXESEXT_DIR) && \
+#		tar -czf $@ $(FIXESEXT_DIR) && \
+#		rm -rf $(FIXESEXT_DIR) \
+#	)
+
+#
+# This is the dependency on the source code.  If the source is missing,
+# then it will be fetched from the site using wget.
+#
+$(DL_DIR)/$(FIXESEXT_SOURCE):
+	$(WGET) -P $(@D) $(FIXESEXT_SITE)/$(@F)
 
 fixesext-source: $(DL_DIR)/fixesext-$(FIXESEXT_VERSION).tar.gz $(FIXESEXT_PATCHES)
 
@@ -96,12 +103,12 @@ fixesext-source: $(DL_DIR)/fixesext-$(FIXESEXT_VERSION).tar.gz $(FIXESEXT_PATCHE
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(FIXESEXT_BUILD_DIR)/.configured: $(DL_DIR)/fixesext-$(FIXESEXT_VERSION).tar.gz \
+$(FIXESEXT_BUILD_DIR)/.configured: $(DL_DIR)/$(FIXESEXT_SOURCE) \
 $(FIXESEXT_PATCHES) make/fixesext.mk
 	$(MAKE) x11-stage
 	$(MAKE) xext-stage
 	rm -rf $(BUILD_DIR)/$(FIXESEXT_DIR) $(@D)
-	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/fixesext-$(FIXESEXT_VERSION).tar.gz
+	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/$(FIXESEXT_SOURCE)
 	if test -n "$(FIXESEXT_PATCHES)" ; \
 		then cat $(FIXESEXT_PATCHES) | \
 		$(PATCH) -d $(BUILD_DIR)/$(FIXESEXT_DIR) -p1 ; \

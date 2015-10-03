@@ -20,7 +20,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-EZ-IPUPDATE_SITE=http://ez-ipupdate.com/dist
+EZ-IPUPDATE_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/ez-ipupdate
 EZ-IPUPDATE_VERSION=3.0.11b7
 EZ-IPUPDATE_SOURCE=ez-ipupdate-$(EZ-IPUPDATE_VERSION).tar.gz
 EZ-IPUPDATE_DIR=ez-ipupdate-$(EZ-IPUPDATE_VERSION)

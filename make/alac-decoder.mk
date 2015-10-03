@@ -26,7 +26,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-ALAC_DECODER_SITE=http://craz.net/programs/itunes/files
+ALAC_DECODER_SITE=ftp://ftp.fi.freebsd.org/pub/FreeBSD/ports/distfiles
 ALAC_DECODER_VERSION=0.1.0
 ALAC_DECODER_SOURCE=alac_decoder-$(ALAC_DECODER_VERSION).tar.gz
 ALAC_DECODER_DIR=alac_decoder

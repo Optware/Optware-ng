@@ -20,7 +20,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-GNU_HTTPTUNNEL_SITE=http://www.nocrew.org/software/httptunnel
+GNU_HTTPTUNNEL_SITE=http://ftp.gnu.org/gnu/httptunnel/
 GNU_HTTPTUNNEL_VERSION=3.3
 GNU_HTTPTUNNEL_SOURCE=httptunnel-$(GNU_HTTPTUNNEL_VERSION).tar.gz
 GNU_HTTPTUNNEL_DIR=httptunnel-$(GNU_HTTPTUNNEL_VERSION)

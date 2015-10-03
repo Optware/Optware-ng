@@ -20,7 +20,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-GROFF_SITE=http://ftp.gnu.org/gnu/groff
+GROFF_SITE=http://ftp.gnu.org/gnu/groff/old
 GROFF_VERSION=1.19.2
 GROFF_SOURCE=groff-$(GROFF_VERSION).tar.gz
 GROFF_DIR=groff-$(GROFF_VERSION)

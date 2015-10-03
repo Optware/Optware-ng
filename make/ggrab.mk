@@ -15,7 +15,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-GGRAB_SITE=http://www.menzebach.de/ggrab
+GGRAB_SITE=$(SOURCES_NLO_SITE)
 GGRAB_VERSION=0.22a
 GGRAB_SOURCE=ggrab-$(GGRAB_VERSION)-linux.tgz
 GGRAB_DIR=ggrab-$(GGRAB_VERSION)
