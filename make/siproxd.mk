@@ -27,11 +27,21 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 #SIPROXD_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/siproxd
-SIPROXD_SITE=http://siproxd.tuxworld.ch
-SIPROXD_UPSTREAM_VERSION=11Feb2015
+#SIPROXD_SITE=http://siproxd.tuxworld.ch
+SIPROXD_SITE=http://ftp.openbsd.org/pub/OpenBSD/distfiles
+#SIPROXD_UPSTREAM_VERSION=11Feb2015
+ifndef SIPROXD_UPSTREAM_VERSION
+SIPROXD_VERSION=0.8.1
+SIPROXD_SOURCE=siproxd-$(SIPROXD_VERSION).tar.gz
+else
 SIPROXD_VERSION=0.8.1+$(SIPROXD_UPSTREAM_VERSION)
 SIPROXD_SOURCE=siproxd-$(SIPROXD_UPSTREAM_VERSION).tar.gz
+endif
+ifndef SIPROXD_UPSTREAM_VERSION
+SIPROXD_DIR=siproxd-0.8.1
+else
 SIPROXD_DIR=siproxd-0.8.2dev
+endif
 SIPROXD_UNZIP=zcat
 SIPROXD_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SIPROXD_DESCRIPTION=Siproxd is a proxy/masquerading daemon for the SIP protocol
