@@ -707,7 +707,7 @@ $(STAGING_DIR):
 	mkdir $(STAGING_DIR)
 
 $(STAGING_PREFIX):
-	mkdir $(STAGING_PREFIX)
+	mkdir -p $(STAGING_PREFIX)
 
 $(STAGING_LIB_DIR):
 	mkdir $(STAGING_LIB_DIR)
