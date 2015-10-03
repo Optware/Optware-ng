@@ -182,7 +182,11 @@ $(ASTERISK_GUI_IPK_DIR)/CONTROL/control:
 	@echo "Section: $(ASTERISK_GUI_SECTION)" >>$@
 	@echo "Version: $(ASTERISK_GUI_VERSION)-$(ASTERISK_GUI_IPK_VERSION)" >>$@
 	@echo "Maintainer: $(ASTERISK_GUI_MAINTAINER)" >>$@
+ifndef ASTERISK_GUI_SVN_REV
 	@echo "Source: $(ASTERISK_GUI_SITE)/$(ASTERISK_GUI_SOURCE)" >>$@
+else
+	@echo "Source: $(ASTERISK_GUI_SVN)" >>$@
+endif
 	@echo "Description: $(ASTERISK_GUI_DESCRIPTION)" >>$@
 	@echo "Depends: $(ASTERISK_GUI_DEPENDS)" >>$@
 	@echo "Suggests: $(ASTERISK_GUI_SUGGESTS)" >>$@
