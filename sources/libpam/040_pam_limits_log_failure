@@ -1,0 +1,36 @@
+Patch for Debian bug #180310
+
+Generate some (low-severity) log information whenever setrlimit() fails,
+for debugging purposes.
+
+Authors: Sam Hartman <hartmans@debian.org>
+
+Upstream status: submitted in <20070830171918.GB30563@dario.dodds.net>
+
+Index: pam.deb/modules/pam_limits/pam_limits.c
+===================================================================
+--- pam.deb.orig/modules/pam_limits/pam_limits.c
++++ pam.deb/modules/pam_limits/pam_limits.c
+@@ -732,9 +732,19 @@
+         if (pl->limits[i].limit.rlim_cur > pl->limits[i].limit.rlim_max)
+             pl->limits[i].limit.rlim_cur = pl->limits[i].limit.rlim_max;
+ 	res = setrlimit(i, &pl->limits[i].limit);
+-	if (res != 0)
+-	  pam_syslog(pamh, LOG_ERR, "Could not set limit for '%s': %m",
+-		     rlimit2str(i));
++	if (res != 0 && (i != RLIMIT_NOFILE
++	                    || pl->limits[i].limit.rlim_cur != RLIM_INFINITY))
++	{
++		int save_errno = errno;
++		pam_syslog(pamh, LOG_DEBUG,
++		           "Could not set limit for '%s' to soft=%d, hard=%d:"
++		           " %m; uid=%lu,euid=%lu", rlimit2str(i),
++		           pl->limits[i].limit.rlim_cur,
++		           pl->limits[i].limit.rlim_max,
++		           (unsigned long) getuid(),
++		           (unsigned long) geteuid());
++		errno = save_errno;
++	}
+ 	if (res == -1 && errno == EPERM)
+ 	    continue;
+ 	status |= res;

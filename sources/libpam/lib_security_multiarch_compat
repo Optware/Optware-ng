@@ -1,0 +1,71 @@
+Unqualified module paths should always be looked up in *both* the default
+module dir, *and* the ISA dir.  That's what paths are for.
+
+This lets us have a soft transition to multiarch for modules without having
+to rewrite /etc/pam.d/ files or add ugly symlinks.
+
+Authors: Steve Langasek <vorlon@debian.org>
+
+Upstream status: not ready to be committed - this needs tweaked, we're
+currently abusing the existing variables and inverting their meaning in
+order to get everything installed where we want it and get absolute paths
+the way we want them.
+
+Index: multiarch/libpam/pam_handlers.c
+===================================================================
+--- multiarch.orig/libpam/pam_handlers.c
++++ multiarch/libpam/pam_handlers.c
+@@ -705,7 +705,26 @@
+ 	}
+ #else
+ 	D(("_pam_load_module: _pam_dlopen(%s)", mod_path));
+-	mod->dl_handle = _pam_dlopen(mod_path);
++	if (mod_path[0] == '/') {
++	    mod->dl_handle = _pam_dlopen(mod_path);
++	} else {
++	    if (asprintf(&mod_full_isa_path, "%s%s",
++	                 DEFAULT_MODULE_PATH, mod_path) >= 0) {
++		mod->dl_handle = _pam_dlopen(mod_full_isa_path);
++		_pam_drop(mod_full_isa_path);
++	    } else {
++		pam_syslog(pamh, LOG_CRIT, "cannot malloc full mod path");
++	    }
++	    if (!mod->dl_handle) {
++		if (asprintf(&mod_full_isa_path, "%s/%s",
++		             _PAM_ISA, mod_path) >= 0) {
++		    mod->dl_handle = _pam_dlopen(mod_full_isa_path);
++		    _pam_drop(mod_full_isa_path);
++		} else {
++		    pam_syslog(pamh, LOG_CRIT, "cannot malloc full mod path");
++		}
++	    }
++	}
+ 	D(("_pam_load_module: _pam_dlopen'ed"));
+ 	D(("_pam_load_module: dlopen'ed"));
+ 	if (mod->dl_handle == NULL) {
+@@ -775,7 +794,6 @@
+     struct handler **handler_p2;
+     struct handlers *the_handlers;
+     const char *sym, *sym2;
+-    char *mod_full_path;
+     servicefn func, func2;
+     int mod_type = PAM_MT_FAULTY_MOD;
+ 
+@@ -787,16 +805,7 @@
+ 
+     if ((handler_type == PAM_HT_MODULE || handler_type == PAM_HT_SILENT_MODULE) &&
+ 	mod_path != NULL) {
+-	if (mod_path[0] == '/') {
+-	    mod = _pam_load_module(pamh, mod_path, handler_type);
+-	} else if (asprintf(&mod_full_path, "%s%s",
+-			     DEFAULT_MODULE_PATH, mod_path) >= 0) {
+-	    mod = _pam_load_module(pamh, mod_full_path, handler_type);
+-	    _pam_drop(mod_full_path);
+-	} else {
+-	    pam_syslog(pamh, LOG_CRIT, "cannot malloc full mod path");
+-	    return PAM_ABORT;
+-	}
++	mod = _pam_load_module(pamh, mod_path, handler_type);
+ 
+ 	if (mod == NULL) {
+ 	    /* if we get here with NULL it means allocation error */

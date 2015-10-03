@@ -1,0 +1,22 @@
+setrlimit will sometimes return EPERM for example if you try to increase the
+number of open files too much.  This is not something we want to consider
+fatal.  This also happens if you use non-root and try to decrease a limit.
+Running PAM as non-root is not so great.
+
+Authors: ?
+
+Upstream status: submitted in <20070830171918.GB30563@dario.dodds.net>
+
+Index: pam.deb/modules/pam_limits/pam_limits.c
+===================================================================
+--- pam.deb.orig/modules/pam_limits/pam_limits.c
++++ pam.deb/modules/pam_limits/pam_limits.c
+@@ -735,6 +735,8 @@
+ 	if (res != 0)
+ 	  pam_syslog(pamh, LOG_ERR, "Could not set limit for '%s': %m",
+ 		     rlimit2str(i));
++	if (res == -1 && errno == EPERM)
++	    continue;
+ 	status |= res;
+     }
+ 

@@ -1,0 +1,77 @@
+On systems without setfsuid(), use setreuid() instead.
+
+Authors: Steve Langasek <vorlon@debian.org>
+
+Upstream status: to be forwarded, now that pam_modutil_{drop,regain}_priv
+ are implemented
+
+Index: pam.debian/libpam/pam_modutil_priv.c
+===================================================================
+--- pam.debian.orig/libpam/pam_modutil_priv.c
++++ pam.debian/libpam/pam_modutil_priv.c
+@@ -14,7 +14,9 @@
+ #include <syslog.h>
+ #include <pwd.h>
+ #include <grp.h>
++#ifdef HAVE_SYS_FSUID_H
+ #include <sys/fsuid.h>
++#endif /* HAVE_SYS_FSUID_H */
+ 
+ /*
+  * Two setfsuid() calls in a row are necessary to check
+@@ -22,17 +24,55 @@
+  */
+ static int change_uid(uid_t uid, uid_t *save)
+ {
++#ifdef HAVE_SYS_FSUID_H
+ 	uid_t tmp = setfsuid(uid);
+ 	if (save)
+ 		*save = tmp;
+ 	return (uid_t) setfsuid(uid) == uid ? 0 : -1;
++#else
++	uid_t euid = geteuid();
++	uid_t ruid = getuid();
++	if (save)
++		*save = ruid;
++	if (ruid == uid && uid != 0)
++		if (setreuid(euid, uid))
++			return -1;
++	else {
++		setreuid(0, -1);
++		if (setreuid(-1, uid)) {
++			setreuid(-1, 0);
++			setreuid(0, -1);
++			if (setreuid(-1, uid))
++				return -1;
++		}
++	}
++#endif
+ }
+ static int change_gid(gid_t gid, gid_t *save)
+ {
++#ifdef HAVE_SYS_FSUID_H
+ 	gid_t tmp = setfsgid(gid);
+ 	if (save)
+ 		*save = tmp;
+ 	return (gid_t) setfsgid(gid) == gid ? 0 : -1;
++#else
++	gid_t egid = getegid();
++	gid_t rgid = getgid();
++	if (save)
++		*save = rgid;
++	if (rgid == gid)
++		if (setregid(egid, gid))
++			return -1;
++	else {
++		setregid(0, -1);
++		if (setregid(-1, gid)) {
++			setregid(-1, 0);
++			setregid(0, -1);
++			if (setregid(-1, gid))
++				return -1;
++		}
++	}
++#endif
+ }
+ 
+ static int cleanup(struct pam_modutil_privs *p)

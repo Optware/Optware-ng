@@ -1,0 +1,462 @@
+Index: pam.debian/modules/pam_unix/pam_unix_passwd.c
+===================================================================
+--- pam.debian.orig/modules/pam_unix/pam_unix_passwd.c
++++ pam.debian/modules/pam_unix/pam_unix_passwd.c
+@@ -102,6 +102,9 @@
+ # endif				/* GNU libc 2.1 */
+ #endif
+ 
++extern const char *obscure_msg(const char *, const char *, const struct passwd *,
++			       unsigned int);
++
+ /*
+    How it works:
+    Gets in username (has to be done) from the calling program
+@@ -521,6 +524,11 @@
+ 				return retval;
+ 			}
+ 		}
++		if (!remark && pass_old != NULL) { /* only check if we don't already have a failure */
++			struct passwd *pwd;
++			pwd = pam_modutil_getpwnam(pamh, user);
++			remark = (char *)obscure_msg(pass_old,pass_new,pwd,ctrl); /* do obscure checks */
++		}
+ 	}
+ 	if (remark) {
+ 		_make_remark(pamh, ctrl, PAM_ERROR_MSG, remark);
+@@ -536,7 +544,7 @@
+ 	int retval;
+ 	int remember = -1;
+ 	int rounds = -1;
+-	int pass_min_len = 0;
++	int pass_min_len = 6;
+ 
+ 	/* <DO NOT free() THESE> */
+ 	const char *user;
+Index: pam.debian/modules/pam_unix/support.h
+===================================================================
+--- pam.debian.orig/modules/pam_unix/support.h
++++ pam.debian/modules/pam_unix/support.h
+@@ -97,8 +97,9 @@
+ 					   password hash algorithms */
+ #define UNIX_BLOWFISH_PASS       26	/* new password hashes will use blowfish */
+ #define UNIX_MIN_PASS_LEN        27	/* min length for password */
++#define UNIX_OBSCURE_CHECKS      28	/* enable obscure checks on passwords */
+ /* -------------- */
+-#define UNIX_CTRLS_              28	/* number of ctrl arguments defined */
++#define UNIX_CTRLS_              29	/* number of ctrl arguments defined */
+ 
+ #define UNIX_DES_CRYPT(ctrl)	(off(UNIX_MD5_PASS,ctrl)&&off(UNIX_BIGCRYPT,ctrl)&&off(UNIX_SHA256_PASS,ctrl)&&off(UNIX_SHA512_PASS,ctrl)&&off(UNIX_BLOWFISH_PASS,ctrl))
+ 
+@@ -107,34 +108,35 @@
+ /* symbol                  token name          ctrl mask             ctrl     *
+  * ----------------------- ------------------- --------------------- -------- */
+ 
+-/* UNIX__OLD_PASSWD */     {NULL,              _ALL_ON_,                  01, 0},
+-/* UNIX__VERIFY_PASSWD */  {NULL,              _ALL_ON_,                  02, 0},
+-/* UNIX__IAMROOT */        {NULL,              _ALL_ON_,                  04, 0},
+-/* UNIX_AUDIT */           {"audit",           _ALL_ON_,                 010, 0},
+-/* UNIX_USE_FIRST_PASS */  {"use_first_pass",  _ALL_ON_^(060),           020, 0},
+-/* UNIX_TRY_FIRST_PASS */  {"try_first_pass",  _ALL_ON_^(060),           040, 0},
+-/* UNIX_NOT_SET_PASS */    {"not_set_pass",    _ALL_ON_,                0100, 0},
+-/* UNIX__PRELIM */         {NULL,              _ALL_ON_^(0600),         0200, 0},
+-/* UNIX__UPDATE */         {NULL,              _ALL_ON_^(0600),         0400, 0},
+-/* UNIX__NONULL */         {NULL,              _ALL_ON_,               01000, 0},
+-/* UNIX__QUIET */          {NULL,              _ALL_ON_,               02000, 0},
+-/* UNIX_USE_AUTHTOK */     {"use_authtok",     _ALL_ON_,               04000, 0},
+-/* UNIX_SHADOW */          {"shadow",          _ALL_ON_,              010000, 0},
+-/* UNIX_MD5_PASS */        {"md5",            _ALL_ON_^(0260420000),  020000, 1},
+-/* UNIX__NULLOK */         {"nullok",          _ALL_ON_^(01000),           0, 0},
+-/* UNIX_DEBUG */           {"debug",           _ALL_ON_,              040000, 0},
+-/* UNIX_NODELAY */         {"nodelay",         _ALL_ON_,             0100000, 0},
+-/* UNIX_NIS */             {"nis",             _ALL_ON_,             0200000, 0},
+-/* UNIX_BIGCRYPT */        {"bigcrypt",       _ALL_ON_^(0260420000), 0400000, 1},
+-/* UNIX_LIKE_AUTH */       {"likeauth",        _ALL_ON_,            01000000, 0},
+-/* UNIX_REMEMBER_PASSWD */ {"remember=",       _ALL_ON_,            02000000, 0},
+-/* UNIX_NOREAP */          {"noreap",          _ALL_ON_,            04000000, 0},
+-/* UNIX_BROKEN_SHADOW */   {"broken_shadow",   _ALL_ON_,           010000000, 0},
+-/* UNIX_SHA256_PASS */     {"sha256",       _ALL_ON_^(0260420000), 020000000, 1},
+-/* UNIX_SHA512_PASS */     {"sha512",       _ALL_ON_^(0260420000), 040000000, 1},
+-/* UNIX_ALGO_ROUNDS */     {"rounds=",         _ALL_ON_,          0100000000, 0},
+-/* UNIX_BLOWFISH_PASS */   {"blowfish",    _ALL_ON_^(0260420000), 0200000000, 1},
+-/* UNIX_MIN_PASS_LEN */    {"minlen=",		_ALL_ON_,         0400000000, 0},
++/* UNIX__OLD_PASSWD */     {NULL,              _ALL_ON_,                  0x1, 0},
++/* UNIX__VERIFY_PASSWD */  {NULL,              _ALL_ON_,                  0x2, 0},
++/* UNIX__IAMROOT */        {NULL,              _ALL_ON_,                  0x4, 0},
++/* UNIX_AUDIT */           {"audit",           _ALL_ON_,                  0x8, 0},
++/* UNIX_USE_FIRST_PASS */  {"use_first_pass",  _ALL_ON_^(0x30),          0x10, 0},
++/* UNIX_TRY_FIRST_PASS */  {"try_first_pass",  _ALL_ON_^(0x30),          0x20, 0},
++/* UNIX_NOT_SET_PASS */    {"not_set_pass",    _ALL_ON_,                 0x40, 0},
++/* UNIX__PRELIM */         {NULL,              _ALL_ON_^(0x180),         0x80, 0},
++/* UNIX__UPDATE */         {NULL,              _ALL_ON_^(0x180),        0x100, 0},
++/* UNIX__NONULL */         {NULL,              _ALL_ON_,                0x200, 0},
++/* UNIX__QUIET */          {NULL,              _ALL_ON_,                0x400, 0},
++/* UNIX_USE_AUTHTOK */     {"use_authtok",     _ALL_ON_,                0x800, 0},
++/* UNIX_SHADOW */          {"shadow",          _ALL_ON_,               0x1000, 0},
++/* UNIX_MD5_PASS */        {"md5",             _ALL_ON_^(0x2C22000),   0x2000, 1},
++/* UNIX__NULLOK */         {"nullok",          _ALL_ON_^(0x200),            0, 0},
++/* UNIX_DEBUG */           {"debug",           _ALL_ON_,               0x4000, 0},
++/* UNIX_NODELAY */         {"nodelay",         _ALL_ON_,               0x8000, 0},
++/* UNIX_NIS */             {"nis",             _ALL_ON_,              0x10000, 0},
++/* UNIX_BIGCRYPT */        {"bigcrypt",        _ALL_ON_^(0x2C22000),  0x20000, 1},
++/* UNIX_LIKE_AUTH */       {"likeauth",        _ALL_ON_,              0x40000, 0},
++/* UNIX_REMEMBER_PASSWD */ {"remember=",       _ALL_ON_,              0x80000, 0},
++/* UNIX_NOREAP */          {"noreap",          _ALL_ON_,             0x100000, 0},
++/* UNIX_BROKEN_SHADOW */   {"broken_shadow",   _ALL_ON_,             0x200000, 0},
++/* UNIX_SHA256_PASS */     {"sha256",          _ALL_ON_^(0x2C22000), 0x400000, 1},
++/* UNIX_SHA512_PASS */     {"sha512",          _ALL_ON_^(0x2C22000), 0x800000, 1},
++/* UNIX_ALGO_ROUNDS */     {"rounds=",         _ALL_ON_,            0x1000000, 0},
++/* UNIX_BLOWFISH_PASS */   {"blowfish",        _ALL_ON_^(0x2C22000),0x2000000, 1},
++/* UNIX_MIN_PASS_LEN */    {"minlen=",         _ALL_ON_,            0x4000000, 0},
++/* UNIX_OBSCURE_CHECKS */  {"obscure",         _ALL_ON_,            0x8000000, 0},
+ };
+ 
+ #define UNIX_DEFAULTS  (unix_args[UNIX__NONULL].flag)
+Index: pam.debian/modules/pam_unix/pam_unix.8.xml
+===================================================================
+--- pam.debian.orig/modules/pam_unix/pam_unix.8.xml
++++ pam.debian/modules/pam_unix/pam_unix.8.xml
+@@ -337,8 +337,81 @@
+         <listitem>
+           <para>
+             Set a minimum password length of <replaceable>n</replaceable>
+-            characters. The max. for DES crypt based passwords are 8
+-            characters.
++            characters.  The default value is 6.  The maximum for DES
++            crypt-based passwords is 8 characters.
++          </para>
++        </listitem>
++      </varlistentry>
++      <varlistentry>
++        <term>
++          <option>obscure</option>
++        </term>
++        <listitem>
++          <para>
++            Enable some extra checks on password strength.  These checks
++            are based on the "obscure" checks in the original shadow
++            package.  The behavior is similar to the pam_cracklib
++            module, but for non-dictionary-based checks.  The following
++            checks are implemented:
++            <variablelist>
++              <varlistentry>
++                <term>
++                  <option>Palindrome</option>
++                </term>
++                <listitem>
++                  <para>
++                    Verifies that the new password is not a palindrome
++                    of (i.e., the reverse of) the previous one.
++                  </para>
++                </listitem>
++              </varlistentry>
++              <varlistentry>
++                <term>
++                  <option>Case Change Only</option>
++                </term>
++                <listitem>
++                  <para>
++                    Verifies that the new password isn't the same as the
++                    old one with a change of case.
++                  </para>
++                </listitem>
++              </varlistentry>
++              <varlistentry>
++                <term>
++                  <option>Similar</option>
++                </term>
++                <listitem>
++                  <para>
++                    Verifies that the new password isn't too much like
++                    the previous one.
++                  </para>
++                </listitem>
++              </varlistentry>
++              <varlistentry>
++                <term>
++                  <option>Simple</option>
++                </term>
++                <listitem>
++                  <para>
++                    Is the new password too simple?  This is based on
++                    the length of the password and the number of
++                    different types of characters (alpha, numeric, etc.)
++                    used.
++                  </para>
++                </listitem>
++              </varlistentry>
++              <varlistentry>
++                <term>
++                  <option>Rotated</option>
++                </term>
++                <listitem>
++                  <para>
++                    Is the new password a rotated version of the old
++                    password?  (E.g., "billy" and "illyb")
++                  </para>
++                </listitem>
++              </varlistentry>
++            </variablelist>
+           </para>
+         </listitem>
+       </varlistentry>
+Index: pam.debian/modules/pam_unix/obscure.c
+===================================================================
+--- /dev/null
++++ pam.debian/modules/pam_unix/obscure.c
+@@ -0,0 +1,198 @@
++/*
++ * Copyright 1989 - 1994, Julianne Frances Haugh
++ * All rights reserved.
++ *
++ * Redistribution and use in source and binary forms, with or without
++ * modification, are permitted provided that the following conditions
++ * are met:
++ * 1. Redistributions of source code must retain the above copyright
++ *    notice, this list of conditions and the following disclaimer.
++ * 2. Redistributions in binary form must reproduce the above copyright
++ *    notice, this list of conditions and the following disclaimer in the
++ *    documentation and/or other materials provided with the distribution.
++ * 3. Neither the name of Julianne F. Haugh nor the names of its contributors
++ *    may be used to endorse or promote products derived from this software
++ *    without specific prior written permission.
++ *
++ * THIS SOFTWARE IS PROVIDED BY JULIE HAUGH AND CONTRIBUTORS ``AS IS'' AND
++ * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
++ * IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
++ * ARE DISCLAIMED.  IN NO EVENT SHALL JULIE HAUGH OR CONTRIBUTORS BE LIABLE
++ * FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
++ * DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS
++ * OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
++ * HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT
++ * LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY
++ * OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF
++ * SUCH DAMAGE.
++ */
++
++#include "config.h"
++
++#include <ctype.h>
++#include <stdio.h>
++#include <unistd.h>
++#include <string.h>
++#include <stdlib.h>
++#include <pwd.h>
++#include <security/pam_modules.h>
++#include <security/_pam_macros.h>
++
++
++#include "support.h"
++
++/* can't be a palindrome - like `R A D A R' or `M A D A M' */
++static int palindrome(const char *old, const char *new) {
++	int	i, j;
++
++	i = strlen (new);
++
++	for (j = 0;j < i;j++)
++		if (new[i - j - 1] != new[j])
++			return 0;
++
++	return 1;
++}
++
++/* more than half of the characters are different ones. */
++static int similar(const char *old, const char *new) {
++	int i, j;
++
++	/*
++	 * XXX - sometimes this fails when changing from a simple password
++	 * to a really long one (MD5).  For now, I just return success if
++	 * the new password is long enough.  Please feel free to suggest
++	 * something better...  --marekm
++	 */
++	if (strlen(new) >= 8)
++		return 0;
++
++	for (i = j = 0; new[i] && old[i]; i++)
++		if (strchr(new, old[i]))
++			j++;
++
++	if (i >= j * 2)
++		return 0;
++
++	return 1;
++}
++
++/* a nice mix of characters. */
++static int simple(const char *old, const char *new) {
++	int	digits = 0;
++	int	uppers = 0;
++	int	lowers = 0;
++	int	others = 0;
++	int	size;
++	int	i;
++
++	for (i = 0;new[i];i++) {
++		if (isdigit (new[i]))
++			digits++;
++		else if (isupper (new[i]))
++			uppers++;
++		else if (islower (new[i]))
++			lowers++;
++		else
++			others++;
++	}
++
++	/*
++	 * The scam is this - a password of only one character type
++	 * must be 8 letters long.  Two types, 7, and so on.
++	 */
++
++	size = 9;
++	if (digits) size--;
++	if (uppers) size--;
++	if (lowers) size--;
++	if (others) size--;
++
++	if (size <= i)
++		return 0;
++
++	return 1;
++}
++
++static char *str_lower(char *string) {
++	char *cp;
++
++	for (cp = string; *cp; cp++)
++		*cp = tolower(*cp);
++	return string;
++}
++
++static const char * password_check(const char *old, const char *new,
++				   const struct passwd *pwdp) {
++	const char *msg = NULL;
++	char *oldmono, *newmono, *wrapped;
++
++	if (strcmp(new, old) == 0)
++		return _("Bad: new password must be different than the old one");
++
++	newmono = str_lower(strdup(new));
++	oldmono = str_lower(strdup(old));
++	wrapped = (char *)malloc(strlen(oldmono) * 2 + 1);
++	strcpy (wrapped, oldmono);
++	strcat (wrapped, oldmono);
++
++	if (palindrome(oldmono, newmono)) {
++		msg = _("Bad: new password cannot be a palindrome");
++	} else if (strcmp(oldmono, newmono) == 0) {
++		msg = _("Bad: new and old password must differ by more than just case");
++	} else if (similar(oldmono, newmono)) {
++		msg = _("Bad: new and old password are too similar");
++	} else if (simple(old, new)) {
++		msg = _("Bad: new password is too simple");
++	} else if (strstr(wrapped, newmono)) {
++		msg = _("Bad: new password is just a wrapped version of the old one");
++	}
++
++	_pam_delete(newmono);
++	_pam_delete(oldmono);
++	_pam_delete(wrapped);
++
++	return msg;
++}
++
++const char *obscure_msg(const char *old, const char *new,
++			       const struct passwd *pwdp, unsigned int ctrl) {
++	int oldlen, newlen;
++	char *new1, *old1;
++	const char *msg;
++
++	if (old == NULL)
++		return NULL; /* no check if old is NULL */
++
++	oldlen = strlen(old);
++	newlen = strlen(new);
++
++	/* Remaining checks are optional. */
++	if (off(UNIX_OBSCURE_CHECKS,ctrl))
++		return NULL;
++
++	if ((msg = password_check(old, new, pwdp)) != NULL)
++		return msg;
++
++	/* The traditional crypt() truncates passwords to 8 chars.  It is
++	   possible to circumvent the above checks by choosing an easy
++	   8-char password and adding some random characters to it...
++	   Example: "password$%^&*123".  So check it again, this time
++	   truncated to the maximum length.  Idea from npasswd.  --marekm */
++
++	if (!UNIX_DES_CRYPT(ctrl))
++		return NULL;  /* unlimited password length */
++
++	if (oldlen <= 8 && newlen <= 8)
++		return NULL;
++
++	new1 = strndup(new,8);
++	old1 = strndup(old,8);
++
++	msg = password_check(old1, new1, pwdp);
++
++	_pam_delete(new1);
++	_pam_delete(old1);
++
++	return msg;
++}
+Index: pam.debian/modules/pam_unix/Makefile.am
+===================================================================
+--- pam.debian.orig/modules/pam_unix/Makefile.am
++++ pam.debian/modules/pam_unix/Makefile.am
+@@ -43,7 +43,7 @@
+ 
+ pam_unix_la_SOURCES = bigcrypt.c pam_unix_acct.c \
+ 	pam_unix_auth.c pam_unix_passwd.c pam_unix_sess.c support.c \
+-	passverify.c yppasswd_xdr.c md5_good.c md5_broken.c
++	passverify.c yppasswd_xdr.c md5_good.c md5_broken.c obscure.c
+ if STATIC_MODULES
+ pam_unix_la_SOURCES += pam_unix_static.c
+ endif
+Index: pam.debian/modules/pam_unix/pam_unix.8
+===================================================================
+--- pam.debian.orig/modules/pam_unix/pam_unix.8
++++ pam.debian/modules/pam_unix/pam_unix.8
+@@ -183,7 +183,38 @@
+ .RS 4
+ Set a minimum password length of
+ \fIn\fR
+-characters\&. The max\&. for DES crypt based passwords are 8 characters\&.
++characters\&. The default value is 6\&. The maximum for DES crypt\-based passwords is 8 characters\&.
++.RE
++.PP
++\fBobscure\fR
++.RS 4
++Enable some extra checks on password strength\&. These checks are based on the "obscure" checks in the original shadow package\&. The behavior is similar to the pam_cracklib module, but for non\-dictionary\-based checks\&. The following checks are implemented:
++.PP
++\fBPalindrome\fR
++.RS 4
++Verifies that the new password is not a palindrome of (i\&.e\&., the reverse of) the previous one\&.
++.RE
++.PP
++\fBCase Change Only\fR
++.RS 4
++Verifies that the new password isn\*(Aqt the same as the old one with a change of case\&.
++.RE
++.PP
++\fBSimilar\fR
++.RS 4
++Verifies that the new password isn\*(Aqt too much like the previous one\&.
++.RE
++.PP
++\fBSimple\fR
++.RS 4
++Is the new password too simple? This is based on the length of the password and the number of different types of characters (alpha, numeric, etc\&.) used\&.
++.RE
++.PP
++\fBRotated\fR
++.RS 4
++Is the new password a rotated version of the old password? (E\&.g\&., "billy" and "illyb")
++.RE
++.sp
+ .RE
+ .PP
+ Invalid arguments are logged with

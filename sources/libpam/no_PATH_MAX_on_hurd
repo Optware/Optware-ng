@@ -1,0 +1,22 @@
+Description: define PATH_MAX for compatibility when it's not already set
+ Some platforms, such as the Hurd, don't set PATH_MAX.  Set a reasonable
+ default value in this case.
+Author: Steve Langasek <vorlon@debian.org>
+Bug-Debian: http://bugs.debian.org/552043
+
+Index: pam.deb/tests/tst-dlopen.c
+===================================================================
+--- pam.deb.orig/tests/tst-dlopen.c
++++ pam.deb/tests/tst-dlopen.c
+@@ -16,6 +16,11 @@
+ #include <limits.h>
+ #include <sys/stat.h>
+ 
++/* Hurd compatibility */
++#ifndef PATH_MAX
++#define PATH_MAX 4096
++#endif
++
+ /* Simple program to see if dlopen() would succeed. */
+ int main(int argc, char **argv)
+ {

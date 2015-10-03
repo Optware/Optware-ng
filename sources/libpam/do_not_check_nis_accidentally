@@ -1,0 +1,22 @@
+Patch for Debian bug #469635
+
+Always call _unix_getpwnam() consistent with the value of the 'nis'
+option, so that we only grab from the backends we're expecting.
+
+Authors: Quentin Godfroy <godfroy@clipper.ens.fr>
+
+Upstream status: should be submitted
+
+Index: pam.deb/modules/pam_unix/pam_unix_passwd.c
+===================================================================
+--- pam.deb.orig/modules/pam_unix/pam_unix_passwd.c
++++ pam.deb/modules/pam_unix/pam_unix_passwd.c
+@@ -551,7 +551,7 @@
+ 		return PAM_USER_UNKNOWN;
+ 	} else {
+ 		struct passwd *pwd;
+-		_unix_getpwnam(pamh, user, 1, 1, &pwd);
++		_unix_getpwnam(pamh, user, 1, on(UNIX_NIS, ctrl), &pwd);
+ 		if (pwd == NULL) {
+ 			pam_syslog(pamh, LOG_DEBUG,
+ 				"user \"%s\" has corrupted passwd entry",

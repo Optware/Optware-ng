@@ -1,0 +1,72 @@
+Patch to implement an @include directive for use in pam.d config files.
+
+Authors: Jan Christoph Nordholz <hesso@pool.math.tu-berlin.de>
+
+Upstream status: not yet submitted
+
+Index: pam.debian/libpam/pam_handlers.c
+===================================================================
+--- pam.debian.orig/libpam/pam_handlers.c
++++ pam.debian/libpam/pam_handlers.c
+@@ -122,6 +122,10 @@
+ 		    module_type = PAM_T_ACCT;
+ 		} else if (!strcasecmp("password", tok)) {
+ 		    module_type = PAM_T_PASS;
++		} else if (!strcasecmp("@include", tok)) {
++		    pam_include = 1;
++		    module_type = requested_module_type;
++		    goto parsing_done;
+ 		} else {
+ 		    /* Illegal module type */
+ 		    D(("_pam_init_handlers: bad module type: %s", tok));
+@@ -192,8 +196,10 @@
+ 		_pam_set_default_control(actions, _PAM_ACTION_BAD);
+ 	    }
+ 
++parsing_done:
+ 	    tok = _pam_StrTok(NULL, " \n\t", &nexttok);
+ 	    if (pam_include) {
++		struct stat include_dir;
+ 		if (substack) {
+ 		    res = _pam_add_handler(pamh, PAM_HT_SUBSTACK, other,
+ 				stack_level, module_type, actions, tok,
+@@ -204,13 +210,35 @@
+ 			return PAM_ABORT;
+ 		    }
+ 		}
+-		if (_pam_load_conf_file(pamh, tok, this_service, module_type,
+-		    stack_level + substack
++		if (tok[0] == '/') {
++		    if (_pam_load_conf_file(pamh, tok, this_service,
++		                            module_type, stack_level + substack
++#ifdef PAM_READ_BOTH_CONFS
++		                            , !other
++#endif /* PAM_READ_BOTH_CONFS */
++		       ) == PAM_SUCCESS)
++			continue;
++		}
++		else if (!stat(PAM_CONFIG_D, &include_dir)
++		         && S_ISDIR(include_dir.st_mode))
++		{
++		    char *include_file;
++		    if (asprintf (&include_file, PAM_CONFIG_DF, tok) < 0) {
++			pam_syslog(pamh, LOG_CRIT, "asprintf failed");
++			return PAM_ABORT;
++		    }
++		    if (_pam_load_conf_file(pamh, include_file, this_service,
++		                            module_type, stack_level + substack
+ #ifdef PAM_READ_BOTH_CONFS
+ 					      , !other
+ #endif /* PAM_READ_BOTH_CONFS */
+-		    ) == PAM_SUCCESS)
+-		    continue;
++		       ) == PAM_SUCCESS)
++		    {
++			free(include_file);
++			continue;
++		    }
++		    free(include_file);
++		}
+ 		_pam_set_default_control(actions, _PAM_ACTION_BAD);
+ 		mod_path = NULL;
+ 		handler_type = PAM_HT_MUST_FAIL;

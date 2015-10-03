@@ -1,0 +1,145 @@
+Patch for Debian bug #163787 et al
+
+Always use the process uid, not getlogin(), to identify an applicant in
+pam_wheel; utmp may be wrong or may have no entry at all in the case of
+an xterm
+
+Authors: Ben Collins <bcollins@debian.org>
+
+Upstream status: submitted in <20070901175405.GA26092@dario.dodds.net>
+
+Index: pam.debian/modules/pam_wheel/pam_wheel.c
+===================================================================
+--- pam.debian.orig/modules/pam_wheel/pam_wheel.c
++++ pam.debian/modules/pam_wheel/pam_wheel.c
+@@ -60,9 +60,8 @@
+ /* argument parsing */
+ 
+ #define PAM_DEBUG_ARG       0x0001
+-#define PAM_USE_UID_ARG     0x0002
+-#define PAM_TRUST_ARG       0x0004
+-#define PAM_DENY_ARG        0x0010
++#define PAM_TRUST_ARG       0x0002
++#define PAM_DENY_ARG        0x0004
+ #define PAM_ROOT_ONLY_ARG   0x0020
+ 
+ static int
+@@ -80,8 +79,7 @@
+ 
+           if (!strcmp(*argv,"debug"))
+                ctrl |= PAM_DEBUG_ARG;
+-          else if (!strcmp(*argv,"use_uid"))
+-               ctrl |= PAM_USE_UID_ARG;
++          else if (!strcmp(*argv,"use_uid")); /* ignored for compat. */
+           else if (!strcmp(*argv,"trust"))
+                ctrl |= PAM_TRUST_ARG;
+           else if (!strcmp(*argv,"deny"))
+@@ -129,27 +127,14 @@
+         }
+     }
+ 
+-    if (ctrl & PAM_USE_UID_ARG) {
+-	tpwd = pam_modutil_getpwuid (pamh, getuid());
+-	if (!tpwd) {
+-	    if (ctrl & PAM_DEBUG_ARG) {
+-                pam_syslog(pamh, LOG_NOTICE, "who is running me ?!");
+-	    }
+-	    return PAM_SERVICE_ERR;
+-	}
+-	fromsu = tpwd->pw_name;
+-    } else {
+-	fromsu = pam_modutil_getlogin(pamh);
+-	if (fromsu) {
+-	    tpwd = pam_modutil_getpwnam (pamh, fromsu);
+-	}
+-	if (!fromsu || !tpwd) {
+-	    if (ctrl & PAM_DEBUG_ARG) {
+-		pam_syslog(pamh, LOG_NOTICE, "who is running me ?!");
+-	    }
+-	    return PAM_SERVICE_ERR;
++    tpwd = pam_modutil_getpwuid (pamh, getuid());
++    if (!tpwd) {
++	if (ctrl & PAM_DEBUG_ARG) {
++	    pam_syslog(pamh, LOG_NOTICE, "who is running me ?!");
+ 	}
++	return PAM_SERVICE_ERR;
+     }
++    fromsu = tpwd->pw_name;
+ 
+     /*
+      * At this point fromsu = username-of-invoker; tpwd = pwd ptr for fromsu
+Index: pam.debian/modules/pam_wheel/pam_wheel.8.xml
+===================================================================
+--- pam.debian.orig/modules/pam_wheel/pam_wheel.8.xml
++++ pam.debian/modules/pam_wheel/pam_wheel.8.xml
+@@ -33,9 +33,6 @@
+       <arg choice="opt">
+ 	trust
+       </arg>
+-      <arg choice="opt">
+-	use_uid
+-      </arg>
+     </cmdsynopsis>
+   </refsynopsisdiv>
+ 
+@@ -115,18 +112,6 @@
+           </para>
+         </listitem>
+       </varlistentry>
+-      <varlistentry>
+-        <term>
+-          <option>use_uid</option>
+-        </term>
+-        <listitem>
+-          <para>
+-            The check for wheel membership will be done against
+-            the current uid instead of the original one (useful when
+-            jumping with su from one account to another for example).
+-          </para>
+-        </listitem>
+-      </varlistentry>
+     </variablelist>
+   </refsect1>
+ 
+Index: pam.debian/modules/pam_wheel/pam_wheel.8
+===================================================================
+--- pam.debian.orig/modules/pam_wheel/pam_wheel.8
++++ pam.debian/modules/pam_wheel/pam_wheel.8
+@@ -31,7 +31,7 @@
+ pam_wheel \- Only permit root access to members of group wheel
+ .SH "SYNOPSIS"
+ .HP \w'\fBpam_wheel\&.so\fR\ 'u
+-\fBpam_wheel\&.so\fR [debug] [deny] [group=\fIname\fR] [root_only] [trust] [use_uid]
++\fBpam_wheel\&.so\fR [debug] [deny] [group=\fIname\fR] [root_only] [trust]
+ .SH "DESCRIPTION"
+ .PP
+ The pam_wheel PAM module is used to enforce the so\-called
+@@ -72,11 +72,6 @@
+ .RS 4
+ The pam_wheel module will return PAM_SUCCESS instead of PAM_IGNORE if the user is a member of the wheel group (thus with a little play stacking the modules the wheel members may be able to su to root without being prompted for a passwd)\&.
+ .RE
+-.PP
+-\fBuse_uid\fR
+-.RS 4
+-The check for wheel membership will be done against the current uid instead of the original one (useful when jumping with su from one account to another for example)\&.
+-.RE
+ .SH "MODULE TYPES PROVIDED"
+ .PP
+ The
+Index: pam.debian/modules/pam_wheel/README
+===================================================================
+--- pam.debian.orig/modules/pam_wheel/README
++++ pam.debian/modules/pam_wheel/README
+@@ -39,12 +39,6 @@
+     modules the wheel members may be able to su to root without being prompted
+     for a passwd).
+ 
+-use_uid
+-
+-    The check for wheel membership will be done against the current uid instead
+-    of the original one (useful when jumping with su from one account to
+-    another for example).
+-
+ EXAMPLES
+ 
+ The root account gains access by default (rootok), only wheel members can

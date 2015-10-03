@@ -1,0 +1,25 @@
+Dropping suid bits is not enough to let us trust the caller; the unix_chkpwd
+helper could be sgid shadow instead of suid root, as it is in Debian and
+Ubuntu by default.  Drop any sgid bits as well.
+
+Authors: Steve Langasek <vorlon@debian.org>,
+         Michael Spang <mspang@csclub.uwaterloo.ca>
+
+Upstream status: to be submitted
+
+Index: pam-debian/modules/pam_unix/unix_chkpwd.c
+===================================================================
+--- pam-debian.orig/modules/pam_unix/unix_chkpwd.c	2011-10-10 16:22:06.270705822 -0700
++++ pam-debian/modules/pam_unix/unix_chkpwd.c	2011-10-10 16:24:06.080224301 -0700
+@@ -137,9 +137,10 @@
+ 	  /* if the caller specifies the username, verify that user
+ 	     matches it */
+ 	  if (strcmp(user, argv[1])) {
++	    gid_t gid = getgid();
+ 	    user = argv[1];
+ 	    /* no match -> permanently change to the real user and proceed */
+-	    if (setuid(getuid()) != 0)
++	    if (setresgid(gid, gid, gid) != 0 || setuid(getuid()) != 0)
+ 		return PAM_AUTH_ERR;
+ 	  }
+ 	}

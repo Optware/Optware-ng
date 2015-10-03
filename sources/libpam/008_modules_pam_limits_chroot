@@ -1,0 +1,132 @@
+Index: pam.debian/modules/pam_limits/pam_limits.c
+===================================================================
+--- pam.debian.orig/modules/pam_limits/pam_limits.c
++++ pam.debian/modules/pam_limits/pam_limits.c
+@@ -87,6 +87,7 @@
+     int flag_numsyslogins; /* whether to limit logins only for a
+ 			      specific user or to count all logins */
+     int priority;	 /* the priority to run user process with */
++    char chroot_dir[8092]; /* directory to chroot into */
+     struct user_limits_struct limits[RLIM_NLIMITS];
+     const char *conf_file;
+     int utmp_after_pam_call;
+@@ -97,6 +98,7 @@
+ #define LIMIT_NUMSYSLOGINS RLIM_NLIMITS+2
+ 
+ #define LIMIT_PRI RLIM_NLIMITS+3
++#define LIMIT_CHROOT RLIM_NLIMITS+4
+ 
+ #define LIMIT_SOFT  1
+ #define LIMIT_HARD  2
+@@ -472,6 +474,8 @@
+     pl->login_limit = -2;
+     pl->login_limit_def = LIMITS_DEF_NONE;
+ 
++    pl->chroot_dir[0] = '\0';
++    
+     return retval;
+ }
+ 
+@@ -542,6 +546,8 @@
+ 	pl->flag_numsyslogins = 1;
+     } else if (strcmp(lim_item, "priority") == 0) {
+ 	limit_item = LIMIT_PRI;
++    } else if (strcmp(lim_item, "chroot") == 0) {
++	limit_item = LIMIT_CHROOT;
+     } else {
+         pam_syslog(pamh, LOG_DEBUG, "unknown limit item '%s'", lim_item);
+         return;
+@@ -579,9 +585,9 @@
+ 			pam_syslog(pamh, LOG_DEBUG,
+ 				   "wrong limit value '%s' for limit type '%s'",
+ 				   lim_value, lim_type);
+-            return;
++			return;
+ 		}
+-	} else {
++	} else if (limit_item != LIMIT_CHROOT) {
+ #ifdef __USE_FILE_OFFSET64
+ 		rlimit_value = strtoull (lim_value, &endptr, 10);
+ #else
+@@ -642,7 +648,11 @@
+ #endif
+     }
+ 
+-    if ( (limit_item != LIMIT_LOGIN)
++    if (limit_item == LIMIT_CHROOT) {
++	strncpy(pl->chroot_dir, value_orig, sizeof(pl->chroot_dir)-1);
++        pl->chroot_dir[sizeof(pl->chroot_dir)-1]='\0';
++    }
++    else if ( (limit_item != LIMIT_LOGIN)
+ 	 && (limit_item != LIMIT_NUMSYSLOGINS)
+ 	 && (limit_item != LIMIT_PRI) ) {
+         if (limit_type & LIMIT_SOFT) {
+@@ -986,6 +996,15 @@
+         retval |= LOGIN_ERR;
+     }
+ 
++    if (!retval && pl->chroot_dir[0]) {
++	i = chdir(pl->chroot_dir);
++	if (i == 0)
++	    i = chroot(pl->chroot_dir);
++	if (i == 0)
++	    i = chdir("/");
++	if (i != 0)
++	    retval = LIMIT_ERR;
++    }
+     return retval;
+ }
+ 
+Index: pam.debian/modules/pam_limits/limits.conf.5.xml
+===================================================================
+--- pam.debian.orig/modules/pam_limits/limits.conf.5.xml
++++ pam.debian/modules/pam_limits/limits.conf.5.xml
+@@ -255,6 +255,12 @@
+                   (Linux 2.6.12 and higher)</para>
+               </listitem>
+             </varlistentry>
++            <varlistentry>
++              <term><option>chroot</option></term>
++              <listitem>
++                <para>the directory to chroot the user to</para>
++              </listitem>
++            </varlistentry>
+           </variablelist>
+         </listitem>
+       </varlistentry>
+Index: pam.debian/modules/pam_limits/limits.conf.5
+===================================================================
+--- pam.debian.orig/modules/pam_limits/limits.conf.5
++++ pam.debian/modules/pam_limits/limits.conf.5
+@@ -260,6 +260,11 @@
+ .RS 4
+ maximum realtime priority allowed for non\-privileged processes (Linux 2\&.6\&.12 and higher)
+ .RE
++.PP
++\fBchroot\fR
++.RS 4
++the directory to chroot the user to
++.RE
+ .RE
+ .PP
+ All items support the values
+Index: pam.debian/modules/pam_limits/limits.conf
+===================================================================
+--- pam.debian.orig/modules/pam_limits/limits.conf
++++ pam.debian/modules/pam_limits/limits.conf
+@@ -35,6 +35,7 @@
+ #        - msgqueue - max memory used by POSIX message queues (bytes)
+ #        - nice - max nice priority allowed to raise to values: [-20, 19]
+ #        - rtprio - max realtime priority
++#        - chroot - change root to directory (Debian-specific)
+ #
+ #<domain>      <type>  <item>         <value>
+ #
+@@ -45,6 +46,7 @@
+ #@faculty        soft    nproc           20
+ #@faculty        hard    nproc           50
+ #ftp             hard    nproc           0
++#ftp             -       chroot          /ftp
+ #@student        -       maxlogins       4
+ 
+ # End of file

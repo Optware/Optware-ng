@@ -1,0 +1,31 @@
+
+Previously jumps were treated as PAM_IGNORE in the freezing part of
+the chain and PAM_OK (aka required) in the frozen part of the chain.
+No one on pam-list was able to explain this behavior, so I changed it
+to be consistent.
+
+Index: pam.debian/libpam/pam_dispatch.c
+===================================================================
+--- pam.debian.orig/libpam/pam_dispatch.c
++++ pam.debian/libpam/pam_dispatch.c
+@@ -254,19 +254,7 @@
+ 	    if ( _PAM_ACTION_IS_JUMP(action) ) {
+ 
+ 		/* If we are evaluating a cached chain, we treat this
+-		   module as required (aka _PAM_ACTION_OK) as well as
+-		   executing the jump. */
+-
+-		if (use_cached_chain) {
+-		    if (impression == _PAM_UNDEF
+-			|| (impression == _PAM_POSITIVE
+-			    && status == PAM_SUCCESS) ) {
+-			if ( retval != PAM_IGNORE || cached_retval == retval ) {
+-			    impression = _PAM_POSITIVE;
+-			    status = retval;
+-			}
+-		    }
+-		}
++		   module as ignored as well as executing the jump. */
+ 
+ 		/* this means that we need to skip #action stacked modules */
+ 		while (h->next != NULL && h->next->stack_level >= stack_level && action > 0) {

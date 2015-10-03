@@ -1,0 +1,22 @@
+Description: handle the case of flags being empty or only PAM_SILENT, which is
+ documented in other PAM implementations as meaning PAM_ESTABLISH_CRED:
+ http://publib.boulder.ibm.com/infocenter/aix/v6r1/index.jsp?topic=%2Fcom.ibm.aix.basetechref%2Fdoc%2Fbasetrf1%2Fpam_setcred.htm
+
+Index: pam.deb/modules/pam_group/pam_group.c
+===================================================================
+--- pam.deb.orig/modules/pam_group/pam_group.c
++++ pam.deb/modules/pam_group/pam_group.c
+@@ -765,9 +765,12 @@
+     unsigned setting;
+ 
+     /* only interested in establishing credentials */
++    /* PAM docs say that an empty flag is to be treated as PAM_ESTABLISH_CRED.
++       Some people just pass PAM_SILENT, so cope with it, too. */
+ 
+     setting = flags;
+-    if (!(setting & (PAM_ESTABLISH_CRED | PAM_REINITIALIZE_CRED))) {
++    if (!(setting & (PAM_ESTABLISH_CRED | PAM_REINITIALIZE_CRED))
++        && (setting != 0) && (setting != PAM_SILENT)) {
+ 	D(("ignoring call - not for establishing credentials"));
+ 	return PAM_SUCCESS;            /* don't fail because of this */
+     }
