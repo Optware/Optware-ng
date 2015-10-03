@@ -21,8 +21,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-LIBMPFR_SITE=http://www.mpfr.org/mpfr-current
-LIBMPFR_VERSION=3.1.2
+LIBMPFR_SITE=http://www.mpfr.org/mpfr-$(LIBMPFR_VERSION)
+LIBMPFR_VERSION=3.1.3
 LIBMPFR_SOURCE=mpfr-$(LIBMPFR_VERSION).tar.xz
 LIBMPFR_DIR=mpfr-$(LIBMPFR_VERSION)
 LIBMPFR_UNZIP=xzcat
