@@ -80,7 +80,7 @@ BIP_IPK=$(BUILD_DIR)/bip_$(BIP_VERSION)-$(BIP_IPK_VERSION)_$(TARGET_ARCH).ipk
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(BIP_SOURCE):
-	$(WGET)  -P $(@D) $(BIP_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(BIP_SITE)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #

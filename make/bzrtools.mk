@@ -81,7 +81,7 @@ PY26-BZRTOOLS_IPK=$(BUILD_DIR)/py26-bzrtools_$(BZRTOOLS_VERSION)-$(BZRTOOLS_IPK_
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(BZRTOOLS_SOURCE):
-	$(WGET)  -P $(@D) $(BZRTOOLS_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(BZRTOOLS_SITE)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #

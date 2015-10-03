@@ -81,7 +81,7 @@ PY26-BZR_IPK=$(BUILD_DIR)/py26-bzr_$(BZR_VERSION)-$(BZR_IPK_VERSION)_$(TARGET_AR
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(BZR_SOURCE):
-	$(WGET)  -P $(@D) $(BZR_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(BZR_SITE)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #

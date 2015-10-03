@@ -84,7 +84,7 @@ MLOCATE_IPK=$(BUILD_DIR)/mlocate_$(MLOCATE_VERSION)-$(MLOCATE_IPK_VERSION)_$(TAR
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(MLOCATE_SOURCE):
-	$(WGET)  -P $(@D) $(MLOCATE_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(MLOCATE_SITE)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
