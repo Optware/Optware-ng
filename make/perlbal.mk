@@ -4,7 +4,7 @@
 #
 ###########################################################
 
-PERLBAL_SITE=http://search.cpan.org/CPAN/authors/id/D/DO/DORMANDO
+PERLBAL_SITE=http://$(PERL_CPAN_SITE)/CPAN/authors/id/D/DO/DORMANDO
 PERLBAL_VERSION=1.78
 PERLBAL_SOURCE=Perlbal-$(PERLBAL_VERSION).tar.gz
 PERLBAL_DIR=Perlbal-$(PERLBAL_VERSION)
@@ -28,6 +28,7 @@ PERLBAL_IPK=$(BUILD_DIR)/perlbal_$(PERLBAL_VERSION)-$(PERLBAL_IPK_VERSION)_$(TAR
 
 $(DL_DIR)/$(PERLBAL_SOURCE):
 	$(WGET) -P $(@D) $(PERLBAL_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(FREEBSD_DISTFILES)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 perlbal-source: $(DL_DIR)/$(PERLBAL_SOURCE) $(PERLBAL_PATCHES)

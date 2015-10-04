@@ -4,7 +4,7 @@
 #
 ###########################################################
 
-PERL-EMAIL-ADDRESS_SITE=http://search.cpan.org/CPAN/authors/id/R/RJ/RJBS
+PERL-EMAIL-ADDRESS_SITE=http://$(PERL_CPAN_SITE)/CPAN/authors/id/R/RJ/RJBS
 PERL-EMAIL-ADDRESS_VERSION=1.907
 PERL-EMAIL-ADDRESS_SOURCE=Email-Address-$(PERL-EMAIL-ADDRESS_VERSION).tar.gz
 PERL-EMAIL-ADDRESS_DIR=Email-Address-$(PERL-EMAIL-ADDRESS_VERSION)
@@ -28,6 +28,7 @@ PERL-EMAIL-ADDRESS_IPK=$(BUILD_DIR)/perl-email-address_$(PERL-EMAIL-ADDRESS_VERS
 
 $(DL_DIR)/$(PERL-EMAIL-ADDRESS_SOURCE):
 	$(WGET) -P $(@D) $(PERL-EMAIL-ADDRESS_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(FREEBSD_DISTFILES)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 perl-email-address-source: $(DL_DIR)/$(PERL-EMAIL-ADDRESS_SOURCE) $(PERL-EMAIL-ADDRESS_PATCHES)

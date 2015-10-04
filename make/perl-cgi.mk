@@ -4,7 +4,7 @@
 #
 ###########################################################
 
-PERL-CGI_SITE=http://search.cpan.org/CPAN/authors/id/L/LD/LDS
+PERL-CGI_SITE=http://$(PERL_CPAN_SITE)/CPAN/authors/id/L/LD/LDS
 PERL-CGI_VERSION=3.50
 PERL-CGI_SOURCE=CGI.pm-$(PERL-CGI_VERSION).tar.gz
 PERL-CGI_DIR=CGI.pm-$(PERL-CGI_VERSION)
@@ -28,6 +28,7 @@ PERL-CGI_IPK=$(BUILD_DIR)/perl-cgi_$(PERL-CGI_VERSION)-$(PERL-CGI_IPK_VERSION)_$
 
 $(DL_DIR)/$(PERL-CGI_SOURCE):
 	$(WGET) -P $(@D) $(PERL-CGI_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(FREEBSD_DISTFILES)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 perl-cgi-source: $(DL_DIR)/$(PERL-CGI_SOURCE) $(PERL-CGI_PATCHES)

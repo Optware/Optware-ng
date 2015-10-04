@@ -577,6 +577,14 @@ SOURCEFORGE_MIRROR=downloads.sourceforge.net
 #SOURCES_NLO_SITE=http://sources.nslu2-linux.org/sources
 SOURCES_NLO_SITE=http://ftp.osuosl.org/pub/nslu2/sources
 
+# FreeBSD distfiles site
+FREEBSD_DISTFILES=ftp://ftp.fi.freebsd.org/pub/FreeBSD/ports/distfiles
+
+# Perl CPAN mirror:
+# use this instead of search.cpan.org, since search.cpan.org
+# contains only recent versions
+PERL_CPAN_SITE=ftp.auckland.ac.nz
+
 TARGET_CXX=$(TARGET_CROSS)g++
 TARGET_CC=$(TARGET_CROSS)gcc
 TARGET_CPP="$(TARGET_CC) -E"

@@ -4,7 +4,7 @@
 #
 ###########################################################
 
-PERL-DBI_SITE=http://search.cpan.org/CPAN/authors/id/T/TI/TIMB
+PERL-DBI_SITE=http://$(PERL_CPAN_SITE)/CPAN/authors/id/T/TI/TIMB
 PERL-DBI_VERSION=1.632
 PERL-DBI_SOURCE=DBI-$(PERL-DBI_VERSION).tar.gz
 PERL-DBI_DIR=DBI-$(PERL-DBI_VERSION)
@@ -28,6 +28,7 @@ PERL-DBI_IPK=$(BUILD_DIR)/perl-dbi_$(PERL-DBI_VERSION)-$(PERL-DBI_IPK_VERSION)_$
 
 $(DL_DIR)/$(PERL-DBI_SOURCE):
 	$(WGET) -P $(@D) $(PERL-DBI_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(FREEBSD_DISTFILES)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 perl-dbi-source: $(DL_DIR)/$(PERL-DBI_SOURCE) $(PERL-DBI_PATCHES)

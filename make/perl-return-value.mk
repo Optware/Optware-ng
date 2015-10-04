@@ -4,7 +4,7 @@
 #
 ###########################################################
 
-PERL-RETURN-VALUE_SITE=http://search.cpan.org/CPAN/authors/id/R/RJ/RJBS
+PERL-RETURN-VALUE_SITE=http://$(PERL_CPAN_SITE)/CPAN/authors/id/R/RJ/RJBS
 PERL-RETURN-VALUE_VERSION=1.666004
 PERL-RETURN-VALUE_SOURCE=Return-Value-$(PERL-RETURN-VALUE_VERSION).tar.gz
 PERL-RETURN-VALUE_DIR=Return-Value-$(PERL-RETURN-VALUE_VERSION)
@@ -28,6 +28,7 @@ PERL-RETURN-VALUE_IPK=$(BUILD_DIR)/perl-return-value_$(PERL-RETURN-VALUE_VERSION
 
 $(DL_DIR)/$(PERL-RETURN-VALUE_SOURCE):
 	$(WGET) -P $(@D) $(PERL-RETURN-VALUE_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(FREEBSD_DISTFILES)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 perl-return-value-source: $(DL_DIR)/$(PERL-RETURN-VALUE_SOURCE) $(PERL-RETURN-VALUE_PATCHES)

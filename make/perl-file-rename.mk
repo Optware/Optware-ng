@@ -4,7 +4,7 @@
 #
 ###########################################################
 
-PERL-FILE-RENAME_SITE=http://www.cpan.org/pub/CPAN/modules/by-authors/id/R/RM/RMBARKER
+PERL-FILE-RENAME_SITE=http://$(PERL_CPAN_SITE)/pub/CPAN/modules/by-authors/id/R/RM/RMBARKER
 PERL-FILE-RENAME_VERSION=0.05
 PERL-FILE-RENAME_SOURCE=File-Rename-$(PERL-FILE-RENAME_VERSION).tar.gz
 PERL-FILE-RENAME_DIR=File-Rename-$(PERL-FILE-RENAME_VERSION)
@@ -28,6 +28,7 @@ PERL-FILE-RENAME_IPK=$(BUILD_DIR)/perl-file-rename_$(PERL-FILE-RENAME_VERSION)-$
 
 $(DL_DIR)/$(PERL-FILE-RENAME_SOURCE):
 	$(WGET) -P $(@D) $(PERL-FILE-RENAME_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(FREEBSD_DISTFILES)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 perl-file-rename-source: $(DL_DIR)/$(PERL-FILE-RENAME_SOURCE) $(PERL-FILE-RENAME_PATCHES)

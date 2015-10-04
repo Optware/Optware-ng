@@ -4,7 +4,7 @@
 #
 ###########################################################
 
-PERL-FILE-NEXT_SITE=http://search.cpan.org/CPAN/authors/id/P/PE/PETDANCE
+PERL-FILE-NEXT_SITE=http://$(PERL_CPAN_SITE)/CPAN/authors/id/P/PE/PETDANCE
 PERL-FILE-NEXT_VERSION=1.02
 PERL-FILE-NEXT_SOURCE=File-Next-$(PERL-FILE-NEXT_VERSION).tar.gz
 PERL-FILE-NEXT_DIR=File-Next-$(PERL-FILE-NEXT_VERSION)
@@ -28,6 +28,7 @@ PERL-FILE-NEXT_IPK=$(BUILD_DIR)/perl-file-next_$(PERL-FILE-NEXT_VERSION)-$(PERL-
 
 $(DL_DIR)/$(PERL-FILE-NEXT_SOURCE):
 	$(WGET) -P $(@D) $(PERL-FILE-NEXT_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(FREEBSD_DISTFILES)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 perl-file-next-source: $(DL_DIR)/$(PERL-FILE-NEXT_SOURCE) $(PERL-FILE-NEXT_PATCHES)

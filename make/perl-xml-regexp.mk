@@ -4,7 +4,7 @@
 #
 ###########################################################
 
-PERL-XML-REGEXP_SITE=http://search.cpan.org/CPAN/authors/id/T/TJ/TJMATHER
+PERL-XML-REGEXP_SITE=http://$(PERL_CPAN_SITE)/CPAN/authors/id/T/TJ/TJMATHER
 PERL-XML-REGEXP_VERSION=0.03
 PERL-XML-REGEXP_SOURCE=XML-RegExp-$(PERL-XML-REGEXP_VERSION).tar.gz
 PERL-XML-REGEXP_DIR=XML-RegExp-$(PERL-XML-REGEXP_VERSION)
@@ -28,6 +28,7 @@ PERL-XML-REGEXP_IPK=$(BUILD_DIR)/perl-xml-regexp_$(PERL-XML-REGEXP_VERSION)-$(PE
 
 $(DL_DIR)/$(PERL-XML-REGEXP_SOURCE):
 	$(WGET) -P $(@D) $(PERL-XML-REGEXP_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(FREEBSD_DISTFILES)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 perl-xml-regexp-source: $(DL_DIR)/$(PERL-XML-REGEXP_SOURCE) $(PERL-XML-REGEXP_PATCHES)

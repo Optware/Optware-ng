@@ -4,7 +4,7 @@
 #
 ###########################################################
 
-PERL-DATE-CALC_SITE=http://search.cpan.org/CPAN/authors/id/S/ST/STBEY
+PERL-DATE-CALC_SITE=http://$(PERL_CPAN_SITE)/CPAN/authors/id/S/ST/STBEY
 PERL-DATE-CALC_VERSION=6.3
 PERL-DATE-CALC_SOURCE=Date-Calc-$(PERL-DATE-CALC_VERSION).tar.gz
 PERL-DATE-CALC_DIR=Date-Calc-$(PERL-DATE-CALC_VERSION)
@@ -33,7 +33,9 @@ PERL-DATE-CALC_IPK_DIR=$(BUILD_DIR)/perl-date-calc-$(PERL-DATE-CALC_VERSION)-ipk
 PERL-DATE-CALC_IPK=$(BUILD_DIR)/perl-date-calc_$(PERL-DATE-CALC_VERSION)-$(PERL-DATE-CALC_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 $(DL_DIR)/$(PERL-DATE-CALC_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PERL-DATE-CALC_SITE)/$(PERL-DATE-CALC_SOURCE)
+	$(WGET) -P $(@D) $(PERL-DATE-CALC_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(FREEBSD_DISTFILES)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 perl-date-calc-source: $(DL_DIR)/$(PERL-DATE-CALC_SOURCE) $(PERL-DATE-CALC_PATCHES)
 

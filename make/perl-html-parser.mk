@@ -4,7 +4,7 @@
 #
 ###########################################################
 
-PERL-HTML-PARSER_SITE=http://search.cpan.org/CPAN/authors/id/G/GA/GAAS
+PERL-HTML-PARSER_SITE=http://$(PERL_CPAN_SITE)/CPAN/authors/id/G/GA/GAAS
 PERL-HTML-PARSER_VERSION=3.71
 PERL-HTML-PARSER_SOURCE=HTML-Parser-$(PERL-HTML-PARSER_VERSION).tar.gz
 PERL-HTML-PARSER_DIR=HTML-Parser-$(PERL-HTML-PARSER_VERSION)
@@ -28,6 +28,7 @@ PERL-HTML-PARSER_IPK=$(BUILD_DIR)/perl-html-parser_$(PERL-HTML-PARSER_VERSION)-$
 
 $(DL_DIR)/$(PERL-HTML-PARSER_SOURCE):
 	$(WGET) -P $(@D) $(PERL-HTML-PARSER_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(FREEBSD_DISTFILES)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 perl-html-parser-source: $(DL_DIR)/$(PERL-HTML-PARSER_SOURCE) $(PERL-HTML-PARSER_PATCHES)

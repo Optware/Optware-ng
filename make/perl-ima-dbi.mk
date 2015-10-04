@@ -4,7 +4,7 @@
 #
 ###########################################################
 
-PERL-IMA-DBI_SITE=http://search.cpan.org/CPAN/authors/id/T/TM/TMTM
+PERL-IMA-DBI_SITE=http://$(PERL_CPAN_SITE)/CPAN/authors/id/T/TM/TMTM
 PERL-IMA-DBI_VERSION=0.34
 PERL-IMA-DBI_SOURCE=Ima-DBI-$(PERL-IMA-DBI_VERSION).tar.gz
 PERL-IMA-DBI_DIR=Ima-DBI-$(PERL-IMA-DBI_VERSION)
@@ -27,7 +27,9 @@ PERL-IMA-DBI_IPK_DIR=$(BUILD_DIR)/perl-ima-dbi-$(PERL-IMA-DBI_VERSION)-ipk
 PERL-IMA-DBI_IPK=$(BUILD_DIR)/perl-ima-dbi_$(PERL-IMA-DBI_VERSION)-$(PERL-IMA-DBI_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 $(DL_DIR)/$(PERL-IMA-DBI_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PERL-IMA-DBI_SITE)/$(PERL-IMA-DBI_SOURCE)
+	$(WGET) -P $(@D) $(PERL-IMA-DBI_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(FREEBSD_DISTFILES)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 perl-ima-dbi-source: $(DL_DIR)/$(PERL-IMA-DBI_SOURCE) $(PERL-IMA-DBI_PATCHES)
 

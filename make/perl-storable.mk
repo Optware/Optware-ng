@@ -4,7 +4,7 @@
 #
 ###########################################################
 
-PERL-STORABLE_SITE=http://search.cpan.org/CPAN/authors/id/A/AM/AMS
+PERL-STORABLE_SITE=http://$(PERL_CPAN_SITE)/CPAN/authors/id/A/AM/AMS
 PERL-STORABLE_VERSION=2.51
 PERL-STORABLE_SOURCE=Storable-$(PERL-STORABLE_VERSION).tar.gz
 PERL-STORABLE_DIR=Storable-$(PERL-STORABLE_VERSION)
@@ -28,6 +28,7 @@ PERL-STORABLE_IPK=$(BUILD_DIR)/perl-storable_$(PERL-STORABLE_VERSION)-$(PERL-STO
 
 $(DL_DIR)/$(PERL-STORABLE_SOURCE):
 	$(WGET) -P $(@D) $(PERL-STORABLE_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(FREEBSD_DISTFILES)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 perl-storable-source: $(DL_DIR)/$(PERL-STORABLE_SOURCE) $(PERL-STORABLE_PATCHES)

@@ -4,7 +4,7 @@
 #
 ###########################################################
 
-PERL-GD_SITE=http://search.cpan.org/CPAN/authors/id/L/LD/LDS
+PERL-GD_SITE=http://$(PERL_CPAN_SITE)/CPAN/authors/id/L/LD/LDS
 PERL-GD_VERSION=2.56
 PERL-GD_SOURCE=GD-$(PERL-GD_VERSION).tar.gz
 PERL-GD_DIR=GD-$(PERL-GD_VERSION)
@@ -28,7 +28,9 @@ PERL-GD_IPK_DIR=$(BUILD_DIR)/perl-gd-$(PERL-GD_VERSION)-ipk
 PERL-GD_IPK=$(BUILD_DIR)/perl-gd_$(PERL-GD_VERSION)-$(PERL-GD_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 $(DL_DIR)/$(PERL-GD_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PERL-GD_SITE)/$(PERL-GD_SOURCE)
+	$(WGET) -P $(@D) $(PERL-GD_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(FREEBSD_DISTFILES)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 perl-gd-source: $(DL_DIR)/$(PERL-GD_SOURCE) $(PERL-GD_PATCHES)
 

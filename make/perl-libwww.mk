@@ -4,7 +4,7 @@
 #
 ###########################################################
 
-PERL-LIBWWW_SITE=http://search.cpan.org/CPAN/authors/id/G/GA/GAAS
+PERL-LIBWWW_SITE=http://$(PERL_CPAN_SITE)/CPAN/authors/id/G/GA/GAAS
 PERL-LIBWWW_VERSION=6.05
 PERL-LIBWWW_SOURCE=libwww-perl-$(PERL-LIBWWW_VERSION).tar.gz
 PERL-LIBWWW_DIR=libwww-perl-$(PERL-LIBWWW_VERSION)
@@ -28,6 +28,7 @@ PERL-LIBWWW_IPK=$(BUILD_DIR)/perl-libwww_$(PERL-LIBWWW_VERSION)-$(PERL-LIBWWW_IP
 
 $(DL_DIR)/$(PERL-LIBWWW_SOURCE):
 	$(WGET) -P $(@D) $(PERL-LIBWWW_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(FREEBSD_DISTFILES)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 perl-libwww-source: $(DL_DIR)/$(PERL-LIBWWW_SOURCE) $(PERL-LIBWWW_PATCHES)

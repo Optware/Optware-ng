@@ -4,7 +4,7 @@
 #
 ###########################################################
 
-PERL-DB-FILE_SITE=http://search.cpan.org/CPAN/authors/id/P/PM/PMQS
+PERL-DB-FILE_SITE=http://$(PERL_CPAN_SITE)/CPAN/authors/id/P/PM/PMQS
 PERL-DB-FILE_VERSION=1.814
 PERL-DB-FILE_SOURCE=DB_File-$(PERL-DB-FILE_VERSION).tar.gz
 PERL-DB-FILE_DIR=DB_File-$(PERL-DB-FILE_VERSION)
@@ -29,7 +29,9 @@ PERL-DB-FILE_IPK_DIR=$(BUILD_DIR)/perl-db-file-$(PERL-DB-FILE_VERSION)-ipk
 PERL-DB-FILE_IPK=$(BUILD_DIR)/perl-db-file_$(PERL-DB-FILE_VERSION)-$(PERL-DB-FILE_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 $(DL_DIR)/$(PERL-DB-FILE_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PERL-DB-FILE_SITE)/$(PERL-DB-FILE_SOURCE)
+	$(WGET) -P $(@D) $(PERL-DB-FILE_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(FREEBSD_DISTFILES)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 perl-db-file-source: $(DL_DIR)/$(PERL-DB-FILE_SOURCE) $(PERL-DB-FILE_PATCHES)
 

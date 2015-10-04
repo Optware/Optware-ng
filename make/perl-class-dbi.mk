@@ -4,7 +4,7 @@
 #
 ###########################################################
 
-PERL-CLASS-DBI_SITE=http://search.cpan.org/CPAN/authors/id/T/TM/TMTM
+PERL-CLASS-DBI_SITE=http://$(PERL_CPAN_SITE)/CPAN/authors/id/T/TM/TMTM
 PERL-CLASS-DBI_VERSION=v3.0.15
 PERL-CLASS-DBI_SOURCE=Class-DBI-$(PERL-CLASS-DBI_VERSION).tar.gz
 PERL-CLASS-DBI_DIR=Class-DBI-$(PERL-CLASS-DBI_VERSION)
@@ -29,7 +29,9 @@ PERL-CLASS-DBI_IPK=$(BUILD_DIR)/perl-class-dbi_$(PERL-CLASS-DBI_VERSION)-$(PERL-
 PERL-CLASS-DBI_CROSS_PATCHES=$(PERL-CLASS-DBI_SOURCE_DIR)/lib-Class-DBI.pm.patch
 
 $(DL_DIR)/$(PERL-CLASS-DBI_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PERL-CLASS-DBI_SITE)/$(PERL-CLASS-DBI_SOURCE)
+	$(WGET) -P $(@D) $(PERL-CLASS-DBI_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(FREEBSD_DISTFILES)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 perl-class-dbi-source: $(DL_DIR)/$(PERL-CLASS-DBI_SOURCE) $(PERL-CLASS-DBI_PATCHES)
 

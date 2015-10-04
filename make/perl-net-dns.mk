@@ -4,7 +4,7 @@
 #
 ###########################################################
 
-PERL-NET-DNS_SITE=http://www.cpan.org/authors/id/N/NL/NLNETLABS
+PERL-NET-DNS_SITE=http://$(PERL_CPAN_SITE)/CPAN/authors/id/N/NL/NLNETLABS
 PERL-NET-DNS_VERSION=0.82_01
 PERL-NET-DNS_SOURCE=Net-DNS-$(PERL-NET-DNS_VERSION).tar.gz
 PERL-NET-DNS_DIR=Net-DNS-$(PERL-NET-DNS_VERSION)
@@ -27,7 +27,9 @@ PERL-NET-DNS_IPK_DIR=$(BUILD_DIR)/perl-net-dns-$(PERL-NET-DNS_VERSION)-ipk
 PERL-NET-DNS_IPK=$(BUILD_DIR)/perl-net-dns_$(PERL-NET-DNS_VERSION)-$(PERL-NET-DNS_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 $(DL_DIR)/$(PERL-NET-DNS_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PERL-NET-DNS_SITE)/$(PERL-NET-DNS_SOURCE)
+	$(WGET) -P $(@D) $(PERL-NET-DNS_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(FREEBSD_DISTFILES)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 perl-net-dns-source: $(DL_DIR)/$(PERL-NET-DNS_SOURCE) $(PERL-NET-DNS_PATCHES)
 

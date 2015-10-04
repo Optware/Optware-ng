@@ -4,7 +4,7 @@
 #
 ###########################################################
 
-PERL-IO-STRING_SITE=http://search.cpan.org/CPAN/authors/id/G/GA/GAAS
+PERL-IO-STRING_SITE=http://$(PERL_CPAN_SITE)/CPAN/authors/id/G/GA/GAAS
 PERL-IO-STRING_VERSION=1.08
 PERL-IO-STRING_SOURCE=IO-String-$(PERL-IO-STRING_VERSION).tar.gz
 PERL-IO-STRING_DIR=IO-String-$(PERL-IO-STRING_VERSION)
@@ -27,7 +27,9 @@ PERL-IO-STRING_IPK_DIR=$(BUILD_DIR)/perl-io-string-$(PERL-IO-STRING_VERSION)-ipk
 PERL-IO-STRING_IPK=$(BUILD_DIR)/perl-io-string_$(PERL-IO-STRING_VERSION)-$(PERL-IO-STRING_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 $(DL_DIR)/$(PERL-IO-STRING_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PERL-IO-STRING_SITE)/$(PERL-IO-STRING_SOURCE)
+	$(WGET) -P $(@D) $(PERL-IO-STRING_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(FREEBSD_DISTFILES)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 perl-io-string-source: $(DL_DIR)/$(PERL-IO-STRING_SOURCE) $(PERL-IO-STRING_PATCHES)
 

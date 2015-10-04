@@ -4,7 +4,7 @@
 #
 ###########################################################
 
-PERL-XML-DOM_SITE=http://search.cpan.org/CPAN/authors/id/T/TJ/TJMATHER
+PERL-XML-DOM_SITE=http://$(PERL_CPAN_SITE)/CPAN/authors/id/T/TJ/TJMATHER
 PERL-XML-DOM_VERSION=1.44
 PERL-XML-DOM_SOURCE=XML-DOM-$(PERL-XML-DOM_VERSION).tar.gz
 PERL-XML-DOM_DIR=XML-DOM-$(PERL-XML-DOM_VERSION)
@@ -28,6 +28,7 @@ PERL-XML-DOM_IPK=$(BUILD_DIR)/perl-xml-dom_$(PERL-XML-DOM_VERSION)-$(PERL-XML-DO
 
 $(DL_DIR)/$(PERL-XML-DOM_SOURCE):
 	$(WGET) -P $(@D) $(PERL-XML-DOM_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(FREEBSD_DISTFILES)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 perl-xml-dom-source: $(DL_DIR)/$(PERL-XML-DOM_SOURCE) $(PERL-XML-DOM_PATCHES)

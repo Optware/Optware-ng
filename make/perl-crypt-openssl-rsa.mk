@@ -4,7 +4,7 @@
 #
 ###########################################################
 
-PERL-CRYPT-OPENSSL-RSA_SITE=http://search.cpan.org/CPAN/authors/id/I/IR/IROBERTS
+PERL-CRYPT-OPENSSL-RSA_SITE=http://$(PERL_CPAN_SITE)/CPAN/authors/id/I/IR/IROBERTS
 PERL-CRYPT-OPENSSL-RSA_VERSION=0.26
 PERL-CRYPT-OPENSSL-RSA_SOURCE=Crypt-OpenSSL-RSA-$(PERL-CRYPT-OPENSSL-RSA_VERSION).tar.gz
 PERL-CRYPT-OPENSSL-RSA_DIR=Crypt-OpenSSL-RSA-$(PERL-CRYPT-OPENSSL-RSA_VERSION)
@@ -29,7 +29,9 @@ PERL-CRYPT-OPENSSL-RSA_IPK=$(BUILD_DIR)/perl-crypt-openssl-rsa_$(PERL-CRYPT-OPEN
 .PHONY: perl-crypt-openssl-rsa-source perl-crypt-openssl-rsa-unpack perl-crypt-openssl-rsa perl-crypt-openssl-rsa-stage perl-crypt-openssl-rsa-ipk perl-crypt-openssl-rsa-clean perl-crypt-openssl-rsa-dirclean perl-crypt-openssl-rsa-check
 
 $(DL_DIR)/$(PERL-CRYPT-OPENSSL-RSA_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PERL-CRYPT-OPENSSL-RSA_SITE)/$(PERL-CRYPT-OPENSSL-RSA_SOURCE)
+	$(WGET) -P $(@D) $(PERL-CRYPT-OPENSSL-RSA_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(FREEBSD_DISTFILES)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 perl-crypt-openssl-rsa-source: $(DL_DIR)/$(PERL-CRYPT-OPENSSL-RSA_SOURCE) $(PERL-CRYPT-OPENSSL-RSA_PATCHES)
 

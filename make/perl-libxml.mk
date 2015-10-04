@@ -4,7 +4,7 @@
 #
 ###########################################################
 
-PERL-LIBXML_SITE=http://search.cpan.org/CPAN/authors/id/K/KM/KMACLEOD
+PERL-LIBXML_SITE=http://$(PERL_CPAN_SITE)/CPAN/authors/id/K/KM/KMACLEOD
 PERL-LIBXML_VERSION=0.08
 PERL-LIBXML_SOURCE=libxml-perl-$(PERL-LIBXML_VERSION).tar.gz
 PERL-LIBXML_DIR=libxml-perl-$(PERL-LIBXML_VERSION)
@@ -28,6 +28,7 @@ PERL-LIBXML_IPK=$(BUILD_DIR)/perl-libxml_$(PERL-LIBXML_VERSION)-$(PERL-LIBXML_IP
 
 $(DL_DIR)/$(PERL-LIBXML_SOURCE):
 	$(WGET) -P $(@D) $(PERL-LIBXML_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(FREEBSD_DISTFILES)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 perl-libxml-source: $(DL_DIR)/$(PERL-LIBXML_SOURCE) $(PERL-LIBXML_PATCHES)

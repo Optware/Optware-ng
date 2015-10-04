@@ -4,7 +4,7 @@
 #
 ###########################################################
 
-PERL-TEXT-DIFF_SITE=http://search.cpan.org/CPAN/authors/id/R/RB/RBS
+PERL-TEXT-DIFF_SITE=http://$(PERL_CPAN_SITE)/CPAN/authors/id/R/RB/RBS
 PERL-TEXT-DIFF_VERSION=0.35
 PERL-TEXT-DIFF_SOURCE=Text-Diff-$(PERL-TEXT-DIFF_VERSION).tar.gz
 PERL-TEXT-DIFF_DIR=Text-Diff-$(PERL-TEXT-DIFF_VERSION)
@@ -27,7 +27,9 @@ PERL-TEXT-DIFF_IPK_DIR=$(BUILD_DIR)/perl-text-diff-$(PERL-TEXT-DIFF_VERSION)-ipk
 PERL-TEXT-DIFF_IPK=$(BUILD_DIR)/perl-text-diff_$(PERL-TEXT-DIFF_VERSION)-$(PERL-TEXT-DIFF_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 $(DL_DIR)/$(PERL-TEXT-DIFF_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PERL-TEXT-DIFF_SITE)/$(PERL-TEXT-DIFF_SOURCE)
+	$(WGET) -P $(@D) $(PERL-TEXT-DIFF_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(FREEBSD_DISTFILES)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 perl-text-diff-source: $(DL_DIR)/$(PERL-TEXT-DIFF_SOURCE) $(PERL-TEXT-DIFF_PATCHES)
 

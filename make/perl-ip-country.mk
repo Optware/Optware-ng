@@ -4,7 +4,7 @@
 #
 ###########################################################
 
-PERL-IP-COUNTRY_SITE=http://search.cpan.org/CPAN/authors/id/N/NW/NWETTERS
+PERL-IP-COUNTRY_SITE=http://$(PERL_CPAN_SITE)/CPAN/authors/id/N/NW/NWETTERS
 PERL-IP-COUNTRY_VERSION=2.21
 PERL-IP-COUNTRY_SOURCE=IP-Country-$(PERL-IP-COUNTRY_VERSION).tar.gz
 PERL-IP-COUNTRY_DIR=IP-Country-$(PERL-IP-COUNTRY_VERSION)
@@ -29,7 +29,9 @@ PERL-IP-COUNTRY_IPK=$(BUILD_DIR)/perl-ip-country_$(PERL-IP-COUNTRY_VERSION)-$(PE
 .PHONY: perl-ip-country-source perl-ip-country-unpack perl-ip-country perl-ip-country-stage perl-ip-country-ipk perl-ip-country-clean perl-ip-country-dirclean perl-ip-country-check
 
 $(DL_DIR)/$(PERL-IP-COUNTRY_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PERL-IP-COUNTRY_SITE)/$(PERL-IP-COUNTRY_SOURCE)
+	$(WGET) -P $(@D) $(PERL-IP-COUNTRY_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(FREEBSD_DISTFILES)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 perl-ip-country-source: $(DL_DIR)/$(PERL-IP-COUNTRY_SOURCE) $(PERL-IP-COUNTRY_PATCHES)
 

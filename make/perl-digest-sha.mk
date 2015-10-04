@@ -4,7 +4,7 @@
 #
 ###########################################################
 
-PERL-DIGEST-SHA_SITE=http://search.cpan.org/CPAN/authors/id//M/MS/MSHELOR
+PERL-DIGEST-SHA_SITE=http://$(PERL_CPAN_SITE)/CPAN/authors/id//M/MS/MSHELOR
 PERL-DIGEST-SHA_VERSION=5.47
 PERL-DIGEST-SHA_SOURCE=Digest-SHA-$(PERL-DIGEST-SHA_VERSION).tar.gz
 PERL-DIGEST-SHA_DIR=Digest-SHA-$(PERL-DIGEST-SHA_VERSION)
@@ -28,6 +28,7 @@ PERL-DIGEST-SHA_IPK=$(BUILD_DIR)/perl-digest-sha_$(PERL-DIGEST-SHA_VERSION)-$(PE
 
 $(DL_DIR)/$(PERL-DIGEST-SHA_SOURCE):
 	$(WGET) -P $(@D) $(PERL-DIGEST-SHA_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(FREEBSD_DISTFILES)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 perl-digest-sha-source: $(DL_DIR)/$(PERL-DIGEST-SHA_SOURCE) $(PERL-DIGEST-SHA_PATCHES)

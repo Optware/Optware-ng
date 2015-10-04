@@ -4,7 +4,7 @@
 #
 ###########################################################
 
-PERL-TEMPLATE-TOOLKIT_SITE=http://cpan.org/modules/by-module/Template
+PERL-TEMPLATE-TOOLKIT_SITE=http://$(PERL_CPAN_SITE)/CPAN/authors/id/A/AB/ABW
 PERL-TEMPLATE-TOOLKIT_VERSION=2.19
 PERL-TEMPLATE-TOOLKIT_SOURCE=Template-Toolkit-$(PERL-TEMPLATE-TOOLKIT_VERSION).tar.gz
 PERL-TEMPLATE-TOOLKIT_DIR=Template-Toolkit-$(PERL-TEMPLATE-TOOLKIT_VERSION)
@@ -34,6 +34,7 @@ PERL-TEMPLATE-TOOLKIT_IPK=$(BUILD_DIR)/perl-template-toolkit_$(PERL-TEMPLATE-TOO
 
 $(DL_DIR)/$(PERL-TEMPLATE-TOOLKIT_SOURCE):
 	$(WGET) -P $(@D) $(PERL-TEMPLATE-TOOLKIT_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(FREEBSD_DISTFILES)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 perl-template-toolkit-source: $(DL_DIR)/$(PERL-TEMPLATE-TOOLKIT_SOURCE) $(PERL-TEMPLATE-TOOLKIT_PATCHES)

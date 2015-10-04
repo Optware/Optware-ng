@@ -4,7 +4,7 @@
 #
 ###########################################################
 
-PERL-DANGA-SOCKET_SITE=http://search.cpan.org/CPAN/authors/id/B/BR/BRADFITZ
+PERL-DANGA-SOCKET_SITE=http://$(PERL_CPAN_SITE)/CPAN/authors/id/B/BR/BRADFITZ
 # perlbal neeeds specifically 1.44
 PERL-DANGA-SOCKET_VERSION=1.44
 PERL-DANGA-SOCKET_SOURCE=Danga-Socket-$(PERL-DANGA-SOCKET_VERSION).tar.gz
@@ -28,7 +28,9 @@ PERL-DANGA-SOCKET_IPK_DIR=$(BUILD_DIR)/perl-danga-socket-$(PERL-DANGA-SOCKET_VER
 PERL-DANGA-SOCKET_IPK=$(BUILD_DIR)/perl-danga-socket_$(PERL-DANGA-SOCKET_VERSION)-$(PERL-DANGA-SOCKET_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 $(DL_DIR)/$(PERL-DANGA-SOCKET_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PERL-DANGA-SOCKET_SITE)/$(PERL-DANGA-SOCKET_SOURCE)
+	$(WGET) -P $(@D) $(PERL-DANGA-SOCKET_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(FREEBSD_DISTFILES)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 perl-danga-socket-source: $(DL_DIR)/$(PERL-DANGA-SOCKET_SOURCE) $(PERL-DANGA-SOCKET_PATCHES)
 

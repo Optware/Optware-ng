@@ -4,7 +4,7 @@
 #
 ###########################################################
 
-PERL-IO-ZLIB_SITE=http://search.cpan.org/CPAN/authors/id/T/TO/TOMHUGHES
+PERL-IO-ZLIB_SITE=http://$(PERL_CPAN_SITE)/CPAN/authors/id/T/TO/TOMHUGHES
 PERL-IO-ZLIB_VERSION=1.09
 PERL-IO-ZLIB_SOURCE=IO-Zlib-$(PERL-IO-ZLIB_VERSION).tar.gz
 PERL-IO-ZLIB_DIR=IO-Zlib-$(PERL-IO-ZLIB_VERSION)
@@ -27,7 +27,9 @@ PERL-IO-ZLIB_IPK_DIR=$(BUILD_DIR)/perl-io-zlib-$(PERL-IO-ZLIB_VERSION)-ipk
 PERL-IO-ZLIB_IPK=$(BUILD_DIR)/perl-io-zlib_$(PERL-IO-ZLIB_VERSION)-$(PERL-IO-ZLIB_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 $(DL_DIR)/$(PERL-IO-ZLIB_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PERL-IO-ZLIB_SITE)/$(PERL-IO-ZLIB_SOURCE)
+	$(WGET) -P $(@D) $(PERL-IO-ZLIB_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(FREEBSD_DISTFILES)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 perl-io-zlib-source: $(DL_DIR)/$(PERL-IO-ZLIB_SOURCE) $(PERL-IO-ZLIB_PATCHES)
 

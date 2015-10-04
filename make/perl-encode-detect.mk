@@ -4,7 +4,7 @@
 #
 ###########################################################
 
-PERL-ENCODE-DETECT_SITE=http://search.cpan.org/CPAN/authors/id/J/JG/JGMYERS
+PERL-ENCODE-DETECT_SITE=http://$(PERL_CPAN_SITE)/CPAN/authors/id/J/JG/JGMYERS
 PERL-ENCODE-DETECT_VERSION=1.00
 PERL-ENCODE-DETECT_SOURCE=Encode-Detect-$(PERL-ENCODE-DETECT_VERSION).tar.gz
 PERL-ENCODE-DETECT_DIR=Encode-Detect-$(PERL-ENCODE-DETECT_VERSION)
@@ -32,6 +32,7 @@ PERL-ENCODE-DETECT_IPK=$(BUILD_DIR)/perl-encode-detect_$(PERL-ENCODE-DETECT_VERS
 
 $(DL_DIR)/$(PERL-ENCODE-DETECT_SOURCE):
 	$(WGET) -P $(@D) $(PERL-ENCODE-DETECT_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(FREEBSD_DISTFILES)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 perl-encode-detect-source: $(DL_DIR)/$(PERL-ENCODE-DETECT_SOURCE) $(PERL-ENCODE-DETECT_PATCHES)

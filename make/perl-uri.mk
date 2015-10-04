@@ -4,7 +4,7 @@
 #
 ###########################################################
 
-PERL-URI_SITE=http://search.cpan.org/CPAN/authors/id/G/GA/GAAS
+PERL-URI_SITE=http://$(PERL_CPAN_SITE)/CPAN/authors/id/G/GA/GAAS
 PERL-URI_VERSION=1.60
 PERL-URI_SOURCE=URI-$(PERL-URI_VERSION).tar.gz
 PERL-URI_DIR=URI-$(PERL-URI_VERSION)
@@ -27,7 +27,9 @@ PERL-URI_IPK_DIR=$(BUILD_DIR)/perl-uri-$(PERL-URI_VERSION)-ipk
 PERL-URI_IPK=$(BUILD_DIR)/perl-uri_$(PERL-URI_VERSION)-$(PERL-URI_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 $(DL_DIR)/$(PERL-URI_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PERL-URI_SITE)/$(PERL-URI_SOURCE)
+	$(WGET) -P $(@D) $(PERL-URI_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(FREEBSD_DISTFILES)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 perl-uri-source: $(DL_DIR)/$(PERL-URI_SOURCE) $(PERL-URI_PATCHES)
 

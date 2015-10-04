@@ -4,7 +4,7 @@
 #
 ###########################################################
 
-PERL-EMAIL-SIMPLE_SITE=http://search.cpan.org/CPAN/authors/id/R/RJ/RJBS
+PERL-EMAIL-SIMPLE_SITE=http://$(PERL_CPAN_SITE)/CPAN/authors/id/R/RJ/RJBS
 PERL-EMAIL-SIMPLE_VERSION=2.203
 PERL-EMAIL-SIMPLE_SOURCE=Email-Simple-$(PERL-EMAIL-SIMPLE_VERSION).tar.gz
 PERL-EMAIL-SIMPLE_DIR=Email-Simple-$(PERL-EMAIL-SIMPLE_VERSION)
@@ -28,6 +28,7 @@ PERL-EMAIL-SIMPLE_IPK=$(BUILD_DIR)/perl-email-simple_$(PERL-EMAIL-SIMPLE_VERSION
 
 $(DL_DIR)/$(PERL-EMAIL-SIMPLE_SOURCE):
 	$(WGET) -P $(@D) $(PERL-EMAIL-SIMPLE_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(FREEBSD_DISTFILES)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 perl-email-simple-source: $(DL_DIR)/$(PERL-EMAIL-SIMPLE_SOURCE) $(PERL-EMAIL-SIMPLE_PATCHES)

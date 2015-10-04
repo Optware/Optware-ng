@@ -4,7 +4,7 @@
 #
 ###########################################################
 
-PERL-EMAIL-SEND_SITE=http://search.cpan.org/CPAN/authors/id/R/RJ/RJBS
+PERL-EMAIL-SEND_SITE=http://$(PERL_CPAN_SITE)/CPAN/authors/id/R/RJ/RJBS
 PERL-EMAIL-SEND_VERSION=2.199
 PERL-EMAIL-SEND_SOURCE=Email-Send-$(PERL-EMAIL-SEND_VERSION).tar.gz
 PERL-EMAIL-SEND_DIR=Email-Send-$(PERL-EMAIL-SEND_VERSION)
@@ -28,6 +28,7 @@ PERL-EMAIL-SEND_IPK=$(BUILD_DIR)/perl-email-send_$(PERL-EMAIL-SEND_VERSION)-$(PE
 
 $(DL_DIR)/$(PERL-EMAIL-SEND_SOURCE):
 	$(WGET) -P $(@D) $(PERL-EMAIL-SEND_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(FREEBSD_DISTFILES)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 perl-email-send-source: $(DL_DIR)/$(PERL-EMAIL-SEND_SOURCE) $(PERL-EMAIL-SEND_PATCHES)

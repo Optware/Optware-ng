@@ -4,7 +4,7 @@
 #
 ###########################################################
 
-PERL-B-KEYWORDS_SITE=http://search.cpan.org/CPAN/authors/id/J/JJ/JJORE
+PERL-B-KEYWORDS_SITE=http://$(PERL_CPAN_SITE)/CPAN/authors/id/J/JJ/JJORE
 PERL-B-KEYWORDS_VERSION=1.08
 PERL-B-KEYWORDS_SOURCE=B-Keywords-$(PERL-B-KEYWORDS_VERSION).tar.gz
 PERL-B-KEYWORDS_DIR=B-Keywords-$(PERL-B-KEYWORDS_VERSION)
@@ -28,6 +28,7 @@ PERL-B-KEYWORDS_IPK=$(BUILD_DIR)/perl-b-keywords_$(PERL-B-KEYWORDS_VERSION)-$(PE
 
 $(DL_DIR)/$(PERL-B-KEYWORDS_SOURCE):
 	$(WGET) -P $(@D) $(PERL-B-KEYWORDS_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(FREEBSD_DISTFILES)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 perl-b-keywords-source: $(DL_DIR)/$(PERL-B-KEYWORDS_SOURCE) $(PERL-B-KEYWORDS_PATCHES)

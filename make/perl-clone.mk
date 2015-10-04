@@ -4,7 +4,7 @@
 #
 ###########################################################
 
-PERL-CLONE_SITE=http://search.cpan.org/CPAN/authors/id/R/RD/RDF
+PERL-CLONE_SITE=http://$(PERL_CPAN_SITE)/CPAN/authors/id/R/RD/RDF
 PERL-CLONE_VERSION=0.29
 PERL-CLONE_SOURCE=Clone-$(PERL-CLONE_VERSION).tar.gz
 PERL-CLONE_DIR=Clone-$(PERL-CLONE_VERSION)
@@ -28,6 +28,7 @@ PERL-CLONE_IPK=$(BUILD_DIR)/perl-clone_$(PERL-CLONE_VERSION)-$(PERL-CLONE_IPK_VE
 
 $(DL_DIR)/$(PERL-CLONE_SOURCE):
 	$(WGET) -P $(@D) $(PERL-CLONE_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(FREEBSD_DISTFILES)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 perl-clone-source: $(DL_DIR)/$(PERL-CLONE_SOURCE) $(PERL-CLONE_PATCHES)

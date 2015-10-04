@@ -4,8 +4,7 @@
 #
 ###########################################################
 
-#PERL-TIME-HIRES_SITE=http://search.cpan.org/CPAN/authors/id/J/JH/JHI
-PERL-TIME-HIRES_SITE=http://www.cpan.org/authors/id/Z/ZE/ZEFRAM
+PERL-TIME-HIRES_SITE=http://$(PERL_CPAN_SITE)/CPAN/authors/id/Z/ZE/ZEFRAM
 PERL-TIME-HIRES_VERSION=1.9726
 PERL-TIME-HIRES_SOURCE=Time-HiRes-$(PERL-TIME-HIRES_VERSION).tar.gz
 PERL-TIME-HIRES_DIR=Time-HiRes-$(PERL-TIME-HIRES_VERSION)
@@ -28,7 +27,9 @@ PERL-TIME-HIRES_IPK_DIR=$(BUILD_DIR)/perl-time-hires-$(PERL-TIME-HIRES_VERSION)-
 PERL-TIME-HIRES_IPK=$(BUILD_DIR)/perl-time-hires_$(PERL-TIME-HIRES_VERSION)-$(PERL-TIME-HIRES_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 $(DL_DIR)/$(PERL-TIME-HIRES_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PERL-TIME-HIRES_SITE)/$(PERL-TIME-HIRES_SOURCE)
+	$(WGET) -P $(@D) $(PERL-TIME-HIRES_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(FREEBSD_DISTFILES)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 perl-time-hires-source: $(DL_DIR)/$(PERL-TIME-HIRES_SOURCE) $(PERL-TIME-HIRES_PATCHES)
 

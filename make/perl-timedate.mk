@@ -4,7 +4,7 @@
 #
 ###########################################################
 
-PERL-TIMEDATE_SITE=http://search.cpan.org/CPAN/authors/id/G/GB/GBARR
+PERL-TIMEDATE_SITE=http://$(PERL_CPAN_SITE)/CPAN/authors/id/G/GB/GBARR
 PERL-TIMEDATE_VERSION=2.30
 PERL-TIMEDATE_SOURCE=TimeDate-$(PERL-TIMEDATE_VERSION).tar.gz
 PERL-TIMEDATE_DIR=TimeDate-$(PERL-TIMEDATE_VERSION)
@@ -28,6 +28,7 @@ PERL-TIMEDATE_IPK=$(BUILD_DIR)/perl-timedate_$(PERL-TIMEDATE_VERSION)-$(PERL-TIM
 
 $(DL_DIR)/$(PERL-TIMEDATE_SOURCE):
 	$(WGET) -P $(@D) $(PERL-TIMEDATE_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(FREEBSD_DISTFILES)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 perl-timedate-source: $(DL_DIR)/$(PERL-TIMEDATE_SOURCE) $(PERL-TIMEDATE_PATCHES)

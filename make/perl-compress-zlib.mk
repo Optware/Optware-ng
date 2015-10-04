@@ -4,7 +4,7 @@
 #
 ###########################################################
 
-PERL-COMPRESS-ZLIB_SITE=http://search.cpan.org/CPAN/authors/id/P/PM/PMQS
+PERL-COMPRESS-ZLIB_SITE=http://$(PERL_CPAN_SITE)/CPAN/authors/id/P/PM/PMQS
 PERL-COMPRESS-ZLIB_VERSION=1.42
 PERL-COMPRESS-ZLIB_SOURCE=Compress-Zlib-$(PERL-COMPRESS-ZLIB_VERSION).tar.gz
 PERL-COMPRESS-ZLIB_DIR=Compress-Zlib-$(PERL-COMPRESS-ZLIB_VERSION)
@@ -28,6 +28,7 @@ PERL-COMPRESS-ZLIB_IPK=$(BUILD_DIR)/perl-compress-zlib_$(PERL-COMPRESS-ZLIB_VERS
 
 $(DL_DIR)/$(PERL-COMPRESS-ZLIB_SOURCE):
 	$(WGET) -P $(@D) $(PERL-COMPRESS-ZLIB_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(FREEBSD_DISTFILES)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 perl-compress-zlib-source: $(DL_DIR)/$(PERL-COMPRESS-ZLIB_SOURCE) $(PERL-COMPRESS-ZLIB_PATCHES)

@@ -4,7 +4,7 @@
 #
 ###########################################################
 
-PERL-JSON-XS_SITE=http://search.cpan.org/CPAN/authors/id/M/ML/MLEHMANN
+PERL-JSON-XS_SITE=http://$(PERL_CPAN_SITE)/CPAN/authors/id/M/ML/MLEHMANN
 PERL-JSON-XS_VERSION=1.5
 PERL-JSON-XS_SOURCE=JSON-XS-$(PERL-JSON-XS_VERSION).tar.gz
 PERL-JSON-XS_DIR=JSON-XS-$(PERL-JSON-XS_VERSION)
@@ -28,6 +28,7 @@ PERL-JSON-XS_IPK=$(BUILD_DIR)/perl-json-xs_$(PERL-JSON-XS_VERSION)-$(PERL-JSON-X
 
 $(DL_DIR)/$(PERL-JSON-XS_SOURCE):
 	$(WGET) -P $(@D) $(PERL-JSON-XS_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(FREEBSD_DISTFILES)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 perl-json-xs-source: $(DL_DIR)/$(PERL-JSON-XS_SOURCE) $(PERL-JSON-XS_PATCHES)

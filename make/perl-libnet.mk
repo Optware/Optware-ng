@@ -4,7 +4,7 @@
 #
 ###########################################################
 
-PERL-LIBNET_SITE=http://search.cpan.org/CPAN/authors/id/G/GB/GBARR
+PERL-LIBNET_SITE=http://$(PERL_CPAN_SITE)/CPAN/authors/id/G/GB/GBARR
 PERL-LIBNET_VERSION=1.22
 PERL-LIBNET_SOURCE=libnet-$(PERL-LIBNET_VERSION).tar.gz
 PERL-LIBNET_DIR=libnet-$(PERL-LIBNET_VERSION)
@@ -29,8 +29,9 @@ PERL-LIBNET_IPK=$(BUILD_DIR)/perl-libnet_$(PERL-LIBNET_VERSION)-$(PERL-LIBNET_IP
 PERL-LIBNET_PATCHES=
 
 $(DL_DIR)/$(PERL-LIBNET_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PERL-LIBNET_SITE)/$(@F) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(PERL-LIBNET_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(FREEBSD_DISTFILES)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 perl-libnet-source: $(DL_DIR)/$(PERL-LIBNET_SOURCE) $(PERL-LIBNET_PATCHES)
 

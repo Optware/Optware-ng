@@ -4,7 +4,7 @@
 #
 ###########################################################
 
-PERL-SCGI_SITE=http://search.cpan.org/CPAN/authors/id/V/VI/VIPERCODE
+PERL-SCGI_SITE=http://$(PERL_CPAN_SITE)/CPAN/authors/id/V/VI/VIPERCODE
 PERL-SCGI_VERSION=0.6
 PERL-SCGI_SOURCE=SCGI-$(PERL-SCGI_VERSION).tar.gz
 PERL-SCGI_DIR=SCGI-$(PERL-SCGI_VERSION)
@@ -27,7 +27,9 @@ PERL-SCGI_IPK_DIR=$(BUILD_DIR)/perl-scgi-$(PERL-SCGI_VERSION)-ipk
 PERL-SCGI_IPK=$(BUILD_DIR)/perl-scgi_$(PERL-SCGI_VERSION)-$(PERL-SCGI_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 $(DL_DIR)/$(PERL-SCGI_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PERL-SCGI_SITE)/$(PERL-SCGI_SOURCE)
+	$(WGET) -P $(@D) $(PERL-SCGI_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(FREEBSD_DISTFILES)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 perl-scgi-source: $(DL_DIR)/$(PERL-SCGI_SOURCE) $(PERL-SCGI_PATCHES)
 

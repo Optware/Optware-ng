@@ -20,7 +20,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PERL-DEVICE-SERIALPORT_SITE=http://search.cpan.org/CPAN/authors/id/C/CO/COOK
+PERL-DEVICE-SERIALPORT_SITE=http://$(PERL_CPAN_SITE)/CPAN/authors/id/C/CO/COOK
 PERL-DEVICE-SERIALPORT_VERSION=1.04
 PERL-DEVICE-SERIALPORT_SOURCE=Device-SerialPort-$(PERL-DEVICE-SERIALPORT_VERSION).tar.gz
 PERL-DEVICE-SERIALPORT_DIR=Device-SerialPort-$(PERL-DEVICE-SERIALPORT_VERSION)
@@ -78,8 +78,9 @@ PERL-DEVICE-SERIALPORT_IPK=$(BUILD_DIR)/perl-device-serialport_$(PERL-DEVICE-SER
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PERL-DEVICE-SERIALPORT_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PERL-DEVICE-SERIALPORT_SITE)/$(PERL-DEVICE-SERIALPORT_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(PERL-DEVICE-SERIALPORT_SOURCE)
+	$(WGET) -P $(@D) $(PERL-DEVICE-SERIALPORT_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(FREEBSD_DISTFILES)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.

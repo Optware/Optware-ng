@@ -4,7 +4,7 @@
 #
 ###########################################################
 
-PERL-YAML-SYCK_SITE=http://search.cpan.org/CPAN/authors/id/A/AU/AUDREYT
+PERL-YAML-SYCK_SITE=http://$(PERL_CPAN_SITE)/CPAN/authors/id/A/AU/AUDREYT
 PERL-YAML-SYCK_VERSION=1.05
 PERL-YAML-SYCK_SOURCE=YAML-Syck-$(PERL-YAML-SYCK_VERSION).tar.gz
 PERL-YAML-SYCK_DIR=YAML-Syck-$(PERL-YAML-SYCK_VERSION)
@@ -28,6 +28,7 @@ PERL-YAML-SYCK_IPK=$(BUILD_DIR)/perl-yaml-syck_$(PERL-YAML-SYCK_VERSION)-$(PERL-
 
 $(DL_DIR)/$(PERL-YAML-SYCK_SOURCE):
 	$(WGET) -P $(@D) $(PERL-YAML-SYCK_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(FREEBSD_DISTFILES)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 perl-yaml-syck-source: $(DL_DIR)/$(PERL-YAML-SYCK_SOURCE) $(PERL-YAML-SYCK_PATCHES)

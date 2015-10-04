@@ -4,7 +4,7 @@
 #
 ###########################################################
 
-PERL-DBD-SQLITE_SITE=http://search.cpan.org/CPAN/authors/id/A/AD/ADAMK
+PERL-DBD-SQLITE_SITE=http://$(PERL_CPAN_SITE)/CPAN/authors/id/A/AD/ADAMK
 PERL-DBD-SQLITE_VERSION=1.35
 PERL-DBD-SQLITE_SOURCE=DBD-SQLite-$(PERL-DBD-SQLITE_VERSION).tar.gz
 PERL-DBD-SQLITE_DIR=DBD-SQLite-$(PERL-DBD-SQLITE_VERSION)
@@ -31,6 +31,7 @@ PERL-DBD-SQLITE_CPPFLAGS=-fno-strict-aliasing -D_LARGEFILE_SOURCE -D_FILE_OFFSET
 
 $(DL_DIR)/$(PERL-DBD-SQLITE_SOURCE):
 	$(WGET) -P $(@D) $(PERL-DBD-SQLITE_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(FREEBSD_DISTFILES)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 perl-dbd-sqlite-source: $(DL_DIR)/$(PERL-DBD-SQLITE_SOURCE) $(PERL-DBD-SQLITE_PATCHES)

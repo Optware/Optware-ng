@@ -4,7 +4,7 @@
 #
 ###########################################################
 
-PERL-POD-README_SITE=http://search.cpan.org/CPAN/authors/id/R/RR/RRWO
+PERL-POD-README_SITE=http://$(PERL_CPAN_SITE)/CPAN/authors/id/R/RR/RRWO
 # Yes, there is a newer, but Module::Build requires only 0.04 and the newer
 # version of Pod::Readme requires Pod::Text 3.0 and version 2.21 is installed
 PERL-POD-README_VERSION=0.081
@@ -30,6 +30,7 @@ PERL-POD-README_IPK=$(BUILD_DIR)/perl-pod-readme_$(PERL-POD-README_VERSION)-$(PE
 
 $(DL_DIR)/$(PERL-POD-README_SOURCE):
 	$(WGET) -P $(@D) $(PERL-POD-README_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(FREEBSD_DISTFILES)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 perl-pod-readme-source: $(DL_DIR)/$(PERL-POD-README_SOURCE) $(PERL-POD-README_PATCHES)

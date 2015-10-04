@@ -4,7 +4,7 @@
 #
 ###########################################################
 
-PERL-EMAIL-MIME_SITE=http://search.cpan.org/CPAN/authors/id/R/RJ/RJBS
+PERL-EMAIL-MIME_SITE=http://$(PERL_CPAN_SITE)/CPAN/authors/id/R/RJ/RJBS
 PERL-EMAIL-MIME_VERSION=1.928
 PERL-EMAIL-MIME_SOURCE=Email-MIME-$(PERL-EMAIL-MIME_VERSION).tar.gz
 PERL-EMAIL-MIME_DIR=Email-MIME-$(PERL-EMAIL-MIME_VERSION)
@@ -28,6 +28,7 @@ PERL-EMAIL-MIME_IPK=$(BUILD_DIR)/perl-email-mime_$(PERL-EMAIL-MIME_VERSION)-$(PE
 
 $(DL_DIR)/$(PERL-EMAIL-MIME_SOURCE):
 	$(WGET) -P $(@D) $(PERL-EMAIL-MIME_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(FREEBSD_DISTFILES)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 perl-email-mime-source: $(DL_DIR)/$(PERL-EMAIL-MIME_SOURCE) $(PERL-EMAIL-MIME_PATCHES)

@@ -4,7 +4,7 @@
 #
 ###########################################################
 
-PERL-POE-XS-QUEUE-ARRAY_SITE=http://search.cpan.org/CPAN/authors/id/T/TO/TONYC
+PERL-POE-XS-QUEUE-ARRAY_SITE=http://$(PERL_CPAN_SITE)/CPAN/authors/id/T/TO/TONYC
 PERL-POE-XS-QUEUE-ARRAY_VERSION=0.005
 PERL-POE-XS-QUEUE-ARRAY_SOURCE=POE-XS-Queue-Array-$(PERL-POE-XS-QUEUE-ARRAY_VERSION).tar.gz
 PERL-POE-XS-QUEUE-ARRAY_DIR=POE-XS-Queue-Array-$(PERL-POE-XS-QUEUE-ARRAY_VERSION)
@@ -28,6 +28,7 @@ PERL-POE-XS-QUEUE-ARRAY_IPK=$(BUILD_DIR)/perl-poe-xs-queue-array_$(PERL-POE-XS-Q
 
 $(DL_DIR)/$(PERL-POE-XS-QUEUE-ARRAY_SOURCE):
 	$(WGET) -P $(@D) $(PERL-POE-XS-QUEUE-ARRAY_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(FREEBSD_DISTFILES)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 perl-poe-xs-queue-array-source: $(DL_DIR)/$(PERL-POE-XS-QUEUE-ARRAY_SOURCE) $(PERL-POE-XS-QUEUE-ARRAY_PATCHES)

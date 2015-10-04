@@ -4,7 +4,7 @@
 #
 ###########################################################
 
-PERL-CRYPT-OPENSSL-RANDOM_SITE=http://search.cpan.org/CPAN/authors/id/I/IR/IROBERTS
+PERL-CRYPT-OPENSSL-RANDOM_SITE=http://$(PERL_CPAN_SITE)/CPAN/authors/id/I/IR/IROBERTS
 PERL-CRYPT-OPENSSL-RANDOM_VERSION=0.04
 PERL-CRYPT-OPENSSL-RANDOM_SOURCE=Crypt-OpenSSL-Random-$(PERL-CRYPT-OPENSSL-RANDOM_VERSION).tar.gz
 PERL-CRYPT-OPENSSL-RANDOM_DIR=Crypt-OpenSSL-Random-$(PERL-CRYPT-OPENSSL-RANDOM_VERSION)
@@ -29,7 +29,9 @@ PERL-CRYPT-OPENSSL-RANDOM_IPK=$(BUILD_DIR)/perl-crypt-openssl-random_$(PERL-CRYP
 .PHONY: perl-crypt-openssl-random-source perl-crypt-openssl-random-unpack perl-crypt-openssl-random perl-crypt-openssl-random-stage perl-crypt-openssl-random-ipk perl-crypt-openssl-random-clean perl-crypt-openssl-random-dirclean perl-crypt-openssl-random-check
 
 $(DL_DIR)/$(PERL-CRYPT-OPENSSL-RANDOM_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PERL-CRYPT-OPENSSL-RANDOM_SITE)/$(PERL-CRYPT-OPENSSL-RANDOM_SOURCE)
+	$(WGET) -P $(@D) $(PERL-CRYPT-OPENSSL-RANDOM_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(FREEBSD_DISTFILES)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 perl-crypt-openssl-random-source: $(DL_DIR)/$(PERL-CRYPT-OPENSSL-RANDOM_SOURCE) $(PERL-CRYPT-OPENSSL-RANDOM_PATCHES)
 
