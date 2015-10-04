@@ -23,8 +23,8 @@
 # You should change all these variables to suit your package.
 #
 XINETD_NAME=xinetd
-XINETD_SITE=http://www.xinetd.org/
-XINETD_VERSION=2.3.14
+XINETD_SITE=http://pkgs.fedoraproject.org/repo/pkgs/xinetd/$(XINETD_SOURCE)/77358478fd58efa6366accae99b8b04c
+XINETD_VERSION=2.3.15
 XINETD_SOURCE=xinetd-$(XINETD_VERSION).tar.gz
 XINETD_DIR=xinetd-$(XINETD_VERSION)
 XINETD_UNZIP=zcat
@@ -37,7 +37,7 @@ XINETD_DEPENDS=psmisc
 #
 # XINETD_IPK_VERSION should be incremented when the ipk changes.
 #
-XINETD_IPK_VERSION=11
+XINETD_IPK_VERSION=1
 
 #
 # XINETD_CONFFILES should be a list of user-editable files
