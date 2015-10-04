@@ -145,9 +145,9 @@ else
 	)
 	(cd $(PERL_BUILD_DIR)/Cross; \
 		( [ -e $(PERL_SOURCE_DIR)/$(PERL_MAJOR_VER)/config.sh-$(OPTWARE_TARGET) ] && \
-		sed -e "s|%OPTWARE_TARGET_PREFIX%|${TARGET_PREFIX}|g" $(PERL_SOURCE_DIR)/$(PERL_MAJOR_VER)/config.sh-$(OPTWARE_TARGET) > config.sh-$(GNU_TARGET_NAME) ) || \
+		$(INSTALL) -m 644 $(PERL_SOURCE_DIR)/$(PERL_MAJOR_VER)/config.sh-$(OPTWARE_TARGET) config.sh-$(GNU_TARGET_NAME) ) || \
 		( [ -e $(PERL_SOURCE_DIR)/$(PERL_MAJOR_VER)/config.sh-$(GNU_TARGET_NAME) ] && \
-		sed -e "s|%OPTWARE_TARGET_PREFIX%|${TARGET_PREFIX}|g" $(PERL_SOURCE_DIR)/$(PERL_MAJOR_VER)/config.sh-$(GNU_TARGET_NAME) > config.sh-$(GNU_TARGET_NAME) ) ; \
+		$(INSTALL) -m 644 $(PERL_SOURCE_DIR)/$(PERL_MAJOR_VER)/config.sh-$(GNU_TARGET_NAME) . ) ; \
 	)
 ifdef PERL_LDFLAGS_EXTRA
 	sed -i -e 's|-shared|& $(PERL_LDFLAGS_EXTRA)|' $(@D)/Cross/config.sh-$(GNU_TARGET_NAME)
