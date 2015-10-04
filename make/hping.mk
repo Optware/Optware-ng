@@ -217,7 +217,7 @@ $(HPING_IPK): $(HPING_BUILD_DIR)/.built
 	$(MAKE) -C $(HPING_BUILD_DIR) \
         	DESTDIR=$(HPING_IPK_DIR) \
         	INSTALL_MANPATH=$(HPING_IPK_DIR)$(TARGET_PREFIX)/share/man \
-        	$(INSTALL)
+        	install
 	$(STRIP_COMMAND) $(HPING_IPK_DIR)$(TARGET_PREFIX)/sbin/hping3
 	cd $(HPING_IPK_DIR)$(TARGET_PREFIX)/sbin; \
         	ln -s hping3 hping; \
