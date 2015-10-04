@@ -226,7 +226,7 @@ $(PY25-LXML_IPK): $(PY-LXML_BUILD_DIR)/.built
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 		CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py \
-		$(INSTALL) --root=$(PY25-LXML_IPK_DIR) --prefix=$(TARGET_PREFIX) \
+		install --root=$(PY25-LXML_IPK_DIR) --prefix=$(TARGET_PREFIX) \
 		--with-xslt-config=$(STAGING_PREFIX)/bin/xslt-config)
 	$(STRIP_COMMAND) `find $(PY25-LXML_IPK_DIR)$(TARGET_PREFIX)/lib/ -name '*.so'`
 	$(MAKE) $(PY25-LXML_IPK_DIR)/CONTROL/control
@@ -239,7 +239,7 @@ $(PY26-LXML_IPK): $(PY-LXML_BUILD_DIR)/.built
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
 		CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 		$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py \
-		$(INSTALL) --root=$(PY26-LXML_IPK_DIR) --prefix=$(TARGET_PREFIX) \
+		install --root=$(PY26-LXML_IPK_DIR) --prefix=$(TARGET_PREFIX) \
 		--with-xslt-config=$(STAGING_PREFIX)/bin/xslt-config)
 	$(STRIP_COMMAND) `find $(PY26-LXML_IPK_DIR)$(TARGET_PREFIX)/lib/ -name '*.so'`
 	$(MAKE) $(PY26-LXML_IPK_DIR)/CONTROL/control

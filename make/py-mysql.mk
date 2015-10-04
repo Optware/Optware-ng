@@ -231,7 +231,7 @@ $(PY25-MYSQL_IPK): $(PY-MYSQL_BUILD_DIR)/.built
 	 PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py \
-	    $(INSTALL) --root=$(PY25-MYSQL_IPK_DIR) --prefix=$(TARGET_PREFIX); \
+	    install --root=$(PY25-MYSQL_IPK_DIR) --prefix=$(TARGET_PREFIX); \
 	)
 	$(STRIP_COMMAND) $(PY25-MYSQL_IPK_DIR)$(TARGET_PREFIX)/lib/python2.5/site-packages/_mysql.so
 	$(MAKE) $(PY25-MYSQL_IPK_DIR)/CONTROL/control
@@ -243,7 +243,7 @@ $(PY26-MYSQL_IPK): $(PY-MYSQL_BUILD_DIR)/.built
 	 PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py \
-	    $(INSTALL) --root=$(PY26-MYSQL_IPK_DIR) --prefix=$(TARGET_PREFIX); \
+	    install --root=$(PY26-MYSQL_IPK_DIR) --prefix=$(TARGET_PREFIX); \
 	)
 	$(STRIP_COMMAND) $(PY26-MYSQL_IPK_DIR)$(TARGET_PREFIX)/lib/python2.6/site-packages/_mysql.so
 	$(MAKE) $(PY26-MYSQL_IPK_DIR)/CONTROL/control

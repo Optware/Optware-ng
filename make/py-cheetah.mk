@@ -257,7 +257,7 @@ $(PY25-CHEETAH_IPK): $(PY-CHEETAH_BUILD_DIR)/.built
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	 PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 -c "import setuptools; execfile('setup.py')" \
-	    $(INSTALL) --root=$(PY25-CHEETAH_IPK_DIR) --prefix=$(TARGET_PREFIX); \
+	    install --root=$(PY25-CHEETAH_IPK_DIR) --prefix=$(TARGET_PREFIX); \
 	)
 	# ls $(PY25-CHEETAH_IPK_DIR)$(TARGET_PREFIX)/bin/* | xargs -I{} mv {} {}-2.5
 	$(STRIP_COMMAND) `find $(PY25-CHEETAH_IPK_DIR)$(TARGET_PREFIX)/lib/python2.5/site-packages -name '*.so'`
@@ -270,7 +270,7 @@ $(PY26-CHEETAH_IPK): $(PY-CHEETAH_BUILD_DIR)/.built
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	 PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
 	    $(HOST_STAGING_PREFIX)/bin/python2.6 -c "import setuptools; execfile('setup.py')" \
-	    $(INSTALL) --root=$(PY26-CHEETAH_IPK_DIR) --prefix=$(TARGET_PREFIX); \
+	    install --root=$(PY26-CHEETAH_IPK_DIR) --prefix=$(TARGET_PREFIX); \
 	)
 	ls $(PY26-CHEETAH_IPK_DIR)$(TARGET_PREFIX)/bin/* | xargs -I{} mv {} {}-2.6
 	$(STRIP_COMMAND) `find $(PY26-CHEETAH_IPK_DIR)$(TARGET_PREFIX)/lib/python2.6/site-packages -name '*.so'`
@@ -283,7 +283,7 @@ $(PY27-CHEETAH_IPK): $(PY-CHEETAH_BUILD_DIR)/.built
 	 CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	 PYTHONPATH=$(STAGING_LIB_DIR)/python2.7/site-packages \
 	    $(HOST_STAGING_PREFIX)/bin/python2.7 -c "import setuptools; execfile('setup.py')" \
-	    $(INSTALL) --root=$(PY27-CHEETAH_IPK_DIR) --prefix=$(TARGET_PREFIX); \
+	    install --root=$(PY27-CHEETAH_IPK_DIR) --prefix=$(TARGET_PREFIX); \
 	)
 	ls $(PY27-CHEETAH_IPK_DIR)$(TARGET_PREFIX)/bin/* | xargs -I{} mv {} {}-2.7
 	$(STRIP_COMMAND) `find $(PY27-CHEETAH_IPK_DIR)$(TARGET_PREFIX)/lib/python2.7/site-packages -name '*.so'`

@@ -215,7 +215,7 @@ $(PY24-CONSTRAINT_IPK): $(PY-CONSTRAINT_BUILD_DIR)/.built
 	(cd $(PY-CONSTRAINT_BUILD_DIR)/2.4; \
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.4 -c "import setuptools; execfile('setup.py')" \
-		$(INSTALL) --root=$(PY24-CONSTRAINT_IPK_DIR) --prefix=$(TARGET_PREFIX))
+		install --root=$(PY24-CONSTRAINT_IPK_DIR) --prefix=$(TARGET_PREFIX))
 	$(MAKE) $(PY24-CONSTRAINT_IPK_DIR)/CONTROL/control
 #	echo $(PY-CONSTRAINT_CONFFILES) | sed -e 's/ /\n/g' > $(PY24-CONSTRAINT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-CONSTRAINT_IPK_DIR)
@@ -225,7 +225,7 @@ $(PY25-CONSTRAINT_IPK) $(PY-CONSTRAINT-DOC_IPK): $(PY-CONSTRAINT_BUILD_DIR)/.bui
 	(cd $(PY-CONSTRAINT_BUILD_DIR)/2.5; \
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.5 -c "import setuptools; execfile('setup.py')" \
-		$(INSTALL) --root=$(PY25-CONSTRAINT_IPK_DIR) --prefix=$(TARGET_PREFIX))
+		install --root=$(PY25-CONSTRAINT_IPK_DIR) --prefix=$(TARGET_PREFIX))
 	$(MAKE) $(PY25-CONSTRAINT_IPK_DIR)/CONTROL/control
 #	echo $(PY-CONSTRAINT_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-CONSTRAINT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-CONSTRAINT_IPK_DIR)

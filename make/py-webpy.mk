@@ -233,7 +233,7 @@ $(PY26-WEBPY_IPK): $(PY-WEBPY_BUILD_DIR)/.built
 	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
 	    CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.6 -c "import setuptools; execfile('setup.py')" \
-	    $(INSTALL) --root=$(PY26-WEBPY_IPK_DIR) --prefix=$(TARGET_PREFIX); \
+	    install --root=$(PY26-WEBPY_IPK_DIR) --prefix=$(TARGET_PREFIX); \
 	)
 #	$(STRIP_COMMAND) `find $(PY26-WEBPY_IPK_DIR)$(TARGET_PREFIX)/lib/python2.6/site-packages -name '*.so'`
 	$(MAKE) $(PY26-WEBPY_IPK_DIR)/CONTROL/control
@@ -245,7 +245,7 @@ $(PY25-WEBPY_IPK): $(PY-WEBPY_BUILD_DIR)/.built
 	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	    CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 -c "import setuptools; execfile('setup.py')" \
-	    $(INSTALL) --root=$(PY25-WEBPY_IPK_DIR) --prefix=$(TARGET_PREFIX); \
+	    install --root=$(PY25-WEBPY_IPK_DIR) --prefix=$(TARGET_PREFIX); \
 	)
 #	$(STRIP_COMMAND) `find $(PY25-WEBPY_IPK_DIR)$(TARGET_PREFIX)/lib/python2.5/site-packages -name '*.so'`
 	$(MAKE) $(PY25-WEBPY_IPK_DIR)/CONTROL/control

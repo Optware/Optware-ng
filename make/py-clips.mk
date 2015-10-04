@@ -243,7 +243,7 @@ $(PY24-CLIPS_IPK): $(PY-CLIPS_BUILD_DIR)/.built
 	(cd $(PY-CLIPS_BUILD_DIR)/2.4; \
          CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
             $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py \
-	    $(INSTALL) --root=$(PY24-CLIPS_IPK_DIR) --prefix=$(TARGET_PREFIX); \
+	    install --root=$(PY24-CLIPS_IPK_DIR) --prefix=$(TARGET_PREFIX); \
         )
 	$(STRIP_COMMAND) $(PY24-CLIPS_IPK_DIR)$(TARGET_PREFIX)/lib/python2.4/site-packages/clips/_clips.so
 	$(MAKE) $(PY24-CLIPS_IPK_DIR)/CONTROL/control
@@ -255,7 +255,7 @@ $(PY25-CLIPS_IPK): $(PY-CLIPS_BUILD_DIR)/.built
 	(cd $(PY-CLIPS_BUILD_DIR)/2.5; \
          CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
             $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py \
-	    $(INSTALL) --root=$(PY25-CLIPS_IPK_DIR) --prefix=$(TARGET_PREFIX); \
+	    install --root=$(PY25-CLIPS_IPK_DIR) --prefix=$(TARGET_PREFIX); \
         )
 	$(STRIP_COMMAND) $(PY25-CLIPS_IPK_DIR)$(TARGET_PREFIX)/lib/python2.5/site-packages/clips/_clips.so
 	$(MAKE) $(PY25-CLIPS_IPK_DIR)/CONTROL/control

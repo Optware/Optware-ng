@@ -223,7 +223,7 @@ $(PY24-CELEMENTTREE_IPK): $(PY-CELEMENTTREE_BUILD_DIR)/.built
 	(cd $(PY-CELEMENTTREE_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.4 -c "import setuptools; execfile('setup.py')" \
-	$(INSTALL) --root=$(PY24-CELEMENTTREE_IPK_DIR) --prefix=$(TARGET_PREFIX))
+	install --root=$(PY24-CELEMENTTREE_IPK_DIR) --prefix=$(TARGET_PREFIX))
 	$(STRIP_COMMAND) $(PY24-CELEMENTTREE_IPK_DIR)$(TARGET_PREFIX)/lib/python2.4/site-packages/*.so
 	$(MAKE) $(PY24-CELEMENTTREE_IPK_DIR)/CONTROL/control
 #	echo $(PY-CELEMENTTREE_CONFFILES) | sed -e 's/ /\n/g' > $(PY24-CELEMENTTREE_IPK_DIR)/CONTROL/conffiles
@@ -234,7 +234,7 @@ $(PY25-CELEMENTTREE_IPK): $(PY-CELEMENTTREE_BUILD_DIR)/.built
 	(cd $(PY-CELEMENTTREE_BUILD_DIR)/2.5; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.5 -c "import setuptools; execfile('setup.py')" \
-	$(INSTALL) --root=$(PY25-CELEMENTTREE_IPK_DIR) --prefix=$(TARGET_PREFIX))
+	install --root=$(PY25-CELEMENTTREE_IPK_DIR) --prefix=$(TARGET_PREFIX))
 	$(STRIP_COMMAND) $(PY25-CELEMENTTREE_IPK_DIR)$(TARGET_PREFIX)/lib/python2.5/site-packages/*.so
 	$(MAKE) $(PY25-CELEMENTTREE_IPK_DIR)/CONTROL/control
 #	echo $(PY-CELEMENTTREE_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-CELEMENTTREE_IPK_DIR)/CONTROL/conffiles

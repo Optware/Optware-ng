@@ -283,7 +283,7 @@ $(PY24-CRYPTO_IPK): $(PY-CRYPTO_BUILD_DIR)/.built
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 		CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	$(HOST_STAGING_PREFIX)/bin/python2.4 -c "import setuptools; execfile('setup.py')" \
-		$(INSTALL) --root=$(PY24-CRYPTO_IPK_DIR) --prefix=$(TARGET_PREFIX))
+		install --root=$(PY24-CRYPTO_IPK_DIR) --prefix=$(TARGET_PREFIX))
 	$(STRIP_COMMAND) `find $(PY24-CRYPTO_IPK_DIR)$(TARGET_PREFIX)/lib/ -name '*.so'`
 	$(MAKE) $(PY24-CRYPTO_IPK_DIR)/CONTROL/control
 #	echo $(PY-CRYPTO_CONFFILES) | sed -e 's/ /\n/g' > $(PY-CRYPTO_IPK_DIR)/CONTROL/conffiles
@@ -295,7 +295,7 @@ $(PY25-CRYPTO_IPK): $(PY-CRYPTO_BUILD_DIR)/.built
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 		CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	$(HOST_STAGING_PREFIX)/bin/python2.5 -c "import setuptools; execfile('setup.py')" \
-		$(INSTALL) --root=$(PY25-CRYPTO_IPK_DIR) --prefix=$(TARGET_PREFIX))
+		install --root=$(PY25-CRYPTO_IPK_DIR) --prefix=$(TARGET_PREFIX))
 	$(STRIP_COMMAND) `find $(PY25-CRYPTO_IPK_DIR)$(TARGET_PREFIX)/lib/ -name '*.so'`
 	$(MAKE) $(PY25-CRYPTO_IPK_DIR)/CONTROL/control
 #	echo $(PY-CRYPTO_CONFFILES) | sed -e 's/ /\n/g' > $(PY-CRYPTO_IPK_DIR)/CONTROL/conffiles
@@ -307,7 +307,7 @@ $(PY26-CRYPTO_IPK): $(PY-CRYPTO_BUILD_DIR)/.built
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
 		CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	$(HOST_STAGING_PREFIX)/bin/python2.6 -c "import setuptools; execfile('setup.py')" \
-		$(INSTALL) --root=$(PY26-CRYPTO_IPK_DIR) --prefix=$(TARGET_PREFIX))
+		install --root=$(PY26-CRYPTO_IPK_DIR) --prefix=$(TARGET_PREFIX))
 	$(STRIP_COMMAND) `find $(PY26-CRYPTO_IPK_DIR)$(TARGET_PREFIX)/lib/ -name '*.so'`
 	$(MAKE) $(PY26-CRYPTO_IPK_DIR)/CONTROL/control
 #	echo $(PY-CRYPTO_CONFFILES) | sed -e 's/ /\n/g' > $(PY-CRYPTO_IPK_DIR)/CONTROL/conffiles
@@ -319,7 +319,7 @@ $(PY27-CRYPTO_IPK): $(PY-CRYPTO_BUILD_DIR)/.built
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.7/site-packages \
 		CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	$(HOST_STAGING_PREFIX)/bin/python2.7 -c "import setuptools; execfile('setup.py')" \
-		$(INSTALL) --root=$(PY27-CRYPTO_IPK_DIR) --prefix=$(TARGET_PREFIX))
+		install --root=$(PY27-CRYPTO_IPK_DIR) --prefix=$(TARGET_PREFIX))
 	$(STRIP_COMMAND) `find $(PY27-CRYPTO_IPK_DIR)$(TARGET_PREFIX)/lib/ -name '*.so'`
 	$(MAKE) $(PY27-CRYPTO_IPK_DIR)/CONTROL/control
 #	echo $(PY-CRYPTO_CONFFILES) | sed -e 's/ /\n/g' > $(PY-CRYPTO_IPK_DIR)/CONTROL/conffiles

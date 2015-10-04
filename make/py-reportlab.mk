@@ -272,7 +272,7 @@ $(PY24-REPORTLAB_IPK): $(PY-REPORTLAB_BUILD_DIR)/.built
 	(cd $(PY-REPORTLAB_BUILD_DIR)/2.4/reportlab; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.4 -c "import setuptools; execfile('setup.py')" \
-	$(INSTALL) --root=$(PY24-REPORTLAB_IPK_DIR) --prefix=$(TARGET_PREFIX))
+	install --root=$(PY24-REPORTLAB_IPK_DIR) --prefix=$(TARGET_PREFIX))
 	$(STRIP_COMMAND) `find $(PY24-REPORTLAB_IPK_DIR)$(TARGET_PREFIX)/lib -name '*.so'`
 	rm -rf $(PY24-REPORTLAB_IPK_DIR)$(TARGET_PREFIX)/share
 	$(MAKE) $(PY24-REPORTLAB_IPK_DIR)/CONTROL/control
@@ -285,7 +285,7 @@ $(PY25-REPORTLAB_IPK) $(PY-REPORTLAB-COMMON_IPK): $(PY-REPORTLAB_BUILD_DIR)/.bui
 	(cd $(PY-REPORTLAB_BUILD_DIR)/2.5/reportlab; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.5 -c "import setuptools; execfile('setup.py')" \
-	$(INSTALL) --root=$(PY25-REPORTLAB_IPK_DIR) --prefix=$(TARGET_PREFIX))
+	install --root=$(PY25-REPORTLAB_IPK_DIR) --prefix=$(TARGET_PREFIX))
 	$(STRIP_COMMAND) `find $(PY25-REPORTLAB_IPK_DIR)$(TARGET_PREFIX)/lib -name '*.so'`
 	$(INSTALL) -d $(PY-REPORTLAB-COMMON_IPK_DIR)$(TARGET_PREFIX)/
 	mv $(PY25-REPORTLAB_IPK_DIR)$(TARGET_PREFIX)/share $(PY-REPORTLAB-COMMON_IPK_DIR)$(TARGET_PREFIX)/

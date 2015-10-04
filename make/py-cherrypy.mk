@@ -152,11 +152,11 @@ $(PY-CHERRYPY_BUILD_DIR)/.staged: $(PY-CHERRYPY_BUILD_DIR)/.built
 	(cd $(@D)/2.4; \
 	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 -c "import setuptools; execfile('setup.py')" \
-	    $(INSTALL) --root=$(STAGING_DIR) --prefix=$(TARGET_PREFIX))
+	    install --root=$(STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	(cd $(@D)/2.5; \
 	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 -c "import setuptools; execfile('setup.py')" \
-	    $(INSTALL) --root=$(STAGING_DIR) --prefix=$(TARGET_PREFIX))
+	    install --root=$(STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	touch $@
 
 py-cherrypy-stage: $(PY-CHERRYPY_BUILD_DIR)/.staged
@@ -211,7 +211,7 @@ $(PY24-CHERRYPY_IPK): $(PY-CHERRYPY_BUILD_DIR)/.built
 	(cd $(PY-CHERRYPY_BUILD_DIR)/2.4; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.4 -c "import setuptools; execfile('setup.py')" \
-	$(INSTALL) --root=$(PY24-CHERRYPY_IPK_DIR) --prefix=$(TARGET_PREFIX))
+	install --root=$(PY24-CHERRYPY_IPK_DIR) --prefix=$(TARGET_PREFIX))
 	$(MAKE) $(PY24-CHERRYPY_IPK_DIR)/CONTROL/control
 	echo $(PY-CHERRYPY_CONFFILES) | sed -e 's/ /\n/g' > $(PY24-CHERRYPY_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY24-CHERRYPY_IPK_DIR)
@@ -221,7 +221,7 @@ $(PY25-CHERRYPY_IPK): $(PY-CHERRYPY_BUILD_DIR)/.built
 	(cd $(PY-CHERRYPY_BUILD_DIR)/2.5; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python2.5 -c "import setuptools; execfile('setup.py')" \
-	$(INSTALL) --root=$(PY25-CHERRYPY_IPK_DIR) --prefix=$(TARGET_PREFIX))
+	install --root=$(PY25-CHERRYPY_IPK_DIR) --prefix=$(TARGET_PREFIX))
 	$(MAKE) $(PY25-CHERRYPY_IPK_DIR)/CONTROL/control
 	echo $(PY-CHERRYPY_CONFFILES) | sed -e 's/ /\n/g' > $(PY25-CHERRYPY_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY25-CHERRYPY_IPK_DIR)

@@ -179,7 +179,7 @@ $(PY-PYRO_IPK): $(PY-PYRO_BUILD_DIR)/.built
 	(cd $(PY-PYRO_BUILD_DIR); \
 	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.4/site-packages \
 	    $(HOST_STAGING_PREFIX)/bin/python2.4 -c "import setuptools; execfile('setup.py')" \
-		$(INSTALL) --root=$(PY-PYRO_IPK_DIR) --prefix=$(TARGET_PREFIX); \
+		install --root=$(PY-PYRO_IPK_DIR) --prefix=$(TARGET_PREFIX); \
 	)
 	$(MAKE) $(PY-PYRO_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY-PYRO_IPK_DIR)

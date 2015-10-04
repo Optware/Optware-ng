@@ -325,7 +325,7 @@ $(IPYTHON_PY25_IPK): $(IPYTHON_BUILD_DIR)/.built
 	rm -rf $(IPYTHON_PY25_IPK_DIR) $(BUILD_DIR)/py25-ipython_*_$(TARGET_ARCH).ipk
 	(cd $(IPYTHON_BUILD_DIR)/2.5; \
 		$(HOST_STAGING_PREFIX)/bin/python2.5 -c "import setuptools; execfile('setup.py')" \
-		$(INSTALL) --root=$(IPYTHON_PY25_IPK_DIR) --prefix=$(TARGET_PREFIX))
+		install --root=$(IPYTHON_PY25_IPK_DIR) --prefix=$(TARGET_PREFIX))
 	rm -rf $(IPYTHON_PY25_IPK_DIR)$(TARGET_PREFIX)/share
 	for f in $(IPYTHON_PY25_IPK_DIR)$(TARGET_PREFIX)/bin/*; \
 		do mv $$f `echo $$f | sed 's|$$|-2.5|'`; done
@@ -338,7 +338,7 @@ $(IPYTHON_PY26_IPK): $(IPYTHON_BUILD_DIR)/.built
 	rm -rf $(IPYTHON-COMMON_IPK_DIR) $(BUILD_DIR)/ipython-common_*_$(TARGET_ARCH).ipk
 	(cd $(IPYTHON_BUILD_DIR)/2.6; \
 		$(HOST_STAGING_PREFIX)/bin/python2.6 -c "import setuptools; execfile('setup.py')" \
-		$(INSTALL) --root=$(IPYTHON_PY26_IPK_DIR) --prefix=$(TARGET_PREFIX))
+		install --root=$(IPYTHON_PY26_IPK_DIR) --prefix=$(TARGET_PREFIX))
 	rm -rf $(IPYTHON_PY26_IPK_DIR)$(TARGET_PREFIX)/share
 	$(MAKE) $(IPYTHON_PY26_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(IPYTHON_PY26_IPK_DIR)
@@ -349,7 +349,7 @@ $(IPYTHON_PY27_IPK): $(IPYTHON_BUILD_DIR)/.built
 	rm -rf $(IPYTHON-COMMON_IPK_DIR) $(BUILD_DIR)/ipython-common_*_$(TARGET_ARCH).ipk
 	(cd $(IPYTHON_BUILD_DIR)/2.7; \
 		$(HOST_STAGING_PREFIX)/bin/python2.7 -c "import setuptools; execfile('setup.py')" \
-		$(INSTALL) --root=$(IPYTHON_PY27_IPK_DIR) --prefix=$(TARGET_PREFIX))
+		install --root=$(IPYTHON_PY27_IPK_DIR) --prefix=$(TARGET_PREFIX))
 	rm -rf $(IPYTHON_PY27_IPK_DIR)$(TARGET_PREFIX)/share
 	$(MAKE) $(IPYTHON_PY27_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(IPYTHON_PY27_IPK_DIR)
@@ -360,7 +360,7 @@ $(IPYTHON_PY3_IPK): $(IPYTHON_BUILD_DIR)/.built
 	rm -rf $(IPYTHON-COMMON_IPK_DIR) $(BUILD_DIR)/ipython-common_*_$(TARGET_ARCH).ipk
 	(cd $(IPYTHON_BUILD_DIR)/3; \
 		$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py \
-		$(INSTALL) --root=$(IPYTHON_PY3_IPK_DIR) --prefix=$(TARGET_PREFIX))
+		install --root=$(IPYTHON_PY3_IPK_DIR) --prefix=$(TARGET_PREFIX))
 	rm -rf $(IPYTHON_PY3_IPK_DIR)$(TARGET_PREFIX)/share
 	$(MAKE) $(IPYTHON_PY3_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(IPYTHON_PY3_IPK_DIR)
@@ -369,7 +369,7 @@ $(IPYTHON_PY3_IPK): $(IPYTHON_BUILD_DIR)/.built
 $(IPYTHON-COMMON_IPK): $(IPYTHON_BUILD_DIR)/.built
 	(cd $(IPYTHON_BUILD_DIR)/2.7; \
 		$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py \
-		$(INSTALL) --root=$(IPYTHON-COMMON_IPK_DIR) --prefix=$(TARGET_PREFIX))
+		install --root=$(IPYTHON-COMMON_IPK_DIR) --prefix=$(TARGET_PREFIX))
 	rm -rf $(IPYTHON-COMMON_IPK_DIR)$(TARGET_PREFIX)/bin $(IPYTHON-COMMON_IPK_DIR)$(TARGET_PREFIX)/lib
 	$(MAKE) $(IPYTHON-COMMON_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(IPYTHON-COMMON_IPK_DIR)
@@ -379,7 +379,7 @@ ifneq ($(IPYTHON_VERSION), $(IPYTHON_VERSION_OLD))
 $(IPYTHON-COMMON-OLD_IPK): $(IPYTHON_BUILD_DIR)/.built
 	(cd $(IPYTHON_BUILD_DIR)/2.6; \
 		$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py \
-		$(INSTALL) --root=$(IPYTHON-COMMON-OLD_IPK_DIR) --prefix=$(TARGET_PREFIX))
+		install --root=$(IPYTHON-COMMON-OLD_IPK_DIR) --prefix=$(TARGET_PREFIX))
 	rm -rf $(IPYTHON-COMMON-OLD_IPK_DIR)$(TARGET_PREFIX)/bin $(IPYTHON-COMMON-OLD_IPK_DIR)$(TARGET_PREFIX)/lib
 	$(MAKE) $(IPYTHON-COMMON-OLD_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(IPYTHON-COMMON-OLD_IPK_DIR)
