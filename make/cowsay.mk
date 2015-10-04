@@ -26,7 +26,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-COWSAY_SITE=http://www.nog.net/~tony/warez/
+COWSAY_SITE=http://pkgs.fedoraproject.org/repo/pkgs/cowsay/$(COWSAY_SOURCE)/b29169797359420dadb998079021a494
 COWSAY_VERSION=3.03
 COWSAY_SOURCE=cowsay-$(COWSAY_VERSION).tar.gz
 COWSAY_DIR=cowsay-$(COWSAY_VERSION)

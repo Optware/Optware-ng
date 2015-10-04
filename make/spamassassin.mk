@@ -4,7 +4,7 @@
 #
 ###########################################################
 
-SPAMASSASSIN_SITE=http://www.artfiles.org/apache.org/spamassassin/source
+SPAMASSASSIN_SITE=https://archive.apache.org/dist/spamassassin
 SPAMASSASSIN_VERSION=3.1.8
 SPAMASSASSIN_SOURCE=Mail-SpamAssassin-$(SPAMASSASSIN_VERSION).tar.bz2
 SPAMASSASSIN_DIR=Mail-SpamAssassin-$(SPAMASSASSIN_VERSION)
@@ -48,7 +48,8 @@ SPAMASSASSIN_IPK=$(BUILD_DIR)/spamassassin_$(SPAMASSASSIN_VERSION)-$(SPAMASSASSI
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(SPAMASSASSIN_SOURCE):
-	$(WGET) -P $(DL_DIR) $(SPAMASSASSIN_SITE)/$(SPAMASSASSIN_SOURCE)
+	$(WGET) -P $(@D) $(SPAMASSASSIN_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(FREEBSD_DISTFILES)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.

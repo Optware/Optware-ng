@@ -77,8 +77,9 @@ PERL_HOTTPROXY_IPK=$(BUILD_DIR)/perl-hottproxy_$(PERL_HOTTPROXY_VERSION)-$(PERL_
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PERL_HOTTPROXY_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PERL_HOTTPROXY_SITE)/$(PERL_HOTTPROXY_SOURCE) || \
-	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(PERL_HOTTPROXY_SOURCE)
+	$(WGET) -P $(@D) $(PERL-HOTTPROXY_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(FREEBSD_DISTFILES)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.

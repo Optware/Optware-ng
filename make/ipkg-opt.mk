@@ -9,6 +9,8 @@
 # for the package.  IPKG-OPT_DIR is the directory which is created when
 # this cvs module is checked out.
 #
+IPKG-OPT_SITE=$(SOURCES_NLO_SITE)
+IPKG-OPT_SOURCE=ipkg-opt-$(IPKG-OPT_VERSION).tar.gz
 IPKG-OPT_REPOSITORY=:pserver:anoncvs@anoncvs.handhelds.org
 IPKG-OPT_DIR=ipkg-opt
 IPKG-OPT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
@@ -21,7 +23,7 @@ else
 IPKG-OPT_DEPENDS=
 endif
 IPKG-OPT_SUGGESTS=
-IPKG-OPT_CONFLICTS=ipkg-fw
+IPKG-OPT_CONFLICTS=ipkg-static
 
 #
 # Software downloaded from CVS repositories must either use a tag or a
@@ -72,7 +74,7 @@ IPKG-OPT_PATCHES=$(IPKG-OPT_SOURCE_DIR)/args.h.patch \
 	$(IPKG-OPT_SOURCE_DIR)/ipkg_conf.h.patch \
 	$(IPKG-OPT_SOURCE_DIR)/ipkg_conf.c.patch \
 	$(IPKG-OPT_SOURCE_DIR)/update-alternatives.patch \
-	$(IPKG-STATIC_SOURCE_DIR)/update-alternatives.android.patch \
+	$(IPKG-OPT_SOURCE_DIR)/update-alternatives.android.patch \
 	$(IPKG-OPT_SOURCE_DIR)/ipkg-va_start_segfault.diff \
 	$(IPKG-OPT_SOURCE_DIR)/list_installed.patch \
 	$(IPKG-OPT_SOURCE_DIR)/ipkg_install.c.patch
@@ -91,19 +93,26 @@ endif
 # In this case there is no tarball, instead we fetch the sources
 # directly to the builddir with CVS
 #
-$(DL_DIR)/ipkg-opt-$(IPKG-OPT_VERSION).tar.gz:
-	( cd $(BUILD_DIR) ; \
-		rm -rf $(IPKG-OPT_DIR) && \
-		echo  "/1 $(IPKG-OPT_REPOSITORY):2401/cvs Ay=0=h<Z" \
-			> ipkg.cvspass && \
-		CVS_PASSFILE=ipkg.cvspass \
-		cvs -d $(IPKG-OPT_REPOSITORY):/cvs -z3 co $(IPKG-OPT_CVS_OPTS) \
-			-d $(IPKG-OPT_DIR) familiar/dist/ipkg/C && \
-		tar -czf $@ $(IPKG-OPT_DIR) && \
-		rm -rf $(IPKG-OPT_DIR) \
-	)
+#$(DL_DIR)/ipkg-opt-$(IPKG-OPT_VERSION).tar.gz:
+#	( cd $(BUILD_DIR) ; \
+#		rm -rf $(IPKG-OPT_DIR) && \
+#		echo  "/1 $(IPKG-OPT_REPOSITORY):2401/cvs Ay=0=h<Z" \
+#			> ipkg.cvspass && \
+#		CVS_PASSFILE=ipkg.cvspass \
+#		cvs -d $(IPKG-OPT_REPOSITORY):/cvs -z3 co $(IPKG-OPT_CVS_OPTS) \
+#			-d $(IPKG-OPT_DIR) familiar/dist/ipkg/C && \
+#		tar -czf $@ $(IPKG-OPT_DIR) && \
+#		rm -rf $(IPKG-OPT_DIR) \
+#	)
 
-ipkg-opt-source: $(DL_DIR)/ipkg-opt-$(IPKG-OPT_VERSION).tar.gz
+#
+# This is the dependency on the source code.  If the source is missing,
+# then it will be fetched from the site using wget.
+#
+$(DL_DIR)/$(IPKG-OPT_SOURCE):
+	$(WGET) -P $(@D) $(IPKG-OPT_SITE)/$(@F)
+
+ipkg-opt-source: $(DL_DIR)/$(IPKG-OPT_SOURCE) $(IPKG-OPT_PATCHES)
 
 #
 # This target also configures the build within the build directory.
@@ -115,9 +124,9 @@ ipkg-opt-source: $(DL_DIR)/ipkg-opt-$(IPKG-OPT_VERSION).tar.gz
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) ipkg-opt-stage <baz>-stage").
 #
-$(IPKG-OPT_BUILD_DIR)/.configured: $(DL_DIR)/ipkg-opt-$(IPKG-OPT_VERSION).tar.gz
+$(IPKG-OPT_BUILD_DIR)/.configured: $(DL_DIR)/$(IPKG-OPT_SOURCE) $(IPKG-OPT_PATCHES) make/ipkg-opt.mk
 	rm -rf $(BUILD_DIR)/$(IPKG-OPT_DIR) $(@D)
-	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/ipkg-opt-$(IPKG-OPT_VERSION).tar.gz
+	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/$(IPKG-OPT_SOURCE)
 	if test -n "$(IPKG-OPT_PATCHES)" ; \
 		then cat $(IPKG-OPT_PATCHES) | \
 		$(PATCH) -d $(BUILD_DIR)/$(IPKG-OPT_DIR) -p1 ; \
@@ -173,7 +182,7 @@ $(IPKG-OPT_IPK_DIR)/CONTROL/control:
 	@echo "Section: $(IPKG-OPT_SECTION)" >>$@
 	@echo "Version: $(IPKG-OPT_VERSION)-$(IPKG-OPT_IPK_VERSION)" >>$@
 	@echo "Maintainer: $(IPKG-OPT_MAINTAINER)" >>$@
-	@echo "Source: $(IPKG-OPT_REPOSITORY)" >>$@
+	@echo "Source: $(IPKG-OPT_SITE)/$(IPKG-OPT_SOURCE)" >>$@
 	@echo "Description: $(IPKG-OPT_DESCRIPTION)" >>$@
 	@echo "Depends: $(IPKG-OPT_DEPENDS)" >>$@
 	@echo "Suggests: $(IPKG-OPT_SUGGESTS)" >>$@

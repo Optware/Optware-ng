@@ -9,6 +9,8 @@
 # for the package.  IPKG-STATIC_DIR is the directory which is created when
 # this cvs module is checked out.
 #
+IPKG-STATIC_SITE=$(SOURCES_NLO_SITE)
+IPKG-STATIC_SOURCE=ipkg-opt-$(IPKG-STATIC_VERSION).tar.gz
 IPKG-STATIC_REPOSITORY=:pserver:anoncvs@anoncvs.handhelds.org
 IPKG-STATIC_DIR=ipkg-opt
 IPKG-STATIC_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
@@ -87,17 +89,17 @@ endif
 #
 #$(DL_DIR)/ipkg-static-$(IPKG-STATIC_VERSION).tar.gz:
 #	( cd $(BUILD_DIR) ; \
-		rm -rf $(IPKG-STATIC_DIR) && \
-		echo  "/1 $(IPKG-STATIC_REPOSITORY):2401/cvs Ay=0=h<Z" \
-			> ipkg.cvspass && \
-		CVS_PASSFILE=ipkg.cvspass \
-		cvs -d $(IPKG-STATIC_REPOSITORY):/cvs -z3 co $(IPKG-STATIC_CVS_OPTS) \
-			-d $(IPKG-STATIC_DIR) familiar/dist/ipkg/C && \
-		tar -czf $@ $(IPKG-STATIC_DIR) && \
-		rm -rf $(IPKG-STATIC_DIR) \
-	)
+#		rm -rf $(IPKG-STATIC_DIR) && \
+#		echo  "/1 $(IPKG-STATIC_REPOSITORY):2401/cvs Ay=0=h<Z" \
+#			> ipkg.cvspass && \
+#		CVS_PASSFILE=ipkg.cvspass \
+#		cvs -d $(IPKG-STATIC_REPOSITORY):/cvs -z3 co $(IPKG-STATIC_CVS_OPTS) \
+#			-d $(IPKG-STATIC_DIR) familiar/dist/ipkg/C && \
+#		tar -czf $@ $(IPKG-STATIC_DIR) && \
+#		rm -rf $(IPKG-STATIC_DIR) \
+#	)
 
-ipkg-static-source: #$(DL_DIR)/ipkg-static-$(IPKG-STATIC_VERSION).tar.gz
+ipkg-static-source: $(IPKG-STATIC_PATCHES)
 	$(MAKE) ipkg-opt-source
 
 #
@@ -110,10 +112,10 @@ ipkg-static-source: #$(DL_DIR)/ipkg-static-$(IPKG-STATIC_VERSION).tar.gz
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) ipkg-static-stage <baz>-stage").
 #
-$(IPKG-STATIC_BUILD_DIR)/.configured: make/ipkg-static.mk #$(DL_DIR)/ipkg-static-$(IPKG-STATIC_VERSION).tar.gz
+$(IPKG-STATIC_BUILD_DIR)/.configured: $(IPKG-STATIC_PATCHES) make/ipkg-static.mk
 	$(MAKE) ipkg-opt-source
 	rm -rf $(BUILD_DIR)/$(IPKG-STATIC_DIR) $(@D)
-	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/ipkg-opt-$(IPKG-STATIC_VERSION).tar.gz
+	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/$(IPKG-STATIC_SOURCE)
 	if test -n "$(IPKG-STATIC_PATCHES)" ; \
 		then cat $(IPKG-STATIC_PATCHES) | \
 		$(PATCH) -d $(BUILD_DIR)/$(IPKG-STATIC_DIR) -p1 ; \
@@ -170,7 +172,7 @@ $(IPKG-STATIC_IPK_DIR)/CONTROL/control:
 	@echo "Section: $(IPKG-STATIC_SECTION)" >>$@
 	@echo "Version: $(IPKG-STATIC_VERSION)-$(IPKG-STATIC_IPK_VERSION)" >>$@
 	@echo "Maintainer: $(IPKG-STATIC_MAINTAINER)" >>$@
-	@echo "Source: $(IPKG-STATIC_REPOSITORY)" >>$@
+	@echo "Source: $(IPKG-STATIC_SITE)/$(IPKG-STATIC_SOURCE)" >>$@
 	@echo "Description: $(IPKG-STATIC_DESCRIPTION)" >>$@
 	@echo "Depends: $(IPKG-STATIC_DEPENDS)" >>$@
 	@echo "Suggests: $(IPKG-STATIC_SUGGESTS)" >>$@

@@ -4,7 +4,7 @@
 #
 ###########################################################
 
-POSTGREY_SITE=http://postgrey.schweikert.ch/pub
+POSTGREY_SITE=http://postgrey.schweikert.ch/pub/old
 POSTGREY_VERSION=1.33
 POSTGREY_SOURCE=postgrey-$(POSTGREY_VERSION).tar.gz
 POSTGREY_DIR=postgrey-$(POSTGREY_VERSION)
@@ -27,7 +27,8 @@ POSTGREY_IPK_DIR=$(BUILD_DIR)/postgrey-$(POSTGREY_VERSION)-ipk
 POSTGREY_IPK=$(BUILD_DIR)/postgrey_$(POSTGREY_VERSION)-$(POSTGREY_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 $(DL_DIR)/$(POSTGREY_SOURCE):
-	$(WGET) -P $(DL_DIR) $(POSTGREY_SITE)/$(POSTGREY_SOURCE)
+	$(WGET) -P $(@D) $(POSTGREY_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(FREEBSD_DISTFILES)/$(@F)
 
 postgrey-source: $(DL_DIR)/$(POSTGREY_SOURCE) $(POSTGREY_PATCHES)
 

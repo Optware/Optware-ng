@@ -20,7 +20,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PERL_ASSP_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/assp
+PERL_ASSP_SITE=$(FREEBSD_DISTFILES)
 PERL_ASSP_VERSION=1.2.6
 PERL_ASSP_SOURCE=ASSP_$(PERL_ASSP_VERSION)-Install.zip
 PERL_ASSP_DIR=ASSP
@@ -76,7 +76,8 @@ PERL_ASSP_IPK=$(BUILD_DIR)/perl-assp_$(PERL_ASSP_VERSION)-$(PERL_ASSP_IPK_VERSIO
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PERL_ASSP_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PERL_ASSP_SITE)/$(PERL_ASSP_SOURCE)
+	$(WGET) -P $(@D) $(PERL_ASSP_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
