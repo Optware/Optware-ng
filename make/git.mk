@@ -349,7 +349,7 @@ $(GIT_IPK): $(GIT_BUILD_DIR)/.built
 		$$GIT_NSEC \
 		$(GIT_MAKE_FLAGS) \
 		prefix=$(TARGET_PREFIX) \
-		$(INSTALL)
+		install
 ifneq (,$(filter perl, $(PACKAGES)))
 	for f in `find $(GIT_IPK_DIR)$(TARGET_PREFIX)/lib -name perllocal.pod`; \
 		do mv $$f $$f.git; done
@@ -381,7 +381,7 @@ $(GIT-LITE_IPK): $(GIT-LITE_BUILD_DIR)/.built
 		$$GIT_NSEC \
 		$(GIT_MAKE_FLAGS) \
 		prefix=$(TARGET_PREFIX) \
-		$(INSTALL)
+		install
 	( cd $(GIT-LITE_IPK_DIR)$(TARGET_PREFIX)/bin ; \
 	  rm -f git-cvsserver git-receive-pack git-shell git-upload-archive git-upload-pack git-remote-* )
 	rm -f $(GIT-LITE_IPK_DIR)$(TARGET_PREFIX)/bin/git
