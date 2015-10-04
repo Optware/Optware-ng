@@ -10,8 +10,8 @@
 # XFIXES_DIR is the directory which is created when the source
 # archive is unpacked.
 #
-XFIXES_SITE=http://freedesktop.org
-XFIXES_SOURCE=# none - available from CVS only
+XFIXES_SITE=$(SOURCES_NLO_SITE)
+XFIXES_SOURCE=xfixes-$(XFIXES_VERSION).tar.gz
 XFIXES_VERSION=2.0.2+cvs20050130
 XFIXES_REPOSITORY=:pserver:anoncvs@freedesktop.org:/cvs/xlibs
 XFIXES_DIR=Xfixes
@@ -62,7 +62,7 @@ XFIXES_IPK=$(BUILD_DIR)/xfixes_$(XFIXES_VERSION)-$(XFIXES_IPK_VERSION)_$(TARGET_
 # Automatically create a ipkg control file
 #
 $(XFIXES_IPK_DIR)/CONTROL/control:
-	@$(INSTALL) -d $(XFIXES_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: xfixes" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -78,15 +78,22 @@ $(XFIXES_IPK_DIR)/CONTROL/control:
 # In this case there is no tarball, instead we fetch the sources
 # directly to the builddir with CVS
 #
-$(DL_DIR)/xfixes-$(XFIXES_VERSION).tar.gz:
-	( cd $(BUILD_DIR) ; \
-		rm -rf $(XFIXES_DIR) && \
-		cvs -d $(XFIXES_REPOSITORY) -z3 co $(XFIXES_CVS_OPTS) $(XFIXES_DIR) && \
-		tar -czf $@ $(XFIXES_DIR) && \
-		rm -rf $(XFIXES_DIR) \
-	)
+#$(DL_DIR)/xfixes-$(XFIXES_VERSION).tar.gz:
+#	( cd $(BUILD_DIR) ; \
+#		rm -rf $(XFIXES_DIR) && \
+#		cvs -d $(XFIXES_REPOSITORY) -z3 co $(XFIXES_CVS_OPTS) $(XFIXES_DIR) && \
+#		tar -czf $@ $(XFIXES_DIR) && \
+#		rm -rf $(XFIXES_DIR) \
+#	)
 
-xfixes-source: $(DL_DIR)/xfixes-$(XFIXES_VERSION).tar.gz $(XFIXES_PATCHES)
+#
+# This is the dependency on the source code.  If the source is missing,
+# then it will be fetched from the site using wget.
+#
+$(DL_DIR)/$(XFIXES_SOURCE):
+	$(WGET) -P $(@D) $(XFIXES_SITE)/$(@F)
+
+xfixes-source: $(DL_DIR)/$(XFIXES_SOURCE) $(XFIXES_PATCHES)
 
 #
 # This target also configures the build within the build directory.
@@ -98,20 +105,18 @@ xfixes-source: $(DL_DIR)/xfixes-$(XFIXES_VERSION).tar.gz $(XFIXES_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(XFIXES_BUILD_DIR)/.configured: $(DL_DIR)/xfixes-$(XFIXES_VERSION).tar.gz \
-		$(XFIXES_PATCHES) make/xfixes.mk
-	$(MAKE) x11-stage
-	$(MAKE) fixesext-stage
+$(XFIXES_BUILD_DIR)/.configured: $(DL_DIR)/$(XFIXES_SOURCE) $(XFIXES_PATCHES) make/xfixes.mk
+	$(MAKE) x11-stage fixesext-stage
 	rm -rf $(BUILD_DIR)/$(XFIXES_DIR) $(@D)
-	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xfixes-$(XFIXES_VERSION).tar.gz
+	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/$(XFIXES_SOURCE)
 	if test -n "$(XFIXES_PATCHES)" ; \
 		then cat $(XFIXES_PATCHES) | \
 		$(PATCH) -d $(BUILD_DIR)/$(XFIXES_DIR) -p1 ; \
 	fi
-	if test "$(BUILD_DIR)/$(XFIXES_DIR)" != "$(XFIXES_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(XFIXES_DIR) $(XFIXES_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(XFIXES_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(XFIXES_DIR) $(@D) ; \
 	fi
-	(cd $(XFIXES_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(XFIXES_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(XFIXES_LDFLAGS)" \
@@ -133,7 +138,7 @@ xfixes-unpack: $(XFIXES_BUILD_DIR)/.configured
 #
 $(XFIXES_BUILD_DIR)/.built: $(XFIXES_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(XFIXES_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -146,7 +151,7 @@ xfixes: $(XFIXES_BUILD_DIR)/.built
 #
 $(XFIXES_BUILD_DIR)/.staged: $(XFIXES_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(XFIXES_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/xfixes.pc
 	rm -f $(STAGING_LIB_DIR)/libXfixes.la
 	touch $@

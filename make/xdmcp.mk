@@ -10,8 +10,8 @@
 # XDMCP_DIR is the directory which is created when the source
 # archive is unpacked.
 #
-XDMCP_SITE=http://freedesktop.org
-XDMCP_SOURCE=# none - available from CVS only
+XDMCP_SITE=$(SOURCES_NLO_SITE)
+XDMCP_SOURCE=xdmcp-$(XDMCP_VERSION).tar.gz
 XDMCP_VERSION=0.1.3+cvs20050130
 XDMCP_REPOSITORY=:pserver:anoncvs@freedesktop.org:/cvs/xlibs
 XDMCP_DIR=Xdmcp
@@ -61,7 +61,7 @@ XDMCP_IPK=$(BUILD_DIR)/xdmcp_$(XDMCP_VERSION)-$(XDMCP_IPK_VERSION)_$(TARGET_ARCH
 # Automatically create a ipkg control file
 #
 $(XDMCP_IPK_DIR)/CONTROL/control:
-	@$(INSTALL) -d $(XDMCP_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: xdmcp" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -76,15 +76,22 @@ $(XDMCP_IPK_DIR)/CONTROL/control:
 # In this case there is no tarball, instead we fetch the sources
 # directly to the builddir with CVS
 #
-$(DL_DIR)/xdmcp-$(XDMCP_VERSION).tar.gz:
-	( cd $(BUILD_DIR) ; \
-		rm -rf $(XDMCP_DIR) && \
-		cvs -d $(XDMCP_REPOSITORY) -z3 co $(XDMCP_CVS_OPTS) $(XDMCP_DIR) && \
-		tar -czf $@ $(XDMCP_DIR) && \
-		rm -rf $(XDMCP_DIR) \
-	)
+#$(DL_DIR)/xdmcp-$(XDMCP_VERSION).tar.gz:
+#	( cd $(BUILD_DIR) ; \
+#		rm -rf $(XDMCP_DIR) && \
+#		cvs -d $(XDMCP_REPOSITORY) -z3 co $(XDMCP_CVS_OPTS) $(XDMCP_DIR) && \
+#		tar -czf $@ $(XDMCP_DIR) && \
+#		rm -rf $(XDMCP_DIR) \
+#	)
 
-xdmcp-source: $(DL_DIR)/xdmcp-$(XDMCP_VERSION).tar.gz $(XDMCP_PATCHES)
+#
+# This is the dependency on the source code.  If the source is missing,
+# then it will be fetched from the site using wget.
+#
+$(DL_DIR)/$(XDMCP_SOURCE):
+	$(WGET) -P $(@D) $(XDMCP_SITE)/$(@F)
+
+xdmcp-source: $(DL_DIR)/$(XDMCP_SOURCE) $(XDMCP_PATCHES)
 
 #
 # This target also configures the build within the build directory.
@@ -96,11 +103,10 @@ xdmcp-source: $(DL_DIR)/xdmcp-$(XDMCP_VERSION).tar.gz $(XDMCP_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(XDMCP_BUILD_DIR)/.configured: $(DL_DIR)/xdmcp-$(XDMCP_VERSION).tar.gz \
-		$(XDMCP_PATCHES) make/xdmcp.mk
+$(XDMCP_BUILD_DIR)/.configured: $(DL_DIR)/$(XDMCP_SOURCE) $(XDMCP_PATCHES) make/xdmcp.mk
 	$(MAKE) xproto-stage
 	rm -rf $(BUILD_DIR)/$(XDMCP_DIR) $(@D)
-	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xdmcp-$(XDMCP_VERSION).tar.gz
+	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/$(XDMCP_SOURCE)
 	if test -n "$(XDMCP_PATCHES)" ; \
 		then cat $(XDMCP_PATCHES) | \
 		$(PATCH) -d $(BUILD_DIR)/$(XDMCP_DIR) -p1 ; \

@@ -10,8 +10,8 @@
 # XPM_DIR is the directory which is created when the source
 # archive is unpacked.
 #
-XPM_SITE=http://freedesktop.org
-XPM_SOURCE=# none - available from CVS only
+XPM_SITE=$(SOURCES_NLO_SITE)
+XPM_SOURCE=xpm-$(XPM_VERSION).tar.gz
 XPM_VERSION=3.5.2+cvs20050130
 XPM_REPOSITORY=:pserver:anoncvs@freedesktop.org:/cvs/xlibs
 XPM_DIR=Xpm
@@ -61,7 +61,7 @@ XPM_IPK=$(BUILD_DIR)/xpm_$(XPM_VERSION)-$(XPM_IPK_VERSION)_$(TARGET_ARCH).ipk
 # Automatically create a ipkg control file
 #
 $(XPM_IPK_DIR)/CONTROL/control:
-	@$(INSTALL) -d $(XPM_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: xpm" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -77,15 +77,22 @@ $(XPM_IPK_DIR)/CONTROL/control:
 # In this case there is no tarball, instead we fetch the sources
 # directly to the builddir with CVS
 #
-$(DL_DIR)/xpm-$(XPM_VERSION).tar.gz:
-	( cd $(BUILD_DIR) ; \
-		rm -rf $(XPM_DIR) && \
-		cvs -d $(XPM_REPOSITORY) -z3 co $(XPM_CVS_OPTS) $(XPM_DIR) && \
-		tar -czf $@ $(XPM_DIR) && \
-		rm -rf $(XPM_DIR) \
-	)
+#$(DL_DIR)/xpm-$(XPM_VERSION).tar.gz:
+#	( cd $(BUILD_DIR) ; \
+#		rm -rf $(XPM_DIR) && \
+#		cvs -d $(XPM_REPOSITORY) -z3 co $(XPM_CVS_OPTS) $(XPM_DIR) && \
+#		tar -czf $@ $(XPM_DIR) && \
+#		rm -rf $(XPM_DIR) \
+#	)
 
-xpm-source: $(DL_DIR)/xpm-$(XPM_VERSION).tar.gz $(XPM_PATCHES)
+#
+# This is the dependency on the source code.  If the source is missing,
+# then it will be fetched from the site using wget.
+#
+$(DL_DIR)/$(XPM_SOURCE):
+	$(WGET) -P $(@D) $(XPM_SITE)/$(@F)
+
+xpm-source: $(DL_DIR)/$(XPM_SOURCE) $(XPM_PATCHES)
 
 #
 # This target also configures the build within the build directory.
@@ -97,19 +104,18 @@ xpm-source: $(DL_DIR)/xpm-$(XPM_VERSION).tar.gz $(XPM_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(XPM_BUILD_DIR)/.configured: $(DL_DIR)/xpm-$(XPM_VERSION).tar.gz \
-		$(XPM_PATCHES) make/xpm.mk
+$(XPM_BUILD_DIR)/.configured: $(DL_DIR)/$(XPM_SOURCE) $(XPM_PATCHES) make/xpm.mk
 	$(MAKE) x11-stage
-	rm -rf $(BUILD_DIR)/$(XPM_DIR) $(XPM_BUILD_DIR)
-	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xpm-$(XPM_VERSION).tar.gz
+	rm -rf $(BUILD_DIR)/$(XPM_DIR) $(@D)
+	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/$(XPM_SOURCE)
 	if test -n "$(XPM_PATCHES)" ; \
 		then cat $(XPM_PATCHES) | \
 		$(PATCH) -d $(BUILD_DIR)/$(XPM_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(XPM_DIR)" != "$(XPM_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(XPM_DIR) $(XPM_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(XPM_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(XPM_DIR) $(@D) ; \
 	fi
-	(cd $(XPM_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(XPM_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(XPM_LDFLAGS)" \
@@ -131,7 +137,7 @@ xpm-unpack: $(XPM_BUILD_DIR)/.configured
 #
 $(XPM_BUILD_DIR)/.built: $(XPM_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(XPM_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -144,7 +150,7 @@ xpm: $(XPM_BUILD_DIR)/.built
 #
 $(XPM_BUILD_DIR)/.staged:  $(XPM_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(XPM_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/xpm.pc
 	rm -f $(STAGING_LIB_DIR)/libXpm.la
 	touch $@

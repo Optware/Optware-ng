@@ -13,6 +13,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 RTORRENT_SITE=http://libtorrent.rakshasa.no/downloads
+RTORRENT_SITE_GITHUB=https://github.com/rakshasa/rtorrent/archive
 
 RTORRENT_VERSION ?= 0.8.6
 RTORRENT_IPK_VERSION ?= 1
@@ -107,6 +108,7 @@ ifdef RTORRENT_SVN_REV
 	)
 else
 	$(WGET) -P $(@D) $(RTORRENT_SITE)/$(@F) || \
+	$(WGET) -O $@ $(RTORRENT_SITE_GITHUB)/$(RTORRENT_VERSION).tar.gz || (rm -f $@; exit 1) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 endif
 

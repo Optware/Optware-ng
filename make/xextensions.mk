@@ -10,8 +10,8 @@
 # XEXTENSIONS_DIR is the directory which is created when the source
 # archive is unpacked.
 #
-XEXTENSIONS_SITE=http://freedesktop.org/
-XEXTENSIONS_SOURCE=# none - available from CVS only
+XEXTENSIONS_SITE=$(SOURCES_NLO_SITE)
+XEXTENSIONS_SOURCE=xextensions-$(XEXTENSIONS_VERSION).tar.gz
 XEXTENSIONS_VERSION=1.0.2
 XEXTENSIONS_REPOSITORY=:pserver:anoncvs@freedesktop.org:/cvs/xlibs
 XEXTENSIONS_DIR=XExtensions
@@ -61,7 +61,7 @@ XEXTENSIONS_IPK=$(BUILD_DIR)/xextensions_$(XEXTENSIONS_VERSION)-$(XEXTENSIONS_IP
 # Automatically create a ipkg control file
 #
 $(XEXTENSIONS_IPK_DIR)/CONTROL/control:
-	@$(INSTALL) -d $(XEXTENSIONS_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: xextensions" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -76,15 +76,22 @@ $(XEXTENSIONS_IPK_DIR)/CONTROL/control:
 # In this case there is no tarball, instead we fetch the sources
 # directly to the builddir with CVS
 #
-$(DL_DIR)/xextensions-$(XEXTENSIONS_VERSION).tar.gz:
-	( cd $(BUILD_DIR) ; \
-		rm -rf $(XEXTENSIONS_DIR) && \
-		cvs -d $(XEXTENSIONS_REPOSITORY) -z3 co $(XEXTENSIONS_CVS_OPTS) $(XEXTENSIONS_DIR) && \
-		tar -czf $@ $(XEXTENSIONS_DIR) && \
-		rm -rf $(XEXTENSIONS_DIR) \
-	)
+#$(DL_DIR)/xextensions-$(XEXTENSIONS_VERSION).tar.gz:
+#	( cd $(BUILD_DIR) ; \
+#		rm -rf $(XEXTENSIONS_DIR) && \
+#		cvs -d $(XEXTENSIONS_REPOSITORY) -z3 co $(XEXTENSIONS_CVS_OPTS) $(XEXTENSIONS_DIR) && \
+#		tar -czf $@ $(XEXTENSIONS_DIR) && \
+#		rm -rf $(XEXTENSIONS_DIR) \
+#	)
 
-xextensions-source: $(DL_DIR)/xextensions-$(XEXTENSIONS_VERSION).tar.gz $(XEXTENSIONS_PATCHES)
+#
+# This is the dependency on the source code.  If the source is missing,
+# then it will be fetched from the site using wget.
+#
+$(DL_DIR)/$(XEXTENSIONS_SOURCE):
+	$(WGET) -P $(@D) $(XEXTENSIONS_SITE)/$(@F)
+
+xextensions-source: $(DL_DIR)/$(XEXTENSIONS_SOURCE) $(XEXTENSIONS_PATCHES)
 
 #
 # This target also configures the build within the build directory.
@@ -96,11 +103,10 @@ xextensions-source: $(DL_DIR)/xextensions-$(XEXTENSIONS_VERSION).tar.gz $(XEXTEN
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(XEXTENSIONS_BUILD_DIR)/.configured: $(DL_DIR)/xextensions-$(XEXTENSIONS_VERSION).tar.gz \
-		$(XEXTENSIONS_PATCHES) make/xextensions.mk
+$(XEXTENSIONS_BUILD_DIR)/.configured: $(DL_DIR)/$(XEXTENSIONS_SOURCE) $(XEXTENSIONS_PATCHES) make/xextensions.mk
 	$(MAKE) xproto-stage
 	rm -rf $(BUILD_DIR)/$(XEXTENSIONS_DIR) $(@D)
-	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xextensions-$(XEXTENSIONS_VERSION).tar.gz
+	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/$(XEXTENSIONS_SOURCE)
 	if test -n "$(XEXTENSIONS_PATCHES)" ; \
 		then cat $(XEXTENSIONS_PATCHES) | \
 		$(PATCH) -d $(BUILD_DIR)/$(XEXTENSIONS_DIR) -p1 ; \

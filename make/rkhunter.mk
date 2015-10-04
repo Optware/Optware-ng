@@ -26,7 +26,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-RKHUNTER_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/rkhunter
+RKHUNTER_SITE=http://pkgs.fedoraproject.org/repo/pkgs/rkhunter/$(RKHUNTER_SOURCE)/0c34eb2a2d0caa384f442c11fcbb0c46
 RKHUNTER_VERSION=1.3.8
 RKHUNTER_SOURCE=rkhunter-$(RKHUNTER_VERSION).tar.gz
 RKHUNTER_DIR=rkhunter-$(RKHUNTER_VERSION)

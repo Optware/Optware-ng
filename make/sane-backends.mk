@@ -45,7 +45,7 @@ SANE_BACKENDS_SITE=http://git.debian.org/?p=sane/sane-backends.git;a=snapshot;h=
 SANE_BACKENDS_VERSION=$(SANE_BACKENDS_RELEASE)+git$(SANE_BACKENDS_GIT_DATE)
 SANE_BACKENDS_DIR=sane-backends
 else
-SANE_BACKENDS_SITE=ftp://ftp.sane-project.org/pub/sane/sane-backends-$(SANE_BACKENDS_VERSION)
+SANE_BACKENDS_SITE=http://fossies.org/linux/misc
 SANE_BACKENDS_SITE_OLD=ftp://ftp.sane-project.org/pub/sane/old-versions/sane-backends-$(SANE_BACKENDS_VERSION)
 SANE_BACKENDS_VERSION=$(SANE_BACKENDS_RELEASE)
 SANE_BACKENDS_DIR=sane-backends-$(SANE_BACKENDS_VERSION)

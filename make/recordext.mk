@@ -10,8 +10,8 @@
 # RECORDEXT_DIR is the directory which is created when the source
 # archive is unpacked.
 #
-RECORDEXT_SITE=http://freedesktop.org/
-RECORDEXT_SOURCE=# none - available from CVS only
+RECORDEXT_SITE=$(SOURCES_NLO_SITE)
+RECORDEXT_SOURCE=recordext-$(RECORDEXT_VERSION).tar.gz
 RECORDEXT_VERSION=1.13+cvs20050130
 RECORDEXT_REPOSITORY=:pserver:anoncvs@freedesktop.org:/cvs/xlibs
 RECORDEXT_DIR=RecordExt
@@ -76,15 +76,22 @@ $(RECORDEXT_IPK_DIR)/CONTROL/control:
 # In this case there is no tarball, instead we fetch the sources
 # directly to the builddir with CVS
 #
-$(DL_DIR)/recordext-$(RECORDEXT_VERSION).tar.gz:
-	( cd $(BUILD_DIR) ; \
-		rm -rf $(RECORDEXT_DIR) && \
-		cvs -d $(RECORDEXT_REPOSITORY) -z3 co $(RECORDEXT_CVS_OPTS) $(RECORDEXT_DIR) && \
-		tar -czf $@ $(RECORDEXT_DIR) && \
-		rm -rf $(RECORDEXT_DIR) \
-	)
+#$(DL_DIR)/recordext-$(RECORDEXT_VERSION).tar.gz:
+#	( cd $(BUILD_DIR) ; \
+#		rm -rf $(RECORDEXT_DIR) && \
+#		cvs -d $(RECORDEXT_REPOSITORY) -z3 co $(RECORDEXT_CVS_OPTS) $(RECORDEXT_DIR) && \
+#		tar -czf $@ $(RECORDEXT_DIR) && \
+#		rm -rf $(RECORDEXT_DIR) \
+#	)
 
-recordext-source: $(DL_DIR)/recordext-$(RECORDEXT_VERSION).tar.gz $(RECORDEXT_PATCHES)
+#
+# This is the dependency on the source code.  If the source is missing,
+# then it will be fetched from the site using wget.
+#
+$(DL_DIR)/$(RECORDEXT_SOURCE):
+	$(WGET) -P $(@D) $(RECORDEXT_SITE)/$(@F)
+
+recordext-source: $(DL_DIR)/$(RECORDEXT_SOURCE) $(RECORDEXT_PATCHES)
 
 #
 # This target also configures the build within the build directory.
@@ -96,19 +103,18 @@ recordext-source: $(DL_DIR)/recordext-$(RECORDEXT_VERSION).tar.gz $(RECORDEXT_PA
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(RECORDEXT_BUILD_DIR)/.configured: $(DL_DIR)/recordext-$(RECORDEXT_VERSION).tar.gz \
-		$(RECORDEXT_PATCHES)
+$(RECORDEXT_BUILD_DIR)/.configured: $(DL_DIR)/$(RECORDEXT_SOURCE) $(RECORDEXT_PATCHES) make/recordext.mk
 	$(MAKE) x11-stage
-	rm -rf $(BUILD_DIR)/$(RECORDEXT_DIR) $(RECORDEXT_BUILD_DIR)
-	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/recordext-$(RECORDEXT_VERSION).tar.gz
+	rm -rf $(BUILD_DIR)/$(RECORDEXT_DIR) $(@D)
+	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/$(RECORDEXT_SOURCE)
 	if test -n "$(RECORDEXT_PATCHES)" ; \
 		then cat $(RECORDEXT_PATCHES) | \
 		$(PATCH) -d $(BUILD_DIR)/$(RECORDEXT_DIR) -p1 ; \
 	fi
-	if test "$(BUILD_DIR)/$(RECORDEXT_DIR)" != "$(RECORDEXT_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(RECORDEXT_DIR) $(RECORDEXT_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(RECORDEXT_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(RECORDEXT_DIR) $(@D) ; \
 	fi
-	(cd $(RECORDEXT_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(RECORDEXT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(RECORDEXT_LDFLAGS)" \
@@ -121,7 +127,7 @@ $(RECORDEXT_BUILD_DIR)/.configured: $(DL_DIR)/recordext-$(RECORDEXT_VERSION).tar
 		--prefix=$(TARGET_PREFIX) \
 		--disable-static \
 	)
-	touch $(RECORDEXT_BUILD_DIR)/.configured
+	touch $@
 
 recordext-unpack: $(RECORDEXT_BUILD_DIR)/.configured
 
@@ -129,9 +135,9 @@ recordext-unpack: $(RECORDEXT_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(RECORDEXT_BUILD_DIR)/.built: $(RECORDEXT_BUILD_DIR)/.configured
-	rm -f $(RECORDEXT_BUILD_DIR)/.built
-	$(MAKE) -C $(RECORDEXT_BUILD_DIR)
-	touch $(RECORDEXT_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -143,7 +149,7 @@ recordext: $(RECORDEXT_BUILD_DIR)/.built
 #
 $(RECORDEXT_BUILD_DIR)/.staged: $(RECORDEXT_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(RECORDEXT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/recordext.pc
 	touch $@
 
@@ -163,7 +169,7 @@ recordext-stage: $(RECORDEXT_BUILD_DIR)/.staged
 #
 $(RECORDEXT_IPK): $(RECORDEXT_BUILD_DIR)/.built
 	rm -rf $(RECORDEXT_IPK_DIR) $(BUILD_DIR)/recordext_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(RECORDEXT_BUILD_DIR) DESTDIR=$(RECORDEXT_IPK_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(RECORDEXT_IPK_DIR) install
 	$(MAKE) $(RECORDEXT_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(RECORDEXT_IPK_DIR)
 

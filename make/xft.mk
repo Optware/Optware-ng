@@ -10,8 +10,8 @@
 # XFT_DIR is the directory which is created when the source
 # archive is unpacked.
 #
-XFT_SITE=http://freedesktop.org
-XFT_SOURCE=# none - available from CVS only
+XFT_SITE=$(SOURCES_NLO_SITE)
+XFT_SOURCE=xft-$(XFT_VERSION).tar.gz
 XFT_VERSION=2.1.6+cvs20050130
 XFT_REPOSITORY=:pserver:anoncvs@freedesktop.org:/cvs/xlibs
 XFT_DIR=Xft
@@ -62,7 +62,7 @@ XFT_IPK=$(BUILD_DIR)/xft_$(XFT_VERSION)-$(XFT_IPK_VERSION)_$(TARGET_ARCH).ipk
 # Automatically create a ipkg control file
 #
 $(XFT_IPK_DIR)/CONTROL/control:
-	@$(INSTALL) -d $(XFT_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: xft" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -78,15 +78,22 @@ $(XFT_IPK_DIR)/CONTROL/control:
 # In this case there is no tarball, instead we fetch the sources
 # directly to the builddir with CVS
 #
-$(DL_DIR)/xft-$(XFT_VERSION).tar.gz:
-	( cd $(BUILD_DIR) ; \
-		rm -rf $(XFT_DIR) && \
-		cvs -d $(XFT_REPOSITORY) -z3 co $(XFT_CVS_OPTS) $(XFT_DIR) && \
-		tar -czf $@ $(XFT_DIR) && \
-		rm -rf $(XFT_DIR) \
-	)
+#$(DL_DIR)/xft-$(XFT_VERSION).tar.gz:
+#	( cd $(BUILD_DIR) ; \
+#		rm -rf $(XFT_DIR) && \
+#		cvs -d $(XFT_REPOSITORY) -z3 co $(XFT_CVS_OPTS) $(XFT_DIR) && \
+#		tar -czf $@ $(XFT_DIR) && \
+#		rm -rf $(XFT_DIR) \
+#	)
 
-xft-source: $(DL_DIR)/xft-$(XFT_VERSION).tar.gz $(XFT_PATCHES)
+#
+# This is the dependency on the source code.  If the source is missing,
+# then it will be fetched from the site using wget.
+#
+$(DL_DIR)/$(XFT_SOURCE):
+	$(WGET) -P $(@D) $(XFT_SITE)/$(@F)
+
+xft-source: $(DL_DIR)/$(XFT_SOURCE) $(XFT_PATCHES)
 
 #
 # This target also configures the build within the build directory.
@@ -98,14 +105,10 @@ xft-source: $(DL_DIR)/xft-$(XFT_VERSION).tar.gz $(XFT_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(XFT_BUILD_DIR)/.configured: $(DL_DIR)/xft-$(XFT_VERSION).tar.gz \
-		$(XFT_PATCHES) make/xft.mk
-	$(MAKE) freetype-stage
-	$(MAKE) fontconfig-stage
-	$(MAKE) x11-stage
-	$(MAKE) xrender-stage
+$(XFT_BUILD_DIR)/.configured: $(DL_DIR)/$(XFT_SOURCE) $(XFT_PATCHES) make/xft.mk
+	$(MAKE) freetype-stage fontconfig-stage x11-stage xrender-stage
 	rm -rf $(BUILD_DIR)/$(XFT_DIR) $(XFT_BUILD_DIR)
-	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xft-$(XFT_VERSION).tar.gz
+	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/$(XFT_SOURCE)
 	if test -n "$(XFT_PATCHES)" ; \
 		then cat $(XFT_PATCHES) | \
 		$(PATCH) -d $(BUILD_DIR)/$(XFT_DIR) -p1 ; \

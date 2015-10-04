@@ -10,8 +10,8 @@
 # XMU_DIR is the directory which is created when the source
 # archive is unpacked.
 #
-XMU_SITE=http://freedesktop.org
-XMU_SOURCE=# none - available from CVS only
+XMU_SITE=$(SOURCES_NLO_SITE)
+XMU_SOURCE=xmu-$(XMU_VERSION).tar.gz
 XMU_VERSION=6.2.3+cvs20050130
 XMU_REPOSITORY=:pserver:anoncvs@freedesktop.org:/cvs/xlibs
 XMU_DIR=Xmu
@@ -62,7 +62,7 @@ XMU_IPK=$(BUILD_DIR)/xmu_$(XMU_VERSION)-$(XMU_IPK_VERSION)_$(TARGET_ARCH).ipk
 # Automatically create a ipkg control file
 #
 $(XMU_IPK_DIR)/CONTROL/control:
-	@$(INSTALL) -d $(XMU_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: xmu" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -78,15 +78,22 @@ $(XMU_IPK_DIR)/CONTROL/control:
 # In this case there is no tarball, instead we fetch the sources
 # directly to the builddir with CVS
 #
-$(DL_DIR)/xmu-$(XMU_VERSION).tar.gz:
-	( cd $(BUILD_DIR) ; \
-		rm -rf $(XMU_DIR) && \
-		cvs -d $(XMU_REPOSITORY) -z3 co $(XMU_CVS_OPTS) $(XMU_DIR) && \
-		tar -czf $@ $(XMU_DIR) && \
-		rm -rf $(XMU_DIR) \
-	)
+#$(DL_DIR)/xmu-$(XMU_VERSION).tar.gz:
+#	( cd $(BUILD_DIR) ; \
+#		rm -rf $(XMU_DIR) && \
+#		cvs -d $(XMU_REPOSITORY) -z3 co $(XMU_CVS_OPTS) $(XMU_DIR) && \
+#		tar -czf $@ $(XMU_DIR) && \
+#		rm -rf $(XMU_DIR) \
+#	)
 
-xmu-source: $(DL_DIR)/xmu-$(XMU_VERSION).tar.gz $(XMU_PATCHES)
+#
+# This is the dependency on the source code.  If the source is missing,
+# then it will be fetched from the site using wget.
+#
+$(DL_DIR)/$(XMU_SOURCE):
+	$(WGET) -P $(@D) $(XMU_SITE)/$(@F)
+
+xmu-source: $(DL_DIR)/$(XMU_SOURCE) $(XMU_PATCHES)
 
 #
 # This target also configures the build within the build directory.
@@ -98,20 +105,18 @@ xmu-source: $(DL_DIR)/xmu-$(XMU_VERSION).tar.gz $(XMU_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(XMU_BUILD_DIR)/.configured: $(DL_DIR)/xmu-$(XMU_VERSION).tar.gz \
-		$(XMU_PATCHES) make/xmu.mk
-	$(MAKE) xext-stage
-	$(MAKE) xt-stage
-	rm -rf $(BUILD_DIR)/$(XMU_DIR) $(XMU_BUILD_DIR)
-	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xmu-$(XMU_VERSION).tar.gz
+$(XMU_BUILD_DIR)/.configured: $(DL_DIR)/$(XMU_SOURCE) $(XMU_PATCHES) make/xmu.mk
+	$(MAKE) xext-stage xt-stage
+	rm -rf $(BUILD_DIR)/$(XMU_DIR) $(@D)
+	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/$(XMU_SOURCE)
 	if test -n "$(XMU_PATCHES)" ; \
 		then cat $(XMU_PATCHES) | \
 		$(PATCH) -d $(BUILD_DIR)/$(XMU_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(XMU_DIR)" != "$(XMU_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(XMU_DIR) $(XMU_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(XMU_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(XMU_DIR) $(@D) ; \
 	fi
-	(cd $(XMU_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(XMU_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(XMU_LDFLAGS)" \
@@ -124,7 +129,7 @@ $(XMU_BUILD_DIR)/.configured: $(DL_DIR)/xmu-$(XMU_VERSION).tar.gz \
 		--prefix=$(TARGET_PREFIX) \
 		--disable-static \
 	)
-	$(PATCH_LIBTOOL) $(XMU_BUILD_DIR)/libtool
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 xmu-unpack: $(XMU_BUILD_DIR)/.configured
@@ -134,7 +139,7 @@ xmu-unpack: $(XMU_BUILD_DIR)/.configured
 #
 $(XMU_BUILD_DIR)/.built: $(XMU_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(XMU_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -147,7 +152,7 @@ xmu: $(XMU_BUILD_DIR)/.built
 #
 $(XMU_BUILD_DIR)/.staged: $(XMU_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(XMU_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' \
 		$(STAGING_LIB_DIR)/pkgconfig/xmu.pc $(STAGING_LIB_DIR)/pkgconfig/xmuu.pc
 	rm -f $(STAGING_LIB_DIR)/libXmu.la

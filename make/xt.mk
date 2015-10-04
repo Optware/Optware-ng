@@ -10,8 +10,8 @@
 # XT_DIR is the directory which is created when the source
 # archive is unpacked.
 #
-XT_SITE=http://freedesktop.org
-XT_SOURCE=# none - available from CVS only
+XT_SITE=$(SOURCES_NLO_SITE)
+XT_SOURCE=xt-$(XT_VERSION).tar.gz
 XT_VERSION=0.1.5+cvs20050130
 XT_REPOSITORY=:pserver:anoncvs@freedesktop.org:/cvs/xlibs
 XT_DIR=Xt
@@ -62,7 +62,7 @@ XT_IPK=$(BUILD_DIR)/xt_$(XT_VERSION)-$(XT_IPK_VERSION)_$(TARGET_ARCH).ipk
 # Automatically create a ipkg control file
 #
 $(XT_IPK_DIR)/CONTROL/control:
-	@$(INSTALL) -d $(XT_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: xt" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -78,15 +78,22 @@ $(XT_IPK_DIR)/CONTROL/control:
 # In this case there is no tarball, instead we fetch the sources
 # directly to the builddir with CVS
 #
-$(DL_DIR)/xt-$(XT_VERSION).tar.gz:
-	( cd $(BUILD_DIR) ; \
-		rm -rf $(XT_DIR) && \
-		cvs -d $(XT_REPOSITORY) -z3 co $(XT_CVS_OPTS) $(XT_DIR) && \
-		tar -czf $@ $(XT_DIR) && \
-		rm -rf $(XT_DIR) \
-	)
+#$(DL_DIR)/xt-$(XT_VERSION).tar.gz:
+#	( cd $(BUILD_DIR) ; \
+#		rm -rf $(XT_DIR) && \
+#		cvs -d $(XT_REPOSITORY) -z3 co $(XT_CVS_OPTS) $(XT_DIR) && \
+#		tar -czf $@ $(XT_DIR) && \
+#		rm -rf $(XT_DIR) \
+#	)
 
-xt-source: $(DL_DIR)/xt-$(XT_VERSION).tar.gz $(XT_PATCHES)
+#
+# This is the dependency on the source code.  If the source is missing,
+# then it will be fetched from the site using wget.
+#
+$(DL_DIR)/$(XT_SOURCE):
+	$(WGET) -P $(@D) $(XT_SITE)/$(@F)
+
+xt-source: $(DL_DIR)/$(XT_SOURCE) $(XT_PATCHES)
 
 #
 # This target also configures the build within the build directory.
@@ -98,20 +105,18 @@ xt-source: $(DL_DIR)/xt-$(XT_VERSION).tar.gz $(XT_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(XT_BUILD_DIR)/.configured: $(DL_DIR)/xt-$(XT_VERSION).tar.gz \
-		$(XT_PATCHES) make/xt.mk
-	$(MAKE) x11-stage
-	$(MAKE) sm-stage
-	rm -rf $(BUILD_DIR)/$(XT_DIR) $(XT_BUILD_DIR)
-	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xt-$(XT_VERSION).tar.gz
+$(XT_BUILD_DIR)/.configured: $(DL_DIR)/$(XT_SOURCE) $(XT_PATCHES) make/xt.mk
+	$(MAKE) x11-stage sm-stage
+	rm -rf $(BUILD_DIR)/$(XT_DIR) $(@D)
+	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/$(XT_SOURCE)
 	if test -n "$(XT_PATCHES)" ; \
 		then cat $(XT_PATCHES) | \
 		$(PATCH) -d $(BUILD_DIR)/$(XT_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(XT_DIR)" != "$(XT_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(XT_DIR) $(XT_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(XT_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(XT_DIR) $(@D) ; \
 	fi
-	(cd $(XT_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(XT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(XT_LDFLAGS)" \
@@ -124,7 +129,7 @@ $(XT_BUILD_DIR)/.configured: $(DL_DIR)/xt-$(XT_VERSION).tar.gz \
 		--prefix=$(TARGET_PREFIX) \
 		--disable-static \
 	)
-	$(PATCH_LIBTOOL) $(XT_BUILD_DIR)/libtool
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 xt-unpack: $(XT_BUILD_DIR)/.configured
@@ -134,8 +139,8 @@ xt-unpack: $(XT_BUILD_DIR)/.configured
 #
 $(XT_BUILD_DIR)/.built: $(XT_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(XT_BUILD_DIR)/util CC=$(HOSTCC) CFLAGS="-pipe -O1" LDFLAGS=""
-	$(MAKE) -C $(XT_BUILD_DIR)
+	$(MAKE) -C $(@D)/util CC=$(HOSTCC) CFLAGS="-pipe -O1" LDFLAGS=""
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -148,7 +153,7 @@ xt: $(XT_BUILD_DIR)/.built
 #
 $(XT_BUILD_DIR)/.staged: $(XT_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(XT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/xt.pc
 	rm -f $(STAGING_LIB_DIR)/libXt.la
 	touch $@

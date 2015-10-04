@@ -4,9 +4,9 @@
 #
 ###########################################################
 
-UNARJ_SITE=ftp://ftp.freebsd.org/pub/FreeBSD/ports/local-distfiles/ache
+UNARJ_SITE=http://pkgs.fedoraproject.org/repo/pkgs/unarj/$(UNARJ_SOURCE)/c6fe45db1741f97155c7def322aa74aa
 UNARJ_VERSION=2.65
-UNARJ_SOURCE=unarj-$(UNARJ_VERSION).tgz
+UNARJ_SOURCE=unarj-$(UNARJ_VERSION).tar.gz
 UNARJ_DIR=unarj-$(UNARJ_VERSION)
 UNARJ_UNZIP=zcat
 UNARJ_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>

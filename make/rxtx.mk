@@ -20,7 +20,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-RXTX_SITE=ftp://ftp.qbang.org/pub/rxtx
+RXTX_SITE=http://pkgs.fedoraproject.org/repo/pkgs/rxtx/$(RXTX_SOURCE)/9290b4832d46199f8d798a531209640b
 RXTX_UPSTREAM_VERSION=2.1-7r2
 RXTX_VERSION=2.1.7r2
 RXTX_SOURCE=rxtx-$(RXTX_UPSTREAM_VERSION).zip

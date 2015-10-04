@@ -10,8 +10,8 @@
 # RENDEREXT_DIR is the directory which is created when the source
 # archive is unpacked.
 #
-RENDEREXT_SITE=http://freedesktop.org/
-RENDEREXT_SOURCE=# none - available from CVS only
+RENDEREXT_SITE=$(SOURCES_NLO_SITE)
+RENDEREXT_SOURCE=renderext-$(RENDEREXT_VERSION).tar.gz
 RENDEREXT_VERSION=0.8+cvs20050130
 RENDEREXT_REPOSITORY=:pserver:anoncvs@freedesktop.org:/cvs/xlibs
 RENDEREXT_DIR=Render
@@ -61,7 +61,7 @@ RENDEREXT_IPK=$(BUILD_DIR)/renderext_$(RENDEREXT_VERSION)-$(RENDEREXT_IPK_VERSIO
 # Automatically create a ipkg control file
 #
 $(RENDEREXT_IPK_DIR)/CONTROL/control:
-	@$(INSTALL) -d $(RENDEREXT_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: renderext" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -76,15 +76,22 @@ $(RENDEREXT_IPK_DIR)/CONTROL/control:
 # In this case there is no tarball, instead we fetch the sources
 # directly to the builddir with CVS
 #
-$(DL_DIR)/renderext-$(RENDEREXT_VERSION).tar.gz:
-	( cd $(BUILD_DIR) ; \
-		rm -rf $(RENDEREXT_DIR) && \
-		cvs -d $(RENDEREXT_REPOSITORY) -z3 co $(RENDEREXT_CVS_OPTS) $(RENDEREXT_DIR) && \
-		tar -czf $@ $(RENDEREXT_DIR) && \
-		rm -rf $(RENDEREXT_DIR) \
-	)
+#$(DL_DIR)/renderext-$(RENDEREXT_VERSION).tar.gz:
+#	( cd $(BUILD_DIR) ; \
+#		rm -rf $(RENDEREXT_DIR) && \
+#		cvs -d $(RENDEREXT_REPOSITORY) -z3 co $(RENDEREXT_CVS_OPTS) $(RENDEREXT_DIR) && \
+#		tar -czf $@ $(RENDEREXT_DIR) && \
+#		rm -rf $(RENDEREXT_DIR) \
+#	)
 
-renderext-source: $(DL_DIR)/renderext-$(RENDEREXT_VERSION).tar.gz $(RENDEREXT_PATCHES)
+#
+# This is the dependency on the source code.  If the source is missing,
+# then it will be fetched from the site using wget.
+#
+$(DL_DIR)/$(RENDEREXT_SOURCE):
+	$(WGET) -P $(@D) $(RENDEREXT_SITE)/$(@F)
+
+renderext-source: $(DL_DIR)/$(RENDEREXT_SOURCE) $(RENDEREXT_PATCHES)
 
 #
 # This target also configures the build within the build directory.
@@ -96,19 +103,18 @@ renderext-source: $(DL_DIR)/renderext-$(RENDEREXT_VERSION).tar.gz $(RENDEREXT_PA
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(RENDEREXT_BUILD_DIR)/.configured: $(DL_DIR)/renderext-$(RENDEREXT_VERSION).tar.gz \
-		$(RENDEREXT_PATCHES)
+$(RENDEREXT_BUILD_DIR)/.configured: $(DL_DIR)/$(RENDEREXT_SOURCE) $(RENDEREXT_PATCHES) make/renderext.mk
 	$(MAKE) x11-stage
-	rm -rf $(BUILD_DIR)/$(RENDEREXT_DIR) $(RENDEREXT_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(RENDEREXT_DIR) $(@D)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/renderext-$(RENDEREXT_VERSION).tar.gz
 	if test -n "$(RENDEREXT_PATCHES)" ; \
 		then cat $(RENDEREXT_PATCHES) | \
 		$(PATCH) -d $(BUILD_DIR)/$(RENDEREXT_DIR) -p1 ; \
 	fi
-	if test "$(BUILD_DIR)/$(RENDEREXT_DIR)" != "$(RENDEREXT_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(RENDEREXT_DIR) $(RENDEREXT_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(RENDEREXT_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(RENDEREXT_DIR) $(@D) ; \
 	fi
-	(cd $(RENDEREXT_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(RENDEREXT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(RENDEREXT_LDFLAGS)" \
@@ -121,7 +127,7 @@ $(RENDEREXT_BUILD_DIR)/.configured: $(DL_DIR)/renderext-$(RENDEREXT_VERSION).tar
 		--prefix=$(TARGET_PREFIX) \
 		--disable-static \
 	)
-	touch $(RENDEREXT_BUILD_DIR)/.configured
+	touch $@
 
 renderext-unpack: $(RENDEREXT_BUILD_DIR)/.configured
 
@@ -130,7 +136,7 @@ renderext-unpack: $(RENDEREXT_BUILD_DIR)/.configured
 #
 $(RENDEREXT_BUILD_DIR)/.built: $(RENDEREXT_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(RENDEREXT_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -143,7 +149,7 @@ renderext: $(RENDEREXT_BUILD_DIR)/.built
 #
 $(RENDEREXT_BUILD_DIR)/.staged: $(RENDEREXT_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(RENDEREXT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/render.pc
 	touch $@
 

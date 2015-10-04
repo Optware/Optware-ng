@@ -19,7 +19,7 @@
 #
 # You should change all these variables to suit your package.
 #
-SAMBA2_SITE=http://www.samba.org/samba/ftp/stable
+SAMBA2_SITE=https://download.samba.org/pub/samba/old-versions
 SAMBA2_VERSION=2.2.12
 SAMBA2_IPK_VERSION=4
 SAMBA2_SOURCE=samba-$(SAMBA2_VERSION).tar.gz

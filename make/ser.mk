@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 SER_VERSION=0.8.14
-SER_SITE=http://ftp.iptel.org/pub/ser/$(SER_VERSION)/src
+SER_SITE=ftp://ftp.netbsd.org/pub/pkgsrc/distfiles
 SER_SOURCE=ser-$(SER_VERSION)_src.tar.gz
 SER_DIR=ser-$(SER_VERSION)
 SER_UNZIP=zcat

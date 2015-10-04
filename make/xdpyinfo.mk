@@ -10,8 +10,8 @@
 # XDPYINFO_DIR is the directory which is created when the source
 # archive is unpacked.
 #
-XDPYINFO_SITE=http://freedesktop.org
-XDPYINFO_SOURCE=# none - available from CVS only
+XDPYINFO_SITE=$(SOURCES_NLO_SITE)
+XDPYINFO_SOURCE=xdpyinfo-$(XDPYINFO_VERSION).tar.gz
 XDPYINFO_VERSION=0.0cvs20050130
 XDPYINFO_REPOSITORY=:pserver:anoncvs@freedesktop.org:/cvs/xapps
 XDPYINFO_DIR=xdpyinfo
@@ -62,7 +62,7 @@ XDPYINFO_IPK=$(BUILD_DIR)/xdpyinfo_$(XDPYINFO_VERSION)-$(XDPYINFO_IPK_VERSION)_$
 # Automatically create a ipkg control file
 #
 $(XDPYINFO_IPK_DIR)/CONTROL/control:
-	@$(INSTALL) -d $(XDPYINFO_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: xdpyinfo" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -78,15 +78,22 @@ $(XDPYINFO_IPK_DIR)/CONTROL/control:
 # In this case there is no tarball, instead we fetch the sources
 # directly to the builddir with CVS
 #
-$(DL_DIR)/xdpyinfo-$(XDPYINFO_VERSION).tar.gz:
-	( cd $(BUILD_DIR) ; \
-		rm -rf $(XDPYINFO_DIR) && \
-		cvs -d $(XDPYINFO_REPOSITORY) -z3 co $(XDPYINFO_CVS_OPTS) $(XDPYINFO_DIR) && \
-		tar -czf $@ $(XDPYINFO_DIR) && \
-		rm -rf $(XDPYINFO_DIR) \
-	)
+#$(DL_DIR)/xdpyinfo-$(XDPYINFO_VERSION).tar.gz:
+#	( cd $(BUILD_DIR) ; \
+#		rm -rf $(XDPYINFO_DIR) && \
+#		cvs -d $(XDPYINFO_REPOSITORY) -z3 co $(XDPYINFO_CVS_OPTS) $(XDPYINFO_DIR) && \
+#		tar -czf $@ $(XDPYINFO_DIR) && \
+#		rm -rf $(XDPYINFO_DIR) \
+#	)
 
-xdpyinfo-source: $(DL_DIR)/xdpyinfo-$(XDPYINFO_VERSION).tar.gz $(XDPYINFO_PATCHES)
+#
+# This is the dependency on the source code.  If the source is missing,
+# then it will be fetched from the site using wget.
+#
+$(DL_DIR)/$(XDPYINFO_SOURCE):
+	$(WGET) -P $(@D) $(XDPYINFO_SITE)/$(@F)
+
+xdpyinfo-source: $(DL_DIR)/$(XDPYINFO_SOURCE) $(XDPYINFO_PATCHES)
 
 #
 # This target also configures the build within the build directory.
@@ -98,13 +105,10 @@ xdpyinfo-source: $(DL_DIR)/xdpyinfo-$(XDPYINFO_VERSION).tar.gz $(XDPYINFO_PATCHE
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(XDPYINFO_BUILD_DIR)/.configured: $(DL_DIR)/xdpyinfo-$(XDPYINFO_VERSION).tar.gz  \
-		$(XDPYINFO_PATCHES) make/xdpyinfo.mk
-	$(MAKE) x11-stage
-	$(MAKE) xext-stage
-	$(MAKE) xtst-stage
+$(XDPYINFO_BUILD_DIR)/.configured: $(DL_DIR)/$(XDPYINFO_SOURCE) $(XDPYINFO_PATCHES) make/xdpyinfo.mk
+	$(MAKE) x11-stage xext-stage xtst-stage
 	rm -rf $(BUILD_DIR)/$(XDPYINFO_DIR) $(XDPYINFO_BUILD_DIR)
-	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/xdpyinfo-$(XDPYINFO_VERSION).tar.gz
+	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/$(XDPYINFO_SOURCE)
 	if test -n "$(XDPYINFO_PATCHES)" ; \
 		then cat $(XDPYINFO_PATCHES) | \
 		$(PATCH) -d $(BUILD_DIR)/$(XDPYINFO_DIR) -p1 ; \

@@ -20,7 +20,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-SCLI_SITE=ftp://ftp.ibr.cs.tu-bs.de/pub/local/scli
+SCLI_SITE=ftp://ftp.netbsd.org/pub/pkgsrc/distfiles
 SCLI_VERSION=0.3.1
 SCLI_SOURCE=scli-$(SCLI_VERSION).tar.gz
 SCLI_DIR=scli-$(SCLI_VERSION)
