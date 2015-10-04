@@ -196,10 +196,14 @@ ifeq (wl500g, $(OPTWARE_TARGET))
 	cp -R $(RUBYGEMS_BUILD_DIR)/doc/* $(RUBYGEMS_IPK_DIR)$(TARGET_PREFIX)/share/doc/rubygems
 endif
 	$(MAKE) $(RUBYGEMS_IPK_DIR)/CONTROL/control
-	echo "#!/bin/sh\n$(TARGET_PREFIX)/bin/update-alternatives --install '$(TARGET_PREFIX)/bin/gem' 'gem' $(TARGET_PREFIX)/bin/rubygems-gem 40" > \
+	echo -e "#!/bin/sh\nupdate-alternatives --install '$(TARGET_PREFIX)/bin/gem' 'gem' $(TARGET_PREFIX)/bin/rubygems-gem 40" > \
 		$(RUBYGEMS_IPK_DIR)/CONTROL/postinst
-	echo "#!/bin/sh\n$(TARGET_PREFIX)/bin/update-alternatives --remove 'gem' $(TARGET_PREFIX)/bin/rubygems-gem" > \
+	echo -e "#!/bin/sh\nupdate-alternatives --remove 'gem' $(TARGET_PREFIX)/bin/rubygems-gem" > \
 		$(RUBYGEMS_IPK_DIR)/CONTROL/prerm
+	if test -n "$(UPD-ALT_PREFIX)"; then \
+		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \
+		$(RUBYGEMS_IPK_DIR)/CONTROL/postinst $(RUBYGEMS_IPK_DIR)/CONTROL/prerm; \
+	fi
 	chmod 755 $(RUBYGEMS_IPK_DIR)/CONTROL/postinst
 	chmod 755 $(RUBYGEMS_IPK_DIR)/CONTROL/prerm
 	echo $(RUBYGEMS_CONFFILES) | sed -e 's/ /\n/g' > $(RUBYGEMS_IPK_DIR)/CONTROL/conffiles

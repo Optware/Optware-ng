@@ -546,7 +546,7 @@ PACKAGES ?= $(filter-out \
 PACKAGES_READY_FOR_TESTING = $(CROSS_PACKAGES_READY_FOR_TESTING)
 endif
 
-ifneq (, $(filter ipkg-opt $(OPTWARE_TARGET)-bootstrap $(OPTWARE_TARGET)-optware-bootstrap, $(PACKAGES)))
+ifneq (, $(filter ipkg-static ipkg-opt $(OPTWARE_TARGET)-bootstrap $(OPTWARE_TARGET)-optware-bootstrap, $(PACKAGES)))
 UPD-ALT_PREFIX ?= $(TARGET_PREFIX)
 endif
 

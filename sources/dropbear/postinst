@@ -1,7 +1,7 @@
 #!/bin/sh
 
-%OPTWARE_TARGET_PREFIX%/bin/update-alternatives --install %OPTWARE_TARGET_PREFIX%/bin/scp scp %OPTWARE_TARGET_PREFIX%/sbin/dropbearmulti 50
-%OPTWARE_TARGET_PREFIX%/bin/update-alternatives --install %OPTWARE_TARGET_PREFIX%/bin/ssh ssh %OPTWARE_TARGET_PREFIX%/sbin/dropbearmulti 50
+update-alternatives --install %OPTWARE_TARGET_PREFIX%/bin/scp scp %OPTWARE_TARGET_PREFIX%/sbin/dropbearmulti 50
+update-alternatives --install %OPTWARE_TARGET_PREFIX%/bin/ssh ssh %OPTWARE_TARGET_PREFIX%/sbin/dropbearmulti 50
 
 echo
 

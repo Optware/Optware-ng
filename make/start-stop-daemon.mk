@@ -214,15 +214,15 @@ $(START-STOP-DAEMON_IPK): $(START-STOP-DAEMON_BUILD_DIR)/.built
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(START-STOP-DAEMON_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 755 $(START-STOP-DAEMON_SOURCE_DIR)/prerm $(START-STOP-DAEMON_IPK_DIR)/CONTROL/prerm
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(START-STOP-DAEMON_IPK_DIR)/CONTROL/prerm
-#	if test -n "$(UPD-ALT_PREFIX)"; then \
+	echo -e "#!/bin/sh\nupdate-alternatives --install '$(TARGET_PREFIX)/sbin/start-stop-daemon' 'start-stop-daemon' $(TARGET_PREFIX)/sbin/start-stop-daemon-start-stop-daemon 40" > \
+		$(START-STOP-DAEMON_IPK_DIR)/CONTROL/postinst
+	echo -e "#!/bin/sh\nupdate-alternatives --remove 'start-stop-daemon' $(TARGET_PREFIX)/sbin/start-stop-daemon-start-stop-daemon" > \
+		$(START-STOP-DAEMON_IPK_DIR)/CONTROL/prerm
+	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \
 			$(START-STOP-DAEMON_IPK_DIR)/CONTROL/postinst $(START-STOP-DAEMON_IPK_DIR)/CONTROL/prerm; \
 	fi
 	echo $(START-STOP-DAEMON_CONFFILES) | sed -e 's/ /\n/g' > $(START-STOP-DAEMON_IPK_DIR)/CONTROL/conffiles
-	echo -e "#!/bin/sh\n$(TARGET_PREFIX)/bin/update-alternatives --install '$(TARGET_PREFIX)/sbin/start-stop-daemon' 'start-stop-daemon' $(TARGET_PREFIX)/sbin/start-stop-daemon-start-stop-daemon 40" > \
-		$(START-STOP-DAEMON_IPK_DIR)/CONTROL/postinst
-	echo -e "#!/bin/sh\n$(TARGET_PREFIX)/bin/update-alternatives --remove 'start-stop-daemon' $(TARGET_PREFIX)/sbin/start-stop-daemon-start-stop-daemon" > \
-		$(START-STOP-DAEMON_IPK_DIR)/CONTROL/prerm
 	chmod 755 $(START-STOP-DAEMON_IPK_DIR)/CONTROL/postinst
 	chmod 755 $(START-STOP-DAEMON_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(START-STOP-DAEMON_IPK_DIR)
