@@ -22,7 +22,10 @@ if [ -f $last ]; then
 	### 	`install.sh [KEY] <SOURCE_FILE> <TARGET_FILE>`
 	###  was called,
 	### so we just call `sed ...` on the target and exit
-	sed -i -e "s|%OPTWARE_TARGET_PREFIX%|${TARGET_PREFIX}|g" $last
+	### (if target is text file and it contains %OPTWARE_TARGET_PREFIX%)
+	if [ -n "`file $last | grep text`" ] && [ -n "`cat $last | grep %OPTWARE_TARGET_PREFIX%`" ]; then
+		sed -i -e "s|%OPTWARE_TARGET_PREFIX%|${TARGET_PREFIX}|g" $last
+	fi
 
 else
 
@@ -70,7 +73,12 @@ else
 		### still make the check to be safe
 		file=${last}/`basename $arg`
 		if [ -f $file ]; then
-			sed -i -e "s|%OPTWARE_TARGET_PREFIX%|${TARGET_PREFIX}|g" $file
+
+			### $file exists; if it is text and contains %OPTWARE_TARGET_PREFIX%,
+			### apply `sed ...` on it
+			if [ -n "`file $file | grep text`" ] && [ -n "`cat $file | grep %OPTWARE_TARGET_PREFIX%`" ]; then
+				sed -i -e "s|%OPTWARE_TARGET_PREFIX%|${TARGET_PREFIX}|g" $file
+			fi
 		fi
 	done
 
