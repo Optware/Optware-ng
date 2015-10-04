@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-PSYCOPG2_SITE=http://initd.org/pub/software/psycopg
+PY-PSYCOPG2_SITE=http://pkgs.fedoraproject.org/repo/pkgs/python-psycopg2/$(PY-PSYCOPG2_SOURCE)/9f86f726f9aa7f6c4b05d729cad1e70a
 PY-PSYCOPG2_VERSION=2.3.2
 PY-PSYCOPG2_SOURCE=psycopg2-$(PY-PSYCOPG2_VERSION).tar.gz
 PY-PSYCOPG2_DIR=psycopg2-$(PY-PSYCOPG2_VERSION)

@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-PYGRESQL_SITE=ftp://ftp.PyGreSQL.org/pub/distrib
+PY-PYGRESQL_SITE=http://pkgs.fedoraproject.org/repo/pkgs/PyGreSQL/$(PY-PYGRESQL_SOURCE)/5575979dac93c9c5795d7693a8f91c86
 PY-PYGRESQL_VERSION=3.8.1
 PY-PYGRESQL_SOURCE=PyGreSQL-$(PY-PYGRESQL_VERSION).tgz
 PY-PYGRESQL_DIR=PyGreSQL-$(PY-PYGRESQL_VERSION)
