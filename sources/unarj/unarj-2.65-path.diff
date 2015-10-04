@@ -1,16 +1,23 @@
---- Makefile.orig	2006-08-26 13:32:42.000000000 +0200
-+++ Makefile	2006-08-26 13:34:10.000000000 +0200
-@@ -9,7 +9,9 @@
+--- Makefile.orig
++++ Makefile
+@@ -5,10 +5,9 @@
+ CC = gcc
+ CFLAGS = -O2 -Wall -ansi -pedantic -DUNIX
+ INSTALLDIR=/usr/local/bin
  
- decode.o:   decode.c  unarj.h
+-unarj: unarj.o decode.o environ.o
+-	$(CC) $(CFLAGS) -o unarj unarj.o decode.o environ.o
+-	strip unarj
++unarj: unarj.o decode.o environ.o sanitize.o
++	$(CC) $(CFLAGS) -o unarj unarj.o decode.o environ.o sanitize.o
  
--OBJS = unarj.o decode.o environ.o
+ clean:
+ 	rm -f core unarj *.o *.out *~
+@@ -19,3 +18,4 @@
+ unarj.o: unarj.c unarj.h Makefile
+ environ.o:  environ.c unarj.h Makefile
+ decode.o:   decode.c unarj.h Makefile
 +sanitize.o:   sanitize.c unarj.h
-+
-+OBJS = unarj.o decode.o environ.o sanitize.o
- 
- unarj: $(OBJS)
- 	$(CC) $(LDFLAGS) $(OBJS) -o unarj
 --- sanitize.c
 +++ sanitize.c
 @@ -0,0 +1,81 @@
