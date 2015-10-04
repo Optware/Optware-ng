@@ -237,14 +237,14 @@ $(GOBJECT-INTROSPECTION_IPK_DIR)/CONTROL/control:
 $(GOBJECT-INTROSPECTION_IPK): $(GOBJECT-INTROSPECTION_BUILD_DIR)/.built
 	rm -rf $(GOBJECT-INTROSPECTION_IPK_DIR) $(BUILD_DIR)/gobject-introspection_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GOBJECT-INTROSPECTION_BUILD_DIR) DESTDIR=$(GOBJECT-INTROSPECTION_IPK_DIR) install-girepoHEADERS \
-		$(INSTALL)-libLTLIBRARIES install-pkgconfigDATA install-binSCRIPTS install-binPROGRAMS install-m4DATA \
-		$(INSTALL)-man1 install-pkgpyexecLTLIBRARIES install-pkgpyexecPYTHON
+		install-libLTLIBRARIES install-pkgconfigDATA install-binSCRIPTS install-binPROGRAMS install-m4DATA \
+		install-man1 install-pkgpyexecLTLIBRARIES install-pkgpyexecPYTHON
 	find $(GOBJECT-INTROSPECTION_IPK_DIR)$(TARGET_PREFIX)/lib -type f -name *.la -exec rm -f {} \;
 	-$(STRIP_COMMAND) $(GOBJECT-INTROSPECTION_IPK_DIR)$(TARGET_PREFIX)/bin/*
 	$(STRIP_COMMAND) $(addprefix $(GOBJECT-INTROSPECTION_IPK_DIR)$(TARGET_PREFIX)/lib/, libgirepository-1.0.so.1.0.0 \
 		gobject-introspection/giscanner/_giscanner.so)
 	$(MAKE) -C $(GOBJECT-INTROSPECTION_HOST_BUILD_DIR) DESTDIR=$(GOBJECT-INTROSPECTION_IPK_DIR) GIR_DIR=$(TARGET_PREFIX)/share/gir-1.0 \
-		$(INSTALL)-girDATA
+		install-girDATA
 	sed -i -e '0,/^#!/s|^#!.*|#!$(TARGET_PREFIX)/bin/python2.7|' $(addprefix $(GOBJECT-INTROSPECTION_IPK_DIR)$(TARGET_PREFIX)/bin/, g-ir-annotation-tool \
 							g-ir-doc-tool g-ir-scanner)
 #	$(INSTALL) -d $(GOBJECT-INTROSPECTION_IPK_DIR)$(TARGET_PREFIX)/etc/
