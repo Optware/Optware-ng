@@ -162,7 +162,7 @@ libdb52: $(LIBDB52_BUILD_DIR)/.built
 $(LIBDB52_BUILD_DIR)/.staged: $(LIBDB52_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(@D)/build_unix DESTDIR=$(STAGING_DIR) \
-		$(INSTALL)_setup install_include install_lib # install_utilities
+		install_setup install_include install_lib # install_utilities
 	rm -f $(STAGING_LIB_DIR)/libdb-5.2.la
 	touch $@
 
@@ -202,7 +202,7 @@ $(LIBDB52_IPK_DIR)/CONTROL/control:
 $(LIBDB52_IPK): $(LIBDB52_BUILD_DIR)/.built
 	rm -rf $(LIBDB52_IPK_DIR) $(BUILD_DIR)/libdb52_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBDB52_BUILD_DIR)/build_unix DESTDIR=$(LIBDB52_IPK_DIR) \
-		$(INSTALL)_setup install_include install_lib # install_utilities
+		install_setup install_include install_lib # install_utilities
 	$(STRIP_COMMAND) $(LIBDB52_IPK_DIR)$(TARGET_PREFIX)/lib/libdb-5.2.so
 	$(MAKE) $(LIBDB52_IPK_DIR)/CONTROL/control
 	echo $(LIBDB52_CONFFILES) | sed -e 's/ /\n/g' > $(LIBDB52_IPK_DIR)/CONTROL/conffiles
