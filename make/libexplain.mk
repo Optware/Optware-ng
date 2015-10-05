@@ -60,16 +60,7 @@ LIBEXPLAIN_PATCHES=$(LIBEXPLAIN_SOURCE_DIR)/includes.patch
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-LIBEXPLAIN_CPPFLAGS=
-ifeq ($(OPTWARE_TARGET), $(filter shibby-tomato-arm buildroot-armeabi buildroot-armeabi-ng buildroot-armeabihf buildroot-i686 buildroot-mipsel buildroot-mipsel-ng, $(OPTWARE_TARGET)))
-# not sure for which targets this should be applied
-# if compilation errors out with something like this:
-### libexplain/buffer/ipc_perm.c: In function ‘explain_buffer_ipc_perm’:
-### libexplain/buffer/ipc_perm.c:104:36: error: ‘const struct ipc_perm’ has no member named ‘key’
-### libexplain/buffer/ipc_perm.c:128:39: error: ‘const struct ipc_perm’ has no member named ‘seq’
-# add the target to the list
-LIBEXPLAIN_CPPFLAGS += -DSYS_SHM_H_struct_ipc_perm_underscore_key
-endif
+LIBEXPLAIN_CPPFLAGS=-DSYS_SHM_H_struct_ipc_perm_underscore_key
 LIBEXPLAIN_LDFLAGS=
 
 #
