@@ -210,7 +210,7 @@ $(TSHARK_IPK): $(TSHARK_BUILD_DIR)/.built
 	$(MAKE) -C $(TSHARK_BUILD_DIR) \
 		DESTDIR=$(TSHARK_IPK_DIR) \
 		program_transform_name="" \
-		$(INSTALL)
+		install
 	rm -rf $(TSHARK_IPK_DIR)$(TARGET_PREFIX)/share/man/man4
 	rm -f $(TSHARK_IPK_DIR)$(TARGET_PREFIX)/share/wireshark/wireshark-filter.html
 	rm -f $(TSHARK_IPK_DIR)$(TARGET_PREFIX)/lib/*.la
