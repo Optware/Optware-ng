@@ -214,12 +214,12 @@ $(SABLEVM_IPK): $(SABLEVM_BUILD_DIR)/.built
 	rm -rf $(SABLEVM_IPK_DIR) $(BUILD_DIR)/sablevm_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SABLEVM_BUILD_DIR)/sablevm \
 	    DESTDIR=$(SABLEVM_IPK_DIR) \
-	    $(INSTALL)
+	    install
 	$(STRIP_COMMAND) $(SABLEVM_IPK_DIR)$(TARGET_PREFIX)/bin/sablevm $(SABLEVM_IPK_DIR)$(TARGET_PREFIX)/lib/libsablevm*.so
 	$(MAKE) -C $(SABLEVM_BUILD_DIR)/sablevm-classpath \
 	    DESTDIR=$(SABLEVM_IPK_DIR) \
 	    INSTALL_STRIP_PROGRAM="$(STRIP_COMMAND)" \
-	    $(INSTALL)-strip
+	    install-strip
 #	$(INSTALL) -d $(SABLEVM_IPK_DIR)$(TARGET_PREFIX)/etc/
 #	$(INSTALL) -m 644 $(SABLEVM_SOURCE_DIR)/sablevm.conf $(SABLEVM_IPK_DIR)$(TARGET_PREFIX)/etc/sablevm.conf
 #	$(INSTALL) -d $(SABLEVM_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
