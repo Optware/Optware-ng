@@ -254,12 +254,16 @@ $(RUBY_IPK): $(RUBY_BUILD_DIR)/.built
 	$(MAKE) $(RUBY_IPK_DIR)/CONTROL/control
 	if [ -f $(RUBY_IPK_DIR)$(TARGET_PREFIX)/bin/gem ] ; then \
 		mv -f $(RUBY_IPK_DIR)$(TARGET_PREFIX)/bin/gem $(RUBY_IPK_DIR)$(TARGET_PREFIX)/bin/ruby-gem; \
-		echo "#!/bin/sh\n$(TARGET_PREFIX)/bin/update-alternatives --install '$(TARGET_PREFIX)/bin/gem' 'gem' $(TARGET_PREFIX)/bin/ruby-gem 30" > \
+		echo -e "#!/bin/sh\nupdate-alternatives --install '$(TARGET_PREFIX)/bin/gem' 'gem' $(TARGET_PREFIX)/bin/ruby-gem 30" > \
 								$(RUBY_IPK_DIR)/CONTROL/postinst; \
-		echo "#!/bin/sh\n$(TARGET_PREFIX)/bin/update-alternatives --remove 'gem' $(TARGET_PREFIX)/bin/ruby-gem" > \
+		echo -e "#!/bin/sh\nupdate-alternatives --remove 'gem' $(TARGET_PREFIX)/bin/ruby-gem" > \
 								$(RUBY_IPK_DIR)/CONTROL/prerm; \
 		chmod 755 $(RUBY_IPK_DIR)/CONTROL/postinst; \
 		chmod 755 $(RUBY_IPK_DIR)/CONTROL/prerm; \
+		if test -n "$(UPD-ALT_PREFIX)"; then \
+			sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \
+				$(RUBY_IPK_DIR)/CONTROL/postinst $(RUBY_IPK_DIR)/CONTROL/prerm; \
+		fi; \
 	fi
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(RUBY_IPK_DIR)
 
