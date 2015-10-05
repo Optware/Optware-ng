@@ -238,7 +238,7 @@ $(LTRACE_IPK): $(LTRACE_BUILD_DIR)/.built
 	rm -rf $(LTRACE_IPK_DIR) $(BUILD_DIR)/ltrace_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LTRACE_BUILD_DIR) \
 		DESTDIR=$(LTRACE_IPK_DIR) ARCH=$(LTRACE_ARCH) OS=linux-gnu \
-		$(INSTALL)
+		install
 	$(STRIP_COMMAND) $(LTRACE_IPK_DIR)$(TARGET_PREFIX)/bin/ltrace
 #	$(INSTALL) -d $(LTRACE_IPK_DIR)$(TARGET_PREFIX)/etc/
 #	$(INSTALL) -m 644 $(LTRACE_SOURCE_DIR)/ltrace.conf $(LTRACE_IPK_DIR)$(TARGET_PREFIX)/etc/ltrace.conf
