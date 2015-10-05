@@ -214,8 +214,8 @@ $(NGET_IPK): $(NGET_BUILD_DIR)/.built
 	rm -rf $(NGET_IPK_DIR) $(BUILD_DIR)/nget_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(NGET_BUILD_DIR) \
 		prefix=$(NGET_IPK_DIR)$(TARGET_PREFIX) \
-		$(INSTALL)_bin="install -m 0755" \
-		$(INSTALL)
+		install_bin="install -m 0755" \
+		install
 	$(STRIP_COMMAND) $(NGET_IPK_DIR)$(TARGET_PREFIX)/bin/*
 	$(INSTALL) -d $(NGET_IPK_DIR)$(TARGET_PREFIX)/share/doc/example/nget
 	$(INSTALL) -m 644 $(NGET_SOURCE_DIR)/example.ngetrc $(NGET_IPK_DIR)$(TARGET_PREFIX)/share/doc/example/nget/
