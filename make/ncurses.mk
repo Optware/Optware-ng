@@ -146,7 +146,7 @@ $(NCURSES_IPK) $(NCURSES-DEV_IPK): $(NCURSES_DIR)/.built
 	rm -rf $(NCURSES-DEV_IPK_DIR) $(BUILD_DIR)/ncurses-dev_*_$(TARGET_ARCH).ipk
 	$(if $(filter $(HOSTCC), $(TARGET_CC)),,PATH=$(NCURSES_HOST_BUILD_DIR)/progs:$$PATH) \
 		$(MAKE) -C $(NCURSES_DIR) DESTDIR=$(NCURSES_IPK_DIR) \
-		$(INSTALL).libs install.progs install.data
+		install.libs install.progs install.data
 	rm -rf $(NCURSES_IPK_DIR)$(TARGET_PREFIX)/include
 	rm -f $(NCURSES_IPK_DIR)$(TARGET_PREFIX)/lib/*.a
 	$(STRIP_COMMAND) $(NCURSES_IPK_DIR)$(TARGET_PREFIX)/bin/clear \
