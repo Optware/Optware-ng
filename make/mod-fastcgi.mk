@@ -106,14 +106,14 @@ mod-fastcgi-source: $(DL_DIR)/$(MOD_FASTCGI_SOURCE) $(MOD_FASTCGI_PATCHES)
 #
 $(MOD_FASTCGI_BUILD_DIR)/.configured: $(DL_DIR)/$(MOD_FASTCGI_SOURCE) $(MOD_FASTCGI_PATCHES) make/mod-fastcgi.mk
 	$(MAKE) apache-stage
-	rm -rf $(BUILD_DIR)/$(MOD_FASTCGI_DIR) $(MOD_FASTCGI_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(MOD_FASTCGI_DIR) $(@)
 	$(MOD_FASTCGI_UNZIP) $(DL_DIR)/$(MOD_FASTCGI_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(MOD_FASTCGI_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(MOD_FASTCGI_DIR) -p1
-	mv $(BUILD_DIR)/$(MOD_FASTCGI_DIR) $(MOD_FASTCGI_BUILD_DIR)
-	(cd $(MOD_FASTCGI_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(MOD_FASTCGI_DIR) $(@)
+	(cd $(@); \
 		cp Makefile.AP2 Makefile \
 	)
-	touch $(MOD_FASTCGI_BUILD_DIR)/.configured
+	touch $@
 
 mod-fastcgi-unpack: $(MOD_FASTCGI_BUILD_DIR)/.configured
 
@@ -121,12 +121,12 @@ mod-fastcgi-unpack: $(MOD_FASTCGI_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(MOD_FASTCGI_BUILD_DIR)/.built: $(MOD_FASTCGI_BUILD_DIR)/.configured
-	rm -f $(MOD_FASTCGI_BUILD_DIR)/.built
-	$(MAKE) -C $(MOD_FASTCGI_BUILD_DIR) \
+	rm -f $@
+	$(MAKE) -C $(@D) \
 	    top_dir=$(STAGING_PREFIX)/share/apache2 \
 #	    LIBTOOL="/bin/sh $(STAGING_PREFIX)/share/apache2/build-1/libtool --silent" \
 	    SH_LIBTOOL="/bin/sh $(STAGING_PREFIX)/share/apache2/build-1/libtool --silent"
-	touch $(MOD_FASTCGI_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -137,8 +137,8 @@ mod-fastcgi: $(MOD_FASTCGI_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(MOD_FASTCGI_BUILD_DIR)/.staged: $(MOD_FASTCGI_BUILD_DIR)/.built
-	rm -f $(MOD_FASTCGI_BUILD_DIR)/.staged
-	touch $(MOD_FASTCGI_BUILD_DIR)/.staged
+	rm -f $@
+	touch $@
 
 mod-fastcgi-stage: $(MOD_FASTCGI_BUILD_DIR)/.staged
 
@@ -147,7 +147,7 @@ mod-fastcgi-stage: $(MOD_FASTCGI_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/mod-fastcgi
 #
 $(MOD_FASTCGI_IPK_DIR)/CONTROL/control:
-	@$(INSTALL) -d $(MOD_FASTCGI_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: mod-fastcgi" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -178,7 +178,7 @@ $(MOD_FASTCGI_IPK): $(MOD_FASTCGI_BUILD_DIR)/.built
 	$(MAKE) -C $(MOD_FASTCGI_BUILD_DIR) \
 	    DESTDIR=$(MOD_FASTCGI_IPK_DIR) \
 	    top_dir=$(STAGING_PREFIX)/share/apache2 \
-	    $(INSTALL)
+	    install
 	$(STRIP_COMMAND) $(MOD_FASTCGI_IPK_DIR)$(TARGET_PREFIX)/libexec/mod_fastcgi.so
 	$(INSTALL) -d $(MOD_FASTCGI_IPK_DIR)$(TARGET_PREFIX)/etc/apache2/conf.d/
 	$(INSTALL) -m 644 $(MOD_FASTCGI_SOURCE_DIR)/mod_fastcgi.conf $(MOD_FASTCGI_IPK_DIR)$(TARGET_PREFIX)/etc/apache2/conf.d/mod_fastcgi.conf
@@ -209,4 +209,4 @@ mod-fastcgi-dirclean:
 # Some sanity check for the package.
 #
 mod-fastcgi-check: $(MOD_FASTCGI_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(MOD_FASTCGI_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
