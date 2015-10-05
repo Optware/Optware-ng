@@ -171,7 +171,7 @@ $(TRICKLE_IPK_DIR)/CONTROL/control:
 $(TRICKLE_IPK): $(TRICKLE_BUILD_DIR)/.built
 	rm -rf $(TRICKLE_IPK_DIR) $(BUILD_DIR)/trickle_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(TRICKLE_BUILD_DIR) DESTDIR=$(TRICKLE_IPK_DIR) transform='' \
-		$(INSTALL)-binPROGRAMS install-trickleoverloadDATA install-man
+		install-binPROGRAMS install-trickleoverloadDATA install-man
 #	$(INSTALL) -d $(TRICKLE_IPK_DIR)$(TARGET_PREFIX)/bin
 	$(STRIP_COMMAND) $(TRICKLE_IPK_DIR)$(TARGET_PREFIX)/bin/trickle* $(TRICKLE_IPK_DIR)$(TARGET_PREFIX)/lib/trickle/*
 #	$(INSTALL) -d $(TRICKLE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
