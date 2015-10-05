@@ -204,7 +204,7 @@ $(UEMACS_IPK): $(UEMACS_BUILD_DIR)/.built
 	$(MAKE) -C $(UEMACS_BUILD_DIR) \
 		BINDIR=$(UEMACS_IPK_DIR)$(TARGET_PREFIX)/bin \
 		LIBDIR=$(UEMACS_IPK_DIR)$(TARGET_PREFIX)/etc \
-		$(INSTALL)
+		install
 	cd $(UEMACS_IPK_DIR)$(TARGET_PREFIX)/bin; ln -s em uemacs
 	mv $(UEMACS_IPK_DIR)$(TARGET_PREFIX)/etc/.emacsrc $(UEMACS_IPK_DIR)$(TARGET_PREFIX)/etc/.uemacsrc
 	mv $(UEMACS_IPK_DIR)$(TARGET_PREFIX)/etc/emacs.hlp $(UEMACS_IPK_DIR)$(TARGET_PREFIX)/etc/uemacs.hlp
