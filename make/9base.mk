@@ -71,10 +71,10 @@ $(9BASE_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(9BASE_SOURCE) make/
 	if test "$(HOST_BUILD_DIR)/$(9BASE_DIR)" != "$(@D)" ; \
 		then mv $(HOST_BUILD_DIR)/$(9BASE_DIR) $(@D) ; \
 	fi
-	sed -i -e 's|/usr/local/plan9|$(TARGET_PREFIX)/lib/9base|' \
+	sed -i -e 's|/usr/local/plan9|/opt/lib/9base|' \
 		$(@D)/lib9/get9root.c $(@D)/lib9/_p9translate.c
 	$(MAKE) -C $(@D) \
-		PREFIX=$(TARGET_PREFIX)/lib/9base \
+		PREFIX=/opt/lib/9base \
 		SUBDIRS="lib9 yacc" \
 		;
 	touch $@
@@ -83,7 +83,7 @@ $(9BASE_HOST_BUILD_DIR)/.staged: $(9BASE_HOST_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(@D) install \
 		DESTDIR=$(HOST_STAGING_DIR) \
-		PREFIX=$(TARGET_PREFIX)/lib/9base \
+		PREFIX=/opt/lib/9base \
 		SUBDIRS="yacc" \
 		;
 	touch $@
