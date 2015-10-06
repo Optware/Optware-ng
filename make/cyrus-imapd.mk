@@ -101,7 +101,7 @@ endif
 	cat $(CYRUS-IMAPD_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(CYRUS-IMAPD_DIR) -p1
 	mv $(BUILD_DIR)/$(CYRUS-IMAPD_DIR) $(@D)
 	find $(@D) -type f -name Makefile.in -exec sed -i -e 's/-s -m/-m/' {} \;
-	$(INSTALL) -m 644 $(CYRUS-IMAPD_SOURCE_DIR)/config.* $(CYRUS-IMAPD_BUILD_DIR)
+	$(INSTALL) -m 755 $(CYRUS-IMAPD_SOURCE_DIR)/config.* $(CYRUS-IMAPD_BUILD_DIR)
 	(cd $(@D); \
 		autoconf; \
 		$(TARGET_CONFIGURE_OPTS) \
