@@ -135,7 +135,7 @@ endif
 	rm -rf $(BUILD_DIR)/$(PYTHON24_DIR) $(@D) $(HOST_STAGING_PREFIX)/bin/python2.4
 	$(PYTHON24_UNZIP) $(DL_DIR)/$(PYTHON24_SOURCE) | tar -C $(BUILD_DIR) -xf -
 	cat $(PYTHON24_PATCHES) | $(PATCH) -bd $(BUILD_DIR)/$(PYTHON24_DIR) -p1
-	sed -i -e '/\$$absconfigcommand/s|.*|    AS="" LD="" CC="" CXX="" AR="" STRIP="" RANLIB="" LDFLAGS="-L$(HOST_STAGING_LIB_DIR)" CPPFLAGS="-I$(HOST_STAGING_INCLUDE_DIR)" \$$absconfigcommand --prefix=\$$prefix --with-system-ffi|' $(BUILD_DIR)/$(PYTHON24_DIR)/configure.in
+	sed -i -e '/\$$absconfigcommand/s|.*|    AS="" LD="" CC="" CXX="" AR="" STRIP="" RANLIB="" LDFLAGS="-L$(HOST_STAGING_LIB_DIR)" CPPFLAGS="-I$(HOST_STAGING_INCLUDE_DIR)" \$$absconfigcommand --prefix=/opt --with-system-ffi|' $(BUILD_DIR)/$(PYTHON24_DIR)/configure.in
 	cd $(BUILD_DIR)/$(PYTHON24_DIR); autoconf configure.in > configure
 	mkdir $(@D)
 	(cd $(@D); \

@@ -100,7 +100,7 @@ $(LUA_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(LUA_SOURCE) $(LUA_PAT
 	rm -rf $(@D)
 	$(LUA_UNZIP) $(DL_DIR)/$(LUA_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
 	mv $(HOST_BUILD_DIR)/$(LUA_DIR) $(@D)
-	sed -i -e 's|/usr/local|$(TARGET_PREFIX)|' $(@D)/src/luaconf.h
+	sed -i -e 's|/usr/local|/opt|' $(@D)/src/luaconf.h
 	$(MAKE) -C $(@D)/src \
 		MYCFLAGS="-DLUA_ANSI" \
 		MYLDFLAGS="$(LUA_LDFLAGS)" \

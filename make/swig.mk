@@ -100,7 +100,7 @@ $(SWIG_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(SWIG_SOURCE) $(SWIG_
 	fi
 	(cd $(@D); \
 		./configure \
-		--prefix=$(TARGET_PREFIX) \
+		--prefix=/opt \
 		--disable-nls \
 		--disable-static \
 	)

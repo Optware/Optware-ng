@@ -175,7 +175,7 @@ $(LIBGMP_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(LIBGMP_SOURCE) ma
 	(cd $(@D); \
 	    CPPFLAGS="$(LIBGMP_M32)" \
 	    ./configure \
-		--prefix=$(TARGET_PREFIX) $(LIBGMP_HOST32) \
+		--prefix=/opt $(LIBGMP_HOST32) \
 		--disable-nls \
 		--disable-shared; \
 	    $(MAKE) DESTDIR=$(HOST_STAGING_DIR) install; \

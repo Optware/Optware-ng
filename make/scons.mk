@@ -185,12 +185,12 @@ $(SCONS_HOST_BUILD_DIR)/.staged: host/.configured make/scons.mk
 		echo "[build_ext]"; \
 		echo "include-dirs=$(HOST_STAGING_INCLUDE_DIR):$(HOST_STAGING_INCLUDE_DIR)/python2.5"; \
 		echo "library-dirs=$(HOST_STAGING_LIB_DIR)"; \
-		echo "rpath=$(TARGET_PREFIX)/lib"; \
+		echo "rpath=$(HOST_STAGING_LIB_DIR)"; \
 	    ) >> setup.cfg; \
 	)
 	(cd $(@D); \
 		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
-			--root=$(HOST_STAGING_DIR) --prefix=$(TARGET_PREFIX); \
+			--root=$(HOST_STAGING_DIR) --prefix=/opt; \
         )
 	touch $@
 

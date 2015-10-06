@@ -98,7 +98,7 @@ $(FILE_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(FILE_SOURCE) make/fi
 	(cd $(@D); \
 		CPPFLAGS="-I$(HOST_STAGING_INCLUDE_DIR)" \
 		./configure \
-		--prefix=$(TARGET_PREFIX) \
+		--prefix=/opt \
 		--disable-nls \
 		--disable-static \
 	)

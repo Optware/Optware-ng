@@ -176,7 +176,7 @@ $(SYX_HOST_BUILD_DIR)/.built: host/.configured make/syx.mk
 	fi
 	$(HOST_STAGING_PREFIX)/bin/scons \
 		-C $(SYX_HOST_BUILD_DIR) \
-		prefix=$(TARGET_PREFIX) \
+		prefix=/opt \
 		GTK=false \
 		;
 	touch $@

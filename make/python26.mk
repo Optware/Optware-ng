@@ -135,7 +135,7 @@ endif
 	rm -rf $(BUILD_DIR)/$(PYTHON26_DIR) $(@D) $(HOST_STAGING_PREFIX)/bin/python2.6
 	$(PYTHON26_UNZIP) $(DL_DIR)/$(PYTHON26_SOURCE) | tar -C $(BUILD_DIR) -xf -
 	cat $(PYTHON26_PATCHES) | $(PATCH) -bd $(BUILD_DIR)/$(PYTHON26_DIR) -p1
-	sed -i -e '/\$$absconfigcommand/s|.*|    AS="" LD="" CC="" CXX="" AR="" STRIP="" RANLIB="" LDFLAGS="-L$(HOST_STAGING_LIB_DIR)" CPPFLAGS="-I$(HOST_STAGING_INCLUDE_DIR)" \$$absconfigcommand --prefix=\$$prefix --with-system-ffi|' $(BUILD_DIR)/$(PYTHON26_DIR)/configure.in
+	sed -i -e '/\$$absconfigcommand/s|.*|    AS="" LD="" CC="" CXX="" AR="" STRIP="" RANLIB="" LDFLAGS="-L$(HOST_STAGING_LIB_DIR)" CPPFLAGS="-I$(HOST_STAGING_INCLUDE_DIR)" \$$absconfigcommand --prefix=/opt --with-system-ffi|' $(BUILD_DIR)/$(PYTHON26_DIR)/configure.in
 	autoreconf -vif $(BUILD_DIR)/$(PYTHON26_DIR)
 	mkdir -p $(@D)
 	cd $(@D); (\

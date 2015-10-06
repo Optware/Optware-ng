@@ -55,7 +55,7 @@ $(ZLIB_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(ZLIB_SOURCE) make/z
 	mv $(HOST_BUILD_DIR)/$(ZLIB_DIR) $(@D)
 	(cd $(@D); \
 	    	CFLAGS="-fPIC" \
-		prefix=$(TARGET_PREFIX) \
+		prefix=/opt \
 		./configure \
 		--shared \
 	)

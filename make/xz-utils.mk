@@ -60,7 +60,7 @@ $(XZ_UTILS_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(XZ_UTILS_SOURCE
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_HOST_NAME) \
 		--target=$(GNU_HOST_NAME) \
-		--prefix=$(TARGET_PREFIX) \
+		--prefix=/opt \
 		--disable-nls \
 		--enable-static \
 		--disable-shared \

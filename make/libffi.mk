@@ -171,7 +171,7 @@ $(LIBFFI_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(LIBFFI_SOURCE) ma
 	(cd $(@D); \
 	    CPPFLAGS="-fPIC" \
 	    ./configure \
-		--prefix=$(TARGET_PREFIX) $(LIBFFI_HOST32) \
+		--prefix=/opt $(LIBFFI_HOST32) \
 		--disable-nls \
 		--disable-shared; \
 	    $(MAKE) DESTDIR=$(HOST_STAGING_DIR) install; \

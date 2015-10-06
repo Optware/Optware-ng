@@ -110,8 +110,8 @@ $(OPENSSL_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(OPENSSL_SOURCE) $
 	(cd $(@D) && \
 		./Configure \
 			shared no-zlib \
-			--openssldir=$(TARGET_PREFIX)/share/openssl \
-			--prefix=$(TARGET_PREFIX) \
+			--openssldir=/opt/share/openssl \
+			--prefix=/opt \
 			enable-md2 \
                         $(OPENSSL_HOST_ARCH) \
 	)
