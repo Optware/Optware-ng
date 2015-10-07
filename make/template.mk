@@ -26,7 +26,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-<FOO>_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/<foo>
+<FOO>_URL=http://$(SOURCEFORGE_MIRROR)/sourceforge/<foo>/<foo>-$(<FOO>_VERSION).tar.gz
 <FOO>_VERSION=3.2.1
 <FOO>_SOURCE=<foo>-$(<FOO>_VERSION).tar.gz
 <FOO>_DIR=<foo>-$(<FOO>_VERSION)
@@ -80,9 +80,13 @@
 #
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
+# $(<FOO>_URL) holds the link to the source,
+# which is saved to $(DL_DIR)/$(<FOO>_SOURCE).
+# When adding new package, remember to place sha512sum of the source to
+# scripts/checksum/$(<FOO>_SOURCE).sha512
 #
 $(DL_DIR)/$(<FOO>_SOURCE):
-	$(WGET) -P $(@D) $(<FOO>_SITE)/$(@F) || \
+	$(WGET) -O $@ $(<FOO>_URL) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
@@ -174,7 +178,7 @@ $(<FOO>_IPK_DIR)/CONTROL/control:
 	@echo "Section: $(<FOO>_SECTION)" >>$@
 	@echo "Version: $(<FOO>_VERSION)-$(<FOO>_IPK_VERSION)" >>$@
 	@echo "Maintainer: $(<FOO>_MAINTAINER)" >>$@
-	@echo "Source: $(<FOO>_SITE)/$(<FOO>_SOURCE)" >>$@
+	@echo "Source: $(<FOO>_URL)" >>$@
 	@echo "Description: $(<FOO>_DESCRIPTION)" >>$@
 	@echo "Depends: $(<FOO>_DEPENDS)" >>$@
 	@echo "Suggests: $(<FOO>_SUGGESTS)" >>$@
