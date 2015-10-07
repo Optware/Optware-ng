@@ -25,7 +25,6 @@
 9BASE_VERSION=4+20090827
 9BASE_UPSTREAM_SOURCE=9base-$(9BASE_UPSTREAM_VERSION).tar.gz
 9BASE_SOURCE=9base-$(9BASE_VERSION).tar.gz
-9BASE_SOURCE_MD5=af10410542ea6b6875a71e06fdc12c66
 9BASE_DIR=9base-$(9BASE_UPSTREAM_VERSION)
 9BASE_UNZIP=zcat
 9BASE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
@@ -57,10 +56,7 @@ endif
 9base-check 9base-host 9base-host-stage
 
 $(DL_DIR)/$(9BASE_SOURCE):
-	rm -f $@ $(@D)/$(9BASE_UPSTREAM_SOURCE)
-	$(WGET) -P $(@D) $(9BASE_SITE)/$(9BASE_UPSTREAM_SOURCE) && \
-	test `md5sum $(@D)/$(9BASE_UPSTREAM_SOURCE) | cut -f1 -d" "` = $(9BASE_SOURCE_MD5) && \
-	mv $(@D)/$(9BASE_UPSTREAM_SOURCE) $@ || \
+	$(WGET) -O $@ $(9BASE_SITE)/$(9BASE_UPSTREAM_SOURCE) && \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 9base-source: $(DL_DIR)/$(9BASE_SOURCE) $(9BASE_PATCHES)
