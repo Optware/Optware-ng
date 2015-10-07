@@ -36,6 +36,7 @@ else
 	###  was called
 
 	skip=0
+	no_more_flags=0
 
 	for arg in "$@"; do
 
@@ -50,17 +51,24 @@ else
 			continue
 		fi
 
-		### skip install switch and (if expected)
-		### relevant argument
-		case "$arg" in
-			-[gmoSt])
-				skip=1
-				continue
-				;;
-			-*)
-				continue
-				;;
-		esac
+		if [ "$no_more_flags" != "1" ]; then
+
+			### skip install switch and (if expected)
+			### relevant argument
+			case "$arg" in
+				-[gmoSt])
+					skip=1
+					continue
+					;;
+				--)
+					no_more_flags=1
+					continue
+					;;
+				-*)
+					continue
+					;;
+			esac
+		fi
 
 		### don't do anything on the last argument,
 		### since it's the target dir
