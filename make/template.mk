@@ -83,7 +83,7 @@
 # $(<FOO>_URL) holds the link to the source,
 # which is saved to $(DL_DIR)/$(<FOO>_SOURCE).
 # When adding new package, remember to place sha512sum of the source to
-# scripts/checksum/$(<FOO>_SOURCE).sha512
+# scripts/checksums/$(<FOO>_SOURCE).sha512
 #
 $(DL_DIR)/$(<FOO>_SOURCE):
 	$(WGET) -O $@ $(<FOO>_URL) || \
