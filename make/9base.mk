@@ -56,7 +56,7 @@ endif
 9base-check 9base-host 9base-host-stage
 
 $(DL_DIR)/$(9BASE_SOURCE):
-	$(WGET) -O $@ $(9BASE_SITE)/$(9BASE_UPSTREAM_SOURCE) && \
+	$(WGET) -O $@ $(9BASE_SITE)/$(9BASE_UPSTREAM_SOURCE) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 9base-source: $(DL_DIR)/$(9BASE_SOURCE) $(9BASE_PATCHES)
