@@ -33,7 +33,7 @@ XAU_CONFFILES=
 # XAU_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-XAU_PATCHES=$(XAU_SOURCE_DIR)/autogen.sh.patch
+#XAU_PATCHES=$(XAU_SOURCE_DIR)/autogen.sh.patch
 
 #
 # If the compilation of the package requires additional
@@ -103,13 +103,13 @@ $(XAU_BUILD_DIR)/.configured: $(DL_DIR)/$(XAU_SOURCE) $(XAU_PATCHES) make/xau.mk
 	if test "$(BUILD_DIR)/$(XAU_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(XAU_DIR) $(@D) ; \
 	fi
-	(cd $(@D); chmod +x autogen.sh; \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(XAU_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(XAU_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
-		./autogen.sh \
+		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \

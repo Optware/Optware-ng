@@ -36,7 +36,7 @@ XCB-PROTO_CONFFILES=
 # XCB-PROTO_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-XCB-PROTO_PATCHES=$(XCB-PROTO_SOURCE_DIR)/autogen.sh.patch
+#XCB-PROTO_PATCHES=$(XCB-PROTO_SOURCE_DIR)/autogen.sh.patch
 
 #
 # If the compilation of the package requires additional
@@ -104,13 +104,13 @@ $(XCB-PROTO_BUILD_DIR)/.configured: $(DL_DIR)/$(XCB-PROTO_SOURCE) $(XCB-PROTO_PA
 	if test "$(BUILD_DIR)/$(XCB-PROTO_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(XCB-PROTO_DIR) $(@D) ; \
 	fi
-	(cd $(@D); chmod +x autogen.sh; \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(XCB-PROTO_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(XCB-PROTO_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
-		./autogen.sh \
+		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \

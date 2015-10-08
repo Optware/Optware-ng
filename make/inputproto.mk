@@ -36,7 +36,7 @@ INPUTPROTO_CONFFILES=
 # INPUTPROTO_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-INPUTPROTO_PATCHES=$(INPUTPROTO_SOURCE_DIR)/autogen.sh.patch
+#INPUTPROTO_PATCHES=$(INPUTPROTO_SOURCE_DIR)/autogen.sh.patch
 
 #
 # If the compilation of the package requires additional
@@ -104,13 +104,13 @@ $(INPUTPROTO_BUILD_DIR)/.configured: $(DL_DIR)/$(INPUTPROTO_SOURCE) $(INPUTPROTO
 	if test "$(BUILD_DIR)/$(INPUTPROTO_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(INPUTPROTO_DIR) $(@D) ; \
 	fi
-	(cd $(@D); chmod +x autogen.sh; \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(INPUTPROTO_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(INPUTPROTO_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
-		./autogen.sh \
+		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \

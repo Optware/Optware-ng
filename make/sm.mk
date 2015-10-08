@@ -34,7 +34,7 @@ SM_CONFFILES=
 # SM_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-SM_PATCHES=$(SM_SOURCE_DIR)/autogen.sh.patch
+#SM_PATCHES=$(SM_SOURCE_DIR)/autogen.sh.patch
 
 #
 # If the compilation of the package requires additional
@@ -105,13 +105,13 @@ $(SM_BUILD_DIR)/.configured: $(DL_DIR)/$(SM_SOURCE) \
 	if test "$(BUILD_DIR)/$(SM_DIR)" != "$(SM_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(SM_DIR) $(SM_BUILD_DIR) ; \
 	fi
-	(cd $(SM_BUILD_DIR); chmod +x autogen.sh; \
+	(cd $(SM_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SM_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(SM_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
-		./autogen.sh \
+		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \

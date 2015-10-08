@@ -33,7 +33,7 @@ XCB_CONFFILES=
 # XCB_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-XCB_PATCHES=$(XCB_SOURCE_DIR)/autogen.sh.patch
+#XCB_PATCHES=$(XCB_SOURCE_DIR)/autogen.sh.patch
 
 #
 # If the compilation of the package requires additional
@@ -103,13 +103,13 @@ $(XCB_BUILD_DIR)/.configured: $(DL_DIR)/$(XCB_SOURCE) $(XCB_PATCHES) make/xcb.mk
 	if test "$(BUILD_DIR)/$(XCB_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(XCB_DIR) $(@D) ; \
 	fi
-	(cd $(@D); chmod +x autogen.sh; \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(XCB_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(XCB_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
-		./autogen.sh \
+		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \

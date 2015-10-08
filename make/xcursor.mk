@@ -34,7 +34,7 @@ XCURSOR_CONFFILES=
 # XCURSOR_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-XCURSOR_PATCHES=$(XCURSOR_SOURCE_DIR)/autogen.sh.patch
+#XCURSOR_PATCHES=$(XCURSOR_SOURCE_DIR)/autogen.sh.patch
 
 #
 # If the compilation of the package requires additional
@@ -105,13 +105,13 @@ $(XCURSOR_BUILD_DIR)/.configured: $(DL_DIR)/$(XCURSOR_SOURCE) \
 	if test "$(BUILD_DIR)/$(XCURSOR_DIR)" != "$(XCURSOR_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(XCURSOR_DIR) $(XCURSOR_BUILD_DIR) ; \
 	fi
-	(cd $(XCURSOR_BUILD_DIR); chmod +x autogen.sh; \
+	(cd $(XCURSOR_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(XCURSOR_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(XCURSOR_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
-		./autogen.sh \
+		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \

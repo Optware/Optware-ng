@@ -34,7 +34,7 @@ ICE_CONFFILES=
 # ICE_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-ICE_PATCHES=$(ICE_SOURCE_DIR)/autogen.sh.patch
+#ICE_PATCHES=$(ICE_SOURCE_DIR)/autogen.sh.patch
 
 #
 # If the compilation of the package requires additional
@@ -107,13 +107,13 @@ $(ICE_BUILD_DIR)/.configured: $(DL_DIR)/$(ICE_SOURCE) \
 	if test "$(BUILD_DIR)/$(ICE_DIR)" != "$(ICE_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(ICE_DIR) $(ICE_BUILD_DIR) ; \
 	fi
-	(cd $(ICE_BUILD_DIR); chmod +x autogen.sh; \
+	(cd $(ICE_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ICE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(ICE_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
-		./autogen.sh \
+		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
