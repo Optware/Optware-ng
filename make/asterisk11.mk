@@ -289,7 +289,6 @@ asterisk11-source: $(DL_DIR)/$(ASTERISK11_SOURCE) $(ASTERISK11_PATCHES)
 # shown below to make various patches to it.
 #
 $(ASTERISK11_BUILD_DIR)/.configured: $(DL_DIR)/$(ASTERISK11_SOURCE) $(ASTERISK11_PATCHES) make/asterisk11.mk
-ifeq (1,0)
 	$(MAKE) ncurses-stage openssl-stage libcurl-stage zlib-stage termcap-stage libstdc++-stage
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
@@ -309,7 +308,6 @@ endif
 	$(MAKE) radiusclient-ng-stage unixodbc-stage popt-stage net-snmp-stage
 	$(MAKE) sqlite-stage libogg-stage libxml2-stage srtp-stage
 	$(MAKE) mysql-stage bluez2-libs-stage openssl-stage e2fsprogs-stage
-endif
 	rm -rf $(BUILD_DIR)/$(ASTERISK11_DIR) $(ASTERISK11_BUILD_DIR)
 	$(ASTERISK11_UNZIP) $(DL_DIR)/$(ASTERISK11_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ASTERISK11_PATCHES)" ; \
