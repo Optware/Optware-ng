@@ -330,10 +330,10 @@ ifeq ($(OPTWARE_TARGET), $(filter buildroot-armeabi buildroot-armeabi-ng buildro
 #	no res_nsearch() in uClibc 0.9.33.2
 	sed -i -e '/AC_DEFINE(\[HAVE_RES_NINIT\]/d' $(@D)/configure.ac
 endif
+	sed -i -e "s/AC_CHECK_HEADERS..xlocale\.h../###########/" $(@D)/configure.ac
+	sed -i -e "s|<defaultenabled>yes</defaultenabled>||" $(@D)/sounds/sounds.xml
 	(cd $(@D); \
-		sed -i -e "s/AC_CHECK_HEADERS..xlocale\.h../###########/" configure.ac; \
-		sed -i -e "s|<defaultenabled>yes</defaultenabled>||" sounds/sounds.xml; \
-		./bootstrap.sh; \
+		./bootstrap.sh && \
 		$(TARGET_CONFIGURE_OPTS) \
 		LIBEDIT_DIR="internal" \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ASTERISK13_CPPFLAGS)" \

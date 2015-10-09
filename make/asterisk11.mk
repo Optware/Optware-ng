@@ -289,6 +289,7 @@ asterisk11-source: $(DL_DIR)/$(ASTERISK11_SOURCE) $(ASTERISK11_PATCHES)
 # shown below to make various patches to it.
 #
 $(ASTERISK11_BUILD_DIR)/.configured: $(DL_DIR)/$(ASTERISK11_SOURCE) $(ASTERISK11_PATCHES) make/asterisk11.mk
+ifeq (1,0)
 	$(MAKE) ncurses-stage openssl-stage libcurl-stage zlib-stage termcap-stage libstdc++-stage
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
@@ -308,6 +309,7 @@ endif
 	$(MAKE) radiusclient-ng-stage unixodbc-stage popt-stage net-snmp-stage
 	$(MAKE) sqlite-stage libogg-stage libxml2-stage srtp-stage
 	$(MAKE) mysql-stage bluez2-libs-stage openssl-stage e2fsprogs-stage
+endif
 	rm -rf $(BUILD_DIR)/$(ASTERISK11_DIR) $(ASTERISK11_BUILD_DIR)
 	$(ASTERISK11_UNZIP) $(DL_DIR)/$(ASTERISK11_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ASTERISK11_PATCHES)" ; \
@@ -324,11 +326,11 @@ ifeq ($(OPTWARE_TARGET), $(filter buildroot-armeabi buildroot-armeabi-ng buildro
 #	no res_nsearch() in uClibc 0.9.33.2
 	sed -i -e '/AC_DEFINE(\[HAVE_RES_NINIT\]/d' $(@D)/configure.ac
 endif
+	sed -i -e "s/AC_CHECK_HEADERS..xlocale\.h../###########/" $(@D)/configure.ac
+	sed -i -e "s|<defaultenabled>yes</defaultenabled>||" $(@D)/sounds/sounds.xml
+	sed -i -e "s#    ac_cross_compile=\$$.*#    ac_cross_compile=\`echo \$$\{CC\} | sed 's/gcc\$$//'\`#" $(@D)/res/pjproject/aconfigure
 	(cd $(@D); \
-		sed -i -e "s/AC_CHECK_HEADERS..xlocale\.h../###########/" configure.ac; \
-		sed -i -e "s|<defaultenabled>yes</defaultenabled>||" sounds/sounds.xml; \
-		sed -i -e "s#    ac_cross_compile=\$$.*#    ac_cross_compile=\`echo \$$\{CC\} | sed 's/gcc\$$//'\`#" res/pjproject/aconfigure; \
-		./bootstrap.sh; \
+		./bootstrap.sh && \
 		$(TARGET_CONFIGURE_OPTS) \
 		LIBEDIT_DIR="internal" \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ASTERISK11_CPPFLAGS)" \
@@ -368,7 +370,8 @@ endif
 		$(ASTERISK11_CONFIGURE_OPTS) \
 		--localstatedir=$(TARGET_PREFIX)/var \
 		--sysconfdir=$(TARGET_PREFIX)/etc; \
-	cd $(@D)/res/pjproject; \
+	)
+	(cd $(@D)/res/pjproject; \
 		echo "export CFLAGS += $(STAGING_CPPFLAGS) $(ASTERISK11_CPPFLAGS)" > user.mak; \
 		echo "export LDLAGS += $(STAGING_LDFLAGS) $(ASTERISK11_LDFLAGS)" >> user.mak; \
 		$(TARGET_CONFIGURE_OPTS) \
