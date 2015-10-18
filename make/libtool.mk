@@ -20,10 +20,10 @@
 # You should change all these variables to suit your package.
 #
 LIBTOOL_SITE=http://ftp.gnu.org/gnu/libtool
-LIBTOOL_VERSION=1.5.26
-LIBTOOL_SOURCE=libtool-$(LIBTOOL_VERSION).tar.gz
+LIBTOOL_VERSION=2.4.6
+LIBTOOL_SOURCE=libtool-$(LIBTOOL_VERSION).tar.xz
 LIBTOOL_DIR=libtool-$(LIBTOOL_VERSION)
-LIBTOOL_UNZIP=zcat
+LIBTOOL_UNZIP=xzcat
 LIBTOOL_MAINTAINER=Christopher <edmondsc@onid.orst.edu>
 LIBTOOL_DESCRIPTION=Library tools.
 LIBTOOL_SECTION=utilities
@@ -35,7 +35,7 @@ LIBTOOL_CONFLICTS=
 #
 # LIBTOOL_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBTOOL_IPK_VERSION=2
+LIBTOOL_IPK_VERSION=1
 
 #
 # LIBTOOL_PATCHES should list any patches, in the the order in
