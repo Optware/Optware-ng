@@ -62,7 +62,7 @@ $(DL_DIR)/$(9BASE_SOURCE):
 9base-source: $(DL_DIR)/$(9BASE_SOURCE) $(9BASE_PATCHES)
 
 $(9BASE_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(9BASE_SOURCE) make/9base.mk
-	rm -rf $(HOST_BUILD_DIR)/$(9BASE_DIR) $(@D)
+	rm -rf $(HOST_BUILD_DIR)/$(9BASE_DIR) $(@D) $(HOST_STAGING_LIB_DIR)/9base
 	$(9BASE_UNZIP) $(DL_DIR)/$(9BASE_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
 	if test "$(HOST_BUILD_DIR)/$(9BASE_DIR)" != "$(@D)" ; \
 		then mv $(HOST_BUILD_DIR)/$(9BASE_DIR) $(@D) ; \
