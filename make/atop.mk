@@ -10,7 +10,7 @@
 # questions. But feel free to update or change this package
 # if there are reasons.
 #
-ATOP_SITE=http://www.atconsultancy.nl/atop/packages
+ATOP_SITE=http://www.atoptool.nl/download
 ATOP_VERSION=1.21
 ATOP_SOURCE=atop-$(ATOP_VERSION).tar.gz
 ATOP_DIR=atop-$(ATOP_VERSION)
