@@ -91,7 +91,8 @@ $(XDPYINFO_IPK_DIR)/CONTROL/control:
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(XDPYINFO_SOURCE):
-	$(WGET) -P $(@D) $(XDPYINFO_SITE)/$(@F)
+	$(WGET) -P $(@D) $(XDPYINFO_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 xdpyinfo-source: $(DL_DIR)/$(XDPYINFO_SOURCE) $(XDPYINFO_PATCHES)
 
@@ -107,17 +108,17 @@ xdpyinfo-source: $(DL_DIR)/$(XDPYINFO_SOURCE) $(XDPYINFO_PATCHES)
 #
 $(XDPYINFO_BUILD_DIR)/.configured: $(DL_DIR)/$(XDPYINFO_SOURCE) $(XDPYINFO_PATCHES) make/xdpyinfo.mk
 	$(MAKE) x11-stage xext-stage xtst-stage
-	rm -rf $(BUILD_DIR)/$(XDPYINFO_DIR) $(XDPYINFO_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(XDPYINFO_DIR) $(@D)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/$(XDPYINFO_SOURCE)
 	if test -n "$(XDPYINFO_PATCHES)" ; \
 		then cat $(XDPYINFO_PATCHES) | \
 		$(PATCH) -d $(BUILD_DIR)/$(XDPYINFO_DIR) -p1 ; \
 	fi
-	if test "$(BUILD_DIR)/$(XDPYINFO_DIR)" != "$(XDPYINFO_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(XDPYINFO_DIR) $(XDPYINFO_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(XDPYINFO_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(XDPYINFO_DIR) $(@D) ; \
 	fi
-	(cd $(XDPYINFO_BUILD_DIR); \
-		$(AUTORECONF1.10) -v --install; \
+	$(AUTORECONF1.10) -vif $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(XDPYINFO_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(XDPYINFO_LDFLAGS)" \
@@ -139,7 +140,7 @@ xdpyinfo-unpack: $(XDPYINFO_BUILD_DIR)/.configured
 #
 $(XDPYINFO_BUILD_DIR)/.built: $(XDPYINFO_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(XDPYINFO_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -152,7 +153,7 @@ xdpyinfo: $(XDPYINFO_BUILD_DIR)/.built
 #
 $(XDPYINFO_BUILD_DIR)/.staged: $(XDPYINFO_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(XDPYINFO_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 xdpyinfo-stage: $(XDPYINFO_BUILD_DIR)/.staged
@@ -191,4 +192,4 @@ xdpyinfo-clean:
 # directories.
 #
 xdpyinfo-dirclean:
-	rm -rf $(BUILD_DIR)/$(XDPYINFO_DIR) $(XDPYINFO_BUILD_DIR) $(XDPYINFO_IPK_DIR) $(XDPYINFO_IPK)
+	rm -rf $(BUILD_DIR)/$(XDPYINFO_DIR) $(XDPYINFO_BUILD_DIR) $(XDPYINFO_IPK_DIR) $^
