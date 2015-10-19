@@ -127,6 +127,7 @@ dovecot-source: $(DL_DIR)/$(DOVECOT_SOURCE) $(DOVECOT_PATCHES)
 #
 $(DOVECOT_BUILD_DIR)/.configured: $(DL_DIR)/$(DOVECOT_SOURCE) $(DOVECOT_PATCHES) make/dovecot.mk
 	$(MAKE) openssl-stage
+	$(HOST_TOOL_AUTOMAKE1.10)
 	rm -rf $(BUILD_DIR)/$(DOVECOT_DIR) $(@D)
 	$(DOVECOT_UNZIP) $(DL_DIR)/$(DOVECOT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(DOVECOT_PATCHES)" ; \
@@ -137,7 +138,9 @@ $(DOVECOT_BUILD_DIR)/.configured: $(DL_DIR)/$(DOVECOT_SOURCE) $(DOVECOT_PATCHES)
 		then mv $(BUILD_DIR)/$(DOVECOT_DIR) $(@D) ; \
 	fi
 	fgrep -rlZ pkglib_DATA --include Makefile.am $(@D) | xargs -0 sed -i 's/pkglib_DATA/pkgdata_DATA/g'
-	$(AUTORECONF1.10) -vif $(@D)
+	cd $(@D); export PATH=$(HOST_STAGING_PREFIX)/bin:$$PATH; libtoolize -c -f; aclocal-1.10; cat $(addprefix $(HOST_STAGING_PREFIX)/share/aclocal/, \
+		libtool.m4 ltoptions.m4 ltversion.m4 ltsugar.m4 lt~obsolete.m4) >> aclocal.m4; \
+		autoheader; autoconf; automake-1.10 -a -c
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(DOVECOT_CPPFLAGS)" \
