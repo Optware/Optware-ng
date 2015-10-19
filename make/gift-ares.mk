@@ -112,7 +112,7 @@ gift-ares-source: $(DL_DIR)/$(GIFTARES_SOURCE) $(GIFTARES_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(GIFTARES_BUILD_DIR)/.configured: $(DL_DIR)/$(GIFTARES_SOURCE) $(GIFTARES_PATCHES) make/gift-ares.mk
-	$(MAKE) gift-stage zlib-stage libtool-host-stage
+	$(MAKE) gift-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(GIFTARES_DIR) $(@D)
 	$(GIFTARES_UNZIP) $(DL_DIR)/$(GIFTARES_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(GIFTARES_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(GIFTARES_DIR) -p1
@@ -120,10 +120,6 @@ $(GIFTARES_BUILD_DIR)/.configured: $(DL_DIR)/$(GIFTARES_SOURCE) $(GIFTARES_PATCH
 	echo 'AC_CONFIG_MACRO_DIR([m4])' >> $(@D)/configure.ac
 	echo 'ACLOCAL_AMFLAGS = -I m4' >> $(@D)/Makefile.am
 	sed -i -e '/^AC_CONFIG_AUX_DIR/s/^/dnl /' -e '/^AM_INIT_AUTOMAKE/s/^/AC_CONFIG_AUX_DIR(.)\n/' $(@D)/configure.ac
-	(cd $(HOST_STAGING_PREFIX)/share/aclocal; \
-		cat libtool.m4 ltoptions.m4 ltversion.m4 ltsugar.m4 \
-			lt~obsolete.m4 >> $(@D)/aclocal.m4 \
-	)
 	$(AUTORECONF1.10) -vif $(@D)
 	(cd $(@D); \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig";export PKG_CONFIG_PATH; \

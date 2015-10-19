@@ -109,12 +109,8 @@ make/gift-opennap.mk
 	$(GIFT_OPENNAP_UNZIP) $(DL_DIR)/$(GIFT_OPENNAP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(GIFT_OPENNAP_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(GIFT_OPENNAP_DIR) -p1
 	mv $(BUILD_DIR)/$(GIFT_OPENNAP_DIR) $(GIFT_OPENNAP_BUILD_DIR)
-	cd $(@D); export PATH=$(HOST_STAGING_PREFIX)/bin:$$PATH; \
-		aclocal-1.10 -I m4 && \
-		autoheader && \
-		autoconf && \
-		libtoolize --automake && \
-		automake-1.10 --add-missing --force-missing
+	echo 'ACLOCAL_AMFLAGS = -I m4' >> $(@D)/Makefile.am
+	$(AUTORECONF1.10) -vif $(@D)
 	(cd $(@D); \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig";export PKG_CONFIG_PATH; \
 		$(TARGET_CONFIGURE_OPTS) \

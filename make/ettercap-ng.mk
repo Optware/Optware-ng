@@ -133,10 +133,6 @@ endif
 	fi
 	sed -i -e 's/LTDL_SHLIB_EXT//g' $(@D)/src/ec_plugins.c
 	sed -i -e 's/^#define PLUGIN_PATTERN .*/#define PLUGIN_PATTERN   "ec_*.so"/' $(@D)/include/ec_plugins.h
-	(cd `aclocal --print-ac-dir`; \
-		cat libtool.m4 ltoptions.m4 ltversion.m4 ltsugar.m4 \
-			lt~obsolete.m4 >> $(@D)/aclocal.m4 \
-	)
 	echo 'AC_CONFIG_MACRO_DIR([m4])' >> $(@D)/configure.in
 	-$(AUTORECONF1.10) -vif $(@D)
 	sed -i -e 's/-lpcap/-lusb-1.0 -lpcap/' $(@D)/configure

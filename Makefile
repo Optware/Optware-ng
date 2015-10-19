@@ -585,22 +585,36 @@ HOST_TOOL_ACLOCAL1.4 = \
 HOST_TOOL_AUTOMAKE1.4 = \
 	$(MAKE) automake1.4-host-stage autoconf-host-stage pkgconfig-host-stage m4-host-stage libtool-host-stage
 
+# These are aclocal wrappers used to automatically fix
+# libtool versions mismatch issue that can occur with
+# some software in most cases
+ACLOCAL1.15_SH= TOP=$(OPTWARE_TOP) ACLOCAL=aclocal-1.15 \
+		sh $(OPTWARE_TOP)/scripts/aclocal.sh
+ACLOCAL1.14_SH= TOP=$(OPTWARE_TOP) ACLOCAL=aclocal-1.14 \
+		sh $(OPTWARE_TOP)/scripts/aclocal.sh
+ACLOCAL1.10_SH= TOP=$(OPTWARE_TOP) ACLOCAL=aclocal-1.10 \
+		sh $(OPTWARE_TOP)/scripts/aclocal.sh
+ACLOCAL1.9_SH= TOP=$(OPTWARE_TOP) ACLOCAL=aclocal-1.9 \
+		sh $(OPTWARE_TOP)/scripts/aclocal.sh
+ACLOCAL1.4_SH= TOP=$(OPTWARE_TOP) ACLOCAL=aclocal-1.4 \
+		sh $(OPTWARE_TOP)/scripts/aclocal.sh
+
 # These should be called instead of `autoreconf`
 AUTORECONF1.15 = (cd $(OPTWARE_TOP) && $(HOST_TOOL_AUTOMAKE)) && \
 	PATH=$(HOST_STAGING_PREFIX)/bin:$$PATH \
-	AUTOMAKE=automake-1.15 ACLOCAL='aclocal-1.15 -I $(STAGING_PREFIX)/share/aclocal' autoreconf
+	AUTOMAKE=automake-1.15 ACLOCAL='$(ACLOCAL1.15_SH) -I $(STAGING_PREFIX)/share/aclocal' autoreconf
 AUTORECONF1.14 = (cd $(OPTWARE_TOP) && $(HOST_TOOL_AUTOMAKE1.14)) && \
 	PATH=$(HOST_STAGING_PREFIX)/bin:$$PATH \
-	AUTOMAKE=automake-1.14 ACLOCAL='aclocal-1.14 -I $(STAGING_PREFIX)/share/aclocal' autoreconf
+	AUTOMAKE=automake-1.14 ACLOCAL='$(ACLOCAL1.14_SH) -I $(STAGING_PREFIX)/share/aclocal' autoreconf
 AUTORECONF1.10 =(cd $(OPTWARE_TOP) && $(HOST_TOOL_AUTOMAKE1.10)) && \
 	PATH=$(HOST_STAGING_PREFIX)/bin:$$PATH \
-	AUTOMAKE=automake-1.10 ACLOCAL='aclocal-1.10 -I $(STAGING_PREFIX)/share/aclocal' autoreconf
+	AUTOMAKE=automake-1.10 ACLOCAL='$(ACLOCAL1.10_SH) -I $(STAGING_PREFIX)/share/aclocal' autoreconf
 AUTORECONF1.9 = (cd $(OPTWARE_TOP) && $(HOST_TOOL_AUTOMAKE1.9)) && \
 	PATH=$(HOST_STAGING_PREFIX)/bin:$$PATH \
-	AUTOMAKE=automake-1.9 ACLOCAL='aclocal-1.9 -I $(STAGING_PREFIX)/share/aclocal' autoreconf
+	AUTOMAKE=automake-1.9 ACLOCAL='$(ACLOCAL1.9_SH) -I $(STAGING_PREFIX)/share/aclocal' autoreconf
 AUTORECONF1.4 = (cd $(OPTWARE_TOP) && $(HOST_TOOL_AUTOMAKE1.4)) && \
 	PATH=$(HOST_STAGING_PREFIX)/bin:$$PATH \
-	AUTOMAKE=automake-1.4 ACLOCAL='aclocal-1.4 -I $(STAGING_PREFIX)/share/aclocal' autoreconf
+	AUTOMAKE=automake-1.4 ACLOCAL='$(ACLOCAL1.4_SH) -I $(STAGING_PREFIX)/share/aclocal' autoreconf
 
 
 # The hostname or IP number of our local dl.sf.net mirror
