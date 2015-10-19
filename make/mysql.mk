@@ -112,7 +112,7 @@ $(MYSQL_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(MYSQL_SOURCE) make/
 	rm -rf $(HOST_BUILD_DIR)/$(MYSQL_DIR) $(@D)
 	$(MYSQL_UNZIP) $(DL_DIR)/$(MYSQL_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
 	mv $(HOST_BUILD_DIR)/$(MYSQL_DIR) $(@D)
-	cd $(@D); ./configure --prefix=$(TARGET_PREFIX)
+	cd $(@D); ./configure --prefix=/opt
 	$(MAKE) -C $(@D)
 	touch $@
 
@@ -135,18 +135,18 @@ mysql-hostbuild: $(MYSQL_HOST_BUILD_DIR)/.built
 #
 $(MYSQL_BUILD_DIR)/.configured: $(MYSQL_PATCHES) $(MYSQL_HOST_BUILD_DIR)/.built \
  $(DL_DIR)/$(MYSQL_SOURCE) make/mysql.mk
-	$(MAKE) openssl-stage
-	$(MAKE) ncurses-stage
-	$(MAKE) zlib-stage
-	$(MAKE) readline-stage
+	$(MAKE) openssl-stage ncurses-stage zlib-stage readline-stage
 ifneq (, $(filter libstdc++, $(PACKAGES)))
 	$(MAKE) libstdc++-stage
 endif
+	$(HOST_TOOL_AUTOMAKE1.10)
 	rm -rf $(BUILD_DIR)/$(MYSQL_DIR) $(@D)
 	$(MYSQL_UNZIP) $(DL_DIR)/$(MYSQL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(MYSQL_PATCHES) | $(PATCH) -bd $(BUILD_DIR)/$(MYSQL_DIR) -p1
 	mv $(BUILD_DIR)/$(MYSQL_DIR) $(MYSQL_BUILD_DIR)
-	$(AUTORECONF1.10) -vif $(@D)
+	cd $(@D); export PATH=$(HOST_STAGING_PREFIX)/bin:$$PATH; libtoolize -c -f; aclocal-1.10; cat $(addprefix $(HOST_STAGING_PREFIX)/share/aclocal/, \
+		libtool.m4 ltoptions.m4 ltversion.m4 ltsugar.m4 lt~obsolete.m4) >> aclocal.m4; \
+		autoheader; autoconf; automake-1.10 -a -c
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MYSQL_CPPFLAGS)" \
