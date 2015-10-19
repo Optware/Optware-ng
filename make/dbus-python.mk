@@ -108,6 +108,7 @@ dbus-python-source: $(DL_DIR)/$(DBUS-PYTHON_SOURCE) $(DBUS-PYTHON_PATCHES)
 #
 $(DBUS-PYTHON_BUILD_DIR)/.configured: $(DL_DIR)/$(DBUS-PYTHON_SOURCE) $(DBUS-PYTHON_PATCHES) make/dbus-python.mk
 	$(MAKE) python-stage dbus-stage dbus-glib-stage
+	$(HOST_TOOL_AUTOMAKE1.10)
 	rm -rf $(@D)
 	mkdir -p $(@D)
 	# 2.5
@@ -117,7 +118,9 @@ $(DBUS-PYTHON_BUILD_DIR)/.configured: $(DL_DIR)/$(DBUS-PYTHON_SOURCE) $(DBUS-PYT
 		cat $(DBUS-PYTHON_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(DBUS-PYTHON_DIR) -p0 ; \
 	fi
 	mv $(BUILD_DIR)/$(DBUS-PYTHON_DIR) $(@D)/2.5
-	$(AUTORECONF1.10) -vif $(@D)/2.5
+	cd $(@D)/2.5; export PATH=$(HOST_STAGING_PREFIX)/bin:$$PATH; libtoolize -c -f; aclocal-1.10 -I m4; cat $(addprefix $(HOST_STAGING_PREFIX)/share/aclocal/, \
+		libtool.m4 ltoptions.m4 ltversion.m4 ltsugar.m4 lt~obsolete.m4) >> aclocal.m4; \
+		autoheader; autoconf; automake-1.10 -a -c
 	(cd $(@D)/2.5; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(DBUS-PYTHON_CPPFLAGS)" \
@@ -141,7 +144,9 @@ $(DBUS-PYTHON_BUILD_DIR)/.configured: $(DL_DIR)/$(DBUS-PYTHON_SOURCE) $(DBUS-PYT
 		cat $(DBUS-PYTHON_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(DBUS-PYTHON_DIR) -p0 ; \
 	fi
 	mv $(BUILD_DIR)/$(DBUS-PYTHON_DIR) $(@D)/2.6
-	$(AUTORECONF1.10) -vif $(@D)/2.6
+	cd $(@D)/2.6; export PATH=$(HOST_STAGING_PREFIX)/bin:$$PATH; libtoolize -c -f; aclocal-1.10 -I m4; cat $(addprefix $(HOST_STAGING_PREFIX)/share/aclocal/, \
+		libtool.m4 ltoptions.m4 ltversion.m4 ltsugar.m4 lt~obsolete.m4) >> aclocal.m4; \
+		autoheader; autoconf; automake-1.10 -a -c
 	(cd $(@D)/2.6; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(DBUS-PYTHON_CPPFLAGS)" \
