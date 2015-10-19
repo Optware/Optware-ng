@@ -141,7 +141,7 @@ $(NETATALK_BUILD_DIR)/.configured: $(DL_DIR)/$(NETATALK_SOURCE) $(NETATALK_PATCH
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=$(TARGET_PREFIX) \
 		--with-bdb=$(STAGING_PREFIX) \
-		--with-libgcrypt-dir=$(STAGING_PREFIX) \
+		--with-libgcrypt-prefix=$(STAGING_PREFIX) \
 		--with-ssl-dir=$(STAGING_PREFIX) \
 		--without-shadow \
 		--without-ldap \
