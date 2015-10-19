@@ -139,7 +139,7 @@ $(LIBPAM_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBPAM_SOURCE) $(LIBPAM_PATCHES) ma
 	if test "$(BUILD_DIR)/$(LIBPAM_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBPAM_DIR) $(@D) ; \
 	fi
-	autoreconf -vif $(@D)
+	$(AUTORECONF1.10) -vif $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBPAM_CPPFLAGS)" \

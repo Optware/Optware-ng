@@ -87,7 +87,7 @@ $(TRICKLE_BUILD_DIR)/.configured: $(DL_DIR)/$(TRICKLE_SOURCE) $(TRICKLE_PATCHES)
 	cat $(TRICKLE_PATCHES) | $(PATCH) -bd $(BUILD_DIR)/$(TRICKLE_DIR) -p0
 	mv $(BUILD_DIR)/$(TRICKLE_DIR) $(@D)
 	sed -i -e '/^AM_CFLAGS/s/+=/=/' $(@D)/Makefile.am
-	autoreconf -vif $(@D)
+	$(AUTORECONF1.10) -vif $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(TRICKLE_CPPFLAGS)" \

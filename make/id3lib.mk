@@ -136,11 +136,13 @@ ifeq ($(OPTWARE_TARGET), $(filter dns323, $(OPTWARE_TARGET)))
 		-e 's/^#ifndef _GLIBCPP_USE_WCHAR_T/#if 1/' \
 		$(@D)/include/id3/id3lib_strings.h
 endif
-	sed -i -e '/iomanip.h/d' $(ID3LIB_BUILD_DIR)/configure.in
+	sed -i -e '/iomanip.h/d' -e \
+		's/AC_DEFINE(ID3LIB_ICONV_OLDSTYLE)/AC_DEFINE(ID3LIB_ICONV_OLDSTYLE,[1],[Old iconv prototype definition in iconv.h])/' -e \
+		's/AC_DEFINE(ID3LIB_ICONV_CAST_OK)/AC_DEFINE(ID3LIB_ICONV_CAST_OK,[1],[Accepting const char ** in iconv prototype])/' $(ID3LIB_BUILD_DIR)/configure.in
 	sed -i -e '/#include <string>/s/$$/\n#include <string.h>/' $(@D)/include/id3/id3lib_strings.h
 	sed -i -e '/#include <string\.h>/s|//||' $(@D)/include/id3/writers.h
+	$(AUTORECONF1.10) -vif $(@D)
 	(cd $(ID3LIB_BUILD_DIR); \
-		autoreconf -vif; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ID3LIB_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(ID3LIB_LDFLAGS)" \

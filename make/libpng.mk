@@ -103,7 +103,7 @@ $(LIBPNG_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBPNG_SOURCE) $(LIBPNG_PATCHES) ma
 		then cat $(LIBPNG_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(LIBPNG_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(LIBPNG_DIR) $(@D)
-#	autoreconf -vif $(@D)
+#	$(AUTORECONF1.10) -vif $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBPNG_CPPFLAGS)" \

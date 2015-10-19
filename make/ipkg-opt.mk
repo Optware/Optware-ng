@@ -135,7 +135,7 @@ $(IPKG-OPT_BUILD_DIR)/.configured: $(DL_DIR)/$(IPKG-OPT_SOURCE) $(IPKG-OPT_PATCH
 		then mv $(BUILD_DIR)/$(IPKG-OPT_DIR) $(@D) ; \
 	fi
 	rm -f $(@D)/etc/Makefile aclocal.m4
-	autoreconf -vif $(@D)
+	$(AUTORECONF1.10) -vif $(@D)
 	(cd $(@D); \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(IPKG-OPT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(IPKG-OPT_LDFLAGS)" \

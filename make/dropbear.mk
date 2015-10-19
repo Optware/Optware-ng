@@ -52,7 +52,7 @@ $(DROPBEAR_BUILD_DIR)/.configured: $(DL_DIR)/$(DROPBEAR_SOURCE) $(DROPBEAR_PATCH
 	fi
 	mv $(BUILD_DIR)/$(DROPBEAR_DIR) $(@D)
 	(cd $(@D) && \
-		autoreconf && \
+		$(AUTORECONF1.10) && \
 		$(TARGET_CONFIGURE_OPTS) \
 		CFLAGS="$(TARGET_CFLAGS)" LD="" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(DROPBEAR_LDFLAGS)" \

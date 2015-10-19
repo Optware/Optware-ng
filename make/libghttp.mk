@@ -111,7 +111,7 @@ $(LIBGHTTP_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBGHTTP_SOURCE) $(LIBGHTTP_PATCH
 	(cd $(LIBGHTTP_BUILD_DIR); \
 		sed -i -e 's/libdir)/libdir)\/..\/bin/g' Makefile.am; \
 		sed -i -e 's/AC_DIVERT_/dnl AC_DIVERT_/g' configure.in; \
-		autoreconf -vif; \
+		$(AUTORECONF1.10) -vif; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBGHTTP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBGHTTP_LDFLAGS)" \

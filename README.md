@@ -87,8 +87,3 @@ All this left me wishing to add Optware ARM EABI uClibc target, which would use 
 For instructions on how to build packages using this build system, see:
 
 * [Original Optware instructions](http://www.nslu2-linux.org/wiki/Optware/AddAPackageToOptware)
-
-If you want to build packages using this build system, apart from usual Optware dependencies, also make sure that you have an older automake (like 1.10) as unsuffixed automake and also have a newer automake installed (e.g., 1.14). Optware will search for the newest automake/aclocal in the same location where unsuffixed one is installed. Alternatively, you can run make with ACLOCAL_NEW= and AUTOMAKE_NEW= variables set:
-```
-make <package> ACLOCAL_NEW=aclocal-1.14  AUTOMAKE_NEW=automake-1.14
-```

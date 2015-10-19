@@ -138,7 +138,7 @@ endif
 			lt~obsolete.m4 >> $(@D)/aclocal.m4 \
 	)
 	echo 'AC_CONFIG_MACRO_DIR([m4])' >> $(@D)/configure.in
-	-autoreconf -vif $(@D)
+	-$(AUTORECONF1.10) -vif $(@D)
 	sed -i -e 's/-lpcap/-lusb-1.0 -lpcap/' $(@D)/configure
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \

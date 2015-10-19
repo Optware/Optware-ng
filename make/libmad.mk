@@ -112,7 +112,7 @@ $(LIBMAD_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBMAD_SOURCE) $(LIBMAD_PATCHES) ma
 		then mv $(BUILD_DIR)/$(LIBMAD_DIR) $(@D) ; \
 	fi
 	touch $(@D)/NEWS $(@D)/AUTHORS $(@D)/ChangeLog
-	autoreconf -vif $(@D)
+	$(AUTORECONF1.10) -vif $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBMAD_CPPFLAGS)" \

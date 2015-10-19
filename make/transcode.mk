@@ -162,7 +162,7 @@ $(TRANSCODE_BUILD_DIR)/.configured: $(DL_DIR)/$(TRANSCODE_SOURCE) $(TRANSCODE_PA
 #	sed -ie 's/static int verbose/extern int verbose/' $(TRANSCODE_BUILD_DIR)/import/tcextract.c
 ifneq ($(HOSTCC), $(TARGET_CC))
 ifneq ($(FFMPEG_OLD), yes)
-	autoreconf -vif $(@D)
+	$(AUTORECONF1.10) -vif $(@D)
 endif
 endif
 	sed -ie 's|="-I/usr/include"|=""|g' $(TRANSCODE_BUILD_DIR)/configure

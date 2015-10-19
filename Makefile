@@ -267,7 +267,8 @@ COMMON_CROSS_PACKAGES = \
 	apache apr apr-util \
 	arc aria2 arping arpwatch aspell \
 	$(ASTERISK_PACKAGES) \
-	at at-spi2-core atftp atk atk-bridge atop attr audiofile autoconf automake autossh avahi \
+	at at-spi2-core atftp atk atk-bridge atop attr audiofile autoconf \
+	automake automake1.4 automake1.9 automake1.10 automake1.14 autossh avahi \
 	bacula bash bash-completion bc bftpd \
 	bind bip bison bitchx bitlbee \
 	bogofilter boost $(BOOST_PACKAGES) bridge-utils \
@@ -563,14 +564,43 @@ PERL=perl
 
 # Required host-tools, which will build if they missing
 HOST_TOOL_GCC33 = $(MAKE) gcc-host-stage GCC_VERSION=3.3.6
-HOST_TOOL_ACLOCAL19 = \
-	$(MAKE) automake19-host-stage autoconf-host-stage pkgconfig-host-stage m4-host-stage libtool-host-stage
-HOST_TOOL_AUTOMAKE19 = \
-	$(MAKE) automake19-host-stage autoconf-host-stage pkgconfig-host-stage m4-host-stage libtool-host-stage
-HOST_TOOL_ACLOCAL14 = \
-	$(MAKE) automake14-host-stage autoconf-host-stage pkgconfig-host-stage m4-host-stage libtool-host-stage
-HOST_TOOL_AUTOMAKE14 = \
-	$(MAKE) automake14-host-stage autoconf-host-stage pkgconfig-host-stage m4-host-stage libtool-host-stage
+HOST_TOOL_ACLOCAL = \
+	$(MAKE) automake-host-stage autoconf-host-stage pkgconfig-host-stage m4-host-stage libtool-host-stage
+HOST_TOOL_AUTOMAKE = \
+	$(MAKE) automake-host-stage autoconf-host-stage pkgconfig-host-stage m4-host-stage libtool-host-stage
+HOST_TOOL_ACLOCAL1.14 = \
+	$(MAKE) automake1.14-host-stage autoconf-host-stage pkgconfig-host-stage m4-host-stage libtool-host-stage
+HOST_TOOL_AUTOMAKE1.14 = \
+	$(MAKE) automake1.14-host-stage autoconf-host-stage pkgconfig-host-stage m4-host-stage libtool-host-stage
+HOST_TOOL_ACLOCAL1.10 = \
+	$(MAKE) automake1.10-host-stage autoconf-host-stage pkgconfig-host-stage m4-host-stage libtool-host-stage
+HOST_TOOL_AUTOMAKE1.10 = \
+	$(MAKE) automake1.10-host-stage autoconf-host-stage pkgconfig-host-stage m4-host-stage libtool-host-stage
+HOST_TOOL_ACLOCAL1.9 = \
+	$(MAKE) automake1.9-host-stage autoconf-host-stage pkgconfig-host-stage m4-host-stage libtool-host-stage
+HOST_TOOL_AUTOMAKE1.9 = \
+	$(MAKE) automake1.9-host-stage autoconf-host-stage pkgconfig-host-stage m4-host-stage libtool-host-stage
+HOST_TOOL_ACLOCAL1.4 = \
+	$(MAKE) automake1.4-host-stage autoconf-host-stage pkgconfig-host-stage m4-host-stage libtool-host-stage
+HOST_TOOL_AUTOMAKE1.4 = \
+	$(MAKE) automake1.4-host-stage autoconf-host-stage pkgconfig-host-stage m4-host-stage libtool-host-stage
+
+# These should be called instead of `autoreconf`
+AUTORECONF1.15 = (cd $(OPTWARE_TOP) && $(HOST_TOOL_AUTOMAKE)) && \
+	PATH=$(HOST_STAGING_PREFIX)/bin:$$PATH \
+	AUTOMAKE=automake-1.15 ACLOCAL='aclocal-1.15 -I $(STAGING_PREFIX)/share/aclocal' autoreconf
+AUTORECONF1.14 = (cd $(OPTWARE_TOP) && $(HOST_TOOL_AUTOMAKE1.14)) && \
+	PATH=$(HOST_STAGING_PREFIX)/bin:$$PATH \
+	AUTOMAKE=automake-1.14 ACLOCAL='aclocal-1.14 -I $(STAGING_PREFIX)/share/aclocal' autoreconf
+AUTORECONF1.10 =(cd $(OPTWARE_TOP) && $(HOST_TOOL_AUTOMAKE1.10)) && \
+	PATH=$(HOST_STAGING_PREFIX)/bin:$$PATH \
+	AUTOMAKE=automake-1.10 ACLOCAL='aclocal-1.10 -I $(STAGING_PREFIX)/share/aclocal' autoreconf
+AUTORECONF1.9 = (cd $(OPTWARE_TOP) && $(HOST_TOOL_AUTOMAKE1.9)) && \
+	PATH=$(HOST_STAGING_PREFIX)/bin:$$PATH \
+	AUTOMAKE=automake-1.9 ACLOCAL='aclocal-1.9 -I $(STAGING_PREFIX)/share/aclocal' autoreconf
+AUTORECONF1.4 = (cd $(OPTWARE_TOP) && $(HOST_TOOL_AUTOMAKE1.4)) && \
+	PATH=$(HOST_STAGING_PREFIX)/bin:$$PATH \
+	AUTOMAKE=automake-1.4 ACLOCAL='aclocal-1.4 -I $(STAGING_PREFIX)/share/aclocal' autoreconf
 
 
 # The hostname or IP number of our local dl.sf.net mirror
@@ -615,13 +645,6 @@ PATCH_LIBTOOL=sed -i \
 	-e 's|^sys_lib_dlsearch_path_spec=.*"$$|sys_lib_dlsearch_path_spec=""|' \
 	-e 's|^hardcode_libdir_flag_spec=.*"$$|hardcode_libdir_flag_spec=""|' \
 	-e 's|nmedit |$(TARGET_CROSS)nmedit |' \
-
-# many optware packages need as old automake as 1.10, which is the recommended version for unsuffixed automake,
-# so we'll detect the latest automake installed on the build system and use it instead of the unsuffixed one
-# for packages that need newer automake (like newer libgd or vlc).
-# In case user set these variables, don't override them:
-ACLOCAL_NEW ?= aclocal-1.$(shell ls $$(dirname `which automake`)/automake-*|cut -d '.' -f 2-|sort -n|tail -n 1)
-AUTOMAKE_NEW ?= automake-1.$(shell ls $$(dirname `which automake`)/automake-*|cut -d '.' -f 2-|sort -n|tail -n 1)
 
 # Clear these variables to remove assumptions
 AR=

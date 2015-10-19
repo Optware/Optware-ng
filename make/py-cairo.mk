@@ -161,7 +161,7 @@ $(PY-CAIRO_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CAIRO_SOURCE2) $(DL_DIR)/$(PY-
 	fi
 	mv $(BUILD_DIR)/$(PY-CAIRO_DIR3) $(@D)/3
 	touch $(@D)/2.6/ChangeLog
-	ACLOCAL=$(ACLOCAL_NEW) AUTOMAKE=$(AUTOMAKE_NEW) autoreconf -vif $(@D)/2.6
+	$(AUTORECONF1.14) -vif $(@D)/2.6
 	(cd $(@D)/2.6; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) -I$(STAGING_INCLUDE_DIR)/python2.6 $(PY-CAIRO_CPPFLAGS)" \
@@ -181,7 +181,7 @@ $(PY-CAIRO_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CAIRO_SOURCE2) $(DL_DIR)/$(PY-
 	)
 	$(PATCH_LIBTOOL) $(@D)/2.6/libtool
 	touch $(@D)/2.7/ChangeLog
-	ACLOCAL=$(ACLOCAL_NEW) AUTOMAKE=$(AUTOMAKE_NEW) autoreconf -vif $(@D)/2.7
+	$(AUTORECONF1.14) -vif $(@D)/2.7
 	(cd $(@D)/2.7; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) -I$(STAGING_INCLUDE_DIR)/python2.7 $(PY-CAIRO_CPPFLAGS)" \

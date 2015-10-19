@@ -117,7 +117,7 @@ $(DBUS-PYTHON_BUILD_DIR)/.configured: $(DL_DIR)/$(DBUS-PYTHON_SOURCE) $(DBUS-PYT
 		cat $(DBUS-PYTHON_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(DBUS-PYTHON_DIR) -p0 ; \
 	fi
 	mv $(BUILD_DIR)/$(DBUS-PYTHON_DIR) $(@D)/2.5
-	autoreconf -vif $(@D)/2.5
+	$(AUTORECONF1.10) -vif $(@D)/2.5
 	(cd $(@D)/2.5; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(DBUS-PYTHON_CPPFLAGS)" \
@@ -141,7 +141,7 @@ $(DBUS-PYTHON_BUILD_DIR)/.configured: $(DL_DIR)/$(DBUS-PYTHON_SOURCE) $(DBUS-PYT
 		cat $(DBUS-PYTHON_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(DBUS-PYTHON_DIR) -p0 ; \
 	fi
 	mv $(BUILD_DIR)/$(DBUS-PYTHON_DIR) $(@D)/2.6
-	autoreconf -vif $(@D)/2.6
+	$(AUTORECONF1.10) -vif $(@D)/2.6
 	(cd $(@D)/2.6; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(DBUS-PYTHON_CPPFLAGS)" \

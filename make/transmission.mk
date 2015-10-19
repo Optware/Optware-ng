@@ -225,14 +225,7 @@ endif
 	sed -i -e 's|return home;|return "$(TARGET_PREFIX)/etc";|' -e 's/".config"/""/' \
 		$(@D)/libtransmission/platform.c
 ifdef TRANSMISSION_SVN_REV
-	if test -x "$(@D)/autogen.sh"; \
-	then cd $(@D) && \
-		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
-		./autogen.sh; \
-	else \
-		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
-		autoreconf -vif $(@D); \
-	fi
+	$(AUTORECONF1.14) -vif $(@D)
 endif
 	sed -i -e '/FLAGS=/s|-g ||' $(@D)/configure
 	if test `$(TARGET_CC) -dumpversion | cut -c1-3` = "3.3"; then \
@@ -285,14 +278,7 @@ endif
 	fi
 	if test -n "$(TRANSMISSION-DBG_SOURCES)"; then cp $(TRANSMISSION-DBG_SOURCES) $(@D)/cli; fi
 ifdef TRANSMISSION_SVN_REV
-	if test -x "$(@D)/autogen.sh"; \
-	then cd $(@D) && \
-		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
-		./autogen.sh; \
-	else \
-		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
-		autoreconf -vif $(@D); \
-	fi
+	$(AUTORECONF1.14) -vif $(@D)
 endif
 	if test `$(TARGET_CC) -dumpversion | cut -c1-3` = "3.3"; then \
 		sed -i -e 's|-Wdeclaration-after-statement||' $(@D)/configure; \

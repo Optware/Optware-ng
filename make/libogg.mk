@@ -104,7 +104,7 @@ $(LIBOGG_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBOGG_SOURCE) $(LIBOGG_PATCHES) ma
 #	cat $(LIBOGG_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(LIBOGG_DIR) -p1
 	mv $(BUILD_DIR)/$(LIBOGG_DIR) $(@D)
 	rm -f $(@D)/config.cache
-	ACLOCAL=$(ACLOCAL_NEW) AUTOMAKE=$(AUTOMAKE_NEW)  autoreconf -vif $(@D)
+	$(AUTORECONF1.14) -vif $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBOGG_CPPFLAGS)" \

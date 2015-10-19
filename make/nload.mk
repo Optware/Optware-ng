@@ -110,7 +110,7 @@ $(NLOAD_BUILD_DIR)/.configured: $(DL_DIR)/$(NLOAD_SOURCE) $(NLOAD_PATCHES)
 		cat $(NLOAD_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(NLOAD_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(NLOAD_DIR) $(@D)
-	autoreconf -vif $(@D)
+	$(AUTORECONF1.10) -vif $(@D)
 	(cd $(@D); \
 		sed -i -e 's|/etc/nload.conf|$(TARGET_PREFIX)/etc/nload.conf|' \
 			docs/nload.1.in src/main.cpp ; \

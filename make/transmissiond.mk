@@ -193,10 +193,7 @@ endif
 	if test -n "$(TRANSMISSIOND_SOURCES)"; then cp $(TRANSMISSIOND_SOURCES) $(@D)/cli; fi
 	sed -i -e 's|-Wdeclaration-after-statement||' $(@D)/configure
 ifdef TRANSMISSIOND_SVN_REV 
-	if test -x "$(@D)/autogen.sh"; \
-	then cd $(@D) && ./autogen.sh; \
-	else autoreconf -vif $(@D); \
-	fi
+	$(AUTORECONF1.14) -vif $(@D)
 endif
 	sed -i -e '/FLAGS=/s|-g ||' $(@D)/configure
 	sed -i  -e 's/transmissioncli/transmissiond/g' \
@@ -241,10 +238,7 @@ endif
 	fi
 	if test -n "$(TRANSMISSIOND-DBG_SOURCES)"; then cp $(TRANSMISSIOND-DBG_SOURCES) $(@D)/cli; fi
 ifdef TRANSMISSIOND_SVN_REV
-	if test -x "$(@D)/autogen.sh"; \
-	then cd $(@D) && ./autogen.sh; \
-	else autoreconf -vif $(@D); \
-	fi
+	$(AUTORECONF1.14) -vif $(@D)
 endif
 	if test `$(TARGET_CC) -dumpversion | cut -c1-3` = "3.3"; then \
 		sed -i -e 's|-Wdeclaration-after-statement||' $(@D)/configure; \

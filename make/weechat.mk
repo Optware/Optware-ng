@@ -124,8 +124,8 @@ endif
 	if test "$(BUILD_DIR)/$(WEECHAT_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(WEECHAT_DIR) $(@D) ; \
 	fi
-#	ACLOCAL="aclocal -I $(STAGING_PREFIX)/share/aclocal"
-	autoreconf -vif $(@D)
+#	echo "ACLOCAL_AMFLAGS += -I $(STAGING_PREFIX)/share/aclocal" >> $(@D)/Makefile.am
+	$(AUTORECONF1.10) -vif $(@D)
 	sed -i	-e '/PYTHON_SYSPREFIX=/s|=.*|=$(STAGING_PREFIX)|' \
 		-e '/PYTHON_VERSION=/s|=.*|=2.7|' \
 		-e '/PYTHON_INCLUDE=/s|=.*|=$(STAGING_INCLUDE_DIR)/python2.7|' \

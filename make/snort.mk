@@ -118,7 +118,8 @@ $(SNORT_BUILD_DIR)/.configured: $(DL_DIR)/$(SNORT_SOURCE) $(SNORT_PATCHES) make/
 		then mv $(BUILD_DIR)/$(SNORT_DIR) $(@D) ; \
 	fi
 	cp -f $(SOURCE_DIR)/common/config.* $(@D)/
-	ACLOCAL="aclocal -Im4" autoreconf -vif $(@D)
+	echo "ACLOCAL_AMFLAGS = -I m4" >> $(@D)/Makefile.am
+	$(AUTORECONF1.10) -vif $(@D)
 	sed -i -e '/extra_incl/s|-I/usr/include/pcap||' $(@D)/configure
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \

@@ -125,7 +125,7 @@ $(FISH_BUILD_DIR)/.configured: $(DL_DIR)/$(FISH_SOURCE) $(FISH_PATCHES) make/fis
 		then mv $(BUILD_DIR)/$(FISH_DIR) $(@D) ; \
 	fi
 ifneq ($(HOSTCC), $(TARGET_CC))
-	autoreconf -vif $(@D)
+	$(AUTORECONF1.10) -vif $(@D)
 endif
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \

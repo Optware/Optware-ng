@@ -117,7 +117,7 @@ ifeq (, $(filter -pipe, $(TARGET_CUSTOM_FLAGS)))
 	sed -i -e 's|-Wall -pipe|-Wall|' $(@D)/configure.ac
 endif
 	touch $(@D)/AUTHORS $(@D)/NEWS $(@D)/README
-	autoreconf -vif $(@D)
+	$(AUTORECONF1.10) -vif $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBMEMCACHE_CPPFLAGS)" \

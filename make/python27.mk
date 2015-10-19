@@ -134,7 +134,7 @@ endif
 	$(PYTHON27_UNZIP) $(DL_DIR)/$(PYTHON27_SOURCE) | tar -C $(BUILD_DIR) -xf -
 	cat $(PYTHON27_PATCHES) | $(PATCH) -bd $(BUILD_DIR)/$(PYTHON27_DIR) -p1
 	sed -i -e '/\$$absconfigcommand/s|.*|    AS="" LD="" CC="" CXX="" AR="" STRIP="" RANLIB="" LDFLAGS="-L$(HOST_STAGING_LIB_DIR)" CPPFLAGS="-I$(HOST_STAGING_INCLUDE_DIR)" \$$absconfigcommand --prefix=/opt --with-system-ffi|' $(BUILD_DIR)/$(PYTHON27_DIR)/configure.ac
-	$(HOST_STAGING_PREFIX)/bin/autoreconf -vif $(BUILD_DIR)/$(PYTHON27_DIR)
+	$(AUTORECONF1.10) -vif $(BUILD_DIR)/$(PYTHON27_DIR)
 	mkdir -p $(@D)
 	cd $(@D); (\
 	echo "[build_ext]"; \

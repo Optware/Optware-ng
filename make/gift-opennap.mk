@@ -103,18 +103,18 @@ gift-opennap-source: $(DL_DIR)/$(GIFT_OPENNAP_SOURCE) $(GIFT_OPENNAP_PATCHES)
 #
 $(GIFT_OPENNAP_BUILD_DIR)/.configured: $(DL_DIR)/$(GIFT_OPENNAP_SOURCE) $(GIFT_OPENNAP_PATCHES) \
 make/gift-opennap.mk
-	$(HOST_TOOL_ACLOCAL19)
-	$(HOST_TOOL_AUTOMAKE19) 
 	$(MAKE) gift-stage
+	$(HOST_TOOL_AUTOMAKE1.10)
 	rm -rf $(BUILD_DIR)/$(GIFT_OPENNAP_DIR) $(@D)
 	$(GIFT_OPENNAP_UNZIP) $(DL_DIR)/$(GIFT_OPENNAP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(GIFT_OPENNAP_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(GIFT_OPENNAP_DIR) -p1
 	mv $(BUILD_DIR)/$(GIFT_OPENNAP_DIR) $(GIFT_OPENNAP_BUILD_DIR)
-	cd $(@D) && aclocal -I m4
-	cd $(@D) && autoheader
-	cd $(@D) && autoconf
-	cd $(@D) && libtoolize --automake
-	cd $(@D) && automake --add-missing --force-missing
+	cd $(@D); export PATH=$(HOST_STAGING_PREFIX)/bin:$$PATH; \
+		aclocal-1.10 -I m4 && \
+		autoheader && \
+		autoconf && \
+		libtoolize --automake && \
+		automake-1.10 --add-missing --force-missing
 	(cd $(@D); \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig";export PKG_CONFIG_PATH; \
 		$(TARGET_CONFIGURE_OPTS) \

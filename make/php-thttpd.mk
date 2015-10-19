@@ -118,7 +118,7 @@ $(PHP_THTTPD_LIBPHP_BUILD_DIR)/.configured: $(PHP_HOST_CLI) $(DL_DIR)/$(PHP_THTT
 	$(MAKE) php-source bzip2-stage gdbm-stage libcurl-stage libdb-stage libgd-stage libxml2-stage \
 		libxslt-stage openssl-stage mysql-stage postgresql-stage freetds-stage \
 		unixodbc-stage imap-stage libpng-stage libjpeg-stage libzip-stage icu-stage \
-		libgmp-stage sqlite-stage libmcrypt-stage libtool-stage
+		libgmp-stage sqlite-stage libmcrypt-stage libtool-stage libtool-host-stage
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
 endif
@@ -151,14 +151,14 @@ endif
 	sed -i -e '/extern int php_string_to_if_index/s/^/#ifndef AI_ADDRCONFIG\n#define AI_ADDRCONFIG 0\n#endif\n/' \
 		$(@D)/ext/sockets/sockaddr_conv.c
 
-	(cd `aclocal --print-ac-dir`; \
+	echo 'AC_CONFIG_MACRO_DIR([m4])' >> $(@D)/configure.in
+
+	(cd $(HOST_STAGING_PREFIX)/share/aclocal; \
 		cat libtool.m4 ltoptions.m4 ltversion.m4 ltsugar.m4 \
 			lt~obsolete.m4 >> $(@D)/aclocal.m4 \
 	)
 
-	echo 'AC_CONFIG_MACRO_DIR([m4])' >> $(@D)/configure.in
-
-	autoreconf -vif $(@D)
+	$(AUTORECONF1.10) -vif $(@D)
 	sed -i -e 's/as_fn_error \$$? "cannot run test program while cross compiling/\$$as_echo \$$? "cannot run test program while cross compiling/' \
 		-e 's|flock_type=unknown|flock_type=linux\n\$$as_echo "#define HAVE_FLOCK_LINUX /\*\*/" >>confdefs\.h|' \
 		-e 's|icu_install_prefix=.*|icu_install_prefix=$(STAGING_PREFIX)|' \

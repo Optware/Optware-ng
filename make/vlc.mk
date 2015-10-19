@@ -241,8 +241,7 @@ endif
 		then mv $(BUILD_DIR)/$(VLC_DIR) $(@D) ; \
 	fi
 	sed -i -e '/modules\/gui\//s/.*//' $(@D)/configure.ac
-	cd $(@D); libtoolize -c -f; $(ACLOCAL_NEW) -I m4; \
-		autoheader; autoconf; $(AUTOMAKE_NEW) -a -c
+	$(AUTORECONF1.14) -vif $(@D)
 	sed -i 	-e '/LIBEXT=/s/=.*/=".so"/' \
 		-e '/GCRYPT_CFLAGS=/s|=.*|="$(shell $(STAGING_PREFIX)/bin/libgcrypt-config --cflags)"|' \
 		-e '/GCRYPT_LIBS=/s|=.*|="$(shell $(STAGING_PREFIX)/bin/libgcrypt-config --libs)"|' \

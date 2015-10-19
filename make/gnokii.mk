@@ -131,7 +131,7 @@ $(GNOKII_BUILD_DIR)/.configured: $(DL_DIR)/$(GNOKII_SOURCE) $(GNOKII_PATCHES) ma
 	if test "$(BUILD_DIR)/$(GNOKII_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(GNOKII_DIR) $(@D) ; \
 	fi
-#	autoreconf -vif $(@D)
+#	$(AUTORECONF1.10) -vif $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GNOKII_CPPFLAGS)" \

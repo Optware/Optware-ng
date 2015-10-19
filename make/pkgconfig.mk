@@ -119,6 +119,7 @@ pkgconfig-host: $(PKGCONFIG_HOST_BUILD_DIR)/.built
 
 $(PKGCONFIG_HOST_BUILD_DIR)/.staged: $(PKGCONFIG_HOST_BUILD_DIR)/.built
 	rm -f $@
+	rm -f $(HOST_STAGING_PREFIX)/bin/*pkg-config
 	$(MAKE) -C $(@D) install prefix=$(HOST_STAGING_PREFIX)
 	touch $@
 
@@ -147,8 +148,8 @@ $(PKGCONFIG_BUILD_DIR)/.configured: $(DL_DIR)/$(PKGCONFIG_SOURCE) $(PKGCONFIG_PA
 	sed -i -e '/AM_SILENT_RULES/s/^/dnl /' -e '/AM_INIT_AUTOMAKE/s/.*/AM_INIT_AUTOMAKE/' $(@D)/configure.ac $(@D)/glib/configure.ac
 	rm -f $(@D)/glib/aclocal.m4 $(@D)/aclocal.m4
 	touch $(@D)/glib/ChangeLog
-	autoreconf -I. -vif $(@D)/glib
-	autoreconf -I. -vif $(@D)
+	$(AUTORECONF1.10) -I. -vif $(@D)/glib
+	$(AUTORECONF1.10) -I. -vif $(@D)
 ifneq ($(HOSTCC), $(TARGET_CC))
 	$(INSTALL) -m 644 $(PKGCONFIG_SOURCE_DIR)/pkgconfig.cache $(PKGCONFIG_BUILD_DIR)/crossconfig.cache
 endif

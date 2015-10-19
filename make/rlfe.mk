@@ -116,7 +116,7 @@ $(RLFE_BUILD_DIR)/.configured: $(DL_DIR)/$(RLFE_SOURCE) $(RLFE_PATCHES) make/rlf
 	if test "$(BUILD_DIR)/$(RLFE_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(RLFE_DIR) $(@D) ; \
 	fi
-	-autoreconf -vif $(@D)/examples/rlfe
+	-$(AUTORECONF1.10) -vif $(@D)/examples/rlfe
 	(cd $(@D)/examples/rlfe; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(RLFE_CPPFLAGS)" \

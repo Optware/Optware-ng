@@ -124,7 +124,7 @@ endif
 	fi
 ifneq ($(HOSTCC), $(TARGET_CC))
 	echo "AC_CONFIG_MACRO_DIR([m4])" >> $(@D)/configure.ac
-	autoreconf -vif $(@D)
+	$(AUTORECONF1.10) -vif $(@D)
 endif
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \

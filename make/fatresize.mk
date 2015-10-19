@@ -118,7 +118,7 @@ $(FATRESIZE_BUILD_DIR)/.configured: $(DL_DIR)/$(FATRESIZE_SOURCE) $(FATRESIZE_PA
 	if test "$(BUILD_DIR)/$(FATRESIZE_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(FATRESIZE_DIR) $(@D) ; \
 	fi
-	autoreconf -vif $(@D)
+	$(AUTORECONF1.10) -vif $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(FATRESIZE_CPPFLAGS)" \

@@ -113,7 +113,7 @@ $(MOD_PYTHON_BUILD_DIR)/.configured: $(DL_DIR)/$(MOD_PYTHON_SOURCE) $(MOD_PYTHON
 	mv $(BUILD_DIR)/$(MOD_PYTHON_DIR) $(@D)
 	sed -i -e "s:@APACHE_VERSION@:`sed -n -e 's/^APACHE_VERSION *=//p' make/apache.mk`:" $(@D)/configure.in
 	sed -i -e 's:@CC_AND_LDSHARED@:CC=$(TARGET_CC) LDSHARED="$(TARGET_CC) -shared":' $(@D)/dist/Makefile.in
-	autoreconf -vif $(@D)
+	$(AUTORECONF1.10) -vif $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MOD_PYTHON_CPPFLAGS)" \

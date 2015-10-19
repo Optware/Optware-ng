@@ -165,7 +165,7 @@ endif
 		then mv $(BUILD_DIR)/$(MEDIATOMB_DIR) $(@D) ; \
 	fi
 	sed -i -e 's/search(/this->search(/' $(@D)/src/hash/dbo_hash.h $(@D)/src/hash/dbr_hash.h
-	autoreconf -vif $(@D)
+	$(AUTORECONF1.10) -vif $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MEDIATOMB_CPPFLAGS)" \

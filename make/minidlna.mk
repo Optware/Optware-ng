@@ -137,7 +137,8 @@ ifneq (, $(filter libstdc++, $(PACKAGES)))
 	$(MAKE) libstdc++-stage
 endif
 	$(MAKE) libexif-stage libid3tag-stage libjpeg-stage libvorbis-stage bzip2-stage xz-utils-stage \
-		e2fsprogs-stage ffmpeg-stage flac-stage sqlite-stage ffmpegthumbnailer-stage libpng-stage
+		e2fsprogs-stage ffmpeg-stage flac-stage sqlite-stage ffmpegthumbnailer-stage libpng-stage \
+		gettext-host-stage
 	rm -rf $(BUILD_DIR)/$(MINIDLNA_DIR) $(@D)
 	$(INSTALL) -d $(@D)
 	tar -C $(@D) -xzf $(DL_DIR)/minidlna-$(MINIDLNA_VERSION).tar.gz
@@ -154,13 +155,14 @@ endif
 	mv $(@D)/$(MINIDLNA_DIR) $(@D)/thumbs
 	### configure version without thumbnails
 	sed -i -e '/^AM_SILENT_RULES/s/^/dnl /' $(@D)/nothumbs/configure.ac
-	autoreconf -vif $(@D)/nothumbs
+	$(AUTORECONF1.10) -vif $(@D)/nothumbs
 	(cd $(@D)/nothumbs; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MINIDLNA_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MINIDLNA_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
+		XGETTEXT=$(HOST_STAGING_PREFIX)/bin/xgettext \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -179,13 +181,14 @@ endif
 		$(@D)/nothumbs/minidlna.c
 	### configure version with thumbnails
 	sed -i -e '/^AM_SILENT_RULES/s/^/dnl /' $(@D)/thumbs/configure.ac
-	autoreconf -vif $(@D)/thumbs
+	$(AUTORECONF1.10) -vif $(@D)/thumbs
 	(cd $(@D)/thumbs; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MINIDLNA_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MINIDLNA_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
+		XGETTEXT=$(HOST_STAGING_PREFIX)/bin/xgettext \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -213,11 +216,13 @@ minidlna-unpack: $(MINIDLNA_BUILD_DIR)/.configured
 $(MINIDLNA_BUILD_DIR)/.built: $(MINIDLNA_BUILD_DIR)/.configured
 	rm -f $@
 	$(MAKE) -C $(@D)/nothumbs \
+		GETTEXT_MACRO_VERSION=$(GETTEXT_VERSION_MAJOR) \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MINIDLNA_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MINIDLNA_LDFLAGS)" \
 		;
 	$(MAKE) -C $(@D)/thumbs \
+		GETTEXT_MACRO_VERSION=$(GETTEXT_VERSION_MAJOR) \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MINIDLNA_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MINIDLNA_LDFLAGS)" \
@@ -296,6 +301,7 @@ endif
 $(MINIDLNA_IPK): $(MINIDLNA_BUILD_DIR)/.built
 	rm -rf $(MINIDLNA_IPK_DIR) $(BUILD_DIR)/minidlna_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MINIDLNA_BUILD_DIR)/nothumbs install \
+		GETTEXT_MACRO_VERSION=$(GETTEXT_VERSION_MAJOR) \
 		DESTDIR=$(MINIDLNA_IPK_DIR) \
 		PREFIX=$(MINIDLNA_IPK_DIR) \
 		INSTALLPREFIX=$(MINIDLNA_IPK_DIR)$(TARGET_PREFIX) \
@@ -314,6 +320,7 @@ $(MINIDLNA_IPK): $(MINIDLNA_BUILD_DIR)/.built
 $(MINIDLNA_THUMBNAIL_IPK): $(MINIDLNA_BUILD_DIR)/.built
 	rm -rf $(MINIDLNA_THUMBNAIL_IPK_DIR) $(BUILD_DIR)/minidlna-thumbnail_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MINIDLNA_BUILD_DIR)/thumbs install \
+		GETTEXT_MACRO_VERSION=$(GETTEXT_VERSION_MAJOR) \
 		DESTDIR=$(MINIDLNA_THUMBNAIL_IPK_DIR) \
 		PREFIX=$(MINIDLNA_THUMBNAIL_IPK_DIR) \
 		INSTALLPREFIX=$(MINIDLNA_THUMBNAIL_IPK_DIR)$(TARGET_PREFIX) \

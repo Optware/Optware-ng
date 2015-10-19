@@ -119,7 +119,7 @@ ifeq ($(LIBC_STYLE), uclibc)
 	$(INSTALL) -m 644 $(PURE-FTPD_SOURCE_DIR)/config-uclibc.cache $(@D)/config.cache
 	sed -i -e '/^ac_cv_path/d;/^ac_cv_env/d;/^ac_cv_prog/d;' $(@D)/config.cache
 endif
-	autoreconf -vif $(@D)
+	$(AUTORECONF1.10) -vif $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PURE-FTPD_CPPFLAGS)" \

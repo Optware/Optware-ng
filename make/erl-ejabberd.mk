@@ -126,7 +126,7 @@ endif
 		then mv $(BUILD_DIR)/$(ERL_EJABBERD_DIR) $(@D) ; \
 	fi
 	sed -i -e 's|@STAGING_LIB_DIR@|$(STAGING_LIB_DIR)|' $(@D)/src/acinclude.m4
-	autoreconf -vif $(@D)/src
+	$(AUTORECONF1.10) -vif $(@D)/src
 	(cd $(@D)/src; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ERL_EJABBERD_CPPFLAGS)" \

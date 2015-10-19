@@ -113,7 +113,7 @@ $(UNITS_BUILD_DIR)/.configured: $(DL_DIR)/$(UNITS_SOURCE) $(UNITS_PATCHES) make/
 		then cat $(UNITS_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(UNITS_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(UNITS_DIR) $(@D)
-#	autoreconf -vif $(@D)
+#	$(AUTORECONF1.10) -vif $(@D)
 	sed -i -e '/ @UDAT@/s|@UDAT@|$$(DESTDIR)/&|' $(@D)/Makefile.in
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \

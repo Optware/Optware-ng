@@ -17,7 +17,7 @@ AUTOMAKE_PRIORITY=optional
 AUTOMAKE_DEPENDS=autoconf
 AUTOMAKE_CONFLICTS=
 
-AUTOMAKE_IPK_VERSION=1
+AUTOMAKE_IPK_VERSION=2
 
 AUTOMAKE_BUILD_DIR=$(BUILD_DIR)/automake
 AUTOMAKE_SOURCE_DIR=$(SOURCE_DIR)/automake
@@ -119,11 +119,21 @@ $(AUTOMAKE_IPK): $(AUTOMAKE_BUILD_DIR)/.built
 	sed -i -e 's|/usr/bin/perl|$(TARGET_PREFIX)/bin/perl|g' $(AUTOMAKE_IPK_DIR)$(TARGET_PREFIX)/bin/*
 	$(MAKE) $(AUTOMAKE_IPK_DIR)/CONTROL/control
 	rm -f $(AUTOMAKE_IPK_DIR)$(TARGET_PREFIX)/info/dir
-	(cd $(AUTOMAKE_IPK_DIR)$(TARGET_PREFIX)/bin; \
-		rm automake aclocal; \
-		ln -s automake-$(AUTOMAKE_VER) automake; \
-		ln -s aclocal-$(AUTOMAKE_VER) aclocal; \
-	)
+	rm -f $(AUTOMAKE_IPK_DIR)$(TARGET_PREFIX)/bin/{automake,aclocal}
+	echo -e "#!/bin/sh\nupdate-alternatives --install '$(TARGET_PREFIX)/bin/aclocal' 'aclocal' $(TARGET_PREFIX)/bin/aclocal-$(AUTOMAKE_VER) 40" > \
+		$(AUTOMAKE_IPK_DIR)/CONTROL/postinst
+	echo -e "update-alternatives --install '$(TARGET_PREFIX)/bin/automake' 'aclocal' $(TARGET_PREFIX)/bin/automake-$(AUTOMAKE_VER) 40" >> \
+		$(AUTOMAKE_IPK_DIR)/CONTROL/postinst
+	echo -e "#!/bin/sh\nupdate-alternatives --remove 'aclocal' $(TARGET_PREFIX)/bin/aclocal-$(AUTOMAKE_VER)" > \
+		$(AUTOMAKE_IPK_DIR)/CONTROL/prerm
+	echo -e "update-alternatives --remove 'automake' $(TARGET_PREFIX)/bin/automake-$(AUTOMAKE_VER)" >> \
+		$(AUTOMAKE_IPK_DIR)/CONTROL/prerm
+	if test -n "$(UPD-ALT_PREFIX)"; then \
+		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \
+			$(AUTOMAKE_IPK_DIR)/CONTROL/postinst $(AUTOMAKE_IPK_DIR)/CONTROL/prerm; \
+	fi
+	chmod 755 $(AUTOMAKE_IPK_DIR)/CONTROL/postinst
+	chmod 755 $(AUTOMAKE_IPK_DIR)/CONTROL/prerm
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(AUTOMAKE_IPK_DIR)
 
 automake-ipk: $(AUTOMAKE_IPK)

@@ -118,6 +118,7 @@ recode-source: $(DL_DIR)/$(RECODE_SOURCE) $(RECODE_PATCHES)
 #
 $(RECODE_BUILD_DIR)/.configured: $(DL_DIR)/$(RECODE_SOURCE) $(RECODE_PATCHES) make/recode.mk
 #	$(MAKE) <bar>-stage <baz>-stage
+	$(HOST_TOOL_AUTOMAKE1.10)
 	rm -rf $(BUILD_DIR)/$(RECODE_DIR) $(@D)
 	$(RECODE_UNZIP) $(DL_DIR)/$(RECODE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(RECODE_PATCHES)" ; \
@@ -131,9 +132,9 @@ $(RECODE_BUILD_DIR)/.configured: $(DL_DIR)/$(RECODE_SOURCE) $(RECODE_PATCHES) ma
 	sed -i -e 's/^linux-gnu\*)$$/*)/g' $(@D)/ltconfig
 	sed -i -e '/AC_PROG_LEX/s/$$/\n:/' $(@D)/m4/flex.m4
 	rm -f $(@D)/aclocal.m4
-	cd $(@D); libtoolize -c -f; aclocal -I m4; cat $(addprefix `aclocal --print-ac-dir`/, \
+	cd $(@D); export PATH=$(HOST_STAGING_PREFIX)/bin:$$PATH; libtoolize -c -f; aclocal-1.10 -I m4; cat $(addprefix $(HOST_STAGING_PREFIX)/share/aclocal/, \
 		libtool.m4 ltoptions.m4 ltversion.m4 ltsugar.m4 lt~obsolete.m4) >> aclocal.m4; \
-		autoheader; autoconf; automake -a -c
+		autoheader; autoconf; automake-1.10 -a -c
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(RECODE_CPPFLAGS)" \

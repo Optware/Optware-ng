@@ -125,7 +125,7 @@ $(MOTIF_BUILD_DIR)/.configured: $(DL_DIR)/$(MOTIF_SOURCE) $(MOTIF_PATCHES) make/
 #	makestrs.host
 	cd $(@D)/config/util; gcc -g -O2 -fno-strict-aliasing -fno-tree-ter -o makestrs.host makestrs.c
 	touch $(@D)/NEWS $(@D)/AUTHORS
-	autoreconf -vif $(@D)
+	$(AUTORECONF1.10) -vif $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MOTIF_CPPFLAGS)" \

@@ -114,7 +114,7 @@ $(SQLITE_BUILD_DIR)/.configured: $(DL_DIR)/$(SQLITE_SOURCE) $(SQLITE_PATCHES) ma
 		then mv $(BUILD_DIR)/$(SQLITE_DIR) $(@D) ; \
 	fi
 	if test -n "$(SQLITE_PATCHES)"; \
-		then autoreconf -vif $(@D); \
+		then $(AUTORECONF1.10) -vif $(@D); \
 	fi
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \

@@ -124,7 +124,8 @@ $(W3M_BUILD_DIR)/.configured: $(DL_DIR)/$(W3M_SOURCE) $(W3M_PATCHES) make/w3m.mk
 	sed -i -e \
 	's|orig_GC_warn_proc = GC_set_warn_proc(wrap_GC_warn_proc);|orig_GC_warn_proc = GC_get_warn_proc();\n    GC_set_warn_proc(wrap_GC_warn_proc);|' \
 				$(@D)/main.c
-	cd $(@D); \
+	$(HOST_TOOL_AUTOMAKE1.10)
+	cd $(@D); export PATH=$(HOST_STAGING_PREFIX)/bin:$$PATH; \
 		libtoolize -c -f
 ifeq ($(HOSTCC), $(TARGET_CC))
 	(cd $(@D); \
@@ -148,7 +149,7 @@ else
 	$(LIBGC_UNZIP) $(DL_DIR)/$(LIBGC_SOURCE) | tar -C $(W3M_LIBGC_HOSTBUILD_DIR)/build -xvf - --strip-components=1
 	$(LIBATOMIC_OPS_UNZIP) $(DL_DIR)/$(LIBATOMIC_OPS_SOURCE) | tar -C $(W3M_LIBGC_HOSTBUILD_DIR)/build/libatomic_ops -xvf - --strip-components=1
 	@echo "=============================== host libgc configure & build ============"
-	autoreconf -vif $(W3M_LIBGC_HOSTBUILD_DIR)/build
+	$(AUTORECONF1.10) -vif $(W3M_LIBGC_HOSTBUILD_DIR)/build
 	cd $(W3M_LIBGC_HOSTBUILD_DIR)/build; \
 		CPPFLAGS="-fPIC" \
 		LDFLAGS="-pthread" \

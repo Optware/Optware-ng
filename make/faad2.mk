@@ -125,7 +125,7 @@ $(FAAD2_BUILD_DIR)/.configured: $(DL_DIR)/$(FAAD2_SOURCE) $(FAAD2_PATCHES) make/
 	if test "$(BUILD_DIR)/$(FAAD2_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(FAAD2_DIR) $(@D) ; \
 	fi
-	autoreconf -vif $(@D)
+	$(AUTORECONF1.10) -vif $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(FAAD2_CPPFLAGS)" \

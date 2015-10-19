@@ -120,7 +120,7 @@ $(RLWRAP_BUILD_DIR)/.configured: $(DL_DIR)/$(RLWRAP_SOURCE) $(RLWRAP_PATCHES) ma
 		then mv $(BUILD_DIR)/$(RLWRAP_DIR) $(@D) ; \
 	fi
 ifneq ($(HOSTCC), $(TARGET_CC))
-	autoreconf -vif $(@D)
+	$(AUTORECONF1.10) -vif $(@D)
 endif
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \

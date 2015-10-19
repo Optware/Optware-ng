@@ -151,6 +151,7 @@ libtorrent-source: $(DL_DIR)/$(LIBTORRENT_SOURCE) $(LIBTORRENT_PATCHES)
 #
 $(LIBTORRENT_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBTORRENT_SOURCE) $(LIBTORRENT_PATCHES) make/libtorrent.mk
 	$(MAKE) openssl-stage libsigc++-stage
+	$(HOST_TOOL_AUTOMAKE1.10) automake1.14-host-stage
 	rm -rf $(BUILD_DIR)/$(LIBTORRENT_DIR) $(@D)
 	$(LIBTORRENT_UNZIP) $(DL_DIR)/$(LIBTORRENT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBTORRENT_PATCHES)" ; \
@@ -161,9 +162,7 @@ $(LIBTORRENT_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBTORRENT_SOURCE) $(LIBTORRENT
 		then mv $(BUILD_DIR)/$(LIBTORRENT_DIR) $(LIBTORRENT_BUILD_DIR) ; \
 	fi
 ifdef LIBTORRENT_SVN_REV
-	(cd $(@D); \
-		AUTOMAKE=automake ACLOCAL=aclocal autoreconf -i -f ; \
-	)
+	export PATH=$(HOST_STAGING_PREFIX)/bin:$$PATH; AUTOMAKE=$(RTORRENT_AUTOMAKE) ACLOCAL=$(RTORRENT_ACLOCAL) autoreconf -vif $(@D)
 endif
 	if test -n "$(LIBTORRENT_POST_AC_PATCHES)" ; then \
 		cat $(LIBTORRENT_POST_AC_PATCHES) | $(PATCH) -d $(@D) -p0 ; \

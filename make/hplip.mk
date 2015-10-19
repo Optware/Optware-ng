@@ -130,7 +130,7 @@ endif
 	fi
 #	sed -i -e 's|/etc/|$(TARGET_PREFIX)&|; /halpredir/s|/usr/share|$(TARGET_PREFIX)/share|' $(@D)/Makefile.am ; \
 #	cd $(@D) ; touch INSTALL NEWS README AUTHORS ChangeLog
-#	autoreconf -vif $(@D)
+#	$(AUTORECONF1.10) -vif $(@D)
 	sed -e "s|-I/usr/local/include||" -i "$(@D)/configure"
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \

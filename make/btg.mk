@@ -165,13 +165,7 @@ endif
 		then mv $(BUILD_DIR)/$(BTG_DIR) $(@D) ; \
 	fi
 	sed -i -e "s/  AC_DEFINE_UNQUOTED(GNUTLS_MAJOR_VER/LIBGNUTLS_MAJOR_VER=`echo $(GNUTLS_VERSION) |cut -d "." -f 1`\nLIBGNUTLS_MINOR_VER=`echo $(GNUTLS_VERSION) |cut -d "." -f 2`\n  AC_DEFINE_UNQUOTED(GNUTLS_MAJOR_VER/" $(@D)/m4/libgnutls-version.m4
-ifdef BTG_SVN_REV
-	(cd $(@D); \
-		./autogen.sh \
-	)
-else
-	autoreconf -vif $(@D)
-endif
+	$(AUTORECONF1.10) -vif $(@D)
 	sed -i -e 's|ZLIB_HOME=/usr/local|ZLIB_HOME="$(STAGING_PREFIX)"|' $(@D)/configure
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \

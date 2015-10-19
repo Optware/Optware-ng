@@ -121,7 +121,7 @@ $(LIBEPOXY_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBEPOXY_SOURCE) $(LIBEPOXY_PATCH
 	if test "$(BUILD_DIR)/$(LIBEPOXY_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBEPOXY_DIR) $(@D) ; \
 	fi
-	autoreconf -vif $(@D)
+	$(AUTORECONF1.10) -vif $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBEPOXY_CPPFLAGS)" \

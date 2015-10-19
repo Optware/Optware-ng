@@ -70,8 +70,8 @@ RTORRENT_CONFIGURE_OPTS = --without-ncursesw
 endif
 RTORRENT_CONFIGURE_OPTS += --with-xmlrpc-c
 
-RTORRENT_AUTOMAKE?=automake
-RTORRENT_ACLOCAL?=aclocal
+RTORRENT_AUTOMAKE?=automake-1.10
+RTORRENT_ACLOCAL?=aclocal-1.10
 
 #
 # RTORRENT_BUILD_DIR is the directory in which the build is done.
@@ -134,6 +134,7 @@ rtorrent-source: $(DL_DIR)/$(RTORRENT_SOURCE) $(RTORRENT_PATCHES)
 $(RTORRENT_BUILD_DIR)/.configured: $(DL_DIR)/$(RTORRENT_SOURCE) $(RTORRENT_PATCHES) make/rtorrent.mk
 	$(MAKE) libtorrent-stage $(RTORRENT_NCURSES)-stage \
 	libcurl-stage xmlrpc-c-stage zlib-stage
+	$(HOST_TOOL_AUTOMAKE1.10) automake1.14-host-stage
 ifeq ($(RTORRENT_CPPUNIT), yes)
 	$(MAKE) cppunit-stage
 endif
@@ -164,7 +165,7 @@ endif
 ifeq ($(RTORRENT_CPPUNIT), yes)
 	cp -f $(STAGING_PREFIX)/share/aclocal/cppunit.m4 $(@D)/scripts/
 endif
-	AUTOMAKE=$(RTORRENT_AUTOMAKE) ACLOCAL=$(RTORRENT_ACLOCAL) autoreconf -vif $(@D)
+	export PATH=$(HOST_STAGING_PREFIX)/bin:$$PATH; AUTOMAKE=$(RTORRENT_AUTOMAKE) ACLOCAL=$(RTORRENT_ACLOCAL) autoreconf -vif $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(RTORRENT_CPPFLAGS)" \

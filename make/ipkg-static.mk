@@ -124,7 +124,7 @@ $(IPKG-STATIC_BUILD_DIR)/.configured: $(IPKG-STATIC_PATCHES) make/ipkg-static.mk
 		then mv $(BUILD_DIR)/$(IPKG-STATIC_DIR) $(@D) ; \
 	fi
 	rm -f $(@D)/etc/Makefile aclocal.m4
-	autoreconf -vif $(@D)
+	$(AUTORECONF1.10) -vif $(@D)
 	(cd $(@D); \
 		CPPFLAGS="$(TARGET_CFLAGS) $(IPKG-STATIC_CPPFLAGS)" \
 		LDFLAGS="-Wl,--gc-sections --static $(IPKG-STATIC_LDFLAGS)" \

@@ -112,7 +112,7 @@ $(NMAP_BUILD_DIR)/.configured: $(DL_DIR)/$(NMAP_SOURCE) $(NMAP_PATCHES) make/nma
 		echo "executable=$(TARGET_PREFIX)/bin/python"; \
 	) >> $(@D)/ndiff/setup.cfg
 	sed -i -e '/	$$(INSTALL)/s| -s | |' $(@D)/ncat/Makefile.in
-#	autoreconf -vif $(@D)
+#	$(AUTORECONF1.10) -vif $(@D)
 	(cd $(@D); \
 	if $(TARGET_CC) -E -P $(SOURCE_DIR)/common/endianness.c | grep -q puts.*BIG_ENDIAN; \
 	then export ac_cv_c_bigendian=yes; \

@@ -132,7 +132,7 @@ endif
 		then mv $(BUILD_DIR)/$(GNUPLOT_DIR) $(@D) ; \
 	fi
 	sed -i -e '/^SUBDIRS/s| demo||' $(@D)/Makefile.am
-	autoreconf -vif $(@D)
+	$(AUTORECONF1.10) -vif $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GNUPLOT_CPPFLAGS)" \

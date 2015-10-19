@@ -110,7 +110,7 @@ $(TAGED_BUILD_DIR)/.configured: $(DL_DIR)/$(TAGED_SOURCE) $(TAGED_PATCHES)
 	$(TAGED_UNZIP) $(DL_DIR)/$(TAGED_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(TAGED_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(TAGED_DIR) -p1
 	mv $(BUILD_DIR)/$(TAGED_DIR) $(@D)
-	autoreconf -vif $(@D)/confuse
+	$(AUTORECONF1.10) -vif $(@D)/confuse
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(TAGED_CPPFLAGS)" \

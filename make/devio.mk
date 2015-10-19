@@ -115,7 +115,7 @@ $(DEVIO_BUILD_DIR)/.configured: $(DL_DIR)/$(DEVIO_SOURCE) $(DEVIO_PATCHES) make/
 	if test "$(BUILD_DIR)/$(DEVIO_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(DEVIO_DIR) $(@D) ; \
 	fi
-	autoreconf -vif $(@D)
+	$(AUTORECONF1.10) -vif $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(DEVIO_CPPFLAGS)" \

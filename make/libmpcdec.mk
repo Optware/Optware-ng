@@ -138,7 +138,7 @@ $(LIBMPCDEC_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBMPCDEC_SOURCE) $(LIBMPCDEC_PA
 	find $(@D) -type f -name '*.[ch]' -exec sed -i -e 's/bswap_16\|bswap_32\|bswap_64/_&_/g' -e 's/nearbyintf/nearbyint/g' {} \;
 	sed -i '/^if HAVE_VISIBILITY/,/endif/s/^/#/'  $(@D)/*/Makefile.am
 	sed -i -e '/^ACLOCAL_AMFLAGS/s/^/dnl /' $(@D)/Makefile.am
-	autoreconf -vif $(@D)
+	$(AUTORECONF1.10) -vif $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBMPCDEC_CPPFLAGS)" \

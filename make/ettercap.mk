@@ -122,7 +122,7 @@ $(ETTERCAP_BUILD_DIR)/.configured: $(DL_DIR)/$(ETTERCAP_SOURCE) $(ETTERCAP_PATCH
 		then mv $(BUILD_DIR)/$(ETTERCAP_DIR) $(@D) ; \
 	fi
 	cp -f $(SOURCE_DIR)/common/config.* $(@D)/
-	autoreconf -vi $(@D)
+	$(AUTORECONF1.10) -vi $(@D)
 	sed -i -e 's/-lpcap/-lusb-1.0 -lpcap/' $(@D)/configure
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \

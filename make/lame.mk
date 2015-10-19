@@ -115,7 +115,7 @@ $(LAME_BUILD_DIR)/.configured: $(DL_DIR)/$(LAME_SOURCE) $(LAME_PATCHES) make/lam
 	fi
 	mv $(BUILD_DIR)/$(LAME_DIR) $(@D)
 ifeq ($(LAME_VERSION), 3.99.5)
-	ACLOCAL=$(ACLOCAL_NEW) AUTOMAKE=$(AUTOMAKE_NEW) autoreconf -vif $(@D)
+	$(AUTORECONF1.14) -vif $(@D)
 endif
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \

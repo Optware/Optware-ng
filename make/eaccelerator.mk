@@ -120,7 +120,7 @@ eaccelerator-source: $(DL_DIR)/$(EACCELERATOR_SOURCE) $(EACCELERATOR_PATCHES)
 #
 $(EACCELERATOR_BUILD_DIR)/.configured: $(DL_DIR)/$(EACCELERATOR_SOURCE) $(EACCELERATOR_PATCHES) \
 make/eaccelerator.mk make/php.mk
-	$(MAKE) php-stage
+	$(MAKE) php-stage libtool-host-stage
 	rm -rf $(BUILD_DIR)/$(EACCELERATOR_DIR) $(@D)
 	$(EACCELERATOR_UNZIP) $(DL_DIR)/$(EACCELERATOR_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(EACCELERATOR_PATCHES)" ; \
@@ -128,14 +128,13 @@ make/eaccelerator.mk make/php.mk
 		$(PATCH) -d $(BUILD_DIR)/$(EACCELERATOR_DIR) -p1 ; \
 	fi
 	mv $(BUILD_DIR)/$(EACCELERATOR_DIR) $(@D)
-#	WANT_AUTOMAKE=1.6 
 	cd $(@D); $(STAGING_DIR)/bin/phpize
-	(cd `aclocal --print-ac-dir`; \
+	(cd $(HOST_STAGING_PREFIX)/share/aclocal; \
 		cat libtool.m4 ltoptions.m4 ltversion.m4 ltsugar.m4 \
 			lt~obsolete.m4 >> $(@D)/aclocal.m4 \
 	)
 	echo 'AC_CONFIG_MACRO_DIR([m4])' >> $(@D)/configure.in
-	autoreconf -vif $(@D)
+	$(AUTORECONF1.10) -vif $(@D)
 	(cd $(@D); \
 		sed -i -e 's/mm_shm_mmap_posix=no/mm_shm_mmap_posix=yes/' -e 's/\$$mm_sem_pthread/yes/' configure; \
 		$(TARGET_CONFIGURE_OPTS) \

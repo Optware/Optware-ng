@@ -119,7 +119,7 @@ $(QUAGGA_BUILD_DIR)/.configured: $(DL_DIR)/$(QUAGGA_SOURCE) $(QUAGGA_PATCHES) ma
 	sed -i -e 's!/usr/include/!$(TARGET_INCDIR)/!g' $(@D)/configure.ac
 	# Some gdb header defines struct user, so let's patch the definition in quagga vtysh_user
 	sed -i -e 's!struct user!struct vtysh_user!g' $(@D)/vtysh/vtysh_user.c
-	autoreconf -vif $(@D)
+	$(AUTORECONF1.10) -vif $(@D)
 	(cd $(@D); \
 		touch aclocal.m4 Makefile.in config.h.in; \
 		touch configure; \

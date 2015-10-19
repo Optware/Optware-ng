@@ -119,6 +119,7 @@ netatalk-source: $(DL_DIR)/$(NETATALK_SOURCE) $(NETATALK_PATCHES)
 #
 $(NETATALK_BUILD_DIR)/.configured: $(DL_DIR)/$(NETATALK_SOURCE) $(NETATALK_PATCHES) make/netatalk.mk
 	$(MAKE) libdb-stage libgcrypt-stage libtool-stage
+	$(HOST_TOOL_AUTOMAKE1.10)
 	rm -rf $(BUILD_DIR)/$(NETATALK_DIR) $(@D)
 	$(NETATALK_UNZIP) $(DL_DIR)/$(NETATALK_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NETATALK_PATCHES)" ; \
@@ -128,11 +129,12 @@ $(NETATALK_BUILD_DIR)/.configured: $(DL_DIR)/$(NETATALK_SOURCE) $(NETATALK_PATCH
 	if test "$(BUILD_DIR)/$(NETATALK_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(NETATALK_DIR) $(@D) ; \
 	fi
-	cd $(@D) && aclocal -I macros 
-	cd $(@D) && autoheader
-	cd $(@D) && autoconf
-	cd $(@D) && libtoolize --automake
-	cd $(@D) && automake --add-missing --force-missing
+	cd $(@D); export PATH=$(HOST_STAGING_PREFIX)/bin:$$PATH; \
+		aclocal-1.10 -I macros && \
+		autoheader && \
+		autoconf && \
+		libtoolize --automake && \
+		automake-1.10 --add-missing --force-missing
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(NETATALK_CPPFLAGS)" \

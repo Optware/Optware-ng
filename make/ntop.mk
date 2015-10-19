@@ -143,8 +143,9 @@ ntop-source: $(DL_DIR)/ntop-$(NTOP_VERSION).tar.gz $(NTOP_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 # 
 $(NTOP_BUILD_DIR)/.configured: $(DL_DIR)/ntop-$(NTOP_VERSION).tar.gz $(NTOP_PATCHES) make/ntop.mk
-	$(MAKE) openssl-stage zlib-stage libpcap-stage gdbm-stage
-	$(MAKE) libgd-stage rrdtool-stage pcre-stage
+	$(MAKE) openssl-stage zlib-stage libpcap-stage gdbm-stage \
+		libgd-stage rrdtool-stage pcre-stage
+	$(HOST_TOOL_AUTOMAKE1.10)
 ifneq (, $(filter mysql, $(PACKAGES)))
 	$(MAKE) mysql-stage
 endif
@@ -161,9 +162,9 @@ endif
 		then mv $(BUILD_DIR)/$(NTOP_DIR) $(@D) ; \
 	fi
 	rm -f $(@D)/aclocal.m4
-	cd $(@D); libtoolize -c -f; aclocal; cat $(addprefix `aclocal --print-ac-dir`/, \
+	cd $(@D); export PATH=$(HOST_STAGING_PREFIX)/bin:$$PATH; libtoolize -c -f; aclocal-1.10; cat $(addprefix $(HOST_STAGING_PREFIX)/share/aclocal/, \
 		libtool.m4 ltoptions.m4 ltversion.m4 ltsugar.m4 lt~obsolete.m4) >> aclocal.m4; \
-		autoheader; autoconf; automake -a -c
+		autoheader; autoconf; automake-1.10 -a -c
 	sed -i -e '/FLAGS=.*FLAGS.*-I\/usr\//d' $(@D)/configure.in
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \

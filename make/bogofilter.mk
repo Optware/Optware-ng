@@ -76,7 +76,7 @@ endif
 	fi
 	mv $(BUILD_DIR)/$(BOGOFILTER_DIR) $(@D)
 ifneq ($(HOSTCC), $(TARGET_CC))
-	autoreconf -vif $(@D)
+	$(AUTORECONF1.10) -vif $(@D)
 endif
 	sed -i -e '/names_next_round=/s/db /db-$(LIBDB_LIB_VERSION) /' $(@D)/configure
 	(cd $(@D); \

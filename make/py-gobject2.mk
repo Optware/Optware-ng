@@ -154,7 +154,7 @@ $(PY-GOBJECT2_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-GOBJECT2_SOURCE) $(PY-GOBJE
 		$(PATCH) -d $(BUILD_DIR)/$(PY-GOBJECT2_DIR) -p1 ; \
 	fi
 	mv $(BUILD_DIR)/$(PY-GOBJECT2_DIR) $(@D)/3
-	autoreconf -vif $(@D)/2.6
+	$(AUTORECONF1.10) -vif $(@D)/2.6
 	(cd $(@D)/2.6; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) -I$(STAGING_INCLUDE_DIR)/python2.6 $(PY-GOBJECT2_CPPFLAGS)" \
@@ -175,7 +175,7 @@ $(PY-GOBJECT2_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-GOBJECT2_SOURCE) $(PY-GOBJE
 		--with-ffi \
 	)
 	$(PATCH_LIBTOOL) $(@D)/2.6/libtool
-	autoreconf -vif $(@D)/2.7
+	$(AUTORECONF1.10) -vif $(@D)/2.7
 	(cd $(@D)/2.7; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) -I$(STAGING_INCLUDE_DIR)/python2.7 $(PY-GOBJECT2_CPPFLAGS)" \
@@ -197,7 +197,7 @@ $(PY-GOBJECT2_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-GOBJECT2_SOURCE) $(PY-GOBJE
 	)
 	$(PATCH_LIBTOOL) $(@D)/2.7/libtool
 	mv -f $(@D)/3/py-compile $(@D)/3/py3-compile
-	autoreconf -vif $(@D)/3
+	$(AUTORECONF1.10) -vif $(@D)/3
 	(cd $(@D)/3; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) -I$(STAGING_INCLUDE_DIR)/python$(PYTHON3_VERSION_MAJOR)m $(PY-GOBJECT2_CPPFLAGS)" \

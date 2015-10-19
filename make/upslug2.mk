@@ -124,7 +124,7 @@ endif
 	if test "$(BUILD_DIR)/$(UPSLUG2_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(UPSLUG2_DIR) $(@D) ; \
 	fi
-	autoreconf -vif $(@D)
+	$(AUTORECONF1.10) -vif $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(UPSLUG2_CPPFLAGS)" \

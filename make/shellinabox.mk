@@ -116,7 +116,7 @@ $(SHELLINABOX_BUILD_DIR)/.configured: $(DL_DIR)/$(SHELLINABOX_SOURCE_SAVE) $(SHE
 	if test "$(BUILD_DIR)/$(SHELLINABOX_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(SHELLINABOX_DIR) $(@D) ; \
 	fi
-	autoreconf -vif $(@D)
+	$(AUTORECONF1.10) -vif $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SHELLINABOX_CPPFLAGS)" \
