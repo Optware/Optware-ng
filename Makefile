@@ -565,25 +565,25 @@ PERL=perl
 # Required host-tools, which will build if they missing
 HOST_TOOL_GCC33 = $(MAKE) gcc-host-stage GCC_VERSION=3.3.6
 HOST_TOOL_ACLOCAL = \
-	$(MAKE) automake-host-stage autoconf-host-stage pkgconfig-host-stage m4-host-stage libtool-host-stage
+	$(MAKE) directories automake-host-stage autoconf-host-stage pkgconfig-host-stage m4-host-stage libtool-host-stage
 HOST_TOOL_AUTOMAKE = \
-	$(MAKE) automake-host-stage autoconf-host-stage pkgconfig-host-stage m4-host-stage libtool-host-stage
+	$(MAKE) directories automake-host-stage autoconf-host-stage pkgconfig-host-stage m4-host-stage libtool-host-stage
 HOST_TOOL_ACLOCAL1.14 = \
-	$(MAKE) automake1.14-host-stage autoconf-host-stage pkgconfig-host-stage m4-host-stage libtool-host-stage
+	$(MAKE) directories automake1.14-host-stage autoconf-host-stage pkgconfig-host-stage m4-host-stage libtool-host-stage
 HOST_TOOL_AUTOMAKE1.14 = \
-	$(MAKE) automake1.14-host-stage autoconf-host-stage pkgconfig-host-stage m4-host-stage libtool-host-stage
+	$(MAKE) directories automake1.14-host-stage autoconf-host-stage pkgconfig-host-stage m4-host-stage libtool-host-stage
 HOST_TOOL_ACLOCAL1.10 = \
-	$(MAKE) automake1.10-host-stage autoconf-host-stage pkgconfig-host-stage m4-host-stage libtool-host-stage
+	$(MAKE) directories automake1.10-host-stage autoconf-host-stage pkgconfig-host-stage m4-host-stage libtool-host-stage
 HOST_TOOL_AUTOMAKE1.10 = \
-	$(MAKE) automake1.10-host-stage autoconf-host-stage pkgconfig-host-stage m4-host-stage libtool-host-stage
+	$(MAKE) directories automake1.10-host-stage autoconf-host-stage pkgconfig-host-stage m4-host-stage libtool-host-stage
 HOST_TOOL_ACLOCAL1.9 = \
-	$(MAKE) automake1.9-host-stage autoconf-host-stage pkgconfig-host-stage m4-host-stage libtool-host-stage
+	$(MAKE) directories automake1.9-host-stage autoconf-host-stage pkgconfig-host-stage m4-host-stage libtool-host-stage
 HOST_TOOL_AUTOMAKE1.9 = \
-	$(MAKE) automake1.9-host-stage autoconf-host-stage pkgconfig-host-stage m4-host-stage libtool-host-stage
+	$(MAKE) directories automake1.9-host-stage autoconf-host-stage pkgconfig-host-stage m4-host-stage libtool-host-stage
 HOST_TOOL_ACLOCAL1.4 = \
-	$(MAKE) automake1.4-host-stage autoconf-host-stage pkgconfig-host-stage m4-host-stage libtool-host-stage
+	$(MAKE) directories automake1.4-host-stage autoconf-host-stage pkgconfig-host-stage m4-host-stage libtool-host-stage
 HOST_TOOL_AUTOMAKE1.4 = \
-	$(MAKE) automake1.4-host-stage autoconf-host-stage pkgconfig-host-stage m4-host-stage libtool-host-stage
+	$(MAKE) directories automake1.4-host-stage autoconf-host-stage pkgconfig-host-stage m4-host-stage libtool-host-stage
 
 # These are aclocal wrappers used to automatically fix
 # libtool versions mismatch issue that can occur with
