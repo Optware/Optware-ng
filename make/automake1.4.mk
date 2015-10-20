@@ -34,10 +34,12 @@ automake1.4-source: $(DL_DIR)/$(AUTOMAKE1.4_SOURCE) $(AUTOMAKE1.4_PATCHES)
 
 
 $(AUTOMAKE1.4_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(AUTOMAKE1.4_SOURCE) make/automake1.4.mk
+	$(MAKE) autoconf-host-stage
 	rm -rf $(HOST_BUILD_DIR)/$(AUTOMAKE1.4_DIR) $(@D)
 	$(AUTOMAKE1.4_UNZIP) $(DL_DIR)/$(AUTOMAKE1.4_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
 	mv $(HOST_BUILD_DIR)/$(AUTOMAKE1.4_DIR) $(@D)
 	(cd $(@D); \
+		AUTOCONF="$(HOST_STAGING_PREFIX)/bin/autoconf" \
 		./configure \
 		--prefix=$(HOST_STAGING_PREFIX)	\
 	)

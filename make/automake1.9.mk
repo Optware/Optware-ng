@@ -34,10 +34,12 @@ automake1.9-source: $(DL_DIR)/$(AUTOMAKE1.9_SOURCE) $(AUTOMAKE1.9_PATCHES)
 
 
 $(AUTOMAKE1.9_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(AUTOMAKE1.9_SOURCE) make/automake1.9.mk
+	$(MAKE) autoconf-host-stage
 	rm -rf $(HOST_BUILD_DIR)/$(AUTOMAKE1.9_DIR) $(@D)
 	$(AUTOMAKE1.9_UNZIP) $(DL_DIR)/$(AUTOMAKE1.9_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
 	mv $(HOST_BUILD_DIR)/$(AUTOMAKE1.9_DIR) $(@D)
 	(cd $(@D); \
+		AUTOCONF="$(HOST_STAGING_PREFIX)/bin/autoconf" \
 		./configure \
 		--prefix=$(HOST_STAGING_PREFIX)	\
 		--datarootdir=$(HOST_STAGING_PREFIX)/share \

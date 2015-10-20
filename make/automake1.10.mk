@@ -34,10 +34,12 @@ automake1.10-source: $(DL_DIR)/$(AUTOMAKE1.10_SOURCE) $(AUTOMAKE1.10_PATCHES)
 
 
 $(AUTOMAKE1.10_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(AUTOMAKE1.10_SOURCE) make/automake1.10.mk
+	$(MAKE) autoconf-host-stage
 	rm -rf $(HOST_BUILD_DIR)/$(AUTOMAKE1.10_DIR) $(@D)
 	$(AUTOMAKE1.10_UNZIP) $(DL_DIR)/$(AUTOMAKE1.10_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
 	mv $(HOST_BUILD_DIR)/$(AUTOMAKE1.10_DIR) $(@D)
 	(cd $(@D); \
+		AUTOCONF="$(HOST_STAGING_PREFIX)/bin/autoconf" \
 		./configure \
 		--prefix=$(HOST_STAGING_PREFIX)	\
 		--datarootdir=$(HOST_STAGING_PREFIX)/share \
