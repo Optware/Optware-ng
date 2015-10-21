@@ -7,7 +7,6 @@
 !/AUTHORS
 !/Makefile
 !/README.md
-!/.cvsignore
 !/.gitignore
 !/downloads
 /downloads/*
