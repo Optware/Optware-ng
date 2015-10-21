@@ -202,11 +202,13 @@ ifeq (slugosbe, $(OPTWARE_TARGET))
 ASTERISK10_CPPFLAGS+= -DPATH_MAX=4096
 endif
 
+ifeq ($(shell test -x $(TARGET_CC); echo $$?),0)
 ifeq ($(shell test $(shell $(TARGET_CC) -dumpversion | cut -d '.' -f 1) -ge 5; echo $$?),0)
 # Workaround for numerous
 #  multiple definition of `ast_*
 # errors
 ASTERISK10_CPPFLAGS+= -DLOW_MEMORY
+endif
 endif
 
 ASTERISK10_LDFLAGS=
