@@ -9,3 +9,6 @@
 !/README.md
 !/.cvsignore
 !/.gitignore
+!/downloads
+/downloads/*
+!/downloads/phoneme_advanced-mr2-dev-src-b97-20_nov_2008.zip
