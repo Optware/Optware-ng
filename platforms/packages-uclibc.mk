@@ -35,6 +35,17 @@ UCLIBC++_BROKEN_PACKAGES = \
 UCLIBC++_SPECIFIC_PACKAGES = \
 	libuclibc++ buildroot uclibc-opt ipkg-opt \
 
+## UCLIBC_NG value indicates whether uclibc used is uclibc-ng
+ifneq ($(CROSS_CONFIGURATION_UCLIBC_VERSION),)
+ifeq ($(shell test $(shell echo $(CROSS_CONFIGURATION_UCLIBC_VERSION) | cut -d '.' -f 1) -gt 0; echo $$?),0)
+UCLIBC_NG=yes
+endif
+endif
+
+UCLIBC_NG ?= no
+
+ifneq ($(UCLIBC_NG), yes)
+
 SUDO_UPSTREAM_VERSION := 1.7.4p6
 SUDO_VERSION := 1.7.4.6
 SUDO_IPK_VERSION := 1
@@ -57,3 +68,5 @@ PSMISC_VERSION := 22.13
 
 SLANG_VERSION := 2.1.4
 SLANG_IPK_VERSION := 1
+
+endif
