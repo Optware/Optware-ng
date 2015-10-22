@@ -21,8 +21,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 HTOP_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/htop
-HTOP_VERSION ?= 1.0.1
-HTOP_IPK_VERSION ?= 2
+HTOP_VERSION ?= 1.0.2
+HTOP_IPK_VERSION ?= 1
 HTOP_SOURCE=htop-$(HTOP_VERSION).tar.gz
 HTOP_DIR=htop-$(HTOP_VERSION)
 HTOP_UNZIP=zcat
