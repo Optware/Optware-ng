@@ -1,0 +1,11 @@
+--- a/plugins/sudoers/match.c
++++ b/plugins/sudoers/match.c
+@@ -936,6 +936,8 @@
+ #ifdef HAVE_INNETGR
+     static char *domain;
+     static int initialized;
++#else
++    char *domain = NULL;
+ #endif
+     bool rc = false;
+     debug_decl(netgr_matches, SUDO_DEBUG_MATCH)

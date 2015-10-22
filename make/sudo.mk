@@ -4,8 +4,8 @@
 # $Id$
 
 SUDO_SITE=http://www.gratisoft.us/sudo/dist
-SUDO_UPSTREAM_VERSION?=1.8.4p5
-SUDO_VERSION?=1.8.4.5
+SUDO_UPSTREAM_VERSION?=1.8.9p5
+SUDO_VERSION?=1.8.9.5
 SUDO_SOURCE=sudo-$(SUDO_UPSTREAM_VERSION).tar.gz
 SUDO_DIR=sudo-$(SUDO_UPSTREAM_VERSION)
 SUDO_UNZIP=zcat
@@ -22,6 +22,12 @@ SUDO_IPK_VERSION?=1
 SUDO_CONFFILES=$(TARGET_PREFIX)/etc/sudoers
 
 #SUDO_PATCHES=
+
+ifeq ($(SUDO_UPSTREAM_VERSION), 1.8.9p5)
+SUDO_PATCHES +=\
+$(SUDO_SOURCE_DIR)/compat.patch \
+$(SUDO_SOURCE_DIR)/sudoers_match.c.patch
+endif
 
 ifneq ($(TARGET_CC), $(HOSTCC))
 SUDO_CONFIGURE_ENV=sudo_cv_uid_t_len=10 sudo_cv_func_unsetenv_void=no
@@ -73,7 +79,7 @@ sudo-unpack: $(SUDO_BUILD_DIR)/.configured
 
 $(SUDO_BUILD_DIR)/.built: $(SUDO_BUILD_DIR)/.configured
 	rm -f $@
-	make -C $(@D)
+	make -C $(@D) HOSTCC=$(HOSTCC)
 	touch $@
 
 sudo: $(SUDO_BUILD_DIR)/.built
