@@ -15,7 +15,7 @@
 RTORRENT_SITE=http://libtorrent.rakshasa.no/downloads
 RTORRENT_SITE_GITHUB=https://github.com/rakshasa/rtorrent/archive
 
-RTORRENT_VERSION ?= 0.8.6
+RTORRENT_VERSION ?= 0.9.4
 RTORRENT_IPK_VERSION ?= 1
 
 RTORRENT_SVN=svn://rakshasa.no/libtorrent/trunk/rtorrent
@@ -37,6 +37,7 @@ RTORRENT_NCURSES=$(strip \
 RTORRENT_DEPENDS=libtorrent, $(RTORRENT_NCURSES), libcurl, xmlrpc-c, zlib
 RTORRENT_SUGGESTS=dtach, screen, adduser
 RTORRENT_CONFLICTS=
+RTORRENT_CPPUNIT?=yes
 ifeq ($(RTORRENT_CPPUNIT), yes)
 RTORRENT_DEPENDS+=, cppunit
 endif
@@ -70,8 +71,8 @@ RTORRENT_CONFIGURE_OPTS = --without-ncursesw
 endif
 RTORRENT_CONFIGURE_OPTS += --with-xmlrpc-c
 
-RTORRENT_AUTOMAKE?=automake-1.10
-RTORRENT_ACLOCAL?=aclocal-1.10
+RTORRENT_AUTOMAKE?=automake-1.14
+RTORRENT_ACLOCAL?=aclocal-1.14
 
 #
 # RTORRENT_BUILD_DIR is the directory in which the build is done.

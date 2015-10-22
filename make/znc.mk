@@ -60,6 +60,7 @@ ZNC_CONFFILES=$(TARGET_PREFIX)/etc/default/znc $(TARGET_PREFIX)/etc/init.d/S91zn
 #
 ZNC_CPPFLAGS=
 ZNC_LDFLAGS=-s
+ZNC_CONFIG_ARGS ?= gl_cv_cc_visibility=true
 
 #
 # ZNC_BUILD_DIR is the directory in which the build is done.

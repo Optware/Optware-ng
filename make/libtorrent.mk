@@ -13,7 +13,7 @@
 #
 LIBTORRENT_SITE=http://libtorrent.rakshasa.no/downloads/
 LIBTORRENT_SITE_GITHUB=https://github.com/rakshasa/libtorrent/archive
-LIBTORRENT_VERSION?=0.12.6
+LIBTORRENT_VERSION?=0.13.4
 LIBTORRENT_SVN=svn://rakshasa.no/libtorrent/trunk/libtorrent
 #LIBTORRENT_SVN_REV=1037
 ifdef LIBTORRENT_SVN_REV

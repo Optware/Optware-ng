@@ -20,13 +20,13 @@
 # You should change all these variables to suit your package.
 #
 
-STRACE_VERSION ?= 4.5.20
+STRACE_VERSION ?= 4.10
 STRACE_IPK_VERSION ?= 1
 
 STRACE_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/strace
-STRACE_SOURCE?=strace-$(STRACE_VERSION).tar.bz2
+STRACE_SOURCE?=strace-$(STRACE_VERSION).tar.xz
 STRACE_DIR=strace-$(STRACE_VERSION)
-STRACE_UNZIP?=bzcat
+STRACE_UNZIP?=xzcat
 STRACE_MAINTAINER=Christopher <edmondsc@onid.orst.edu>
 STRACE_DESCRIPTION=Traces all system calls a program makes.
 STRACE_SECTION=utility
@@ -40,14 +40,14 @@ STRACE_CONFLICTS=
 # which they should be applied to the source code.
 #
 #
-STRACE_PATCHES?=$(STRACE_SOURCE_DIR)/CTL_PROC.patch
+STRACE_PATCHES?=#$(STRACE_SOURCE_DIR)/CTL_PROC.patch
 
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
 STRACE_CPPFLAGS=
-STRACE_CPPFLAGS_PRE?=
+STRACE_CPPFLAGS_PRE?=-I$(SOURCE_DIR)/strace/include
 STRACE_LDFLAGS=
 
 #
