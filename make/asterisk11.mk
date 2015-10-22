@@ -327,8 +327,9 @@ endif
 	sed -i -e "s/AC_CHECK_HEADERS..xlocale\.h../###########/" $(@D)/configure.ac
 	sed -i -e "s|<defaultenabled>yes</defaultenabled>||" $(@D)/sounds/sounds.xml
 	sed -i -e "s#    ac_cross_compile=\$$.*#    ac_cross_compile=\`echo \$$\{CC\} | sed 's/gcc\$$//'\`#" $(@D)/res/pjproject/aconfigure
+	echo 'ACLOCAL_AMFLAGS = -I autoconf' >> $(@D)/Makefile.am
+	$(AUTORECONF1.9) -vif $(@D)
 	(cd $(@D); \
-		./bootstrap.sh && \
 		$(TARGET_CONFIGURE_OPTS) \
 		LIBEDIT_DIR="internal" \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ASTERISK11_CPPFLAGS)" \

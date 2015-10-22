@@ -332,8 +332,9 @@ ifeq ($(OPTWARE_TARGET), $(filter buildroot-armeabi buildroot-armeabi-ng buildro
 endif
 	sed -i -e "s/AC_CHECK_HEADERS..xlocale\.h../###########/" $(@D)/configure.ac
 	sed -i -e "s|<defaultenabled>yes</defaultenabled>||" $(@D)/sounds/sounds.xml
+	echo 'ACLOCAL_AMFLAGS = -I autoconf' >> $(@D)/Makefile.am
+	$(AUTORECONF1.9) -vif $(@D)
 	(cd $(@D); \
-		./bootstrap.sh && \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ASTERISK10_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(ASTERISK10_LDFLAGS)" \
