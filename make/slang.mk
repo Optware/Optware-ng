@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SLANG_SITE=ftp://space.mit.edu/pub/davis/slang/v2.2
-SLANG_VERSION ?= 2.2.3
+SLANG_VERSION ?= 2.2.4
 SLANG_SOURCE=slang-$(SLANG_VERSION).tar.bz2
 SLANG_DIR=slang-$(SLANG_VERSION)
 SLANG_UNZIP=bzcat
@@ -39,7 +39,7 @@ SLANG_CONFLICTS=
 #
 # SLANG_IPK_VERSION should be incremented when the ipk changes.
 #
-SLANG_IPK_VERSION ?= 2
+SLANG_IPK_VERSION ?= 1
 
 #
 # SLANG_CONFFILES should be a list of user-editable files
@@ -50,10 +50,11 @@ SLANG_IPK_VERSION ?= 2
 # which they should be applied to the source code.
 #
 ifeq (uclibc, $(LIBC_STYLE))
+ifneq ($(UCLIBC_NG), yes)
 SLANG_PATCHES=$(SLANG_SOURCE_DIR)/uclibc.patch
-else
-SLANG_PATCHES=$(SLANG_SOURCE_DIR)/WCONTINUED.patch
 endif
+endif
+SLANG_PATCHES?=$(SLANG_SOURCE_DIR)/WCONTINUED.patch
 
 #
 # If the compilation of the package requires additional
