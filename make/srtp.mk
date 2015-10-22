@@ -105,7 +105,7 @@ srtp-source: $(DL_DIR)/$(SRTP_SOURCE) $(SRTP_PATCHES)
 # shown below to make various patches to it.
 #
 $(SRTP_BUILD_DIR)/.configured: $(DL_DIR)/$(SRTP_SOURCE) $(SRTP_PATCHES) make/srtp.mk
-	#$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) autoconf-host-stage
 	-@$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) uninstall
 	rm -rf $(BUILD_DIR)/$(SRTP_DIR) $(@D)
 	$(SRTP_UNZIP) $(DL_DIR)/$(SRTP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -118,7 +118,7 @@ $(SRTP_BUILD_DIR)/.configured: $(DL_DIR)/$(SRTP_SOURCE) $(SRTP_PATCHES) make/srt
 	fi
 	(cd $(@D); \
 		sed -i -e "s/\bmips/srtp_mips/g" test/srtp_driver.c; \
-		autoconf; \
+		PATH=$(HOST_STAGING_PREFIX)/bin:$$PATH autoconf; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SRTP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(SRTP_LDFLAGS)" \
