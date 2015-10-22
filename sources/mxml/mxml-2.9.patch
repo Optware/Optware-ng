@@ -1,0 +1,46 @@
+--- Makefile.in.orig	2008-12-05 20:20:38.000000000 -0800
++++ Makefile.in	2009-07-30 22:03:09.000000000 -0700
+@@ -59,7 +59,7 @@
+ # Install commands...
+ #
+ 
+-INSTALL_BIN	=	$(LIBTOOL) $(INSTALL) -m 755 -s
++INSTALL_BIN	=	$(LIBTOOL) $(INSTALL) -m 755
+ INSTALL_DATA	=	$(INSTALL) -m 644
+ INSTALL_DIR	=	$(INSTALL) -d
+ INSTALL_LIB	=	$(LIBTOOL) $(INSTALL) -m 755
+@@ -88,7 +88,7 @@
+ 			mxml-node.o mxml-search.o mxml-set.o
+ LIBOBJS		=	$(PUBLIBOBJS) mxml-private.o mxml-string.o
+ OBJS		=	mxmldoc.o testmxml.o $(LIBOBJS)
+-TARGETS		=	$(LIBMXML) mxmldoc testmxml mxml.xml doc/mxml.man
++TARGETS		=	$(LIBMXML) mxmldoc mxml.xml doc/mxml.man
+ 
+ 
+ #
+@@ -329,6 +329,7 @@
+ 
+ testmxml.o:	mxml.h
+ 
++MXMLDOC_DIR=.
+ 
+ #
+ # mxml.xml
+@@ -336,7 +337,7 @@
+ 
+ mxml.xml:	mxmldoc-static mxml.h $(PUBLIBOBJS:.o=.c)
+ 	$(RM) mxml.xml
+-	./mxmldoc-static --header doc/reference.heading mxml.xml mxml.h $(PUBLIBOBJS:.o=.c) >doc/reference.html
++	$(MXMLDOC_DIR)/mxmldoc-static --header doc/reference.heading mxml.xml mxml.h $(PUBLIBOBJS:.o=.c) >doc/reference.html
+ 	if test "x`uname`" = xDarwin; then \
+ 		./mxmldoc-static --docset org.minixml.docset \
+ 			--docversion @VERSION@ --feedname minixml.org \
+@@ -363,7 +364,7 @@
+ 
+ doc/mxml.man: mxmldoc-static mxml.xml
+ 	$(RM) doc/mxml.man
+-	./mxmldoc-static --man mxml --title "Mini-XML API" \
++	$(MXMLDOC_DIR)/mxmldoc-static --man mxml --title "Mini-XML API" \
+ 		--intro doc/intro.man --footer doc/footer.man \
+ 		mxml.xml >doc/mxml.man
+ 
