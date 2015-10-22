@@ -62,10 +62,7 @@ ESOUND_CPPFLAGS=
 ifdef NO_BUILTIN_MATH
 ESOUND_CPPFLAGS+= -fno-builtin-cos -fno-builtin-sin
 endif
-ESOUND_LDFLAGS=
-ifeq ($(OPTWARE_TARGET), $(filter buildroot-armeabi buildroot-armeabi-ng buildroot-armeabihf buildroot-mipsel buildroot-mipsel-ng buildroot-i686, $(OPTWARE_TARGET)))
-ESOUND_LDFLAGS += -lm
-endif
+ESOUND_LDFLAGS=-lm
 
 ifeq (no,$(IPV6))
 ESOUND_CONFIGURE_OPTIONS+=--disable-ipv6
