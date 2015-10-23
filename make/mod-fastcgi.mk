@@ -106,11 +106,11 @@ mod-fastcgi-source: $(DL_DIR)/$(MOD_FASTCGI_SOURCE) $(MOD_FASTCGI_PATCHES)
 #
 $(MOD_FASTCGI_BUILD_DIR)/.configured: $(DL_DIR)/$(MOD_FASTCGI_SOURCE) $(MOD_FASTCGI_PATCHES) make/mod-fastcgi.mk
 	$(MAKE) apache-stage
-	rm -rf $(BUILD_DIR)/$(MOD_FASTCGI_DIR) $(@)
+	rm -rf $(BUILD_DIR)/$(MOD_FASTCGI_DIR) $(@D)
 	$(MOD_FASTCGI_UNZIP) $(DL_DIR)/$(MOD_FASTCGI_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(MOD_FASTCGI_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(MOD_FASTCGI_DIR) -p1
-	mv $(BUILD_DIR)/$(MOD_FASTCGI_DIR) $(@)
-	(cd $(@); \
+	mv $(BUILD_DIR)/$(MOD_FASTCGI_DIR) $(@D)
+	(cd $(@D); \
 		cp Makefile.AP2 Makefile \
 	)
 	touch $@
