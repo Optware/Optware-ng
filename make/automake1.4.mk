@@ -16,7 +16,7 @@ AUTOMAKE1.4_PRIORITY=optional
 AUTOMAKE1.4_DEPENDS=autoconf
 AUTOMAKE1.4_CONFLICTS=
 
-AUTOMAKE1.4_IPK_VERSION=1
+AUTOMAKE1.4_IPK_VERSION=2
 
 AUTOMAKE1.4_BUILD_DIR=$(BUILD_DIR)/automake1.4
 AUTOMAKE1.4_SOURCE_DIR=$(SOURCE_DIR)/automake1.4
@@ -120,7 +120,7 @@ $(AUTOMAKE1.4_IPK): $(AUTOMAKE1.4_BUILD_DIR)/.built
 	rm -f $(AUTOMAKE1.4_IPK_DIR)$(TARGET_PREFIX)/bin/{automake,aclocal}
 	echo -e "#!/bin/sh\nupdate-alternatives --install '$(TARGET_PREFIX)/bin/aclocal' 'aclocal' $(TARGET_PREFIX)/bin/aclocal-1.4 20" > \
 		$(AUTOMAKE1.4_IPK_DIR)/CONTROL/postinst
-	echo -e "update-alternatives --install '$(TARGET_PREFIX)/bin/automake' 'aclocal' $(TARGET_PREFIX)/bin/automake-1.4 20" >> \
+	echo -e "update-alternatives --install '$(TARGET_PREFIX)/bin/automake' 'automake' $(TARGET_PREFIX)/bin/automake-1.4 20" >> \
 		$(AUTOMAKE1.4_IPK_DIR)/CONTROL/postinst
 	echo -e "#!/bin/sh\nupdate-alternatives --remove 'aclocal' $(TARGET_PREFIX)/bin/aclocal-1.4" > \
 		$(AUTOMAKE1.4_IPK_DIR)/CONTROL/prerm

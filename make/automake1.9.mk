@@ -16,7 +16,7 @@ AUTOMAKE1.9_PRIORITY=optional
 AUTOMAKE1.9_DEPENDS=autoconf
 AUTOMAKE1.9_CONFLICTS=
 
-AUTOMAKE1.9_IPK_VERSION=1
+AUTOMAKE1.9_IPK_VERSION=2
 
 AUTOMAKE1.9_BUILD_DIR=$(BUILD_DIR)/automake1.9
 AUTOMAKE1.9_SOURCE_DIR=$(SOURCE_DIR)/automake1.9
@@ -121,7 +121,7 @@ $(AUTOMAKE1.9_IPK): $(AUTOMAKE1.9_BUILD_DIR)/.built
 	rm -f $(AUTOMAKE1.9_IPK_DIR)$(TARGET_PREFIX)/bin/{automake,aclocal}
 	echo -e "#!/bin/sh\nupdate-alternatives --install '$(TARGET_PREFIX)/bin/aclocal' 'aclocal' $(TARGET_PREFIX)/bin/aclocal-1.9 25" > \
 		$(AUTOMAKE1.9_IPK_DIR)/CONTROL/postinst
-	echo -e "update-alternatives --install '$(TARGET_PREFIX)/bin/automake' 'aclocal' $(TARGET_PREFIX)/bin/automake-1.9 25" >> \
+	echo -e "update-alternatives --install '$(TARGET_PREFIX)/bin/automake' 'automake' $(TARGET_PREFIX)/bin/automake-1.9 25" >> \
 		$(AUTOMAKE1.9_IPK_DIR)/CONTROL/postinst
 	echo -e "#!/bin/sh\nupdate-alternatives --remove 'aclocal' $(TARGET_PREFIX)/bin/aclocal-1.9" > \
 		$(AUTOMAKE1.9_IPK_DIR)/CONTROL/prerm

@@ -17,7 +17,7 @@ AUTOMAKE_PRIORITY=optional
 AUTOMAKE_DEPENDS=autoconf
 AUTOMAKE_CONFLICTS=
 
-AUTOMAKE_IPK_VERSION=2
+AUTOMAKE_IPK_VERSION=3
 
 AUTOMAKE_BUILD_DIR=$(BUILD_DIR)/automake
 AUTOMAKE_SOURCE_DIR=$(SOURCE_DIR)/automake
@@ -122,7 +122,7 @@ $(AUTOMAKE_IPK): $(AUTOMAKE_BUILD_DIR)/.built
 	rm -f $(AUTOMAKE_IPK_DIR)$(TARGET_PREFIX)/bin/{automake,aclocal}
 	echo -e "#!/bin/sh\nupdate-alternatives --install '$(TARGET_PREFIX)/bin/aclocal' 'aclocal' $(TARGET_PREFIX)/bin/aclocal-$(AUTOMAKE_VER) 40" > \
 		$(AUTOMAKE_IPK_DIR)/CONTROL/postinst
-	echo -e "update-alternatives --install '$(TARGET_PREFIX)/bin/automake' 'aclocal' $(TARGET_PREFIX)/bin/automake-$(AUTOMAKE_VER) 40" >> \
+	echo -e "update-alternatives --install '$(TARGET_PREFIX)/bin/automake' 'automake' $(TARGET_PREFIX)/bin/automake-$(AUTOMAKE_VER) 40" >> \
 		$(AUTOMAKE_IPK_DIR)/CONTROL/postinst
 	echo -e "#!/bin/sh\nupdate-alternatives --remove 'aclocal' $(TARGET_PREFIX)/bin/aclocal-$(AUTOMAKE_VER)" > \
 		$(AUTOMAKE_IPK_DIR)/CONTROL/prerm

@@ -16,7 +16,7 @@ AUTOMAKE1.10_PRIORITY=optional
 AUTOMAKE1.10_DEPENDS=autoconf
 AUTOMAKE1.10_CONFLICTS=
 
-AUTOMAKE1.10_IPK_VERSION=1
+AUTOMAKE1.10_IPK_VERSION=2
 
 AUTOMAKE1.10_BUILD_DIR=$(BUILD_DIR)/automake1.10
 AUTOMAKE1.10_SOURCE_DIR=$(SOURCE_DIR)/automake1.10
@@ -121,7 +121,7 @@ $(AUTOMAKE1.10_IPK): $(AUTOMAKE1.10_BUILD_DIR)/.built
 	rm -f $(AUTOMAKE1.10_IPK_DIR)$(TARGET_PREFIX)/bin/{automake,aclocal}
 	echo -e "#!/bin/sh\nupdate-alternatives --install '$(TARGET_PREFIX)/bin/aclocal' 'aclocal' $(TARGET_PREFIX)/bin/aclocal-1.10 30" > \
 		$(AUTOMAKE1.10_IPK_DIR)/CONTROL/postinst
-	echo -e "update-alternatives --install '$(TARGET_PREFIX)/bin/automake' 'aclocal' $(TARGET_PREFIX)/bin/automake-1.10 30" >> \
+	echo -e "update-alternatives --install '$(TARGET_PREFIX)/bin/automake' 'automake' $(TARGET_PREFIX)/bin/automake-1.10 30" >> \
 		$(AUTOMAKE1.10_IPK_DIR)/CONTROL/postinst
 	echo -e "#!/bin/sh\nupdate-alternatives --remove 'aclocal' $(TARGET_PREFIX)/bin/aclocal-1.10" > \
 		$(AUTOMAKE1.10_IPK_DIR)/CONTROL/prerm
