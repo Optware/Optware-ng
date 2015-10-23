@@ -20,16 +20,19 @@
 # You should change all these variables to suit your package.
 #
 GDB_SITE=http://ftp.gnu.org/gnu/gdb
-ifneq ($(OPTWARE_TARGET), $(filter wl500g mss, $(OPTWARE_TARGET)))
-GDB_VERSION=6.8
-GDB_IPK_VERSION=2
-else
+ifeq ($(OPTWARE_TARGET), $(filter wl500g mss, $(OPTWARE_TARGET)))
 GDB_VERSION=6.3
 GDB_IPK_VERSION=4
-endif
 GDB_SOURCE=gdb-$(GDB_VERSION).tar.bz2
-GDB_DIR=gdb-$(GDB_VERSION)
 GDB_UNZIP=bzcat
+else
+GDB_VERSION=7.8.1
+GDB_IPK_VERSION=2
+GDB_SOURCE=gdb-$(GDB_VERSION).tar.xz
+GDB_DEPENDS+=, liblzma0
+GDB_UNZIP=xzcat
+endif
+GDB_DIR=gdb-$(GDB_VERSION)
 GDB_MAINTAINER=Steve Henson <snhenson@gmail.com>
 GDB_DESCRIPTION=gdb is the standard GNU debugger
 GDB_SECTION=utility
@@ -39,14 +42,6 @@ ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 GDB_DEPENDS+=, libiconv
 endif
 GDB_CONFLICTS=
-
-ifeq ($(OPTWARE_TARGET), $(filter buildroot-armeabi buildroot-armeabi-ng buildroot-armeabihf buildroot-i686 buildroot-mipsel buildroot-mipsel-ng shibby-tomato-arm, $(OPTWARE_TARGET)))
-GDB_VERSION=7.8.1
-GDB_IPK_VERSION=2
-GDB_SOURCE=gdb-$(GDB_VERSION).tar.xz
-GDB_DEPENDS+=, liblzma0
-GDB_UNZIP=xzcat
-endif
 
 
 #
@@ -66,10 +61,7 @@ endif
 GDB_CPPFLAGS=
 # Note: added -s in here to strip binaries.
 #
-GDB_LDFLAGS=-s -lpthread
-ifeq ($(OPTWARE_TARGET), $(filter buildroot-armeabi buildroot-armeabi-ng buildroot-mipsel shibby-tomato-arm, $(OPTWARE_TARGET)))
-GDB_LDFLAGS+= -lm
-endif
+GDB_LDFLAGS=-s -lpthread -lm
 
 #
 # GDB_BUILD_DIR is the directory in which the build is done.
