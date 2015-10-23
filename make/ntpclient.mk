@@ -26,7 +26,7 @@ NTPCLIENT_LDFLAGS=-lrt
 ifeq ($(OPTWARE_TARGET), $(filter vt4, $(OPTWARE_TARGET)))
 NTPCLIENT_LDFLAGS+=-lpthread
 endif
-ifeq ($(OPTWARE_TARGET), $(filter buildroot-armeabi buildroot-armeabi-ng buildroot-mipsel buildroot-mipsel-ng, $(OPTWARE_TARGET)))
+ifeq ($(LIBC_STYLE), uclibc)
 NTPCLIENT_CPPFLAGS += -D__adjtimex=adjtimex
 endif
 
