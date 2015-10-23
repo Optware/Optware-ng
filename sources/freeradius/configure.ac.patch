@@ -1,0 +1,12 @@
+--- a/configure.ac
++++ b/configure.ac
+@@ -1172,6 +1172,9 @@
+       [
+         AC_MSG_RESULT(no)
+         AC_MSG_FAILURE([OpenSSL library version does not match header version])
++      ],
++      [
++        AC_MSG_RESULT(cross-compiling (guessing yes))
+       ]
+     )
+     CPPFLAGS="$old_CPPFLAGS"

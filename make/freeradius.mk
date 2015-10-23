@@ -21,7 +21,7 @@
 #
 FREERADIUS_SITE=ftp://ftp.freeradius.org/pub/radius
 FREERADIUS_SITE2=$(FREERADIUS_SITE)/old
-FREERADIUS_VERSION=2.0.5
+FREERADIUS_VERSION=3.0.10
 FREERADIUS_DIR=freeradius-server-$(FREERADIUS_VERSION)
 FREERADIUS_SOURCE=$(FREERADIUS_DIR).tar.bz2
 FREERADIUS_UNZIP=bzcat
@@ -29,27 +29,30 @@ FREERADIUS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 FREERADIUS_DESCRIPTION=An open source RADIUS server.
 FREERADIUS_SECTION=net
 FREERADIUS_PRIORITY=optional
-FREERADIUS_DEPENDS=libtool, openssl, psmisc
+FREERADIUS_DEPENDS=libtool, openssl, psmisc, talloc
 FREERADIUS_SUGGESTS=freeradius-doc
 FREERADIUS_CONFLICTS=
 
 #
 # FREERADIUS_IPK_VERSION should be incremented when the ipk changes.
 #
-FREERADIUS_IPK_VERSION=3
+FREERADIUS_IPK_VERSION=1
 
 #
 # FREERADIUS_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#FREERADIUS_PATCHES=$(FREERADIUS_SOURCE_DIR)/freeradius.patch
+FREERADIUS_PATCHES=\
+$(FREERADIUS_SOURCE_DIR)/configure.ac.patch \
+$(FREERADIUS_SOURCE_DIR)/headers.patch \
+$(FREERADIUS_SOURCE_DIR)/acinclude.m4.patch
 
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-FREERADIUS_CPPFLAGS=-I$(FREERADIUS_BUILD_DIR)/src/include -I$(STAGING_INCLUDE_DIR)/mysql
-FREERADIUS_LDFLAGS=-L$(STAGING_LIB_DIR)/mysql
+FREERADIUS_CPPFLAGS=
+FREERADIUS_LDFLAGS=-lm
 
 ifneq (, $(filter dns323, $(OPTWARE_TARGET)))
 FREERADIUS_CONFIG_ARGS = --without-rlm-sql-mysql
@@ -57,6 +60,8 @@ else
 FREERADIUS_CONFIG_ARGS = \
 	--with-rlm-sql-mysql-include-dir=$(STAGING_INCLUDE_DIR)/mysql \
 	--with-rlm-sql-mysql-lib-dir=$(STAGING_LIB_DIR)/mysql
+FREERADIUS_CPPFLAGS += -I$(STAGING_INCLUDE_DIR)/mysql
+FREERADIUS_LDFLAGS += -L$(STAGING_LIB_DIR)/mysql -Wl,-rpath,$(TARGET_PREFIX)/lib/mysql -Wl,-rpath-link,$(STAGING_LIB_DIR)/mysql
 endif
 #
 # FREERADIUS_BUILD_DIR is the directory in which the build is done.
@@ -108,12 +113,10 @@ freeradius-source: $(DL_DIR)/$(FREERADIUS_SOURCE) $(FREERADIUS_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(FREERADIUS_BUILD_DIR)/.configured: $(DL_DIR)/$(FREERADIUS_SOURCE) $(FREERADIUS_PATCHES) make/freeradius.mk
-	$(MAKE) openssl-stage
-	$(MAKE) libtool-stage
+	$(MAKE) openssl-stage libtool-stage talloc-stage postgresql-stage unixodbc-stage
 ifeq (, $(filter --without-rlm-sql-mysql, $(FREERADIUS_CONFIG_ARGS)))
 	$(MAKE) mysql-stage
 endif
-	$(MAKE) postgresql-stage unixodbc-stage
 	rm -rf $(BUILD_DIR)/$(FREERADIUS_DIR) $(@D)
 	$(FREERADIUS_UNZIP) $(DL_DIR)/$(FREERADIUS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(FREERADIUS_PATCHES)"; \
@@ -121,6 +124,9 @@ endif
 	fi
 	mv $(BUILD_DIR)/$(FREERADIUS_DIR) $(@D)
 	sed -i.orig -e '/rlm_perl\|rlm_pam/d' $(@D)/src/modules/stable
+	sed -i -e '/^smart_include_dir=/s|=.*|="$(TARGET_INCDIR) $(STAGING_INCLUDE_DIR)"|' $(@D)/acinclude.m4
+	$(AUTORECONF1.14) -vif $(@D)
+	rm -rf $(@D)/src/modules/rlm_krb5
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(FREERADIUS_CPPFLAGS)" \
@@ -128,22 +134,29 @@ endif
 		LDFLAGS="$(STAGING_LDFLAGS) $(FREERADIUS_LDFLAGS)" \
 		MYSQL_CONFIG=yes \
 		PATH="$(STAGING_PREFIX)/bin:$$PATH" \
+		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
+		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
+		ax_cv_cc_builtin_choose_expr="yes" \
+		ax_cv_cc_builtin_types_compatible_p="yes" \
+		ax_cv_cc_builtin_bswap64="yes" \
+		ax_cv_cc_bounded_attribute="yes" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=$(TARGET_PREFIX) \
 		--libdir=$(TARGET_PREFIX)/lib \
-		--with-logdir=/var/spool/radius/log \
-		--with-radacctdir=/var/spool/radius/radacct \
 		--with-raddbdir=$(TARGET_PREFIX)/etc/raddb \
 		--with-openssl-includes=$(STAGING_INCLUDE_DIR) \
 		--with-openssl-libraries=$(STAGING_LIB_DIR) \
 		$(FREERADIUS_CONFIG_ARGS) \
 		--with-rlm-sql-postgresql-include-dir=$(STAGING_INCLUDE_DIR) \
 		--with-rlm-sql-postgresql-lib-dir=$(STAGING_LIB_DIR) \
+		--with-rlm-sql-unixodbc-include-dir=$(STAGING_INCLUDE_DIR) \
+		--with-rlm-sql-unixodbc-lib-dir=$(STAGING_LIB_DIR) \
 	)
-	$(PATCH_LIBTOOL) $(@D)/libtool
+	sed -i -e '/^SRC_CFLAGS\t:=/s/=.*/=/' -e '/^TGT_LDLIBS\t:=/s/=.*/= -lodbc/' $(@D)/src/modules/rlm_sql/drivers/rlm_sql_unixodbc/all.mk
+	sed -i -e '/^SRC_CFLAGS\t:=/s/=.*/=/' -e '/^TGT_LDLIBS\t:=/s/=.*/= -lpq/' $(@D)/src/modules/rlm_sql/drivers/rlm_sql_postgresql/all.mk
 	touch $@
 
 freeradius-unpack: $(FREERADIUS_BUILD_DIR)/.configured
@@ -154,8 +167,10 @@ freeradius-unpack: $(FREERADIUS_BUILD_DIR)/.configured
 #
 $(FREERADIUS_BUILD_DIR)/.built: $(FREERADIUS_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(@D)
-	$(MAKE) install -C $(@D) \
+	$(HOSTCC) $(@D)/scripts/jlibtool.c -o $(@D)/jlibtool
+	$(MAKE) -C $(@D) headers
+	$(MAKE) -C $(@D) JLIBTOOL=$(@D)/jlibtool
+	$(MAKE) install -C $(@D) JLIBTOOL=$(@D)/jlibtool \
 		R=$(@D)/install \
 		STRIPPROG=$(TARGET_STRIP) \
 		;
@@ -234,12 +249,7 @@ $(FREERADIUS_IPK): $(FREERADIUS_BUILD_DIR)/.built
 	mv $(FREERADIUS_IPK_DIR)$(TARGET_PREFIX)/etc/* $(FREERADIUS_IPK_DIR)$(TARGET_PREFIX)/doc/.radius/
 	$(INSTALL) -m 644 $(FREERADIUS_SOURCE_DIR)/radiusd.conf $(FREERADIUS_IPK_DIR)$(TARGET_PREFIX)/doc/.radius/raddb/radiusd.conf
 	$(INSTALL) -d $(FREERADIUS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
-	$(STRIP_COMMAND) $(FREERADIUS_IPK_DIR)$(TARGET_PREFIX)/sbin/radiusd
-	$(STRIP_COMMAND) $(FREERADIUS_IPK_DIR)$(TARGET_PREFIX)/bin/radclient
-	$(STRIP_COMMAND) $(FREERADIUS_IPK_DIR)$(TARGET_PREFIX)/bin/smbencrypt
-	$(STRIP_COMMAND) $(FREERADIUS_IPK_DIR)$(TARGET_PREFIX)/bin/radeapclient $(FREERADIUS_IPK_DIR)$(TARGET_PREFIX)/bin/radwho
-	$(STRIP_COMMAND) $(FREERADIUS_IPK_DIR)$(TARGET_PREFIX)/bin/radsniff $(FREERADIUS_IPK_DIR)$(TARGET_PREFIX)/bin/rlm_*
-	$(STRIP_COMMAND) $(FREERADIUS_IPK_DIR)$(TARGET_PREFIX)/lib/lib*.so $(FREERADIUS_IPK_DIR)$(TARGET_PREFIX)/lib/rlm_*.so
+	-$(STRIP_COMMAND) $(FREERADIUS_IPK_DIR)$(TARGET_PREFIX)/{{bin,sbin}/*,lib/*.so}
 	$(INSTALL) -m 755 $(FREERADIUS_SOURCE_DIR)/rc.freeradius $(FREERADIUS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S55freeradius
 	$(MAKE) $(FREERADIUS_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 644 $(FREERADIUS_SOURCE_DIR)/postinst $(FREERADIUS_IPK_DIR)/CONTROL/postinst

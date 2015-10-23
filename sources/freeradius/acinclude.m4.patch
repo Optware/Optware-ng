@@ -1,0 +1,34 @@
+--- a/acinclude.m4
++++ b/acinclude.m4
+@@ -172,31 +172,6 @@
+ fi
+ 
+ dnl #
+-dnl #  Try to guess possible locations.
+-dnl #
+-if test "x$smart_lib" = "x"; then
+-  FR_LOCATE_DIR(smart_lib_dir,[lib$1${libltdl_cv_shlibext}])
+-  FR_LOCATE_DIR(smart_lib_dir,[lib$1.a])
+-
+-  for try in $smart_lib_dir /usr/local/lib /opt/lib; do
+-    AC_MSG_CHECKING([for $2 in -l$1 in $try])
+-    LIBS="-l$1 $old_LIBS"
+-    CPPFLAGS="-L$try -Wl,-rpath,$try $old_CPPFLAGS"
+-    AC_TRY_LINK([extern char $2();],
+-		[$2()],
+-		[
+-		  smart_lib="-l$1"
+-		  smart_ldflags="-L$try -Wl,-rpath,$try"
+-		  AC_MSG_RESULT(yes)
+-		  break
+-		],
+-		[AC_MSG_RESULT(no)])
+-  done
+-  LIBS="$old_LIBS"
+-  CPPFLAGS="$old_CPPFLAGS"
+-fi
+-
+-dnl #
+ dnl #  Found it, set the appropriate variable.
+ dnl #
+ if test "x$smart_lib" != "x"; then
