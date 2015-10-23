@@ -53,7 +53,7 @@ automake-host: $(AUTOMAKE_HOST_BUILD_DIR)/.built
 $(AUTOMAKE_HOST_BUILD_DIR)/.staged: $(AUTOMAKE_HOST_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(@D) install prefix=$(HOST_STAGING_PREFIX)
-	rm -f $(HOST_STAGING_PREFIX)/bin/aclocal $(HOST_STAGING_PREFIX)/bin/automake
+	for f in automake aclocal; do mv -f $(HOST_STAGING_PREFIX)/bin/$$f $(HOST_STAGING_PREFIX)/bin/$${f}-$(AUTOMAKE_VER); done
 	touch $@
 
 automake-host-stage: $(AUTOMAKE_HOST_BUILD_DIR)/.staged
@@ -119,7 +119,7 @@ $(AUTOMAKE_IPK): $(AUTOMAKE_BUILD_DIR)/.built
 	sed -i -e 's|/usr/bin/perl|$(TARGET_PREFIX)/bin/perl|g' $(AUTOMAKE_IPK_DIR)$(TARGET_PREFIX)/bin/*
 	$(MAKE) $(AUTOMAKE_IPK_DIR)/CONTROL/control
 	rm -f $(AUTOMAKE_IPK_DIR)$(TARGET_PREFIX)/info/dir
-	rm -f $(AUTOMAKE_IPK_DIR)$(TARGET_PREFIX)/bin/{automake,aclocal}
+	for f in automake aclocal; do mv -f $(AUTOMAKE_IPK_DIR)$(TARGET_PREFIX)/bin/$$f $(AUTOMAKE_IPK_DIR)$(TARGET_PREFIX)/bin/$${f}-$(AUTOMAKE_VER); done
 	echo -e "#!/bin/sh\nupdate-alternatives --install '$(TARGET_PREFIX)/bin/aclocal' 'aclocal' $(TARGET_PREFIX)/bin/aclocal-$(AUTOMAKE_VER) 40" > \
 		$(AUTOMAKE_IPK_DIR)/CONTROL/postinst
 	echo -e "update-alternatives --install '$(TARGET_PREFIX)/bin/automake' 'automake' $(TARGET_PREFIX)/bin/automake-$(AUTOMAKE_VER) 40" >> \
