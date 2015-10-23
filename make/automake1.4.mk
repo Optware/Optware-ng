@@ -42,7 +42,6 @@ $(AUTOMAKE1.4_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(AUTOMAKE1.4_S
 		AUTOCONF="$(HOST_STAGING_PREFIX)/bin/autoconf" \
 		./configure \
 		--prefix=$(HOST_STAGING_PREFIX)	\
-		--datarootdir=$(HOST_STAGING_PREFIX)/share \
 	)
 	$(MAKE) -C $(@D)
 	touch $@
