@@ -14,7 +14,7 @@ UCLIBC_BROKEN_PACKAGES = \
 	newsbeuter \
 	nfs-server nfs-utils \
 	nmon \
-	qemu qemu-libc-i386 quickie \
+	qemu qemu-libc-i386 \
 	syx \
 	xchat \
 
