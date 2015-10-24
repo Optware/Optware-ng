@@ -158,7 +158,7 @@ bacula-unpack: $(BACULA_BUILD_DIR)/.configured
 #
 $(BACULA_BUILD_DIR)/.built: $(BACULA_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(@D)
+	$(MAKE) -C $(@D) archivedir=$(TARGET_PREFIX)/tmp
 	touch $@
 
 #
@@ -171,7 +171,7 @@ bacula: $(BACULA_BUILD_DIR)/.built
 #
 $(BACULA_BUILD_DIR)/.staged: $(BACULA_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) archivedir=$(TARGET_PREFIX)/tmp install
 	touch $@
 
 bacula-stage: $(BACULA_BUILD_DIR)/.staged
@@ -209,8 +209,7 @@ $(BACULA_IPK_DIR)/CONTROL/control:
 #
 $(BACULA_IPK): $(BACULA_BUILD_DIR)/.built
 	rm -rf $(BACULA_IPK_DIR) $(BUILD_DIR)/bacula_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(BACULA_BUILD_DIR) DESTDIR=$(BACULA_IPK_DIR) install
-	rm -rf $(BACULA_IPK_DIR)/tmp
+	$(MAKE) -C $(BACULA_BUILD_DIR) DESTDIR=$(BACULA_IPK_DIR) archivedir=$(TARGET_PREFIX)/tmp install
 	find $(BACULA_IPK_DIR)$(TARGET_PREFIX)/sbin -type f \! -name btraceback \! -name bacula | xargs $(STRIP_COMMAND)
 	$(STRIP_COMMAND) $(BACULA_IPK_DIR)$(TARGET_PREFIX)/lib/lib*.so* $(BACULA_IPK_DIR)$(TARGET_PREFIX)/lib/bpipe-fd.so
 	$(MAKE) $(BACULA_IPK_DIR)/CONTROL/control
