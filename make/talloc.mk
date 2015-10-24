@@ -40,7 +40,7 @@ TALLOC_CONFLICTS=
 #
 # TALLOC_IPK_VERSION should be incremented when the ipk changes.
 #
-TALLOC_IPK_VERSION=1
+TALLOC_IPK_VERSION=2
 
 #
 # TALLOC_CONFFILES should be a list of user-editable files
@@ -137,8 +137,7 @@ endif
 		echo "-Wl,--version-script support: OK"; \
 		echo "Checking getconf LFS_CFLAGS: \"-D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64\""; \
 		echo "Checking getconf large file support flags work: OK"; \
-		echo "Checking for large file support without additional flags: NO"; \
-		echo "Checking for -D_FILE_OFFSET_BITS=64: OK"; \
+		echo "Checking for large file support without additional flags: OK"; \
 		echo "Checking correct behavior of strtoll: OK"; \
 		echo "Checking for working strptime: OK"; \
 		echo "Checking for C99 vsnprintf: OK"; \
@@ -159,6 +158,8 @@ endif
 		--cross-answers=answers.txt \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=$(TARGET_PREFIX) \
+		--libdir='$${PREFIX}/lib/talloc' \
+		--includedir='$${PREFIX}/include/libtalloc' \
 		--disable-python \
 	)
 	sed -i -e "/^CPPPATH =/s|=.*|= ['$(STAGING_INCLUDE_DIR)']|" \
