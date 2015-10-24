@@ -509,9 +509,9 @@ DEFAULT_TARGET_PREFIX ?= /opt
 
 TARGET_PREFIX ?= /opt
 
-INSTALL = TARGET_PREFIX=$(TARGET_PREFIX) sh $(OPTWARE_TOP)/scripts/install.sh
+INSTALL = TARGET_PREFIX=$(TARGET_PREFIX) sh $(BASE_DIR)/scripts/install.sh
 
-PATCH = TARGET_PREFIX=$(TARGET_PREFIX) sh $(OPTWARE_TOP)/scripts/patch.sh
+PATCH = TARGET_PREFIX=$(TARGET_PREFIX) sh $(BASE_DIR)/scripts/patch.sh
 
 ifndef TARGET_USRLIBDIR
 TARGET_USRLIBDIR = $(TARGET_LIBDIR)
@@ -559,7 +559,7 @@ testing:
 CVS=cvs
 SUDO=sudo
 WGET_BINARY=wget
-WGET = TOP=$(OPTWARE_TOP)/scripts WGET=$(WGET_BINARY) sh $(OPTWARE_TOP)/scripts/wget.sh --passive-ftp --tries=1 --no-check-certificate
+WGET = TOP=$(BASE_DIR)/scripts WGET=$(WGET_BINARY) sh $(BASE_DIR)/scripts/wget.sh --passive-ftp --tries=1 --no-check-certificate
 PERL=perl
 
 # Required host-tools, which will build if they missing
@@ -588,20 +588,20 @@ HOST_TOOL_AUTOMAKE1.4 = \
 # These are aclocal wrappers used to automatically fix
 # libtool versions mismatch issue that can occur with
 # some software in most cases
-ACLOCAL1.15_SH= TOP=$(OPTWARE_TOP) ACLOCAL=$(HOST_STAGING_PREFIX)/bin/aclocal-1.15 \
-		sh $(OPTWARE_TOP)/scripts/aclocal.sh
-ACLOCAL1.14_SH= TOP=$(OPTWARE_TOP) ACLOCAL=$(HOST_STAGING_PREFIX)/bin/aclocal-1.14 \
-		sh $(OPTWARE_TOP)/scripts/aclocal.sh
-ACLOCAL1.10_SH= TOP=$(OPTWARE_TOP) ACLOCAL=$(HOST_STAGING_PREFIX)/bin/aclocal-1.10 \
-		sh $(OPTWARE_TOP)/scripts/aclocal.sh
-ACLOCAL1.9_SH= TOP=$(OPTWARE_TOP) ACLOCAL=$(HOST_STAGING_PREFIX)/bin/aclocal-1.9 \
-		sh $(OPTWARE_TOP)/scripts/aclocal.sh
-ACLOCAL1.4_SH= TOP=$(OPTWARE_TOP) ACLOCAL=$(HOST_STAGING_PREFIX)/bin/aclocal-1.4 \
-		sh $(OPTWARE_TOP)/scripts/aclocal.sh
+ACLOCAL1.15_SH= TOP=$(BASE_DIR) ACLOCAL=$(HOST_STAGING_PREFIX)/bin/aclocal-1.15 \
+		sh $(BASE_DIR)/scripts/aclocal.sh
+ACLOCAL1.14_SH= TOP=$(BASE_DIR) ACLOCAL=$(HOST_STAGING_PREFIX)/bin/aclocal-1.14 \
+		sh $(BASE_DIR)/scripts/aclocal.sh
+ACLOCAL1.10_SH= TOP=$(BASE_DIR) ACLOCAL=$(HOST_STAGING_PREFIX)/bin/aclocal-1.10 \
+		sh $(BASE_DIR)/scripts/aclocal.sh
+ACLOCAL1.9_SH= TOP=$(BASE_DIR) ACLOCAL=$(HOST_STAGING_PREFIX)/bin/aclocal-1.9 \
+		sh $(BASE_DIR)/scripts/aclocal.sh
+ACLOCAL1.4_SH= TOP=$(BASE_DIR) ACLOCAL=$(HOST_STAGING_PREFIX)/bin/aclocal-1.4 \
+		sh $(BASE_DIR)/scripts/aclocal.sh
 
 
 # These should be called instead of `autoreconf`
-AUTORECONF1.15 = (cd $(OPTWARE_TOP) && $(HOST_TOOL_AUTOMAKE)) && \
+AUTORECONF1.15 = (cd $(BASE_DIR) && $(HOST_TOOL_AUTOMAKE)) && \
 	$(subst %,$(HOST_STAGING_PREFIX)/bin/, \
 		AUTOCONF=%autoconf \
 		AUTOHEADER=%autoheader \
@@ -611,7 +611,7 @@ AUTORECONF1.15 = (cd $(OPTWARE_TOP) && $(HOST_TOOL_AUTOMAKE)) && \
 		M4=%m4 \
 		ACLOCAL='$(ACLOCAL1.15_SH) -I $(STAGING_PREFIX)/share/aclocal' \
 		%autoreconf)
-AUTORECONF1.14 = (cd $(OPTWARE_TOP) && $(HOST_TOOL_AUTOMAKE1.14)) && \
+AUTORECONF1.14 = (cd $(BASE_DIR) && $(HOST_TOOL_AUTOMAKE1.14)) && \
 	$(subst %,$(HOST_STAGING_PREFIX)/bin/, \
 		AUTOCONF=%autoconf \
 		AUTOHEADER=%autoheader \
@@ -621,7 +621,7 @@ AUTORECONF1.14 = (cd $(OPTWARE_TOP) && $(HOST_TOOL_AUTOMAKE1.14)) && \
 		M4=%m4 \
 		ACLOCAL='$(ACLOCAL1.14_SH) -I $(STAGING_PREFIX)/share/aclocal' \
 		%autoreconf)
-AUTORECONF1.10 =(cd $(OPTWARE_TOP) && $(HOST_TOOL_AUTOMAKE1.10)) && \
+AUTORECONF1.10 =(cd $(BASE_DIR) && $(HOST_TOOL_AUTOMAKE1.10)) && \
 	$(subst %,$(HOST_STAGING_PREFIX)/bin/, \
 		AUTOCONF=%autoconf \
 		AUTOHEADER=%autoheader \
@@ -631,7 +631,7 @@ AUTORECONF1.10 =(cd $(OPTWARE_TOP) && $(HOST_TOOL_AUTOMAKE1.10)) && \
 		M4=%m4 \
 		ACLOCAL='$(ACLOCAL1.10_SH) -I $(STAGING_PREFIX)/share/aclocal' \
 		%autoreconf)
-AUTORECONF1.9 = (cd $(OPTWARE_TOP) && $(HOST_TOOL_AUTOMAKE1.9)) && \
+AUTORECONF1.9 = (cd $(BASE_DIR) && $(HOST_TOOL_AUTOMAKE1.9)) && \
 	$(subst %,$(HOST_STAGING_PREFIX)/bin/, \
 		AUTOCONF=%autoconf \
 		AUTOHEADER=%autoheader \
@@ -641,7 +641,7 @@ AUTORECONF1.9 = (cd $(OPTWARE_TOP) && $(HOST_TOOL_AUTOMAKE1.9)) && \
 		M4=%m4 \
 		ACLOCAL='$(ACLOCAL1.9_SH) -I $(STAGING_PREFIX)/share/aclocal' \
 		%autoreconf)
-AUTORECONF1.4 = (cd $(OPTWARE_TOP) && $(HOST_TOOL_AUTOMAKE1.4)) && \
+AUTORECONF1.4 = (cd $(BASE_DIR) && $(HOST_TOOL_AUTOMAKE1.4)) && \
 	$(subst %,$(HOST_STAGING_PREFIX)/bin/, \
 		AUTOCONF=%autoconf \
 		AUTOHEADER=%autoheader \
