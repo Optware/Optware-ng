@@ -125,7 +125,7 @@ $(QUILT_BUILD_DIR)/.configured: $(DL_DIR)/$(QUILT_SOURCE) $(QUILT_PATCHES) make/
 		-e '/@PERL/s|$$(PERL)|$(TARGET_PREFIX)/bin/perl|' \
 		-e '/@PATCH/s|$$(PATCH)|$(TARGET_PREFIX)/bin/patch|' \
 		$(@D)/Makefile.in
-	sed -i -e 's|patch_version=\$$2|patch_version=$(shell $(PATCH) --version|head -n 1|sed 's/.* //')|' $(@D)/configure
+	sed -i -e 's|patch_version=\$$2|patch_version=$(shell patch --version|head -n 1|sed 's/.* //')|' $(@D)/configure
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(QUILT_CPPFLAGS)" \
@@ -274,5 +274,5 @@ quilt-dirclean:
 #
 # Some sanity check for the package.
 #
-quilt-check: $(QUILT_IPK)
+quilt-check: $(QUILT_IPK) $(QUILT-LITE_IPK)
 	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
