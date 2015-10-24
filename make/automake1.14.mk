@@ -117,7 +117,7 @@ $(AUTOMAKE1.14_IPK): $(AUTOMAKE1.14_BUILD_DIR)/.built
 	sed -i -e 's|/usr/bin/perl|$(TARGET_PREFIX)/bin/perl|g' $(AUTOMAKE1.14_IPK_DIR)$(TARGET_PREFIX)/bin/*
 	$(MAKE) $(AUTOMAKE1.14_IPK_DIR)/CONTROL/control
 	rm -f $(AUTOMAKE1.14_IPK_DIR)$(TARGET_PREFIX)/info/dir
-	for f in automake aclocal; do mv -f $(AUTOMAKE_IPK_DIR)$(TARGET_PREFIX)/bin/$$f $(AUTOMAKE_IPK_DIR)$(TARGET_PREFIX)/bin/$${f}-1.14; done
+	for f in automake aclocal; do mv -f $(AUTOMAKE1.14_IPK_DIR)$(TARGET_PREFIX)/bin/$$f $(AUTOMAKE1.14_IPK_DIR)$(TARGET_PREFIX)/bin/$${f}-1.14; done
 	echo -e "#!/bin/sh\nupdate-alternatives --install '$(TARGET_PREFIX)/bin/aclocal' 'aclocal' $(TARGET_PREFIX)/bin/aclocal-1.14 35" > \
 		$(AUTOMAKE1.14_IPK_DIR)/CONTROL/postinst
 	echo -e "update-alternatives --install '$(TARGET_PREFIX)/bin/automake' 'automake' $(TARGET_PREFIX)/bin/automake-1.14 35" >> \
