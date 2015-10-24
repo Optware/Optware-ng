@@ -652,6 +652,8 @@ AUTORECONF1.4 = (cd $(OPTWARE_TOP) && $(HOST_TOOL_AUTOMAKE1.4)) && \
 		ACLOCAL='$(ACLOCAL1.4_SH) -I $(STAGING_PREFIX)/share/aclocal' \
 		%autoreconf)
 
+host-automake-tools: directories automake1.4-host-stage automake1.9-host-stage automake1.10-host-stage automake1.14-host-stage automake-host-stage autoconf-host-stage pkgconfig-host-stage m4-host-stage libtool-host-stage
+
 
 # The hostname or IP number of our local dl.sf.net mirror
 SOURCEFORGE_MIRROR=downloads.sourceforge.net
