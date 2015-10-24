@@ -187,7 +187,7 @@ talloc: $(TALLOC_BUILD_DIR)/.built
 $(TALLOC_BUILD_DIR)/.staged: $(TALLOC_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
-	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/talloc.pc
+	sed -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/talloc/pkgconfig/talloc.pc > $(STAGING_LIB_DIR)/pkgconfig/talloc.pc
 	touch $@
 
 talloc-stage: $(TALLOC_BUILD_DIR)/.staged
