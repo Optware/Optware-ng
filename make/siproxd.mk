@@ -47,13 +47,13 @@ SIPROXD_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SIPROXD_DESCRIPTION=Siproxd is a proxy/masquerading daemon for the SIP protocol
 SIPROXD_SECTION=net
 SIPROXD_PRIORITY=optional
-SIPROXD_DEPENDS=libosip2
+SIPROXD_DEPENDS=libosip2, libtool
 SIPROXD_CONFLICTS=
 
 #
 # SIPROXD_IPK_VERSION should be incremented when the ipk changes.
 #
-SIPROXD_IPK_VERSION=1
+SIPROXD_IPK_VERSION=2
 
 #
 # SIPROXD_CONFFILES should be a list of user-editable files
@@ -69,7 +69,7 @@ SIPROXD_CONFFILES=$(TARGET_PREFIX)/etc/init.d/S98siproxd
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-SIPROXD_CPPFLAGS=
+SIPROXD_CPPFLAGS=-Dlt__PROGRAM__LTX_preloaded_symbols=lt_libltdl_LTX_preloaded_symbols
 SIPROXD_LDFLAGS=
 
 #
@@ -117,7 +117,7 @@ siproxd-source: $(DL_DIR)/$(SIPROXD_SOURCE) $(SIPROXD_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(SIPROXD_BUILD_DIR)/.configured: $(DL_DIR)/$(SIPROXD_SOURCE) $(SIPROXD_PATCHES) make/siproxd.mk
-	$(MAKE) libosip2-stage
+	$(MAKE) libosip2-stage libtool-stage
 	rm -rf $(BUILD_DIR)/$(SIPROXD_DIR) $(@D)
 	$(SIPROXD_UNZIP) $(DL_DIR)/$(SIPROXD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #       cat $(SIPROXD_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(SIPROXD_DIR) -p1
