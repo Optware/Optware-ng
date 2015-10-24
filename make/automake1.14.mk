@@ -53,7 +53,7 @@ automake1.14-host: $(AUTOMAKE1.14_HOST_BUILD_DIR)/.built
 $(AUTOMAKE1.14_HOST_BUILD_DIR)/.staged: $(AUTOMAKE1.14_HOST_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(@D) install prefix=$(HOST_STAGING_PREFIX)
-	for f in automake aclocal; do mv -f $(HOST_STAGING_PREFIX)/bin/$$f $(HOST_STAGING_PREFIX)/bin/$${f}-1.14; done
+	rm -f $(HOST_STAGING_PREFIX)/bin/aclocal $(HOST_STAGING_PREFIX)/bin/automake
 	touch $@
 
 automake1.14-host-stage: $(AUTOMAKE1.14_HOST_BUILD_DIR)/.staged
@@ -117,7 +117,7 @@ $(AUTOMAKE1.14_IPK): $(AUTOMAKE1.14_BUILD_DIR)/.built
 	sed -i -e 's|/usr/bin/perl|$(TARGET_PREFIX)/bin/perl|g' $(AUTOMAKE1.14_IPK_DIR)$(TARGET_PREFIX)/bin/*
 	$(MAKE) $(AUTOMAKE1.14_IPK_DIR)/CONTROL/control
 	rm -f $(AUTOMAKE1.14_IPK_DIR)$(TARGET_PREFIX)/info/dir
-	for f in automake aclocal; do mv -f $(AUTOMAKE1.14_IPK_DIR)$(TARGET_PREFIX)/bin/$$f $(AUTOMAKE1.14_IPK_DIR)$(TARGET_PREFIX)/bin/$${f}-1.14; done
+	rm -f $(AUTOMAKE1.14_IPK_DIR)$(TARGET_PREFIX)/bin/automake $(AUTOMAKE1.14_IPK_DIR)$(TARGET_PREFIX)/bin/aclocal
 	echo -e "#!/bin/sh\nupdate-alternatives --install '$(TARGET_PREFIX)/bin/aclocal' 'aclocal' $(TARGET_PREFIX)/bin/aclocal-1.14 35" > \
 		$(AUTOMAKE1.14_IPK_DIR)/CONTROL/postinst
 	echo -e "update-alternatives --install '$(TARGET_PREFIX)/bin/automake' 'automake' $(TARGET_PREFIX)/bin/automake-1.14 35" >> \
