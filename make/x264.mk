@@ -94,6 +94,12 @@ endif
 X264_CPPFLAGS=-fPIC
 X264_LDFLAGS=
 
+ifeq ($(OPTWARE_TARGET), $(filter buildroot-armv5eabi-ng, $(OPTWARE_TARGET)))
+X264_CONFIGURE_OPTIONS=--disable-asm
+else
+X264_CONFIGURE_OPTIONS=
+endif
+
 #
 # X264_BUILD_DIR is the directory in which the build is done.
 # X264_SOURCE_DIR is the directory which holds all the
@@ -166,6 +172,7 @@ endif
 		--prefix=$(TARGET_PREFIX) \
 		--enable-shared \
 		--disable-share \
+		$(X264_CONFIGURE_OPTIONS) \
 	)
 	sed -i -e 's/-mcpu=[^ ]*\|-mfpu=[^ ]*//g' $(@D)/config.mak
 	touch $@
