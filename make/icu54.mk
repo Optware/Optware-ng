@@ -216,7 +216,7 @@ $(ICU54_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(ICU54_IPK): $(ICU54_BUILD_DIR)/.built
-	rm -rf $(ICU54_IPK_DIR) $(BUILD_DIR)/icu_*_$(TARGET_ARCH).ipk
+	rm -rf $(ICU54_IPK_DIR) $(BUILD_DIR)/icu54_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(ICU54_BUILD_DIR)/source bindir=$(TARGET_PREFIX)/bin/icu54 DESTDIR=$(ICU54_IPK_DIR) install
 	$(STRIP_COMMAND) \
 		`ls $(ICU54_IPK_DIR)$(TARGET_PREFIX)/bin/* | grep -v icu-config` \
