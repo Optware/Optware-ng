@@ -156,7 +156,7 @@ $(ICU54_BUILD_DIR)/.built: $(ICU54_HOST_BUILD_DIR)/.built $(ICU54_BUILD_DIR)/.co
 #
 # This is the build convenience target.
 #
-icu: $(ICU54_BUILD_DIR)/.built
+icu54: $(ICU54_BUILD_DIR)/.built
 
 #
 # If you are building a library, then you need to stage it too.
