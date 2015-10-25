@@ -79,8 +79,8 @@ fi
 if [ ! -f "${TOP}/checksums/$(basename ${file}).sha512" ]; then
 	echo "Missing checksum for $(basename ${file})" >&2
 	if [ "x${CREATE_CHECKSUM}" == "x1" ]; then
-		echo "Creating ${TOP}/checksums/$(basename ${file}).sha512 as requested)" >&2
-		sha512sum $file | cut -d ' ' -f1 > ${TOP}/checksums/$(basename ${file}).sha512
+		echo "Creating ${TOP}/checksums/$(basename ${file}).sha512 as requested" >&2
+		(sha512sum $file | cut -d ' ' -f1 > ${TOP}/checksums/$(basename ${file}).sha512) || exit 1
 		exit 0
 	fi
 	echo "Removing ${file}" >&2
