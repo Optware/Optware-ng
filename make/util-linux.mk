@@ -60,7 +60,7 @@ UTIL_LINUX_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/ncurses
 ifeq ($(OPTWARE_TARGET), $(filter buildroot-mipsel buildroot-mipsel-ng, $(OPTWARE_TARGET)))
 UTIL_LINUX_CPPFLAGS+=-DOMAGIC=0407 -DNMAGIC=0410 -DZMAGIC=0413
 endif
-ifeq ($(OPTWARE_TARGET), $(filter buildroot-armeabi-ng buildroot-mipsel-ng, $(OPTWARE_TARGET)))
+ifeq ($(OPTWARE_TARGET), $(filter buildroot-armeabi-ng buildroot-armv5eabi-ng buildroot-mipsel-ng, $(OPTWARE_TARGET)))
 UTIL_LINUX_CPPFLAGS+=-DLIBC_HAS_NO_SIGSETMASK
 endif
 UTIL_LINUX_LDFLAGS=
@@ -125,7 +125,7 @@ $(UTIL_LINUX_BUILD_DIR)/.configured: $(DL_DIR)/$(UTIL_LINUX_SOURCE) $(UTIL_LINUX
 	if test "$(BUILD_DIR)/$(UTIL_LINUX_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(UTIL_LINUX_DIR) $(@D) ; \
 	fi
-ifeq ($(OPTWARE_TARGET), $(filter shibby-tomato-arm buildroot-armeabi buildroot-armeabi-ng buildroot-armeabihf buildroot-i686 buildroot-mipsel buildroot-mipsel-ng, $(OPTWARE_TARGET)))
+ifeq ($(OPTWARE_TARGET), $(filter shibby-tomato-arm buildroot-armeabi buildroot-armeabi-ng buildroot-armv5eabi-ng buildroot-armeabihf buildroot-i686 buildroot-mipsel buildroot-mipsel-ng, $(OPTWARE_TARGET)))
 #	no <asm/page.h>
 	sed -i -e '/#include <asm\/page\.h>/s|^|//|' $(@D)/disk-utils/fsck.cramfs.c
 endif
