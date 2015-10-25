@@ -559,7 +559,7 @@ testing:
 CVS=cvs
 SUDO=sudo
 WGET_BINARY=wget
-WGET = TOP=$(BASE_DIR)/scripts WGET=$(WGET_BINARY) sh $(BASE_DIR)/scripts/wget.sh --passive-ftp --tries=1 --no-check-certificate
+WGET = wget --passive-ftp --tries=1 --no-check-certificate
 PERL=perl
 
 # Required host-tools, which will build if they missing
