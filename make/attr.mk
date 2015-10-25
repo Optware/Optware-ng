@@ -27,6 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ATTR_SITE=http://download.savannah.gnu.org/releases/attr
+ATTR_SITE2=http://pkgs.fedoraproject.org/repo/pkgs/attr/attr-2.4.47.src.tar.gz/84f58dec00b60f2dc8fd1c9709291cc7
 ATTR_VERSION=2.4.47
 ATTR_SOURCE=attr-$(ATTR_VERSION).src.tar.gz
 ATTR_DIR=attr-$(ATTR_VERSION)
@@ -80,6 +81,7 @@ ATTR_IPK=$(BUILD_DIR)/attr_$(ATTR_VERSION)-$(ATTR_IPK_VERSION)_$(TARGET_ARCH).ip
 #
 $(DL_DIR)/$(ATTR_SOURCE):
 	$(WGET) -P $(@D) $(ATTR_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(ATTR_SITE2)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
