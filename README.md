@@ -1,6 +1,6 @@
 # Description
 
-This is an Optware fork. It targets to be firmware-independent and currently supports hard-float ARMv7, I686 and soft-float ARMv7 EABI and MIPSEL targets.
+This is an Optware fork. It targets to be firmware-independent and currently supports hard-float ARMv7, I686 and soft-float ARMv5, ARMv7 EABI and MIPSEL targets.
 
 # Attention!
 
@@ -19,6 +19,11 @@ wget -O - http://optware-ng.zyxmon.org/buildroot-armeabihf/buildroot-armeabihf-b
 ARMv7 EABI softfloat:
 ```
 wget -O - http://optware-ng.zyxmon.org/buildroot-armeabi-ng/buildroot-armeabi-ng-bootstrap.sh | sh
+```
+```
+ARMv5 EABI:
+```
+wget -O - http://optware-ng.zyxmon.org/buildroot-armv5eabi-ng/buildroot-armv5eabi-ng-bootstrap.sh | sh
 ```
 MIPSEL:
 ```
@@ -43,6 +48,7 @@ Install desired ones:
 
 * [ARMv7 EABI hardfloat](http://optware-ng.zyxmon.org/buildroot-armeabihf/Packages.html)
 * [ARMv7 EABI softfloat](http://optware-ng.zyxmon.org/buildroot-armeabi-ng/Packages.html)
+* [ARMv5 EABI](http://optware-ng.zyxmon.org/buildroot-armv5eabi-ng/Packages.html)
 * [MIPSEL](http://optware-ng.zyxmon.org/buildroot-mipsel-ng/Packages.html)
 * [I686](http://optware-ng.zyxmon.org/buildroot-i686/Packages.html)
 
@@ -55,6 +61,10 @@ wget -O - http://optware-ng.zyxmon.org/scripts/move-to-uclibc-ng.sh | sh
 ```
 
 # News
+
+## 2015-10-26
+
+New buildroot-armv5eabi-ng feed is now online. This is a softfloat ARMv5 gcc-5.2.0, uClibc-ng-1.0.6, linux-2.6.36.4 feed. It targets ARMv5 devices with EABI interface, like older ARM NASes or android devices.
 
 ## 2015-09-29
 
