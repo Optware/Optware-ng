@@ -626,7 +626,7 @@ endif
 	# workaround for /opt/lib/php/extensions/intl.so: undefined symbol: spoofchecker_register_Spoofchecker_class
 	for obj in spoofchecker spoofchecker_class spoofchecker_create spoofchecker_main; do \
 		(echo "ext/intl/spoofchecker/$${obj}.lo: $(@D)/ext/intl/spoofchecker/$${obj}.c"; \
-		 echo "	\$$(LIBTOOL) --mode=compile \$$(CC)  -Wno-write-strings -Iext/intl/ -I$(@D)/ext/intl/ \$$(COMMON_FLAGS) \$$(CFLAGS_CLEAN) \$$(EXTRA_CFLAGS) -prefer-non-pic -c $(@D)/ext/intl/spoofchecker/$${obj}.c -o ext/intl/spoofchecker/$${obj}.lo") >> $(@D)/Makefile; \
+		 echo "	\$$(LIBTOOL) --mode=compile \$$(CC)  -Wno-write-strings -Iext/intl/ -I$(@D)/ext/intl/ \$$(COMMON_FLAGS) \$$(CFLAGS_CLEAN) \$$(EXTRA_CFLAGS) -fPIC -c $(@D)/ext/intl/spoofchecker/$${obj}.c -o ext/intl/spoofchecker/$${obj}.lo") >> $(@D)/Makefile; \
 	done
 	sed -i -e '/^shared_objects_intl/s|$$| $(addprefix ext/intl/spoofchecker/,spoofchecker.lo spoofchecker_class.lo spoofchecker_create.lo spoofchecker_main.lo)|' $(@D)/Makefile
 
