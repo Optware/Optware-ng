@@ -35,14 +35,14 @@ ZNC_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 ZNC_DESCRIPTION=an advanced IRC bouncer
 ZNC_SECTION=net
 ZNC_PRIORITY=optional
-ZNC_DEPENDS=adduser, c-ares, libgmp, openssl
+ZNC_DEPENDS=adduser, c-ares, libgmp, openssl, icu
 ZNC_SUGGESTS=
 ZNC_CONFLICTS=
 
 #
 # ZNC_IPK_VERSION should be incremented when the ipk changes.
 #
-ZNC_IPK_VERSION=1
+ZNC_IPK_VERSION=2
 
 #
 # ZNC_CONFFILES should be a list of user-editable files
@@ -112,7 +112,7 @@ znc-source: $(DL_DIR)/$(ZNC_SOURCE) $(ZNC_PATCHES)
 # shown below to make various patches to it.
 #
 $(ZNC_BUILD_DIR)/.configured: $(DL_DIR)/$(ZNC_SOURCE) $(ZNC_PATCHES) make/znc.mk
-	$(MAKE) c-ares-stage libgmp-stage openssl-stage
+	$(MAKE) c-ares-stage libgmp-stage openssl-stage icu-stage
 	rm -rf $(BUILD_DIR)/$(ZNC_DIR) $(@D)
 	$(ZNC_UNZIP) $(DL_DIR)/$(ZNC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ZNC_PATCHES)" ; \
@@ -127,6 +127,7 @@ $(ZNC_BUILD_DIR)/.configured: $(DL_DIR)/$(ZNC_SOURCE) $(ZNC_PATCHES) make/znc.mk
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ZNC_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(ZNC_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
+		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
 		$(ZNC_CONFIG_ARGS) \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
