@@ -13,7 +13,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 PHP_SITE=http://static.php.net/www.php.net/distributions/
-PHP_VERSION=5.6.11
+PHP_VERSION=5.6.13
 PHP_SOURCE=php-$(PHP_VERSION).tar.bz2
 PHP_DIR=php-$(PHP_VERSION)
 PHP_UNZIP=bzcat
@@ -622,6 +622,13 @@ endif
 		-e 's/###      or --detect-prefix//' \
 		-e 's|INTL_SHARED_LIBADD =.*|INTL_SHARED_LIBADD = -L$(STAGING_LIB_DIR) -licuuc -licui18n -licuio|' \
 		-e 's|^program_prefix =.*|program_prefix =|' $(@D)/Makefile
+
+	# workaround for /opt/lib/php/extensions/intl.so: undefined symbol: spoofchecker_register_Spoofchecker_class
+	for obj in spoofchecker spoofchecker_class spoofchecker_create spoofchecker_main; do \
+		(echo "ext/intl/spoofchecker/$${obj}.lo: $(@D)/ext/intl/spoofchecker/$${obj}.c"; \
+		 echo "	\$$(LIBTOOL) --mode=compile \$$(CC)  -Wno-write-strings -Iext/intl/ -I$(@D)/ext/intl/ \$$(COMMON_FLAGS) \$$(CFLAGS_CLEAN) \$$(EXTRA_CFLAGS) -prefer-non-pic -c $(@D)/ext/intl/spoofchecker/$${obj}.c -o ext/intl/spoofchecker/$${obj}.lo") >> $(@D)/Makefile; \
+	done
+	sed -i -e '/^shared_objects_intl/s|$$| $(addprefix ext/intl/spoofchecker/,spoofchecker.lo spoofchecker_class.lo spoofchecker_create.lo spoofchecker_main.lo)|' $(@D)/Makefile
 
 	touch $@
 
