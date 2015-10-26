@@ -20,7 +20,6 @@ ARMv7 EABI softfloat:
 ```
 wget -O - http://optware-ng.zyxmon.org/buildroot-armeabi-ng/buildroot-armeabi-ng-bootstrap.sh | sh
 ```
-```
 ARMv5 EABI:
 ```
 wget -O - http://optware-ng.zyxmon.org/buildroot-armv5eabi-ng/buildroot-armv5eabi-ng-bootstrap.sh | sh
