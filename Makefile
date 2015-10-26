@@ -319,7 +319,7 @@ COMMON_CROSS_PACKAGES = \
 	gift-openft gift-opennap gtk gtk2 gtksourceview gtksourceview2 gsettings-desktop-schemas \
 	haproxy harfbuzz haserl hd2u hdparm hello hexcurse heyu \
 	hiawatha hicolor-icon-theme hnb hping htop httping \
-	ice icecast ices0 icu icu54 \
+	ice icecast ices0 icu \
 	id3lib ifstat iftop ii iksemel imagemagick imap \
 	inadyn indent inetutils \
 	inferno \
