@@ -26,9 +26,9 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-ICU_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/icu
-ICU_VERSION=4.0
-ICU_SOURCE=icu4c-4_0-src.tgz
+ICU_SITE=http://download.icu-project.org/files/icu4c/$(ICU_VERSION)
+ICU_VERSION=56.1
+ICU_SOURCE=icu4c-56_1-src.tgz
 ICU_DIR=icu
 ICU_UNZIP=zcat
 ICU_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
@@ -111,7 +111,8 @@ icu-source: $(DL_DIR)/$(ICU_SOURCE) $(ICU_PATCHES)
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(ICU_BUILD_DIR)/.configured: $(DL_DIR)/$(ICU_SOURCE) $(ICU_PATCHES) make/icu.mk
+$(ICU_BUILD_DIR)/.configured: 	$(DL_DIR)/$(ICU_SOURCE) $(ICU_PATCHES) make/icu.mk \
+				$(ICU_HOST_BUILD_DIR)/.built
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(ICU_DIR) $(@D)
 	$(ICU_UNZIP) $(DL_DIR)/$(ICU_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -125,7 +126,7 @@ $(ICU_BUILD_DIR)/.configured: $(DL_DIR)/$(ICU_SOURCE) $(ICU_PATCHES) make/icu.mk
 	(cd $(@D)/source; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(TARGET_CFLAGS) $(ICU_CPPFLAGS)" \
-		LDFLAGS="$(STAGING_LDFLAGS) $(ICU_LDFLAGS)" \
+		LDFLAGS="$(TARGET_LDFLAGS) -Wl,-rpath,$(TARGET_PREFIX)/lib $(ICU_LDFLAGS)" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -133,10 +134,8 @@ $(ICU_BUILD_DIR)/.configured: $(DL_DIR)/$(ICU_SOURCE) $(ICU_PATCHES) make/icu.mk
 		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
+		--with-cross-build=$(ICU_HOST_BUILD_DIR) \
 	)
-
-	sed -i -e 's/^#elif$$/#else/' $(@D)/source/layoutex/ParagraphLayout.cpp
-
 #	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
@@ -145,21 +144,9 @@ icu-unpack: $(ICU_BUILD_DIR)/.configured
 #
 # This builds the actual binary.
 #
-$(ICU_BUILD_DIR)/.built: $(ICU_HOST_BUILD_DIR)/.built $(ICU_BUILD_DIR)/.configured
+$(ICU_BUILD_DIR)/.built: $(ICU_BUILD_DIR)/.configured
 	rm -f $@
-	###should exit with "/bin/sh: ../bin/icupkg: cannot execute binary file"
-	-$(MAKE) -C $(@D)/source
-	mkdir -p $(@D)/source/bin.cross $(@D)/source/data.cross
-	cp -rf $(@D)/source/bin/* $(@D)/source/bin.cross
-	cp -rf $(@D)/source/data/* $(@D)/source/data.cross
-	cp -rf $(ICU_HOST_BUILD_DIR)/bin/* $(@D)/source/bin
-	cp -rf $(ICU_HOST_BUILD_DIR)/data/* $(@D)/source/data
-	sed -i -e "s|INVOKE = \$$(LDLIBRARYPATH_ENVVAR)=|INVOKE = \$$(LDLIBRARYPATH_ENVVAR)=$(HOST_BUILD_DIR)/icu/lib:|" $(@D)/source/icudefs.mk
 	$(MAKE) -C $(@D)/source
-	rm -rf $(@D)/source/bin/uconv
-	$(MAKE) -C $(@D)/source
-	cp -f $(@D)/source/bin/uconv $(@D)/source/bin.cross
-	cp -rf $(@D)/source/bin.cross/* $(@D)/source/bin
 	touch $@
 
 #
@@ -171,15 +158,14 @@ icu: $(ICU_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(ICU_BUILD_DIR)/.staged: $(ICU_BUILD_DIR)/.built
-	cp -f $(ICU_HOST_BUILD_DIR)/bin/pkgdata $(@D)/source/bin
 	$(MAKE) -C $(@D)/source DESTDIR=$(STAGING_DIR) install
-	cp -f $(@D)/source/bin.cross/pkgdata $(STAGING_PREFIX)/bin
-	cp -f $(@D)/source/bin.cross/pkgdata $(@D)/source/bin
+	sed -i -e '/^prefix =/s|=.*|= $(STAGING_PREFIX)|' 	$(STAGING_LIB_DIR)/pkgconfig/icu*.pc \
+								$(STAGING_LIB_DIR)/icu/$(ICU_VERSION)/Makefile.inc
 	touch $@
 
 icu-stage: $(ICU_BUILD_DIR)/.staged
 
-$(ICU_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(ICU_SOURCE)
+$(ICU_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(ICU_SOURCE) make/icu.mk
 	rm -rf $(HOST_BUILD_DIR)/$(ICU_DIR) $(@D)
 	$(ICU_UNZIP) $(DL_DIR)/$(ICU_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
 	if test "$(HOST_BUILD_DIR)/$(ICU_DIR)" != "$(@D)" ; \
@@ -190,9 +176,6 @@ $(ICU_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(ICU_SOURCE)
 		./configure \
 		--disable-threads \
 	)
-
-	sed -i -e 's/^#elif$$/#else/' $(@D)/layoutex/ParagraphLayout.cpp
-
 	$(MAKE) -C $(@D)
 	touch $@
 
@@ -229,10 +212,7 @@ $(ICU_IPK_DIR)/CONTROL/control:
 #
 $(ICU_IPK): $(ICU_BUILD_DIR)/.built
 	rm -rf $(ICU_IPK_DIR) $(BUILD_DIR)/icu_*_$(TARGET_ARCH).ipk
-	cp -f $(HOST_BUILD_DIR)/icu/bin/pkgdata $(ICU_BUILD_DIR)/source/bin
 	$(MAKE) -C $(ICU_BUILD_DIR)/source DESTDIR=$(ICU_IPK_DIR) install
-	cp -f $(ICU_BUILD_DIR)/source/bin.cross/pkgdata $(ICU_IPK_DIR)$(TARGET_PREFIX)/bin
-	cp -f $(ICU_BUILD_DIR)/source/bin.cross/pkgdata $(ICU_BUILD_DIR)/source/bin
 	$(STRIP_COMMAND) \
 		`ls $(ICU_IPK_DIR)$(TARGET_PREFIX)/bin/* | grep -v icu-config` \
 		$(ICU_IPK_DIR)$(TARGET_PREFIX)/sbin/* \
