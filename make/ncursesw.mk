@@ -5,8 +5,9 @@
 ###########################################################
 
 NCURSESW_DIR=$(BUILD_DIR)/ncursesw
+NCURSESW_SOURCE_DIR=$(SOURCE_DIR)/ncurses
 
-NCURSESW_VERSION=5.7
+NCURSESW_VERSION=5.9
 NCURSESW_SITE=ftp://invisible-island.net/ncurses
 NCURSESW_SOURCE=ncurses-$(NCURSESW_VERSION).tar.gz
 NCURSESW_UNZIP=zcat
@@ -17,7 +18,9 @@ NCURSESW_PRIORITY=optional
 NCURSESW_DEPENDS=ncurses
 NCURSESW_CONFLICTS=
 
-NCURSESW_IPK_VERSION=2
+NCURSESW_IPK_VERSION=1
+
+NCURSESW_PATCHES=$(NCURSESW_SOURCE_DIR)/MKlib_gen_sh.patch
 
 NCURSESW_IPK=$(BUILD_DIR)/ncursesw_$(NCURSESW_VERSION)-$(NCURSESW_IPK_VERSION)_$(TARGET_ARCH).ipk
 NCURSESW-DEV_IPK=$(BUILD_DIR)/ncursesw-dev_$(NCURSESW_VERSION)-$(NCURSESW_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -37,6 +40,10 @@ $(NCURSESW_DIR)/.configured: $(DL_DIR)/$(NCURSESW_SOURCE) make/ncursesw.mk
 		$(STAGING_LIB_DIR)/libncursesw.* \
 		$(STAGING_LIB_DIR)/libpanelw.*
 	$(NCURSESW_UNZIP) $(DL_DIR)/$(NCURSESW_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	if test -n "$(NCURSESW_PATCHES)" ; \
+		then cat $(NCURSESW_PATCHES) | \
+		$(PATCH) -d $(BUILD_DIR)/$(NCURSES) -p1 ; \
+	fi
 	mv $(BUILD_DIR)/$(NCURSES) $(NCURSESW_DIR)
 ifneq ($(HOSTCC), $(TARGET_CC))
 	# configure without wide char just to make two build tools
