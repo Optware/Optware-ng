@@ -5,7 +5,7 @@
 ###########################################################
 
 RSYNC_SITE=http://www.samba.org/ftp/rsync/src/
-RSYNC_VERSION=3.0.9
+RSYNC_VERSION=3.1.1
 RSYNC_SOURCE=rsync-$(RSYNC_VERSION).tar.gz
 RSYNC_DIR=rsync-$(RSYNC_VERSION)
 RSYNC_UNZIP=zcat
@@ -61,7 +61,7 @@ rsync-source: $(DL_DIR)/$(RSYNC_SOURCE) $(RSYNC_PATCHES)
 
 .PHONY: rsync-source rsync-unpack rsync rsync-stage rsync-ipk rsync-clean rsync-dirclean rsync-check
 
-$(RSYNC_BUILD_DIR)/.configured: $(DL_DIR)/$(RSYNC_SOURCE) $(RSYNC_PATCHES)
+$(RSYNC_BUILD_DIR)/.configured: $(DL_DIR)/$(RSYNC_SOURCE) $(RSYNC_PATCHES) make/rsync.mk
 ifneq (, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
 endif
