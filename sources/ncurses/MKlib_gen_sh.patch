@@ -1,0 +1,10 @@
+--- a/ncurses/base/MKlib_gen.sh
++++ b/ncurses/base/MKlib_gen.sh
+@@ -442,6 +442,7 @@
+ 	-e 's/  / /g' \
+ 	-e 's/^ //' \
+ 	-e 's/_Bool/NCURSES_BOOL/g' \
++	-e ':a;N;$!ba;s/\n# [0-9]* "'"${TMP}"'"[^\n]*\n/ /g' \
+ | $AWK -f $AW2 \
+ | sed -f $ED3 \
+ | sed \

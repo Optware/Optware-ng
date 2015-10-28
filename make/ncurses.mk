@@ -5,8 +5,9 @@
 ###########################################################
 
 NCURSES_DIR=$(BUILD_DIR)/ncurses
+NCURSES_SOURCE_DIR=$(SOURCE_DIR)/ncurses
 
-NCURSES_VERSION=5.7
+NCURSES_VERSION=5.9
 NCURSES=ncurses-$(NCURSES_VERSION)
 NCURSES_SITE=ftp://invisible-island.net/ncurses
 NCURSES_SOURCE=$(NCURSES).tar.gz
@@ -24,7 +25,9 @@ else
 NCURSES_FOR_OPTWARE_TARGET=ncurses
 endif
 
-NCURSES_IPK_VERSION=3
+NCURSES_IPK_VERSION=1
+
+NCURSES_PATCHES=$(NCURSES_SOURCE_DIR)/MKlib_gen_sh.patch
 
 NCURSES_IPK=$(BUILD_DIR)/ncurses_$(NCURSES_VERSION)-$(NCURSES_IPK_VERSION)_$(TARGET_ARCH).ipk
 NCURSES-DEV_IPK=$(BUILD_DIR)/ncurses-dev_$(NCURSES_VERSION)-$(NCURSES_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -73,6 +76,10 @@ endif
 		$(STAGING_LIB_DIR)/libncurses.* \
 		$(STAGING_LIB_DIR)/libpanel.*
 	$(NCURSES_UNZIP) $(DL_DIR)/$(NCURSES_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	if test -n "$(NCURSES_PATCHES)" ; \
+		then cat $(NCURSES_PATCHES) | \
+		$(PATCH) -d $(BUILD_DIR)/$(NCURSES) -p1 ; \
+	fi
 	mv $(BUILD_DIR)/$(NCURSES) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
