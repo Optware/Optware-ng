@@ -4,7 +4,7 @@
  	-e 's/  / /g' \
  	-e 's/^ //' \
  	-e 's/_Bool/NCURSES_BOOL/g' \
-+	-e ':a;N;$!ba;s/\n# [0-9]* "'"${TMP}"'"[^\n]*\n/ /g' \
++	-e ':a' -e 'N' -e '$!ba' -e "s/\n# [0-9]* \"${TMP}\"[^\n]*\n/ /g" \
  | $AWK -f $AW2 \
  | sed -f $ED3 \
  | sed \

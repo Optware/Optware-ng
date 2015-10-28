@@ -64,7 +64,7 @@ $(NCURSES_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(NCURSES_SOURCE) m
 
 ncurses-host: $(NCURSES_HOST_BUILD_DIR)/.built
 
-$(NCURSES_DIR)/.configured: $(DL_DIR)/$(NCURSES_SOURCE) make/ncurses.mk
+$(NCURSES_DIR)/.configured: $(DL_DIR)/$(NCURSES_SOURCE) $(NCURSES_PATCHES) make/ncurses.mk
 	$(MAKE) zlib-stage
 ifneq ($(HOSTCC), $(TARGET_CC))
 	$(MAKE) ncurses-host
