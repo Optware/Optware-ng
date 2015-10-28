@@ -114,7 +114,7 @@ ifeq ($(OPTWARE_TARGET), $(filter buildroot-armeabi buildroot-armeabi-ng buildro
 	sed -i -e "/^version=/s~$$~\n\n# get last argument: IPK_DIR\nfor IPK_DIR; do true; done\nFILTEROUT=\`cat $$\{IPK_DIR\}/CONTROL/control|egrep '^Package: uclibc-opt$$|^Package: libnsl$$|^Package: ipkg-static$$'|wc -l\`\nif [ \"\$$FILTEROUT\" -eq \"0\" ]; then\nsed -i -e 's/^Depends:/Depends: uclibc-opt,/' -e 's/, *$$//' \$$\{IPK_DIR\}/CONTROL/control\nfi~" \
 						$(STAGING_DIR)/bin/ipkg-build
 endif
-ifeq ($(OPTWARE_TARGET), $(filter buildroot-armeabihf buildroot-i686, $(OPTWARE_TARGET)))
+ifeq ($(OPTWARE_TARGET), $(filter buildroot-armeabihf buildroot-i686 buildroot-ppc-603e, $(OPTWARE_TARGET)))
 	sed -i -e "/^version=/s~$$~\n\n# get last argument: IPK_DIR\nfor IPK_DIR; do true; done\nFILTEROUT=\`cat $$\{IPK_DIR\}/CONTROL/control|egrep '^Package: glibc-opt$$|^Package: libnsl$$|^Package: ipkg-static$$'|wc -l\`\nif [ \"\$$FILTEROUT\" -eq \"0\" ]; then\nsed -i -e 's/^Depends:/Depends: glibc-opt,/' -e 's/, *$$//' \$$\{IPK_DIR\}/CONTROL/control\nfi~" \
 						$(STAGING_DIR)/bin/ipkg-build
 endif
