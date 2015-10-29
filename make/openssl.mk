@@ -194,8 +194,8 @@ endif
 	cd $(STAGING_LIB_DIR) && ln -fs libssl.so.$(OPENSSL_LIB_VERSION) libssl.so.0
 	cd $(STAGING_LIB_DIR) && ln -fs libssl.so.$(OPENSSL_LIB_VERSION) libssl.so
 	$(INSTALL) -d $(STAGING_LIB_DIR)/pkgconfig
-	$(INSTALL) -m 644 $(@D)/openssl.pc $(STAGING_LIB_DIR)/pkgconfig
-	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/openssl.pc
+	$(INSTALL) -m 644 $(@D)/{openssl,libcrypto,libssl}.pc $(STAGING_LIB_DIR)/pkgconfig
+	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/{openssl,libcrypto,libssl}.pc
 	touch $@
 
 openssl-stage: $(OPENSSL_BUILD_DIR)/.staged
