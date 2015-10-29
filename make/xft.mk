@@ -117,6 +117,7 @@ $(XFT_BUILD_DIR)/.configured: $(DL_DIR)/$(XFT_SOURCE) $(XFT_PATCHES) make/xft.mk
 		then mv $(BUILD_DIR)/$(XFT_DIR) $(@D) ; \
 	fi
 	sed -i -e 's|freetype/ftoutln.h|freetype2/ftoutln.h|' $(@D)/xftglyphs.c
+	$(AUTORECONF1.10) -vif $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(XFT_CPPFLAGS)" \
@@ -124,7 +125,7 @@ $(XFT_BUILD_DIR)/.configured: $(DL_DIR)/$(XFT_SOURCE) $(XFT_PATCHES) make/xft.mk
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
 		PATH="$(STAGING_DIR)/bin:$$PATH" \
-		./autogen.sh \
+		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \

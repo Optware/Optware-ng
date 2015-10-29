@@ -115,13 +115,14 @@ $(XPM_BUILD_DIR)/.configured: $(DL_DIR)/$(XPM_SOURCE) $(XPM_PATCHES) make/xpm.mk
 	if test "$(BUILD_DIR)/$(XPM_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(XPM_DIR) $(@D) ; \
 	fi
+	$(AUTORECONF1.10) -vif $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(XPM_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(XPM_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
-		./autogen.sh \
+		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \

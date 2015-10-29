@@ -148,8 +148,9 @@ endif
 	mv $(BUILD_DIR)/$(CHEROKEE_DIR) $(@D)
 	sed -i.orig -e '1s|#!.*|#!$(TARGET_PREFIX)/bin/python|' $(@D)/admin/server.py
 	sed -i.orig -e '/\/var\/run\/cherokee.pid/d' $(@D)/admin/PageNewConfig.py
+	touch $(@D)/{README,ChangeLog}
+	$(AUTORECONF1.10) -vif $(@D)
 	(cd $(@D); \
-		./autogen.sh; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(CHEROKEE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(CHEROKEE_LDFLAGS)" \

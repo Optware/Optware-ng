@@ -218,7 +218,7 @@ ifeq ($(OPTWARE_TARGET), $(filter ddwrt oleg openwrt-ixp4xx, $(OPTWARE_TARGET)))
 	#sed -i -e 's/^static size_t strl/size_t strl/' $(@D)/source3/client/mount.cifs.c
 endif
 	sed -i -e '/AC_PATH_PROG(CUPS_CONFIG, cups-config)/s|.*|CUPS_CONFIG=$(STAGING_PREFIX)/bin/cups-config|' $(@D)/source3/configure.in
-	(cd $(@D)/source3/; ./autogen.sh )
+	export SKIP_ACLOCAL=1; $(AUTORECONF1.10) -vif -Im4 -I../m4 -I../lib/replace -I../source4 $(@D)/source3
 	(cd $(@D)/source3/; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SAMBA34_CPPFLAGS)" \

@@ -87,7 +87,9 @@ LIBGC_IPK=$(BUILD_DIR)/libgc_$(LIBGC_VERSION)-$(LIBGC_IPK_VERSION)_$(TARGET_ARCH
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(LIBGC_SOURCE):
-	$(WGET) -P $(DL_DIR) $(LIBGC_SITE)/$(LIBGC_SOURCE)
+	$(WGET) -P $(DL_DIR) $(LIBGC_SITE)/$(@D) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
+
 
 #
 # The source code depends on it existing within the download directory.
@@ -122,8 +124,8 @@ $(LIBGC_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBGC_SOURCE) $(LIBGC_PATCHES) make/
 	if test "$(BUILD_DIR)/$(LIBGC_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBGC_DIR) $(@D) ; \
 	fi
+	$(AUTORECONF1.10) -vif $(@D)
 	(cd $(@D); \
-		./autogen.sh && \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBGC_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBGC_LDFLAGS)" \

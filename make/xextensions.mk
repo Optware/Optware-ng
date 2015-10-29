@@ -111,16 +111,17 @@ $(XEXTENSIONS_BUILD_DIR)/.configured: $(DL_DIR)/$(XEXTENSIONS_SOURCE) $(XEXTENSI
 		then cat $(XEXTENSIONS_PATCHES) | \
 		$(PATCH) -d $(BUILD_DIR)/$(XEXTENSIONS_DIR) -p1 ; \
 	fi
-	if test "$(BUILD_DIR)/$(XEXTENSIONS_DIR)" != "$(XEXTENSIONS_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(XEXTENSIONS_DIR) $(XEXTENSIONS_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(XEXTENSIONS_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(XEXTENSIONS_DIR) $(@D) ; \
 	fi
-	(cd $(XEXTENSIONS_BUILD_DIR); \
+	$(AUTORECONF1.10) -vif $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(XEXTENSIONS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(XEXTENSIONS_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
-		./autogen.sh \
+		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
@@ -136,7 +137,7 @@ xextensions-unpack: $(XEXTENSIONS_BUILD_DIR)/.configured
 #
 $(XEXTENSIONS_BUILD_DIR)/.built: $(XEXTENSIONS_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(XEXTENSIONS_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -149,7 +150,7 @@ xextensions: $(XEXTENSIONS_BUILD_DIR)/.built
 #
 $(XEXTENSIONS_BUILD_DIR)/.staged: $(XEXTENSIONS_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(XEXTENSIONS_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/xextensions.pc
 	touch $@
 

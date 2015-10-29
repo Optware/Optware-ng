@@ -122,23 +122,22 @@ newt-source: $(DL_DIR)/$(NEWT_SOURCE)
 # first, then do that first (e.g. "$(MAKE) <foo>-stage <baz>-stage").
 #
 $(NEWT_BUILD_DIR)/.configured: $(DL_DIR)/$(NEWT_SOURCE) make/newt.mk
-	$(MAKE) popt-stage
-	$(MAKE) python-stage
-	$(MAKE) slang-stage
+	$(MAKE) popt-stage python-stage slang-stage
 ifeq ($(GETTEXT_NLS), enable)
 	$(MAKE) gettext-stage
 endif
-	rm -rf $(BUILD_DIR)/$(NEWT_DIR) $(NEWT_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(NEWT_DIR) $(@D)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/$(NEWT_SOURCE)
 	if test -n "$(NEWT_PATCHES)" ; \
 		then cat $(NEWT_PATCHES) | \
 		$(PATCH) -bd $(BUILD_DIR)/$(NEWT_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(NEWT_DIR)" != "$(NEWT_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(NEWT_DIR) $(NEWT_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(NEWT_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(NEWT_DIR) $(@D) ; \
 	fi
-	(cd $(NEWT_BUILD_DIR); \
-		./autogen.sh; \
+	sed -i -e 's/^AC_INIT(\(.*\))/AC_INIT([Newt], [$(NEWT_VERSION)])\nAC_CONFIG_SRCDIR(\1)\nAM_INIT_AUTOMAKE/' $(@D)/configure.ac
+	-$(AUTORECONF1.10) -vif $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(NEWT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(NEWT_LDFLAGS)" \
@@ -150,7 +149,7 @@ endif
 		--disable-nls \
 		--without-tcl \
 	)
-	touch $(NEWT_BUILD_DIR)/.configured
+	touch $@
 
 newt-unpack: $(NEWT_BUILD_DIR)/.configured
 
@@ -158,12 +157,12 @@ newt-unpack: $(NEWT_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(NEWT_BUILD_DIR)/.built: $(NEWT_BUILD_DIR)/.configured
-	rm -f $(NEWT_BUILD_DIR)/.built
-	$(MAKE) -C $(NEWT_BUILD_DIR) \
+	rm -f $@
+	$(MAKE) -C $(@D) \
 		STAGING_INCLUDE_DIR="$(STAGING_INCLUDE_DIR)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(NEWT_LDFLAGS)" \
 		;
-	touch $(NEWT_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -174,9 +173,9 @@ newt: $(NEWT_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(NEWT_BUILD_DIR)/.staged: $(NEWT_BUILD_DIR)/.built
-	rm -f $(NEWT_BUILD_DIR)/.staged
+	rm -f $@
 	$(MAKE) -C $(NEWT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(NEWT_BUILD_DIR)/.staged
+	touch $@
 
 newt-stage: $(NEWT_BUILD_DIR)/.staged
 

@@ -113,8 +113,8 @@ $(LIBATOMIC_OPS_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBATOMIC_OPS_SOURCE) $(LIBA
 	fi
 	mv $(BUILD_DIR)/$(LIBATOMIC_OPS_DIR) $(@D)
 	cp -f $(SOURCE_DIR)/common/config.* $(@D)/
+	$(AUTORECONF1.14) -vif $(@D)
 	(cd $(@D); \
-		./autogen.sh; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBATOMIC_OPS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBATOMIC_OPS_LDFLAGS)" \

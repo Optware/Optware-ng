@@ -114,13 +114,14 @@ $(RECORDEXT_BUILD_DIR)/.configured: $(DL_DIR)/$(RECORDEXT_SOURCE) $(RECORDEXT_PA
 	if test "$(BUILD_DIR)/$(RECORDEXT_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(RECORDEXT_DIR) $(@D) ; \
 	fi
+	$(AUTORECONF1.10) -vif $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(RECORDEXT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(RECORDEXT_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
-		./autogen.sh \
+		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \

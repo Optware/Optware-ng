@@ -111,16 +111,17 @@ $(XDMCP_BUILD_DIR)/.configured: $(DL_DIR)/$(XDMCP_SOURCE) $(XDMCP_PATCHES) make/
 		then cat $(XDMCP_PATCHES) | \
 		$(PATCH) -d $(BUILD_DIR)/$(XDMCP_DIR) -p1 ; \
 	fi
-	if test "$(BUILD_DIR)/$(XDMCP_DIR)" != "$(XDMCP_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(XDMCP_DIR) $(XDMCP_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(XDMCP_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(XDMCP_DIR) $(@D) ; \
 	fi
-	(cd $(XDMCP_BUILD_DIR); \
+	$(AUTORECONF1.10) -vif $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(XDMCP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(XDMCP_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
-		./autogen.sh \
+		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
@@ -136,7 +137,7 @@ xdmcp-unpack: $(XDMCP_BUILD_DIR)/.configured
 #
 $(XDMCP_BUILD_DIR)/.built: $(XDMCP_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(XDMCP_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -149,7 +150,7 @@ xdmcp: $(XDMCP_BUILD_DIR)/.built
 #
 $(XDMCP_BUILD_DIR)/.staged: $(XDMCP_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(XDMCP_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/xdmcp.pc
 	rm -f $(STAGING_LIB_DIR)/libXdmcp.la
 	touch $@

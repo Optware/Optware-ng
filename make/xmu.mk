@@ -116,13 +116,14 @@ $(XMU_BUILD_DIR)/.configured: $(DL_DIR)/$(XMU_SOURCE) $(XMU_PATCHES) make/xmu.mk
 	if test "$(BUILD_DIR)/$(XMU_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(XMU_DIR) $(@D) ; \
 	fi
+	$(AUTORECONF1.10) -vif $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(XMU_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(XMU_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
-		./autogen.sh \
+		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \

@@ -222,7 +222,7 @@ ifeq (3.0.14a, $(SAMBA35_VERSION))
 	sed -i -e '/AC_TRY_RUN.*1.*5.*6.*7/s/;$$//' $(@D)/source/aclocal.m4
 endif
 	sed -i -e '/AC_PATH_PROG(CUPS_CONFIG, cups-config)/s|.*|CUPS_CONFIG=$(STAGING_PREFIX)/bin/cups-config|' $(@D)/source3/configure.in
-	(cd $(@D)/source3/; ./autogen.sh)
+	export SKIP_ACLOCAL=1; $(AUTORECONF1.10) -vif -Im4 -I../m4 -I../lib/replace -I../source4 $(@D)/source3
 	(cd $(@D)/source3/; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SAMBA35_CPPFLAGS)" \

@@ -61,7 +61,7 @@ FIXESEXT_IPK=$(BUILD_DIR)/fixesext_$(FIXESEXT_VERSION)-$(FIXESEXT_IPK_VERSION)_$
 # Automatically create a ipkg control file
 #
 $(FIXESEXT_IPK_DIR)/CONTROL/control:
-	@$(INSTALL) -d $(FIXESEXT_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: fixesext" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -113,16 +113,17 @@ $(FIXESEXT_PATCHES) make/fixesext.mk
 		then cat $(FIXESEXT_PATCHES) | \
 		$(PATCH) -d $(BUILD_DIR)/$(FIXESEXT_DIR) -p1 ; \
 	fi
-	if test "$(BUILD_DIR)/$(FIXESEXT_DIR)" != "$(FIXESEXT_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(FIXESEXT_DIR) $(FIXESEXT_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(FIXESEXT_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(FIXESEXT_DIR) $(@D) ; \
 	fi
-	(cd $(FIXESEXT_BUILD_DIR); \
+	$(AUTORECONF1.10) -vif $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(FIXESEXT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(FIXESEXT_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
-		./autogen.sh \
+		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
@@ -138,7 +139,7 @@ fixesext-unpack: $(FIXESEXT_BUILD_DIR)/.configured
 #
 $(FIXESEXT_BUILD_DIR)/.built: $(FIXESEXT_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(FIXESEXT_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -151,7 +152,7 @@ fixesext: $(FIXESEXT_BUILD_DIR)/.built
 #
 $(FIXESEXT_BUILD_DIR)/.staged: $(FIXESEXT_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(FIXESEXT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	sed -ie 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/fixesext.pc
 	touch $@
 

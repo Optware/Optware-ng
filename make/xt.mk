@@ -116,13 +116,14 @@ $(XT_BUILD_DIR)/.configured: $(DL_DIR)/$(XT_SOURCE) $(XT_PATCHES) make/xt.mk
 	if test "$(BUILD_DIR)/$(XT_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(XT_DIR) $(@D) ; \
 	fi
+	$(AUTORECONF1.10) -vif $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(XT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(XT_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
-		./autogen.sh \
+		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \

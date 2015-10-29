@@ -111,7 +111,7 @@ $(SMARTMONTOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(SMARTMONTOOLS_SOURCE) $(SMAR
 		then mv $(BUILD_DIR)/$(SMARTMONTOOLS_DIR) $(@D) ; \
 	fi
 ifdef SMARTMONTOOLS_CVS_OPTS
-	cd $(@D); ./autogen.sh
+	$(AUTORECONF1.10) -vif $(@D)
 endif
 	sed -i -e 's|libc_have_working_snprintf=no|libc_have_working_snprintf=yes|' $(@D)/configure
 	(cd $(@D); \

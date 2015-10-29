@@ -116,13 +116,14 @@ $(XFIXES_BUILD_DIR)/.configured: $(DL_DIR)/$(XFIXES_SOURCE) $(XFIXES_PATCHES) ma
 	if test "$(BUILD_DIR)/$(XFIXES_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(XFIXES_DIR) $(@D) ; \
 	fi
+	$(AUTORECONF1.10) -vif $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(XFIXES_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(XFIXES_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
-		./autogen.sh \
+		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \

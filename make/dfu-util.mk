@@ -84,18 +84,19 @@ dfu-util-source: $(DL_DIR)/dfu-util-$(DFU-UTIL_VERSION).tar.gz
 #
 $(DFU-UTIL_BUILD_DIR)/.configured: $(DL_DIR)/dfu-util-$(DFU-UTIL_VERSION).tar.gz $(DFU-UTIL_PATCHES) make/dfu-util.mk
 	$(MAKE) libusb-stage
-	rm -rf $(BUILD_DIR)/$(DFU-UTIL_DIR) $(DFU-UTIL_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(DFU-UTIL_DIR) $(@D)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/dfu-util-$(DFU-UTIL_VERSION).tar.gz
 	if test -n "$(DFU-UTIL_PATCHES)" ; \
 		then cat $(DFU-UTIL_PATCHES) | \
 		$(PATCH) -d $(BUILD_DIR)/$(DFU-UTIL_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(DFU-UTIL_DIR)" != "$(DFU-UTIL_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(DFU-UTIL_DIR) $(DFU-UTIL_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(DFU-UTIL_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(DFU-UTIL_DIR) $(@D) ; \
 	fi
 	sed -i -e 's|\[config.h\]|config.h|g' $(DFU-UTIL_BUILD_DIR)/configure.ac
-	(cd $(DFU-UTIL_BUILD_DIR); ./autogen.sh )
-	(cd $(DFU-UTIL_BUILD_DIR); \
+	touch $(@D)/{README,NEWS,AUTHORS,ChangeLog}
+	$(AUTORECONF1.10) -vif $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(DFU-UTIL_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(DFU-UTIL_LDFLAGS)" \
@@ -108,7 +109,7 @@ $(DFU-UTIL_BUILD_DIR)/.configured: $(DL_DIR)/dfu-util-$(DFU-UTIL_VERSION).tar.gz
 		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 	)
-	touch $(DFU-UTIL_BUILD_DIR)/.configured
+	touch $@
 
 dfu-util-unpack: $(DFU-UTIL_BUILD_DIR)/.configured
 
@@ -116,9 +117,9 @@ dfu-util-unpack: $(DFU-UTIL_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(DFU-UTIL_BUILD_DIR)/.built: $(DFU-UTIL_BUILD_DIR)/.configured
-	rm -f $(DFU-UTIL_BUILD_DIR)/.built
-	$(MAKE) -C $(DFU-UTIL_BUILD_DIR) bin_PROGRAMS=dfu-util
-	touch $(DFU-UTIL_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D) bin_PROGRAMS=dfu-util
+	touch $@
 
 #
 # This is the build convenience target.

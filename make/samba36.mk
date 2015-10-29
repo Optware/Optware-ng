@@ -218,7 +218,7 @@ endif
 #	resolve linux/xattr.h and sys/xattr.h incompatibility leading to an error similar to this:
 #	.../sys/xattr.h:32:3: error: expected identifier before numeric constant
 	sed -i -e '/^#include <sys\/capability.h>/s/^/#define _SYS_XATTR_H	1\n/' $(@D)/lib/replace/system/capability.h
-	(cd $(@D)/source3/; ./autogen.sh)
+	export SKIP_ACLOCAL=1; $(AUTORECONF1.10) -vif -Im4 -I../m4 -I../lib/replace -I../source4 $(@D)/source3
 	(cd $(@D)/source3/; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SAMBA36_CPPFLAGS)" \
