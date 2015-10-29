@@ -136,7 +136,7 @@ endif
 	$(PYTHON24_UNZIP) $(DL_DIR)/$(PYTHON24_SOURCE) | tar -C $(BUILD_DIR) -xf -
 	cat $(PYTHON24_PATCHES) | $(PATCH) -bd $(BUILD_DIR)/$(PYTHON24_DIR) -p1
 	sed -i -e '/\$$absconfigcommand/s|.*|    AS="" LD="" CC="" CXX="" AR="" STRIP="" RANLIB="" LDFLAGS="-L$(HOST_STAGING_LIB_DIR)" CPPFLAGS="-I$(HOST_STAGING_INCLUDE_DIR)" \$$absconfigcommand --prefix=/opt --with-system-ffi|' $(BUILD_DIR)/$(PYTHON24_DIR)/configure.in
-	cd $(BUILD_DIR)/$(PYTHON24_DIR); autoconf configure.in > configure
+	$(AUTORECONF1.10) -vif $(BUILD_DIR)/$(PYTHON24_DIR)
 	mkdir $(@D)
 	(cd $(@D); \
 	( \
