@@ -44,7 +44,7 @@ endif
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 MKVTOOLNIX_DEPENDS +=, libiconv
 endif
-ifeq ($(OPTWARE_TARGET), $(filter buildroot-armeabi buildroot-armeabi-ng buildroot-armeabihf buildroot-i686 buildroot-mipsel-ng, $(OPTWARE_TARGET)))
+ifeq ($(OPTWARE_TARGET), $(filter buildroot-armeabi buildroot-armeabi-ng buildroot-armeabihf buildroot-i686 buildroot-mipsel-ng buildroot-ppc-603e, $(OPTWARE_TARGET)))
 MKVTOOLNIX_DEPENDS +=, libcurl
 endif
 MKVTOOLNIX_SUGGESTS=
@@ -69,7 +69,7 @@ MKVTOOLNIX_PATCHES=$(MKVTOOLNIX_SOURCE_DIR)/va_list.patch $(MKVTOOLNIX_ADDITIONA
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-MKVTOOLNIX_CPPFLAGS=
+MKVTOOLNIX_CPPFLAGS=-Wno-deprecated-declarations -Wno-unused-variable
 ifeq ($(LIBC_STYLE),uclibc)
 MKVTOOLNIX_CPPFLAGS += -Duint16_t=__u16 -Duint32_t=__u32 -Duint64_t=__64
 endif
@@ -170,9 +170,9 @@ mkvtoolnix-unpack: $(MKVTOOLNIX_BUILD_DIR)/.configured
 $(MKVTOOLNIX_BUILD_DIR)/.built: $(MKVTOOLNIX_BUILD_DIR)/.configured
 	rm -f $@
 ifeq ($(shell test $(shell echo $(MKVTOOLNIX_VERSION) | sed 's/\..*//') -gt 4; echo $$?),0)
-	cd $(@D); ./drake -j`nproc`
+	cd $(@D); ./drake -j`nproc` V=1
 else
-	$(MAKE) -C $(@D)
+	$(MAKE) -C $(@D) V=1
 endif
 	touch $@
 
