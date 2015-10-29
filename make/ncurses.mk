@@ -51,7 +51,7 @@ $(NCURSES_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(NCURSES_SOURCE) m
 	mv $(HOST_BUILD_DIR)/$(NCURSES) $(@D)
 	(cd $(@D); \
 		./configure \
-		--prefix=$(TARGET_PREFIX)	\
+		--prefix=$(HOST_STAGING_PREFIX)	\
 		--without-shared	\
 		--enable-symlinks	\
 		--with-build-cc=gcc	\
@@ -63,6 +63,15 @@ $(NCURSES_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(NCURSES_SOURCE) m
 	touch $@
 
 ncurses-host: $(NCURSES_HOST_BUILD_DIR)/.built
+
+$(NCURSES_HOST_BUILD_DIR)/.staged: $(NCURSES_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D) install
+	ln -sf ncurses/ncurses.h $(HOST_STAGING_INCLUDE_DIR)
+	ln -sf ncurses/curses.h $(HOST_STAGING_INCLUDE_DIR)
+	touch $@
+
+ncurses-host-stage: $(NCURSES_HOST_BUILD_DIR)/.staged
 
 $(NCURSES_DIR)/.configured: $(DL_DIR)/$(NCURSES_SOURCE) $(NCURSES_PATCHES) make/ncurses.mk
 	$(MAKE) zlib-stage
