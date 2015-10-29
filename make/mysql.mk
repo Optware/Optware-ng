@@ -109,10 +109,13 @@ $(DL_DIR)/$(MYSQL_SOURCE):
 mysql-source: $(DL_DIR)/$(MYSQL_SOURCE) $(MYSQL_PATCHES)
 
 $(MYSQL_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(MYSQL_SOURCE) make/mysql.mk
+	$(MAKE) ncurses-host-stage
 	rm -rf $(HOST_BUILD_DIR)/$(MYSQL_DIR) $(@D)
 	$(MYSQL_UNZIP) $(DL_DIR)/$(MYSQL_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
 	mv $(HOST_BUILD_DIR)/$(MYSQL_DIR) $(@D)
-	cd $(@D); ./configure --prefix=/opt
+	cd $(@D); \
+		LDFLAGS="-L$(HOST_STAGING_LIB_DIR)" CPPFLAGS="-I$(HOST_STAGING_INCLUDE_DIR)" \
+		./configure --prefix=/opt
 	$(MAKE) -C $(@D)
 	touch $@
 
