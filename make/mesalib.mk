@@ -123,6 +123,8 @@ $(MESALIB_BUILD_DIR)/.configured: $(DL_DIR)/$(MESALIB_SOURCE) $(MESALIB_PATCHES)
 	if test "$(BUILD_DIR)/$(MESALIB_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(MESALIB_DIR) $(@D) ; \
 	fi
+	sed -i -e 's/\([^=]\)wayland_scanner/\1wayland-scanner/' $(@D)/configure.ac
+	$(AUTORECONF1.14) -vif $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MESALIB_CPPFLAGS)" \
