@@ -560,7 +560,11 @@ CVS=cvs
 SUDO=sudo
 WGET_BINARY=wget
 CREATE_CHECKSUM=0
-WGET = TOP=$(BASE_DIR)/scripts WGET=$(WGET_BINARY) CREATE_CHECKSUM=$(CREATE_CHECKSUM) sh $(BASE_DIR)/scripts/wget.sh --passive-ftp --tries=1 --no-check-certificate
+ifeq ($(CREATE_CHECKSUM), 1)
+WGET = TOP=$(BASE_DIR)/scripts WGET=$(WGET_BINARY) CREATE_CHECKSUM=1 sh $(BASE_DIR)/scripts/wget.sh --passive-ftp --tries=1 --no-check-certificate
+else
+WGET = TOP=$(BASE_DIR)/scripts WGET=$(WGET_BINARY) sh $(BASE_DIR)/scripts/wget.sh --passive-ftp --tries=1 --no-check-certificate
+endif
 PERL=perl
 
 # Required host-tools, which will build if they missing
