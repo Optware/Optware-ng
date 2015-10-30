@@ -28,10 +28,9 @@ COREUTILS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 COREUTILS_DESCRIPTION=Bunch of heavyweight *nix core utilities
 COREUTILS_SECTION=core
 COREUTILS_PRIORITY=optional
+COREUTILS_DEPENDS=libcap
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
-COREUTILS_DEPENDS=libiconv
-else
-COREUTILS_DEPENDS=
+COREUTILS_DEPENDS+=, libiconv
 endif
 ifeq (enable, $(GETTEXT_NLS))
 COREUTILS_DEPENDS+=, gettext
@@ -41,7 +40,7 @@ COREUTILS_CONFLICTS=
 #
 # COREUTILS_IPK_VERSION should be incremented when the ipk changes.
 #
-COREUTILS_IPK_VERSION=1
+COREUTILS_IPK_VERSION=2
 
 #
 # COREUTILS_PATCHES should list any patches, in the the order in
@@ -138,6 +137,7 @@ endif
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
 endif
+	$(MAKE) libcap-stage
 	rm -rf $(BUILD_DIR)/$(COREUTILS_DIR) $(@D)
 	$(COREUTILS_UNZIP) $(DL_DIR)/$(COREUTILS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(COREUTILS_PATCHES) | $(PATCH) -Z -d $(BUILD_DIR)/$(COREUTILS_DIR) -p1
