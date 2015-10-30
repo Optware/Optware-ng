@@ -202,7 +202,7 @@ $(PY-MAKO_BUILD_DIR)/.staged: $(PY-MAKO_BUILD_DIR)/.built
 #	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 #	touch $@
 
-$(PY-MAKO_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(PY-MAKO_SOURCE) make/py-mako.mk
+$(PY-MAKO_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(PY-MAKO_SOURCE)  $(DL_DIR)/$(PY-MAKO_SOURCE_OLD) make/py-mako.mk
 	rm -rf $(HOST_BUILD_DIR)/$(PY-MAKO_DIR) $(HOST_BUILD_DIR)/$(PY-MAKO_DIR_OLD) $(@D)
 	$(MAKE) py-beaker-host-stage
 	mkdir -p $(@D)/
