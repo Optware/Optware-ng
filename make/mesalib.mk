@@ -131,7 +131,6 @@ $(MESALIB_BUILD_DIR)/.configured: $(DL_DIR)/$(MESALIB_SOURCE) $(MESALIB_PATCHES)
 		LDFLAGS="$(STAGING_LDFLAGS) $(MESALIB_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
-		WAYLAND_SCANNER=$(HOST_STAGING_PREFIX)/bin/wayland-scanner \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -161,7 +160,7 @@ mesalib-unpack: $(MESALIB_BUILD_DIR)/.configured
 #
 $(MESALIB_BUILD_DIR)/.built: $(MESALIB_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(@D)
+	$(MAKE) -C $(@D) WAYLAND_SCANNER=$(HOST_STAGING_PREFIX)/bin/wayland-scanner
 	touch $@
 
 #
