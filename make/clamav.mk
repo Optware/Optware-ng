@@ -35,14 +35,14 @@ CLAMAV_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 CLAMAV_DESCRIPTION=Clam ANtivirus is a GPL anti-virus toolkit for UNIX
 CLAMAV_SECTION=misc
 CLAMAV_PRIORITY=optional
-CLAMAV_DEPENDS=adduser,zlib,libgmp,bzip2
+CLAMAV_DEPENDS=adduser,zlib,libgmp,bzip2,openssl
 CLAMAV_SUGGESTS=
 CLAMAV_CONFLICTS=
 
 #
 # CLAMAV_IPK_VERSION should be incremented when the ipk changes.
 #
-CLAMAV_IPK_VERSION=1
+CLAMAV_IPK_VERSION=2
 
 #
 # CLAMAV_CONFFILES should be a list of user-editable files
@@ -111,7 +111,7 @@ clamav-source: $(DL_DIR)/$(CLAMAV_SOURCE) $(CLAMAV_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(CLAMAV_BUILD_DIR)/.configured: $(DL_DIR)/$(CLAMAV_SOURCE) $(CLAMAV_PATCHES) make/clamav.mk
-	$(MAKE) zlib-stage libgmp-stage
+	$(MAKE) zlib-stage libgmp-stage openssl-stage
 	rm -rf $(BUILD_DIR)/$(CLAMAV_DIR) $(@D)
 	$(CLAMAV_UNZIP) $(DL_DIR)/$(CLAMAV_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(CLAMAV_PATCHES)"; \
@@ -137,6 +137,7 @@ $(CLAMAV_BUILD_DIR)/.configured: $(DL_DIR)/$(CLAMAV_SOURCE) $(CLAMAV_PATCHES) ma
 		--disable-static \
 		--sysconfdir=$(TARGET_PREFIX)/etc \
 		--with-zlib=$(STAGING_PREFIX) \
+		--with-openssl=$(STAGING_PREFIX) \
 		--mandir=$(TARGET_PREFIX)/man	\
 	)
 	$(PATCH_LIBTOOL) $(@D)/libtool
