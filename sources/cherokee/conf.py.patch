@@ -10,15 +10,15 @@
                       "/usr/bin/",
                       "/usr/sbin/",
                       "/usr/local/bin/",
-                      "%OPTWARE_TARGET_PREFIX%/csw/php5/bin/",
-                      "%OPTWARE_TARGET_PREFIX%/local/bin"]
+                      "/opt/csw/php5/bin/",
+                      "/opt/local/bin"]
  
 -PYTHON_DIRS       = ["/usr/bin",
 +PYTHON_DIRS       = ["%OPTWARE_TARGET_PREFIX%/bin",
 +                     "/usr/bin",
                       "/usr/local/bin",
-                      "%OPTWARE_TARGET_PREFIX%/csw/bin",
-                      "%OPTWARE_TARGET_PREFIX%/local/bin"]
+                      "/opt/csw/bin",
+                      "/opt/local/bin"]
  
 -PHP_NAMES         = ["php5-cgi",
 +PHP_NAMES         = ["php-fcgi",
