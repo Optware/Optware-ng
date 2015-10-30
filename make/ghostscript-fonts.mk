@@ -90,8 +90,8 @@ GHOSTSCRIPT-FONTS_IPK=$(BUILD_DIR)/ghostscript-fonts_$(GHOSTSCRIPT-FONTS_VERSION
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(GHOSTSCRIPT-FONTS_SOURCE):
-	$(WGET) -P $(@D) $(GHOSTSCRIPT-FONTS_SITE)/$(shell echo $(@F)|sed -e 's/+/%2B/g' -e 's/~/%7E/') || \
-	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(shell echo $(@F)|sed -e 's/+/%2B/g' -e 's/~/%7E/')
+	$(WGET) -P $(@D) $(GHOSTSCRIPT-FONTS_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
