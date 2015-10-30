@@ -15,7 +15,7 @@
 # You should change all these variables to suit your package.
 #
 GETTEXT_SITE=http://ftp.gnu.org/gnu/gettext
-GETTEXT_VERSION=0.19.5.1
+GETTEXT_VERSION=0.19.6
 GETTEXT_VERSION_MAJOR=0.19
 GETTEXT_SOURCE=gettext-$(GETTEXT_VERSION).tar.gz
 GETTEXT_DIR=gettext-$(GETTEXT_VERSION)
@@ -98,7 +98,7 @@ $(DL_DIR)/$(GETTEXT_SOURCE):
 gettext-source: $(DL_DIR)/$(GETTEXT_SOURCE) $(GETTEXT_PATCHES)
 
 
-$(GETTEXT_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(GETTEXT_SOURCE)
+$(GETTEXT_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(GETTEXT_SOURCE) make/gettext.mk
 	rm -rf $(HOST_BUILD_DIR)/$(GETTEXT_DIR) $(@D)
 	$(GETTEXT_UNZIP) $(DL_DIR)/$(GETTEXT_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
 	mv $(HOST_BUILD_DIR)/$(GETTEXT_DIR) $(@D)
