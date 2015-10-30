@@ -13,10 +13,12 @@ The instructions below only download, unpack and configure the package manager `
 To bootstrap the feed, connect over SSH/Telnet and type:
 
 ARMv7 EABI hardfloat:
+(Use this if you have a modern ARM device with FPU, e.g., a NAS)
 ```
 wget -O - http://optware-ng.zyxmon.org/buildroot-armeabihf/buildroot-armeabihf-bootstrap.sh | sh
 ```
 ARMv7 EABI softfloat:
+(Use this for a modern ARM device without FPU, e.g., an ARMv7 router)
 ```
 wget -O - http://optware-ng.zyxmon.org/buildroot-armeabi-ng/buildroot-armeabi-ng-bootstrap.sh | sh
 ```
