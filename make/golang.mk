@@ -122,7 +122,7 @@ $(GOLANG_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(GOLANG_SOURCE) $(G
 
 golang-host: $(GOLANG_HOST_BUILD_DIR)/.built
 
-$(GOLANG_BUILD_DIR)/.configured: $(GOLANG_PATCHES) make/golang.mk #$(GOLANG_HOST_BUILD_DIR)/.built
+$(GOLANG_BUILD_DIR)/.configured: $(DL_DIR)/$(GOLANG_SOURCE) $(GOLANG_PATCHES) make/golang.mk #$(GOLANG_HOST_BUILD_DIR)/.built
 	rm -rf $(BUILD_DIR)/$(GOLANG_DIR) $(@D)
 	$(GOLANG_UNZIP) $(DL_DIR)/$(GOLANG_SOURCE) | tar -C $(BUILD_DIR) -xf -
 	if test -n "$(GOLANG_PATCHES)" ; \
