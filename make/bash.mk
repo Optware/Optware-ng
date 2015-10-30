@@ -21,9 +21,9 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 BASH_SITE=http://ftp.gnu.org/gnu/bash/
-BASH_VER=3.2
+BASH_VER=4.3
 # must match patch files
-BASH_PATCH_LEVEL=54
+BASH_PATCH_LEVEL=42
 BASH_VERSION=$(BASH_VER).$(BASH_PATCH_LEVEL)
 BASH_SOURCE=bash-$(BASH_VER).tar.gz
 BASH_DIR=bash-$(BASH_VER)
@@ -49,8 +49,8 @@ BASH_IPK_VERSION=1
 # which they should be applied to the source code.
 #
 #						001 - $(BASH_PATCH_LEVEL)
-BASH_PATCHES=$(BASH_SOURCE_DIR)/bash-3.2-patches/bash32-* \
-	     $(BASH_SOURCE_DIR)/builtins-Makefile.in.patch
+BASH_PATCHES=$(BASH_SOURCE_DIR)/bash-4.3-patches/bash43-* \
+#	     $(BASH_SOURCE_DIR)/builtins-Makefile.in.patch
 
 #
 # If the compilation of the package requires additional
