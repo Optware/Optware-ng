@@ -108,7 +108,7 @@ $(DICT_BUILD_DIR)/.configured: $(DL_DIR)/$(DICT_SOURCE) $(DICT_PATCHES) make/dic
 	rm -rf $(BUILD_DIR)/$(DICT_DIR) $(DICT_BUILD_DIR)
 	$(DICT_UNZIP) $(DL_DIR)/$(DICT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(DICT_DIR) $(DICT_BUILD_DIR)
-	sed -i.orig -e 's|libtool|$(STAGING_PREFIX)/bin/libtool|' $(@D)/Makefile.in
+	sed -i.orig -e 's|@LIBTOOL@|$(STAGING_PREFIX)/bin/libtool|' $(@D)/Makefile.in
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(DICT_CPPFLAGS)" \
@@ -121,6 +121,7 @@ $(DICT_BUILD_DIR)/.configured: $(DL_DIR)/$(DICT_SOURCE) $(DICT_PATCHES) make/dic
 		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 	)
+	ln -s . $(@D)/.libs
 #	$(PATCH_LIBTOOL) $(DICT_BUILD_DIR)/libtool
 	touch $@
 
