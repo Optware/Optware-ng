@@ -138,7 +138,8 @@ cscope-unpack: $(CSCOPE_BUILD_DIR)/.configured
 #
 $(CSCOPE_BUILD_DIR)/.built: $(CSCOPE_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(@D)
+	$(MAKE) -C $(@D) \
+		CURSES_LIBS='-lncurses'
 	touch $@
 
 #
