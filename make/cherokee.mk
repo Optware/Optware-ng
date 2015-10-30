@@ -135,7 +135,7 @@ cherokee-source: $(DL_DIR)/$(CHEROKEE_SOURCE_SAVE) $(CHEROKEE_PATCHES)
 # shown below to make various patches to it.
 #
 $(CHEROKEE_BUILD_DIR)/.configured: $(DL_DIR)/$(CHEROKEE_SOURCE_SAVE) $(CHEROKEE_PATCHES) make/cherokee.mk
-	$(MAKE) openssl-stage pcre-stage
+	$(MAKE) openssl-stage pcre-stage python27-host-stage gettext-host-stage
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
 	$(MAKE) openldap-stage
 endif
@@ -148,8 +148,11 @@ endif
 	mv $(BUILD_DIR)/$(CHEROKEE_DIR) $(@D)
 	sed -i.orig -e '1s|#!.*|#!$(TARGET_PREFIX)/bin/python|' $(@D)/admin/server.py
 	sed -i.orig -e '/\/var\/run\/cherokee.pid/d' $(@D)/admin/PageNewConfig.py
+	cd $(@D); $(HOST_STAGING_PREFIX)/bin/python2.7 po/admin/generate_POTFILESin.py > po/admin/POTFILES.in
+	sed -i -e '/^AC_INIT(/s/$$/\nAM_GNU_GETTEXT\nAM_GNU_GETTEXT_VERSION([$(GETTEXT_VERSION)])/' -e \
+		'/^AM_PO_SUBDIRS/s/^/dnl /' $(@D)/configure.ac
 	touch $(@D)/{README,ChangeLog}
-	$(AUTORECONF1.10) -vif $(@D)
+	export PATH=$(HOST_STAGING_PREFIX)/bin:$$PATH; $(AUTORECONF1.10) -vif $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(CHEROKEE_CPPFLAGS)" \
