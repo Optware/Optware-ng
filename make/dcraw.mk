@@ -22,7 +22,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 DCRAW_SITE=http://www.cybercom.net/~dcoffin/dcraw
-DCRAW_VERSION=1.376
+DCRAW_HEAD_VERSION=`wget -qO- $(DCRAW_SITE)/RCS/dcraw.c,v|head -1|cut -f2|tr -d ';'`
+DCRAW_VERSION=1.476
 DCRAW_SOURCE=dcraw.c,v
 DCRAW_DIR=dcraw-$(DCRAW_VERSION)
 DCRAW_UNZIP=zcat
@@ -30,14 +31,14 @@ DCRAW_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 DCRAW_DESCRIPTION=Decoding raw digital photos.
 DCRAW_SECTION=graphics
 DCRAW_PRIORITY=optional
-DCRAW_DEPENDS=libjpeg, liblcms
+DCRAW_DEPENDS=libjpeg, liblcms2
 DCRAW_SUGGESTS=
 DCRAW_CONFLICTS=
 
 #
 # DCRAW_IPK_VERSION should be incremented when the ipk changes.
 #
-DCRAW_IPK_VERSION=2
+DCRAW_IPK_VERSION=1
 
 #
 # DCRAW_CONFFILES should be a list of user-editable files
@@ -53,7 +54,7 @@ DCRAW_IPK_VERSION=2
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-DCRAW_CPPFLAGS=-lm -ljpeg -llcms
+DCRAW_CPPFLAGS=-lm -ljpeg -llcms2 -DNO_JASPER
 DCRAW_LDFLAGS=
 
 #
@@ -78,9 +79,13 @@ DCRAW_IPK=$(BUILD_DIR)/dcraw_$(DCRAW_VERSION)-$(DCRAW_IPK_VERSION)_$(TARGET_ARCH
 #
 $(DL_DIR)/$(DCRAW_SOURCE): make/dcraw.mk
 	rm -f $(DL_DIR)/dcraw*
-	$(WGET) -P $(DL_DIR) $(DCRAW_SITE)/RCS/$(DCRAW_SOURCE)
-	$(WGET) -P $(DL_DIR) $(DCRAW_SITE)/dcraw.1
-	touch $(DL_DIR)/$(DCRAW_SOURCE)
+	export CREATE_CHECKSUM=1; \
+	head_ver=$(DCRAW_HEAD_VERSION) && \
+		$(WGET) -O $(@D)/dcraw.c,v-$${head_ver} $(DCRAW_SITE)/RCS/$(@F) && \
+		$(WGET) -O $(@D)/dcraw.1-$${head_ver} $(DCRAW_SITE)/dcraw.1 && \
+		mv -f $(@D)/dcraw.c,v-$${head_ver} $@ && \
+		mv -f $(@D)/dcraw.1-$${head_ver} $(@D)/dcraw.1
+	touch $@
 
 #
 # The source code depends on it existing within the download directory.
@@ -108,7 +113,7 @@ dcraw-source: $(DL_DIR)/$(DCRAW_SOURCE) $(DCRAW_PATCHES)
 # shown below to make various patches to it.
 #
 $(DCRAW_BUILD_DIR)/.configured: $(DL_DIR)/$(DCRAW_SOURCE) $(DCRAW_PATCHES) make/dcraw.mk
-	$(MAKE) libjpeg-stage liblcms-stage
+	$(MAKE) libjpeg-stage liblcms2-stage
 	rm -rf $(BUILD_DIR)/$(DCRAW_DIR) $(DCRAW_BUILD_DIR)
 #	$(DCRAW_UNZIP) $(DL_DIR)/$(DCRAW_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mkdir -p $(BUILD_DIR)/$(DCRAW_DIR)
@@ -164,7 +169,7 @@ $(DCRAW_IPK_DIR)/CONTROL/control:
 	@echo "Section: $(DCRAW_SECTION)" >>$@
 	@echo "Version: $(DCRAW_VERSION)-$(DCRAW_IPK_VERSION)" >>$@
 	@echo "Maintainer: $(DCRAW_MAINTAINER)" >>$@
-	@echo "Source: $(DCRAW_SITE)/$(DCRAW_SOURCE)" >>$@
+	@echo "Source: $(DCRAW_SITE)/RCS/$(DCRAW_SOURCE)" >>$@
 	@echo "Description: $(DCRAW_DESCRIPTION)" >>$@
 	@echo "Depends: $(DCRAW_DEPENDS)" >>$@
 	@echo "Suggests: $(DCRAW_SUGGESTS)" >>$@
@@ -188,7 +193,7 @@ $(DCRAW_IPK): $(DCRAW_BUILD_DIR)/.built
 	$(INSTALL) $(DCRAW_BUILD_DIR)/dcraw $(DCRAW_IPK_DIR)$(TARGET_PREFIX)/bin/
 	$(STRIP_COMMAND) $(DCRAW_IPK_DIR)$(TARGET_PREFIX)/bin/dcraw
 	$(INSTALL) -d $(DCRAW_IPK_DIR)$(TARGET_PREFIX)/share/man/man1
-	$(INSTALL) $(DL_DIR)/dcraw.1 $(DCRAW_IPK_DIR)$(TARGET_PREFIX)/share/man/man1/
+	$(INSTALL) $(DL_DIR)/dcraw.1 $(DCRAW_IPK_DIR)$(TARGET_PREFIX)/share/man/man1/dcraw.1
 #	$(MAKE) -C $(DCRAW_BUILD_DIR) DESTDIR=$(DCRAW_IPK_DIR) install-strip
 #	$(INSTALL) -d $(DCRAW_IPK_DIR)$(TARGET_PREFIX)/etc/
 #	$(INSTALL) -m 644 $(DCRAW_SOURCE_DIR)/dcraw.conf $(DCRAW_IPK_DIR)$(TARGET_PREFIX)/etc/dcraw.conf
