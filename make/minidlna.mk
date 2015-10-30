@@ -154,8 +154,8 @@ endif
 	fi
 	mv $(@D)/$(MINIDLNA_DIR) $(@D)/thumbs
 	### configure version without thumbnails
-	sed -i -e '/^AM_SILENT_RULES/s/^/dnl /' $(@D)/nothumbs/configure.ac
-	$(AUTORECONF1.10) -vif $(@D)/nothumbs
+	sed -i -e 's/AM_GNU_GETTEXT_VERSION(.*)/AM_GNU_GETTEXT_VERSION($(GETTEXT_VERSION))/' $(@D)/nothumbs/configure.ac
+	$(AUTORECONF1.14) -vif $(@D)/nothumbs
 	(cd $(@D)/nothumbs; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MINIDLNA_CPPFLAGS)" \
@@ -180,8 +180,8 @@ endif
 		 -e 's|/usr/|$(TARGET_PREFIX)/|' \
 		$(@D)/nothumbs/minidlna.c
 	### configure version with thumbnails
-	sed -i -e '/^AM_SILENT_RULES/s/^/dnl /' $(@D)/thumbs/configure.ac
-	$(AUTORECONF1.10) -vif $(@D)/thumbs
+	sed -i -e 's/AM_GNU_GETTEXT_VERSION(.*)/AM_GNU_GETTEXT_VERSION($(GETTEXT_VERSION))/' $(@D)/thumbs/configure.ac
+	$(AUTORECONF1.14) -vif $(@D)/thumbs
 	(cd $(@D)/thumbs; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MINIDLNA_CPPFLAGS)" \
@@ -216,13 +216,11 @@ minidlna-unpack: $(MINIDLNA_BUILD_DIR)/.configured
 $(MINIDLNA_BUILD_DIR)/.built: $(MINIDLNA_BUILD_DIR)/.configured
 	rm -f $@
 	$(MAKE) -C $(@D)/nothumbs \
-		GETTEXT_MACRO_VERSION=$(GETTEXT_VERSION_MAJOR) \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MINIDLNA_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MINIDLNA_LDFLAGS)" \
 		;
 	$(MAKE) -C $(@D)/thumbs \
-		GETTEXT_MACRO_VERSION=$(GETTEXT_VERSION_MAJOR) \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MINIDLNA_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MINIDLNA_LDFLAGS)" \
@@ -301,7 +299,6 @@ endif
 $(MINIDLNA_IPK): $(MINIDLNA_BUILD_DIR)/.built
 	rm -rf $(MINIDLNA_IPK_DIR) $(BUILD_DIR)/minidlna_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MINIDLNA_BUILD_DIR)/nothumbs install \
-		GETTEXT_MACRO_VERSION=$(GETTEXT_VERSION_MAJOR) \
 		DESTDIR=$(MINIDLNA_IPK_DIR) \
 		PREFIX=$(MINIDLNA_IPK_DIR) \
 		INSTALLPREFIX=$(MINIDLNA_IPK_DIR)$(TARGET_PREFIX) \
@@ -320,7 +317,6 @@ $(MINIDLNA_IPK): $(MINIDLNA_BUILD_DIR)/.built
 $(MINIDLNA_THUMBNAIL_IPK): $(MINIDLNA_BUILD_DIR)/.built
 	rm -rf $(MINIDLNA_THUMBNAIL_IPK_DIR) $(BUILD_DIR)/minidlna-thumbnail_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MINIDLNA_BUILD_DIR)/thumbs install \
-		GETTEXT_MACRO_VERSION=$(GETTEXT_VERSION_MAJOR) \
 		DESTDIR=$(MINIDLNA_THUMBNAIL_IPK_DIR) \
 		PREFIX=$(MINIDLNA_THUMBNAIL_IPK_DIR) \
 		INSTALLPREFIX=$(MINIDLNA_THUMBNAIL_IPK_DIR)$(TARGET_PREFIX) \
