@@ -340,7 +340,7 @@ COMMON_CROSS_PACKAGES = \
 	libglade libhid \
 	libical \
 	libid3tag libidn libieee1284 libijs libinklevel libjansson libjbigkit libjpeg \
-	libksba liblcms libmaa libmad libmatroska libmemcache libmicrohttpd \
+	libksba liblcms liblcms2 libmaa libmad libmatroska libmemcache libmicrohttpd \
 	libmcrypt \
 	libmms libmnl libmpc libmpcdec libmpdclient libmpeg2 libmpfr libmrss libmtp \
 	libnetfilter-acct libnetfilter-conntrack libnetfilter-log libnetfilter-queue libnfnetlink libnettle libnl libnsl libnxml \
