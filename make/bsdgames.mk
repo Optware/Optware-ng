@@ -114,7 +114,7 @@ bsdgames-source: $(DL_DIR)/$(BSDGAMES_SOURCE) $(BSDGAMES_PATCHES)
 # shown below to make various patches to it.
 #
 $(BSDGAMES_BUILD_DIR)/.configured: $(DL_DIR)/$(BSDGAMES_SOURCE) $(BSDGAMES_PATCHES) make/bsdgames.mk
-	$(MAKE) flex-stage ncurses-stage openssl-host-stage openssl-stage
+	$(MAKE) flex-stage ncurses-host-stage ncurses-stage openssl-host-stage openssl-stage
 	rm -rf $(BUILD_DIR)/$(BSDGAMES_DIR) $(@D)
 	$(BSDGAMES_UNZIP) $(DL_DIR)/$(BSDGAMES_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(BSDGAMES_PATCHES)" ; \
@@ -158,7 +158,7 @@ $(BSDGAMES_BUILD_DIR)/.built: $(BSDGAMES_BUILD_DIR)/.configured
 		;
 	$(MAKE) -C $(@D) \
 		CC=$(HOSTCC) \
-		OPTIMIZE="-O2 -I$(HOST_STAGING_INCLUDE_DIR)" \
+		OPTIMIZE="-O2 -I$(HOST_STAGING_INCLUDE_DIR) -I$(HOST_STAGING_INCLUDE_DIR)/ncurses" \
 		hack/makedefs \
 		fortune/strfile/strfile \
 		monop/initdeck \
