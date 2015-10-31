@@ -12,11 +12,10 @@
 # RTORRENT_UNZIP is the command used to unzip the source.
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
-RTORRENT_SITE=http://libtorrent.rakshasa.no/downloads
-RTORRENT_SITE_GITHUB=https://github.com/rakshasa/rtorrent/archive
+RTORRENT_SITE=https://github.com/rakshasa/rtorrent/archive
 
-RTORRENT_VERSION ?= 0.9.4
-RTORRENT_IPK_VERSION ?= 1
+RTORRENT_VERSION=0.9.4
+RTORRENT_IPK_VERSION=1
 
 RTORRENT_SVN=svn://rakshasa.no/libtorrent/trunk/rtorrent
 #RTORRENT_SVN_REV=1037
@@ -35,12 +34,8 @@ RTORRENT_NCURSES=$(strip \
 	$(if $(filter ds101g syno-e500, $(OPTWARE_TARGET)), ncurses, \
 	$(NCURSES_FOR_OPTWARE_TARGET)))
 RTORRENT_DEPENDS=libtorrent, $(RTORRENT_NCURSES), libcurl, xmlrpc-c, zlib
-RTORRENT_SUGGESTS=dtach, screen, adduser
+RTORRENT_SUGGESTS=dtach, screen, adduser, cppunit
 RTORRENT_CONFLICTS=
-RTORRENT_CPPUNIT?=yes
-ifeq ($(RTORRENT_CPPUNIT), yes)
-RTORRENT_DEPENDS+=, cppunit
-endif
 
 #
 # RTORRENT_CONFFILES should be a list of user-editable files
@@ -108,8 +103,7 @@ ifdef RTORRENT_SVN_REV
 		rm -rf $(RTORRENT_DIR) \
 	)
 else
-	$(WGET) -P $(@D) $(RTORRENT_SITE)/$(@F) || \
-	$(WGET) -O $@ $(RTORRENT_SITE_GITHUB)/$(RTORRENT_VERSION).tar.gz || (rm -f $@; exit 1) || \
+	$(WGET) -O $@ $(RTORRENT_SITE_GITHUB)/$(RTORRENT_VERSION).tar.gz || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 endif
 
@@ -134,18 +128,9 @@ rtorrent-source: $(DL_DIR)/$(RTORRENT_SOURCE) $(RTORRENT_PATCHES)
 # 
 $(RTORRENT_BUILD_DIR)/.configured: $(DL_DIR)/$(RTORRENT_SOURCE) $(RTORRENT_PATCHES) make/rtorrent.mk
 	$(MAKE) libtorrent-stage $(RTORRENT_NCURSES)-stage \
-	libcurl-stage xmlrpc-c-stage zlib-stage
-	$(HOST_TOOL_AUTOMAKE1.10) automake1.14-host-stage
-ifeq ($(RTORRENT_CPPUNIT), yes)
-	$(MAKE) cppunit-stage
-endif
-	rm -rf $(BUILD_DIR)/$(RTORRENT_DIR) $(RTORRENT_BUILD_DIR)
-ifdef RTORRENT_SVN_REV
+		libcurl-stage xmlrpc-c-stage zlib-stage cppunit-stage
+	rm -rf $(BUILD_DIR)/$(RTORRENT_DIR) $(@D)
 	$(RTORRENT_UNZIP) $(DL_DIR)/$(RTORRENT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-else
-	mkdir -p $(BUILD_DIR)/$(RTORRENT_DIR)
-	$(RTORRENT_UNZIP) $(DL_DIR)/$(RTORRENT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-endif
 	if test -n "$(RTORRENT_PATCHES)" ; \
 		then cat $(RTORRENT_PATCHES) | \
 		$(PATCH) -d $(BUILD_DIR)/$(RTORRENT_DIR) -p0 ; \
@@ -163,10 +148,7 @@ else
 	sed -i -e '/TORRENT_CHECK_EXECINFO()/s/.*/AC_DEFINE(USE_EXECINFO, 1, Use execinfo.h)/' \
 		$(@D)/configure.ac
 endif
-ifeq ($(RTORRENT_CPPUNIT), yes)
-	cp -f $(STAGING_PREFIX)/share/aclocal/cppunit.m4 $(@D)/scripts/
-endif
-	export PATH=$(HOST_STAGING_PREFIX)/bin:$$PATH; AUTOMAKE=$(RTORRENT_AUTOMAKE) ACLOCAL=$(RTORRENT_ACLOCAL) autoreconf -vif $(@D)
+	$(AUTORECONF1.14) -vif $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(RTORRENT_CPPFLAGS)" \
@@ -229,7 +211,7 @@ else
 	@echo "Version: $(RTORRENT_VERSION)-$(RTORRENT_IPK_VERSION)" >>$@
 endif
 	@echo "Maintainer: $(RTORRENT_MAINTAINER)" >>$@
-	@echo "Source: $(RTORRENT_SITE)/$(RTORRENT_SOURCE)" >>$@
+	@echo "Source: $(RTORRENT_SITE_GITHUB)/$(RTORRENT_VERSION).tar.gz" >>$@
 	@echo "Description: $(RTORRENT_DESCRIPTION)" >>$@
 	@echo "Depends: $(RTORRENT_DEPENDS)" >>$@
 	@echo "Suggests: $(RTORRENT_SUGGESTS)" >>$@

@@ -11,9 +11,8 @@
 # LIBTORRENT_UNZIP is the command used to unzip the source.
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
-LIBTORRENT_SITE=http://libtorrent.rakshasa.no/downloads/
-LIBTORRENT_SITE_GITHUB=https://github.com/rakshasa/libtorrent/archive
-LIBTORRENT_VERSION?=0.13.4
+LIBTORRENT_SITE=https://github.com/rakshasa/libtorrent/archive
+LIBTORRENT_VERSION=0.13.4
 LIBTORRENT_SVN=svn://rakshasa.no/libtorrent/trunk/libtorrent
 #LIBTORRENT_SVN_REV=1037
 ifdef LIBTORRENT_SVN_REV
@@ -27,14 +26,14 @@ LIBTORRENT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 LIBTORRENT_DESCRIPTION=libtorrent is a BitTorrent library with a focus on high performance and good code. 
 LIBTORRENT_SECTION=libs
 LIBTORRENT_PRIORITY=optional
-LIBTORRENT_DEPENDS=openssl, libsigc++
+LIBTORRENT_DEPENDS=openssl, libsigc++, cppunit
 LIBTORRENT_SUGGESTS=
 LIBTORRENT_CONFLICTS=
 
 #
 # LIBTORRENT_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBTORRENT_IPK_VERSION?=1
+LIBTORRENT_IPK_VERSION=1
 
 #
 # LIBTORRENT_CONFFILES should be a list of user-editable files
@@ -122,8 +121,7 @@ ifdef LIBTORRENT_SVN_REV
 		rm -rf $(LIBTORRENT_DIR) \
 		)
 else
-	$(WGET) -P $(@D) $(LIBTORRENT_SITE)/$(@F) || \
-	$(WGET) -O $@ $(LIBTORRENT_SITE_GITHUB)/$(LIBTORRENT_VERSION).tar.gz || (rm -f $@; exit 1) || \
+	$(WGET) -O $@ $(LIBTORRENT_SITE)/$(LIBTORRENT_VERSION).tar.gz \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 endif
 
@@ -150,8 +148,7 @@ libtorrent-source: $(DL_DIR)/$(LIBTORRENT_SOURCE) $(LIBTORRENT_PATCHES)
 # shown below to make various patches to it.
 #
 $(LIBTORRENT_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBTORRENT_SOURCE) $(LIBTORRENT_PATCHES) make/libtorrent.mk
-	$(MAKE) openssl-stage libsigc++-stage
-	$(HOST_TOOL_AUTOMAKE1.10) automake1.14-host-stage
+	$(MAKE) openssl-stage libsigc++-stage cppunit-stage
 	rm -rf $(BUILD_DIR)/$(LIBTORRENT_DIR) $(@D)
 	$(LIBTORRENT_UNZIP) $(DL_DIR)/$(LIBTORRENT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBTORRENT_PATCHES)" ; \
@@ -161,12 +158,7 @@ $(LIBTORRENT_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBTORRENT_SOURCE) $(LIBTORRENT
 	if test "$(BUILD_DIR)/$(LIBTORRENT_DIR)" != "$(LIBTORRENT_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(LIBTORRENT_DIR) $(LIBTORRENT_BUILD_DIR) ; \
 	fi
-ifdef LIBTORRENT_SVN_REV
-	export PATH=$(HOST_STAGING_PREFIX)/bin:$$PATH; AUTOMAKE=$(RTORRENT_AUTOMAKE) ACLOCAL=$(RTORRENT_ACLOCAL) autoreconf -vif $(@D)
-endif
-	if test -n "$(LIBTORRENT_POST_AC_PATCHES)" ; then \
-		cat $(LIBTORRENT_POST_AC_PATCHES) | $(PATCH) -d $(@D) -p0 ; \
-	fi
+	$(AUTORECONF1.14) -vif $(@D)
 # fix for newer gcc error: ‘NULL’ was not declared in this scope
 	sed -i -e '/^#define LIBTORRENT_COMMON_H/s/$$/\n\n#include <cstddef>/' \
 		$(@D)/src/torrent/common.h
@@ -241,7 +233,7 @@ else
 	@echo "Version: $(LIBTORRENT_VERSION)-$(LIBTORRENT_IPK_VERSION)" >>$@
 endif
 	@echo "Maintainer: $(LIBTORRENT_MAINTAINER)" >>$@
-	@echo "Source: $(LIBTORRENT_SITE)/$(LIBTORRENT_SOURCE)" >>$@
+	@echo "Source: $(LIBTORRENT_SITE)/$(LIBTORRENT_VERSION).tar.gz" >>$@
 	@echo "Description: $(LIBTORRENT_DESCRIPTION)" >>$@
 	@echo "Depends: $(LIBTORRENT_DEPENDS)" >>$@
 	@echo "Suggests: $(LIBTORRENT_SUGGESTS)" >>$@
