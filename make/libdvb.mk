@@ -84,10 +84,12 @@ LIBDVB_IPK=$(BUILD_DIR)/libdvb_$(LIBDVB_VERSION)-$(LIBDVB_IPK_VERSION)_$(TARGET_
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(LIBDVB_SOURCE):
-	$(WGET) -P $(DL_DIR) $(LIBDVB_SITE)/$(LIBDVB_SOURCE)
+	$(WGET) -P $(@D) $(LIBDVB_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 $(DL_DIR)/$(LIBDVB_HEADERS_SOURCE):
-	$(WGET) -P $(DL_DIR) $(LIBDVB_SITE)/$(LIBDVB_HEADERS_SOURCE)
+	$(WGET) -P $(@D) $(LIBDVB_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.

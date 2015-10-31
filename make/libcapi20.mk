@@ -19,7 +19,7 @@
 #
 # You should change all these variables to suit your package.
 #
-LIBCAPI20_SITE=ftp://ftp.melware.net/capi-utils
+LIBCAPI20_SITE=http://optware.kupper.org/sources
 LIBCAPI20_VERSION=3.0.5-cm2
 LIBCAPI20_SOURCE=libcapi20-$(LIBCAPI20_VERSION).tar.gz
 LIBCAPI20_DIR=libcapi20-$(LIBCAPI20_VERSION)
@@ -70,7 +70,8 @@ LIBCAPI20_IPK=$(BUILD_DIR)/libcapi20_$(LIBCAPI20_VERSION)-$(LIBCAPI20_IPK_VERSIO
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(LIBCAPI20_SOURCE):
-	$(WGET) -P $(DL_DIR) $(LIBCAPI20_SITE)/$(LIBCAPI20_SOURCE)
+	$(WGET) -P $(@D) $(LIBCAPI20_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
