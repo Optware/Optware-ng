@@ -63,7 +63,7 @@ $(GLIBC-OPT_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-GLIBC-OPT_LIBS?=ld libBrokenLocale libSegFault libanl libc libcidn libcrypt libutil \
+GLIBC-OPT_LIBS?=ld libBrokenLocale libSegFault libgcc_s libanl libc libcidn libcrypt libutil \
 		libdl libm libmemusage libnss_compat libnss_dns libnss_files libnss_hesiod \
 		libnss_nis libnss_nisplus libpcprofile libpthread libresolv librt libthread_db
 

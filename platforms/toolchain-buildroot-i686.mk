@@ -44,7 +44,7 @@ TOOLCHAIN_SITE=http://buildroot.uclibc.org/downloads
 TOOLCHAIN_SOURCE=buildroot-2015.08.tar.bz2
 
 GLIBC-OPT_VERSION = 2.20
-GLIBC-OPT_IPK_VERSION = 2
+GLIBC-OPT_IPK_VERSION = 3
 GLIBC-OPT_LIBS_SOURCE_DIR = $(TARGET_CROSS_TOP)/i686-buildroot-linux-gnu/sysroot/lib
 LIBNSL_SO_DIR = $(TARGET_CROSS_TOP)/i686-buildroot-linux-gnu/sysroot/lib
 
