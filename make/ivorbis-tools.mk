@@ -123,6 +123,8 @@ $(IVORBIS_TOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(IVORBIS_TOOLS_SOURCE) $(IVOR
 		--with-ogg=$(STAGING_PREFIX) \
 		--with-vorbis=$(STAGING_PREFIX) \
 		--disable-curltest \
+		--disable-oggtest \
+		--disable-vorbistest \
 		--disable-nls \
 	)
 	sed -i -e '/CURLOPT_MUTE/d' $(@D)/ogg123/http_transport.c
