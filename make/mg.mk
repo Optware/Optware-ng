@@ -129,6 +129,7 @@ $(MG_BUILD_DIR)/.configured: $(DL_DIR)/$(MG_SOURCE) $(MG_PATCHES) make/mg.mk
 		--disable-nls \
 		--disable-static \
 	)
+	sed -i -e '/exit 1/s/^/#/' $(@D)/configure
 	cd $(@D); ./configure
 ifeq (uclibc, $(LIBC_STYLE))
 	cd $(@D); \
