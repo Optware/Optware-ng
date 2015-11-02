@@ -59,7 +59,7 @@ MOTIF_PATCHES=$(MOTIF_SOURCE_DIR)/configure.patch $(MOTIF_SOURCE_DIR)/Makefile.p
 # compilation or linking flags, then list them here.
 #
 MOTIF_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/freetype2
-MOTIF_LDFLAGS=-lfreetype -lXt -lX11 -lXext
+MOTIF_LDFLAGS=-lfreetype -lXt -lXft -lX11 -lXext
 
 #
 # MOTIF_BUILD_DIR is the directory in which the build is done.
@@ -123,7 +123,7 @@ $(MOTIF_BUILD_DIR)/.configured: $(DL_DIR)/$(MOTIF_SOURCE) $(MOTIF_PATCHES) make/
 		then mv $(BUILD_DIR)/$(MOTIF_DIR) $(@D) ; \
 	fi
 #	makestrs.host
-	cd $(@D)/config/util; gcc -g -O2 -fno-strict-aliasing -fno-tree-ter -o makestrs.host makestrs.c
+	cd $(@D)/config/util; $(HOSTCC) -g -O2 -fno-strict-aliasing -fno-tree-ter -o makestrs.host makestrs.c
 	touch $(@D)/NEWS $(@D)/AUTHORS
 	$(AUTORECONF1.10) -vif $(@D)
 	(cd $(@D); \
