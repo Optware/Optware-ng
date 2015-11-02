@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-NET-TOOLS_SITE=http://www.tazenda.demon.co.uk/phil/net-tools
+NET-TOOLS_SITE=$(SOURCES_NLO_SITE)
 NET-TOOLS_VERSION=1.60
 NET-TOOLS_SOURCE=net-tools-$(NET-TOOLS_VERSION).tar.bz2
 NET-TOOLS_DIR=net-tools-$(NET-TOOLS_VERSION)
