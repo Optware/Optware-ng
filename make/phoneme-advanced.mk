@@ -102,7 +102,8 @@ $(DL_DIR)/$(PHONEME_ADVANCED_SOURCE):
 	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(PHONEME_ADVANCED_SOURCE)
 
 $(DL_DIR)/$(PHONEME_ADVANCED_LEGAL): # make/phoneme-advanced.mk
-	( cd $(BUILD_DIR) ; \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
+#	( cd $(BUILD_DIR) ; \
 		rm -rf $(PHONEME_ADVANCED_DIR)-legal && \
 		svn co $(PHONEME_ADVANCED_REPO)/legal $(PHONEME_ADVANCED_DIR)-legal/legal --username guest --password '' && \
 		tar -C $(PHONEME_ADVANCED_DIR)-legal -czf $@ legal --exclude .svn && \
