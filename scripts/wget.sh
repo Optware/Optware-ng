@@ -75,6 +75,7 @@ if [ "x$fail" == "x1" ]; then
 	echo "Download failed" >&2
 	echo "Removing ${file}" >&2
 	rm -f ${file}
+	exit 1
 fi
 
 if [ ! -f $file ]; then
