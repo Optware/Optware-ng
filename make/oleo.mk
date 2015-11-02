@@ -124,6 +124,7 @@ $(OLEO_BUILD_DIR)/.configured: $(DL_DIR)/$(OLEO_SOURCE) $(OLEO_PATCHES) make/ole
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(OLEO_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(OLEO_LDFLAGS)" \
 		ac_cv_lib_cups_cupsGetPrinters=no \
+		am_cv_func_working_mktime=yes \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
