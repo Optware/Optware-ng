@@ -150,7 +150,7 @@ $(LIBLCMS2_BUILD_DIR)/.staged: $(LIBLCMS2_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	rm -f $(STAGING_LIB_DIR)/liblcms2.la
-	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/lcms.pc
+	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/lcms2.pc
 	touch $@
 
 liblcms2-stage: $(LIBLCMS2_BUILD_DIR)/.staged
