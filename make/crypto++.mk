@@ -122,7 +122,7 @@ $(CRYPTO++_BUILD_DIR)/.configured: $(DL_DIR)/$(CRYPTO++_SOURCE) $(CRYPTO++_PATCH
 		then mv $(BUILD_DIR)/$(CRYPTO++_DIR) $(@D) ; \
 	fi
 ifneq ($(TARGET_ARCH), $(filter i686, $(TARGET_ARCH)))
-	sed -i -e '/-mtune/d' $(@D)/GNUmakefile
+	sed -i -e '/-mtune/d' -e 's/-march=native//g' $(@D)/GNUmakefile
 endif
 #	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
