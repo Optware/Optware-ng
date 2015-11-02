@@ -12,7 +12,7 @@ if [ -z "${TOP}" ]; then
 	TOP=`dirname $0`
 fi
 
-${WGET} "$@" || exit 1
+${WGET} "$@" || fail=1
 
 skip=0
 next_is_file=0
@@ -70,6 +70,12 @@ for arg in "$@"; do
 		### and URL
 		file=${dir}`echo $arg | sed -e 's|/*$||' -e 's|.*/||'`
 	done
+
+if [ "x$fail" == "x1" ]; then
+	echo "Download failed" >&2
+	echo "Removing ${file}" >&2
+	rm -f ${file}
+fi
 
 if [ ! -f $file ]; then
 	echo "Download failed" >&2
