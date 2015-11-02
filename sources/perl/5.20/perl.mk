@@ -168,6 +168,7 @@ else
 	sed -i -e "/^extensions=\|^nonxs_ext=\|^static_ext=\|^dynamic_ext=/s/=.*/=''/" $(@D)/config.sh-$(PERL_TARGET_NAME)
 	(cd $(@D); \
 		PATH="`dirname $(TARGET_CC)`:$$PATH" \
+		LC_TIME="en_US.UTF-8" \
 		./configure \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
