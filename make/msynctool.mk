@@ -76,7 +76,8 @@ MSYNCTOOL_IPK=$(BUILD_DIR)/msynctool_$(MSYNCTOOL_VERSION)-$(MSYNCTOOL_IPK_VERSIO
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(MSYNCTOOL_SOURCE):
-	$(WGET) -O $(DL_DIR)/$(MSYNCTOOL_SOURCE) "$(MSYNCTOOL_SITE)/$(MSYNCTOOL_SOURCE)?rev=&format=raw" || \
+#	$(WGET) -O $(DL_DIR)/$(MSYNCTOOL_SOURCE) "$(MSYNCTOOL_SITE)/$(MSYNCTOOL_SOURCE)?rev=&format=raw" || \
+
 	$(WGET) -P $(DL_DIR) $(SOURCES_NLO_SITE)/$(MSYNCTOOL_SOURCE)
 
 #
