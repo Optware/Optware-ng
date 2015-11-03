@@ -265,6 +265,10 @@ $(PY-OPENSSL_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(PY-OPENSSL_SO
 	$(MAKE) py-six-host-stage openssl-host-stage #py-cryptography-host-stage
 	mkdir -p $(@D)/
 	$(PY-OPENSSL_UNZIP) $(DL_DIR)/$(PY-OPENSSL_SOURCE_OLD) | tar -C $(HOST_BUILD_DIR) -xvf -
+	if test -n "$(PY-OPENSSL_PATCHES_OLD)" ; \
+		then cat $(PY-OPENSSL_PATCHES_OLD) | \
+		$(PATCH) -d $(HOST_BUILD_DIR)/$(PY-OPENSSL_DIR_OLD) -p1 ; \
+	fi
 	mv $(HOST_BUILD_DIR)/$(PY-OPENSSL_DIR_OLD) $(@D)/2.5
 	(cd $(@D)/2.5; \
 	    ( \
@@ -275,6 +279,10 @@ $(PY-OPENSSL_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(PY-OPENSSL_SO
 	    ) >> setup.cfg; \
 	)
 	$(PY-OPENSSL_UNZIP) $(DL_DIR)/$(PY-OPENSSL_SOURCE_OLD) | tar -C $(HOST_BUILD_DIR) -xvf -
+	if test -n "$(PY-OPENSSL_PATCHES_OLD)" ; \
+		then cat $(PY-OPENSSL_PATCHES_OLD) | \
+		$(PATCH) -d $(HOST_BUILD_DIR)/$(PY-OPENSSL_DIR_OLD) -p1 ; \
+	fi
 	mv $(HOST_BUILD_DIR)/$(PY-OPENSSL_DIR_OLD) $(@D)/2.6
 	(cd $(@D)/2.6; \
 	    ( \
@@ -285,6 +293,10 @@ $(PY-OPENSSL_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(PY-OPENSSL_SO
 	    ) >> setup.cfg; \
 	)
 	$(PY-OPENSSL_UNZIP) $(DL_DIR)/$(PY-OPENSSL_SOURCE_OLD) | tar -C $(HOST_BUILD_DIR) -xvf -
+	if test -n "$(PY-OPENSSL_PATCHES_OLD)" ; \
+		then cat $(PY-OPENSSL_PATCHES_OLD) | \
+		$(PATCH) -d $(HOST_BUILD_DIR)/$(PY-OPENSSL_DIR_OLD) -p1 ; \
+	fi
 	mv $(HOST_BUILD_DIR)/$(PY-OPENSSL_DIR_OLD) $(@D)/2.7
 	(cd $(@D)/2.7; \
 	    ( \
@@ -295,6 +307,10 @@ $(PY-OPENSSL_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(PY-OPENSSL_SO
 	    ) >> setup.cfg; \
 	)
 	$(PY-OPENSSL_UNZIP) $(DL_DIR)/$(PY-OPENSSL_SOURCE_OLD) | tar -C $(HOST_BUILD_DIR) -xvf -
+	if test -n "$(PY-OPENSSL_PATCHES_OLD)" ; \
+		then cat $(PY-OPENSSL_PATCHES_OLD) | \
+		$(PATCH) -d $(HOST_BUILD_DIR)/$(PY-OPENSSL_DIR_OLD) -p1 ; \
+	fi
 	mv $(HOST_BUILD_DIR)/$(PY-OPENSSL_DIR_OLD) $(@D)/3
 	(cd $(@D)/3; \
 	    ( \
