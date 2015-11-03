@@ -56,7 +56,7 @@ SILC_CLIENT_IPK_VERSION=1
 # compilation or linking flags, then list them here.
 #
 SILC_CLIENT_CPPFLAGS=
-SILC_CLIENT_LDFLAGS=
+SILC_CLIENT_LDFLAGS=-lncurses
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 SILC_CLIENT_LDFLAGS += -liconv
 endif
