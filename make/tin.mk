@@ -106,7 +106,7 @@ tin-source: $(DL_DIR)/$(TIN_SOURCE) $(TIN_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(TIN_BUILD_DIR)/.configured: $(DL_DIR)/$(TIN_SOURCE) $(TIN_PATCHES)
+$(TIN_BUILD_DIR)/.configured: $(DL_DIR)/$(TIN_SOURCE) $(TIN_PATCHES) make/tin.mk
 	make libidn-stage ncurses-stage pcre-stage
 	rm -rf $(BUILD_DIR)/$(TIN_DIR) $(@D)
 	$(TIN_UNZIP) $(DL_DIR)/$(TIN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -134,7 +134,7 @@ tin-unpack: $(TIN_BUILD_DIR)/.configured
 #
 $(TIN_BUILD_DIR)/.built: $(TIN_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(@D) build BUILD_CC=$(HOSTCC)
+	$(MAKE) -C $(@D) build BUILD_CFLAGS="" BUILD_CPPFLAGS="" BUILD_LDFLAGS="" BUILD_CC=$(HOSTCC)
 	touch $@
 
 #
