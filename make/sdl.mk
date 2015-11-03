@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SDL_SITE=http://www.libsdl.org/release
-SDL_VERSION=1.2.11
+SDL_VERSION=1.2.15
 SDL_SOURCE=SDL-$(SDL_VERSION).tar.gz
 SDL_DIR=SDL-$(SDL_VERSION)
 SDL_UNZIP=zcat
@@ -36,7 +36,7 @@ SDL_CONFLICTS=
 #
 # SDL_IPK_VERSION should be incremented when the ipk changes.
 #
-SDL_IPK_VERSION=2
+SDL_IPK_VERSION=1
 
 #
 # SDL_CONFFILES should be a list of user-editable files
