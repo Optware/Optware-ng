@@ -20,7 +20,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-SSAM_SITE=http://www.westley.demon.co.uk/src
+SSAM_SITE=ftp://ftp.tw.freebsd.org/pub/ports/distfiles
 SSAM_VERSION=1.10
 SSAM_SOURCE=ssam-$(SSAM_VERSION).tar.gz
 SSAM_DIR=ssam-$(SSAM_VERSION)
