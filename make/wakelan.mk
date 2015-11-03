@@ -72,7 +72,9 @@ WAKELAN_IPK=$(BUILD_DIR)/wakelan_$(WAKELAN_VERSION)-$(WAKELAN_IPK_VERSION)_$(TAR
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(WAKELAN_SOURCE):
-	$(WGET) -P $(DL_DIR) $(WAKELAN_SITE)/$(WAKELAN_SOURCE)
+#	$(WGET) -P $(@D) $(WAKELAN_SITE)/$(@F) || \
+
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
