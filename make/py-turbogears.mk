@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-TURBOGEARS_SITE=http://files.turbogears.org/eggs
+PY-TURBOGEARS_SITE=https://pypi.python.org/packages/source/T/TurboGears
 PY-TURBOGEARS_VERSION=1.1.1
 PY-TURBOGEARS_IPK_VERSION=1
 PY-TURBOGEARS_SOURCE=TurboGears-$(PY-TURBOGEARS_VERSION).tar.gz
