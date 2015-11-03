@@ -316,7 +316,9 @@ vlc-unpack: $(VLC_BUILD_DIR)/.configured
 #
 $(VLC_BUILD_DIR)/.built: $(VLC_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(@D) vlc_LDFLAGS="-L../src/.libs -lvlccore" vlc_cache_gen_LDADD="-L../src/.libs -L../lib/.libs -lvlccore -lvlc"
+	$(MAKE) -C $(@D) vlc_LDFLAGS="-L../src/.libs -lvlccore" \
+			vlc_cache_gen_LDADD="-L../src/.libs -L../lib/.libs -lvlccore -lvlc" \
+			LUAC=$(HOST_STAGING_PREFIX)/bin/luac
 	touch $@
 
 #
