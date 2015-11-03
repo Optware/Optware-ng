@@ -93,7 +93,7 @@ PY3-DJANGO_IPK=$(BUILD_DIR)/py3-django_$(PY-DJANGO_VERSION)-$(PY-DJANGO_IPK_VERS
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-DJANGO_SOURCE):
-	$(WGET) -O $(@D)/$(@F) $(PY-DJANGO_SITE) || \
+	$(WGET) -P $(@D) $(PY-DJANGO_SITE)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 ifneq ($(PY-DJANGO_VERSION), $(PY-DJANGO_VERSION_OLD))
 $(DL_DIR)/$(PY-DJANGO_SOURCE_OLD):
