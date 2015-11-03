@@ -74,7 +74,8 @@ PY-PYRO_IPK=$(BUILD_DIR)/py-pyro_$(PY-PYRO_VERSION)-$(PY-PYRO_IPK_VERSION)_$(TAR
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-PYRO_SOURCE):
-	$(WGET) -P $(DL_DIR) $(PY-PYRO_SITE)/$(PY-PYRO_SOURCE)
+	$(WGET) -P $(@D) $(PY-PYRO_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
