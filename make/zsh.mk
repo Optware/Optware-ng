@@ -21,7 +21,9 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 ZSH_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/zsh
-ZSH_VERSION=4.3.17
+ZSH_SITE2=http://www.zsh.org/pub
+ZSH_SITE3=http://www.zsh.org/pub/old
+ZSH_VERSION=5.1.1
 ZSH_SOURCE=zsh-$(ZSH_VERSION).tar.gz
 ZSH_DIR=zsh-$(ZSH_VERSION)
 ZSH_UNZIP=zcat
@@ -77,6 +79,8 @@ ZSH_IPK=$(BUILD_DIR)/zsh_$(ZSH_VERSION)-$(ZSH_IPK_VERSION)_$(TARGET_ARCH).ipk
 #
 $(DL_DIR)/$(ZSH_SOURCE):
 	$(WGET) -P $(@D) $(ZSH_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(ZSH_SITE2)/$(@F) || \
+	$(WGET) -P $(@D) $(ZSH_SITE3)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
