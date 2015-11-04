@@ -607,6 +607,7 @@ ACLOCAL1.4_SH= TOP=$(BASE_DIR) ACLOCAL=$(HOST_STAGING_PREFIX)/bin/aclocal-1.4 \
 
 # These should be called instead of `autoreconf`
 AUTORECONF1.15 = (cd $(BASE_DIR) && $(HOST_TOOL_AUTOMAKE)) && \
+	mkdir -p $(STAGING_PREFIX)/share/aclocal && \
 	$(subst %,$(HOST_STAGING_PREFIX)/bin/, \
 		AUTOCONF=%autoconf \
 		AUTOHEADER=%autoheader \
@@ -617,6 +618,7 @@ AUTORECONF1.15 = (cd $(BASE_DIR) && $(HOST_TOOL_AUTOMAKE)) && \
 		ACLOCAL='$(ACLOCAL1.15_SH) -I $(STAGING_PREFIX)/share/aclocal' \
 		%autoreconf)
 AUTORECONF1.14 = (cd $(BASE_DIR) && $(HOST_TOOL_AUTOMAKE1.14)) && \
+	mkdir -p $(STAGING_PREFIX)/share/aclocal && \
 	$(subst %,$(HOST_STAGING_PREFIX)/bin/, \
 		AUTOCONF=%autoconf \
 		AUTOHEADER=%autoheader \
@@ -627,6 +629,7 @@ AUTORECONF1.14 = (cd $(BASE_DIR) && $(HOST_TOOL_AUTOMAKE1.14)) && \
 		ACLOCAL='$(ACLOCAL1.14_SH) -I $(STAGING_PREFIX)/share/aclocal' \
 		%autoreconf)
 AUTORECONF1.10 =(cd $(BASE_DIR) && $(HOST_TOOL_AUTOMAKE1.10)) && \
+	mkdir -p $(STAGING_PREFIX)/share/aclocal && \
 	$(subst %,$(HOST_STAGING_PREFIX)/bin/, \
 		AUTOCONF=%autoconf \
 		AUTOHEADER=%autoheader \
@@ -637,6 +640,7 @@ AUTORECONF1.10 =(cd $(BASE_DIR) && $(HOST_TOOL_AUTOMAKE1.10)) && \
 		ACLOCAL='$(ACLOCAL1.10_SH) -I $(STAGING_PREFIX)/share/aclocal' \
 		%autoreconf)
 AUTORECONF1.9 = (cd $(BASE_DIR) && $(HOST_TOOL_AUTOMAKE1.9)) && \
+	mkdir -p $(STAGING_PREFIX)/share/aclocal && \
 	$(subst %,$(HOST_STAGING_PREFIX)/bin/, \
 		AUTOCONF=%autoconf \
 		AUTOHEADER=%autoheader \
@@ -647,6 +651,7 @@ AUTORECONF1.9 = (cd $(BASE_DIR) && $(HOST_TOOL_AUTOMAKE1.9)) && \
 		ACLOCAL='$(ACLOCAL1.9_SH) -I $(STAGING_PREFIX)/share/aclocal' \
 		%autoreconf)
 AUTORECONF1.4 = (cd $(BASE_DIR) && $(HOST_TOOL_AUTOMAKE1.4)) && \
+	mkdir -p $(STAGING_PREFIX)/share/aclocal && \
 	$(subst %,$(HOST_STAGING_PREFIX)/bin/, \
 		AUTOCONF=%autoconf \
 		AUTOHEADER=%autoheader \
