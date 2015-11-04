@@ -180,7 +180,7 @@
  	addnewvar("SHELL", get_user_shell());
 -	addnewvar("PATH", DEFAULT_PATH);
 +	if (svr_opts.android_mode) {
-+		addnewvar("PATH", "/sbin:/system/sbin:/system/bin:/system/xbin:/bin:%OPTWARE_TARGET_PREFIX%/bin:%OPTWARE_TARGET_PREFIX%/sbin");
++		addnewvar("PATH", "/bin:%OPTWARE_TARGET_PREFIX%/bin:%OPTWARE_TARGET_PREFIX%/sbin:/sbin:/system/sbin:/system/bin:/system/xbin");
 +		addnewvar("ANDROID_ASSETS", "/system/app");
 +		addnewvar("ANDROID_BOOTLOGO", "1");
 +		addnewvar("ANDROID_DATA", "/data");
