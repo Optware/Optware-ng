@@ -41,6 +41,11 @@ ERLANG_DOC_HTML_SOURCE=otp_doc_html_$(ERLANG_UPSTREAM_VERSION).tar.gz
 ERLANG_MAKE_OPTION=
 #"OTP_SMALL_BUILD=true"
 
+ifeq ($(shell test -x /usr/lib/jvm/java-8-oracle/bin/javac; echo $$?),0)
+# prefer oracle 8 javac if installed on the system
+ERLANG_MAKE_OPTION += JAVA="/usr/lib/jvm/java-8-oracle/bin/javac"
+endif
+
 #
 # ERLANG_IPK_VERSION should be incremented when the ipk changes.
 #
