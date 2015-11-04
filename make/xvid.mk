@@ -111,10 +111,7 @@ $(XVID_BUILD_DIR)/.configured: $(DL_DIR)/$(XVID_SOURCE) $(XVID_PATCHES) make/xvi
 	if test "$(BUILD_DIR)/$(XVID_DIR)" != "$(@D)" ; then \
 	    mv $(BUILD_DIR)/$(XVID_DIR) $(@D); \
 	fi
-	(cd $(@D)/build/generic; \
-		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
-		./bootstrap.sh; \
-	)
+	$(AUTORECONF1.10) $(@D)/build/generic
 	sed -i \
 	    -e 's:`./gcc-ver M`:'"`$(TARGET_CC) -dumpversion | cut -d. -f1`:" \
 	    -e 's:`./gcc-ver m`:'"`$(TARGET_CC) -dumpversion | cut -d. -f2`:" \
