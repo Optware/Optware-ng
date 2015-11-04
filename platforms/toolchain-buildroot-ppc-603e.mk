@@ -53,7 +53,9 @@ TARGET_INCDIR = $(TARGET_CROSS_TOP)/powerpc-buildroot-linux-gnu/sysroot/usr/incl
 #	into executables
 TARGET_LDFLAGS = -Wl,--dynamic-linker=$(TARGET_PREFIX)/lib/ld.so.1
 
-TARGET_CUSTOM_FLAGS= -pipe
+TARGET_CUSTOM_FLAGS= -pipe -fno-var-tracking-assignments
+# for -fno-var-tracking-assignments see:
+# https://gcc.gnu.org/bugzilla/show_bug.cgi?id=65779
 TARGET_CFLAGS=$(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
 
 TOOLCHAIN_SITE=http://buildroot.uclibc.org/downloads
