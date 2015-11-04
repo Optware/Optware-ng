@@ -129,7 +129,7 @@ spamassassin-stage: $(SPAMASSASSIN_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/spamassassin
 #
 $(SPAMASSASSIN_IPK_DIR)/CONTROL/control:
-	@$(INSTALL) -d $(SPAMASSASSIN_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: spamassassin" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -157,7 +157,9 @@ $(SPAMASSASSIN_IPK_DIR)/CONTROL/control:
 #
 $(SPAMASSASSIN_IPK): $(SPAMASSASSIN_BUILD_DIR)/.built
 	rm -rf $(SPAMASSASSIN_IPK_DIR) $(BUILD_DIR)/spamassassin_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(SPAMASSASSIN_BUILD_DIR) DESTDIR=$(SPAMASSASSIN_IPK_DIR) install
+	$(MAKE) -C $(SPAMASSASSIN_BUILD_DIR) DESTDIR=$(SPAMASSASSIN_IPK_DIR) install \
+		B_DATADIR=$(PERL-SPAMASSASSIN_IPK_DIR)$(TARGET_PREFIX)/share/spamassassin \
+		B_CONFDIR=$(PERL-SPAMASSASSIN_IPK_DIR)$(TARGET_PREFIX)/etc/spamassassin
 	perl -pi -e 's|$(PERL_HOSTPERL)|$(TARGET_PREFIX)/bin/perl|g' $(SPAMASSASSIN_IPK_DIR)/*
 	$(INSTALL) -d $(SPAMASSASSIN_IPK_DIR)$(TARGET_PREFIX)/etc/
 	$(MAKE) $(SPAMASSASSIN_IPK_DIR)/CONTROL/control
