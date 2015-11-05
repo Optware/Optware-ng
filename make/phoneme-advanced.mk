@@ -71,9 +71,14 @@ PHONEME_ADVANCED_CPPFLAGS=
 PHONEME_ADVANCED_LDFLAGS=
 
 PHONEME_ADVANCED_MAKE_OPTIONS=
-# JDK_HOME e.g. /usr/lib/jvm/java-1.5.0-sun-1.5.0.11
+ifeq ($(shell [ -x /usr/lib/jvm/java-8-oracle/bin/jar ] && [ -x /usr/lib/jvm/java-8-oracle/bin/java ] && [ -x /usr/lib/jvm/java-8-oracle/bin/javac ]; echo $$?),0)
+# prefer oracle 8 java if installed on the system
+PHONEME_ADVANCED_MAKE_OPTIONS+= JDK_HOME="/usr/lib/jvm/java-8-oracle"
+else
 ifdef JDK_HOME
+# JDK_HOME e.g. /usr/lib/jvm/java-1.5.0-sun-1.5.0.11
 PHONEME_ADVANCED_MAKE_OPTIONS+= JDK_HOME=$(JDK_HOME)
+endif
 endif
 
 #
