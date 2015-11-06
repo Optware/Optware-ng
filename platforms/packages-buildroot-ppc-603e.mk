@@ -38,7 +38,6 @@ BOOST_ADDITIONAL_LIBS:= atomic \
 			timer \
 			exception \
 			serialization \
-			test \
 			wave
 
 ### boost packages
