@@ -136,12 +136,6 @@ $(SQUEAK_BUILD_DIR)/.configured: $(DL_DIR)/$(SQUEAK_VM_SRC) $(DL_DIR)/$(SQUEAK_I
 	if test "$(BUILD_DIR)/$(SQUEAK_DIR)" != "$(SQUEAK_BUILD_DIR)" ; then \
 		mv $(BUILD_DIR)/$(SQUEAK_DIR) $(SQUEAK_BUILD_DIR) ; \
 	fi
-	(cd $(@D)/platforms/unix/config/; \
-		./mkacinc > acplugins.m4; \
-		aclocal; \
-		autoconf; \
-		rm acplugins.m4; \
-	)
 	mkdir -p $(@D)/bld
 	find $(@D) -type f -name "*.[ch]" -exec sed -i -e 's/clone/_clone_/g' {} \;
 #	Avoid adding host include and lib dirs
