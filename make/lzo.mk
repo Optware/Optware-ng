@@ -21,7 +21,7 @@
 #
 LZO_NAME=lzo
 LZO_SITE=http://www.oberhumer.com/opensource/lzo/download
-LZO_VERSION=2.03
+LZO_VERSION=2.09
 LZO_SOURCE=$(LZO_NAME)-$(LZO_VERSION).tar.gz
 LZO_DIR=$(LZO_NAME)-$(LZO_VERSION)
 LZO_UNZIP=zcat
