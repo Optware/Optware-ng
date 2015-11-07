@@ -29,7 +29,7 @@ UTIL_LINUX_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 UTIL_LINUX_DESCRIPTION=A suite of essential utilities for any Linux system.
 UTIL_LINUX_SECTION=misc
 UTIL_LINUX_PRIORITY=optional
-UTIL_LINUX_DEPENDS=e2fslibs, ncursesw, libtinfo, zlib, getopt
+UTIL_LINUX_DEPENDS=e2fslibs, ncursesw, libtinfo, zlib, getopt, libudev, readline
 UTIL_LINUX_SUGGESTS=python27
 UTIL_LINUX_CONFLICTS=
 
@@ -109,7 +109,8 @@ util-linux-source: $(DL_DIR)/$(UTIL_LINUX_SOURCE) $(UTIL_LINUX_PATCHES)
 # shown below to make various patches to it.
 #
 $(UTIL_LINUX_BUILD_DIR)/.configured: $(DL_DIR)/$(UTIL_LINUX_SOURCE) $(UTIL_LINUX_PATCHES) make/util-linux.mk
-	$(MAKE) e2fsprogs-stage ncursesw-stage libtinfo-stage zlib-stage python27-stage
+	$(MAKE) e2fsprogs-stage ncursesw-stage libtinfo-stage zlib-stage \
+		python27-stage udev-stage readline-stage
 	rm -rf $(BUILD_DIR)/$(UTIL_LINUX_DIR) $(@D)
 	$(UTIL_LINUX_UNZIP) $(DL_DIR)/$(UTIL_LINUX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(UTIL_LINUX_PATCHES)" ; \
