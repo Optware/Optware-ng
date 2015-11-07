@@ -20,23 +20,23 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-UTIL_LINUX_SITE=ftp://ftp.kernel.org/pub/linux/utils/util-linux
-UTIL_LINUX_VERSION=2.12r
-UTIL_LINUX_SOURCE=util-linux-$(UTIL_LINUX_VERSION).tar.gz
+UTIL_LINUX_SITE=ftp://ftp.kernel.org/pub/linux/utils/util-linux/v2.27
+UTIL_LINUX_VERSION=2.27.1
+UTIL_LINUX_SOURCE=util-linux-$(UTIL_LINUX_VERSION).tar.xz
 UTIL_LINUX_DIR=util-linux-$(UTIL_LINUX_VERSION)
-UTIL_LINUX_UNZIP=zcat
+UTIL_LINUX_UNZIP=xzcat
 UTIL_LINUX_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 UTIL_LINUX_DESCRIPTION=A suite of essential utilities for any Linux system.
 UTIL_LINUX_SECTION=misc
 UTIL_LINUX_PRIORITY=optional
-UTIL_LINUX_DEPENDS=
-UTIL_LINUX_SUGGESTS=ncurses, zlib
+UTIL_LINUX_DEPENDS=e2fslibs, ncursesw, libtinfo, zlib, getopt
+UTIL_LINUX_SUGGESTS=python27
 UTIL_LINUX_CONFLICTS=
 
 #
 # UTIL_LINUX_IPK_VERSION should be incremented when the ipk changes.
 #
-UTIL_LINUX_IPK_VERSION=6
+UTIL_LINUX_IPK_VERSION=1
 
 #
 # UTIL_LINUX_CONFFILES should be a list of user-editable files
@@ -46,7 +46,7 @@ UTIL_LINUX_IPK_VERSION=6
 # UTIL_LINUX_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-UTIL_LINUX_PATCHES=\
+#UTIL_LINUX_PATCHES=\
 	$(UTIL_LINUX_SOURCE_DIR)/llseek.patch \
 	$(UTIL_LINUX_SOURCE_DIR)/umount2.patch \
 	$(UTIL_LINUX_SOURCE_DIR)/loop-aes-util-linux-2.12r.patch \
@@ -56,13 +56,7 @@ UTIL_LINUX_PATCHES=\
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-UTIL_LINUX_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/ncurses
-ifeq ($(OPTWARE_TARGET), $(filter buildroot-mipsel buildroot-mipsel-ng, $(OPTWARE_TARGET)))
-UTIL_LINUX_CPPFLAGS+=-DOMAGIC=0407 -DNMAGIC=0410 -DZMAGIC=0413
-endif
-ifeq ($(OPTWARE_TARGET), $(filter buildroot-armeabi-ng buildroot-armv5eabi-ng buildroot-mipsel-ng, $(OPTWARE_TARGET)))
-UTIL_LINUX_CPPFLAGS+=-DLIBC_HAS_NO_SIGSETMASK
-endif
+UTIL_LINUX_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/ncursesw -I$(STAGING_INCLUDE_DIR)/python2.7
 UTIL_LINUX_LDFLAGS=
 
 #
@@ -115,7 +109,7 @@ util-linux-source: $(DL_DIR)/$(UTIL_LINUX_SOURCE) $(UTIL_LINUX_PATCHES)
 # shown below to make various patches to it.
 #
 $(UTIL_LINUX_BUILD_DIR)/.configured: $(DL_DIR)/$(UTIL_LINUX_SOURCE) $(UTIL_LINUX_PATCHES) make/util-linux.mk
-	$(MAKE) ncurses-stage zlib-stage
+	$(MAKE) e2fsprogs-stage ncursesw-stage libtinfo-stage zlib-stage python27-stage
 	rm -rf $(BUILD_DIR)/$(UTIL_LINUX_DIR) $(@D)
 	$(UTIL_LINUX_UNZIP) $(DL_DIR)/$(UTIL_LINUX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(UTIL_LINUX_PATCHES)" ; \
@@ -125,35 +119,23 @@ $(UTIL_LINUX_BUILD_DIR)/.configured: $(DL_DIR)/$(UTIL_LINUX_SOURCE) $(UTIL_LINUX
 	if test "$(BUILD_DIR)/$(UTIL_LINUX_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(UTIL_LINUX_DIR) $(@D) ; \
 	fi
-ifeq ($(OPTWARE_TARGET), $(filter shibby-tomato-arm buildroot-armeabi buildroot-armeabi-ng buildroot-armv5eabi-ng buildroot-armeabihf buildroot-i686 buildroot-mipsel buildroot-mipsel-ng, $(OPTWARE_TARGET)))
-#	no <asm/page.h>
-	sed -i -e '/#include <asm\/page\.h>/s|^|//|' $(@D)/disk-utils/fsck.cramfs.c
-endif
-ifeq ($(OPTWARE_TARGET), $(filter buildroot-mipsel buildroot-mipsel-ng, $(OPTWARE_TARGET)))
-#	no <linux/a.out.h>
-	sed -i -e '/#include <a\.out\.h>/s|^|//|' $(@D)/text-utils/more.c
-endif
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(UTIL_LINUX_CPPFLAGS)" \
 		CFLAGS="$(STAGING_CPPFLAGS) $(UTIL_LINUX_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(UTIL_LINUX_LDFLAGS)" \
+		PKG_CONFIG_PATH=$(STAGING_LIB_DIR)/pkgconfig \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=$(TARGET_PREFIX) \
+		--with-bashcompletiondir=$(TARGET_PREFIX)/share/bash-completion/completions \
+		--disable-use-tty-group \
 		--disable-nls \
 		--disable-static \
 	)
-	sed -i -e 's|-I/usr/include/ncurses ||g' \
-	       -e 's|HAVE_ZLIB=no|HAVE_ZLIB=yes|g' \
-		$(@D)/make_include
-ifeq ($(OPTWARE_TARGET), $(filter mbwe-bluering, $(OPTWARE_TARGET)))
-	### mbwe-bluering compiler bug workaround
-	sed -i -e '/#define PAGE_CACHE_SIZE/s/^.*/#define PAGE_CACHE_SIZE (4096)/' $(@D)/disk-utils/fsck.cramfs.c
-endif
-#	$(PATCH_LIBTOOL) $(UTIL_LINUX_BUILD_DIR)/libtool
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 util-linux-unpack: $(UTIL_LINUX_BUILD_DIR)/.configured
@@ -178,6 +160,12 @@ $(UTIL_LINUX_BUILD_DIR)/.built: $(UTIL_LINUX_BUILD_DIR)/.configured
 		INFO_DIR=$(TARGET_PREFIX)/share/info \
 		USRSHAREMISC_DIR=$(TARGET_PREFIX)/share/misc \
 		LOCALEDIR=$(TARGET_PREFIX)/share/locale \
+		NCURSES_CFLAGS='-I$(STAGING_INCLUDE_DIR)/ncursesw  ' \
+		NCURSES_LIBS='-lncursesw  ' \
+		PYTHON_CFLAGS='-I$(STAGING_INCLUDE_DIR)/python2.7  ' \
+		PYTHON_LIBS='-lpython2.7  ' \
+		TINFO_CFLAGS='-I$(STAGING_INCLUDE_DIR)/ncursesw  ' \
+		TINFO_LIBS='-ltinfo  ' \
 		;
 	touch $@
 
@@ -264,6 +252,10 @@ $(UTIL_LINUX_IPK): $(UTIL_LINUX_BUILD_DIR)/.built
 		echo "update-alternatives --remove $$f $$d/util-linux-$$f" \
 			>> $(UTIL_LINUX_IPK_DIR)/CONTROL/prerm; \
 	    done; \
+	done
+	# fix broken links
+	for link in `find $(UTIL_LINUX_IPK_DIR)$(TARGET_PREFIX)/bin -type l; find $(UTIL_LINUX_IPK_DIR)$(TARGET_PREFIX)/sbin -type l`; do \
+		ln -sf util-linux-`readlink $$link` $$link; \
 	done
 	echo "update-alternatives --install $(TARGET_PREFIX)/sbin/swapoff swapoff $(TARGET_PREFIX)/sbin/util-linux-swapon 80" \
 		>> $(UTIL_LINUX_IPK_DIR)/CONTROL/postinst
