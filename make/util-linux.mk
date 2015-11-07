@@ -29,7 +29,7 @@ UTIL_LINUX_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 UTIL_LINUX_DESCRIPTION=A suite of essential utilities for any Linux system.
 UTIL_LINUX_SECTION=misc
 UTIL_LINUX_PRIORITY=optional
-UTIL_LINUX_DEPENDS=e2fslibs, ncursesw, libtinfo, zlib, getopt, libudev, readline
+UTIL_LINUX_DEPENDS=e2fslibs, ncursesw, libtinfo, zlib, libudev, readline
 UTIL_LINUX_SUGGESTS=python27
 UTIL_LINUX_CONFLICTS=
 
