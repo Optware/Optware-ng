@@ -126,7 +126,7 @@ util-linux-ng-source: $(DL_DIR)/$(UTIL_LINUX_NG_SOURCE) $(UTIL_LINUX_NG_PATCHES)
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(UTIL_LINUX_NG_BUILD_DIR)/.configured: $(DL_DIR)/$(UTIL_LINUX_NG_SOURCE) $(UTIL_LINUX_NG_PATCHES) # make/util-linux-ng.mk
+$(UTIL_LINUX_NG_BUILD_DIR)/.configured: $(DL_DIR)/$(UTIL_LINUX_NG_SOURCE) $(UTIL_LINUX_NG_PATCHES) make/util-linux-ng.mk
 	$(MAKE) e2fsprogs-stage ncursesw-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(UTIL_LINUX_NG_DIR) $(@D)
 	$(UTIL_LINUX_NG_UNZIP) $(DL_DIR)/$(UTIL_LINUX_NG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -137,7 +137,7 @@ $(UTIL_LINUX_NG_BUILD_DIR)/.configured: $(DL_DIR)/$(UTIL_LINUX_NG_SOURCE) $(UTIL
 	if test "$(BUILD_DIR)/$(UTIL_LINUX_NG_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(UTIL_LINUX_NG_DIR) $(@D) ; \
 	fi
-#	$(AUTORECONF1.10) -vif $(@D)
+	$(AUTORECONF1.10) -vif $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(UTIL_LINUX_NG_CPPFLAGS)" \
