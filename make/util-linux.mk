@@ -29,14 +29,14 @@ UTIL_LINUX_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 UTIL_LINUX_DESCRIPTION=A suite of essential utilities for any Linux system.
 UTIL_LINUX_SECTION=misc
 UTIL_LINUX_PRIORITY=optional
-UTIL_LINUX_DEPENDS=e2fslibs, ncursesw, libtinfo, zlib, libudev, readline
+UTIL_LINUX_DEPENDS=ncursesw, libtinfo, zlib, libudev, readline
 UTIL_LINUX_SUGGESTS=python27
 UTIL_LINUX_CONFLICTS=
 
 #
 # UTIL_LINUX_IPK_VERSION should be incremented when the ipk changes.
 #
-UTIL_LINUX_IPK_VERSION=1
+UTIL_LINUX_IPK_VERSION=2
 
 #
 # UTIL_LINUX_CONFFILES should be a list of user-editable files
@@ -109,7 +109,7 @@ util-linux-source: $(DL_DIR)/$(UTIL_LINUX_SOURCE) $(UTIL_LINUX_PATCHES)
 # shown below to make various patches to it.
 #
 $(UTIL_LINUX_BUILD_DIR)/.configured: $(DL_DIR)/$(UTIL_LINUX_SOURCE) $(UTIL_LINUX_PATCHES) make/util-linux.mk
-	$(MAKE) e2fsprogs-stage ncursesw-stage libtinfo-stage zlib-stage \
+	$(MAKE) ncursesw-stage libtinfo-stage zlib-stage \
 		python27-stage udev-stage readline-stage
 	rm -rf $(BUILD_DIR)/$(UTIL_LINUX_DIR) $(@D)
 	$(UTIL_LINUX_UNZIP) $(DL_DIR)/$(UTIL_LINUX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -124,13 +124,14 @@ $(UTIL_LINUX_BUILD_DIR)/.configured: $(DL_DIR)/$(UTIL_LINUX_SOURCE) $(UTIL_LINUX
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(UTIL_LINUX_CPPFLAGS)" \
 		CFLAGS="$(STAGING_CPPFLAGS) $(UTIL_LINUX_CPPFLAGS)" \
-		LDFLAGS="$(STAGING_LDFLAGS) $(UTIL_LINUX_LDFLAGS)" \
+		LDFLAGS="-Wl,-rpath,$(TARGET_PREFIX)/lib/util-linux $(STAGING_LDFLAGS) $(UTIL_LINUX_LDFLAGS)" \
 		PKG_CONFIG_PATH=$(STAGING_LIB_DIR)/pkgconfig \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=$(TARGET_PREFIX) \
+		--libdir=$(TARGET_PREFIX)/lib/util-linux \
 		--with-bashcompletiondir=$(TARGET_PREFIX)/share/bash-completion/completions \
 		--disable-use-tty-group \
 		--disable-nls \
