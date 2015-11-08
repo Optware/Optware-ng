@@ -60,7 +60,7 @@ endif
 #
 # GCC_IPK_VERSION should be incremented when the ipk changes.
 #
-GCC_IPK_VERSION ?= 5
+GCC_IPK_VERSION ?= 6
 
 #
 # GCC_CONFFILES should be a list of user-editable files
@@ -279,7 +279,7 @@ $(GCC_IPK): $(GCC_BUILD_DIR)/.built
 ifeq (wdtv, $(OPTWARE_TARGET))
 	rm -f $(GCC_IPK_DIR)$(TARGET_PREFIX)/lib/lib*.so* $(GCC_IPK_DIR)$(TARGET_PREFIX)/include/*.h
 endif
-ifeq (uclibc-opt, $(filter uclibc-opt, $(PACKAGES)))
+ifneq (, $(filter glibc-opt uclibc-opt, $(PACKAGES)))
 	rm -f $(GCC_IPK_DIR)$(TARGET_PREFIX)/lib/libgcc_s.so*
 endif
 	-cd $(GCC_IPK_DIR)$(TARGET_PREFIX)/libexec/gcc/`$(TARGET_CC) -dumpmachine`/$(GCC_VERSION); \
