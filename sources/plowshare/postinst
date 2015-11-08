@@ -5,4 +5,6 @@ if ! test -L /dev/fd; then
 	ln -s /proc/self/fd /dev/fd
 fi
 
+mkdir -p %OPTWARE_TARGET_PREFIX%/share/plowshare/modules
+
 exit 0
