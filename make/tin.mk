@@ -134,7 +134,7 @@ tin-unpack: $(TIN_BUILD_DIR)/.configured
 #
 $(TIN_BUILD_DIR)/.built: $(TIN_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(@D) build BUILD_CFLAGS="" BUILD_CPPFLAGS="" BUILD_LDFLAGS="" BUILD_CC=$(HOSTCC)
+	$(MAKE) -C $(@D) build BUILD_CFLAGS="" BUILD_CPPFLAGS="-I$(@D)/include" BUILD_LDFLAGS="" BUILD_CC=$(HOSTCC)
 	touch $@
 
 #
