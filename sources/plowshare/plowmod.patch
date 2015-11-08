@@ -1,0 +1,73 @@
+--- a/src/mod.sh
++++ b/src/mod.sh
+@@ -18,6 +18,9 @@
+ # You should have received a copy of the GNU General Public License
+ # along with Plowshare.  If not, see <http://www.gnu.org/licenses/>.
+ 
++FIND=%OPTWARE_TARGET_PREFIX%/bin/findutils-find
++GIT=%OPTWARE_TARGET_PREFIX%/bin/git
++
+ declare -r VERSION='GIT-snapshot'
+ 
+ # Default repository source
+@@ -99,16 +102,16 @@
+     log_notice "- installing new directory: $L"
+ 
+     if [ -d "$L" -a -n "$HAVE_GIT" ]; then
+-        if git -C "$L" rev-parse --is-inside-work-tree &>/dev/null; then
++        if (cd "$L"; ${GIT} rev-parse --is-inside-work-tree) &>/dev/null; then
+             log_notice 'WARNING: directory already exists! Do a git pull.'
+-            git -C "$L" pull --quiet
++            (cd "$L"; ${GIT} pull --quiet)
+         else
+             log_error 'ERROR: directory exists but it does not appear to be a git repository, abort'
+             RET=$ERR_FATAL
+         fi
+     else
+         # Be stupid for now and git clone. See --depth later.
+-        git clone --quiet "$R" "$L"
++        ${GIT} clone --quiet "$R" "$L"
+     fi
+     return $RET
+ }
+@@ -124,8 +127,8 @@
+ 
+     if [ -d "$L" ]; then
+         if [ -n "$HAVE_GIT" ]; then
+-            if git -C "$L" rev-parse --is-inside-work-tree &>/dev/null; then
+-                git -C "$L" pull --quiet
++            if (cd "$L"; ${GIT} rev-parse --is-inside-work-tree) &>/dev/null; then
++                (cd "$L"; ${GIT} pull --quiet)
+             else
+                 log_error 'ERROR: directory exists but it does not appear to be a git repository, abort!'
+                 RET=$ERR_FATAL
+@@ -163,7 +166,7 @@
+         while read -r; do
+             D=$(dirname "$REPLY")
+             SRCS+=( "$D" )
+-        done < <(find "$2" -mindepth 2 -maxdepth 2 -name config)
++        done < <(${FIND} "$2" -mindepth 2 -maxdepth 2 -name config)
+     fi
+ 
+     # Check for first install
+@@ -305,9 +308,9 @@
+     exit $ERR_BAD_COMMAND_LINE
+ fi
+ 
+-if check_exec 'git'; then
++if check_exec "${GIT}"; then
+     HAVE_GIT=1
+-    log_report "[git ] $(git --version)"
++    log_report "[${GIT} ] $(${GIT} --version)"
+ fi
+ 
+ set_exit_trap
+@@ -331,7 +334,7 @@
+         U=$(dirname "$REPLY")
+         mod_update "$U" || RETVAL=$?
+         RETVALS+=($RETVAL)
+-    done < <(find "$DDIR" -mindepth 2 -maxdepth 2 -name config)
++    done < <(${FIND} "$DDIR" -mindepth 2 -maxdepth 2 -name config)
+ fi
+ 
+ if [ ${#RETVALS[@]} -eq 0 ]; then
