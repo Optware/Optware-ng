@@ -39,7 +39,7 @@ PLOWSHARE_CONFLICTS=
 #
 # PLOWSHARE_IPK_VERSION should be incremented when the ipk changes.
 #
-PLOWSHARE_IPK_VERSION=2
+PLOWSHARE_IPK_VERSION=3
 
 #
 # PLOWSHARE_CONFFILES should be a list of user-editable files
@@ -49,7 +49,9 @@ PLOWSHARE_IPK_VERSION=2
 # PLOWSHARE_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-PLOWSHARE_PATCHES=$(PLOWSHARE_SOURCE_DIR)/plowmod.patch
+PLOWSHARE_PATCHES=\
+$(PLOWSHARE_SOURCE_DIR)/plowmod.patch \
+$(PLOWSHARE_SOURCE_DIR)/conf_dir.patch
 
 #
 # If the compilation of the package requires additional
@@ -215,7 +217,6 @@ endif
 $(PLOWSHARE_IPK): $(PLOWSHARE_BUILD_DIR)/.built
 	rm -rf $(PLOWSHARE_IPK_DIR) $(BUILD_DIR)/plowshare_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(<D) DESTDIR=$(PLOWSHARE_IPK_DIR) PREFIX=$(TARGET_PREFIX) install
-	rm -rf $(PLOWSHARE_IPK_DIR)$(TARGET_PREFIX)/share/plowshare/modules
 	$(MAKE) $(PLOWSHARE_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m755 $(PLOWSHARE_SOURCE_DIR)/postinst $(PLOWSHARE_IPK_DIR)/CONTROL/
 	echo $(PLOWSHARE_CONFFILES) | sed -e 's/ /\n/g' > $(PLOWSHARE_IPK_DIR)/CONTROL/conffiles

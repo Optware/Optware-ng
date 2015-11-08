@@ -1,0 +1,15 @@
+--- a/src/core.sh
++++ b/src/core.sh
+@@ -25,7 +25,11 @@
+ declare -r PLOWSHARE_API_VERSION=2
+ 
+ # User configuration directory (contains plowshare.conf, exec/, storage/)
+-declare -r PLOWSHARE_CONFDIR="$HOME/.config/plowshare"
++if [[ $EUID -ne 0 ]]; then
++    declare -r PLOWSHARE_CONFDIR="$HOME/.config/plowshare"
++else
++    declare -r PLOWSHARE_CONFDIR="%OPTWARE_TARGET_PREFIX%/etc/plowshare"
++fi
+ 
+ # Global error codes
+ # 0 means success or link alive
