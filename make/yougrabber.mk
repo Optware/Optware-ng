@@ -29,14 +29,14 @@ YOUGRABBER_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 YOUGRABBER_DESCRIPTION=YouGrabber is a lightweight, multi-threaded (NPTL based) command line YouTube.com video downloader.
 YOUGRABBER_SECTION=misc
 YOUGRABBER_PRIORITY=optional
-YOUGRABBER_DEPENDS=glib, libcurl, ncurses, openssl
+YOUGRABBER_DEPENDS=glib, libcurl, ncurses, libtinfo, openssl
 YOUGRABBER_SUGGESTS=
 YOUGRABBER_CONFLICTS=
 
 #
 # YOUGRABBER_IPK_VERSION should be incremented when the ipk changes.
 #
-YOUGRABBER_IPK_VERSION=1
+YOUGRABBER_IPK_VERSION=2
 
 #
 # YOUGRABBER_CONFFILES should be a list of user-editable files
@@ -143,6 +143,7 @@ $(YOUGRABBER_BUILD_DIR)/.built: $(YOUGRABBER_BUILD_DIR)/.configured
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(YOUGRABBER_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(YOUGRABBER_LDFLAGS)" \
+		LIBS='-lm -lpthread -lncurses -ltinfo `pkg-config --libs glib-2.0` `curl-config --libs`' \
 		;
 	touch $@
 
