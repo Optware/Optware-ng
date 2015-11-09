@@ -39,7 +39,7 @@ PLOWSHARE_CONFLICTS=
 #
 # PLOWSHARE_IPK_VERSION should be incremented when the ipk changes.
 #
-PLOWSHARE_IPK_VERSION=3
+PLOWSHARE_IPK_VERSION=4
 
 #
 # PLOWSHARE_CONFFILES should be a list of user-editable files
@@ -51,7 +51,8 @@ PLOWSHARE_IPK_VERSION=3
 #
 PLOWSHARE_PATCHES=\
 $(PLOWSHARE_SOURCE_DIR)/plowmod.patch \
-$(PLOWSHARE_SOURCE_DIR)/conf_dir.patch
+$(PLOWSHARE_SOURCE_DIR)/core.patch \
+$(PLOWSHARE_SOURCE_DIR)/conf_dir.patch \
 
 #
 # If the compilation of the package requires additional

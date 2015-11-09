@@ -1,0 +1,35 @@
+--- a/src/core.sh
++++ b/src/core.sh
+@@ -18,6 +18,10 @@
+ # You should have received a copy of the GNU General Public License
+ # along with Plowshare.  If not, see <http://www.gnu.org/licenses/>.
+ 
++declare -r GIT=%OPTWARE_TARGET_PREFIX%/bin/git
++
++declare -r FIND=%OPTWARE_TARGET_PREFIX%/bin/findutils-find
++
+ # Make pipes fail on the first failed command (requires Bash 3+)
+ set -o pipefail
+ 
+@@ -2746,7 +2750,7 @@
+         while read -r; do
+             D=$(dirname "$REPLY")
+             SRCS+=( "$D" )
+-        done < <(find "$PLOWSHARE_CONFDIR/modules.d/" -mindepth 2 -maxdepth 2 -name config)
++        done < <(${FIND} "$PLOWSHARE_CONFDIR/modules.d/" -mindepth 2 -maxdepth 2 -name config)
+     fi
+ 
+     for D in "${SRCS[@]}"; do
+@@ -2916,9 +2920,9 @@
+ 
+         # Note: git -C <path> is available since v1.8.5
+         if git -C "$LIBDIR" rev-parse --is-inside-work-tree &>/dev/null; then
+-            local -r GIT_BRANCH=$(git -C "$LIBDIR" rev-parse --quiet --abbrev-ref HEAD)
+-            local -r GIT_REV=$(git -C "$LIBDIR" describe --tags --always 2>/dev/null)
+-            log_report "[git ] $GIT_REV ($GIT_BRANCH branch)"
++            local -r GIT_BRANCH=$(${GIT} -C "$LIBDIR" rev-parse --quiet --abbrev-ref HEAD)
++            local -r GIT_REV=$(${GIT} -C "$LIBDIR" describe --tags --always 2>/dev/null)
++            log_report "[${GIT} ] $GIT_REV ($GIT_BRANCH branch)"
+         fi
+ 
+         log_report '=== SYSTEM INFO END ==='
