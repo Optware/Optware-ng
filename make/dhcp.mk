@@ -58,9 +58,9 @@ $(DHCP_BUILD_DIR)/.configured: $(DL_DIR)/$(DHCP_SOURCE) make/dhcp.mk
 		$(PATCH) -d $(BUILD_DIR)/$(DHCP_DIR) -p1 ; \
 	fi
 	mv $(BUILD_DIR)/$(DHCP_DIR) $(@D)
-	sed -i -e 's/\/\* #define _PATH_DHCPD_PID.*/#define _PATH_DHCPD_PID      "\$(TARGET_PREFIX)\/var\/run\/dhcpd.pid"/' $(@D)/includes/site.h
-	sed -i -e 's/\/\* #define _PATH_DHCPD_DB.*/#define _PATH_DHCPD_DB      "\$(TARGET_PREFIX)\/etc\/dhcpd.leases"/' $(@D)/includes/site.h
-	sed -i -e 's/\/\* #define _PATH_DHCPD_CONF.*/#define _PATH_DHCPD_CONF      "\$(TARGET_PREFIX)\/etc\/dhcpd.conf"/' $(@D)/includes/site.h
+	sed -i -e 's|/\* #define _PATH_DHCPD_PID.*|#define _PATH_DHCPD_PID      "$(TARGET_PREFIX)/var/run/dhcpd.pid"|' $(@D)/includes/site.h
+	sed -i -e 's|/\* #define _PATH_DHCPD_DB.*|#define _PATH_DHCPD_DB      "$(TARGET_PREFIX)/etc/dhcpd.leases"|' $(@D)/includes/site.h
+	sed -i -e 's|/\* #define _PATH_DHCPD_CONF.*|#define _PATH_DHCPD_CONF      "$(TARGET_PREFIX)/etc/dhcpd.conf"|' $(@D)/includes/site.h
 	sed -i -e '/STD_CWARNINGS=/s/ -Werror//' $(@D)/configure
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
