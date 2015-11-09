@@ -177,8 +177,13 @@ libpam: $(LIBPAM_BUILD_DIR)/.built
 #
 $(LIBPAM_BUILD_DIR)/.staged: $(LIBPAM_BUILD_DIR)/.built
 	rm -f $@
+	rm -rf $(STAGING_INCLUDE_DIR)/security
 	$(MAKE) -C $(@D)/libpam DESTDIR=$(STAGING_DIR) install
 	rm -f $(STAGING_LIB_DIR)/libpam*.la
+	mkdir -p $(STAGING_INCLUDE_DIR)/security
+	for h in _pam_types.h _pam_compat.h pam_modutil.h pam_modules.h pam_ext.h pam_appl.h _pam_macros.h; do \
+		ln -sf ../$$h $(STAGING_INCLUDE_DIR)/security/$$h; \
+	done
 	touch $@
 
 libpam-stage: $(LIBPAM_BUILD_DIR)/.staged
