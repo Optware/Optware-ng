@@ -41,7 +41,7 @@ endif
 #
 # GNUPLOT_IPK_VERSION should be incremented when the ipk changes.
 #
-GNUPLOT_IPK_VERSION=2
+GNUPLOT_IPK_VERSION=3
 
 #
 # GNUPLOT_CONFFILES should be a list of user-editable files

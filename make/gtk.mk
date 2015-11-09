@@ -35,7 +35,7 @@ GTK_PRINT_DEPENDS=gtk, cups
 #
 # GTK_IPK_VERSION should be incremented when the ipk changes.
 #
-GTK_IPK_VERSION=2
+GTK_IPK_VERSION=3
 
 #
 # GTK_LOCALES defines which locales get installed

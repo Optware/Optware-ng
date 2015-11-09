@@ -37,7 +37,7 @@ MRTG_CONFLICTS=
 #
 # MRTG_IPK_VERSION should be incremented when the ipk changes.
 #
-MRTG_IPK_VERSION=1
+MRTG_IPK_VERSION=2
 
 #
 # MRTG_CONFFILES should be a list of user-editable files

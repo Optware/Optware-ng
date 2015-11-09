@@ -38,7 +38,7 @@ DCRAW_CONFLICTS=
 #
 # DCRAW_IPK_VERSION should be incremented when the ipk changes.
 #
-DCRAW_IPK_VERSION=1
+DCRAW_IPK_VERSION=2
 
 #
 # DCRAW_CONFFILES should be a list of user-editable files

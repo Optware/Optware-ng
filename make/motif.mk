@@ -42,7 +42,7 @@ MOTIF_CONFLICTS=
 #
 # MOTIF_IPK_VERSION should be incremented when the ipk changes.
 #
-MOTIF_IPK_VERSION=1
+MOTIF_IPK_VERSION=2
 
 #
 # MOTIF_CONFFILES should be a list of user-editable files

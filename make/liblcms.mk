@@ -29,14 +29,14 @@ LIBLCMS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 LIBLCMS_DESCRIPTION=A small-footprint, speed optimized color management engine.
 LIBLCMS_SECTION=graphics
 LIBLCMS_PRIORITY=optional
-LIBLCMS_DEPENDS=
+LIBLCMS_DEPENDS=libjpeg, libtiff
 LIBLCMS_SUGGESTS=
 LIBLCMS_CONFLICTS=
 
 #
 # LIBLCMS_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBLCMS_IPK_VERSION=1
+LIBLCMS_IPK_VERSION=2
 
 #
 # LIBLCMS_CONFFILES should be a list of user-editable files
@@ -103,7 +103,7 @@ liblcms-source: $(DL_DIR)/$(LIBLCMS_SOURCE) $(LIBLCMS_PATCHES)
 # shown below to make various patches to it.
 #
 $(LIBLCMS_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBLCMS_SOURCE) $(LIBLCMS_PATCHES) make/liblcms.mk
-#	$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) libjpeg-stage libtiff-stage
 	rm -rf $(BUILD_DIR)/$(LIBLCMS_DIR) $(@D)
 	$(LIBLCMS_UNZIP) $(DL_DIR)/$(LIBLCMS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBLCMS_PATCHES)" ; \

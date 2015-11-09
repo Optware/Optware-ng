@@ -30,7 +30,7 @@ EMACS_CONFLICTS=
 #
 # EMACS_IPK_VERSION should be incremented when the ipk changes.
 #
-EMACS_IPK_VERSION=5
+EMACS_IPK_VERSION=6
 
 #
 # EMACS_CONFFILES should be a list of user-editable files

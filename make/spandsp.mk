@@ -39,7 +39,7 @@ SPANDSP_CONFLICTS=
 #
 # SPANDSP_IPK_VERSION should be incremented when the ipk changes.
 #
-SPANDSP_IPK_VERSION=1
+SPANDSP_IPK_VERSION=2
 
 #
 # SPANDSP_CONFFILES should be a list of user-editable files

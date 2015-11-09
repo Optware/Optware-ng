@@ -42,7 +42,7 @@ KISSDX_CONFLICTS=
 #
 # KISSDX_IPK_VERSION should be incremented when the ipk changes.
 #
-KISSDX_IPK_VERSION=3
+KISSDX_IPK_VERSION=4
 
 #
 # KISSDX_CONFFILES should be a list of user-editable files

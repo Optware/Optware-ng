@@ -20,9 +20,9 @@ MOTION_DESCRIPTION=a software motion detector
 MOTION_SECTION=misc
 MOTION_PRIORITY=optional
 ifeq ($(OPTWARE_TARGET),ds101g)
-MOTION_DEPENDS=ffmpeg
+MOTION_DEPENDS=ffmpeg, libjpeg
 else
-MOTION_DEPENDS=ffmpeg,mysql
+MOTION_DEPENDS=ffmpeg, libjpeg, mysql
 endif
 MOTION_SUGGESTS=
 MOTION_CONFLICTS=
@@ -92,7 +92,7 @@ endif
 motion-source: $(DL_DIR)/$(MOTION_SOURCE) $(MOTION_PATCHES)
 
 $(MOTION_BUILD_DIR)/.configured: $(DL_DIR)/$(MOTION_SOURCE) $(MOTION_PATCHES) make/motion.mk
-	$(MAKE) libjpeg-stage ffmpeg-stage mysql-stage
+	$(MAKE) libjpeg-stage ffmpeg-stage mysql-stage libjpeg-stage
 	rm -rf $(BUILD_DIR)/$(MOTION_DIR) $(@D)
 	$(MOTION_UNZIP) $(DL_DIR)/$(MOTION_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MOTION_PATCHES)" ; \

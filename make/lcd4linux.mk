@@ -21,10 +21,10 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LCD4LINUX_SITE=https://ssl.bulix.org/projects/lcd4linux/raw-attachment/wiki/Download
-#LCD4LINUX_SVN=https://ssl.bulix.org/svn/lcd4linux/trunk
-LCD4LINUX_SVN_REV=758
+LCD4LINUX_SVN=https://ssl.bulix.org/svn/lcd4linux/trunk
+LCD4LINUX_SVN_REV=1203
 ifdef LCD4LINUX_SVN
-LCD4LINUX_VERSION=0.10.0+r$(LCD4LINUX_SVN_REV)
+LCD4LINUX_VERSION=0.11.0-SVN$(LCD4LINUX_SVN_REV)
 LCD4LINUX_SOURCE=lcd4linux-$(LCD4LINUX_VERSION).tar.gz
 LCD4LINUX_UNZIP=zcat
 LCD4LINUX_DIR=lcd4linux
@@ -38,7 +38,7 @@ LCD4LINUX_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 LCD4LINUX_DESCRIPTION=Grabs information from the kernel and some subsystems and displays it on an external liquid crystal display
 LCD4LINUX_SECTION=comm
 LCD4LINUX_PRIORITY=optional
-LCD4LINUX_DEPENDS=ncurses, libusb, libgd
+LCD4LINUX_DEPENDS=ncurses, libusb, libgd, libjpeg, libmpdclient
 LCD4LINUX_SUGGESTS=
 LCD4LINUX_CONFLICTS=
 
@@ -55,14 +55,14 @@ LCD4LINUX_CONFFILES=$(TARGET_PREFIX)/etc/lcd4linux.conf
 # LCD4LINUX_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-LCD4LINUX_PATCHES=$(LCD4LINUX_SOURCE_DIR)/fix-no-io.h-build.patch
+#LCD4LINUX_PATCHES=$(LCD4LINUX_SOURCE_DIR)/fix-no-io.h-build.patch
 
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
 LCD4LINUX_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/ncurses
-LCD4LINUX_LDFLAGS=
+LCD4LINUX_LDFLAGS=-ljpeg -lmpdclient
 
 #
 # LCD4LINUX_BUILD_DIR is the directory in which the build is done.
@@ -127,17 +127,19 @@ lcd4linux-source: $(DL_DIR)/$(LCD4LINUX_SOURCE) $(LCD4LINUX_PATCHES)
 # shown below to make various patches to it.
 # 
 $(LCD4LINUX_BUILD_DIR)/.configured: $(DL_DIR)/$(LCD4LINUX_SOURCE) $(LCD4LINUX_PATCHES) make/lcd4linux.mk
-	$(MAKE) ncurses-stage libusb-stage libgd-stage
-	rm -rf $(BUILD_DIR)/$(LCD4LINUX_DIR) $(LCD4LINUX_BUILD_DIR)
+	$(MAKE) ncurses-stage libusb-stage libgd-stage libjpeg-stage libtool-stage libmpdclient-stage
+	rm -rf $(BUILD_DIR)/$(LCD4LINUX_DIR) $(@D)
 	$(LCD4LINUX_UNZIP) $(DL_DIR)/$(LCD4LINUX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LCD4LINUX_PATCHES)" ; \
 		then cat $(LCD4LINUX_PATCHES) | \
 		$(PATCH) -d $(BUILD_DIR)/$(LCD4LINUX_DIR) -p1 ; \
 	fi
-	if test "$(BUILD_DIR)/$(LCD4LINUX_DIR)" != "$(LCD4LINUX_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(LCD4LINUX_DIR) $(LCD4LINUX_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(LCD4LINUX_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(LCD4LINUX_DIR) $(@D) ; \
 	fi
-	(cd $(LCD4LINUX_BUILD_DIR); \
+	ln -s . $(@D)/m4
+	$(AUTORECONF1.14) -vif $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LCD4LINUX_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LCD4LINUX_LDFLAGS)" \
@@ -153,7 +155,7 @@ $(LCD4LINUX_BUILD_DIR)/.configured: $(DL_DIR)/$(LCD4LINUX_SOURCE) $(LCD4LINUX_PA
 		--with-plugins=all,\!xmms \
 		--with-drivers=all,\!G15,\!RouterBoard \
 	)
-#	$(PATCH_LIBTOOL) $(LCD4LINUX_BUILD_DIR)/libtool
+#	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 lcd4linux-unpack: $(LCD4LINUX_BUILD_DIR)/.configured
@@ -163,7 +165,7 @@ lcd4linux-unpack: $(LCD4LINUX_BUILD_DIR)/.configured
 #
 $(LCD4LINUX_BUILD_DIR)/.built: $(LCD4LINUX_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(LCD4LINUX_BUILD_DIR)
+	$(MAKE) -C $(@D) LIBTOOL=$(STAGING_PREFIX)/bin/libtool
 	touch $@
 
 #
@@ -176,7 +178,8 @@ lcd4linux: $(LCD4LINUX_BUILD_DIR)/.built
 #
 $(LCD4LINUX_BUILD_DIR)/.staged: $(LCD4LINUX_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(LCD4LINUX_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install \
+		 LIBTOOL=$(STAGING_PREFIX)/bin/libtool
 	touch $@
 
 lcd4linux-stage: $(LCD4LINUX_BUILD_DIR)/.staged
@@ -214,7 +217,8 @@ $(LCD4LINUX_IPK_DIR)/CONTROL/control:
 #
 $(LCD4LINUX_IPK): $(LCD4LINUX_BUILD_DIR)/.built
 	rm -rf $(LCD4LINUX_IPK_DIR) $(BUILD_DIR)/lcd4linux_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(LCD4LINUX_BUILD_DIR) DESTDIR=$(LCD4LINUX_IPK_DIR) install-strip
+	$(MAKE) -C $(LCD4LINUX_BUILD_DIR) DESTDIR=$(LCD4LINUX_IPK_DIR) install-strip \
+		 LIBTOOL=$(STAGING_PREFIX)/bin/libtool
 	$(INSTALL) -d $(LCD4LINUX_IPK_DIR)$(TARGET_PREFIX)/etc/
 	$(INSTALL) -m 644 $(LCD4LINUX_SOURCE_DIR)/lcd4linux.conf $(LCD4LINUX_IPK_DIR)$(TARGET_PREFIX)/etc/lcd4linux.conf
 #	$(INSTALL) -d $(LCD4LINUX_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
@@ -251,4 +255,4 @@ lcd4linux-dirclean:
 # Some sanity check for the package.
 #
 lcd4linux-check: $(LCD4LINUX_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(LCD4LINUX_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^

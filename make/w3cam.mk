@@ -35,7 +35,7 @@ W3CAM_DEPENDS=libjpeg
 #
 # W3CAM_IPK_VERSION should be incremented when the ipk changes.
 #
-W3CAM_IPK_VERSION=3
+W3CAM_IPK_VERSION=4
 
 #
 # W3CAM_CONFFILES should be a list of user-editable files

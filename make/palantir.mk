@@ -36,7 +36,7 @@ PALANTIR_CONFLICTS=
 #
 # PALANTIR_IPK_VERSION should be incremented when the ipk changes.
 #
-PALANTIR_IPK_VERSION=2
+PALANTIR_IPK_VERSION=3
 
 #
 # PALANTIR_CONFFILES should be a list of user-editable files

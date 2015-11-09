@@ -37,7 +37,7 @@ PY-GDCHART2_CONFLICTS=
 #
 # PY-GDCHART2_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-GDCHART2_IPK_VERSION=4
+PY-GDCHART2_IPK_VERSION=5
 
 #
 # PY-GDCHART2_CONFFILES should be a list of user-editable files
