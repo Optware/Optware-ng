@@ -29,14 +29,14 @@ BSDGAMES_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 BSDGAMES_DESCRIPTION=A collection of classic textual Unix games.
 BSDGAMES_SECTION=games
 BSDGAMES_PRIORITY=optional
-BSDGAMES_DEPENDS=ncurses, libtinfo
+BSDGAMES_DEPENDS=ncurses
 BSDGAMES_SUGGESTS=less, miscfiles, openssl
 BSDGAMES_CONFLICTS=
 
 #
 # BSDGAMES_IPK_VERSION should be incremented when the ipk changes.
 #
-BSDGAMES_IPK_VERSION=3
+BSDGAMES_IPK_VERSION=4
 
 #
 # BSDGAMES_CONFFILES should be a list of user-editable files
@@ -62,7 +62,7 @@ $(BSDGAMES_SOURCE_DIR)/debian-changes-2.17-19.patch \
 # compilation or linking flags, then list them here.
 #
 BSDGAMES_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/ncurses
-BSDGAMES_LDFLAGS=-ltinfo
+BSDGAMES_LDFLAGS=
 
 #
 # BSDGAMES_BUILD_DIR is the directory in which the build is done.

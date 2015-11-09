@@ -29,14 +29,14 @@ UTIL_LINUX_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 UTIL_LINUX_DESCRIPTION=A suite of essential utilities for any Linux system.
 UTIL_LINUX_SECTION=misc
 UTIL_LINUX_PRIORITY=optional
-UTIL_LINUX_DEPENDS=ncursesw, libtinfo, zlib, libudev, readline
+UTIL_LINUX_DEPENDS=ncursesw, zlib, libudev, readline
 UTIL_LINUX_SUGGESTS=python27
 UTIL_LINUX_CONFLICTS=
 
 #
 # UTIL_LINUX_IPK_VERSION should be incremented when the ipk changes.
 #
-UTIL_LINUX_IPK_VERSION=2
+UTIL_LINUX_IPK_VERSION=3
 
 #
 # UTIL_LINUX_CONFFILES should be a list of user-editable files
@@ -56,7 +56,7 @@ UTIL_LINUX_IPK_VERSION=2
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-UTIL_LINUX_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/ncursesw -I$(STAGING_INCLUDE_DIR)/python2.7
+UTIL_LINUX_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/python2.7
 UTIL_LINUX_LDFLAGS=
 
 #
@@ -109,7 +109,7 @@ util-linux-source: $(DL_DIR)/$(UTIL_LINUX_SOURCE) $(UTIL_LINUX_PATCHES)
 # shown below to make various patches to it.
 #
 $(UTIL_LINUX_BUILD_DIR)/.configured: $(DL_DIR)/$(UTIL_LINUX_SOURCE) $(UTIL_LINUX_PATCHES) make/util-linux.mk
-	$(MAKE) ncursesw-stage libtinfo-stage zlib-stage \
+	$(MAKE) ncursesw-stage zlib-stage \
 		python27-stage udev-stage readline-stage
 	rm -rf $(BUILD_DIR)/$(UTIL_LINUX_DIR) $(@D)
 	$(UTIL_LINUX_UNZIP) $(DL_DIR)/$(UTIL_LINUX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -120,9 +120,11 @@ $(UTIL_LINUX_BUILD_DIR)/.configured: $(DL_DIR)/$(UTIL_LINUX_SOURCE) $(UTIL_LINUX
 	if test "$(BUILD_DIR)/$(UTIL_LINUX_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(UTIL_LINUX_DIR) $(@D) ; \
 	fi
+	sed -i -e '/security\/pam_appl.h/d' $(@D)/configure.ac
+	$(AUTORECONF1.14) -vif $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
-		CPPFLAGS="$(STAGING_CPPFLAGS) $(UTIL_LINUX_CPPFLAGS)" \
+		CPPFLAGS="-I$(STAGING_INCLUDE_DIR)/ncursesw $(STAGING_CPPFLAGS) $(UTIL_LINUX_CPPFLAGS)" \
 		CFLAGS="$(STAGING_CPPFLAGS) $(UTIL_LINUX_CPPFLAGS)" \
 		LDFLAGS="-Wl,-rpath,$(TARGET_PREFIX)/lib/util-linux $(STAGING_LDFLAGS) $(UTIL_LINUX_LDFLAGS)" \
 		PKG_CONFIG_PATH=$(STAGING_LIB_DIR)/pkgconfig \
@@ -167,7 +169,7 @@ $(UTIL_LINUX_BUILD_DIR)/.built: $(UTIL_LINUX_BUILD_DIR)/.configured
 		PYTHON_CFLAGS='-I$(STAGING_INCLUDE_DIR)/python2.7  ' \
 		PYTHON_LIBS='-lpython2.7  ' \
 		TINFO_CFLAGS='-I$(STAGING_INCLUDE_DIR)/ncursesw  ' \
-		TINFO_LIBS='-ltinfo  ' \
+		TINFO_LIBS='-lncursesw ' \
 		;
 	touch $@
 
@@ -240,7 +242,6 @@ $(UTIL_LINUX_IPK): $(UTIL_LINUX_BUILD_DIR)/.built
 		;
 	rm -rf $(UTIL_LINUX_IPK_DIR)$(TARGET_PREFIX)/share/info
 	$(STRIP_COMMAND) `ls $(UTIL_LINUX_IPK_DIR)$(TARGET_PREFIX)/bin/* | grep -v chkdupexe`
-	rm -f $(UTIL_LINUX_IPK_DIR)$(TARGET_PREFIX)/sbin/swapoff
 	$(STRIP_COMMAND) $(UTIL_LINUX_IPK_DIR)$(TARGET_PREFIX)/sbin/*
 	$(MAKE) $(UTIL_LINUX_IPK_DIR)/CONTROL/control
 	echo "#!/bin/sh" > $(UTIL_LINUX_IPK_DIR)/CONTROL/postinst
@@ -259,10 +260,6 @@ $(UTIL_LINUX_IPK): $(UTIL_LINUX_BUILD_DIR)/.built
 	for link in `find $(UTIL_LINUX_IPK_DIR)$(TARGET_PREFIX)/bin -type l; find $(UTIL_LINUX_IPK_DIR)$(TARGET_PREFIX)/sbin -type l`; do \
 		ln -sf util-linux-`readlink $$link` $$link; \
 	done
-	echo "update-alternatives --install $(TARGET_PREFIX)/sbin/swapoff swapoff $(TARGET_PREFIX)/sbin/util-linux-swapon 80" \
-		>> $(UTIL_LINUX_IPK_DIR)/CONTROL/postinst
-	echo "update-alternatives --remove swapoff $(TARGET_PREFIX)/sbin/util-linux-swapon" \
-		>> $(UTIL_LINUX_IPK_DIR)/CONTROL/prerm
 	if test -n "$(UPD-ALT_PREFIX)"; then \
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \
 			$(UTIL_LINUX_IPK_DIR)/CONTROL/postinst $(UTIL_LINUX_IPK_DIR)/CONTROL/prerm; \
