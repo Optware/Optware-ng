@@ -29,14 +29,14 @@ DIALOG_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 DIALOG_DESCRIPTION=Script-driven curses widgets.
 DIALOG_SECTION=console
 DIALOG_PRIORITY=optional
-DIALOG_DEPENDS=ncurses
+DIALOG_DEPENDS=ncurses, libtinfo
 DIALOG_SUGGESTS=
 DIALOG_CONFLICTS=
 
 #
 # DIALOG_IPK_VERSION should be incremented when the ipk changes.
 #
-DIALOG_IPK_VERSION=1
+DIALOG_IPK_VERSION=2
 
 #
 # DIALOG_CONFFILES should be a list of user-editable files
@@ -53,7 +53,7 @@ DIALOG_IPK_VERSION=1
 # compilation or linking flags, then list them here.
 #
 DIALOG_CPPFLAGS=
-DIALOG_LDFLAGS=
+DIALOG_LDFLAGS=-ltinfo
 
 #
 # DIALOG_BUILD_DIR is the directory in which the build is done.
