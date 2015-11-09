@@ -19,23 +19,23 @@
 #
 # You should change all these variables to suit your package.
 #
-GHOSTSCRIPT_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/ghostscript
-GHOSTSCRIPT_VERSION=8.71
-GHOSTSCRIPT_SOURCE=ghostscript-$(GHOSTSCRIPT_VERSION).tar.gz
+GHOSTSCRIPT_SITE=http://downloads.ghostscript.com/public
+GHOSTSCRIPT_VERSION=9.18
+GHOSTSCRIPT_SOURCE=ghostscript-$(GHOSTSCRIPT_VERSION).tar.bz2
 GHOSTSCRIPT_DIR=ghostscript-$(GHOSTSCRIPT_VERSION)
-GHOSTSCRIPT_UNZIP=zcat
+GHOSTSCRIPT_UNZIP=bzcat
 GHOSTSCRIPT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 GHOSTSCRIPT_DESCRIPTION=An interpreter for the PostScript (TM) language
 GHOSTSCRIPT_SECTION=text
 GHOSTSCRIPT_PRIORITY=optional
-GHOSTSCRIPT_DEPENDS=cups, fontconfig, libpng, openssl
+GHOSTSCRIPT_DEPENDS=cups, fontconfig, libpng, libjpeg, liblcms2, openssl
 GHOSTSCRIPT_SUGGESTS=
 GHOSTSCRIPT_CONFLICTS=
 
 #
 # GHOSTSCRIPT_IPK_VERSION should be incremented when the ipk changes.
 #
-GHOSTSCRIPT_IPK_VERSION=2
+GHOSTSCRIPT_IPK_VERSION=1
 
 #
 # GHOSTSCRIPT_CONFFILES should be a list of user-editable files
@@ -102,8 +102,9 @@ $(GHOSTSCRIPT_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(GHOSTSCRIPT_S
 		--disable-static \
 		; \
 	)
-	mkdir -p $(@D)/obj
-	$(MAKE) -C $(@D) ./obj/echogs ./obj/genarch ./obj/genconf ./obj/mkromfs
+	mkdir -p $(@D)/obj/aux
+	$(MAKE) -C $(@D) ./obj/aux/echogs ./obj/aux/genarch ./obj/aux/genconf ./obj/aux/mkromfs ./obj/aux/mkromfs_0
+	$(MAKE) -C $(@D) obj/arch.h
 	touch $@
 
 ghostscript-host-build: $(GHOSTSCRIPT_HOST_BUILD_DIR)/.built
@@ -128,8 +129,8 @@ $(GHOSTSCRIPT_BUILD_DIR)/.configured: $(DL_DIR)/$(GHOSTSCRIPT_SOURCE) $(GHOSTSCR
 else
 $(GHOSTSCRIPT_BUILD_DIR)/.configured: $(GHOSTSCRIPT_HOST_BUILD_DIR)/.built $(GHOSTSCRIPT_PATCHES)
 endif
-	$(MAKE) cups-stage fontconfig-stage openssl-stage
-	$(MAKE) libjpeg-stage libpng-stage libtiff-stage
+	$(MAKE) cups-stage fontconfig-stage openssl-stage \
+		libjpeg-stage libpng-stage libtiff-stage liblcms2-stage
 	rm -rf $(BUILD_DIR)/$(GHOSTSCRIPT_DIR) $(@D)
 	$(GHOSTSCRIPT_UNZIP) $(DL_DIR)/$(GHOSTSCRIPT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(GHOSTSCRIPT_PATCHES)"; then \
@@ -137,9 +138,14 @@ endif
 	fi
 	mv $(BUILD_DIR)/$(GHOSTSCRIPT_DIR) $(@D)
 	sed -i -e '/^EXTRALIBS/s/$$/ @LDFLAGS@/' $(@D)/Makefile.in
-	sed -i -e 's|$$(EXP)$$(MKROMFS_XE)|$(GHOSTSCRIPT_HOST_BUILD_DIR)/obj/mkromfs|' $(@D)/base/lib.mak
-	sed -i -e '/cups-config --image/s| -o | $(STAGING_LDFLAGS)&|' $(@D)/cups/cups.mak
+	sed -i -e 's|$$(EXP)$$(MKROMFS_XE)|$(GHOSTSCRIPT_HOST_BUILD_DIR)/obj/aux/mkromfs|' $(@D)/base/lib.mak	
 	(cd $(@D); \
+		rm -rf freetype lcms2 jpeg libpng; \
+		if $(TARGET_CC) -E -P $(SOURCE_DIR)/common/endianness.c | grep -q puts.*BIG_ENDIAN; then \
+			endian=big; \
+		else \
+			endian=little; \
+		fi; \
 		PATH=$(STAGING_PREFIX)/bin:$$PATH \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ESPGS_CPPFLAGS)" \
@@ -152,6 +158,8 @@ endif
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=$(TARGET_PREFIX) \
+		--with-system-libtiff \
+		--enable-$${endian}-endian \
 		--without-x \
 		--disable-gtk \
 		--disable-cairo \
@@ -162,6 +170,20 @@ endif
 		; \
 	)
 	sed -i -e 's|-I$(TARGET_PREFIX)/include ||' $(@D)/Makefile
+	mkdir -p $(@D)/obj
+	# TODO different TARGET_ARCH needs different arch.h
+	$(MAKE) -C $(@D) obj/arch.h \
+		GENARCH_XE=$(GHOSTSCRIPT_HOST_BUILD_DIR)/obj/aux/genarch
+	if $(TARGET_CC) -E -P $(SOURCE_DIR)/common/bits.c | grep -q puts.*32-bit; then \
+		$(INSTALL) -m 644 $(GHOSTSCRIPT_SOURCE_DIR)/arch-32bit.h  $(@D)/obj/arch.h; \
+	else \
+		$(INSTALL) -m 644 $(GHOSTSCRIPT_SOURCE_DIR)/arch-64bit.h  $(@D)/obj/arch.h; \
+	fi
+	if $(TARGET_CC) -E -P $(SOURCE_DIR)/common/endianness.c | grep -q puts.*BIG_ENDIAN; then \
+		sed -i -e '/ARCH_IS_BIG_ENDIAN/s/[01]/1/' $(@D)/obj/arch.h; \
+	else \
+		sed -i -e '/ARCH_IS_BIG_ENDIAN/s/[01]/0/' $(@D)/obj/arch.h; \
+	fi
 	touch $@
 
 ghostscript-unpack: $(GHOSTSCRIPT_BUILD_DIR)/.configured
@@ -171,24 +193,12 @@ ghostscript-unpack: $(GHOSTSCRIPT_BUILD_DIR)/.configured
 #
 $(GHOSTSCRIPT_BUILD_DIR)/.built: $(GHOSTSCRIPT_BUILD_DIR)/.configured
 	rm -f $@
-	mkdir -p $(@D)/obj
-	# TODO different TARGET_ARCH needs different arch.h
-	$(MAKE) -C $(@D) obj/arch.h \
-		GENARCH_XE=$(GHOSTSCRIPT_HOST_BUILD_DIR)/obj/genarch
-	[ -e $(GHOSTSCRIPT_SOURCE_DIR)/arch-$(TARGET_ARCH).h ] && \
-	$(INSTALL) -m 644 $(GHOSTSCRIPT_SOURCE_DIR)/arch-$(TARGET_ARCH).h $(@D)/obj/arch.h || \
-	if $(TARGET_CC) -E -P $(SOURCE_DIR)/common/endianness.c | grep -q puts.*BIG_ENDIAN; \
-	then sed -e '/ARCH_IS_BIG_ENDIAN/s/[01]/1/' $(GHOSTSCRIPT_SOURCE_DIR)/arch-unknown.h \
-		> $(@D)/obj/arch.h; \
-	else sed -e '/ARCH_IS_BIG_ENDIAN/s/[01]/0/' $(GHOSTSCRIPT_SOURCE_DIR)/arch-unknown.h \
-		> $(@D)/obj/arch.h; \
-	fi
-	#
 	$(MAKE) -C $(@D) \
-		ECHOGS_XE=$(GHOSTSCRIPT_HOST_BUILD_DIR)/obj/echogs \
-		GENARCH_XE=$(GHOSTSCRIPT_HOST_BUILD_DIR)/obj/genarch \
-		GENCONF_XE=$(GHOSTSCRIPT_HOST_BUILD_DIR)/obj/genconf \
-		GENINIT_XE=$(GHOSTSCRIPT_HOST_BUILD_DIR)/obj/geninit \
+		XTRALIBS="-lfreetype -lexpat -lz -lbz2 -lpng12" \
+		ECHOGS_XE=$(GHOSTSCRIPT_HOST_BUILD_DIR)/obj/aux/echogs \
+		GENARCH_XE=$(GHOSTSCRIPT_HOST_BUILD_DIR)/obj/aux/genarch \
+		GENCONF_XE=$(GHOSTSCRIPT_HOST_BUILD_DIR)/obj/aux/genconf \
+		GENINIT_XE=$(GHOSTSCRIPT_HOST_BUILD_DIR)/obj/aux/geninit \
 		;
 	touch $@
 
@@ -202,7 +212,13 @@ ghostscript: $(GHOSTSCRIPT_BUILD_DIR)/.built
 #
 $(GHOSTSCRIPT_BUILD_DIR)/.staged: $(GHOSTSCRIPT_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install \
+		XTRALIBS="-lfreetype -lexpat -lz -lbz2 -lpng12" \
+		ECHOGS_XE=$(GHOSTSCRIPT_HOST_BUILD_DIR)/obj/aux/echogs \
+		GENARCH_XE=$(GHOSTSCRIPT_HOST_BUILD_DIR)/obj/aux/genarch \
+		GENCONF_XE=$(GHOSTSCRIPT_HOST_BUILD_DIR)/obj/aux/genconf \
+		GENINIT_XE=$(GHOSTSCRIPT_HOST_BUILD_DIR)/obj/aux/geninit \
+		;
 	touch $@
 
 ghostscript-stage: $(GHOSTSCRIPT_BUILD_DIR)/.staged
@@ -242,13 +258,14 @@ $(GHOSTSCRIPT_IPK): $(GHOSTSCRIPT_BUILD_DIR)/.built
 	rm -rf $(GHOSTSCRIPT_IPK_DIR) $(BUILD_DIR)/ghostscript_*_$(TARGET_ARCH).ipk
 	PATH=$(STAGING_PREFIX)/bin:$$PATH \
 	$(MAKE) -C $(GHOSTSCRIPT_BUILD_DIR) install \
+		XTRALIBS="-lfreetype -lexpat -lz -lbz2 -lpng12" \
 		DESTDIR=$(GHOSTSCRIPT_IPK_DIR) \
-		ECHOGS_XE=$(GHOSTSCRIPT_HOST_BUILD_DIR)/obj/echogs \
-		GENARCH_XE=$(GHOSTSCRIPT_HOST_BUILD_DIR)/obj/genarch \
-		GENCONF_XE=$(GHOSTSCRIPT_HOST_BUILD_DIR)/obj/genconf \
+		ECHOGS_XE=$(GHOSTSCRIPT_HOST_BUILD_DIR)/obj/aux/echogs \
+		GENARCH_XE=$(GHOSTSCRIPT_HOST_BUILD_DIR)/obj/aux/genarch \
+		GENCONF_XE=$(GHOSTSCRIPT_HOST_BUILD_DIR)/obj/aux/genconf \
 		;
-	$(STRIP_COMMAND) $(GHOSTSCRIPT_IPK_DIR)$(TARGET_PREFIX)/bin/gs $(GHOSTSCRIPT_IPK_DIR)$(TARGET_PREFIX)/lib/cups/filter/pdftoraster
-	sed -i -e 's|/usr/share|$(TARGET_PREFIX)/share|' $(GHOSTSCRIPT_IPK_DIR)$(TARGET_PREFIX)/lib/cups/filter/psto*
+	-find $(GHOSTSCRIPT_IPK_DIR)$(TARGET_PREFIX) -type f -exec $(STRIP_COMMAND) {} 2>/dev/null \;
+#	sed -i -e 's|/usr/share|$(TARGET_PREFIX)/share|' $(GHOSTSCRIPT_IPK_DIR)$(TARGET_PREFIX)/lib/cups/filter/psto*
 	$(MAKE) $(GHOSTSCRIPT_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GHOSTSCRIPT_IPK_DIR)
 
