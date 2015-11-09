@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 LIBJPEG_SITE=http://www.ijg.org/files
-LIBJPEG_VERSION=6b
+LIBJPEG_VERSION=8d
 LIBJPEG_SOURCE=jpegsrc.v$(LIBJPEG_VERSION).tar.gz
 LIBJPEG_DIR=jpeg-$(LIBJPEG_VERSION)
 LIBJPEG_UNZIP=zcat
@@ -34,7 +34,7 @@ LIBJPEG_CONFLICTS=
 #
 # LIBJPEG_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBJPEG_IPK_VERSION=3
+LIBJPEG_IPK_VERSION=1
 
 #
 # LIBJPEG_PATCHES should list any patches, in the the order in
@@ -104,7 +104,6 @@ $(LIBJPEG_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBJPEG_SOURCE) $(LIBJPEG_PATCHES)
 	$(LIBJPEG_UNZIP) $(DL_DIR)/$(LIBJPEG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(LIBJPEG_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(LIBJPEG_DIR) -p1
 	mv $(BUILD_DIR)/$(LIBJPEG_DIR) $(@D)
-	$(INSTALL) -m 755 $(LIBJPEG_SOURCE_DIR)/config.* $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBJPEG_CPPFLAGS)" \
@@ -183,14 +182,10 @@ $(LIBJPEG_IPK_DIR)/CONTROL/control:
 #
 $(LIBJPEG_IPK): $(LIBJPEG_BUILD_DIR)/.built
 	rm -rf $(LIBJPEG_IPK_DIR) $(LIBJPEG_IPK)
-	$(INSTALL) -d $(LIBJPEG_IPK_DIR)$(TARGET_PREFIX)/include
-	$(INSTALL) -d $(LIBJPEG_IPK_DIR)$(TARGET_PREFIX)/lib
-	$(INSTALL) -d $(LIBJPEG_IPK_DIR)$(TARGET_PREFIX)/bin
-	$(INSTALL) -d $(LIBJPEG_IPK_DIR)$(TARGET_PREFIX)/share/man/man1
-	$(MAKE) -C $(LIBJPEG_BUILD_DIR) prefix=$(LIBJPEG_IPK_DIR)$(TARGET_PREFIX) mandir=$(LIBJPEG_IPK_DIR)$(TARGET_PREFIX)/share/man/man1 install
-	rm -f $(LIBJPEG_IPK_DIR)$(TARGET_PREFIX)/lib/libjpeg.la
-	$(TARGET_STRIP) $(LIBJPEG_IPK_DIR)$(TARGET_PREFIX)/bin/*
-	$(TARGET_STRIP) $(LIBJPEG_IPK_DIR)$(TARGET_PREFIX)/lib/*.so
+	$(MAKE) -C $(LIBJPEG_BUILD_DIR) prefix=$(LIBJPEG_IPK_DIR)$(TARGET_PREFIX) install
+	rm -f $(LIBJPEG_IPK_DIR)$(TARGET_PREFIX)/lib/jpeg9/libjpeg.la
+	$(STRIP_COMMAND) 	$(LIBJPEG_IPK_DIR)$(TARGET_PREFIX)/bin/* \
+				$(LIBJPEG_IPK_DIR)$(TARGET_PREFIX)/lib/*.so
 #	$(INSTALL) -d $(LIBJPEG_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
 #	$(INSTALL) -m 755 $(LIBJPEG_SOURCE_DIR)/rc.libjpeg $(LIBJPEG_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibjpeg
 	$(MAKE) $(LIBJPEG_IPK_DIR)/CONTROL/control
