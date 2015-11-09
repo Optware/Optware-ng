@@ -32,14 +32,14 @@ AMULE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 AMULE_DESCRIPTION=non-gui part of aMule ed2k client (amuled,amulweb,amulecmd) 
 AMULE_SECTION=net
 AMULE_PRIORITY=optional
-AMULE_DEPENDS=libstdc++, wxbase, zlib, libcurl, libpng, libgd, libupnp, readline, ncurses
+AMULE_DEPENDS=libstdc++, wxbase, zlib, libpng, libupnp, readline, ncurses
 AMULE_SUGGESTS=
 AMULE_CONFLICTS=
 
 #
 # AMULE_IPK_VERSION should be incremented when the ipk changes.
 #
-AMULE_IPK_VERSION=2
+AMULE_IPK_VERSION=3
 
 #
 # AMULE_CONFFILES should be a list of user-editable files
@@ -60,11 +60,11 @@ endif
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-AMULE_CPPFLAGS=
+AMULE_CPPFLAGS=-pthread -I$(STAGING_INCLUDE_DIR)/upnp -DENABLE_UPNP=1
 ifeq ($(OPTWARE_TARGET), ts101)
 AMULE_CPPFLAGS+= -fno-builtin-log -fno-builtin-exp
 endif
-AMULE_LDFLAGS=
+AMULE_LDFLAGS=-pthread -lupnp -lthreadutil -lixml
 AMULE_CONFIGURE_OPTS = ac_cv_func_malloc_0_nonnull=yes ac_cv_func_realloc_0_nonnull=yes
 ifeq ($(LIBC_STYLE), uclibc)
 ifdef TARGET_GXX
@@ -90,7 +90,6 @@ AMULE_CONFIGURE_ARGS = \
 		--disable-cas \
 		--disable-wxcas \
 		--disable-systray \
-		--with-curl-config=$(STAGING_DIR)/bin/curl-config \
 		--with-gdlib-prefix=$(STAGING_PREFIX) \
 		--with-libpng-prefix=$(STAGING_PREFIX) \
 		--with-libupnp-prefix=$(STAGING_PREFIX) \
@@ -152,9 +151,9 @@ amule-source: $(DL_DIR)/$(AMULE_SOURCE) $(AMULE_PATCHES)
 # shown below to make various patches to it.
 #
 #
-$(AMULE_BUILD_DIR)/.configured: $(DL_DIR)/$(AMULE_SOURCE) $(AMULE_PATCHES)
-	$(MAKE) libstdc++-stage crypto++-stage ncurses-stage
-	$(MAKE) wxbase-stage libcurl-stage zlib-stage libpng-stage libgd-stage libupnp-stage readline-stage
+$(AMULE_BUILD_DIR)/.configured: $(DL_DIR)/$(AMULE_SOURCE) $(AMULE_PATCHES) make/amule.mk
+	$(MAKE) libstdc++-stage crypto++-stage ncurses-stage \
+		wxbase-stage zlib-stage libpng-stage libupnp-stage readline-stage
 	rm -rf $(BUILD_DIR)/$(AMULE_DIR) $(@D)
 	$(AMULE_UNZIP) $(DL_DIR)/$(AMULE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(AMULE_PATCHES)" ; \
