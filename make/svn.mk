@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SVN_SITE=http://archive.apache.org/dist/subversion/
-SVN_VERSION=1.8.13
+SVN_VERSION=1.8.14
 SVN_SOURCE=subversion-$(SVN_VERSION).tar.bz2
 SVN_DIR=subversion-$(SVN_VERSION)
 SVN_UNZIP=bzcat
@@ -203,7 +203,7 @@ endif
 	    -e '/^SWIG_RB/s|= *gcc|= $(TARGET_CC)|' \
 	    -e '/^SWIG_RB_INCLUDES/s|.*|SWIG_RB_INCLUDES =  \$$(SWIG_INCLUDES) -I. -I$(STAGING_INCLUDE_DIR)/ruby-$(RUBY_VERSION) -I$(STAGING_INCLUDE_DIR)/ruby-$(RUBY_VERSION)/ruby -I$(STAGING_INCLUDE_DIR)/ruby-$(RUBY_VERSION)/ruby/backward -I$(shell ls -d $(STAGING_INCLUDE_DIR)/ruby-$(RUBY_VERSION)/*|grep "\-linux"|head -n 1) -I\$$(SWIG_SRC_DIR)/ruby/libsvn_swig_ruby|' \
 	    -e '/^SWIG_RB_LIBS/s|.*|SWIG_RB_LIBS = -Wl,-R$(TARGET_PREFIX)/lib -L$(STAGING_LIB_DIR) -lruby -lpthread -ldl -lcrypt -lm|' \
-	    -e '/^SWIG_RB_SITE_ARCH_DIR/s|.*|SWIG_RB_SITE_ARCH_DIR = /$(shell cd $(STAGING_DIR); ls -d opt/local/lib/ruby/site_ruby/$(RUBY_VERSION)/*|grep "\-linux"|head -n 1)|' \
+	    -e '/^SWIG_RB_SITE_ARCH_DIR/s|.*|SWIG_RB_SITE_ARCH_DIR = $(TARGET_PREFIX)/local/lib/ruby/site_ruby/$(RUBY_VERSION)/$(RUBY_ARCH)|' \
 	    -e 's|-L$(TARGET_PREFIX)/lib||g' \
 	    -e '/^SVN_APRUTIL_LIBS/s/=/= -lpthread /' \
 	    $(@D)/Makefile
