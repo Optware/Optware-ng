@@ -55,9 +55,12 @@ CALC_IPK_VERSION=1
 CALC_CPPFLAGS=
 CALC_LDFLAGS=
 
-CALC_LONG_BITS=$(strip \
-$(if $(filter x86_64 amd64, $(TARGET_ARCH)), 64, \
-32))
+CALC_LONG_BITS=`\
+if $(TARGET_CC) -E -P $(SOURCE_DIR)/common/bits.c | grep -q puts.*32-bit; then \
+	echo 32; \
+else \
+	echo 64; \
+fi`
 # override this variable in platforms/packages-<target>.mk
 CALC_HAVE_USTAT?=no
 # set to yes if target has ustat.h
