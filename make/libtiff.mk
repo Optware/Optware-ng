@@ -22,7 +22,7 @@
 # http://www.remotesensing.org/libtiff/
 #
 LIBTIFF_SITE=http://download.osgeo.org/libtiff
-LIBTIFF_VERSION=3.9.5
+LIBTIFF_VERSION=3.9.7
 LIBTIFF_SOURCE=tiff-$(LIBTIFF_VERSION).tar.gz
 LIBTIFF_DIR=tiff-$(LIBTIFF_VERSION)
 LIBTIFF_UNZIP=zcat
@@ -30,7 +30,7 @@ LIBTIFF_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 LIBTIFF_DESCRIPTION=Tag Image File Format Libraries
 LIBTIFF_SECTION=lib
 LIBTIFF_PRIORITY=optional
-LIBTIFF_DEPENDS=zlib, libstdc++
+LIBTIFF_DEPENDS=zlib, libstdc++, libjpeg
 LIBTIFF_SUGGESTS=
 LIBTIFF_CONFLICTS=
 
@@ -101,7 +101,7 @@ $(DL_DIR)/$(LIBTIFF_SOURCE):
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(LIBTIFF_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBTIFF_SOURCE) $(LIBTIFF_PATCHES) make/libtiff.mk
-#	$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) zlib-stage libjpeg-stage
 	rm -rf $(BUILD_DIR)/$(LIBTIFF_DIR) $(@D)
 	$(LIBTIFF_UNZIP) $(DL_DIR)/$(LIBTIFF_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(LIBTIFF_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(LIBTIFF_DIR) -p1
