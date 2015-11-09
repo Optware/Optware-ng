@@ -48,6 +48,8 @@ RUBY_SECTION=misc
 RUBY_PRIORITY=optional
 RUBY_DEPENDS=zlib, readline, openssl, ncurses
 
+RUBY_ARCH?=$(TARGET_ARCH)-linux-gnu
+
 
 #
 # RUBY_CONFFILES should be a list of user-editable files
