@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 GIT_SITE=http://ftp.be.debian.org/pub/software/scm/git-core
-GIT_VERSION=1.8.4.2
+GIT_VERSION=2.6.3
 GIT_IPK_VERSION=1
 GIT_SOURCE=git-$(GIT_VERSION).tar.gz
 GIT_DIR=git-$(GIT_VERSION)
@@ -59,7 +59,7 @@ GIT-MANPAGES_SOURCE=git-manpages-$(GIT_VERSION).tar.gz
 # GIT_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-GIT_PATCHES=$(GIT_SOURCE_DIR)/Makefile.patch $(GIT_SOURCE_DIR)/ssh-path.patch
+GIT_PATCHES=$(GIT_SOURCE_DIR)/Makefile.patch $(GIT_SOURCE_DIR)/ssh-path-2.6.3.patch
 GIT-LITE_PATCHES=$(GIT_SOURCE_DIR)/Makefile-1.6.patch $(GIT_SOURCE_DIR)/ssh-path.patch
 
 #

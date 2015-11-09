@@ -1,0 +1,11 @@
+--- a/connect.c
++++ b/connect.c
+@@ -766,7 +766,7 @@
+ 
+ 				ssh = getenv("GIT_SSH");
+ 				if (!ssh)
+-					ssh = "ssh";
++					ssh = "%OPTWARE_TARGET_PREFIX%/bin/ssh";
+ 
+ 				ssh_dup = xstrdup(ssh);
+ 				base = basename(ssh_dup);
