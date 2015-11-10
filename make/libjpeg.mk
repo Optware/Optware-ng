@@ -183,7 +183,7 @@ $(LIBJPEG_IPK_DIR)/CONTROL/control:
 $(LIBJPEG_IPK): $(LIBJPEG_BUILD_DIR)/.built
 	rm -rf $(LIBJPEG_IPK_DIR) $(BUILD_DIR)/libjpeg_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBJPEG_BUILD_DIR) prefix=$(LIBJPEG_IPK_DIR)$(TARGET_PREFIX) install
-	rm -f $(LIBJPEG_IPK_DIR)$(TARGET_PREFIX)/lib/jpeg9/libjpeg.la
+	rm -f $(LIBJPEG_IPK_DIR)$(TARGET_PREFIX)/lib/libjpeg.la
 	$(STRIP_COMMAND) 	$(LIBJPEG_IPK_DIR)$(TARGET_PREFIX)/bin/* \
 				$(LIBJPEG_IPK_DIR)$(TARGET_PREFIX)/lib/*.so
 #	$(INSTALL) -d $(LIBJPEG_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
