@@ -29,6 +29,9 @@ GHOSTSCRIPT_DESCRIPTION=An interpreter for the PostScript (TM) language
 GHOSTSCRIPT_SECTION=text
 GHOSTSCRIPT_PRIORITY=optional
 GHOSTSCRIPT_DEPENDS=cups, fontconfig, libpng, libjpeg, liblcms2, openssl
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+GHOSTSCRIPT_DEPENDS+=, libiconv
+endif
 GHOSTSCRIPT_SUGGESTS=
 GHOSTSCRIPT_CONFLICTS=
 
@@ -56,6 +59,22 @@ endif
 #
 GHOSTSCRIPT_CPPFLAGS=
 GHOSTSCRIPT_LDFLAGS=
+
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+GHOSTSCRIPT_MAKE_ARGS=\
+		XTRALIBS="-lfreetype -lexpat -lz -lbz2 -lpng12 -liconv" \
+		ECHOGS_XE=$(GHOSTSCRIPT_HOST_BUILD_DIR)/obj/aux/echogs \
+		GENARCH_XE=$(GHOSTSCRIPT_HOST_BUILD_DIR)/obj/aux/genarch \
+		GENCONF_XE=$(GHOSTSCRIPT_HOST_BUILD_DIR)/obj/aux/genconf \
+		GENINIT_XE=$(GHOSTSCRIPT_HOST_BUILD_DIR)/obj/aux/geninit
+else
+GHOSTSCRIPT_MAKE_ARGS=\
+		XTRALIBS="-lfreetype -lexpat -lz -lbz2 -lpng12" \
+		ECHOGS_XE=$(GHOSTSCRIPT_HOST_BUILD_DIR)/obj/aux/echogs \
+		GENARCH_XE=$(GHOSTSCRIPT_HOST_BUILD_DIR)/obj/aux/genarch \
+		GENCONF_XE=$(GHOSTSCRIPT_HOST_BUILD_DIR)/obj/aux/genconf \
+		GENINIT_XE=$(GHOSTSCRIPT_HOST_BUILD_DIR)/obj/aux/geninit
+endif
 
 #
 # GHOSTSCRIPT_BUILD_DIR is the directory in which the build is done.
@@ -104,7 +123,6 @@ $(GHOSTSCRIPT_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(GHOSTSCRIPT_S
 	)
 	mkdir -p $(@D)/obj/aux
 	$(MAKE) -C $(@D) ./obj/aux/echogs ./obj/aux/genarch ./obj/aux/genconf ./obj/aux/mkromfs ./obj/aux/mkromfs_0
-	$(MAKE) -C $(@D) obj/arch.h
 	touch $@
 
 ghostscript-host-build: $(GHOSTSCRIPT_HOST_BUILD_DIR)/.built
@@ -131,6 +149,9 @@ $(GHOSTSCRIPT_BUILD_DIR)/.configured: $(GHOSTSCRIPT_HOST_BUILD_DIR)/.built $(GHO
 endif
 	$(MAKE) cups-stage fontconfig-stage openssl-stage \
 		libjpeg-stage libpng-stage libtiff-stage liblcms2-stage
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+	$(MAKE) libiconv-stage
+endif
 	rm -rf $(BUILD_DIR)/$(GHOSTSCRIPT_DIR) $(@D)
 	$(GHOSTSCRIPT_UNZIP) $(DL_DIR)/$(GHOSTSCRIPT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(GHOSTSCRIPT_PATCHES)"; then \
@@ -193,13 +214,7 @@ ghostscript-unpack: $(GHOSTSCRIPT_BUILD_DIR)/.configured
 #
 $(GHOSTSCRIPT_BUILD_DIR)/.built: $(GHOSTSCRIPT_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(@D) \
-		XTRALIBS="-lfreetype -lexpat -lz -lbz2 -lpng12" \
-		ECHOGS_XE=$(GHOSTSCRIPT_HOST_BUILD_DIR)/obj/aux/echogs \
-		GENARCH_XE=$(GHOSTSCRIPT_HOST_BUILD_DIR)/obj/aux/genarch \
-		GENCONF_XE=$(GHOSTSCRIPT_HOST_BUILD_DIR)/obj/aux/genconf \
-		GENINIT_XE=$(GHOSTSCRIPT_HOST_BUILD_DIR)/obj/aux/geninit \
-		;
+	$(MAKE) -C $(@D) $(GHOSTSCRIPT_MAKE_ARGS)
 	touch $@
 
 #
@@ -213,12 +228,7 @@ ghostscript: $(GHOSTSCRIPT_BUILD_DIR)/.built
 $(GHOSTSCRIPT_BUILD_DIR)/.staged: $(GHOSTSCRIPT_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install \
-		XTRALIBS="-lfreetype -lexpat -lz -lbz2 -lpng12" \
-		ECHOGS_XE=$(GHOSTSCRIPT_HOST_BUILD_DIR)/obj/aux/echogs \
-		GENARCH_XE=$(GHOSTSCRIPT_HOST_BUILD_DIR)/obj/aux/genarch \
-		GENCONF_XE=$(GHOSTSCRIPT_HOST_BUILD_DIR)/obj/aux/genconf \
-		GENINIT_XE=$(GHOSTSCRIPT_HOST_BUILD_DIR)/obj/aux/geninit \
-		;
+		$(GHOSTSCRIPT_MAKE_ARGS)
 	touch $@
 
 ghostscript-stage: $(GHOSTSCRIPT_BUILD_DIR)/.staged
@@ -257,13 +267,8 @@ $(GHOSTSCRIPT_IPK_DIR)/CONTROL/control:
 $(GHOSTSCRIPT_IPK): $(GHOSTSCRIPT_BUILD_DIR)/.built
 	rm -rf $(GHOSTSCRIPT_IPK_DIR) $(BUILD_DIR)/ghostscript_*_$(TARGET_ARCH).ipk
 	PATH=$(STAGING_PREFIX)/bin:$$PATH \
-	$(MAKE) -C $(GHOSTSCRIPT_BUILD_DIR) install \
-		XTRALIBS="-lfreetype -lexpat -lz -lbz2 -lpng12" \
-		DESTDIR=$(GHOSTSCRIPT_IPK_DIR) \
-		ECHOGS_XE=$(GHOSTSCRIPT_HOST_BUILD_DIR)/obj/aux/echogs \
-		GENARCH_XE=$(GHOSTSCRIPT_HOST_BUILD_DIR)/obj/aux/genarch \
-		GENCONF_XE=$(GHOSTSCRIPT_HOST_BUILD_DIR)/obj/aux/genconf \
-		;
+	$(MAKE) -C $(GHOSTSCRIPT_BUILD_DIR) install DESTDIR=$(GHOSTSCRIPT_IPK_DIR) \
+		$(GHOSTSCRIPT_MAKE_ARGS)
 	-find $(GHOSTSCRIPT_IPK_DIR)$(TARGET_PREFIX) -type f -exec $(STRIP_COMMAND) {} 2>/dev/null \;
 #	sed -i -e 's|/usr/share|$(TARGET_PREFIX)/share|' $(GHOSTSCRIPT_IPK_DIR)$(TARGET_PREFIX)/lib/cups/filter/psto*
 	$(MAKE) $(GHOSTSCRIPT_IPK_DIR)/CONTROL/control
