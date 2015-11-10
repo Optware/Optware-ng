@@ -111,7 +111,7 @@ cryptsetup-source: $(DL_DIR)/$(CRYPTSETUP_SOURCE) $(CRYPTSETUP_PATCHES)
 # shown below to make various patches to it.
 #
 $(CRYPTSETUP_BUILD_DIR)/.configured: $(DL_DIR)/$(CRYPTSETUP_SOURCE) $(CRYPTSETUP_PATCHES) make/cryptsetup.mk
-	$(MAKE) dmsetup-stage libgcrypt-stage popt-stage util-linux-ng-stage
+	$(MAKE) dmsetup-stage libgcrypt-stage popt-stage util-linux-stage
 	rm -rf $(BUILD_DIR)/$(CRYPTSETUP_DIR) $(@D)
 	$(CRYPTSETUP_UNZIP) $(DL_DIR)/$(CRYPTSETUP_SOURCE) | tar -C $(BUILD_DIR) -xvf - 
 	if test -n "$(CRYPTSETUP_PATCHES)" ; \

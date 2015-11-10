@@ -32,7 +32,7 @@ taglib libopensync newsbeuter newt ettercap-ng lighttpd \
 nfs-server transcode esound ices0 nfs-utils \
 littlesmalltalk nget fcgi nload ffmpeg uemacs fish \
 loudmouth nrpe uncia freeze madplay iptraf ntop \
-ffmpeg ushare fuppes mc irssi util-linux-ng mdadm vlc \
+ffmpeg ushare fuppes mc irssi mdadm vlc \
 ivorbis-tools jabberd rrdcollect gambit-c obexftp \
 vorbis-tools rrdtool jove git launchtool gnu-smalltalk \
 ldconfig libao gloox libcdio libdlna libdvb gift-ares \
@@ -422,7 +422,7 @@ COMMON_CROSS_PACKAGES = \
 	ucl udev udns udpxy uemacs ulogd unarj uncia unfs3 units unixodbc \
 	unrar unrtf \
 	unzip up-imapproxy updatedd upslug2 \
-	upx usbutils ushare utelnetd utf8proc util-linux util-linux-ng \
+	upx usbutils ushare utelnetd utf8proc util-linux \
 	vblade vdr-mediamvp vim vitetris vlc \
 	vnstat vorbis-tools vpnc vsftpd vte vtun \
 	w3cam w3m wayland wakelan wavpack webalizer weechat werc wget \
