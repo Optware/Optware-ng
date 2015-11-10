@@ -181,7 +181,7 @@ $(LIBJPEG_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(LIBJPEG_IPK): $(LIBJPEG_BUILD_DIR)/.built
-	rm -rf $(LIBJPEG_IPK_DIR) $(LIBJPEG_IPK)
+	rm -rf $(LIBJPEG_IPK_DIR) $(BUILD_DIR)/libjpeg_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBJPEG_BUILD_DIR) prefix=$(LIBJPEG_IPK_DIR)$(TARGET_PREFIX) install
 	rm -f $(LIBJPEG_IPK_DIR)$(TARGET_PREFIX)/lib/jpeg9/libjpeg.la
 	$(STRIP_COMMAND) 	$(LIBJPEG_IPK_DIR)$(TARGET_PREFIX)/bin/* \
