@@ -21,6 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 DOSFSTOOLS_SITE=http://daniel-baumann.ch/files/software/dosfstools
+DOSFSTOOLS_SITE2=http://pkgs.fedoraproject.org/repo/pkgs/dosfstools/$(DOSFSTOOLS_SOURCE)/7f159ec44d3b9c502904bab0236050e4
 DOSFSTOOLS_VERSION=3.0.9
 DOSFSTOOLS_SOURCE=dosfstools-$(DOSFSTOOLS_VERSION).tar.bz2
 DOSFSTOOLS_DIR=dosfstools-$(DOSFSTOOLS_VERSION)
@@ -77,6 +78,7 @@ DOSFSTOOLS_IPK=$(BUILD_DIR)/dosfstools_$(DOSFSTOOLS_VERSION)-$(DOSFSTOOLS_IPK_VE
 #
 $(DL_DIR)/$(DOSFSTOOLS_SOURCE):
 	$(WGET) -P $(@D) $(DOSFSTOOLS_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(DOSFSTOOLS_SITE2)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
