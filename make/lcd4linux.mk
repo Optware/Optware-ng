@@ -62,6 +62,9 @@ LCD4LINUX_CONFFILES=$(TARGET_PREFIX)/etc/lcd4linux.conf
 # compilation or linking flags, then list them here.
 #
 LCD4LINUX_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/ncurses
+ifeq ($(LIBC_STYLE),uclibc)
+LCD4LINUX_CPPFLAGS += -Dlog2l=log2
+endif
 LCD4LINUX_LDFLAGS=-ljpeg -lmpdclient
 
 #
