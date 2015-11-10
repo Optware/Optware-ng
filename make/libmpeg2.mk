@@ -20,10 +20,10 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-LIBMPEG2_SITE=http://libmpeg2.sourceforge.net/files
-LIBMPEG2_VERSION=0.4.1
-LIBMPEG2_SOURCE=mpeg2dec-$(LIBMPEG2_VERSION).tar.gz
-LIBMPEG2_DIR=mpeg2dec-$(LIBMPEG2_VERSION)
+LIBMPEG2_SITE=https://download.videolan.org/contrib
+LIBMPEG2_VERSION=0.5.1
+LIBMPEG2_SOURCE=libmpeg2-$(LIBMPEG2_VERSION).tar.gz
+LIBMPEG2_DIR=libmpeg2-$(LIBMPEG2_VERSION)
 LIBMPEG2_UNZIP=zcat
 LIBMPEG2_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 LIBMPEG2_DESCRIPTION=A free library for decoding MPEG-2 and MPEG-1 video streams.
@@ -38,7 +38,7 @@ LIBMPEG2_CONFLICTS=
 #
 # LIBMPEG2_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBMPEG2_IPK_VERSION=2
+LIBMPEG2_IPK_VERSION=1
 
 #
 # LIBMPEG2_CONFFILES should be a list of user-editable files
@@ -55,6 +55,9 @@ LIBMPEG2_IPK_VERSION=2
 # compilation or linking flags, then list them here.
 #
 LIBMPEG2_CPPFLAGS=
+ifeq ($(OPTWARE_TARGET), $(filter buildroot-ppc-603e, $(OPTWARE_TARGET)))
+LIBMPEG2_CPPFLAGS += -DHAVE_ALTIVEC_H
+endif
 LIBMPEG2_LDFLAGS=
 
 #
@@ -214,9 +217,9 @@ $(LIBMPEG2_IPK): $(LIBMPEG2_BUILD_DIR)/.built
 	rm -rf $(LIBMPEG2_IPK_DIR) $(BUILD_DIR)/libmpeg2_*_$(TARGET_ARCH).ipk
 	rm -rf $(MPEG2DEC_IPK_DIR) $(BUILD_DIR)/mpeg2dec_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBMPEG2_BUILD_DIR) DESTDIR=$(LIBMPEG2_IPK_DIR) install-strip
-	$(INSTALL) -d $(MPEG2DEC_IPK_DIR)$(TARGET_PREFIX)/share
+	$(INSTALL) -d $(MPEG2DEC_IPK_DIR)$(TARGET_PREFIX)
 	mv $(LIBMPEG2_IPK_DIR)$(TARGET_PREFIX)/bin $(MPEG2DEC_IPK_DIR)$(TARGET_PREFIX)/
-	mv $(LIBMPEG2_IPK_DIR)$(TARGET_PREFIX)/man $(MPEG2DEC_IPK_DIR)$(TARGET_PREFIX)/share/
+	mv $(LIBMPEG2_IPK_DIR)$(TARGET_PREFIX)/share $(MPEG2DEC_IPK_DIR)$(TARGET_PREFIX)/
 	$(MAKE) $(LIBMPEG2_IPK_DIR)/CONTROL/control
 	$(MAKE) $(MPEG2DEC_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBMPEG2_IPK_DIR)
