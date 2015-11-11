@@ -124,6 +124,9 @@ $(NCURSES_DIR)/.staged: $(NCURSES_DIR)/.built
 	sed -i -e '/^prefix=/s|=.*|=$(STAGING_PREFIX)|' $(STAGING_PREFIX)/bin/ncurses[0-9]*-config
 	ln -sf ncurses/ncurses.h $(STAGING_INCLUDE_DIR)
 	ln -sf ncurses/curses.h $(STAGING_INCLUDE_DIR)
+	$(INSTALL) -d $(STAGING_LIB_DIR)/pkgconfig
+	$(INSTALL) -m 644 $(NCURSES_SOURCE_DIR)/ncurses.pc $(STAGING_LIB_DIR)/pkgconfig
+	sed -i -e '/^prefix=/s|=.*|=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/ncurses.pc
 	touch $@
 
 ncurses-stage: $(NCURSES_DIR)/.staged

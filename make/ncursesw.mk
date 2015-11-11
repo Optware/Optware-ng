@@ -95,6 +95,9 @@ $(NCURSESW_DIR)/.staged: $(NCURSESW_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(NCURSESW_DIR) DESTDIR=$(STAGING_DIR) install.includes install.libs
 	sed -i -e '/^prefix=/s|=.*|=$(STAGING_PREFIX)|' $(STAGING_PREFIX)/bin/ncursesw[0-9]*-config
+	$(INSTALL) -d $(STAGING_LIB_DIR)/pkgconfig
+	$(INSTALL) -m 644 $(NCURSESW_SOURCE_DIR)/ncursesw.pc $(STAGING_LIB_DIR)/pkgconfig
+	sed -i -e '/^prefix=/s|=.*|=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/ncursesw.pc
 	touch $@
 
 ncursesw-stage: $(NCURSESW_DIR)/.staged

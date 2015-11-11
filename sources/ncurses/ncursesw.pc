@@ -1,0 +1,14 @@
+prefix=/opt
+exec_prefix=${prefix}
+libdir=${prefix}/lib
+includedir=${prefix}/include
+major_version=5
+version=5.7
+
+Name: ncursesw
+Description: ncursesw 5.7 library
+Version: ${version}
+URL: http://invisible-island.net/ncurses
+Libs: -L${libdir} -lncursesw
+Libs.private:  
+Cflags: -I${includedir}/ncursesw
