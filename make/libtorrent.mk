@@ -83,7 +83,7 @@ endif
 ifeq ($(OPTWARE_TARGET), $(filter cs05q3armel mssii, $(OPTWARE_TARGET)))
 LIBTORRENT_CONFIG_ARGS+=--without-epoll
 endif
-ifeq ($(OPTWARE_TARGET), $(filter buildroot-mipsel buildroot-mipsel-ng buildroot-armv5eabi-ng, $(OPTWARE_TARGET)))
+ifeq ($(OPTWARE_TARGET), $(filter buildroot-mipsel buildroot-mipsel-ng buildroot-armv5eabi-ng buildroot-ppc-603e, $(OPTWARE_TARGET)))
 LIBTORRENT_CONFIG_ARGS+=--disable-instrumentation
 endif
 
