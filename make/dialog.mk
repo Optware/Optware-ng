@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 DIALOG_SITE=ftp://invisible-island.net/dialog
-DIALOG_VERSION=1.1-20080819
+DIALOG_VERSION=1.2-20150920
 DIALOG_SOURCE=dialog-$(DIALOG_VERSION).tgz
 DIALOG_DIR=dialog-$(DIALOG_VERSION)
 DIALOG_UNZIP=zcat
@@ -29,14 +29,14 @@ DIALOG_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 DIALOG_DESCRIPTION=Script-driven curses widgets.
 DIALOG_SECTION=console
 DIALOG_PRIORITY=optional
-DIALOG_DEPENDS=ncurses
+DIALOG_DEPENDS=ncursesw
 DIALOG_SUGGESTS=
 DIALOG_CONFLICTS=
 
 #
 # DIALOG_IPK_VERSION should be incremented when the ipk changes.
 #
-DIALOG_IPK_VERSION=3
+DIALOG_IPK_VERSION=1
 
 #
 # DIALOG_CONFFILES should be a list of user-editable files
@@ -105,8 +105,8 @@ dialog-source: $(DL_DIR)/$(DIALOG_SOURCE) $(DIALOG_PATCHES)
 # shown below to make various patches to it.
 #
 $(DIALOG_BUILD_DIR)/.configured: $(DL_DIR)/$(DIALOG_SOURCE) $(DIALOG_PATCHES) make/dialog.mk
-	$(MAKE) ncurses-stage
-	rm -rf $(BUILD_DIR)/$(DIALOG_DIR) $(DIALOG_BUILD_DIR)
+	$(MAKE) ncursesw-stage
+	rm -rf $(BUILD_DIR)/$(DIALOG_DIR) $(@D)
 	$(DIALOG_UNZIP) $(DL_DIR)/$(DIALOG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(DIALOG_PATCHES)" ; \
 		then cat $(DIALOG_PATCHES) | \
@@ -115,20 +115,24 @@ $(DIALOG_BUILD_DIR)/.configured: $(DL_DIR)/$(DIALOG_SOURCE) $(DIALOG_PATCHES) ma
 	if test "$(BUILD_DIR)/$(DIALOG_DIR)" != "$(DIALOG_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(DIALOG_DIR) $(DIALOG_BUILD_DIR) ; \
 	fi
-	(cd $(DIALOG_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(DIALOG_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(DIALOG_LDFLAGS)" \
+		PKG_CONFIG_PATH=$(STAGING_LIB_DIR)/pkgconfig \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=$(TARGET_PREFIX) \
+		--enable-widec \
+		--with-ncursesw \
+		--disable-rpath-hack \
 		--disable-nls \
 		--disable-static \
 	)
-	sed -i -e '/^LIBS/s| -L/lib||' $(DIALOG_BUILD_DIR)/makefile
-#	$(PATCH_LIBTOOL) $(DIALOG_BUILD_DIR)/libtool
+#	sed -i -e '/^LIBS/s| -L/lib||' $(@D)/makefile
+#	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 dialog-unpack: $(DIALOG_BUILD_DIR)/.configured
@@ -138,7 +142,7 @@ dialog-unpack: $(DIALOG_BUILD_DIR)/.configured
 #
 $(DIALOG_BUILD_DIR)/.built: $(DIALOG_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(DIALOG_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -151,7 +155,7 @@ dialog: $(DIALOG_BUILD_DIR)/.built
 #
 $(DIALOG_BUILD_DIR)/.staged: $(DIALOG_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(DIALOG_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 dialog-stage: $(DIALOG_BUILD_DIR)/.staged
@@ -227,4 +231,4 @@ dialog-dirclean:
 # Some sanity check for the package.
 #
 dialog-check: $(DIALOG_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(DIALOG_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
