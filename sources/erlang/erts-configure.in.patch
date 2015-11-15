@@ -18,7 +18,7 @@
  AC_SUBST(SSL_LINK_WITH_ZLIB)
  AC_SUBST(STATIC_ZLIB_LIBS)
  
--std_ssl_locations="/usr/local /usr/sfw /usr %OPTWARE_TARGET_PREFIX%/local /usr/pkg /usr/local/openssl /usr/lib/openssl /usr/openssl /usr/local/ssl /usr/lib/ssl /usr/ssl"
+-std_ssl_locations="/usr/local /usr/sfw /usr /opt/local /usr/pkg /usr/local/openssl /usr/lib/openssl /usr/openssl /usr/local/ssl /usr/lib/ssl /usr/ssl"
 +std_ssl_locations="%OPTWARE_TARGET_PREFIX%"
  
  AC_ARG_WITH(ssl-zlib,
