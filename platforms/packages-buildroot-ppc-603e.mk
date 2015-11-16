@@ -9,6 +9,7 @@ BROKEN_PACKAGES = \
 	ecl \
 	gnu-smalltalk \
 	golang \
+	phoneme-advanced \
 	qemu \
 	qemu-libc-i386 \
 	syx \
