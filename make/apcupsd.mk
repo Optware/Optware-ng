@@ -29,14 +29,14 @@ APCUPSD_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 APCUPSD_DESCRIPTION=A daemon for controlling APC UPSes
 APCUPSD_SECTION=sysadmin
 APCUPSD_PRIORITY=optional
-APCUPSD_DEPENDS=
+APCUPSD_DEPENDS=libgd
 APCUPSD_SUGGESTS=
 APCUPSD_CONFLICTS=
 
 #
 # APCUPSD_IPK_VERSION should be incremented when the ipk changes.
 #
-APCUPSD_IPK_VERSION=1
+APCUPSD_IPK_VERSION=2
 
 #
 # APCUPSD_CONFFILES should be a list of user-editable files
