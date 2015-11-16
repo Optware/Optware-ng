@@ -146,7 +146,8 @@ cups-source: $(DL_DIR)/$(CUPS_SOURCE) $(CUPS_PATCHES)
 $(CUPS_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(CUPS_SOURCE) make/cups.mk
 #	$(MAKE) libjpeg-host-stage libpng-host-stage
 #	$(MAKE) openssl-host-stage
-	rm -rf $(HOST_BUILD_DIR)/$(CUPS_DIR) $(@D)
+	rm -rf  $(HOST_BUILD_DIR)/$(CUPS_DIR) $(@D) \
+		$(HOST_STAGING_PREFIX)/share/cups $(HOST_STAGING_PREFIX)/etc/cups
 	$(CUPS_UNZIP) $(DL_DIR)/$(CUPS_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
 	cat $(CUPS_SOURCE_DIR)/build_without_gnutls.patch | $(PATCH) -d $(HOST_BUILD_DIR)/$(CUPS_DIR) -p1
 	if test "$(HOST_BUILD_DIR)/$(CUPS_DIR)" != "$(@D)" ; \
@@ -157,11 +158,11 @@ $(CUPS_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(CUPS_SOURCE) make/cu
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_HOST_NAME) \
 		--target=$(GNU_HOST_NAME) \
-		--prefix=$(TARGET_PREFIX) \
-		--exec_prefix=$(TARGET_PREFIX) \
-		--with-icondir=$(TARGET_PREFIX)/share/icons \
-		--with-menudir=$(TARGET_PREFIX)/share/applications \
-		--libdir=$(TARGET_PREFIX)/lib \
+		--prefix=$(HOST_STAGING_PREFIX) \
+		--exec_prefix=$(HOST_STAGING_PREFIX) \
+		--with-icondir=$(HOST_STAGING_PREFIX)/share/icons \
+		--with-menudir=$(HOST_STAGING_PREFIX)/share/applications \
+		--libdir=$(HOST_STAGING_LIB_DIR) \
 		--disable-nls \
 		--disable-dbus \
 		--disable-tiff \
@@ -183,8 +184,7 @@ $(CUPS_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(CUPS_SOURCE) make/cu
 
 $(CUPS_HOST_BUILD_DIR)/.staged: $(CUPS_HOST_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(@D) install DSTROOT=$(HOST_STAGING_DIR)
-	sed -i -e 's|=$(TARGET_PREFIX)|=$(HOST_STAGING_PREFIX)|' $(HOST_STAGING_PREFIX)/bin/cups-config
+	$(MAKE) -C $(@D) install INITDIR=$(HOST_STAGING_PREFIX)/etc
 	touch $@
 
 cups-host-stage: $(CUPS_HOST_BUILD_DIR)/.staged
@@ -201,7 +201,8 @@ endif
 ifeq (gnutls, $(filter gnutls, $(PACKAGES)))
 	$(MAKE) gnutls-stage
 endif
-	rm -rf $(BUILD_DIR)/$(CUPS_DIR) $(@D)
+	rm -rf  $(BUILD_DIR)/$(CUPS_DIR) $(@D) \
+		$(STAGING_PREFIX)/share/cups $(STAGING_PREFIX)/etc/cups
 	$(CUPS_UNZIP) $(DL_DIR)/$(CUPS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(CUPS_PATCHES)" ; \
 		then cat $(CUPS_PATCHES) | \
