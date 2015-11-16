@@ -1,0 +1,27 @@
+Description: ZeroVM fix under IA32. Actual code in
+ openjdk/hotspot/src/os/linux/vm/os_linux.cpp#safe_cond_timedwait 
+ call get_fpu_control_word and set_fpu_control_word under
+ any IA32 arch.
+ In os_linux_zero.cpp, this methods throw errors with ShouldNotCallThis.
+ Just replace it with just NO-OP.
+ TODO: Maybe just add ifndef ZERO in os_linux.cpp
+Author: Damien Raude-Morvan <drazzib@debian.org>
+Last-Update: 2011-08-02
+Forwarded: http://mail.openjdk.java.net/pipermail/zero-dev/2011-August/000398.html
+--- a/hotspot/src/os_cpu/linux_zero/vm/os_linux_zero.cpp
++++ b/hotspot/src/os_cpu/linux_zero/vm/os_linux_zero.cpp
+@@ -259,11 +259,12 @@
+ }
+ 
+ int os::Linux::get_fpu_control_word() {
+-  ShouldNotCallThis();
++  // Nothing to do
++  return 0;
+ }
+ 
+ void os::Linux::set_fpu_control_word(int fpu) {
+-  ShouldNotCallThis();
++  // Nothing to do
+ }
+ 
+ bool os::is_allocatable(size_t bytes) {

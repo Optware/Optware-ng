@@ -1,0 +1,25 @@
+Description: at least in 7b143, building without the precompiled headers doesn't work.
+ patch attached.
+Forwarded: http://mail.openjdk.java.net/pipermail/zero-dev/2011-July/000385.html
+
+--- openjdk/hotspot/src/cpu/zero/vm/entry_zero.hpp.orig
++++ openjdk/hotspot/src/cpu/zero/vm/entry_zero.hpp
+@@ -26,6 +26,8 @@
+ #ifndef CPU_ZERO_VM_ENTRY_ZERO_HPP
+ #define CPU_ZERO_VM_ENTRY_ZERO_HPP
+ 
++#include "interpreter/cppInterpreter.hpp"
++
+ class ZeroEntry {
+  public:
+   ZeroEntry() {
+--- openjdk/hotspot/src/cpu/zero/vm/nativeInst_zero.cpp.orig
++++ openjdk/hotspot/src/cpu/zero/vm/nativeInst_zero.cpp
+@@ -25,6 +25,7 @@
+
+ #include "precompiled.hpp"
+ #include "assembler_zero.inline.hpp"
++#include "entry_zero.hpp"
+ #include "memory/resourceArea.hpp"
+ #include "nativeInst_zero.hpp"
+ #include "oops/oop.inline.hpp"

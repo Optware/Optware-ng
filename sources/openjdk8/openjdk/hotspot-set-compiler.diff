@@ -1,0 +1,12 @@
+# DP: Allow to overwrite CC/CXX from the environment
+--- openjdk/hotspot/make/linux/makefiles/gcc.make
++++ openjdk/hotspot/make/linux/makefiles/gcc.make
+@@ -39,7 +39,7 @@
+     ifeq ($(USE_CLANG), true)
+       CXX = clang++
+       CC  = clang
+-    else
++    else ifeq ($(CXX),)
+       CXX = g++
+       CC  = gcc
+     endif

@@ -1,0 +1,13 @@
+# Don't explicitly build with -march=i586 on i386 architectures.
+
+--- a/hotspot/make/linux/makefiles/gcc.make
++++ b/hotspot/make/linux/makefiles/gcc.make
+@@ -171,7 +171,7 @@
+ endif
+ 
+ ARCHFLAG = $(ARCHFLAG/$(BUILDARCH))
+-ARCHFLAG/i486    = -m32 -march=i586
++ARCHFLAG/i486    = -m32
+ ARCHFLAG/amd64   = -m64 $(STACK_ALIGNMENT_OPT)
+ ARCHFLAG/ia64    =
+ ARCHFLAG/sparc   = -m32 -mcpu=v9

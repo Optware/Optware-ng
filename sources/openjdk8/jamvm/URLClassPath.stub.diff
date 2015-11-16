@@ -1,0 +1,34 @@
+--- jamvm/jamvm/src/classlib/openjdk/jvm.c
++++ jamvm/jamvm/src/classlib/openjdk/jvm.c
+@@ -35,6 +35,7 @@
+ #include <assert.h>
+ #include <errno.h>
+ #include <stdint.h>
++#include <stdbool.h>
+ #include <stdio.h>
+ #include <string.h>
+ #include <netdb.h>
+@@ -3102,3 +3103,23 @@
+ 
+     return signals[i].number;
+ }
++
++/* stubs for OpenJDK8 URLClassPath.c */
++
++/* JVM_KnownToNotExist */
++
++jboolean JVM_KnownToNotExist(JNIEnv *env, jobject loader, const char *classname) {
++    return false;
++}
++
++/* JVM_GetResourceLookupCacheURLs */
++
++jobjectArray JVM_GetResourceLookupCacheURLs(JNIEnv *env, jobject loader) {
++    return NULL;
++}
++
++/* JVM_GetResourceLookupCache */
++
++jintArray JVM_GetResourceLookupCache(JNIEnv *env, jobject loader, const char *resource_name) {
++    return NULL;
++}

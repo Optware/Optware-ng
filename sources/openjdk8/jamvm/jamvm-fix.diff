@@ -1,0 +1,95 @@
+--- jamvm/jamvm/src/classlib/openjdk/jvm.c
++++ jamvm/jamvm/src/classlib/openjdk/jvm.c
+@@ -517,6 +517,48 @@ jclass JVM_FindClassFromBootLoader(JNIEnv *env, const char *name) {
+ }
+ 
+ 
++/* JVM_FindClassFromCaller
++ * Find a class from a given class loader.  Throws ClassNotFoundException.
++ *  name:   name of class
++ *  init:   whether initialization is done
++ *  loader: class loader to look up the class.
++ *          This may not be the same as the caller's class loader.
++ *  caller: initiating class. The initiating class may be null when a security
++ *          manager is not installed.
++ *
++ * Find a class with this name in this loader,
++ * using the caller's "protection domain".
++ */
++
++jclass JVM_FindClassFromCaller(JNIEnv *env, const char *name,
++                               jboolean init, jobject loader,
++                               jclass caller) {
++    Class *class;
++
++    TRACE("JVM_FindClassFromCaller(env=%p, name=%s, init=%d, loader=%p,"
++          " caller=%p)", env, name, init, loader, caller);
++
++    /* XXX The caller's protection domain should be used during
++       the findClassFromClassLoader but there is no specification or
++       unit-test in OpenJDK documenting the desired effect */
++
++    class = findClassFromClassLoader((char *)name, loader);
++
++    if(class == NULL) {
++        Object *excep = exceptionOccurred();
++        char *dot_name = slash2DotsDup((char*)name);
++
++        clearException();
++        signalChainedException(java_lang_ClassNotFoundException,
++                               dot_name, excep);
++        sysFree(dot_name);
++    } else if(init)
++        initClass(class);
++
++    return class;
++}
++
++
+ /* JVM_FindClassFromClassLoader */
+ 
+ jclass JVM_FindClassFromClassLoader(JNIEnv *env, const char *name,
+@@ -2965,6 +3007,24 @@ void JVM_GetVersionInfo(JNIEnv *env, jvm_version_info *info, size_t info_size) {
+ }
+ 
+ 
++/* JVM_GetTemporaryDirectory
++ * Return the temporary directory that the VM uses for the attach
++ * and perf data files.
++ *
++ * It is important that this directory is well-known and the
++ * same for all VM instances. It cannot be affected by configuration
++ * variables such as java.io.tmpdir.
++ *
++ * JamVM do not support the jvmstat framework thus this is left unimplemented.
++ */
++
++jstring JVM_GetTemporaryDirectory(JNIEnv *env) {
++    UNIMPLEMENTED("JVM_GetTemporaryDirectory");
++
++    return 0;
++}
++
++
+ /* JVM_RegisterSignal */
+ 
+ extern void signalHandler(int sig);
+--- jamvm/jamvm/src/classlib/openjdk/classlib-defs.h
++++ jamvm/jamvm/src/classlib/openjdk/classlib-defs.h
+@@ -1,5 +1,6 @@
+ /*
+- * Copyright (C) 2011, 2013, 2014 Robert Lougher <rob@jamvm.org.uk>.
++ * Copyright (C) 2011, 2013, 2014, 2015
++ * Robert Lougher <rob@jamvm.org.uk>.
+  *
+  * This file is part of JamVM.
+  *
+@@ -23,7 +23,7 @@
+ #define CLASSLIB_CLASS_SPECIAL  JTHREAD
+ 
+ #if OPENJDK_VERSION == 8
+-#define CLASSLIB_CLASS_PAD_SIZE 10*sizeof(Object*)+1*sizeof(int)
++#define CLASSLIB_CLASS_PAD_SIZE 11*sizeof(Object*)+1*sizeof(int)
+ #elif OPENJDK_VERSION == 7
+ #define CLASSLIB_CLASS_PAD_SIZE 18*sizeof(Object*)+2*sizeof(int)
+ #else

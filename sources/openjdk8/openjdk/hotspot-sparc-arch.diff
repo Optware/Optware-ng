@@ -1,0 +1,13 @@
+Index: b/hotspot/make/linux/makefiles/defs.make
+===================================================================
+--- a/hotspot/make/linux/makefiles/defs.make
++++ b/hotspot/make/linux/makefiles/defs.make
+@@ -69,7 +69,7 @@ ifeq ($(ARCH), ia64)
+ endif
+ 
+ # sparc
+-ifeq ($(ARCH), sparc64)
++ifneq (,$(filter $(ARCH), sparc sparc64))
+   ifeq ($(ARCH_DATA_MODEL), 64)
+     ARCH_DATA_MODEL  = 64
+     MAKE_ARGS        += LP64=1
