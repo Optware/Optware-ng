@@ -106,8 +106,8 @@ $(GUTENPRINT_HOST_BUILD_DIR)/.built: $(DL_DIR)/$(GUTENPRINT_SOURCE) make/gutenpr
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_HOST_NAME) \
 		--target=$(GNU_HOST_NAME) \
-		--prefix=$(TARGET_PREFIX) \
-		--with-cups=$(TARGET_PREFIX) \
+		--prefix=$(HOST_STAGING_PREFIX) \
+		--with-cups=$(HOST_STAGING_PREFIX) \
 		--enable-cups-ppds \
 		--enable-cups-level3-ppds \
 		--without-ghostscript \
