@@ -380,7 +380,7 @@ COMMON_CROSS_PACKAGES = \
 	ocaml oleo open2300 openjdk8 \
 	openobex obexftp \
 	opendchub openjpeg openldap opensips \
-	openssl openssh openvpn \
+	openssl openssh openvpn oscam \
 	optware-devel ossp-js oww owwlog \
 	p7zip p910nd pal palantir pango parted \
 	par2cmdline patch patchutils \
