@@ -384,7 +384,7 @@ COMMON_CROSS_PACKAGES = \
 	optware-devel ossp-js oww owwlog \
 	p7zip p910nd pal palantir pango parted \
 	par2cmdline patch patchutils \
-	pcal pcapsipdump pciutils pcre pen perltgd pinentry pixman \
+	pcal pcapsipdump pciutils pcre pcsc-lite pen perltgd pinentry pixman \
 	phoneme-advanced \
 	php php-apache php-thttpd phpmyadmin \
 	picocom picolisp pkgconfig plowshare polipo pop3proxy \
