@@ -39,7 +39,7 @@ PSMISC_CONFLICTS=
 #
 # PSMISC_IPK_VERSION should be incremented when the ipk changes.
 #
-PSMISC_IPK_VERSION=1
+PSMISC_IPK_VERSION=2
 
 #
 # PSMISC_CONFFILES should be a list of user-editable files
@@ -205,7 +205,7 @@ $(PSMISC_IPK): $(PSMISC_BUILD_DIR)/.built
 	$(MAKE) $(PSMISC_IPK_DIR)/CONTROL/control
 	(echo "#!/bin/sh"; \
 	 echo "update-alternatives --install $(TARGET_PREFIX)/bin/killall killall $(TARGET_PREFIX)/bin/psmisc-killall 70"; \
-	 echo "update-alternatives --install $(TARGET_PREFIX)/bin/pidof pidof $(TARGET_PREFIX)/bin/psmisc-killall 70"; \
+	 echo "update-alternatives --remove pidof $(TARGET_PREFIX)/bin/psmisc-killall"; \
 	) > $(PSMISC_IPK_DIR)/CONTROL/postinst
 	(echo "#!/bin/sh"; \
 	 echo "update-alternatives --remove killall $(TARGET_PREFIX)/bin/psmisc-killall"; \
