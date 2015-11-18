@@ -1,0 +1,7 @@
+#!/bin/sh
+
+PATH=%OPTWARE_TARGET_PREFIX%/bin:%OPTWARE_TARGET_PREFIX%/sbin:$PATH
+
+%OPTWARE_TARGET_PREFIX%/etc/init.d/S30oscam stop
+
+exit 0

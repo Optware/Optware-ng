@@ -1,0 +1,69 @@
+#!/bin/sh
+
+prefix="%OPTWARE_TARGET_PREFIX%"
+PATH=${prefix}/bin:${prefix}/sbin:$PATH
+TITLE=OSCam
+NAME=oscam
+DAEMON=${prefix}/bin/${NAME}
+DAEMON_OPTS="-c ${prefix}/etc/oscam"
+DAEMON_PID_FILE=${prefix}/var/run/oscam.pid
+
+start() {
+    echo -n "Starting $NAME: "
+    if [ -n "`pidof $NAME`" ]; then
+    echo "Already running"
+    return
+    fi
+    $DAEMON -b --pidfile "$DAEMON_PID_FILE"
+    echo "Done!"
+    return
+}
+stop() {
+    if [ -n "`pidof $NAME`" ]; then
+        echo -n "Shutting down $NAME: "
+        kill `cat "$DAEMON_PID_FILE"` 2>/dev/null
+        sleep 3
+        if [ -n "`pidof $NAME`" ]; then
+            echo "Failed to stop $TITLE"
+            return
+        fi
+        echo "Done!"
+        return
+    else
+        echo "$TITLE not running"
+        return
+    fi
+}
+
+restart() {
+    stop
+    start
+}
+status() {
+    if [ -n "`pidof $NAME`" ]; then
+    echo "$TITLE is running"
+    return
+    fi
+    echo "$TITLE not running"
+    return
+}
+
+case "$1" in
+  start)
+    start
+    ;;
+  stop)
+    stop
+    ;;
+  restart)
+    restart
+    ;;
+  status)
+    status
+    ;;
+  *)
+    echo "Usage: $0 {start|stop|restart|status}"
+    exit 1
+esac
+
+exit $?

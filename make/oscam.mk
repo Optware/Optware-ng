@@ -42,7 +42,7 @@ OSCAM_IPK_VERSION=1
 
 #
 # OSCAM_CONFFILES should be a list of user-editable files
-#OSCAM_CONFFILES=$(TARGET_PREFIX)/etc/oscam.conf $(TARGET_PREFIX)/etc/init.d/SXXoscam
+OSCAM_CONFFILES=$(TARGET_PREFIX)/etc/init.d/S30oscam
 
 #
 # OSCAM_PATCHES should list any patches, in the the order in
@@ -138,7 +138,7 @@ $(OSCAM_BUILD_DIR)/.built: $(OSCAM_BUILD_DIR)/.configured
 	$(MAKE) -C $(@D) \
 		CROSS=$(TARGET_CROSS) \
 		HOSTCC=$(HOSTCC) \
-		CONF_DIR=$(TARGET_PREFIX)/etc/tuxbox/config/ \
+		CONF_DIR=$(TARGET_PREFIX)/etc/oscam \
 		USE_LIBUSB=1 LIBUSB_LIB="-lusb-1.0 -pthread" USE_PCSC=1 USE_SSL=1 \
 		EXTRA_CFLAGS="$(STAGING_CPPFLAGS) $(OSCAM_CPPFLAGS)" \
 		EXTRA_LDFLAGS="$(STAGING_LDFLAGS) $(OSCAM_LDFLAGS)" \
@@ -208,11 +208,14 @@ $(OSCAM_DOCS_IPK_DIR)/CONTROL/control:
 #
 $(OSCAM_IPK): $(OSCAM_BUILD_DIR)/.built
 	rm -rf $(OSCAM_IPK_DIR) $(BUILD_DIR)/oscam_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(OSCAM_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(INSTALL) -d $(OSCAM_IPK_DIR)$(TARGET_PREFIX)/{bin,etc/init.d}
 	$(INSTALL) -m 755 $(OSCAM_BUILD_DIR)/oscam $(OSCAM_BUILD_DIR)/list_smargo \
 		$(OSCAM_IPK_DIR)$(TARGET_PREFIX)/bin
 	$(STRIP_COMMAND) $(OSCAM_IPK_DIR)$(TARGET_PREFIX)/bin/*
+	$(INSTALL) -m 755 $(OSCAM_SOURCE_DIR)/rc.oscam $(OSCAM_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S30oscam
 	$(MAKE) $(OSCAM_IPK_DIR)/CONTROL/control
+	$(INSTALL) -m 755 $(OSCAM_SOURCE_DIR)/postinst $(OSCAM_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(OSCAM_SOURCE_DIR)/prerm $(OSCAM_IPK_DIR)/CONTROL/prerm
 	echo $(OSCAM_CONFFILES) | sed -e 's/ /\n/g' > $(OSCAM_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(OSCAM_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(OSCAM_IPK_DIR)
