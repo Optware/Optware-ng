@@ -14,7 +14,7 @@ start() {
     echo "Already running"
     return
     fi
-    $DAEMON -b --pidfile "$DAEMON_PID_FILE"
+    $DAEMON -b --pidfile "$DAEMON_PID_FILE" $DAEMON_OPTS
     echo "Done!"
     return
 }
