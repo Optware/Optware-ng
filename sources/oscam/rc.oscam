@@ -9,7 +9,7 @@ DAEMON_OPTS="-c ${prefix}/etc/oscam"
 DAEMON_PID_FILE=${prefix}/var/run/oscam.pid
 
 start() {
-    echo -n "Starting $NAME: "
+    echo -n "Starting $TITLE: "
     if [ -n "`pidof $NAME`" ]; then
     echo "Already running"
     return
