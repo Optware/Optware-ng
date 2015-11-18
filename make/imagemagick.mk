@@ -20,9 +20,10 @@
 # You should change all these variables to suit your package.
 #
 IMAGEMAGICK_SITE=ftp://ftp.imagemagick.org/pub/ImageMagick/releases
+IMAGEMAGICK_SITE2=http://ftp.sunet.se/pub/multimedia/graphics/ImageMagic
 ifneq ($(OPTWARE_TARGET), $(filter wl500g mss, $(OPTWARE_TARGET)))
 IMAGEMAGICK_VER=6.9.2
-IMAGEMAGICK_REV=5
+IMAGEMAGICK_REV=6
 IMAGEMAGICK_IPK_VERSION=1
 IMAGEMAGICK_SOURCE=ImageMagick-$(IMAGEMAGICK_VER)-$(IMAGEMAGICK_REV).tar.xz
 IMAGEMAGICK_UNZIP=xzcat
@@ -79,6 +80,7 @@ IMAGEMAGICK_IPK=$(BUILD_DIR)/imagemagick_$(IMAGEMAGICK_VERSION)-$(IMAGEMAGICK_IP
 #
 $(DL_DIR)/$(IMAGEMAGICK_SOURCE):
 	$(WGET) -P $(@D) $(IMAGEMAGICK_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(IMAGEMAGICK_SITE2)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
