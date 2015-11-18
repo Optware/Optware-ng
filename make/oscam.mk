@@ -21,8 +21,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 OSCAM_SVN=http://www.streamboard.tv/svn/oscam/trunk
-OSCAM_REVISION=11158
-OSCAM_VERSION=1.10+rev$(OSCAM_REVISION)
+OSCAM_REVISION=11160
+OSCAM_VERSION=1.20-rev$(OSCAM_REVISION)
 OSCAM_SOURCE=oscam-$(OSCAM_VERSION).tar.bz2
 OSCAM_DIR=oscam-$(OSCAM_VERSION)
 OSCAM_UNZIP=bzcat
