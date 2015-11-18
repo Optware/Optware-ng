@@ -6,7 +6,6 @@ TITLE=OSCam
 NAME=oscam
 DAEMON=${prefix}/bin/${NAME}
 DAEMON_OPTS="-c ${prefix}/etc/oscam"
-DAEMON_PID_FILE=${prefix}/var/run/oscam.pid
 
 start() {
     echo -n "Starting $TITLE: "
@@ -14,14 +13,14 @@ start() {
     echo "Already running"
     return
     fi
-    $DAEMON -b --pidfile "$DAEMON_PID_FILE" $DAEMON_OPTS
+    $DAEMON -b $DAEMON_OPTS
     echo "Done!"
     return
 }
 stop() {
     if [ -n "`pidof $NAME`" ]; then
         echo -n "Shutting down $NAME: "
-        kill `cat "$DAEMON_PID_FILE"` 2>/dev/null
+        killall $NAME 2>/dev/null
         sleep 3
         if [ -n "`pidof $NAME`" ]; then
             echo "Failed to stop $TITLE"
