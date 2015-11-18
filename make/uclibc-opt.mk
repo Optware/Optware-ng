@@ -33,10 +33,6 @@ UCLIBC-OPT_SUGGESTS=
 endif
 UCLIBC-OPT_CONFLICTS=
 
-
-### package non-stripped libpthread and libthread_db, increment ipk version
-override UCLIBC-OPT_IPK_VERSION := $(shell expr $(UCLIBC-OPT_IPK_VERSION) + 1 )
-
 # UCLIBC-OPT_IPK_DIR is the directory in which the ipk is built.
 # UCLIBC-OPT_IPK is the name of the resulting ipk files.
 #
