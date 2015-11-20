@@ -308,7 +308,7 @@ COMMON_CROSS_PACKAGES = \
 	fribidi ftpcopy fslint ftpd-topfield fuppes fuse fuse-exfat \
 	gambit-c gawk gcal gconv-modules gdb gdbm gdchart \
 	ged gedit geoip gettext gdk-pixbuf \
-	ggrab ghostscript ghostscript-fonts git gkrellmd glib gnet gnokii gnome-icon-theme \
+	ggrab ghostscript ghostscript-fonts git gkrellmd glib glib-networking gnet gnokii gnome-icon-theme \
 	gnome-icon-theme-symbolic \
 	gnu-httptunnel gnu-smalltalk gnugo \
 	gnupg1 gnupg gnuplot gnutls gpgme \
