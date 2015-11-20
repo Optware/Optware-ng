@@ -29,14 +29,14 @@ MEGATOOLS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 MEGATOOLS_DESCRIPTION=Collection of programs for accessing Mega service from a command line of your desktop or server.
 MEGATOOLS_SECTION=web
 MEGATOOLS_PRIORITY=optional
-MEGATOOLS_DEPENDS=glib, openssl, libcurl
+MEGATOOLS_DEPENDS=glib, glib-networking, openssl, libcurl
 MEGATOOLS_SUGGESTS=
 MEGATOOLS_CONFLICTS=
 
 #
 # MEGATOOLS_IPK_VERSION should be incremented when the ipk changes.
 #
-MEGATOOLS_IPK_VERSION=1
+MEGATOOLS_IPK_VERSION=2
 
 #
 # MEGATOOLS_CONFFILES should be a list of user-editable files
