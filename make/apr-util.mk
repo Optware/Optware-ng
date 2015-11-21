@@ -27,7 +27,7 @@ ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 APR_UTIL_DEPENDS+=, libiconv
 endif
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
-APR_UTIL_DEPENDS+=, openldap
+APR_UTIL_DEPENDS+=, openldap-libs
 endif
 APR_UTIL_SUGGESTS=sqlite
 
