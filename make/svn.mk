@@ -35,7 +35,7 @@ SVN_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SVN_DESCRIPTION=a compelling replacement for CVS
 SVN_SECTION=net
 SVN_PRIORITY=optional
-SVN_DEPENDS=neon, apr, apr-util, cyrus-sasl-libs, e2fslibs, expat, file, gdbm, libxml2, sqlite, zlib
+SVN_DEPENDS=libserf, apr, apr-util, cyrus-sasl-libs, e2fslibs, expat, file, gdbm, libxml2, sqlite, zlib
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
 SVN_DEPENDS +=, openldap-libs
 endif
@@ -63,7 +63,7 @@ SVN-RB_CONFLICTS=
 #
 # SVN_IPK_VERSION should be incremented when the ipk changes.
 #
-SVN_IPK_VERSION=1
+SVN_IPK_VERSION=2
 
 #
 # SVN_CONFFILES should be a list of user-editable files
@@ -79,7 +79,7 @@ SVN_CONFFILES=
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-SVN_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/neon -D_LARGEFILE64_SOURCE
+SVN_CPPFLAGS=-D_LARGEFILE64_SOURCE
 SVN_LDFLAGS=
 ifeq ($(TARGET_CC), $(HOSTCC))
 SVN_CONFIG_ENV=
@@ -151,9 +151,9 @@ svn-source: $(DL_DIR)/$(SVN_SOURCE) $(SVN_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(SVN_BUILD_DIR)/.configured: $(DL_DIR)/$(SVN_SOURCE) $(SVN_PATCHES) make/svn.mk
-	$(MAKE) apr-stage apr-util-stage apache-stage neon-stage \
+	$(MAKE) apr-stage apr-util-stage apache-stage \
 		cyrus-sasl-stage expat-stage file-stage libxml2-stage \
-		e2fsprogs-stage gdbm-stage sqlite-stage zlib-stage
+		e2fsprogs-stage gdbm-stage sqlite-stage zlib-stage libserf-stage
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
 	$(MAKE) openldap-stage
 endif
@@ -184,7 +184,7 @@ endif
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=$(TARGET_PREFIX) \
-		--with-neon=$(STAGING_PREFIX) \
+		--with-serf=$(STAGING_PREFIX) \
 		--with-apr=$(STAGING_PREFIX) \
 		--with-ruby-sitedir=$(TARGET_PREFIX)/local/lib/ruby/site_ruby/$(RUBY_VERSION) \
 		--with-apr-util=$(STAGING_PREFIX) \
@@ -222,7 +222,7 @@ svn-unpack: $(SVN_BUILD_DIR)/.configured
 #
 $(SVN_BUILD_DIR)/.built: $(SVN_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(@D) NEON_LIBS=-lneon
+	$(MAKE) -C $(@D)
 	touch $@
 
 $(SVN_BUILD_DIR)/.py-built: $(SVN_BUILD_DIR)/.built
