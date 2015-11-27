@@ -36,7 +36,7 @@ AUTOSSH_CONFLICTS=
 #
 # AUTOSSH_IPK_VERSION should be incremented when the ipk changes.
 #
-AUTOSSH_IPK_VERSION=1
+AUTOSSH_IPK_VERSION=2
 
 #
 # AUTOSSH_CONFFILES should be a list of user-editable files
@@ -46,7 +46,7 @@ AUTOSSH_IPK_VERSION=1
 # AUTOSSH_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#AUTOSSH_PATCHES=$(AUTOSSH_SOURCE_DIR)/configure.patch
+AUTOSSH_PATCHES=$(AUTOSSH_SOURCE_DIR)/use-configured-ldflags.patch
 
 #
 # If the compilation of the package requires additional
@@ -110,7 +110,7 @@ $(AUTOSSH_BUILD_DIR)/.configured: $(DL_DIR)/$(AUTOSSH_SOURCE) $(AUTOSSH_PATCHES)
 	$(AUTOSSH_UNZIP) $(DL_DIR)/$(AUTOSSH_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(AUTOSSH_PATCHES)" ; \
 		then cat $(AUTOSSH_PATCHES) | \
-		$(PATCH) -d $(BUILD_DIR)/$(AUTOSSH_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(AUTOSSH_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(AUTOSSH_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(AUTOSSH_DIR) $(@D) ; \

@@ -1,0 +1,11 @@
+--- a/Makefile.in
++++ b/Makefile.in
+@@ -31,7 +31,7 @@
+ 
+ 
+ $(TARGET):	$(OFILES)
+-		$(CC) $(CPPFLAGS) -o $(TARGET) $(OFILES) $(LIBS)
++		$(CC) $(LDFLAGS) $(CPPFLAGS) -o $(TARGET) $(OFILES) $(LIBS)
+ 
+ clean:
+ 		- /bin/rm -f *.o *.a *.core *~
