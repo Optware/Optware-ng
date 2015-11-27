@@ -13,7 +13,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 GLIB_SITE=http://ftp.gnome.org/pub/gnome/sources/glib/2.47
-GLIB_VERSION=2.47.1
+GLIB_VERSION=2.47.3
 GLIB_SOURCE=glib-$(GLIB_VERSION).tar.xz
 GLIB_DIR=glib-$(GLIB_VERSION)
 GLIB_UNZIP=xzcat
