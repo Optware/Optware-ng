@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 AUTOSSH_SITE=http://www.harding.motd.ca/autossh
-AUTOSSH_VERSION=1.4b
+AUTOSSH_VERSION=1.4e
 AUTOSSH_SOURCE=autossh-$(AUTOSSH_VERSION).tgz
 AUTOSSH_DIR=autossh-$(AUTOSSH_VERSION)
 AUTOSSH_UNZIP=zcat
