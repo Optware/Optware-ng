@@ -5,7 +5,7 @@
 ###########################################################
 
 MC_SITE=http://www.midnight-commander.org/downloads
-MC_VERSION=4.8.14
+MC_VERSION=4.8.15
 MC_SOURCE=mc-$(MC_VERSION).tar.bz2
 MC_DIR=mc-$(MC_VERSION)
 MC_UNZIP=bzcat
