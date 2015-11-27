@@ -346,7 +346,7 @@ COMMON_CROSS_PACKAGES = \
 	libnetfilter-acct libnetfilter-conntrack libnetfilter-log libnetfilter-queue libnfnetlink libnettle libnl libnsl libnxml \
 	libol libogg libosip2 libopensync libotr libpam \
 	libpar2 libpcap libpeas libpng libpth librsync librsvg \
-	libsamplerate libserf libshout libsigc++ libsoup libsndfile libstdc++ \
+	libsamplerate libserf libshout libsigc++ libsoup libsndfile libsodium libstdc++ \
 	libtasn1 libtheora libtiff libtool libtorrent \
 	libunistring libupnp libusb libusb1 libvncserver \
 	libvorbis libvorbisidec libxfce4ui libxfce4util libxkbcommon libxml2 libxslt libzip \
