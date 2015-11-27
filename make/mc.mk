@@ -5,7 +5,7 @@
 ###########################################################
 
 MC_SITE=http://www.midnight-commander.org/downloads
-MC_VERSION=4.8.13
+MC_VERSION=4.8.14
 MC_SOURCE=mc-$(MC_VERSION).tar.bz2
 MC_DIR=mc-$(MC_VERSION)
 MC_UNZIP=bzcat
@@ -36,7 +36,7 @@ MC_IPK_VERSION=1
 #
 
 MC_CPPFLAGS=
-MC_LDFLAGS=-lpthread
+MC_LDFLAGS=-pthread
 
 #
 # MC_BUILD_DIR is the directory in which the build is done.
