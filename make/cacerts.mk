@@ -22,7 +22,7 @@
 #
 CACERTS_URL=http://www.linuxfromscratch.org/blfs/view/cvs/postlfs/cacerts.html
 CACERTS_CERTDATA_URL=http://anduin.linuxfromscratch.org/BLFS/other/certdata.txt
-CACERTS_VERSION:=$(shell ( $(WGET_BINARY) -qO- $(CACERTS_CERTDATA_URL) 2>/dev/null || cat $(DL_DIR)/$(CACERTS_SOURCE) 2>/dev/null ) | head -1 | sed -n -e 's/.*\$$Revision: \([0-9]*\).*/\1/p')
+CACERTS_VERSION:=$(shell ( $(WGET_BINARY) -qO- $(CACERTS_CERTDATA_URL) 2>/dev/null || cat $(DL_DIR)/$(CACERTS_SOURCE) 2>/dev/null ) | head -1 | sed -n -e '/\$$Revision: /s/.*\$$Revision: \([0-9]*\).*/\1/p')
 CACERTS_SOURCE=certdata.txt
 CACERTS_DIR=cacerts
 CACERTS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
