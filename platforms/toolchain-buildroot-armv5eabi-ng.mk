@@ -1,7 +1,9 @@
-# This toolchain is gcc 5.2.0 on uClibc-ng 1.0.6
+# This toolchain is gcc 5.2.0 on uClibc-ng 1.0.9
 
 GNU_TARGET_NAME = arm-linux
 EXACT_TARGET_NAME = arm-buildroot-linux-uclibcgnueabi
+
+UCLIBC_VERSION=1.0.9
 
 DEFAULT_TARGET_PREFIX=/opt
 TARGET_PREFIX ?= /opt
@@ -19,7 +21,7 @@ GETTEXT_NLS=enable
 IPV6=yes
 
 CROSS_CONFIGURATION_GCC_VERSION=5.2.0
-CROSS_CONFIGURATION_UCLIBC_VERSION=1.0.6
+CROSS_CONFIGURATION_UCLIBC_VERSION=$(UCLIBC_VERSION)
 
 ifeq ($(HOST_MACHINE), $(filter armv5tel armv5tejl, $(HOST_MACHINE)))
 
@@ -59,14 +61,14 @@ TARGET_CFLAGS=$(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
 TOOLCHAIN_SITE=http://buildroot.uclibc.org/downloads
 TOOLCHAIN_SOURCE=buildroot-2015.08.tar.bz2
 
-UCLIBC-OPT_VERSION = 1.0.6
-UCLIBC-OPT_IPK_VERSION = 2
-LIBNSL_IPK_VERSION = 2
+UCLIBC-OPT_VERSION = $(UCLIBC_VERSION)
+UCLIBC-OPT_IPK_VERSION = 1
+LIBNSL_IPK_VERSION = 1
 UCLIBC-OPT_LIBS_SOURCE_DIR = $(TARGET_CROSS_TOP)/arm-buildroot-linux-uclibcgnueabi/sysroot/lib
 
 BUILDROOT-ARMv5EABI-NG_SOURCE_DIR=$(SOURCE_DIR)/buildroot-armv5eabi-ng
 
-BUILDROOT-ARMv5EABI-NG_PATCHES=$(BUILDROOT-ARMv5EABI-NG_SOURCE_DIR)/uclibc-ng-1.0.6.patch
+BUILDROOT-ARMv5EABI-NG_PATCHES=$(BUILDROOT-ARMv5EABI-NG_SOURCE_DIR)/uclibc-ng-bump.patch
 
 toolchain: $(TARGET_CROSS_TOP)/.built
 
@@ -90,7 +92,7 @@ $(TARGET_CROSS_TOP)/.built: $(TARGET_CROSS_TOP)/.configured
 	rm -f $@
 	$(MAKE) STAGING_DIR=$(TARGET_CROSS_TOP)/arm-buildroot-linux-uclibcgnueabi/sysroot -C $(TARGET_CROSS_BUILD_DIR)
 	cp -af $(TARGET_CROSS_BUILD_DIR)/output/host/usr/* $(TARGET_CROSS_TOP)/
-	cp -f $(UCLIBC-OPT_LIBS_SOURCE_DIR)/libnsl-1.0.6.so $(TARGET_LIBDIR)/
+	cp -f $(UCLIBC-OPT_LIBS_SOURCE_DIR)/libnsl-$(UCLIBC_VERSION).so $(TARGET_LIBDIR)/
 	cp -f $(TARGET_CROSS_TOP)/lib/gcc/arm-buildroot-linux-uclibcgnueabi/5.2.0/*.a $(UCLIBC-OPT_LIBS_SOURCE_DIR)/
 	touch $@
 
