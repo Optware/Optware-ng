@@ -4,7 +4,7 @@ Index: b/common/autoconf/platform.m4
 ===================================================================
 --- a/common/autoconf/platform.m4
 +++ b/common/autoconf/platform.m4
-@@ -36,42 +36,108 @@
+@@ -36,25 +36,85 @@
        VAR_CPU_BITS=64
        VAR_CPU_ENDIAN=little
        ;;
@@ -92,18 +92,13 @@ Index: b/common/autoconf/platform.m4
        VAR_CPU=ppc
        VAR_CPU_ARCH=ppc
        VAR_CPU_BITS=32
-       VAR_CPU_ENDIAN=big
-       ;;
--    powerpc64)
-+    powerpc64|ppc64)
-       VAR_CPU=ppc64
-       VAR_CPU_ARCH=ppc
+@@ -66,12 +126,18 @@
        VAR_CPU_BITS=64
        VAR_CPU_ENDIAN=big
        ;;
 -    powerpc64le)
 +    powerpc64le|ppc64le)
-       VAR_CPU=ppc64le
+       VAR_CPU=ppc64
        VAR_CPU_ARCH=ppc
        VAR_CPU_BITS=64
        VAR_CPU_ENDIAN=little
@@ -117,7 +112,7 @@ Index: b/common/autoconf/platform.m4
      s390)
        VAR_CPU=s390
        VAR_CPU_ARCH=s390
-@@ -390,6 +437,11 @@
+@@ -371,6 +437,11 @@
  
    # ZERO_ARCHDEF is used to enable architecture-specific code
    case "${OPENJDK_TARGET_CPU}" in
@@ -129,16 +124,3 @@ Index: b/common/autoconf/platform.m4
      ppc)     ZERO_ARCHDEF=PPC32 ;;
      ppc64)   ZERO_ARCHDEF=PPC64 ;;
      s390*)   ZERO_ARCHDEF=S390  ;;
-Index: b/common/autoconf/toolchain.m4
-===================================================================
---- a/common/autoconf/toolchain.m4
-+++ b/common/autoconf/toolchain.m4
-@@ -1245,6 +1245,8 @@ AC_DEFUN_ONCE([TOOLCHAIN_SETUP_COMPILER_
-     *)
-       ZERO_ARCHFLAG="${COMPILER_TARGET_BITS_FLAG}${OPENJDK_TARGET_CPU_BITS}"
-   esac
-+  # use the default for the package builds
-+  ZERO_ARCHFLAG=""
-   TOOLCHAIN_COMPILER_CHECK_ARGUMENTS([$ZERO_ARCHFLAG], [], [ZERO_ARCHFLAG=""])
-   AC_SUBST(ZERO_ARCHFLAG)
- 

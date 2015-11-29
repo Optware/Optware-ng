@@ -20,29 +20,22 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-OPENJDK8_HG=http://icedtea.classpath.org/hg
+OPENJDK8_HG=http://hg.openjdk.java.net/jdk8u/jdk8u
+OPENJDK8_ICEDTEA_HG=http://icedtea.classpath.org/hg
 OPENJDK8_SITE=http://icedtea.wildebeest.org/download
-OPENJDK8_DATE=20150930
-# this is tag of the main icedtea source tarball
-# that we take some patches from,
-# e.g., icedtea-3.0.0pre06
-OPENJDK8_TAG=icedtea-3.0.0pre06
-# this is tag of icedtea-forest8 source tarballs
-# that we use for compilation,
-# e.g., jdk8u60-b23 or icedtea-3.0.0pre06
-OPENJDK8_JDK_TAG=icedtea-3.0.0pre06
-OPENJDK8_UPDATE_VERSION=60
-OPENJDK8_BUILD_NUMBER=b24
+OPENJDK8_UPDATE_VERSION=72
+OPENJDK8_BUILD_NUMBER=b05
 OPENJDK8_VERSION=8u$(OPENJDK8_UPDATE_VERSION)-$(OPENJDK8_BUILD_NUMBER)
-OPENJDK8_SOURCE=$(OPENJDK8_TAG).tar.bz2
-OPENJDK8_FOREST8_SOURCE=icedtea8-forest-$(OPENJDK8_VERSION).tar.bz2
-OPENJDK8_CORBA_SOURCE=icedtea8-forest-corba-$(OPENJDK8_VERSION).tar.bz2
-OPENJDK8_HOTSPOT_SOURCE=icedtea8-forest-hotspot-$(OPENJDK8_VERSION).tar.bz2
-OPENJDK8_JAXP_SOURCE=icedtea8-forest-jaxp-$(OPENJDK8_VERSION).tar.bz2
-OPENJDK8_JAXWS_SOURCE=icedtea8-forest-jaxws-$(OPENJDK8_VERSION).tar.bz2
-OPENJDK8_JDK_SOURCE=icedtea8-forest-jdk-$(OPENJDK8_VERSION).tar.bz2
-OPENJDK8_LANGTOOLS_SOURCE=icedtea8-forest-langtools-$(OPENJDK8_VERSION).tar.bz2
-OPENJDK8_NASHORN_SOURCE=icedtea8-forest-nashorn-$(OPENJDK8_VERSION).tar.bz2
+OPENJDK8_SOURCE=jdk$(OPENJDK8_VERSION).tar.bz2
+OPENJDK8_ICEDTEA_TAG=icedtea-3.0.0pre06
+OPENJDK8_FOREST8_SOURCE=$(OPENJDK8_ICEDTEA_TAG).tar.bz2
+OPENJDK8_CORBA_SOURCE=openjdk8u-corba-$(OPENJDK8_VERSION).tar.bz2
+OPENJDK8_HOTSPOT_SOURCE=openjdk8u-hotspot-$(OPENJDK8_VERSION).tar.bz2
+OPENJDK8_JAXP_SOURCE=openjdk8u-jaxp-$(OPENJDK8_VERSION).tar.bz2
+OPENJDK8_JAXWS_SOURCE=openjdk8u-jaxws-$(OPENJDK8_VERSION).tar.bz2
+OPENJDK8_JDK_SOURCE=openjdk8u-jdk-$(OPENJDK8_VERSION).tar.bz2
+OPENJDK8_LANGTOOLS_SOURCE=openjdk8u-langtools-$(OPENJDK8_VERSION).tar.bz2
+OPENJDK8_NASHORN_SOURCE=openjdk8u-nashorn-$(OPENJDK8_VERSION).tar.bz2
 
 OPENJDK8_JAMVM_SOURCE=jamvm-2.0.0.tar.gz
 
@@ -50,8 +43,8 @@ OPENJDK8_JAMVM_SOURCE=jamvm-2.0.0.tar.gz
 OPENJDK8_UNZIP=bzcat
 OPENJDK8_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 OPENJDK8_JDK_DESCRIPTION=OpenJDK Java development environment. The packages are built using patches from the IcedTea project and Debian.
-OPENJDK8_JRE_DESCRIPTION=Full OpenJDK Java runtime, using JamVM. The packages are built using patches from the IcedTea project and Debian.
-OPENJDK8_JRE_HEADLESS_DESCRIPTION=Minimal Java runtime - needed for executing non GUI Java programs, using JamVM. The packages are built using patches from the IcedTea project and Debian.
+OPENJDK8_JRE_DESCRIPTION=Full OpenJDK Java runtime, using Zero VM. The packages are built using patches from the IcedTea project and Debian.
+OPENJDK8_JRE_HEADLESS_DESCRIPTION=Minimal Java runtime - needed for executing non GUI Java programs, using Zero VM. The packages are built using patches from the IcedTea project and Debian.
 OPENJDK8_SECTION=language
 OPENJDK8_PRIORITY=optional
 OPENJDK8_JRE_HEADLESS_DEPENDS=libstdc++, freetype, libffi
@@ -91,10 +84,10 @@ jre/lib/$(OPENJDK8_LIBARCH)/libj2pkcs11.so \
 jre/lib/$(OPENJDK8_LIBARCH)/libjava.so \
 jre/lib/$(OPENJDK8_LIBARCH)/libnet.so \
 jre/lib/$(OPENJDK8_LIBARCH)/libnio.so \
+jre/lib/$(OPENJDK8_LIBARCH)/libjsig.so  \
 jre/lib/$(OPENJDK8_LIBARCH)/libverify.so \
 jre/lib/$(OPENJDK8_LIBARCH)/libzip.so \
 jre/lib/$(OPENJDK8_LIBARCH)/server/libjvm.so \
-jre/lib/$(OPENJDK8_LIBARCH)/server/libjsig.so  \
 jre/lib/$(OPENJDK8_LIBARCH)/server/Xusage.txt \
 jre/lib/calendars.properties \
 jre/lib/classlist \
@@ -122,6 +115,7 @@ jre/lib/tzdb.dat \
 release \
 
 
+
 #
 # OPENJDK8_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
@@ -136,6 +130,7 @@ $(OPENJDK8_SOURCE_DIR)/openjdk/hotspot-powerpcspe.diff \
 $(OPENJDK8_SOURCE_DIR)/openjdk/hotspot-set-compiler.diff \
 $(OPENJDK8_SOURCE_DIR)/openjdk/hotspot-sparc-arch.diff \
 $(OPENJDK8_SOURCE_DIR)/openjdk/os_linux.uclibc.patch \
+$(OPENJDK8_SOURCE_DIR)/openjdk/rhbz1206656_fix_current_stack_pointer.patch \
 $(OPENJDK8_SOURCE_DIR)/openjdk/xtoolkit.uclibc.patch \
 $(OPENJDK8_SOURCE_DIR)/openjdk/zero-architectures.diff \
 $(OPENJDK8_SOURCE_DIR)/openjdk/zero-fpu-control-is-noop.diff \
@@ -157,7 +152,7 @@ OPENJDK8_CPPFLAGS=-I$(OPENJDK8_BUILD_DIR)/openjdk/jdk/src/share/npt \
 -I$(OPENJDK8_BUILD_DIR)/jamvm/install/include \
 $(STAGING_CPPFLAGS)
 # commas in LDFLAGS cause make functions parse errors
-OPENJDK8_LDFLAGS=-L$(OPENJDK8_BUILD_DIR)/openjdk/build/linux-$(OPENJDK8_ARCH)-normal-server-release/jdk/lib/$(OPENJDK8_LIBARCH) \
+OPENJDK8_LDFLAGS=-L$(OPENJDK8_BUILD_DIR)/openjdk/build/linux-$(OPENJDK8_ARCH)-normal-zero-release/jdk/lib/$(OPENJDK8_LIBARCH) \
 -Xlinker -rpath -Xlinker $(TARGET_PREFIX)/lib/openjdk8/$(OPENJDK8_LIBARCH)/jli \
 -Xlinker -rpath -Xlinker $(TARGET_PREFIX)/lib/openjdk8/$(OPENJDK8_LIBARCH)/server \
 -Xlinker -rpath -Xlinker $(TARGET_PREFIX)/lib/openjdk8/$(OPENJDK8_LIBARCH) \
@@ -173,7 +168,7 @@ OPENJDK8_MAKE_ARGS=\
 		BUILD_LD=$(HOSTCC) \
 		WARNINGS_ARE_ERRORS='' \
 		LOG=debug \
-		CONF=linux-$(OPENJDK8_ARCH)-normal-server-release
+		CONF=linux-$(OPENJDK8_ARCH)-normal-zero-release
 
 OPENJDK8_ARCH=$(strip \
 	$(if $(filter powerpc, $(TARGET_ARCH)), ppc, \
@@ -188,7 +183,7 @@ OPENJDK8_LIBARCH=$(strip \
 	$(if $(filter x86_64, $(OPENJDK8_ARCH)), amd64, \
 	$(OPENJDK8_ARCH))))
 
-OPENJDK8_JDK_IMAGE_DIR=$(OPENJDK8_BUILD_DIR)/openjdk/build/linux-$(OPENJDK8_ARCH)-normal-server-release/images/j2sdk-image
+OPENJDK8_JDK_IMAGE_DIR=$(OPENJDK8_BUILD_DIR)/openjdk/build/linux-$(OPENJDK8_ARCH)-normal-zero-release/images/j2sdk-image
 
 #
 # OPENJDK8_BUILD_DIR is the directory in which the build is done.
@@ -223,25 +218,22 @@ $(OPENJDK8_JAXP_SOURCE) \
 $(OPENJDK8_JAXWS_SOURCE) \
 $(OPENJDK8_JDK_SOURCE) \
 $(OPENJDK8_LANGTOOLS_SOURCE) \
-$(OPENJDK8_NASHORN_SOURCE) \
+$(OPENJDK8_NASHORN_SOURCE))
+# \
 $(OPENJDK8_JAMVM_SOURCE))
 
 $(DL_DIR)/$(OPENJDK8_SOURCE):
-	export SKIP_CHECKSUM=1; \
-	$(WGET) -O $@ $(OPENJDK8_HG)/icedtea/archive/`$(WGET) -qO- $(OPENJDK8_HG)/icedtea/raw-file/tip/.hgtags \
-		| grep "$(OPENJDK8_TAG)" | cut -d ' ' -f1`.tar.bz2 || \
+	$(WGET) -O $@ $(OPENJDK8_HG)/archive/jdk$(OPENJDK8_VERSION).tar.bz2 || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 $(DL_DIR)/$(OPENJDK8_FOREST8_SOURCE):
 	export SKIP_CHECKSUM=1; \
-	$(WGET) -O $@ $(OPENJDK8_HG)/icedtea8-forest/archive/`$(WGET) -qO- $(OPENJDK8_HG)/icedtea8-forest/raw-file/tip/.hgtags \
-		| grep "$(OPENJDK8_JDK_TAG)" | cut -d ' ' -f1`.tar.bz2 || \
+	$(WGET) -O $@ $(OPENJDK8_ICEDTEA_HG)/icedtea8/archive/`$(WGET) -qO- $(OPENJDK8_ICEDTEA_HG)/icedtea8/raw-file/tip/.hgtags \
+		| grep "$(OPENJDK8_ICEDTEA_TAG)" | cut -d ' ' -f1`.tar.bz2 || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
-$(DL_DIR)/icedtea8-forest-%-$(OPENJDK8_VERSION).tar.bz2:
-	export SKIP_CHECKSUM=1; \
-	$(WGET) -O $@ $(OPENJDK8_HG)/icedtea8-forest/$*/archive/`$(WGET) -qO- $(OPENJDK8_HG)/icedtea8-forest/$*/raw-file/tip/.hgtags \
-		| grep "$(OPENJDK8_JDK_TAG)" | cut -d ' ' -f1`.tar.bz2 || \
+$(DL_DIR)/openjdk8u-%-$(OPENJDK8_VERSION).tar.bz2:
+	$(WGET) -O $@ $(OPENJDK8_HG)/$*/archive/jdk$(OPENJDK8_VERSION).tar.bz2 || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 ifneq (2.0.0,$(JAMVM_VERSION))
@@ -283,7 +275,7 @@ ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 endif
 	rm -rf $(@D)
 	$(INSTALL) -d $(@D)
-	$(OPENJDK8_UNZIP) $(DL_DIR)/$(OPENJDK8_SOURCE) | tar -C $(@D) -xvf - --strip-components=1
+	$(OPENJDK8_UNZIP) $(DL_DIR)/$(OPENJDK8_FOREST8_SOURCE) | tar -C $(@D) -xvf - --strip-components=1
 	if test -n "$(OPENJDK8_PATCHES)" ; \
 		then cat $(OPENJDK8_PATCHES) | \
 		$(PATCH) -d $(@D) -p0 ; \
@@ -293,7 +285,7 @@ endif
 # unpack OpenJDK
 	rm -rf $(@D)/openjdk
 	mkdir -p $(addprefix $(@D)/openjdk/,corba jaxp jaxws jdk langtools hotspot nashorn)
-	$(OPENJDK8_UNZIP) $(DL_DIR)/$(OPENJDK8_FOREST8_SOURCE) | tar -C $(@D)/openjdk -xf - --strip-components=1
+	$(OPENJDK8_UNZIP) $(DL_DIR)/$(OPENJDK8_SOURCE) | tar -C $(@D)/openjdk -xf - --strip-components=1
 	$(OPENJDK8_UNZIP) $(DL_DIR)/$(OPENJDK8_CORBA_SOURCE) | tar -C $(@D)/openjdk/corba -xf - --strip-components=1
 	$(OPENJDK8_UNZIP) $(DL_DIR)/$(OPENJDK8_JAXP_SOURCE) | tar -C $(@D)/openjdk/jaxp -xf - --strip-components=1
 	$(OPENJDK8_UNZIP) $(DL_DIR)/$(OPENJDK8_JAXWS_SOURCE) | tar -C $(@D)/openjdk/jaxws -xf - --strip-components=1
@@ -310,6 +302,7 @@ endif
 		then cat $(OPENJDK8_OPENJDK_PATCHES) | \
 		$(PATCH) -d $(@D)/openjdk -p1 ; \
 	fi
+ifeq (0,1)
 # unpack, patch and stage jamvm
 	rm -rf $(@D)/jamvm
 	mkdir -p $(@D)/jamvm/jamvm
@@ -343,6 +336,7 @@ endif
 	ln -sf server $(@D)/jamvm/install/hotspot/jre/lib/$(OPENJDK8_LIBARCH)/client
 	touch $(@D)/jamvm/install/hotspot/jre/lib/$(OPENJDK8_LIBARCH)/server/Xusage.txt
 	ln -sf libjvm.so $(@D)/jamvm/install/hotspot/jre/lib/$(OPENJDK8_LIBARCH)/client/libjsig.so
+endif
 # finally configure OpenJDK
 	cat $(@D)/openjdk/common/autoconf/configure.ac  | sed -e "s|@DATE_WHEN_GENERATED@|`LC_ALL=C date +%s`|" | $(HOST_STAGING_PREFIX)/bin/autoconf \
 		-W all -I$(@D)/openjdk/common/autoconf - > $(@D)/openjdk/common/autoconf/generated-configure.sh
@@ -367,7 +361,7 @@ endif
 		--with-update-version=$(OPENJDK8_UPDATE_VERSION) \
 		--with-build-number=$(OPENJDK8_BUILD_NUMBER) \
 		--with-milestone=Optware-ng \
-		--with-import-hotspot="$(@D)/jamvm/install/hotspot" \
+		--with-jvm-variants=zero \
 		--disable-freetype-bundling \
 		--with-extra-cflags="$(OPENJDK8_CPPFLAGS)" \
 		--with-extra-cxxflags="$(OPENJDK8_CPPFLAGS)" \
@@ -388,14 +382,10 @@ endif
 		--with-extra-cxxflags="$(OPENJDK8_CPPFLAGS)" \
 		--with-extra-ldflags="$(OPENJDK8_LDFLAGS)"  \
 		--with-zlib=system \
-		--with-lcms=bundled \
-		--with-libjpeg=bundled \
-		--with-libpng=bundled \
 		--with-giflib=bundled \
-		--disable-warnings-as-errors \
 	)
 	sed -i 	-e 's/@OPENJDK_TARGET_OS_ENV@/linux/g' -e 's|@THEPWDCMD@|$(shell which pwd)|g' \
-		-e 's/@ENABLE_JFR@/no/g' $(@D)/openjdk/build/linux-$(OPENJDK8_ARCH)-normal-server-release/spec.gmk
+		-e 's/@ENABLE_JFR@/no/g' $(@D)/openjdk/build/linux-$(OPENJDK8_ARCH)-normal-zero-release/spec.gmk
 #	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
@@ -407,7 +397,7 @@ openjdk8-unpack: $(OPENJDK8_BUILD_DIR)/.configured
 $(OPENJDK8_BUILD_DIR)/.built: $(OPENJDK8_BUILD_DIR)/.configured
 	rm -f $@
 	$(MAKE) -C $(@D)/openjdk $(OPENJDK8_MAKE_ARGS) images
-	printf -- '-jamvm ALIASED_TO -server\n' >> $(OPENJDK8_JDK_IMAGE_DIR)/jre/lib/$(OPENJDK8_LIBARCH)/jvm.cfg
+#	printf -- '-jamvm ALIASED_TO -server\n' >> $(OPENJDK8_JDK_IMAGE_DIR)/jre/lib/$(OPENJDK8_LIBARCH)/jvm.cfg
 	touch $@
 
 #
