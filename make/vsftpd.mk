@@ -108,7 +108,7 @@ vsftpd-source: $(DL_DIR)/$(VSFTPD_SOURCE) $(VSFTPD_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(VSFTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(VSFTPD_SOURCE) $(VSFTPD_PATCHES) make/vsftpd.mk
-	$(MAKE) libcap-stage
+	$(MAKE) libcap-stage libpam-stage
 ifneq (0.9.7,$(OPENSSL_LIB_VERSION))
 	$(MAKE) openssl-stage
 endif
