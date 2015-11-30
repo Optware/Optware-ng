@@ -28,7 +28,7 @@ VSFTPD_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 VSFTPD_DESCRIPTION=ftp daemon with an emphasis on speed and security
 VSFTPD_SECTION=net
 VSFTPD_PRIORITY=optional
-VSFTPD_DEPENDS=libcap
+VSFTPD_DEPENDS=libcap, libpam
 ifneq (0.9.7,$(OPENSSL_LIB_VERSION))
 VSFTPD_DEPENDS+=, openssl
 endif
@@ -38,7 +38,7 @@ VSFTPD_CONFLICTS=
 #
 # VSFTPD_IPK_VERSION should be incremented when the ipk changes.
 #
-VSFTPD_IPK_VERSION=2
+VSFTPD_IPK_VERSION=3
 
 
 # VSFTPD_CONFFILES should be a list of user-editable files
@@ -55,7 +55,7 @@ VSFTPD_CONFFILES=$(TARGET_PREFIX)/etc/vsftpd.conf
 # compilation or linking flags, then list them here.
 #
 VSFTPD_CPPFLAGS=
-VSFTPD_LDFLAGS=-lcrypt -lcap
+VSFTPD_LDFLAGS=-lcrypt -lcap -lpam
 
 ifneq (0.9.7,$(OPENSSL_LIB_VERSION))
 VSFTPD_CPPFLAGS+=-I$(STAGING_INCLUDE_DIR)/openssl
