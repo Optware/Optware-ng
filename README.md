@@ -1,6 +1,6 @@
 # Description
 
-This is an Optware fork. It targets to be firmware-independent and currently supports hard-float ARMv7, I686 and soft-float ARMv5, ARMv7 EABI and MIPSEL targets.
+This is an Optware fork. It targets to be firmware-independent and currently supports hard-float ARMv7, I686, PowerPC 603e and soft-float ARMv5, ARMv7 EABI and MIPSEL targets.
 
 # Attention!
 
@@ -30,6 +30,10 @@ MIPSEL:
 ```
 wget -O - http://optware-ng.zyxmon.org/buildroot-mipsel-ng/buildroot-mipsel-ng-bootstrap.sh | sh
 ```
+PowerPC 603e:
+```
+wget -O - http://optware-ng.zyxmon.org/buildroot-ppc-603e/buildroot-ppc-603e-bootstrap.sh | sh
+```
 I686:
 ```
 wget -O - http://optware-ng.zyxmon.org/buildroot-i686/buildroot-i686-bootstrap.sh | sh
@@ -51,6 +55,7 @@ Install desired ones:
 * [ARMv7 EABI softfloat](http://optware-ng.zyxmon.org/buildroot-armeabi-ng/Packages.html)
 * [ARMv5 EABI](http://optware-ng.zyxmon.org/buildroot-armv5eabi-ng/Packages.html)
 * [MIPSEL](http://optware-ng.zyxmon.org/buildroot-mipsel-ng/Packages.html)
+* [PowerPC 603e](http://optware-ng.zyxmon.org/buildroot-ppc-603e/Packages.html)
 * [I686](http://optware-ng.zyxmon.org/buildroot-i686/Packages.html)
 
 # Migrating to uClibc-ng feeds from deprecated uClibc ones
@@ -62,6 +67,10 @@ wget -O - http://optware-ng.zyxmon.org/scripts/move-to-uclibc-ng.sh | sh
 ```
 
 # News
+
+## 2015-11-30
+
+New buildroot-ppc-603e is now online. This is a hardfloat PowerPC 603e gcc-5.2.0, glibc-2.21, linux-3.2.66 feed.
 
 ## 2015-10-26
 
