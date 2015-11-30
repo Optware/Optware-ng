@@ -130,6 +130,7 @@ $(OPENJDK8_SOURCE_DIR)/openjdk/hotspot-powerpcspe.diff \
 $(OPENJDK8_SOURCE_DIR)/openjdk/hotspot-set-compiler.diff \
 $(OPENJDK8_SOURCE_DIR)/openjdk/hotspot-sparc-arch.diff \
 $(OPENJDK8_SOURCE_DIR)/openjdk/os_linux.uclibc.patch \
+$(OPENJDK8_SOURCE_DIR)/openjdk/os_linux.fix-i386-zero-build.patch \
 $(OPENJDK8_SOURCE_DIR)/openjdk/rhbz1206656_fix_current_stack_pointer.patch \
 $(OPENJDK8_SOURCE_DIR)/openjdk/xtoolkit.uclibc.patch \
 $(OPENJDK8_SOURCE_DIR)/openjdk/zero-architectures.diff \
@@ -267,7 +268,7 @@ openjdk8-source: $(OPENJDK8_SOURCES) $(OPENJDK8_PATCHES)
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(OPENJDK8_BUILD_DIR)/.configured: $(OPENJDK8_SOURCES) $(OPENJDK8_PATCHES) $(OPENJDK8_JAMVM_PATCHES) \
+$(OPENJDK8_BUILD_DIR)/.configured: $(OPENJDK8_SOURCES) $(OPENJDK8_PATCHES) \
 		$(OPENJDK8_JAMVM_PATCHES) $(OPENJDK8_OPENJDK_PATCHES) make/openjdk8.mk
 	$(MAKE) libstdc++-stage freetype-stage x11-stage autoconf-host-stage libffi-stage
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
