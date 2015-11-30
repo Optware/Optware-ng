@@ -20,12 +20,13 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-LFTP_SITE=http://lftp.cybermirror.org/old
+LFTP_SITE=ftp://ftp.cs.tu-berlin.de/pub/net/ftp/lftp
+LFTP_SITE2=ftp://ftp.tuwien.ac.at/infosys/browsers/ftp/lftp
 SFR_SITE=http://www.sfr-fresh.com/unix/misc
-LFTP_VERSION=4.4.0
-LFTP_SOURCE=lftp-$(LFTP_VERSION).tar.gz
+LFTP_VERSION=4.6.4
+LFTP_SOURCE=lftp-$(LFTP_VERSION).tar.xz
 LFTP_DIR=lftp-$(LFTP_VERSION)
-LFTP_UNZIP=zcat
+LFTP_UNZIP=xzcat
 LFTP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 LFTP_DESCRIPTION=Sophisticated ftp/http client, file transfer program supporting a number of network protocols.
 LFTP_SECTION=net
@@ -97,6 +98,7 @@ LFTP_IPK=$(BUILD_DIR)/lftp_$(LFTP_VERSION)-$(LFTP_IPK_VERSION)_$(TARGET_ARCH).ip
 #
 $(DL_DIR)/$(LFTP_SOURCE):
 	$(WGET) -P $(@D) $(LFTP_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(LFTP_SITE2)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F) || \
 	$(WGET) -P $(@D) $(SFR_SITE)/$(@F)
 
