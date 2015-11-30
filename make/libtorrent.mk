@@ -121,7 +121,7 @@ ifdef LIBTORRENT_SVN_REV
 		rm -rf $(LIBTORRENT_DIR) \
 		)
 else
-	$(WGET) -O $@ $(LIBTORRENT_SITE)/$(LIBTORRENT_VERSION).tar.gz \
+	$(WGET) -O $@ $(LIBTORRENT_SITE)/$(LIBTORRENT_VERSION).tar.gz || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 endif
 
