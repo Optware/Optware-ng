@@ -136,7 +136,7 @@ endif
 	rm -f $(KISSDX_BUILD_DIR)/Makefile
 	mv $(KISSDX_BUILD_DIR)/Makefile-Unslung $(KISSDX_BUILD_DIR)/Makefile
 	sed -i "s#CFLAGS = #CFLAGS = ${STAGING_CPPFLAGS} ${KISSDX_CPPFLAGS} #" $(KISSDX_BUILD_DIR)/Makefile
-	sed -i "s#-L$(TARGET_PREFIX)/lib#${STAGING_LDFLAGS} ${KISSDX_LDFLAGS}#" $(KISSDX_BUILD_DIR)/Makefile
+	sed -i "s#-L/opt/lib#${STAGING_LDFLAGS} ${KISSDX_LDFLAGS}#" $(KISSDX_BUILD_DIR)/Makefile
 	sed -i "s#$(DESTDIR)/usr/sbin/#${STAGING_DIR}$(TARGET_PREFIX)/bin/#g" $(KISSDX_BUILD_DIR)/Makefile
 	sed -i "s#$(DESTDIR)/etc/#${STAGING_DIR}$(TARGET_PREFIX)/etc/#g" $(KISSDX_BUILD_DIR)/Makefile
 	sed -i "s#$(DESTDIR)/usr/share/man/#${STAGING_DIR}$(TARGET_PREFIX)/man/#g" $(KISSDX_BUILD_DIR)/Makefile
