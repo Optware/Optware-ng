@@ -107,7 +107,7 @@ py-epsilon-source: $(DL_DIR)/$(PY-EPSILON_SOURCE) $(PY-EPSILON_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(PY-EPSILON_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-EPSILON_SOURCE) $(PY-EPSILON_PATCHES) make/py-epsilon.mk
-	$(MAKE) py-twisted-stage
+	$(MAKE) py-twisted-host-stage
 	rm -rf $(@D)
 	mkdir -p $(@D)
 	# 2.5
@@ -146,10 +146,8 @@ py-epsilon-unpack: $(PY-EPSILON_BUILD_DIR)/.configured
 $(PY-EPSILON_BUILD_DIR)/.built: $(PY-EPSILON_BUILD_DIR)/.configured
 	rm -f $@
 	cd $(@D)/2.5; \
-		PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build
 	cd $(@D)/2.6; \
-		PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py build
 	touch $@
 
@@ -164,11 +162,9 @@ py-epsilon: $(PY-EPSILON_BUILD_DIR)/.built
 $(PY-EPSILON_BUILD_DIR)/.staged: $(PY-EPSILON_BUILD_DIR)/.built
 	rm -f $@
 	(cd $(@D)/2.5; \
-		PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
 		--root=$(STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	(cd $(@D)/2.6; \
-		PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install \
 		--root=$(STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	touch $@
@@ -223,7 +219,6 @@ $(PY25-EPSILON_IPK): $(PY-EPSILON_BUILD_DIR)/.built
 	rm -rf $(BUILD_DIR)/py*-epsilon_*_$(TARGET_ARCH).ipk
 	rm -rf $(PY25-EPSILON_IPK_DIR) $(BUILD_DIR)/py25-epsilon_*_$(TARGET_ARCH).ipk
 	(cd $(PY-EPSILON_BUILD_DIR)/2.5; \
-		PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install \
 		--root=$(PY25-EPSILON_IPK_DIR) --prefix=$(TARGET_PREFIX))
 	rm -rf $(PY25-EPSILON_IPK_DIR)$(TARGET_PREFIX)/lib/python2.5/site-packages/build
@@ -235,7 +230,6 @@ $(PY25-EPSILON_IPK): $(PY-EPSILON_BUILD_DIR)/.built
 $(PY26-EPSILON_IPK): $(PY-EPSILON_BUILD_DIR)/.built
 	rm -rf $(PY26-EPSILON_IPK_DIR) $(BUILD_DIR)/py26-epsilon_*_$(TARGET_ARCH).ipk
 	(cd $(PY-EPSILON_BUILD_DIR)/2.6; \
-		PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
 		$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install \
 		--root=$(PY26-EPSILON_IPK_DIR) --prefix=$(TARGET_PREFIX))
 	rm -rf $(PY25-EPSILON_IPK_DIR)$(TARGET_PREFIX)/lib/python2.5/site-packages/build
