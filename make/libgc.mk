@@ -87,7 +87,7 @@ LIBGC_IPK=$(BUILD_DIR)/libgc_$(LIBGC_VERSION)-$(LIBGC_IPK_VERSION)_$(TARGET_ARCH
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(LIBGC_SOURCE):
-	$(WGET) -P $(DL_DIR) $(LIBGC_SITE)/$(@D) || \
+	$(WGET) -P $(@D) $(LIBGC_SITE)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 
