@@ -1,0 +1,33 @@
+--- a/scripts/mysqld_multi.sh
++++ b/scripts/mysqld_multi.sh
+@@ -573,8 +573,8 @@
+ 
+   my %seen;  # Don't list the same file more than once
+   return grep { defined $_ and not $seen{$_}++ and -f $_ and -r $_ }
+-              ('/etc/my.cnf',
+-               '/etc/mysql/my.cnf',
++              ('%OPTWARE_TARGET_PREFIX%/etc/my.cnf',
++               '%OPTWARE_TARGET_PREFIX%/etc/mysql/my.cnf',
+                '@sysconfdir@/my.cnf',
+                ($ENV{MYSQL_HOME} ? "$ENV{MYSQL_HOME}/my.cnf" : undef),
+                $opt{'extra-file'},
+@@ -706,7 +706,7 @@
+ {
+   print <<EOF;
+ # This is an example of a my.cnf file for $my_progname.
+-# Usually this file is located in home dir ~/.my.cnf or /etc/my.cnf
++# Usually this file is located in home dir ~/.my.cnf or %OPTWARE_TARGET_PREFIX%/etc/my.cnf
+ #
+ # SOME IMPORTANT NOTES FOLLOW:
+ #
+--- a/scripts/mysqldumpslow.sh
++++ b/scripts/mysqldumpslow.sh
+@@ -60,7 +60,7 @@
+     my $datadir = ($defaults =~ m/--datadir=(.*)/)[0];
+     my $slowlog = ($defaults =~ m/--slow-query-log-file=(.*)/)[0];
+     if (!$datadir or $opt{i}) {
+-	# determine the datadir from the instances section of /etc/my.cnf, if any
++	# determine the datadir from the instances section of %OPTWARE_TARGET_PREFIX%/etc/my.cnf, if any
+ 	my $instances  = `my_print_defaults instances`;
+ 	die "Can't determine datadir from 'my_print_defaults mysqld' output: $defaults"
+ 	    unless $instances;

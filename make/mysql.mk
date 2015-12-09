@@ -26,56 +26,108 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-MYSQL_SITE=http://downloads.mysql.com/archives/mysql-4.1
-MYSQL_VERSION=4.1.22
-MYSQL_SOURCE=mysql-$(MYSQL_VERSION).tar.gz
+MYSQL_OLD_TARGETS=\
+buildroot-mipsel-ng \
+buildroot-armv5eabi-ng \
+buildroot-ppc-603e
+
+ifneq ($(OPTWARE_TARGET), $(filter $(MYSQL_OLD_TARGETS), $(OPTWARE_TARGET)))
+MYSQL_SITE=https://dev.mysql.com/get/Downloads/MySQL-5.7
+MYSQL_VERSION=5.7.9
 MYSQL_DIR=mysql-$(MYSQL_VERSION)
+else
+# no atomic/gcc_builtins.h, which
+# makes compiling newer mysql impossible
+MYSQL_SITE=https://github.com/mysql/mysql-server/archive
+MYSQL_VERSION=5.7.4
+MYSQL_DIR=mysql-server-mysql-$(MYSQL_VERSION)
+endif
+MYSQL_SOURCE=mysql-$(MYSQL_VERSION).tar.gz
 MYSQL_UNZIP=zcat
 MYSQL_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 MYSQL_DESCRIPTION=Popular free SQL database system
 MYSQL_SECTION=misc
 MYSQL_PRIORITY=optional
-MYSQL_DEPENDS=zlib, ncurses, openssl, readline
+MYSQL_DEPENDS=zlib, ncurses, libevent
 ifneq (, $(filter libstdc++, $(PACKAGES)))
 MYSQL_DEPENDS +=, libstdc++
 endif
+ifneq ($(OPTWARE_TARGET), $(filter $(MYSQL_OLD_TARGETS), $(OPTWARE_TARGET)))
+MYSQL_DEPENDS +=, openssl
+endif
 MYSQL_CONFLICTS=
+
+# recent mysql needs boost headers only,
+# and requires a specific version at that
+MYSQL_BOOST_VERSION=1_59_0
+MYSQL_BOOST_SOURCE=boost_$(BOOST_VERSION).tar.gz
 
 #
 # MYSQL_IPK_VERSION should be incremented when the ipk changes.
 #
-MYSQL_IPK_VERSION=3
+MYSQL_IPK_VERSION=1
 
 #
 # MYSQL_CONFFILES should be a list of user-editable files
-MYSQL_CONFFILES=$(TARGET_PREFIX)/etc/my.cnf
+MYSQL_CONFFILES=\
+$(TARGET_PREFIX)/etc/my.cnf\
+$(TARGET_PREFIX)/support-files/mysql.server
 
 #
 # MYSQL_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
+ifneq ($(OPTWARE_TARGET), $(filter $(MYSQL_OLD_TARGETS), $(OPTWARE_TARGET)))
 MYSQL_PATCHES=\
-$(MYSQL_SOURCE_DIR)/configure.patch \
-$(MYSQL_SOURCE_DIR)/lex_hash.patch \
-$(MYSQL_SOURCE_DIR)/comp_err.patch\
-$(MYSQL_SOURCE_DIR)/m_string.h.patch
-
-ifeq ($(OPTWARE_TARGET), dns323)
-# SIGILL if -O3 is used, so replace -O3 with -Os; it will supercede the TARGET_OPTIMIZATION
-# in toolchain-dns323 because it is later on the command line.
-MYSQL_PATCHES+=$(MYSQL_SOURCE_DIR)/configure_dns323_optimization.patch
+$(MYSQL_SOURCE_DIR)/auth_utils.patch \
+$(MYSQL_SOURCE_DIR)/find-system-zlib.patch \
+$(MYSQL_SOURCE_DIR)/gen_lex.patch \
+$(MYSQL_SOURCE_DIR)/my.cnf_location.patch \
+$(MYSQL_SOURCE_DIR)/my_default.patch \
+$(MYSQL_SOURCE_DIR)/mysqld.patch \
+$(MYSQL_SOURCE_DIR)/sasl_defs.patch
+else
+MYSQL_PATCHES=\
+$(MYSQL_SOURCE_DIR)/bison3.fix.patch \
+$(MYSQL_SOURCE_DIR)/find-system-zlib.old.patch \
+$(MYSQL_SOURCE_DIR)/gen_lex.patch \
+$(MYSQL_SOURCE_DIR)/includes.fix.patch \
+$(MYSQL_SOURCE_DIR)/my.cnf_location.patch \
+$(MYSQL_SOURCE_DIR)/my_default.patch \
+$(MYSQL_SOURCE_DIR)/sasl_defs.patch
 endif
 
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-MYSQL_CPPFLAGS=
-MYSQL_LDFLAGS="-Wl,-rpath,$(TARGET_PREFIX)/lib/mysql"
-MYSQL_CONFIG_ENV=ac_cv_sys_restartable_syscalls=yes
-MYSQL_CONFIG_ENV += $(strip \
-$(if $(filter arm armeb, $(TARGET_ARCH)), ac_cv_c_stack_direction=1, \
-))
+MYSQL_CPPFLAGS=\
+-Wno-deprecated-declarations \
+-DHAVE_IB_GCC_SYNC_SYNCHRONISE \
+
+ifneq ($(OPTWARE_TARGET), $(filter $(MYSQL_OLD_TARGETS), $(OPTWARE_TARGET)))
+MYSQL_CPPFLAGS += \
+-DHAVE_IB_GCC_ATOMIC_COMPARE_EXCHANGE \
+-DHAVE_IB_GCC_ATOMIC_THREAD_FENCE \
+-DHAVE_IB_ATOMIC_PTHREAD_T_GCC
+
+MYSQL_CONFIGURE_ARGS=\
+-DWITH_BOOST=$(MYSQL_HOST_BUILD_DIR)/boost_$(MYSQL_BOOST_VERSION) \
+-DWITH_SSL=system
+else
+MYSQL_CONFIGURE_ARGS=\
+-DINNODB_PAGE_ATOMIC_REF_COUNT=OFF
+endif
+
+MYSQL_CXX_FLAGS=
+
+ifeq ($(shell test -x $(TARGET_CC); echo $$?),0)
+ifeq ($(shell test $(shell $(TARGET_CC) -dumpversion | cut -d '.' -f 1) -gt 4; echo $$?),0)
+MYSQL_CXX_FLAGS += -std=c++11
+endif
+endif
+
+#MYSQL_LDFLAGS="-Wl,-rpath,$(TARGET_PREFIX)/lib/mysql"
 
 #
 # MYSQL_BUILD_DIR is the directory in which the build is done.
@@ -88,7 +140,11 @@ $(if $(filter arm armeb, $(TARGET_ARCH)), ac_cv_c_stack_direction=1, \
 #
 MYSQL_SOURCE_DIR=$(SOURCE_DIR)/mysql
 MYSQL_BUILD_DIR=$(BUILD_DIR)/mysql
+ifneq ($(OPTWARE_TARGET), $(filter $(MYSQL_OLD_TARGETS), $(OPTWARE_TARGET)))
 MYSQL_HOST_BUILD_DIR=$(HOST_BUILD_DIR)/mysql
+else
+MYSQL_HOST_BUILD_DIR=$(HOST_BUILD_DIR)/mysql_old
+endif
 
 MYSQL_IPK_DIR=$(BUILD_DIR)/mysql-$(MYSQL_VERSION)-ipk
 MYSQL_IPK=$(BUILD_DIR)/mysql_$(MYSQL_VERSION)-$(MYSQL_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -101,22 +157,33 @@ $(DL_DIR)/$(MYSQL_SOURCE):
 	$(WGET) -P $(@D) $(MYSQL_SITE)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
+ifneq ($(MYSQL_BOOST_VERSION),$(BOOST_VERSION))
+$(DL_DIR)/$(MYSQL_BOOST_SOURCE):
+	$(WGET) -P $(@D) $(BOOST_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
+endif
+
 #
 # The source code depends on it existing within the download directory.
 # This target will be called by the top level Makefile to download the
 # source code's archive (.tar.gz, .bz2, etc.)
 #
-mysql-source: $(DL_DIR)/$(MYSQL_SOURCE) $(MYSQL_PATCHES)
+mysql-source: $(DL_DIR)/$(MYSQL_SOURCE) $(DL_DIR)/$(MYSQL_BOOST_SOURCE) $(MYSQL_PATCHES)
 
-$(MYSQL_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(MYSQL_SOURCE) make/mysql.mk
-	$(MAKE) ncurses-host-stage
+$(MYSQL_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(MYSQL_SOURCE) $(DL_DIR)/$(MYSQL_BOOST_SOURCE) #make/mysql.mk
 	rm -rf $(HOST_BUILD_DIR)/$(MYSQL_DIR) $(@D)
 	$(MYSQL_UNZIP) $(DL_DIR)/$(MYSQL_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
+	if test -n "$(MYSQL_PATCHES)" ; \
+		then cat $(MYSQL_PATCHES) | \
+		$(PATCH) -bd $(HOST_BUILD_DIR)/$(MYSQL_DIR) -p1 ; \
+	fi
 	mv $(HOST_BUILD_DIR)/$(MYSQL_DIR) $(@D)
-	cd $(@D); \
-		LDFLAGS="-L$(HOST_STAGING_LIB_DIR)" CPPFLAGS="-I$(HOST_STAGING_INCLUDE_DIR)" \
-		./configure --prefix=/opt
-	$(MAKE) -C $(@D)
+ifneq ($(OPTWARE_TARGET), $(filter $(MYSQL_OLD_TARGETS), $(OPTWARE_TARGET)))
+	$(BOOST_UNZIP) $(DL_DIR)/$(MYSQL_BOOST_SOURCE) | tar -C $(@D) -xf - boost_$(MYSQL_BOOST_VERSION)/boost
+endif
+	cd $(@D)/BUILD; \
+		cmake $(@D) -DWITH_BOOST=$(@D)/boost_$(MYSQL_BOOST_VERSION) -DWITH_UNIT_TESTS=OFF
+	$(MAKE) -C $(@D)/BUILD
 	touch $@
 
 mysql-hostbuild: $(MYSQL_HOST_BUILD_DIR)/.built
@@ -136,51 +203,66 @@ mysql-hostbuild: $(MYSQL_HOST_BUILD_DIR)/.built
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(MYSQL_BUILD_DIR)/.configured: $(MYSQL_PATCHES) $(MYSQL_HOST_BUILD_DIR)/.built \
- $(DL_DIR)/$(MYSQL_SOURCE) make/mysql.mk
-	$(MAKE) openssl-stage ncurses-stage zlib-stage readline-stage
+$(MYSQL_BUILD_DIR)/.configured: $(MYSQL_HOST_BUILD_DIR)/.built \
+ $(DL_DIR)/$(MYSQL_SOURCE) $(DL_DIR)/$(MYSQL_BOOST_SOURCE) $(MYSQL_PATCHES) make/mysql.mk
+	$(MAKE) ncurses-stage zlib-stage libevent-stage
 ifneq (, $(filter libstdc++, $(PACKAGES)))
 	$(MAKE) libstdc++-stage
 endif
+ifneq ($(OPTWARE_TARGET), $(filter $(MYSQL_OLD_TARGETS), $(OPTWARE_TARGET)))
+	$(MAKE) openssl-stage
+endif
 	rm -rf $(BUILD_DIR)/$(MYSQL_DIR) $(@D)
 	$(MYSQL_UNZIP) $(DL_DIR)/$(MYSQL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(MYSQL_PATCHES) | $(PATCH) -bd $(BUILD_DIR)/$(MYSQL_DIR) -p1
-	mv $(BUILD_DIR)/$(MYSQL_DIR) $(MYSQL_BUILD_DIR)
-	$(AUTORECONF1.10) -vif $(@D)
-	(cd $(@D); \
-		$(TARGET_CONFIGURE_OPTS) \
-		CPPFLAGS="$(STAGING_CPPFLAGS) $(MYSQL_CPPFLAGS)" \
-		LDFLAGS="$(STAGING_LDFLAGS) $(MYSQL_LDFLAGS)" \
-		$(MYSQL_CONFIG_ENV) \
-		./configure \
-		--build=$(GNU_HOST_NAME) \
-		--host=$(GNU_TARGET_NAME) \
-		--target=$(GNU_TARGET_NAME) \
-		--prefix=$(TARGET_PREFIX) \
-		--program-prefix="" \
-		--disable-static \
-		--with-openssl=$(STAGING_PREFIX) \
-		--with-zlib-dir=$(STAGING_PREFIX) \
-		--without-readline \
-		--enable-thread-safe-client \
-		--with-comment="optware distribution $(MYSQL_VERSION)-$(MYSQL_IPK_VERSION)" \
-		--without-debug \
-		--without-extra-tools \
-		--without-docs \
-		--without-bench \
-		--without-isam \
-		--without-innodb \
-		--with-geometry \
-		--with-low-memory \
-		--enable-assembler \
+	if test -n "$(MYSQL_PATCHES)" ; \
+		then cat $(MYSQL_PATCHES) | \
+		$(PATCH) -bd $(BUILD_DIR)/$(MYSQL_DIR) -p1 ; \
+	fi
+	if test "$(BUILD_DIR)/$(MYSQL_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(MYSQL_DIR) $(@D) ; \
+	fi
+	(cd $(@D)/BUILD; \
+		cmake $(@D) \
+		-DCMAKE_VERBOSE_MAKEFILE=TRUE \
+		$(MYSQL_CONFIGURE_ARGS) \
+		-DCOMPILATION_COMMENT="Optware-ng distribution $(MYSQL_VERSION)-$(MYSQL_IPK_VERSION)" \
+		-DZLIB_INCLUDE_DIR=$(STAGING_INCLUDE_DIR) \
+		-DZLIB_LIBRARY=$(STAGING_LIB_DIR)/libz.so \
+		-DWITH_LIBEVENT=system \
+		-DWITH_ZLIB=system \
+		-DCMAKE_SYSTEM_NAME=Linux \
+		-DCMAKE_SYSTEM_PROCESSOR=$(TARGET_ARCH) \
+		-DCMAKE_SYSTEM_VERSION=1 \
+		-DCMAKE_CROSSCOMPILING=1 \
+		-DCMAKE_C_COMPILER=$(TARGET_CC) \
+		-DCMAKE_CXX_COMPILER=$(TARGET_CXX) \
+		-DCMAKE_FIND_ROOT_PATH_MODE_PROGRAM=NEVER \
+		-DCMAKE_FIND_ROOT_PATH_MODE_LIBRARY=NEVER \
+		-DCMAKE_FIND_ROOT_PATH_MODE_INCLUDE=NEVER \
+		-DCMAKE_LIBRARY_PATH=$(STAGING_LIB_DIR) \
+		-DCMAKE_SKIP_RPATH=TRUE \
+		-DCMAKE_INCLUDE_PATH=$(STAGING_INCLUDE_DIR) \
+		-DCMAKE_INSTALL_PREFIX=$(TARGET_PREFIX) \
+		-DSTACK_DIRECTION=1 \
+		-DHAVE_LLVM_LIBCPP_EXITCODE=1 \
+		-DHAVE_FALLOC_PUNCH_HOLE_AND_KEEP_SIZE_EXITCODE=1 \
+		-DWITH_UNIT_TESTS=OFF \
+		-DWITH_EMBEDDED_SERVER=TRUE \
+		-DDEFAULT_CHARSET=utf8 \
+		-DDEFAULT_COLLATION=utf8_general_ci \
+		-DCMAKE_C_FLAGS="$(TARGET_CFLAGS) $(MYSQL_CPPFLAGS)" \
+		-DCMAKE_CXX_FLAGS="$(TARGET_CFLAGS) $(MYSQL_CXX_FLAGS) $(MYSQL_CPPFLAGS)" \
+		-DCMAKE_C_LINK_FLAGS="$(MYSQL_LDFLAGS) $(STAGING_LDFLAGS)" \
+		-DCMAKE_CXX_LINK_FLAGS="$(MYSQL_LDFLAGS) $(STAGING_LDFLAGS)" \
+		-DCMAKE_SHARED_LIBRARY_C_FLAGS="$(MYSQL_LDFLAGS) $(STAGING_LDFLAGS)" \
+		-DCMAKE_MODULE_LINKER_FLAGS="$(MYSQL_LDFLAGS) $(STAGING_LDFLAGS)" \
+		-DCMAKE_SHARED_LINKER_FLAGS="$(MYSQL_LDFLAGS) $(STAGING_LDFLAGS)" \
 	)
-#		--with-named-thread-libs=-lpthread \
-
-	sed -i -e 's!"/etc!"$(TARGET_PREFIX)/etc!g' $(@D)/*/default.c $(@D)/scripts/*.sh
-	$(PATCH_LIBTOOL) $(@D)/libtool
-ifeq ($(CROSS_CONFIGURATION_UCLIBC_VERSION), 0.9.29)
-	sed -i -e 's!.*HAVE_INDEX.*!#define HAVE_INDEX 1!' $(@D)/config.h
-endif
+	mkdir -p $(@D)/host_binaries
+	cd $(MYSQL_HOST_BUILD_DIR)/BUILD; \
+		cp -f extra/comp_err scripts/comp_sql sql/gen_lex_{token,hash} $(@D)/host_binaries
+	cp -f $(MYSQL_HOST_BUILD_DIR)/BUILD/scripts/comp_sql $(@D)/scripts
+	cp -f $(MYSQL_HOST_BUILD_DIR)/BUILD/sql/gen_lex_{token,hash} $(@D)/sql
 	touch $@
 
 mysql-unpack: $(MYSQL_BUILD_DIR)/.configured
@@ -190,10 +272,8 @@ mysql-unpack: $(MYSQL_BUILD_DIR)/.configured
 #
 $(MYSQL_BUILD_DIR)/.built: $(MYSQL_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(@D) \
-		GEN_LEX_HASH=$(MYSQL_HOST_BUILD_DIR)/sql/gen_lex_hash \
-		COMP_ERR=$(MYSQL_HOST_BUILD_DIR)/extra/comp_err \
-		;
+	PATH=$$PATH:$(@D)/host_binaries; \
+		$(MAKE) -C $(@D)/BUILD
 	touch $@
 
 #
@@ -206,8 +286,8 @@ mysql: $(MYSQL_BUILD_DIR)/.built
 #
 $(MYSQL_BUILD_DIR)/.staged: $(MYSQL_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install-strip
-	rm -f $(STAGING_LIB_DIR)/mysql/*.la
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR)/BUILD install
+	sed -i -e '/^prefix=/s|=.*|=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/mysqlclient.pc
 	touch $@
 
 mysql-stage: $(MYSQL_BUILD_DIR)/.staged
@@ -244,19 +324,24 @@ $(MYSQL_IPK_DIR)/CONTROL/control:
 #
 $(MYSQL_IPK): $(MYSQL_BUILD_DIR)/.built
 	rm -rf $(MYSQL_IPK_DIR) $(BUILD_DIR)/mysql_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(MYSQL_BUILD_DIR) DESTDIR=$(MYSQL_IPK_DIR) install-strip
-	rm -rf $(MYSQL_IPK_DIR)$(TARGET_PREFIX)/mysql-test
+	$(MAKE) -C $(MYSQL_BUILD_DIR)/BUILD DESTDIR=$(MYSQL_IPK_DIR) install
+	rm -rf $(MYSQL_IPK_DIR)$(TARGET_PREFIX)/mysql-test $(MYSQL_IPK_DIR)$(TARGET_PREFIX)/lib/*.a
+	-$(STRIP_COMMAND) $(MYSQL_IPK_DIR)$(TARGET_PREFIX)/{bin/*,lib/*.so,lib/plugin/*.so} 2>/dev/null
 	$(INSTALL) -d $(MYSQL_IPK_DIR)$(TARGET_PREFIX)/var/lib/mysql
 	$(INSTALL) -d $(MYSQL_IPK_DIR)$(TARGET_PREFIX)/var/log
 	$(INSTALL) -d $(MYSQL_IPK_DIR)$(TARGET_PREFIX)/etc/
 	$(INSTALL) -m 644 $(MYSQL_SOURCE_DIR)/my.cnf $(MYSQL_IPK_DIR)$(TARGET_PREFIX)/etc/my.cnf
 	$(INSTALL) -d $(MYSQL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
 	( cd $(MYSQL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d ; \
-		ln -s ../../share/mysql/mysql.server S70mysqld ; \
-		ln -s ../../share/mysql/mysql.server K70mysqld ; \
+		ln -s ../../support-files/mysql.server S70mysqld ; \
+		ln -s ../../support-files/mysql.server K70mysqld ; \
 	)
 	$(MAKE) $(MYSQL_IPK_DIR)/CONTROL/control
+ifneq ($(OPTWARE_TARGET), $(filter $(MYSQL_OLD_TARGETS), $(OPTWARE_TARGET)))
 	$(INSTALL) -m 755 $(MYSQL_SOURCE_DIR)/postinst $(MYSQL_IPK_DIR)/CONTROL/postinst
+else
+	$(INSTALL) -m 755 $(MYSQL_SOURCE_DIR)/postinst.old $(MYSQL_IPK_DIR)/CONTROL/postinst
+endif
 	$(INSTALL) -m 755 $(MYSQL_SOURCE_DIR)/prerm $(MYSQL_IPK_DIR)/CONTROL/prerm
 	echo $(MYSQL_CONFFILES) | sed -e 's/ /\n/g' > $(MYSQL_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MYSQL_IPK_DIR)

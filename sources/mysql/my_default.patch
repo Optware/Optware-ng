@@ -1,0 +1,24 @@
+--- a/mysys_ssl/my_default.cc
++++ b/mysys_ssl/my_default.cc
+@@ -174,8 +174,8 @@
+   - Windows:     GetWindowsDirectory()
+   - Windows:     C:/
+   - Windows:     Directory above where the executable is located
+-  - Unix:        /etc/
+-  - Unix:        /etc/mysql/
++  - Unix:        %OPTWARE_TARGET_PREFIX%/etc/
++  - Unix:        %OPTWARE_TARGET_PREFIX%/etc/mysql/
+   - Unix:        --sysconfdir=<path> (compile-time option)
+   - ALL:         getenv("MYSQL_HOME")
+   - ALL:         --defaults-extra-file=<path> (run-time option)
+@@ -1404,8 +1404,8 @@
+ 
+ #else
+ 
+-  errors += add_directory(alloc, "/etc/", dirs);
+-  errors += add_directory(alloc, "/etc/mysql/", dirs);
++  errors += add_directory(alloc, "%OPTWARE_TARGET_PREFIX%/etc/", dirs);
++  errors += add_directory(alloc, "%OPTWARE_TARGET_PREFIX%/etc/mysql/", dirs);
+ 
+ #if defined(DEFAULT_SYSCONFDIR)
+   if (DEFAULT_SYSCONFDIR[0])

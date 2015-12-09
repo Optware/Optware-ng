@@ -1,0 +1,25 @@
+--- a/sql/CMakeLists.txt
++++ b/sql/CMakeLists.txt
+@@ -47,7 +47,9 @@
+ 
+ # Gen_lex_token
+ # Make sure sql_yacc.h is generated before compiling gen_lex_token
+-ADD_EXECUTABLE(gen_lex_token gen_lex_token.cc)
+-ADD_DEPENDENCIES(gen_lex_token GenServerSource)
++IF(NOT CMAKE_CROSSCOMPILING)
++ ADD_EXECUTABLE(gen_lex_token gen_lex_token.cc)
++ ADD_DEPENDENCIES(gen_lex_token GenServerSource)
++ENDIF()
+ 
+ ADD_CUSTOM_COMMAND(
+@@ -534,7 +536,9 @@
+ )
+ 
+ # Gen_lex_hash
+-ADD_EXECUTABLE(gen_lex_hash gen_lex_hash.cc)
++IF(NOT CMAKE_CROSSCOMPILING)
++ ADD_EXECUTABLE(gen_lex_hash gen_lex_hash.cc)
++ENDIF()
+ 
+ ADD_CUSTOM_COMMAND(
+   OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/lex_hash.h

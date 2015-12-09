@@ -8,12 +8,7 @@
 # it also starts mysqld after install
 
 if [ ! -f %OPTWARE_TARGET_PREFIX%/var/lib/mysql/mysql/db.frm ] ; then
-	%OPTWARE_TARGET_PREFIX%/bin/mysqld --intialize-insecure
-	echo '====================================================='
-	echo "After mysqld starts, don't forget to execute" 
-	echo "%OPTWARE_TARGET_PREFIX%/bin/mysqladmin password"
-	echo "to set root password"
-	echo '====================================================='
+	%OPTWARE_TARGET_PREFIX%/bin/mysql_install_db --datadir=%OPTWARE_TARGET_PREFIX%/var/lib/mysql  --lc-messages-dir=%OPTWARE_TARGET_PREFIX%/share/english --mysqld-file=%OPTWARE_TARGET_PREFIX%/bin/mysqld
 fi
 
 %OPTWARE_TARGET_PREFIX%/etc/init.d/S70mysqld start

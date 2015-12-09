@@ -1,0 +1,26 @@
+--- a/plugin/innodb_memcached/daemon_memcached/daemon/sasl_defs.c
++++ b/plugin/innodb_memcached/daemon_memcached/daemon/sasl_defs.c
+@@ -11,8 +11,8 @@
+  * specify one in the environment variable SASL_CONF_PATH
+  */
+ const char * const locations[] = {
+-    "/etc/sasl/memcached.conf",
+-    "/etc/sasl2/memcached.conf",
++    "%OPTWARE_TARGET_PREFIX%/etc/sasl/memcached.conf",
++    "%OPTWARE_TARGET_PREFIX%/etc/sasl2/memcached.conf",
+     NULL
+ };
+ #endif
+--- a/storage/ndb/memcache/extra/memcached/daemon/sasl_defs.c
++++ b/storage/ndb/memcache/extra/memcached/daemon/sasl_defs.c
+@@ -10,8 +10,8 @@
+  * specify one in the environment variable SASL_CONF_PATH
+  */
+ const char * const locations[] = {
+-    "/etc/sasl/memcached.conf",
+-    "/etc/sasl2/memcached.conf",
++    "%OPTWARE_TARGET_PREFIX%/etc/sasl/memcached.conf",
++    "%OPTWARE_TARGET_PREFIX%/etc/sasl2/memcached.conf",
+     NULL
+ };
+ #endif

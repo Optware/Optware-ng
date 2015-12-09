@@ -1,0 +1,34 @@
+--- a/libbinlogstandalone/CMakeLists.txt
++++ b/libbinlogstandalone/CMakeLists.txt
+@@ -27,7 +27,30 @@
+ #  INCLUDE_DIRECTORIES(${GTEST_INCLUDE_DIRS})
+ #ENDIF()
+ 
+-FIND_PACKAGE(ZLIB REQUIRED)
++if(ZLIB_INCLUDE_DIR AND ZLIB_LIBRARY AND EXISTS "${ZLIB_INCLUDE_DIR}/zlib.h" AND EXISTS "${ZLIB_LIBRARY}")
++    file(STRINGS "${ZLIB_INCLUDE_DIR}/zlib.h" ZLIB_H REGEX "^#define ZLIB_VERSION \"[^\"]*\"$")
++
++    string(REGEX REPLACE "^.*ZLIB_VERSION \"([0-9]+).*$" "\\1" ZLIB_VERSION_MAJOR "${ZLIB_H}")
++    string(REGEX REPLACE "^.*ZLIB_VERSION \"[0-9]+\\.([0-9]+).*$" "\\1" ZLIB_VERSION_MINOR  "${ZLIB_H}")
++    string(REGEX REPLACE "^.*ZLIB_VERSION \"[0-9]+\\.[0-9]+\\.([0-9]+).*$" "\\1" ZLIB_VERSION_PATCH "${ZLIB_H}")
++    set(ZLIB_VERSION_STRING "${ZLIB_VERSION_MAJOR}.${ZLIB_VERSION_MINOR}.${ZLIB_VERSION_PATCH}")
++
++    # only append a TWEAK version if it exists:
++    set(ZLIB_VERSION_TWEAK "")
++    if( "${ZLIB_H}" MATCHES "^.*ZLIB_VERSION \"[0-9]+\\.[0-9]+\\.[0-9]+\\.([0-9]+).*$")
++        set(ZLIB_VERSION_TWEAK "${CMAKE_MATCH_1}")
++        set(ZLIB_VERSION_STRING "${ZLIB_VERSION_STRING}.${ZLIB_VERSION_TWEAK}")
++    endif()
++
++    set(ZLIB_MAJOR_VERSION "${ZLIB_VERSION_MAJOR}")
++    set(ZLIB_MINOR_VERSION "${ZLIB_VERSION_MINOR}")
++    set(ZLIB_PATCH_VERSION "${ZLIB_VERSION_PATCH}")
++
++    set(ZLIB_INCLUDE_DIRS ${ZLIB_INCLUDE_DIR})
++    set(ZLIB_LIBRARIES ${ZLIB_LIBRARY})
++else()
++    FIND_PACKAGE(ZLIB REQUIRED)
++endif()
+ 
+ 
+ INCLUDE_DIRECTORIES(${CMAKE_SOURCE_DIR}/include

@@ -1,0 +1,43 @@
+--- a/client/CMakeLists.txt
++++ b/client/CMakeLists.txt
+@@ -16,14 +16,15 @@
+ INCLUDE_DIRECTORIES(
+   ${CMAKE_SOURCE_DIR}/include
+   ${CMAKE_SOURCE_DIR}/mysys_ssl
+-  ${ZLIB_INCLUDE_DIR}
+   ${SSL_INCLUDE_DIRS}
++  ${ZLIB_INCLUDE_DIR}
+   ${CMAKE_SOURCE_DIR}/libmysql
+   ${CMAKE_SOURCE_DIR}/regex
+   ${CMAKE_SOURCE_DIR}/sql
+   ${CMAKE_SOURCE_DIR}/strings
+   ${EDITLINE_INCLUDE_DIR}
+   ${CMAKE_CURRENT_BINARY_DIR}
++  ${CURSES_NCURSES_INCLUDE_PATH}
+ )
+ 
+ 
+--- a/libmysqld/examples/CMakeLists.txt
++++ b/libmysqld/examples/CMakeLists.txt
+@@ -17,7 +17,8 @@
+                     ${CMAKE_SOURCE_DIR}/libmysqld/include
+                     ${CMAKE_SOURCE_DIR}/regex 
+                     ${CMAKE_SOURCE_DIR}/tests
+-                    ${EDITLINE_INCLUDE_DIR}                 
++                    ${EDITLINE_INCLUDE_DIR} 
++                    ${CURSES_NCURSES_INCLUDE_PATH}                
+                     )
+ 
+ 
+--- a/sql/CMakeLists.txt
++++ b/sql/CMakeLists.txt
+@@ -19,8 +19,8 @@
+   ${CMAKE_SOURCE_DIR}/sql 
+   ${CMAKE_SOURCE_DIR}/sql/auth
+   ${CMAKE_SOURCE_DIR}/regex 
+-  ${ZLIB_INCLUDE_DIR}
+   ${SSL_INCLUDE_DIRS}
++  ${ZLIB_INCLUDE_DIR}
+   ${CMAKE_BINARY_DIR}/sql
+ )
+ 

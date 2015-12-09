@@ -1,0 +1,182 @@
+Backport of the following 5.7.5 patch to 5.7.4
+
+From 9cedd5518cceb8088761feb42a34fcda56c0b2c8 Mon Sep 17 00:00:00 2001
+From: Gleb Shchepa <gleb.shchepa@oracle.com>
+Date: Fri, 28 Mar 2014 00:06:16 +0400
+Subject: [PATCH] Bug#18017820: BISON 3 BREAKS MYSQL BUILD
+ ========================================
+
+The source of the reported problem is a removal of a few deprecated
+things from Bison 3.x:
+* YYPARSE_PARAM macro (use the %parse-param bison directive instead),
+* YYLEX_PARAM macro (use %lex-param instead),
+* YYID(X) macro (don't needed at all, use the plain X value instead).
+
+The fix removes obsolete macro calls and introduces use of
+%parse-param and %lex-param directives.
+--- a/sql/sql_lex.cc
++++ b/sql/sql_lex.cc
+@@ -34,7 +34,7 @@
+ #include "sql_optimizer.h"             // JOIN
+ #include <mysql/psi/mysql_statement.h>
+ 
+-static int lex_one_token(void *arg, void *yythd);
++static int lex_one_token(YYSTYPE *yylval, THD *thd);
+ 
+ /*
+   We are using pointer to this variable for distinguishing between assignment
+@@ -1187,9 +1187,9 @@ bool consume_comment(Lex_input_stream *l
+ /*
+   yylex() function implementation for the main parser
+ 
+-  @param arg    [out]   semantic value of the token being parsed (yylval)
+-  @param arg2   [out]   "location" of the token being parsed (yylloc)
+-  @param yythd          THD
++  @param yylval         [out]  semantic value of the token being parsed (yylval)
++  @param yylloc         [out]  "location" of the token being parsed (yylloc)
++  @param thd            THD
+ 
+   @return               token number
+ 
+@@ -1201,12 +1201,9 @@ bool consume_comment(Lex_input_stream *l
+ 				(which can't be followed by a signed number)
+ */
+ 
+-int MYSQLlex(void *arg, void *arg2, void *yythd)
++int MYSQLlex(YYSTYPE *yylval, YYLTYPE *yylloc, THD *thd)
+ {
+-  THD *thd= (THD *)yythd;
+   Lex_input_stream *lip= & thd->m_parser_state->m_lip;
+-  YYSTYPE *yylval=(YYSTYPE*) arg;
+-  YYLTYPE *yylloc=(YYLTYPE*) arg2;
+   int token;
+ 
+   if (lip->lookahead_token >= 0)
+@@ -1227,7 +1224,7 @@ int MYSQLlex(void *arg, void *arg2, void
+     return token;
+   }
+ 
+-  token= lex_one_token(arg, yythd);
++  token= lex_one_token(yylval, thd);
+   yylloc->start= lip->get_cpp_tok_start();
+   yylloc->raw_start= lip->get_tok_start();
+ 
+@@ -1240,7 +1237,7 @@ int MYSQLlex(void *arg, void *arg2, void
+       to transform the grammar into a LALR(1) grammar,
+       which sql_yacc.yy can process.
+     */
+-    token= lex_one_token(arg, yythd);
++    token= lex_one_token(yylval, thd);
+     switch(token) {
+     case CUBE_SYM:
+       yylloc->end= lip->get_cpp_ptr();
+@@ -1274,17 +1271,15 @@ int MYSQLlex(void *arg, void *arg2, void
+   return token;
+ }
+ 
+-static int lex_one_token(void *arg, void *yythd)
++static int lex_one_token(YYSTYPE *yylval, THD *thd)
+ {
+   uchar c= 0;
+   bool comment_closed;
+   int tokval, result_state;
+   uint length;
+   enum my_lex_states state;
+-  THD *thd= (THD *)yythd;
+   Lex_input_stream *lip= & thd->m_parser_state->m_lip;
+   LEX *lex= thd->lex;
+-  YYSTYPE *yylval=(YYSTYPE*) arg;
+   const CHARSET_INFO *cs= thd->charset();
+   const uchar *state_map= cs->state_map;
+   const uchar *ident_map= cs->ident_map;
+--- a/sql/sql_lex.h
++++ b/sql/sql_lex.h
+@@ -132,7 +132,7 @@ typedef struct YYLTYPE
+ */
+ #define YYLLOC_DEFAULT(Current, Rhs, N)                             \
+     do                                                              \
+-      if (YYID (N))                                                 \
++      if (N)                                                        \
+       {                                                             \
+         (Current).start=     YYRHSLOC(Rhs, 1).start;                \
+         (Current).end=       YYRHSLOC(Rhs, N).end;                  \
+@@ -146,7 +146,7 @@ typedef struct YYLTYPE
+         (Current).raw_start= YYRHSLOC(Rhs, 0).raw_start;            \
+         (Current).raw_end=   YYRHSLOC(Rhs, 0).raw_end;              \
+       }                                                             \
+-    while (YYID (0))
++    while (0)
+ 
+ 
+ #ifdef MYSQL_SERVER
+@@ -3088,7 +3088,8 @@ extern void lex_init(void);
+ extern void lex_free(void);
+ extern bool lex_start(THD *thd);
+ extern void lex_end(LEX *lex);
+-extern int MYSQLlex(void *arg, void *arg2, void *yythd);
++extern int MYSQLlex(union YYSTYPE *yylval, struct YYLTYPE *yylloc,
++                    class THD *thd);
+ 
+ extern void trim_whitespace(const CHARSET_INFO *cs, LEX_STRING *str);
+ 
+--- a/sql/sql_parse.cc
++++ b/sql/sql_parse.cc
+@@ -6725,7 +6725,7 @@ bool check_host_name(LEX_STRING *str)
+ }
+ 
+ 
+-extern int MYSQLparse(void *thd); // from sql_yacc.cc
++extern int MYSQLparse(class THD *thd); // from sql_yacc.cc
+ 
+ 
+ /**
+--- a/sql/sql_yacc.yy
++++ b/sql/sql_yacc.yy
+@@ -22,13 +22,9 @@
+ */
+ 
+ %{
+-/* thd is passed as an argument to yyparse(), and subsequently to yylex().
+-** The type will be void*, so it must be  cast to (THD*) when used.
+-** Use the YYTHD macro for this.
++/*
++Note: YYTHD is passed as an argument to yyparse(), and subsequently to yylex().
+ */
+-#define YYPARSE_PARAM yythd
+-#define YYLEX_PARAM yythd
+-#define YYTHD ((THD *)yythd)
+ #define YYLIP (& YYTHD->m_parser_state->m_lip)
+ #define YYPS (& YYTHD->m_parser_state->m_yacc)
+ #define YYCSCL  YYTHD->variables.character_set_client
+@@ -87,7 +83,7 @@ int yylex(void *yylval, void *yythd);
+     ulong val= *(H);                          \
+     if (my_yyoverflow((B), (D), (F), &val))   \
+     {                                         \
+-      yyerror((char*) (A));                   \
++      yyerror(NULL, YYTHD, (char*) (A));      \
+       return 2;                               \
+     }                                         \
+     else                                      \
+@@ -189,10 +185,8 @@ void parse_error_at(THD *thd, const YYLT
+   to abort from the parser.
+ */
+ 
+-void MYSQLerror(const char *s)
++void MYSQLerror(YYLTYPE *, THD *thd, const char *s)
+ {
+-  THD *thd= current_thd;
+-
+   /*
+     Restore the original LEX if it was replaced when parsing
+     a stored procedure. We must ensure that a parsing error
+@@ -958,7 +952,9 @@ bool match_authorized_user(Security_cont
+ bool my_yyoverflow(short **a, YYSTYPE **b, YYLTYPE **c, ulong *yystacksize);
+ %}
+ 
+-%pure_parser                                    /* We have threads */
++%parse-param { class THD *YYTHD }
++%lex-param { class THD *YYTHD }
++%pure-parser                                    /* We have threads */
+ /*
+   Currently there are 157 shift/reduce conflicts.
+   We should not introduce new conflicts any more.

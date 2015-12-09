@@ -1,0 +1,29 @@
+--- a/sql/mysqld.cc
++++ b/sql/mysqld.cc
+@@ -23,7 +23,11 @@
+ #include <set>
+ #include <string>
+ 
+-#include <fenv.h>
++#if (__cplusplus >= 201103L)
++# include <cfenv>
++#else
++# include <fenv.h>
++#endif
+ #include <signal.h>
+ #ifdef HAVE_SYS_WAIT_H
+ #include <sys/wait.h>
+@@ -185,7 +189,13 @@
+ #endif
+ 
+   /* Set FPU rounding mode to "round-to-nearest" */
++#ifndef __UCLIBC__
++# if (__cplusplus >= 201103L)
++  std::fesetround(FE_TONEAREST);
++# else
+   fesetround(FE_TONEAREST);
++# endif
++#endif
+ 
+   /*
+     x86 (32-bit) requires FPU precision to be explicitly set to 64 bit
