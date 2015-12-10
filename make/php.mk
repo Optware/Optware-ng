@@ -13,7 +13,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 PHP_SITE=http://static.php.net/www.php.net/distributions/
-PHP_VERSION=5.6.13
+PHP_VERSION=5.6.16
 PHP_SOURCE=php-$(PHP_VERSION).tar.bz2
 PHP_DIR=php-$(PHP_VERSION)
 PHP_UNZIP=bzcat
@@ -71,7 +71,7 @@ PHP_PATCHES=\
 # compilation or linking flags, then list them here.
 #
 PHP_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/libxml2 -I$(STAGING_INCLUDE_DIR)/libxslt -I$(STAGING_INCLUDE_DIR)/libexslt -I$(STAGING_INCLUDE_DIR)/freetype2
-PHP_LDFLAGS=-L$(STAGING_LIB_DIR)/mysql -Wl,-rpath,$(TARGET_PREFIX)/lib/mysql -ldl -lpthread -lgcc_s
+PHP_LDFLAGS=-ldl -lpthread -lgcc_s
 
 #
 # PHP_BUILD_DIR is the directory in which the build is done.
