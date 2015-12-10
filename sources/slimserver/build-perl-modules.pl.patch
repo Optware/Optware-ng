@@ -155,7 +155,7 @@
  
  		# Just the directory name.
  		my ($packageDir) = ($package =~ /(\S+?)\.tar\.gz/);
-@@ -230,15 +209,50 @@
+@@ -230,15 +209,48 @@
  		}
  
  		print "Configuring..\n";
@@ -176,11 +176,9 @@
  			die "There was a problem creating Makefile - exiting!\n";
  		}
 +		if ($package eq  "@DBD-mysql@.tar.gz") {
-+#	no 'error' field in MYSQL_BIND in mysql-4.1
-+		`sed -i -e '/buffer->error/s|^|//|' $downloadPath/$packageDir/dbdimp.c`;
 +# This code relies on DBI being processed before DBDSqlite.
 +		`sed -e "s/~DRIVER~/mysql/g"  $dbipackagedir/Driver.xst > mysql.xsi`;
-+		  $pasthruinc="\"$ENV{CPPFLAGS} -I$dbipackagedir -I$ENV{STAGINGDIR}%OPTWARE_TARGET_PREFIX%/include/mysql -L$ENV{STAGINGDIR}%OPTWARE_TARGET_PREFIX%/lib/mysql\"";
++		  $pasthruinc="\"$ENV{CPPFLAGS} -I$dbipackagedir -I$ENV{STAGINGDIR}%OPTWARE_TARGET_PREFIX%/include/mysql\"";
 +
 +		} else {
 +		  $pasthruinc = "\"$ENV{CPPFLAGS}\"";
@@ -196,7 +194,7 @@
 +                 } ;
 +
 +		if ( $package eq  "@DBD-mysql@.tar.gz" ) { 
-+		         $ldopts = $ldopts . " LD=$ENV{GCC} LDDLFLAGS=\"-shared $ENV{LDFLAGS} -Wl,-rpath,%OPTWARE_TARGET_PREFIX%/lib/mysql\"";
++		         $ldopts = $ldopts . " LD=$ENV{GCC} LDDLFLAGS=\"-shared $ENV{LDFLAGS}\"";
 +		} ;
 +		$ldopts = $ldopts . " LD_RUN_PATH=%OPTWARE_TARGET_PREFIX%/lib" ;
 +		if ( defined($ENV{PERL_INC}) && $ENV{PERL_INC} ne "") { $ldopts = $ldopts . " PERL_INC=$ENV{PERL_INC}" ;  }; 
