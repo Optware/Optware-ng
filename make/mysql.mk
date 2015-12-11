@@ -26,7 +26,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-MYSQL_OLD_TARGETS=\
+MYSQL_OLD_TARGETS:=\
 buildroot-mipsel-ng \
 buildroot-armv5eabi-ng \
 buildroot-ppc-603e
