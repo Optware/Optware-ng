@@ -53,7 +53,7 @@ $(MYSQL_CONNECTOR_ODBC_SOURCE_DIR)/mysql.5.7.4.api.patch
 
 MYSQL_CONNECTOR_ODBC_PATCHES=$(strip \
 	$(if $(filter $(MYSQL_OLD_TARGETS), $(OPTWARE_TARGET)), $(MYSQL_CONNECTOR_ODBC_PATCHES_OLD), \
-	$(MYSQL_CONNECTOR_ODBC_PATCHES_OLD)))
+	$(MYSQL_CONNECTOR_ODBC_PATCHES_NEW)))
 
 #
 # If the compilation of the package requires additional
