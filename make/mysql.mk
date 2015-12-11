@@ -287,7 +287,7 @@ mysql: $(MYSQL_BUILD_DIR)/.built
 $(MYSQL_BUILD_DIR)/.staged: $(MYSQL_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(@D)/BUILD DESTDIR=$(STAGING_DIR) install
-	sed -i -e '/^prefix=/s|=.*|=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/mysqlclient.pc
+	-sed -i -e '/^prefix=/s|=.*|=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/mysqlclient.pc
 	touch $@
 
 mysql-stage: $(MYSQL_BUILD_DIR)/.staged
