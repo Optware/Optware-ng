@@ -1,0 +1,1929 @@
+diff -durN a/odbc_const.h b/odbc_const.h
+--- a/odbc_const.h
++++ b/odbc_const.h
+@@ -0,0 +1,15 @@
++#ifndef ODBC_CONST_H
++#define ODBC_CONST_H
++
++#define SQL_PARAM_INPUT_OUTPUT_STREAM 8
++#define SQL_PARAM_OUTPUT_STREAM 16
++#define SQL_OV_ODBC3_80 380
++#define SQL_ASYNC_DBC_FUNCTIONS 10023
++#define SQL_ASYNC_DBC_NOT_CAPABLE 0x00000000
++#define SQL_GD_OUTPUT_PARAMS 0x00000010
++#define SQL_API_SQLCANCELHANDLE 1022
++#define SQL_ATTR_RESET_CONNECTION 116
++#define SQL_RESET_CONNECTION_YES 1
++
++#endif
++
+diff -durN a/driver/ansi.c b/driver/ansi.c
+--- a/driver/ansi.c
++++ b/driver/ansi.c
+@@ -377,7 +377,7 @@
+ 
+   if (outw_max)
+   {
+-    outw= (SQLWCHAR *)my_malloc(sizeof(SQLWCHAR) * out_max, MYF(0));
++    outw= (SQLWCHAR *)my_malloc(key_memory_max_alloca, sizeof(SQLWCHAR) * out_max, MYF(0));
+     if (!outw)
+     {
+       rc= set_dbc_error((DBC *)hdbc, "HY001", NULL, 0);
+diff -durN a/driver/catalog.c b/driver/catalog.c
+--- a/driver/catalog.c
++++ b/driver/catalog.c
+@@ -88,8 +88,8 @@
+ create_fake_resultset(STMT *stmt, MYSQL_ROW rowval, size_t rowsize,
+                       my_ulonglong rowcnt, MYSQL_FIELD *fields, uint fldcnt)
+ {
+-  stmt->result= (MYSQL_RES*) my_malloc(sizeof(MYSQL_RES), MYF(MY_ZEROFILL));
+-  stmt->result_array= (MYSQL_ROW)my_memdup((char *)rowval, rowsize, MYF(0));
++  stmt->result= (MYSQL_RES*) my_malloc(key_memory_max_alloca, sizeof(MYSQL_RES), MYF(MY_ZEROFILL));
++  stmt->result_array= (MYSQL_ROW)my_memdup(key_memory_max_alloca, (char *)rowval, rowsize, MYF(0));
+   if (!(stmt->result && stmt->result_array))
+   {
+     x_free(stmt->result);
+@@ -156,41 +156,41 @@
+   char buff[255+4*NAME_CHAR_LEN], *to;
+   my_bool clause_added= FALSE;
+ 
+-  to= strmov(buff, "SELECT TABLE_NAME, TABLE_COMMENT, TABLE_TYPE, TABLE_SCHEMA \
++  to= my_stpmov(buff, "SELECT TABLE_NAME, TABLE_COMMENT, TABLE_TYPE, TABLE_SCHEMA \
+                     FROM INFORMATION_SCHEMA.TABLES \
+                     WHERE ");
+ 
+   if (catalog_name && *catalog_name)
+   {
+-    to= strmov(to, "TABLE_SCHEMA LIKE '");
++    to= my_stpmov(to, "TABLE_SCHEMA LIKE '");
+     to+= myodbc_escape_string(mysql, to, (ulong)(sizeof(buff) - (to - buff)),
+                               (char *)catalog_name, catalog_len, 1);
+-    to= strmov(to, "' ");
++    to= my_stpmov(to, "' ");
+     clause_added= TRUE;
+   }
+   else
+   {
+-    to= strmov(to, "TABLE_SCHEMA = DATABASE() ");
++    to= my_stpmov(to, "TABLE_SCHEMA = DATABASE() ");
+   }
+ 
+   if (show_tables)
+   {
+-    to= strmov(to, "AND ");
++    to= my_stpmov(to, "AND ");
+     if (show_views)
+-      to= strmov(to, "( ");
+-    to= strmov(to, "TABLE_TYPE='BASE TABLE' ");
++      to= my_stpmov(to, "( ");
++    to= my_stpmov(to, "TABLE_TYPE='BASE TABLE' ");
+   }
+ 
+   if (show_views)
+   {
+     if (show_tables)
+-      to= strmov(to, "OR ");
++      to= my_stpmov(to, "OR ");
+     else
+-      to= strmov(to, "AND ");
++      to= my_stpmov(to, "AND ");
+ 
+-    to= strmov(to, "TABLE_TYPE='VIEW' ");
++    to= my_stpmov(to, "TABLE_TYPE='VIEW' ");
+     if (show_tables)
+-      to= strmov(to, ") ");
++      to= my_stpmov(to, ") ");
+   }
+ 
+   /*
+@@ -203,7 +203,7 @@
+ 
+   if (table_name && *table_name)
+   {
+-    to= strmov(to, "AND TABLE_NAME LIKE '");
++    to= my_stpmov(to, "AND TABLE_NAME LIKE '");
+     if (wildcard)
+     {
+       to+= mysql_real_escape_string(mysql, to, (char *)table_name, table_len);
+@@ -213,7 +213,7 @@
+       to+= myodbc_escape_string(mysql, to, (ulong)(sizeof(buff) - (to - buff)),
+                                 (char *)table_name, table_len, 0);
+     }
+-    to= strmov(to, "'");
++    to= my_stpmov(to, "'");
+   }
+ 
+   assert(to - buff < sizeof(buff));
+@@ -283,22 +283,22 @@
+ 
+     if (metadata_id)
+     {
+-      *pos= strmov(*pos, "=");
++      *pos= my_stpmov(*pos, "=");
+       /* Need also code to remove trailing blanks */
+     }
+     else
+-      *pos= strmov(*pos, "= BINARY ");
++      *pos= my_stpmov(*pos, "= BINARY ");
+ 
+-    *pos= strmov(*pos, "'");
++    *pos= my_stpmov(*pos, "'");
+     *pos+= mysql_real_escape_string(&stmt->dbc->mysql, *pos, (char *)name, name_len);
+-    *pos= strmov(*pos, "' ");
++    *pos= my_stpmov(*pos, "' ");
+   }
+   else
+   {
+     /* According to http://msdn.microsoft.com/en-us/library/ms714579%28VS.85%29.aspx
+     identifier argument cannot be NULL with one exception not actual for mysql) */
+     if (!metadata_id && _default)
+-      *pos= strmov(*pos, _default); 
++      *pos= my_stpmov(*pos, _default); 
+     else
+       return 1;
+   }
+@@ -327,22 +327,22 @@
+ 
+     if (metadata_id)
+     {
+-      *pos= strmov(*pos, "=");
++      *pos= my_stpmov(*pos, "=");
+       /* Need also code to remove trailing blanks */
+     }
+     else
+-      *pos= strmov(*pos, " LIKE BINARY ");
++      *pos= my_stpmov(*pos, " LIKE BINARY ");
+ 
+-    *pos= strmov(*pos, "'");
++    *pos= my_stpmov(*pos, "'");
+     *pos+= mysql_real_escape_string(&stmt->dbc->mysql, *pos, (char *)name, name_len);
+-    *pos= strmov(*pos, "' ");
++    *pos= my_stpmov(*pos, "' ");
+   }
+   else
+   {
+     /* According to http://msdn.microsoft.com/en-us/library/ms714579%28VS.85%29.aspx
+        identifier argument cannot be NULL with one exception not actual for mysql) */
+     if (!metadata_id && _default)
+-      *pos= strmov(*pos, _default); 
++      *pos= my_stpmov(*pos, _default); 
+     else
+       return 1;
+   }
+@@ -563,7 +563,7 @@
+   SQLRETURN rc;
+ 
+   /* Db,User,Table_name,"NULL" as Grantor,Table_priv*/
+-  pos= strmov(buff,
++  pos= my_stpmov(buff,
+                "SELECT TABLE_SCHEMA as TABLE_CAT, TABLE_CATALOG as TABLE_SCHEM,"
+                       "TABLE_NAME, NULL as GRANTOR, GRANTEE,"
+                       "PRIVILEGE_TYPE as PRIVILEGE, IS_GRANTABLE "
+@@ -572,11 +572,11 @@
+ 
+   add_name_condition_pv_id(hstmt, &pos, table_name, table_len, " LIKE '%'" );
+ 
+-  pos= strmov(pos, " AND TABLE_SCHEMA");
++  pos= my_stpmov(pos, " AND TABLE_SCHEMA");
+   add_name_condition_oa_id(hstmt, &pos, catalog_name, catalog_len, "=DATABASE()");
+ 
+   /* TABLE_CAT is always NULL in mysql I_S */
+-  pos= strmov(pos, " ORDER BY /*TABLE_CAT,*/ TABLE_SCHEM, TABLE_NAME, PRIVILEGE, GRANTEE");
++  pos= my_stpmov(pos, " ORDER BY /*TABLE_CAT,*/ TABLE_SCHEM, TABLE_NAME, PRIVILEGE, GRANTEE");
+ 
+   assert(pos - buff < sizeof(buff));
+ 
+@@ -644,7 +644,7 @@
+   SQLRETURN rc;
+ 
+   /* Db,User,Table_name,"NULL" as Grantor,Table_priv*/
+-  pos= strmov(buff,
++  pos= my_stpmov(buff,
+     "SELECT TABLE_SCHEMA as TABLE_CAT, TABLE_CATALOG as TABLE_SCHEM,"
+     "TABLE_NAME, COLUMN_NAME, NULL as GRANTOR, GRANTEE,"
+     "PRIVILEGE_TYPE as PRIVILEGE, IS_GRANTABLE "
+@@ -654,16 +654,16 @@
+   if(add_name_condition_oa_id(hstmt, &pos, table_name, table_len, NULL))
+     return set_stmt_error(stmt, "HY009", "Invalid use of NULL pointer(table is required parameter)", 0);
+ 
+-  pos= strmov(pos, " AND TABLE_SCHEMA");
++  pos= my_stpmov(pos, " AND TABLE_SCHEMA");
+   add_name_condition_oa_id(hstmt, &pos, catalog_name, catalog_len, "=DATABASE()");
+ 
+ 
+-  pos= strmov(pos, " AND COLUMN_NAME");
++  pos= my_stpmov(pos, " AND COLUMN_NAME");
+   add_name_condition_pv_id(hstmt, &pos, column_name, column_len, " LIKE '%'");
+ 
+ 
+   /* TABLE_CAT is always NULL in mysql I_S */
+-  pos= strmov(pos, " ORDER BY /*TABLE_CAT,*/ TABLE_SCHEM, TABLE_NAME, COLUMN_NAME, PRIVILEGE");
++  pos= my_stpmov(pos, " ORDER BY /*TABLE_CAT,*/ TABLE_SCHEM, TABLE_NAME, COLUMN_NAME, PRIVILEGE");
+ 
+   assert(pos - buff < sizeof(buff));
+ 
+@@ -911,52 +911,52 @@
+ 
+   if (pk_table_name && pk_table_name[0])
+   {
+-    buff= strmov(buff, "AND A.REFERENCED_TABLE_SCHEMA = ");
++    buff= my_stpmov(buff, "AND A.REFERENCED_TABLE_SCHEMA = ");
+     if (pk_catalog_name && pk_catalog_name[0])
+     {
+-      buff= strmov(buff, "'");
++      buff= my_stpmov(buff, "'");
+       buff+= mysql_real_escape_string(mysql, buff, (char *)pk_catalog_name,
+                                       pk_catalog_len);
+-      buff= strmov(buff, "' ");
++      buff= my_stpmov(buff, "' ");
+     }
+     else
+     {
+-      buff= strmov(buff, "DATABASE() ");
++      buff= my_stpmov(buff, "DATABASE() ");
+     }
+ 
+-    buff= strmov(buff, "AND A.REFERENCED_TABLE_NAME = '");
++    buff= my_stpmov(buff, "AND A.REFERENCED_TABLE_NAME = '");
+ 
+     buff+= mysql_real_escape_string(mysql, buff, (char *)pk_table_name,
+                                     pk_table_len);
+-    buff= strmov(buff, "' ");
++    buff= my_stpmov(buff, "' ");
+ 
+-    strmov(buff, "ORDER BY PKTABLE_CAT, PKTABLE_NAME, "
++    my_stpmov(buff, "ORDER BY PKTABLE_CAT, PKTABLE_NAME, "
+                  "KEY_SEQ, FKTABLE_NAME");
+   }
+ 
+   if (fk_table_name && fk_table_name[0])
+   {
+-    buff= strmov(buff, "AND A.TABLE_SCHEMA = ");
++    buff= my_stpmov(buff, "AND A.TABLE_SCHEMA = ");
+ 
+     if (fk_catalog_name && fk_catalog_name[0])
+     {
+-      buff= strmov(buff, "'");
++      buff= my_stpmov(buff, "'");
+       buff+= mysql_real_escape_string(mysql, buff, (char *)fk_catalog_name,
+                                       fk_catalog_len);
+-      buff= strmov(buff, "' ");
++      buff= my_stpmov(buff, "' ");
+     }
+     else
+     {
+-      buff= strmov(buff, "DATABASE() ");
++      buff= my_stpmov(buff, "DATABASE() ");
+     }
+ 
+-    buff= strmov(buff, "AND A.TABLE_NAME = '");
++    buff= my_stpmov(buff, "AND A.TABLE_NAME = '");
+ 
+     buff+= mysql_real_escape_string(mysql, buff, (char *)fk_table_name,
+                                     fk_table_len);
+-    buff= strmov(buff, "' ");
++    buff= my_stpmov(buff, "' ");
+ 
+-    buff= strmov(buff, "ORDER BY FKTABLE_CAT, FKTABLE_NAME, "
++    buff= my_stpmov(buff, "ORDER BY FKTABLE_CAT, FKTABLE_NAME, "
+                  "KEY_SEQ, PKTABLE_NAME");
+   }
+ 
+diff -durN a/driver/catalog_no_i_s.c b/driver/catalog_no_i_s.c
+--- a/driver/catalog_no_i_s.c
++++ b/driver/catalog_no_i_s.c
+@@ -108,16 +108,16 @@
+     MYSQL *mysql= &dbc->mysql;
+     char  buff[255], *to;
+ 
+-    to= strmov(buff, "SHOW KEYS FROM `");
++    to= my_stpmov(buff, "SHOW KEYS FROM `");
+     if (catalog_len)
+     {
+       to+= myodbc_escape_string(mysql, to, (ulong)(sizeof(buff) - (to - buff)),
+                                 (char *)catalog, catalog_len, 1);
+-      to= strmov(to, "`.`");
++      to= my_stpmov(to, "`.`");
+     }
+     to+= myodbc_escape_string(mysql, to, (ulong)(sizeof(buff) - (to - buff)),
+                               (char *)table, table_len, 1);
+-    to= strmov(to, "`");
++    to= my_stpmov(to, "`");
+ 
+     MYLOG_DBC_QUERY(dbc, buff);
+     if (mysql_query(mysql,buff))
+@@ -320,7 +320,7 @@
+ 
+     rows+= mysql_num_fields(table_res);
+ 
+-    stmt->result_array= (char **)my_realloc((char *)stmt->result_array,
++    stmt->result_array= (char **)my_realloc(key_memory_max_alloca, (char *)stmt->result_array,
+                                             sizeof(char *) *
+                                             SQLCOLUMNS_FIELDS * rows,
+                                             MYF(MY_ALLOW_ZERO_PTR));
+@@ -539,12 +539,12 @@
+   pos= strxmov(pos, "' AND Db = ", NullS);
+   if (catalog_len)
+   {
+-    pos= strmov(pos, "'");
++    pos= my_stpmov(pos, "'");
+     pos+= mysql_real_escape_string(mysql, pos, (char *)catalog, catalog_len);
+-    pos= strmov(pos, "'");
++    pos= my_stpmov(pos, "'");
+   }
+   else
+-    pos= strmov(pos, "DATABASE()");
++    pos= my_stpmov(pos, "DATABASE()");
+ 
+   pos= strxmov(pos, " ORDER BY Db, Table_name, Table_priv, User", NullS);
+ 
+@@ -610,7 +610,7 @@
+     pthread_mutex_unlock(&stmt->dbc->lock);
+ 
+     /* Allocate max buffers, to avoid reallocation */
+-    stmt->result_array= (char**) my_malloc(sizeof(char*)* SQLTABLES_PRIV_FIELDS *
++    stmt->result_array= (char**) my_malloc(key_memory_max_alloca, sizeof(char*)* SQLTABLES_PRIV_FIELDS *
+       (ulong)stmt->result->row_count *
+       MY_MAX_TABPRIV_COUNT,
+       MYF(MY_ZEROFILL));
+@@ -679,27 +679,27 @@
+ {
+   char buff[255+3*NAME_LEN+1], *pos;
+ 
+-  pos= strmov(buff,
++  pos= my_stpmov(buff,
+     "SELECT c.Db, c.User, c.Table_name, c.Column_name,"
+     "t.Grantor, c.Column_priv, t.Table_priv "
+     "FROM mysql.columns_priv AS c, mysql.tables_priv AS t "
+     "WHERE c.Table_name = '");
+   pos+= mysql_real_escape_string(mysql, pos, (char *)table, table_len);
+ 
+-  pos= strmov(pos, "' AND c.Db = ");
++  pos= my_stpmov(pos, "' AND c.Db = ");
+   if (catalog_len)
+   {
+-    pos= strmov(pos, "'");
++    pos= my_stpmov(pos, "'");
+     pos+= mysql_real_escape_string(mysql, pos, (char *)catalog, catalog_len);
+-    pos= strmov(pos, "'");
++    pos= my_stpmov(pos, "'");
+   }
+   else
+-    pos= strmov(pos, "DATABASE()");
++    pos= my_stpmov(pos, "DATABASE()");
+ 
+-  pos= strmov(pos, "AND c.Column_name LIKE '");
++  pos= my_stpmov(pos, "AND c.Column_name LIKE '");
+   pos+= mysql_real_escape_string(mysql, pos, (char *)column, column_len);
+ 
+-  pos= strmov(pos,
++  pos= my_stpmov(pos,
+     "' AND c.Table_name = t.Table_name "
+     "ORDER BY c.Db, c.Table_name, c.Column_name, c.Column_priv");
+ 
+@@ -760,7 +760,7 @@
+   }
+   pthread_mutex_unlock(&stmt->dbc->lock);
+ 
+-  stmt->result_array= (char **)my_malloc(sizeof(char *) *
++  stmt->result_array= (char **)my_malloc(key_memory_max_alloca, sizeof(char *) *
+     SQLCOLUMNS_PRIV_FIELDS *
+     (ulong) stmt->result->row_count *
+     MY_MAX_COLPRIV_COUNT,
+@@ -832,13 +832,13 @@
+ 	/** @todo determine real size for buffer */
+ 	char buff[36 + 4*NAME_LEN + 1], *to;
+ 
+-	to= strmov(buff, "SHOW TABLE STATUS ");
++	to= my_stpmov(buff, "SHOW TABLE STATUS ");
+ 	if (catalog && *catalog)
+ 	{
+-		to= strmov(to, "FROM `");
++		to= my_stpmov(to, "FROM `");
+ 		to+= myodbc_escape_string(mysql, to, (ulong)(sizeof(buff) - (to - buff)),
+ 			(char *)catalog, catalog_length, 1);
+-		to= strmov(to, "` ");
++		to= my_stpmov(to, "` ");
+ 	}
+ 
+ 	/*
+@@ -851,13 +851,13 @@
+ 
+ 	if (table && *table)
+ 	{
+-		to= strmov(to, "LIKE '");
++		to= my_stpmov(to, "LIKE '");
+ 		if (wildcard)
+ 			to+= mysql_real_escape_string(mysql, to, (char *)table, table_length);
+ 		else
+ 			to+= myodbc_escape_string(mysql, to, (ulong)(sizeof(buff) - (to - buff)),
+ 			(char *)table, table_length, 0);
+-		to= strmov(to, "'");
++		to= my_stpmov(to, "'");
+ 	}
+ 
+   MYLOG_QUERY(stmt, buff);
+@@ -896,12 +896,12 @@
+   /** @todo determine real size for buffer */
+   char buff[36 + 4*NAME_LEN + 1], *to;
+ 
+-  to= strmov(buff, "SHOW CREATE TABLE ");
++  to= my_stpmov(buff, "SHOW CREATE TABLE ");
+   if (catalog && *catalog)
+   {
+-    to= strmov(to, " `");
+-    to= strmov(to, (char *)catalog);
+-    to= strmov(to, "`.");
++    to= my_stpmov(to, " `");
++    to= my_stpmov(to, (char *)catalog);
++    to= my_stpmov(to, "`.");
+   }
+ 
+   /* Empty string won't match anything. */
+@@ -910,9 +910,9 @@
+ 
+   if (table && *table)
+   {
+-    to= strmov(to, " `");
+-    to= strmov(to, (char *)table);
+-    to= strmov(to, "`");
++    to= my_stpmov(to, " `");
++    to= my_stpmov(to, (char *)table);
++    to= my_stpmov(to, "`");
+   }
+ 
+   MYLOG_QUERY(stmt, buff);
+@@ -1093,7 +1093,7 @@
+   unsigned long *lengths;
+   SQLRETURN rc= SQL_SUCCESS;
+ 
+-  my_init_dynamic_array(&records, sizeof(MY_FOREIGN_KEY_FIELD), 0, 0);
++  my_init_dynamic_array(&records, key_memory_max_alloca, sizeof(MY_FOREIGN_KEY_FIELD), NULL, 0, 0);
+ 
+   /* Get the list of tables that match szCatalog and szTable */
+   pthread_mutex_lock(&stmt->dbc->lock);
+@@ -1235,19 +1235,19 @@
+                   buffer[bracket_end - pos - quote_char_length * 2 - 1]= '\0';
+                   if (key_search == 0)
+                   {
+-                    strmov(fkRows->FKCOLUMN_NAME, buffer);
++                    my_stpmov(fkRows->FKCOLUMN_NAME, buffer);
+                   }
+                   else
+                   {
+-                    strmov(fkRows->PKCOLUMN_NAME, buffer);
+-                    strmov(fkRows->PKTABLE_NAME, table_name);
+-                    strmov(fkRows->FK_NAME, constraint_name);
+-                    strmov(fkRows->FKTABLE_NAME, row[0]);
+-                    strmov(fkRows->FKTABLE_CAT, (szFkCatalogName ?
++                    my_stpmov(fkRows->PKCOLUMN_NAME, buffer);
++                    my_stpmov(fkRows->PKTABLE_NAME, table_name);
++                    my_stpmov(fkRows->FK_NAME, constraint_name);
++                    my_stpmov(fkRows->FKTABLE_NAME, row[0]);
++                    my_stpmov(fkRows->FKTABLE_CAT, (szFkCatalogName ?
+                             strdup_root(alloc, (char *)szFkCatalogName) :
+                             strdup_root(alloc, stmt->dbc->database ?
+                             stmt->dbc->database : "null")));
+-                    strmov(fkRows->PKTABLE_CAT, (szPkCatalogName ?
++                    my_stpmov(fkRows->PKTABLE_CAT, (szPkCatalogName ?
+                             strdup_root(alloc, (char *)szPkCatalogName) :
+                             strdup_root(alloc, stmt->dbc->database ?
+                             stmt->dbc->database : "null")));
+@@ -1264,19 +1264,19 @@
+                   buffer[comma_pos - pos - quote_char_length * 2 - 1]= '\0';
+                   if (key_search == 0)
+                   {    
+-                    strmov(fkRows->FKCOLUMN_NAME, buffer);
++                    my_stpmov(fkRows->FKCOLUMN_NAME, buffer);
+                   }
+                   else
+                   {
+-                    strmov(fkRows->PKCOLUMN_NAME, buffer);
+-                    strmov(fkRows->PKTABLE_NAME, table_name);
+-                    strmov(fkRows->FK_NAME, constraint_name);
+-                    strmov(fkRows->FKTABLE_NAME, row[0]);
+-                    strmov(fkRows->FKTABLE_CAT, (szFkCatalogName ?
++                    my_stpmov(fkRows->PKCOLUMN_NAME, buffer);
++                    my_stpmov(fkRows->PKTABLE_NAME, table_name);
++                    my_stpmov(fkRows->FK_NAME, constraint_name);
++                    my_stpmov(fkRows->FKTABLE_NAME, row[0]);
++                    my_stpmov(fkRows->FKTABLE_CAT, (szFkCatalogName ?
+                             strdup_root(alloc, (char *)szFkCatalogName) :
+                             strdup_root(alloc, stmt->dbc->database ?
+                             stmt->dbc->database : "null")));
+-                    strmov(fkRows->PKTABLE_CAT, (szPkCatalogName ?
++                    my_stpmov(fkRows->PKTABLE_CAT, (szPkCatalogName ?
+                             strdup_root(alloc, (char *)szPkCatalogName) :
+                             strdup_root(alloc, stmt->dbc->database ?
+                             stmt->dbc->database : "null")));
+@@ -1374,7 +1374,7 @@
+ 
+   if (records.elements)
+   {
+-    tempdata= (char**) my_malloc(sizeof(char*)*SQLFORE_KEYS_FIELDS*
++    tempdata= (char**) my_malloc(key_memory_max_alloca, sizeof(char*)*SQLFORE_KEYS_FIELDS*
+                                          records.elements,
+                                          MYF(MY_ZEROFILL));
+     if (!tempdata)
+@@ -1430,7 +1430,7 @@
+   mysql_free_result(res);
+ 
+   /* Copy only the elements that contain fk names */
+-  stmt->result_array= (MYSQL_ROW)my_memdup((char *)tempdata,
++  stmt->result_array= (MYSQL_ROW)my_memdup(key_memory_max_alloca, (char *)tempdata,
+                                            sizeof(char *) *
+                                            SQLFORE_KEYS_FIELDS *
+                                            row_count,
+@@ -1532,7 +1532,7 @@
+       return rc;
+     }
+     pthread_mutex_unlock(&stmt->dbc->lock);
+-    stmt->result_array= (char**) my_malloc(sizeof(char*)*SQLPRIM_KEYS_FIELDS*
++    stmt->result_array= (char**) my_malloc(key_memory_max_alloca, sizeof(char*)*SQLPRIM_KEYS_FIELDS*
+                                             (ulong) stmt->result->row_count,
+                                             MYF(MY_ZEROFILL));
+     if (!stmt->result_array)
+@@ -1541,7 +1541,7 @@
+       return handle_connection_error(stmt);
+     }
+ 
+-    stmt->lengths= (unsigned long*) my_malloc( sizeof(long)*SQLPRIM_KEYS_FIELDS*
++    stmt->lengths= (unsigned long*) my_malloc(key_memory_max_alloca,  sizeof(long)*SQLPRIM_KEYS_FIELDS*
+                                             (ulong) stmt->result->row_count,
+                                             MYF(MY_ZEROFILL));
+     if (!stmt->lengths)
+@@ -1632,27 +1632,27 @@
+   MYSQL *mysql= &dbc->mysql;
+   char   buff[255+4*NAME_LEN+1], *pos;
+ 
+-  pos= strmov(buff, "SELECT name, CONCAT(IF(length(returns)>0, CONCAT('RETURN_VALUE ', returns, if(length(param_list)>0, ',', '')),''), param_list),"
++  pos= my_stpmov(buff, "SELECT name, CONCAT(IF(length(returns)>0, CONCAT('RETURN_VALUE ', returns, if(length(param_list)>0, ',', '')),''), param_list),"
+                     "db, type FROM mysql.proc WHERE Db=");
+ 
+ 
+   if (catalog_len)
+   {
+-    pos= strmov(pos, "'");
++    pos= my_stpmov(pos, "'");
+     pos+= mysql_real_escape_string(mysql, pos, (char *)catalog, catalog_len);
+-    pos= strmov(pos, "'");
++    pos= my_stpmov(pos, "'");
+   }
+   else
+-    pos= strmov(pos, "DATABASE()");
++    pos= my_stpmov(pos, "DATABASE()");
+ 
+   if (proc_name_len)
+   {
+-    pos= strmov(pos, " AND name LIKE '");
++    pos= my_stpmov(pos, " AND name LIKE '");
+     pos+= mysql_real_escape_string(mysql, pos, (char *)proc_name, proc_name_len);
+-    pos= strmov(pos, "'");
++    pos= my_stpmov(pos, "'");
+   }
+ 
+-  pos= strmov(pos, " ORDER BY Db, name");
++  pos= my_stpmov(pos, " ORDER BY Db, name");
+ 
+   assert(pos - buff < sizeof(buff));
+   MYLOG_DBC_QUERY(dbc, buff);
+@@ -1730,7 +1730,7 @@
+   if (init_dynamic_string(&dynQuery, "SELECT 1", 1024,1024))
+     return set_stmt_error(stmt, "HY001", "Not enough memory", 4001);
+ 
+-  params_r= params= (LIST *) my_malloc(sizeof(LIST), MYF(MY_ZEROFILL));
++  params_r= params= (LIST *) my_malloc(key_memory_max_alloca, sizeof(LIST), MYF(MY_ZEROFILL));
+ 
+   if (params_r == NULL)
+   {
+@@ -1796,7 +1796,7 @@
+       SQLTypeMap *type_map;
+       SQLSMALLINT dec;
+       SQLULEN param_size= 0;
+-      MYSQL_ROW data= my_malloc(sizeof(SQLPROCEDURECOLUMNS_values), MYF(MY_ZEROFILL));
++      MYSQL_ROW data= my_malloc(key_memory_max_alloca, sizeof(SQLPROCEDURECOLUMNS_values), MYF(MY_ZEROFILL));
+       /* temp variables for debugging */
+       SQLUINTEGER dec_int= 0;
+       SQLINTEGER sql_type_int= 0;
+@@ -1823,10 +1823,10 @@
+ 
+       proc_get_param_octet_len(stmt, sql_type_index, param_size, dec, flags, param_buffer_len);
+ 
+-      data[mypcPROCEDURE_CAT]= my_strdup(row[2], MYF(0));   /* PROCEDURE_CAT */
++      data[mypcPROCEDURE_CAT]= my_strdup(key_memory_max_alloca, row[2], MYF(0));   /* PROCEDURE_CAT */
+       data[mypcPROCEDURE_SCHEM]= NULL;                      /* PROCEDURE_SCHEM */
+-      data[mypcPROCEDURE_NAME]= my_strdup(row[0], MYF(0));  /* PROCEDURE_NAME */
+-      data[mypcCOLUMN_NAME]= my_strdup(param_name, MYF(0)); /* COLUMN_NAME */
++      data[mypcPROCEDURE_NAME]= my_strdup(key_memory_max_alloca, row[0], MYF(0));  /* PROCEDURE_NAME */
++      data[mypcCOLUMN_NAME]= my_strdup(key_memory_max_alloca, param_name, MYF(0)); /* COLUMN_NAME */
+ 
+       if (cbColumnName)
+       {
+@@ -1842,7 +1842,7 @@
+       }
+ 
+       sprintf(param_type, "%d", ptype);
+-      data[mypcCOLUMN_TYPE]= my_strdup(param_type, MYF(0)); /* COLUMN_TYPE */
++      data[mypcCOLUMN_TYPE]= my_strdup(key_memory_max_alloca, param_type, MYF(0)); /* COLUMN_TYPE */
+ 
+       if (!myodbc_strcasecmp(type_map->type_name, "bit") && param_size > 1)
+       {
+@@ -1852,29 +1852,29 @@
+       {
+         sprintf(param_sql_type, "%d", (int)type_map->sql_type);
+       }
+-      data[mypcDATA_TYPE]= my_strdup(param_sql_type, MYF(0)); /* DATA_TYPE */
++      data[mypcDATA_TYPE]= my_strdup(key_memory_max_alloca, param_sql_type, MYF(0)); /* DATA_TYPE */
+       
+       if (!myodbc_strcasecmp(type_map->type_name, "set") ||
+          !myodbc_strcasecmp(type_map->type_name, "enum"))
+       {
+-        data[mypcTYPE_NAME]= my_strdup("char", MYF(0));
++        data[mypcTYPE_NAME]= my_strdup(key_memory_max_alloca, "char", MYF(0));
+       }
+       else
+       {
+-        data[mypcTYPE_NAME]= my_strdup(type_map->type_name, MYF(0));
++        data[mypcTYPE_NAME]= my_strdup(key_memory_max_alloca, type_map->type_name, MYF(0));
+       }
+ 
+        /* TYPE_NAME */
+       
+       proc_get_param_col_len(stmt, sql_type_index, param_size, dec, flags, param_size_buf);
+-      data[mypcCOLUMN_SIZE]= my_strdup(param_size_buf, MYF(0)); /* COLUMN_SIZE */
++      data[mypcCOLUMN_SIZE]= my_strdup(key_memory_max_alloca, param_size_buf, MYF(0)); /* COLUMN_SIZE */
+ 
+-      data[mypcBUFFER_LENGTH]= my_strdup(param_buffer_len, MYF(0)); /* BUFFER_LENGTH */
++      data[mypcBUFFER_LENGTH]= my_strdup(key_memory_max_alloca, param_buffer_len, MYF(0)); /* BUFFER_LENGTH */
+       
+       if (dec != SQL_NO_TOTAL)
+       {
+         sprintf(param_decimal, "%d", (int)dec);
+-        data[mypcDECIMAL_DIGITS]= my_strdup(param_decimal, MYF(0)); /* DECIMAL_DIGITS */
++        data[mypcDECIMAL_DIGITS]= my_strdup(key_memory_max_alloca, param_decimal, MYF(0)); /* DECIMAL_DIGITS */
+         data[mypcNUM_PREC_RADIX]= "10"; /* NUM_PREC_RADIX */
+       }
+       else
+@@ -1891,12 +1891,12 @@
+          type_map->sql_type == SQL_TYPE_TIMESTAMP)
+       {
+         sprintf(param_desc_type, "%d", SQL_DATETIME);
+-        data[mypcSQL_DATA_TYPE]= my_strdup(param_desc_type, MYF(0)); /* SQL_DATA_TYPE  */
+-        data[mypcSQL_DATETIME_SUB]= my_strdup(data[mypcDATA_TYPE], MYF(0)); /* SQL_DATETIME_SUB */
++        data[mypcSQL_DATA_TYPE]= my_strdup(key_memory_max_alloca, param_desc_type, MYF(0)); /* SQL_DATA_TYPE  */
++        data[mypcSQL_DATETIME_SUB]= my_strdup(key_memory_max_alloca, data[mypcDATA_TYPE], MYF(0)); /* SQL_DATETIME_SUB */
+       }
+       else
+       {
+-        data[mypcSQL_DATA_TYPE]= my_strdup(data[mypcDATA_TYPE], MYF(0)); /* SQL_DATA_TYPE  */
++        data[mypcSQL_DATA_TYPE]= my_strdup(key_memory_max_alloca, data[mypcDATA_TYPE], MYF(0)); /* SQL_DATA_TYPE  */
+         data[mypcSQL_DATETIME_SUB]= NULL;  /* SQL_DATETIME_SUB */
+       }
+ 
+@@ -1904,7 +1904,7 @@
+           is_binary_sql_type(type_map->sql_type))
+       {
+         /* Actualy can use data[mypcBUFFER_LENGTH] here and don't do my_strdup */
+-        data[mypcCHAR_OCTET_LENGTH]= my_strdup(param_buffer_len, MYF(0)); /* CHAR_OCTET_LENGTH */
++        data[mypcCHAR_OCTET_LENGTH]= my_strdup(key_memory_max_alloca, param_buffer_len, MYF(0)); /* CHAR_OCTET_LENGTH */
+       }
+       else
+       {
+@@ -1912,13 +1912,13 @@
+       }
+ 
+       sprintf(param_pos, "%d", (int) param_ordinal_position);
+-      data[mypcORDINAL_POSITION]= my_strdup(param_pos, MYF(0)); /* ORDINAL_POSITION */
++      data[mypcORDINAL_POSITION]= my_strdup(key_memory_max_alloca, param_pos, MYF(0)); /* ORDINAL_POSITION */
+       ++param_ordinal_position;
+ 
+       data[mypcIS_NULLABLE]= "YES"; /* IS_NULLABLE */
+ 
+       {
+-        LIST *new_elem= (LIST *) my_malloc(sizeof(LIST), MYF(MY_ZEROFILL));
++        LIST *new_elem= (LIST *) my_malloc(key_memory_max_alloca, sizeof(LIST), MYF(MY_ZEROFILL));
+ 
+         if (new_elem == NULL)
+         {
+@@ -1986,7 +1986,7 @@
+   }
+ 
+   stmt->result= proc_list_res;
+-  stmt->result_array= (MYSQL_ROW) my_malloc(sizeof(char*) * SQLPROCEDURECOLUMNS_FIELDS *
++  stmt->result_array= (MYSQL_ROW) my_malloc(key_memory_max_alloca, sizeof(char*) * SQLPROCEDURECOLUMNS_FIELDS *
+                                             (return_params_num ? return_params_num : total_params_num), 
+                                             MYF(MY_ZEROFILL));
+   tempdata= stmt->result_array;
+@@ -2121,7 +2121,7 @@
+     if ( fColType == SQL_ROWVER )
+     {
+         /* Find possible timestamp */
+-        if ( !(stmt->result_array= (char**) my_malloc(sizeof(char*)*SQLSPECIALCOLUMNS_FIELDS*
++        if ( !(stmt->result_array= (char**) my_malloc(key_memory_max_alloca, sizeof(char*)*SQLSPECIALCOLUMNS_FIELDS*
+                                                       result->field_count, MYF(MY_ZEROFILL))) )
+         {
+           set_mem_error(&stmt->dbc->mysql);
+@@ -2202,7 +2202,7 @@
+             break;
+         }
+     }
+-    if ( !(stmt->result_array= (char**) my_malloc(sizeof(char*)*SQLSPECIALCOLUMNS_FIELDS*
++    if ( !(stmt->result_array= (char**) my_malloc(key_memory_max_alloca, sizeof(char*)*SQLSPECIALCOLUMNS_FIELDS*
+                                                   result->field_count, MYF(MY_ZEROFILL))) )
+     {
+       set_mem_error(&stmt->dbc->mysql);
+@@ -2322,7 +2322,7 @@
+     stmt->order=       SQLSTAT_order;
+     stmt->order_count= array_elements(SQLSTAT_order);
+     stmt->fix_fields=  fix_fields_copy;
+-    stmt->array= (MYSQL_ROW) my_memdup((char *)SQLSTAT_values,
++    stmt->array= (MYSQL_ROW) my_memdup(key_memory_max_alloca, (char *)SQLSTAT_values,
+                                        sizeof(SQLSTAT_values),MYF(0));
+     if (!stmt->array)
+     {
+@@ -2415,10 +2415,10 @@
+         pthread_mutex_lock(&stmt->dbc->lock);
+         {
+           char buff[32 + NAME_LEN], *to;
+-          to= strmov(buff, "SHOW DATABASES LIKE '");
++          to= my_stpmov(buff, "SHOW DATABASES LIKE '");
+           to+= mysql_real_escape_string(&stmt->dbc->mysql, to,
+                                         (char *)catalog, catalog_len);
+-          to= strmov(to, "'");
++          to= my_stpmov(to, "'");
+           MYLOG_QUERY(stmt, buff);
+           if (!mysql_query(&stmt->dbc->mysql, buff))
+             stmt->result= mysql_store_result(&stmt->dbc->mysql);
+@@ -2433,7 +2433,7 @@
+         stmt->order         = SQLTABLES_qualifier_order;
+         stmt->order_count   = array_elements(SQLTABLES_qualifier_order);
+         stmt->fix_fields    = fix_fields_copy;
+-        stmt->array= (MYSQL_ROW) my_memdup((char *)SQLTABLES_qualifier_values,
++        stmt->array= (MYSQL_ROW) my_memdup(key_memory_max_alloca, (char *)SQLTABLES_qualifier_values,
+                                            sizeof(SQLTABLES_qualifier_values),
+                                            MYF(0));
+         if (!stmt->array)
+@@ -2531,7 +2531,7 @@
+       }
+ 
+       if (!(stmt->result_array=
+-            (char **)my_malloc((uint)(sizeof(char *) * SQLTABLES_FIELDS *
++            (char **)my_malloc(key_memory_max_alloca, (uint)(sizeof(char *) * SQLTABLES_FIELDS *
+                                       row_count),
+                                MYF(MY_ZEROFILL))))
+       {
+diff -durN a/driver/connect.c b/driver/connect.c
+--- a/driver/connect.c
++++ b/driver/connect.c
+@@ -178,8 +178,7 @@
+   /* Set other connection options */
+ 
+   if (ds->allow_big_results || ds->safe)
+-    /* max_allowed_packet is a magical mysql macro. */
+-    max_allowed_packet= ~0L;
++    mysql_options(mysql, MYSQL_OPT_MAX_ALLOWED_PACKET, ~0L);
+ 
+   if (ds->force_use_of_named_pipes)
+     mysql_options(mysql, MYSQL_OPT_NAMED_PIPE, NullS);
+@@ -357,7 +356,7 @@
+   if (ds->database)
+   {
+     x_free(dbc->database);
+-    dbc->database= my_strdup(ds_get_utf8attr(ds->database, &ds->database8),
++    dbc->database= my_strdup(key_memory_max_alloca, ds_get_utf8attr(ds->database, &ds->database8),
+                              MYF(MY_WME));
+   }
+   
+@@ -733,7 +732,7 @@
+     /* create a string for prompting, and add driver manually */
+     prompt_inlen= ds_to_kvpair_len(ds) + sqlwcharlen(W_DRIVER_PARAM) +
+                   sqlwcharlen(ds->driver) + 1;
+-    prompt_instr= (SQLWCHAR *) my_malloc(prompt_inlen * sizeof(SQLWCHAR),
++    prompt_instr= (SQLWCHAR *) my_malloc(key_memory_max_alloca, prompt_inlen * sizeof(SQLWCHAR),
+                                          MYF(0));
+     if (ds_to_kvpair(ds, prompt_instr, prompt_inlen, ';') == -1)
+     {
+diff -durN a/driver/cursor.c b/driver/cursor.c
+--- a/driver/cursor.c
++++ b/driver/cursor.c
+@@ -232,9 +232,9 @@
+     table= stmt->result->fields->table;
+ 
+   /* Use SHOW KEYS FROM table to check for keys. */
+-  pos= strmov(buff, "SHOW KEYS FROM `");
++  pos= my_stpmov(buff, "SHOW KEYS FROM `");
+   pos+= mysql_real_escape_string(&stmt->dbc->mysql, pos, table, strlen(table));
+-  pos= strmov(pos, "`");
++  pos= my_stpmov(pos, "`");
+ 
+   MYLOG_QUERY(stmt, buff);
+ 
+@@ -269,7 +269,7 @@
+     if (have_field_in_result(row[4], stmt->result))
+     {
+       /* We have a unique key field -- copy it, and increment our count. */
+-      strmov(stmt->cursor.pkcol[stmt->cursor.pk_count++].name, row[4]);
++      my_stpmov(stmt->cursor.pkcol[stmt->cursor.pk_count++].name, row[4]);
+       seq_in_index= seq;
+     }
+     else
+@@ -337,7 +337,7 @@
+ 
+ static void set_dynamic_cursor_name(STMT *stmt)
+ {
+-    stmt->cursor.name= (char*) my_malloc(MYSQL_MAX_CURSOR_LEN,MYF(MY_ZEROFILL));
++    stmt->cursor.name= (char*) my_malloc(key_memory_max_alloca, MYSQL_MAX_CURSOR_LEN,MYF(MY_ZEROFILL));
+     sprintf((char*) stmt->cursor.name,"SQL_CUR%d",stmt->dbc->cursor_count++);
+ }
+ 
+@@ -1484,7 +1484,9 @@
+               We have a limited capacity to shove data across the wire, but
+               we handle this by sending in multiple calls to exec_stmt_query()
+             */
+-            if (ext_query->length + length >= (SQLULEN) net_buffer_length)
++            unsigned long _net_buffer_length;
++            mysql_get_option(&stmt->dbc->mysql, MYSQL_OPT_NET_BUFFER_LENGTH, &_net_buffer_length);
++            if (ext_query->length + length >= (SQLULEN) _net_buffer_length)
+             {
+                 break_insert= TRUE;
+                 break;
+diff -durN a/driver/desc.c b/driver/desc.c
+--- a/driver/desc.c
++++ b/driver/desc.c
+@@ -55,7 +55,7 @@
+ DESC *desc_alloc(STMT *stmt, SQLSMALLINT alloc_type,
+                  desc_ref_type ref_type, desc_desc_type desc_type)
+ {
+-  DESC *desc= (DESC *)my_malloc(sizeof(DESC), MYF(MY_ZEROFILL));
++  DESC *desc= (DESC *)my_malloc(key_memory_max_alloca, sizeof(DESC), MYF(MY_ZEROFILL));
+   if (!desc)
+     return NULL;
+   /*
+@@ -63,13 +63,13 @@
+      but in desc_get_rec we manually get a pointer to it. This avoids
+      having to call set_dynamic after modifying the DESCREC.
+   */
+-  if (my_init_dynamic_array(&desc->records, sizeof(DESCREC), 0, 0))
++  if (my_init_dynamic_array(&desc->records, key_memory_max_alloca, sizeof(DESCREC), NULL, 0, 0))
+   {
+     x_free((char *)desc);
+     return NULL;
+   }
+ 
+-  if (my_init_dynamic_array(&desc->bookmark, sizeof(DESCREC), 0, 0))
++  if (my_init_dynamic_array(&desc->bookmark, key_memory_max_alloca, sizeof(DESCREC), NULL, 0, 0))
+   {
+     delete_dynamic(&desc->records);
+     x_free((char *)desc);
+@@ -995,7 +995,8 @@
+ 
+   /* copy the records */
+   delete_dynamic(&dest->records);
+-  if (my_init_dynamic_array(&dest->records, sizeof(DESCREC),
++  if (my_init_dynamic_array(&dest->records, key_memory_max_alloca,
++                            sizeof(DESCREC), NULL,
+                             src->records.max_element,
+                             src->records.alloc_increment))
+   {
+diff -durN a/driver/dll.c b/driver/dll.c
+--- a/driver/dll.c
++++ b/driver/dll.c
+@@ -75,12 +75,12 @@
+   {
+     struct lconv *tmp;
+     init_getfunctions();
+-    default_locale=my_strdup(setlocale(LC_NUMERIC,NullS),MYF(0));
++    default_locale=my_strdup(key_memory_max_alloca, setlocale(LC_NUMERIC,NullS),MYF(0));
+     setlocale(LC_NUMERIC,"");
+     tmp=localeconv();
+-    decimal_point=my_strdup(tmp->decimal_point,MYF(0));
++    decimal_point=my_strdup(key_memory_max_alloca, tmp->decimal_point,MYF(0));
+     decimal_point_length=strlen(decimal_point);
+-    thousands_sep=my_strdup(tmp->thousands_sep,MYF(0));
++    thousands_sep=my_strdup(key_memory_max_alloca, tmp->thousands_sep,MYF(0));
+     thousands_sep_length=strlen(thousands_sep);
+     setlocale(LC_NUMERIC,default_locale);
+ 
+@@ -104,7 +104,7 @@
+ 
+     /* my_thread_end_wait_time was added in 5.1.14 and 5.0.32 */
+ #if !defined(NONTHREADSAFE) && \
+-    (MYSQL_VERSION_ID >= 50114 || \
++    ((MYSQL_VERSION_ID >= 50114 && MYSQL_VERSION_ID < 50706) || \
+      (MYSQL_VERSION_ID >= 50032 && MYSQL_VERSION_ID < 50100))
+     /*
+        This eliminates the delay when my_end() is called and other threads
+diff -durN a/driver/error.c b/driver/error.c
+--- a/driver/error.c
++++ b/driver/error.c
+@@ -116,13 +116,13 @@
+         myodbc3_errors[i].sqlstate[0]= 'S';
+         myodbc3_errors[i].sqlstate[1]= '1';
+     }
+-    strmov(myodbc3_errors[MYERR_07005].sqlstate,"24000");
+-    strmov(myodbc3_errors[MYERR_42000].sqlstate,"37000");
+-    strmov(myodbc3_errors[MYERR_42S01].sqlstate,"S0001");
+-    strmov(myodbc3_errors[MYERR_42S02].sqlstate,"S0002");
+-    strmov(myodbc3_errors[MYERR_42S12].sqlstate,"S0012");
+-    strmov(myodbc3_errors[MYERR_42S21].sqlstate,"S0021");
+-    strmov(myodbc3_errors[MYERR_42S22].sqlstate,"S0022");
++    my_stpmov(myodbc3_errors[MYERR_07005].sqlstate,"24000");
++    my_stpmov(myodbc3_errors[MYERR_42000].sqlstate,"37000");
++    my_stpmov(myodbc3_errors[MYERR_42S01].sqlstate,"S0001");
++    my_stpmov(myodbc3_errors[MYERR_42S02].sqlstate,"S0002");
++    my_stpmov(myodbc3_errors[MYERR_42S12].sqlstate,"S0012");
++    my_stpmov(myodbc3_errors[MYERR_42S21].sqlstate,"S0021");
++    my_stpmov(myodbc3_errors[MYERR_42S22].sqlstate,"S0022");
+ }
+ 
+ 
+@@ -140,13 +140,13 @@
+         myodbc3_errors[i].sqlstate[0]= 'H';
+         myodbc3_errors[i].sqlstate[1]= 'Y';
+     }
+-    strmov(myodbc3_errors[MYERR_07005].sqlstate,"07005");
+-    strmov(myodbc3_errors[MYERR_42000].sqlstate,"42000");
+-    strmov(myodbc3_errors[MYERR_42S01].sqlstate,"42S01");
+-    strmov(myodbc3_errors[MYERR_42S02].sqlstate,"42S02");
+-    strmov(myodbc3_errors[MYERR_42S12].sqlstate,"42S12");
+-    strmov(myodbc3_errors[MYERR_42S21].sqlstate,"42S21");
+-    strmov(myodbc3_errors[MYERR_42S22].sqlstate,"42S22");
++    my_stpmov(myodbc3_errors[MYERR_07005].sqlstate,"07005");
++    my_stpmov(myodbc3_errors[MYERR_42000].sqlstate,"42000");
++    my_stpmov(myodbc3_errors[MYERR_42S01].sqlstate,"42S01");
++    my_stpmov(myodbc3_errors[MYERR_42S02].sqlstate,"42S02");
++    my_stpmov(myodbc3_errors[MYERR_42S12].sqlstate,"42S12");
++    my_stpmov(myodbc3_errors[MYERR_42S21].sqlstate,"42S21");
++    my_stpmov(myodbc3_errors[MYERR_42S22].sqlstate,"42S22");
+ }
+ 
+ 
+@@ -157,8 +157,8 @@
+ 
+ SQLRETURN copy_stmt_error(STMT *dst,STMT *src)
+ {
+-    strmov(dst->error.sqlstate,src->error.sqlstate);
+-    strmov(dst->error.message, src->error.message);
++    my_stpmov(dst->error.sqlstate,src->error.sqlstate);
++    my_stpmov(dst->error.message, src->error.message);
+     dst->error.native_error= src->error.native_error;
+     dst->error.retcode= src->error.retcode;
+     return(SQL_SUCCESS);
+@@ -174,7 +174,7 @@
+ SQLRETURN set_dbc_error(DBC *dbc, char *state,
+                         const char *message, uint errcode)
+ {
+-    strmov(dbc->error.sqlstate, state);
++    my_stpmov(dbc->error.sqlstate, state);
+     strxmov(dbc->error.message, MYODBC_ERROR_PREFIX, message, NullS);
+     dbc->error.native_error= errcode;
+     return SQL_ERROR;
+@@ -192,7 +192,7 @@
+                           const char *  message,
+                           uint          errcode )
+ {
+-    strmov(stmt->error.sqlstate, state);
++    my_stpmov(stmt->error.sqlstate, state);
+     strxmov(stmt->error.message, stmt->dbc->st_error_prefix, message, NullS);
+     stmt->error.native_error = errcode;
+ 
+@@ -210,7 +210,7 @@
+                          const char *  message,
+                          uint          errcode)
+ {
+-  strmov(desc->error.sqlstate, state);
++  my_stpmov(desc->error.sqlstate, state);
+   strxmov(desc->error.message, desc->stmt->dbc->st_error_prefix,
+           message, NullS);
+   desc->error.native_error = errcode;
+@@ -279,7 +279,7 @@
+             break;
+         default: break;
+     }
+-    strmov(save_state, state);
++    my_stpmov(save_state, state);
+ }
+ 
+ 
+@@ -302,7 +302,7 @@
+ 
+     sqlreturn= error->retcode= myodbc3_errors[errid].retcode;  /* RETCODE */
+     error->native_error= code;                     /* NATIVE */
+-    strmov(error->sqlstate, myodbc3_errors[errid].sqlstate);   /* SQLSTATE */
++    my_stpmov(error->sqlstate, myodbc3_errors[errid].sqlstate);   /* SQLSTATE */
+     strxmov(error->message,prefix,errmsg,NullS);           /* MESSAGE */
+ 
+     return sqlreturn;
+@@ -348,13 +348,13 @@
+ 
+ /*
+   @type    : myodbc3 internal
+-  @purpose : sets a my_malloc() failure on a MYSQL* connection
++  @purpose : sets a my_malloc(key_memory_max_alloca, ) failure on a MYSQL* connection
+ */
+ void set_mem_error(MYSQL *mysql)
+ {
+   mysql->net.last_errno= CR_OUT_OF_MEMORY;
+-  strmov(mysql->net.last_error, "Memory allocation failed");
+-  strmov(mysql->net.sqlstate, "HY001");
++  my_stpmov(mysql->net.last_error, "Memory allocation failed");
++  my_stpmov(mysql->net.sqlstate, "HY001");
+ }
+ 
+ 
+diff -durN a/driver/execute.c b/driver/execute.c
+--- a/driver/execute.c
++++ b/driver/execute.c
+@@ -324,7 +324,7 @@
+ 
+     if (finalquery!=NULL)
+     {
+-      if ( !(to= (char*) my_memdup((char*) net->buff,
++      if ( !(to= (char*) my_memdup(key_memory_max_alloca, (char*) net->buff,
+         (uint) (to - (char*) net->buff),MYF(0))) )
+       {
+         goto memerror;
+@@ -398,12 +398,12 @@
+        a separate data structure. and free right after use */
+   if (bind->buffer == NULL)
+   {
+-    bind->buffer= my_malloc(length, MYF(0));
++    bind->buffer= my_malloc(key_memory_max_alloca, length, MYF(0));
+     bind->buffer_length= length;
+   }
+   else if(bind->buffer_length < length)
+   {
+-    bind->buffer= my_realloc(bind->buffer, length, MYF(0));
++    bind->buffer= my_realloc(key_memory_max_alloca, bind->buffer, length, MYF(0));
+     bind->buffer_length= length;
+   }
+ 
+diff -durN a/driver/handle.c b/driver/handle.c
+--- a/driver/handle.c
++++ b/driver/handle.c
+@@ -80,7 +80,7 @@
+         }
+     }
+ #else
+-    if (!(*phenv= (SQLHENV) my_malloc(sizeof(ENV),MYF(MY_ZEROFILL))))
++    if (!(*phenv= (SQLHENV) my_malloc(key_memory_max_alloca, sizeof(ENV),MYF(MY_ZEROFILL))))
+     {
+         *phenv= SQL_NULL_HENV;
+         return SQL_ERROR;
+@@ -185,7 +185,7 @@
+     }
+     else
+     {
+-      thread_count= my_malloc(sizeof(long), MYF(0));
++      thread_count= my_malloc(key_memory_max_alloca, sizeof(long), MYF(0));
+       (*thread_count)= 1;
+       pthread_setspecific(myodbc_thread_counter_key, thread_count);
+ 
+@@ -224,7 +224,7 @@
+         }
+     }
+ #else
+-    if (!(*phdbc= (SQLHDBC) my_malloc(sizeof(DBC),MYF(MY_ZEROFILL))))
++    if (!(*phdbc= (SQLHDBC) my_malloc(key_memory_max_alloca, sizeof(DBC),MYF(MY_ZEROFILL))))
+     {
+         *phdbc= SQL_NULL_HDBC;
+         return(set_env_error(henv,MYERR_S1001,NULL,0));
+@@ -395,7 +395,7 @@
+ {
+   if (*param_bind == NULL)
+   {
+-    *param_bind= my_malloc(sizeof(DYNAMIC_ARRAY), MYF(0));
++    *param_bind= my_malloc(key_memory_max_alloca, sizeof(DYNAMIC_ARRAY), MYF(0));
+ 
+     if (*param_bind == NULL)
+     {
+@@ -403,13 +403,48 @@
+     }
+   }
+ 
+-  my_init_dynamic_array(*param_bind, sizeof(MYSQL_BIND), elements, 10);
++  my_init_dynamic_array(*param_bind, key_memory_max_alloca, sizeof(MYSQL_BIND), NULL, elements, 10);
+   memset((*param_bind)->buffer, 0, sizeof(MYSQL_BIND) *
+ 											(*param_bind)->max_element);
+ 
+   return FALSE;
+ }
+ 
++my_bool allocate_dynamic(DYNAMIC_ARRAY *array, uint max_elements)
++{
++  if (max_elements >= array->max_element)
++  {
++    uint size;
++    uchar *new_ptr;
++    size= (max_elements + array->alloc_increment)/array->alloc_increment;
++    size*= array->alloc_increment;
++    if (array->buffer == (uchar *)(array + 1))
++    {
++       /*
++         In this senerio, the buffer is statically preallocated,
++         so we have to create an all-new malloc since we overflowed
++       */
++       if (!(new_ptr= (uchar *) my_malloc(key_memory_max_alloca,
++                                         size *
++                                         array->size_of_element,
++                                         MYF(MY_WME))))
++         return 0;
++       memcpy(new_ptr, array->buffer, 
++              array->elements * array->size_of_element);
++     }
++     else
++
++
++    if (!(new_ptr= (uchar*) my_realloc(key_memory_max_alloca,
++                                       array->buffer,size*
++                                       array->size_of_element,
++                                       MYF(MY_WME | MY_ALLOW_ZERO_PTR))))
++      return TRUE;
++    array->buffer= new_ptr;
++    array->max_element= size;
++  }
++  return FALSE;
++}
+ 
+ int adjust_param_bind_array(STMT *stmt)
+ {
+@@ -475,7 +510,7 @@
+     GlobalFree(hstmt);
+   }
+ #else
+-  *phstmt= (SQLHSTMT) my_malloc(sizeof (STMT), MYF(MY_ZEROFILL | MY_WME));
++  *phstmt= (SQLHSTMT) my_malloc(key_memory_max_alloca, sizeof (STMT), MYF(MY_ZEROFILL | MY_WME));
+ #endif /* IS UNIX */
+   if (*phstmt == SQL_NULL_HSTMT)
+     goto error;
+@@ -490,7 +525,7 @@
+   stmt->stmt_options= dbc->stmt_options;
+   stmt->state= ST_UNKNOWN;
+   stmt->dummy_state= ST_DUMMY_UNKNOWN;
+-  strmov(stmt->error.sqlstate, "00000");
++  my_stpmov(stmt->error.sqlstate, "00000");
+   init_parsed_query(&stmt->query);
+   init_parsed_query(&stmt->orig_query);
+ 
+@@ -764,7 +799,7 @@
+   desc->exp.dbc= dbc;
+ 
+   /* add to this connection's list of explicit descriptors */
+-  e= (LIST *) my_malloc(sizeof(LIST), MYF(0));
++  e= (LIST *) my_malloc(key_memory_max_alloca, sizeof(LIST), MYF(0));
+   e->data= desc;
+   pthread_mutex_lock(&dbc->lock);
+   dbc->exp_desc= list_add(dbc->exp_desc, e);
+diff -durN a/driver/info.c b/driver/info.c
+--- a/driver/info.c
++++ b/driver/info.c
+@@ -71,6 +71,9 @@
+   SQLSMALLINT dummy;
+   SQLINTEGER dummy_value;
+ 
++  unsigned long _net_buffer_length;
++  mysql_get_option(&dbc->mysql, MYSQL_OPT_NET_BUFFER_LENGTH, &_net_buffer_length);
++
+   if (!value_len)
+     value_len= &dummy;
+   if (!num_info)
+@@ -562,7 +565,7 @@
+     MYINFO_SET_USHORT(0);
+ 
+   case SQL_MAX_STATEMENT_LEN:
+-    MYINFO_SET_ULONG(net_buffer_length);
++    MYINFO_SET_ULONG(_net_buffer_length);
+ 
+   case SQL_MAX_TABLE_NAME_LEN:
+     MYINFO_SET_USHORT(NAME_LEN);
+@@ -1022,9 +1025,9 @@
+   }
+ 
+   /* Set up result Data dictionary. */
+-  stmt->result= (MYSQL_RES *)my_malloc(sizeof(MYSQL_RES), MYF(MY_ZEROFILL));
++  stmt->result= (MYSQL_RES *)my_malloc(key_memory_max_alloca, sizeof(MYSQL_RES), MYF(MY_ZEROFILL));
+   stmt->fake_result= 1;
+-  stmt->result_array= (char **)my_malloc(sizeof(SQL_GET_TYPE_INFO_values),
++  stmt->result_array= (char **)my_malloc(key_memory_max_alloca, sizeof(SQL_GET_TYPE_INFO_values),
+                                          MYF(MY_FAE | MY_ZEROFILL));
+ 
+   if (fSqlType == SQL_ALL_TYPES)
+diff -durN a/driver/my_prepared_stmt.c b/driver/my_prepared_stmt.c
+--- a/driver/my_prepared_stmt.c
++++ b/driver/my_prepared_stmt.c
+@@ -453,7 +453,7 @@
+ 
+   if (result.size > 0)
+   {
+-    result.buffer= my_malloc(result.size, MYF(0));
++    result.buffer= my_malloc(key_memory_max_alloca, result.size, MYF(0));
+   }
+ 
+   return result;
+@@ -486,7 +486,7 @@
+         if (stmt->lengths[i] < *stmt->result_bind[i].length)
+         {
+           /* TODO Realloc error proc */
+-          stmt->array[i]= my_realloc(stmt->array[i], *stmt->result_bind[i].length,
++          stmt->array[i]= my_realloc(key_memory_max_alloca, stmt->array[i], *stmt->result_bind[i].length,
+             MYF(MY_ALLOW_ZERO_PTR));
+           stmt->lengths[i]= *stmt->result_bind[i].length;
+         }
+@@ -542,17 +542,17 @@
+   }
+   else
+   {
+-    my_bool       *is_null= my_malloc(sizeof(my_bool)*num_fields,
++    my_bool       *is_null= my_malloc(key_memory_max_alloca, sizeof(my_bool)*num_fields,
+                                       MYF(MY_ZEROFILL));
+-    my_bool       *err=     my_malloc(sizeof(my_bool)*num_fields,
++    my_bool       *err=     my_malloc(key_memory_max_alloca, sizeof(my_bool)*num_fields,
+                                       MYF(MY_ZEROFILL));
+-    unsigned long *len=     my_malloc(sizeof(unsigned long)*num_fields,
++    unsigned long *len=     my_malloc(key_memory_max_alloca, sizeof(unsigned long)*num_fields,
+                                       MYF(MY_ZEROFILL));
+ 
+     /*TODO care about memory allocation errors */
+-    stmt->result_bind=  (MYSQL_BIND*)my_malloc(sizeof(MYSQL_BIND)*num_fields,
++    stmt->result_bind=  (MYSQL_BIND*)my_malloc(key_memory_max_alloca, sizeof(MYSQL_BIND)*num_fields,
+                                               MYF(MY_ZEROFILL));
+-    stmt->array=        (MYSQL_ROW)my_malloc(sizeof(char*)*num_fields,
++    stmt->array=        (MYSQL_ROW)my_malloc(key_memory_max_alloca, sizeof(char*)*num_fields,
+                                               MYF(MY_ZEROFILL));
+ 
+     for (i= 0; i < num_fields; ++i)
+@@ -581,7 +581,7 @@
+         /* Need to alloc it only once*/
+         if (stmt->lengths == NULL)
+         {
+-          stmt->lengths= my_malloc(sizeof(unsigned long)*num_fields, MYF(MY_ZEROFILL));
++          stmt->lengths= my_malloc(key_memory_max_alloca, sizeof(unsigned long)*num_fields, MYF(MY_ZEROFILL));
+         }
+         /* Buffer of initial length? */
+       }
+@@ -623,7 +623,7 @@
+ 
+ /* --------------- Type conversion functions -------------- */
+ 
+-#define ALLOC_IFNULL(buff,size) ((buff)==NULL?(char*)my_malloc(size,MYF(0)):buff)
++#define ALLOC_IFNULL(buff,size) ((buff)==NULL?(char*)my_malloc(key_memory_max_alloca, size,MYF(0)):buff)
+ 
+ /* {{{ ssps_get_string() -I- */
+ /* caller should care to make buffer long enough,
+diff -durN a/driver/my_stmt.c b/driver/my_stmt.c
+--- a/driver/my_stmt.c
++++ b/driver/my_stmt.c
+@@ -444,7 +444,7 @@
+   {
+     /* Append to old value */
+     assert(aprec->par.alloced);
+-    if ( !(aprec->par.value= my_realloc(aprec->par.value,
++    if ( !(aprec->par.value= my_realloc(key_memory_max_alloca, aprec->par.value,
+                                         aprec->par.value_length + length + 1,
+                                         MYF(0))) )
+     {
+@@ -459,7 +459,7 @@
+   else
+   {
+     /* New value */
+-    if ( !(aprec->par.value= my_malloc(length+1,MYF(0))) )
++    if ( !(aprec->par.value= my_malloc(key_memory_max_alloca, length+1,MYF(0))) )
+     {
+       return set_error(stmt,MYERR_S1001,NULL,4001);
+     }
+@@ -588,7 +588,7 @@
+ 
+   /*extend_buffer(&stmt->dbc->mysql.net, stmt->query_end, len2add);*/
+   stmt->scroller.query_len= query_len + len2add - (limit.end - limit.begin);
+-  stmt->scroller.query= (char*)my_malloc((size_t)stmt->scroller.query_len + 1,
++  stmt->scroller.query= (char*)my_malloc(key_memory_max_alloca, (size_t)stmt->scroller.query_len + 1,
+                                           MYF(MY_ZEROFILL));
+ 
+   memcpy(stmt->scroller.query, query, limit.begin - query);
+diff -durN a/driver/options.c b/driver/options.c
+--- a/driver/options.c
++++ b/driver/options.c
+@@ -327,7 +327,7 @@
+           }
+         }
+         x_free(dbc->database);
+-        dbc->database= my_strdup(db,MYF(MY_WME));
++        dbc->database= my_strdup(key_memory_max_alloca, db,MYF(MY_WME));
+         pthread_mutex_unlock(&dbc->lock);
+       }
+       break;
+@@ -661,7 +661,7 @@
+               else if (desc->alloc_type == SQL_DESC_ALLOC_USER)
+               {
+                 /* otherwise, associate this statement with the desc */
+-                LIST *e= (LIST *) my_malloc(sizeof(LIST), MYF(0));
++                LIST *e= (LIST *) my_malloc(key_memory_max_alloca, sizeof(LIST), MYF(0));
+                 e->data= stmt;
+                 /* No need to lock */
+                 desc->exp.stmts= list_add(desc->exp.stmts, e);
+diff -durN a/driver/parse.c b/driver/parse.c
+--- a/driver/parse.c
++++ b/driver/parse.c
+@@ -129,8 +129,8 @@
+ 
+     /* TODO: Store offsets rather than ptrs. In this case we will be fine
+        if work with copy of the originally parsed string */
+-    my_init_dynamic_array(&pq->token,     sizeof(uint), 20, 10);
+-    my_init_dynamic_array(&pq->param_pos, sizeof(uint), 10, 10);
++    my_init_dynamic_array(&pq->token, key_memory_max_alloca,     sizeof(uint), NULL, 20, 10);
++    my_init_dynamic_array(&pq->param_pos, key_memory_max_alloca, sizeof(uint), NULL, 10, 10);
+   }
+ 
+   return pq;
+@@ -184,7 +184,7 @@
+ 
+ int copy_parsed_query(MY_PARSED_QUERY* src, MY_PARSED_QUERY *target)
+ {
+-  char * dummy= my_strdup(GET_QUERY(src), MYF(0));
++  char * dummy= my_strdup(key_memory_max_alloca, GET_QUERY(src), MYF(0));
+ 
+   if (dummy == NULL)
+   {
+@@ -539,6 +539,22 @@
+   return !END_NOT_REACHED(parser);
+ }
+ 
++my_bool insert_dynamic(DYNAMIC_ARRAY *array, const void *element)
++{
++  uchar* buffer;
++  if (array->elements == array->max_element)
++  {						/* Call only when nessesary */
++    if (!(buffer=alloc_dynamic(array)))
++      return TRUE;
++  }
++  else
++  {
++    buffer=array->buffer+(array->elements * array->size_of_element);
++    array->elements++;
++  }
++  memcpy(buffer,element,(size_t) array->size_of_element);
++  return FALSE;
++}
+ 
+ my_bool add_token(MY_PARSER *parser)
+ {
+@@ -854,6 +870,13 @@
+   return FALSE;
+ }
+ 
++void delete_dynamic_element(DYNAMIC_ARRAY *array, uint idx)
++{
++  char *ptr= (char*) array->buffer+array->size_of_element*idx;
++  array->elements--;
++  memmove(ptr,ptr+array->size_of_element,
++          (array->elements-idx)*array->size_of_element);
++}
+ 
+ /* Removes qurly braces off embraced query. Query has to be parsed
+    Returns TRUE if braces were removed */
+diff -durN a/driver/results.c b/driver/results.c
+--- a/driver/results.c
++++ b/driver/results.c
+@@ -1084,7 +1084,7 @@
+ 
+   if (stmt->dbc->ds->return_table_names_for_SqlDescribeCol && irrec->table_name)
+   {
+-    char *tmp= my_malloc(strlen((char *)irrec->name) +
++    char *tmp= my_malloc(key_memory_max_alloca, strlen((char *)irrec->name) +
+                          strlen((char *)irrec->table_name) + 2,
+                          MYF(0));
+     if (!tmp)
+diff -durN a/driver/utility.c b/driver/utility.c
+--- a/driver/utility.c
++++ b/driver/utility.c
+@@ -337,10 +337,10 @@
+ {
+     char *to;
+     if ( !from )
+-        return my_strdup("",MYF(MY_WME));
++        return my_strdup(key_memory_max_alloca, "",MYF(MY_WME));
+     if ( length == SQL_NTS )
+         length= strlen(from);
+-    if ( (to= my_malloc(length+1,MYF(MY_WME))) )
++    if ( (to= my_malloc(key_memory_max_alloca, length+1,MYF(MY_WME))) )
+     {
+         memcpy(to,from,length);
+         to[length]= 0;
+@@ -1002,7 +1002,7 @@
+   switch (field->type) {
+   case MYSQL_TYPE_BIT:
+     if (buff)
+-      (void)strmov(buff, "bit");
++      (void)my_stpmov(buff, "bit");
+     /*
+       MySQL's BIT type can have more than one bit, in which case we treat
+       it as a BINARY field.
+@@ -1012,43 +1012,43 @@
+   case MYSQL_TYPE_DECIMAL:
+   case MYSQL_TYPE_NEWDECIMAL:
+     if (buff)
+-      (void)strmov(buff, "decimal");
++      (void)my_stpmov(buff, "decimal");
+     return SQL_DECIMAL;
+ 
+   case MYSQL_TYPE_TINY:
+     /* MYSQL_TYPE_TINY could either be a TINYINT or a single CHAR. */
+     if (buff)
+     {
+-      buff= strmov(buff, (field->flags & NUM_FLAG) ? "tinyint" : "char");
++      buff= my_stpmov(buff, (field->flags & NUM_FLAG) ? "tinyint" : "char");
+       if (field->flags & UNSIGNED_FLAG)
+-        (void)strmov(buff, " unsigned");
++        (void)my_stpmov(buff, " unsigned");
+     }
+     return (field->flags & NUM_FLAG) ? SQL_TINYINT : SQL_CHAR;
+ 
+   case MYSQL_TYPE_SHORT:
+     if (buff)
+     {
+-      buff= strmov(buff, "smallint");
++      buff= my_stpmov(buff, "smallint");
+       if (field->flags & UNSIGNED_FLAG)
+-        (void)strmov(buff, " unsigned");
++        (void)my_stpmov(buff, " unsigned");
+     }
+     return SQL_SMALLINT;
+ 
+   case MYSQL_TYPE_INT24:
+     if (buff)
+     {
+-      buff= strmov(buff, "mediumint");
++      buff= my_stpmov(buff, "mediumint");
+       if (field->flags & UNSIGNED_FLAG)
+-        (void)strmov(buff, " unsigned");
++        (void)my_stpmov(buff, " unsigned");
+     }
+     return SQL_INTEGER;
+ 
+   case MYSQL_TYPE_LONG:
+     if (buff)
+     {
+-      buff= strmov(buff, "integer");
++      buff= my_stpmov(buff, "integer");
+       if (field->flags & UNSIGNED_FLAG)
+-        (void)strmov(buff, " unsigned");
++        (void)my_stpmov(buff, " unsigned");
+     }
+     return SQL_INTEGER;
+ 
+@@ -1056,12 +1056,12 @@
+     if (buff)
+     {
+       if (stmt->dbc->ds->change_bigint_columns_to_int)
+-        buff= strmov(buff, "int");
++        buff= my_stpmov(buff, "int");
+       else
+-        buff= strmov(buff, "bigint");
++        buff= my_stpmov(buff, "bigint");
+       
+       if (field->flags & UNSIGNED_FLAG)
+-        (void)strmov(buff, " unsigned");
++        (void)my_stpmov(buff, " unsigned");
+     }
+ 
+     if (stmt->dbc->ds->change_bigint_columns_to_int)
+@@ -1072,41 +1072,41 @@
+   case MYSQL_TYPE_FLOAT:
+     if (buff)
+     {
+-      buff= strmov(buff, "float");
++      buff= my_stpmov(buff, "float");
+       if (field->flags & UNSIGNED_FLAG)
+-        (void)strmov(buff, " unsigned");
++        (void)my_stpmov(buff, " unsigned");
+     }
+     return SQL_REAL;
+ 
+   case MYSQL_TYPE_DOUBLE:
+     if (buff)
+     {
+-      buff= strmov(buff, "double");
++      buff= my_stpmov(buff, "double");
+       if (field->flags & UNSIGNED_FLAG)
+-        (void)strmov(buff, " unsigned");
++        (void)my_stpmov(buff, " unsigned");
+     }
+     return SQL_DOUBLE;
+ 
+   case MYSQL_TYPE_NULL:
+     if (buff)
+-      (void)strmov(buff, "null");
++      (void)my_stpmov(buff, "null");
+     return SQL_VARCHAR;
+ 
+   case MYSQL_TYPE_YEAR:
+     if (buff)
+-      (void)strmov(buff, "year");
++      (void)my_stpmov(buff, "year");
+     return SQL_SMALLINT;
+ 
+   case MYSQL_TYPE_TIMESTAMP:
+     if (buff)
+-      (void)strmov(buff, "timestamp");
++      (void)my_stpmov(buff, "timestamp");
+     if (stmt->dbc->env->odbc_ver == SQL_OV_ODBC3)
+       return SQL_TYPE_TIMESTAMP;
+     return SQL_TIMESTAMP;
+ 
+   case MYSQL_TYPE_DATETIME:
+     if (buff)
+-      (void)strmov(buff, "datetime");
++      (void)my_stpmov(buff, "datetime");
+     if (stmt->dbc->env->odbc_ver == SQL_OV_ODBC3)
+       return SQL_TYPE_TIMESTAMP;
+     return SQL_TIMESTAMP;
+@@ -1114,21 +1114,21 @@
+   case MYSQL_TYPE_NEWDATE:
+   case MYSQL_TYPE_DATE:
+     if (buff)
+-      (void)strmov(buff, "date");
++      (void)my_stpmov(buff, "date");
+     if (stmt->dbc->env->odbc_ver == SQL_OV_ODBC3)
+       return SQL_TYPE_DATE;
+     return SQL_DATE;
+ 
+   case MYSQL_TYPE_TIME:
+     if (buff)
+-      (void)strmov(buff, "time");
++      (void)my_stpmov(buff, "time");
+     if (stmt->dbc->env->odbc_ver == SQL_OV_ODBC3)
+       return SQL_TYPE_TIME;
+     return SQL_TIME;
+ 
+   case MYSQL_TYPE_STRING:
+     if (buff)
+-      (void)strmov(buff, field_is_binary ? "binary" : "char");
++      (void)my_stpmov(buff, field_is_binary ? "binary" : "char");
+ 
+     return field_is_binary ? SQL_BINARY :
+       (stmt->dbc->unicode && field->charsetnr != stmt->dbc->ansi_charset_info->number ?
+@@ -1141,7 +1141,7 @@
+   case MYSQL_TYPE_VARCHAR:
+   case MYSQL_TYPE_VAR_STRING:
+     if (buff)
+-      (void)strmov(buff, field_is_binary ? "varbinary" : "varchar");
++      (void)my_stpmov(buff, field_is_binary ? "varbinary" : "varchar");
+ 
+     return field_is_binary ? SQL_VARBINARY :
+       (stmt->dbc->unicode && field->charsetnr != stmt->dbc->ansi_charset_info->number ?
+@@ -1149,7 +1149,7 @@
+ 
+   case MYSQL_TYPE_TINY_BLOB:
+     if (buff)
+-      (void)strmov(buff, field_is_binary ? "tinyblob" : "tinytext");
++      (void)my_stpmov(buff, field_is_binary ? "tinyblob" : "tinytext");
+ 
+     return field_is_binary ? SQL_LONGVARBINARY :
+       (stmt->dbc->unicode && field->charsetnr != stmt->dbc->ansi_charset_info->number ?
+@@ -1157,7 +1157,7 @@
+ 
+   case MYSQL_TYPE_BLOB:
+     if (buff)
+-      (void)strmov(buff, field_is_binary ? "blob" : "text");
++      (void)my_stpmov(buff, field_is_binary ? "blob" : "text");
+ 
+     return field_is_binary ? SQL_LONGVARBINARY :
+       (stmt->dbc->unicode && field->charsetnr != stmt->dbc->ansi_charset_info->number ?
+@@ -1165,7 +1165,7 @@
+ 
+   case MYSQL_TYPE_MEDIUM_BLOB:
+     if (buff)
+-      (void)strmov(buff, field_is_binary ? "mediumblob" : "mediumtext");
++      (void)my_stpmov(buff, field_is_binary ? "mediumblob" : "mediumtext");
+ 
+     return field_is_binary ? SQL_LONGVARBINARY :
+       (stmt->dbc->unicode && field->charsetnr != stmt->dbc->ansi_charset_info->number ?
+@@ -1173,7 +1173,7 @@
+ 
+   case MYSQL_TYPE_LONG_BLOB:
+     if (buff)
+-      (void)strmov(buff, field_is_binary ? "longblob" : "longtext");
++      (void)my_stpmov(buff, field_is_binary ? "longblob" : "longtext");
+ 
+     return field_is_binary ? SQL_LONGVARBINARY :
+       (stmt->dbc->unicode && field->charsetnr != stmt->dbc->ansi_charset_info->number ?
+@@ -1181,17 +1181,17 @@
+ 
+   case MYSQL_TYPE_ENUM:
+     if (buff)
+-      (void)strmov(buff, "enum");
++      (void)my_stpmov(buff, "enum");
+     return SQL_CHAR;
+ 
+   case MYSQL_TYPE_SET:
+     if (buff)
+-      (void)strmov(buff, "set");
++      (void)my_stpmov(buff, "set");
+     return SQL_CHAR;
+ 
+   case MYSQL_TYPE_GEOMETRY:
+     if (buff)
+-      (void)strmov(buff, "geometry");
++      (void)my_stpmov(buff, "geometry");
+     return SQL_LONGVARBINARY;
+   }
+ 
+@@ -2299,7 +2299,7 @@
+             {
+                 if ( row[0] )
+                 {
+-                    dbc->database = my_strdup(row[0], MYF(MY_WME));
++                    dbc->database = my_strdup(key_memory_max_alloca, row[0], MYF(MY_WME));
+                 }
+                 else
+                 {
+@@ -2408,8 +2408,8 @@
+         fprintf(query_log,"--\n");
+         fprintf(query_log,"--  Driver name: %s  Version: %s\n",DRIVER_NAME,
+                 DRIVER_VERSION);
+-#ifdef HAVE_LOCALTIME_R
+         {
++#ifdef HAVE_LOCALTIME_R
+             time_t now= time(NULL);
+             struct tm start;
+             localtime_r(&now,&start);
+@@ -3899,9 +3899,9 @@
+ 
+   if (var)
+   {
+-    to= strmov(buff, "SHOW SESSION VARIABLES LIKE '");
+-    to= strmov(to, var);
+-    to= strmov(to, "'");
++    to= my_stpmov(buff, "SHOW SESSION VARIABLES LIKE '");
++    to= my_stpmov(to, var);
++    to= my_stpmov(to, "'");
+     *to= '\0';
+ 
+     if (!SQL_SUCCEEDED(odbc_stmt(stmt->dbc, buff)))
+@@ -3973,7 +3973,7 @@
+     net_read_packet() may actually read 4 bytes depending on build flags and
+     platform.
+   */
+-  if (!(buff= (uchar*) my_realloc((char*) net->buff, pkt_length +
++  if (!(buff= (uchar*) my_realloc(key_memory_max_alloca, (char*) net->buff, pkt_length +
+                                   NET_HEADER_SIZE + COMP_HEADER_SIZE + 1,
+                                   MYF(MY_WME))))
+   {
+diff -durN a/installer/CMakeLists.txt b/installer/CMakeLists.txt
+--- a/installer/CMakeLists.txt
++++ b/installer/CMakeLists.txt
+@@ -53,9 +53,9 @@
+ ELSE(WIN32)
+   SET(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} ${ODBC_LINK_FLAGS}")
+   TARGET_LINK_LIBRARIES(myodbc-installer myodbc-util  
+-      ${ODBC_LINK_FLAGS} ${MYSQL_CLIENT_LIBS} ${CMAKE_THREAD_LIBS_INIT} m)
++      ${ODBC_LINK_FLAGS} ${MYSQL_CLIENT_LIBS} ${CMAKE_THREAD_LIBS_INIT} m ${MYSQL_LINK_FLAGS})
+   SET_TARGET_PROPERTIES(myodbc-installer PROPERTIES 
+         LINK_FLAGS "${MYSQLODBCCONN_LINK_FLAGS_ENV} ${MYSQL_LINK_FLAGS}")
+ ENDIF(WIN32)
+ 
+ IF(MYSQL_CXX_LINKAGE)
+diff -durN a/MYODBC_MYSQL.h b/MYODBC_MYSQL.h
+--- a/MYODBC_MYSQL.h
++++ b/MYODBC_MYSQL.h
+@@ -32,19 +32,35 @@
+ #include <my_list.h>
+ #include <m_string.h>
+ #include <mysqld_error.h>
++#include "odbc_const.h"
+ 
+ #ifdef __cplusplus
+ extern "C"
+ {
+ #endif
+ 
++extern my_bool allocate_dynamic(DYNAMIC_ARRAY *array, uint max_elements);
++extern void delete_dynamic_element(DYNAMIC_ARRAY *array, uint array_index);
++extern my_bool insert_dynamic(DYNAMIC_ARRAY *array, const void *element);
++
++#define push_dynamic(A,B) insert_dynamic((A),(B))
++
++#if defined(_lint) || defined(FORCE_INIT_OF_VARS) || \
++    (defined(__GNUC__) && defined(__cplusplus))
++#define LINT_INIT(var) var= 0
++#else
++#define LINT_INIT(var)
++#endif
++
++#define sort_dynamic(A,cmp) my_qsort((A)->buffer, (A)->elements, (A)->size_of_element, (cmp))
++
+ #define MIN_MYSQL_VERSION 40100L
+ #if MYSQL_VERSION_ID < MIN_MYSQL_VERSION
+ # error "Connector/ODBC requires v4.1 (or later) of the MySQL client library"
+ #endif
+ 
+ #ifdef THREAD
+-#include <my_pthread.h>
++#include <my_thread.h>
+ #else
+ # ifdef pthread_mutex_lock
+ #  undef pthread_mutex_lock
+diff -durN a/setupgui/callbacks.c b/setupgui/callbacks.c
+--- a/setupgui/callbacks.c
++++ b/setupgui/callbacks.c
+@@ -61,7 +61,7 @@
+     SQLSMALLINT len;
+     SQLWCHAR *ptr;
+ 
+-    msg= (SQLWCHAR *) my_malloc(512 * sizeof(SQLWCHAR), MYF(0));
++    msg= (SQLWCHAR *) my_malloc(key_memory_max_alloca, 512 * sizeof(SQLWCHAR), MYF(0));
+     *msg= 0;
+ 
+     sqlwcharncpy(msg, _W(L"Connection Failed\n"), SQL_NTS);
+diff -durN a/setupgui/ConfigDSN.c b/setupgui/ConfigDSN.c
+--- a/setupgui/ConfigDSN.c
++++ b/setupgui/ConfigDSN.c
+@@ -192,9 +192,9 @@
+   size_t lenAttrib = strlen(pszAttributesA);
+ 
+   /* We will assume using one-byte Latin string as a subset of UTF-8 */
+-  SQLWCHAR *pszDriverW= (SQLWCHAR *) my_malloc((lenDriver + 1) * 
++  SQLWCHAR *pszDriverW= (SQLWCHAR *) my_malloc(key_memory_max_alloca, (lenDriver + 1) * 
+                                                 sizeof(SQLWCHAR), MYF(0));
+-  SQLWCHAR *pszAttributesW= (SQLWCHAR *)my_malloc((lenAttrib + 1) * 
++  SQLWCHAR *pszAttributesW= (SQLWCHAR *)my_malloc(key_memory_max_alloca, (lenAttrib + 1) * 
+                                                   sizeof(SQLWCHAR), MYF(0));
+ 
+   utf8_as_sqlwchar(pszDriverW, lenDriver, (SQLCHAR* )pszDriverA, lenDriver);
+diff -durN a/setupgui/gtk/odbcdialogparams.c b/setupgui/gtk/odbcdialogparams.c
+--- a/setupgui/gtk/odbcdialogparams.c
++++ b/setupgui/gtk/odbcdialogparams.c
+@@ -358,7 +358,7 @@
+ 
+   if(len>0)
+   {
+-    *param= (SQLWCHAR *) my_malloc((len + 1) * sizeof (SQLWCHAR), MYF (0));
++    *param= (SQLWCHAR *) my_malloc(key_memory_max_alloca, (len + 1) * sizeof (SQLWCHAR), MYF (0));
+     if(*param)
+     {
+     const gchar *entry_text= gtk_entry_get_text(widget);
+@@ -415,7 +415,7 @@
+ 
+   if(len>0)
+   {
+-    *param= (SQLWCHAR *) my_malloc((len + 1) * sizeof (SQLWCHAR), MYF (0));
++    *param= (SQLWCHAR *) my_malloc(key_memory_max_alloca, (len + 1) * sizeof (SQLWCHAR), MYF (0));
+     if(*param)
+     {
+       const gchar *entry_text= gtk_entry_get_text(entry);
+@@ -501,7 +501,7 @@
+ 
+       msglen= 50 + (driver->lib8?strlen(driver->lib8):0) +
+                   (params->name8?strlen(params->name8):0);
+-      msg= (char*)my_malloc(msglen, MYF(0));
++      msg= (char*)my_malloc(key_memory_max_alloca, msglen, MYF(0));
+       snprintf(msg, msglen, "Failure to lookup driver entry at path '%s'('%s')",
+                driver->lib8, params->name8);
+ 
+diff -durN a/test/CMakeLists.txt b/test/CMakeLists.txt
+--- a/test/CMakeLists.txt
++++ b/test/CMakeLists.txt
+@@ -71,7 +71,7 @@
+   IF(WIN32)
+     TARGET_LINK_LIBRARIES(${T} ${ODBCLIB} ${ODBCINSTLIB})
+   ELSE(WIN32)
+-    TARGET_LINK_LIBRARIES(${T} ${ODBC_LINK_FLAGS} ${ODBCINSTLIB})
++    TARGET_LINK_LIBRARIES(${T} ${ODBC_LINK_FLAGS} ${ODBCINSTLIB} ${MYSQL_LINK_FLAGS})
+   ENDIF(WIN32)
+   ADD_TEST(${T} ${T})
+ 
+@@ -116,7 +116,7 @@
+       ENDIF(WIN32)
+ 
+       # Not quite clear atm whether ${ODBCINSTLIB} is needed
+-      TARGET_LINK_LIBRARIES(${T} myodbc5${CONNECTOR_DRIVER_TYPE_SHORT})
++      TARGET_LINK_LIBRARIES(${T} myodbc5${CONNECTOR_DRIVER_TYPE_SHORT} ${MYSQL_LINK_FLAGS})
+       ADD_TEST(${T} ${T})
+     ENDIF (NOT ${CONNECTOR_DRIVER_TYPE_SHORT} STREQUAL "w")
+ 
+@@ -124,7 +124,7 @@
+ 
+ ENDIF(NOT ${CMAKE_SYSTEM_NAME} MATCHES "Darwin")
+ 
+-TARGET_LINK_LIBRARIES(my_basics ${CMAKE_THREAD_LIBS_INIT})
++TARGET_LINK_LIBRARIES(my_basics ${CMAKE_THREAD_LIBS_INIT} ${MYSQL_LINK_FLAGS})
+ 
+ INSTALL(FILES
+ 	${CMAKE_CURRENT_BINARY_DIR}/CTestTestfile.cmake
+diff -durN a/util/installer.c b/util/installer.c
+--- a/util/installer.c
++++ b/util/installer.c
+@@ -275,17 +275,17 @@
+  */
+ Driver *driver_new()
+ {
+-  Driver *driver= (Driver *)my_malloc(sizeof(Driver), MYF(0));
++  Driver *driver= (Driver *)my_malloc(key_memory_max_alloca, sizeof(Driver), MYF(0));
+   if (!driver)
+     return NULL;
+-  driver->name= (SQLWCHAR *)my_malloc(ODBCDRIVER_STRLEN * sizeof(SQLWCHAR),
++  driver->name= (SQLWCHAR *)my_malloc(key_memory_max_alloca, ODBCDRIVER_STRLEN * sizeof(SQLWCHAR),
+                                       MYF(0));
+   if (!driver->name)
+   {
+     x_free(driver);
+     return NULL;
+   }
+-  driver->lib= (SQLWCHAR *)my_malloc(ODBCDRIVER_STRLEN * sizeof(SQLWCHAR),
++  driver->lib= (SQLWCHAR *)my_malloc(key_memory_max_alloca, ODBCDRIVER_STRLEN * sizeof(SQLWCHAR),
+                                      MYF(0));
+   if (!driver->lib)
+   {
+@@ -293,7 +293,7 @@
+     x_free(driver);
+     return NULL;
+   }
+-  driver->setup_lib= (SQLWCHAR *)my_malloc(ODBCDRIVER_STRLEN *
++  driver->setup_lib= (SQLWCHAR *)my_malloc(key_memory_max_alloca, ODBCDRIVER_STRLEN *
+                                            sizeof(SQLWCHAR), MYF(0));
+   if (!driver->setup_lib)
+   {
+@@ -614,7 +614,7 @@
+  */
+ DataSource *ds_new()
+ {
+-  DataSource *ds= (DataSource *)my_malloc(sizeof(DataSource), MYF(0));
++  DataSource *ds= (DataSource *)my_malloc(key_memory_max_alloca, sizeof(DataSource), MYF(0));
+   if (!ds)
+     return NULL;
+   memset(ds, 0, sizeof(DataSource));
+@@ -1380,7 +1380,7 @@
+ {
+   size_t len= strlen((char *)val8);
+   x_free(*attr);
+-  if (!(*attr= (SQLWCHAR *)my_malloc((len + 1) * sizeof(SQLWCHAR), MYF(0))))
++  if (!(*attr= (SQLWCHAR *)my_malloc(key_memory_max_alloca, (len + 1) * sizeof(SQLWCHAR), MYF(0))))
+     return -1;
+   utf8_as_sqlwchar(*attr, len, val8, len);
+   return 0;
+diff -durN a/util/stringutil.c b/util/stringutil.c
+--- a/util/stringutil.c
++++ b/util/stringutil.c
+@@ -69,7 +69,7 @@
+     uint32 used_bytes, used_chars;
+     size_t u8_max= (*len / charset_info->mbminlen *
+                     utf8_charset_info->mbmaxlen + 1);
+-    SQLCHAR *u8= (SQLCHAR *)my_malloc(u8_max, MYF(0));
++    SQLCHAR *u8= (SQLCHAR *)my_malloc(key_memory_max_alloca, u8_max, MYF(0));
+ 
+     if (!u8)
+     {
+@@ -88,7 +88,7 @@
+ 
+   out_bytes= (*len + 1) * sizeof(SQLWCHAR);
+ 
+-  out= (SQLWCHAR *)my_malloc(out_bytes, MYF(0));
++  out= (SQLWCHAR *)my_malloc(key_memory_max_alloca, out_bytes, MYF(0));
+   if (!out)
+   {
+     *len= -1;
+@@ -167,7 +167,7 @@
+   }
+ 
+   out_bytes= *len * charset_info->mbmaxlen * sizeof(SQLCHAR) + 1;
+-  out= (SQLCHAR *)my_malloc(out_bytes, MYF(0));
++  out= (SQLCHAR *)my_malloc(key_memory_max_alloca, out_bytes, MYF(0));
+   if (!out)
+   {
+     *len= -1;
+@@ -240,7 +240,7 @@
+ 
+   if (buff == NULL || buff_max < (uint)(*len * MAX_BYTES_PER_UTF8_CP))
+   {
+-    u8= (UTF8 *)my_malloc(sizeof(UTF8) * MAX_BYTES_PER_UTF8_CP * *len + 1,
++    u8= (UTF8 *)my_malloc(key_memory_max_alloca, sizeof(UTF8) * MAX_BYTES_PER_UTF8_CP * *len + 1,
+                         MYF(0));
+   }
+   else
+@@ -412,7 +412,7 @@
+     *len= strlen((char *)str);
+ 
+   bytes= (*len / from_charset->mbminlen * to_charset->mbmaxlen);
+-  conv= (SQLCHAR *)my_malloc(bytes + 1, MYF(0));
++  conv= (SQLCHAR *)my_malloc(key_memory_max_alloca, bytes + 1, MYF(0));
+   if (!conv)
+   {
+     *len= -1;
+@@ -642,7 +642,7 @@
+ 
+ 
+ /*
+- * Duplicate a SQLWCHAR string. Memory is allocated with my_malloc()
++ * Duplicate a SQLWCHAR string. Memory is allocated with my_malloc(key_memory_max_alloca, )
+  * and should be freed with my_free() or the x_free() macro.
+  *
+  * @return A pointer to a new string.
+@@ -650,7 +650,7 @@
+ SQLWCHAR *sqlwchardup(const SQLWCHAR *wstr, size_t charlen)
+ {
+   size_t chars= charlen == SQL_NTS ? sqlwcharlen(wstr) : charlen;
+-  SQLWCHAR *res= (SQLWCHAR *)my_malloc((chars + 1) * sizeof(SQLWCHAR), MYF(0));
++  SQLWCHAR *res= (SQLWCHAR *)my_malloc(key_memory_max_alloca, (chars + 1) * sizeof(SQLWCHAR), MYF(0));
+   if (!res)
+     return NULL;
+   memcpy(res, wstr, chars * sizeof(SQLWCHAR));
