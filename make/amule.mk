@@ -22,11 +22,12 @@
 # http://developer.berlios.de/projects/amule/
 
 #AMULE_SITE=http://download.berlios.de/amule
-AMULE_VERSION=2.3.1rc1
+AMULE_VERSION=2.3.1release
+AMULE_VERSION_REAL=2.3.1
 #AMULE_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/amule
-AMULE_SITE=http://$(SOURCEFORGE_MIRROR)/project/amule/aMule/$(AMULE_VERSION)
-AMULE_SOURCE=aMule-$(AMULE_VERSION).tar.bz2
-AMULE_DIR=aMule-$(AMULE_VERSION)
+AMULE_SITE=http://$(SOURCEFORGE_MIRROR)/project/amule/aMule/$(AMULE_VERSION_REAL)
+AMULE_SOURCE=aMule-$(AMULE_VERSION_REAL).tar.bz2
+AMULE_DIR=aMule-$(AMULE_VERSION_REAL)
 AMULE_UNZIP=bzcat
 AMULE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 AMULE_DESCRIPTION=non-gui part of aMule ed2k client (amuled,amulweb,amulecmd) 
