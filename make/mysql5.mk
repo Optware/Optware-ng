@@ -27,25 +27,17 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 
-MYSQL5_VERSION ?= 5.0.88
-#MYSQL5_VERSION=5.1.40
+MYSQL5_VERSION = $(MYSQL_VERSION)
 
-MYSQL5_SITE=http://downloads.mysql.com/archives/mysql-5.0
-#MYSQL5_SITE=http://mysql.llarian.net/Downloads/MySQL-5.0
-#MYSQL5_SITE=http://downloads.mysql.com/archives/mysql-5.1
-
-MYSQL5_SOURCE=mysql-$(MYSQL5_VERSION).tar.gz
+MYSQL5_SOURCE=$(MYSQL_SOURCE)
 MYSQL5_DIR=mysql-$(MYSQL5_VERSION)
 MYSQL5_UNZIP=zcat
 MYSQL5_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
-MYSQL5_DESCRIPTION=Popular free SQL database system
+MYSQL5_DESCRIPTION=Popular free SQL database system. This is a dummy package that install 'mysql' package
 MYSQL5_SECTION=misc
 MYSQL5_PRIORITY=optional
-MYSQL5_DEPENDS=zlib, ncurses, openssl, readline
-ifneq (, $(filter libstdc++, $(PACKAGES)))
-MYSQL5_DEPENDS +=, libstdc++
-endif
-MYSQL5_CONFLICTS=mysql
+MYSQL5_DEPENDS=mysql
+MYSQL5_CONFLICTS=
 
 #
 # MYSQL5_IPK_VERSION should be incremented when the ipk changes.
@@ -54,13 +46,13 @@ MYSQL5_IPK_VERSION=1
 
 #
 # MYSQL5_CONFFILES should be a list of user-editable files
-MYSQL5_CONFFILES=$(TARGET_PREFIX)/etc/my.cnf
+#MYSQL5_CONFFILES=$(TARGET_PREFIX)/etc/my.cnf
 
 #
 # MYSQL5_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-MYSQL5_PATCHES=$(MYSQL5_SOURCE_DIR)/configure-$(MYSQL5_VERSION).patch
+#MYSQL5_PATCHES=$(MYSQL5_SOURCE_DIR)/configure-$(MYSQL5_VERSION).patch
 
 #
 # If the compilation of the package requires additional
@@ -87,16 +79,8 @@ MYSQL5_SOURCE_DIR=$(SOURCE_DIR)/mysql5
 MYSQL5_BUILD_DIR=$(BUILD_DIR)/mysql5
 MYSQL5_HOST_BUILD_DIR=$(HOST_BUILD_DIR)/mysql5
 
-MYSQL5_IPK_DIR=$(BUILD_DIR)/mysql5-$(MYSQL5_VERSION)-ipk
+MYSQL5_IPK_DIR=$(BUILD_DIR)/mysql5-ipk
 MYSQL5_IPK=$(BUILD_DIR)/mysql5_$(MYSQL5_VERSION)-$(MYSQL5_IPK_VERSION)_$(TARGET_ARCH).ipk
-
-#
-# This is the dependency on the source code.  If the source is missing,
-# then it will be fetched from the site using wget.
-#
-$(DL_DIR)/$(MYSQL5_SOURCE):
-	$(WGET) -P $(@D) $(MYSQL5_SITE)/$(@F) || \
-	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
@@ -104,16 +88,6 @@ $(DL_DIR)/$(MYSQL5_SOURCE):
 # source code's archive (.tar.gz, .bz2, etc.)
 #
 mysql5-source: $(DL_DIR)/$(MYSQL5_SOURCE) $(MYSQL5_PATCHES)
-
-$(MYSQL5_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(MYSQL5_SOURCE) make/mysql5.mk
-	rm -rf $(HOST_BUILD_DIR)/$(MYSQL5_DIR) $(@D)
-	$(MYSQL5_UNZIP) $(DL_DIR)/$(MYSQL5_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
-	mv $(HOST_BUILD_DIR)/$(MYSQL5_DIR) $(@D)
-	cd $(@D); ./configure --prefix=$(TARGET_PREFIX)
-	$(MAKE) -C $(@D)
-	touch $@
-
-mysql5-hostbuild: $(MYSQL5_HOST_BUILD_DIR)/.built
 
 #
 # This target unpacks the source code in the build directory.
@@ -131,52 +105,7 @@ mysql5-hostbuild: $(MYSQL5_HOST_BUILD_DIR)/.built
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(MYSQL5_BUILD_DIR)/.configured: $(MYSQL5_PATCHES) $(DL_DIR)/$(MYSQL5_SOURCE) make/mysql5.mk
-# $(MYSQL5_HOST_BUILD_DIR)/.built
-	$(MAKE) openssl-stage
-	$(MAKE) ncurses-stage
-	$(MAKE) zlib-stage
-	$(MAKE) readline-stage
-ifneq (, $(filter libstdc++, $(PACKAGES)))
-	$(MAKE) libstdc++-stage
-endif
-	rm -rf $(BUILD_DIR)/$(MYSQL5_DIR) $(MYSQL5_BUILD_DIR)
-	$(MYSQL5_UNZIP) $(DL_DIR)/$(MYSQL5_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	if test -n "$(MYSQL5_PATCHES)"; \
-		then cat $(MYSQL5_PATCHES) | $(PATCH) -bd $(BUILD_DIR)/$(MYSQL5_DIR) -p1; \
-	fi
-	mv $(BUILD_DIR)/$(MYSQL5_DIR) $(MYSQL5_BUILD_DIR)
-	$(AUTORECONF1.10) -vif $(@D)
-	(cd $(@D); \
-		$(TARGET_CONFIGURE_OPTS) \
-		CPPFLAGS="$(STAGING_CPPFLAGS) $(MYSQL5_CPPFLAGS)" \
-		LDFLAGS="$(STAGING_LDFLAGS) $(MYSQL5_LDFLAGS)" \
-		$(MYSQL5_CONFIG_ENV) \
-		./configure \
-		--build=$(GNU_HOST_NAME) \
-		--host=$(GNU_TARGET_NAME) \
-		--target=$(GNU_TARGET_NAME) \
-		--prefix=$(TARGET_PREFIX) \
-		--program-prefix="" \
-		--disable-static \
-		--with-openssl=$(STAGING_PREFIX) \
-		--with-zlib-dir=$(STAGING_PREFIX) \
-		--without-readline \
-		--enable-thread-safe-client \
-		--with-comment="optware distribution $(MYSQL5_VERSION)-$(MYSQL5_IPK_VERSION)" \
-		--without-debug \
-		--without-extra-tools \
-		--without-docs \
-		--without-bench \
-		--without-isam \
-		--without-innodb \
-		--with-geometry \
-		--with-low-memory \
-		--enable-assembler \
-	)
-#		--with-named-thread-libs=-lpthread \
-
-	sed -i -e 's!"/etc!"$(TARGET_PREFIX)/etc!g' $(@D)/*/default.c $(@D)/scripts/*.sh
-	$(PATCH_LIBTOOL) $(@D)/libtool
+	$(INSTALL) -d $(@D)
 	touch $@
 
 mysql5-unpack: $(MYSQL5_BUILD_DIR)/.configured
@@ -184,12 +113,9 @@ mysql5-unpack: $(MYSQL5_BUILD_DIR)/.configured
 #
 # This builds the actual binary.
 #
-$(MYSQL5_BUILD_DIR)/.built: $(MYSQL5_BUILD_DIR)/.configured
+$(MYSQL5_BUILD_DIR)/.built: #$(MYSQL5_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(@D) \
-		GEN_LEX_HASH=$(MYSQL5_HOST_BUILD_DIR)/sql/gen_lex_hash \
-		COMP_ERR=$(MYSQL5_HOST_BUILD_DIR)/extra/comp_err \
-		;
+	$(MAKE) mysql
 	touch $@
 
 #
@@ -200,10 +126,9 @@ mysql5: $(MYSQL5_BUILD_DIR)/.built
 #
 # If you are building a library, then you need to stage it too.
 #
-$(MYSQL5_BUILD_DIR)/.staged: $(MYSQL5_BUILD_DIR)/.built
+$(MYSQL5_BUILD_DIR)/.staged: #$(MYSQL5_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(MYSQL5_BUILD_DIR) DESTDIR=$(STAGING_DIR) install-strip
-	rm -f $(STAGING_LIB_DIR)/mysql/*.la
+	$(MAKE) mysql-stage
 	touch $@
 
 mysql5-stage: $(MYSQL5_BUILD_DIR)/.staged
@@ -238,29 +163,16 @@ $(MYSQL5_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(MYSQL5_IPK): $(MYSQL5_BUILD_DIR)/.built
+$(MYSQL5_IPK_DIR)/.packaged: make/mysql5.mk make/mysql.mk #$(MYSQL5_BUILD_DIR)/.built
 	rm -rf $(MYSQL5_IPK_DIR) $(BUILD_DIR)/mysql5_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(MYSQL5_BUILD_DIR) DESTDIR=$(MYSQL5_IPK_DIR) install-strip
-	rm -rf $(MYSQL5_IPK_DIR)$(TARGET_PREFIX)/mysql5-test
-	$(INSTALL) -d $(MYSQL5_IPK_DIR)$(TARGET_PREFIX)/var/lib/mysql
-	$(INSTALL) -d $(MYSQL5_IPK_DIR)$(TARGET_PREFIX)/var/log
-	$(INSTALL) -d $(MYSQL5_IPK_DIR)$(TARGET_PREFIX)/etc/
-	$(INSTALL) -m 644 $(MYSQL5_SOURCE_DIR)/my.cnf $(MYSQL5_IPK_DIR)$(TARGET_PREFIX)/etc/my.cnf
-	$(INSTALL) -d $(MYSQL5_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
-	( cd $(MYSQL5_IPK_DIR)$(TARGET_PREFIX)/etc/init.d ; \
-		ln -s ../../share/mysql/mysql.server S70mysqld ; \
-		ln -s ../../share/mysql/mysql.server K70mysqld ; \
-	)
 	$(MAKE) $(MYSQL5_IPK_DIR)/CONTROL/control
-	$(INSTALL) -m 755 $(MYSQL5_SOURCE_DIR)/postinst $(MYSQL5_IPK_DIR)/CONTROL/postinst
-	$(INSTALL) -m 755 $(MYSQL5_SOURCE_DIR)/prerm $(MYSQL5_IPK_DIR)/CONTROL/prerm
-	echo $(MYSQL5_CONFFILES) | sed -e 's/ /\n/g' > $(MYSQL5_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(MYSQL5_IPK_DIR)
+	touch $@
 
 #
 # This is called from the top level makefile to create the IPK file.
 #
-mysql5-ipk: $(MYSQL5_IPK)
+mysql5-ipk: $(MYSQL5_IPK_DIR)/.packaged
 
 #
 # This is called from the top level makefile to clean all of the built files.
