@@ -24,6 +24,7 @@ perl-source: $(DL_DIR)/$(PERL_CROSS_SOURCE)
 # which they should be applied to the source code.
 #
 #PERL_PATCHES=$(PERL_SOURCE_DIR)/$(PERL_MAJOR_VER)/INET.pm.patch
+PERL_CROSS_PATCHES=$(PERL_SOURCE_DIR)/$(PERL_MAJOR_VER)/dynamic_ext.fix.patch
 
 #PERL_POST_CONFIGURE_PATCHES=$(PERL_SOURCE_DIR)/Makefile-pp_hot.patch
 
@@ -130,6 +131,9 @@ endif
 	fi
 ifneq ($(HOSTCC), $(TARGET_CC))
 	$(PERL_CROSS_UNZIP) $(DL_DIR)/$(PERL_CROSS_SOURCE) | tar --overwrite -C $(BUILD_DIR) -xvf -
+	if test -n "$(PERL_CROSS_PATCHES)" ; then \
+		cat $(PERL_CROSS_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PERL_DIR) -p1 ; \
+	fi
 endif
 	mv $(BUILD_DIR)/$(PERL_DIR) $(@D)
 	sed -i -e '/LIBS/s|-L/usr/local/lib|-L$(STAGING_LIB_DIR)|' $(@D)/ext/*/Makefile.PL
@@ -188,6 +192,7 @@ else
 		-Dar=$(TARGET_AR) \
 		-Dcpp=$(TARGET_CPP) \
 		-Dranlib=$(TARGET_RANLIB) \
+		-Duseshrplib \
 	)
 endif
 	touch $@

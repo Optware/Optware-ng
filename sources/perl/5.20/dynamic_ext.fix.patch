@@ -1,0 +1,29 @@
+--- a/Makefile
++++ b/Makefile
+@@ -139,7 +139,7 @@
+ 	$(CC) $(LDFLAGS) -o $@ $(filter %$o,$^) $(LIBPERL) $(statars) $(LIBS) $(extlibs)
+ 
+ %$o: %.c config.h
+-	$(CC) $(CFLAGS) -c -o $@ $<
++	$(CC) $(CFLAGS) -fPIC -c -o $@ $<
+ 
+ globals.o: uudmap.h
+ 
+@@ -176,7 +176,7 @@
+ 
+ ifeq ($(useshrplib),define)
+ $(LIBPERL):
+-	$(CC) $(LDDLFLAGS) -o $@ $(filter %$o,$^) $(LIBS)
++	$(CC) $(LDDLFLAGS) -Wl,-soname,$(LIBPERL) -o $@ $(filter %$o,$^) $(LIBS)
+ else
+ $(LIBPERL):
+ 	$(AR) cru $@ $(filter %$o,$^)
+@@ -225,7 +225,7 @@
+ 	$(MAKE) -C $(dir $@) all PERL_CORE=1 LIBPERL=$(LIBPERL) LINKTYPE=static $(STATIC_LDFLAGS)
+ 
+ $(dynamic_tgt) $(disabled_dynamic_tgt): %/pm_to_blib: | %/Makefile
+-	$(MAKE) -C $(dir $@) all PERL_CORE=1 LIBPERL=$(LIBPERL) LINKTYPE=dynamic
++	$(MAKE) -C $(dir $@) all PERL_CORE=1 LIBPERL=$(LIBPERL) LINKTYPE=dynamic PERL_ARCHIVE=$(shell pwd)/$(LIBPERL)
+ 
+ %/Makefile: %/Makefile.PL preplibrary cflags config.h | $(XSUBPP) miniperl$X
+ 	$(eval top=$(shell echo $(dir $@) | sed -e 's![^/]\+!..!g'))
