@@ -93,7 +93,7 @@ libxslt-source: $(DL_DIR)/$(LIBXSLT_SOURCE) $(LIBXSLT_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(LIBXSLT_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBXSLT_SOURCE) $(LIBXSLT_PATCHES)
+$(LIBXSLT_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBXSLT_SOURCE) $(LIBXSLT_PATCHES) make/libxslt.mk
 	$(MAKE) libxml2-stage
 	rm -rf $(BUILD_DIR)/$(LIBXSLT_DIR) $(@D)
 	$(LIBXSLT_UNZIP) $(DL_DIR)/$(LIBXSLT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -187,7 +187,7 @@ $(LIBXSLT_IPK_DIR)/CONTROL/control:
 $(LIBXSLT_IPK): $(LIBXSLT_BUILD_DIR)/.built
 	rm -rf $(LIBXSLT_IPK_DIR) $(BUILD_DIR)/libxslt_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBXSLT_BUILD_DIR) DESTDIR=$(LIBXSLT_IPK_DIR) install-strip
-	sed -i 's|$(STAGING_PREFIX)||g' $(LIBXSLT_IPK_DIR)$(TARGET_PREFIX)/bin/xslt-config
+	sed -i 's|$(STAGING_DIR)||g' $(LIBXSLT_IPK_DIR)$(TARGET_PREFIX)/bin/xslt-config
 	rm -f $(LIBXSLT_IPK_DIR)$(TARGET_PREFIX)/lib/libxslt.la
 	rm -f $(LIBXSLT_IPK_DIR)$(TARGET_PREFIX)/lib/libexslt.la
 	rm -rf $(LIBXSLT_IPK_DIR)$(TARGET_PREFIX)/share/doc
