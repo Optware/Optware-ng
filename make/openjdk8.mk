@@ -228,9 +228,7 @@ $(DL_DIR)/$(OPENJDK8_SOURCE):
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 $(DL_DIR)/$(OPENJDK8_FOREST8_SOURCE):
-	export SKIP_CHECKSUM=1; \
-	$(WGET) -O $@ $(OPENJDK8_ICEDTEA_HG)/icedtea8/archive/`$(WGET) -qO- $(OPENJDK8_ICEDTEA_HG)/icedtea8/raw-file/tip/.hgtags \
-		| grep "$(OPENJDK8_ICEDTEA_TAG)" | cut -d ' ' -f1`.tar.bz2 || \
+	$(WGET) -O $@ $(OPENJDK8_ICEDTEA_HG)/icedtea/archive/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 $(DL_DIR)/openjdk8u-%-$(OPENJDK8_VERSION).tar.bz2:
