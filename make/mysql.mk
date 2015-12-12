@@ -65,7 +65,7 @@ MYSQL_BOOST_SOURCE=boost_$(BOOST_VERSION).tar.gz
 #
 # MYSQL_IPK_VERSION should be incremented when the ipk changes.
 #
-MYSQL_IPK_VERSION=1
+MYSQL_IPK_VERSION=2
 
 #
 # MYSQL_CONFFILES should be a list of user-editable files
@@ -82,6 +82,7 @@ MYSQL_PATCHES=\
 $(MYSQL_SOURCE_DIR)/auth_utils.patch \
 $(MYSQL_SOURCE_DIR)/find-system-zlib.patch \
 $(MYSQL_SOURCE_DIR)/gen_lex.patch \
+$(MYSQL_SOURCE_DIR)/hostname.patch \
 $(MYSQL_SOURCE_DIR)/my.cnf_location.patch \
 $(MYSQL_SOURCE_DIR)/my_default.patch \
 $(MYSQL_SOURCE_DIR)/mysqld.patch \
@@ -91,6 +92,7 @@ MYSQL_PATCHES=\
 $(MYSQL_SOURCE_DIR)/bison3.fix.patch \
 $(MYSQL_SOURCE_DIR)/find-system-zlib.old.patch \
 $(MYSQL_SOURCE_DIR)/gen_lex.patch \
+$(MYSQL_SOURCE_DIR)/hostname.patch \
 $(MYSQL_SOURCE_DIR)/includes.fix.patch \
 $(MYSQL_SOURCE_DIR)/my.cnf_location.patch \
 $(MYSQL_SOURCE_DIR)/my_default.patch \

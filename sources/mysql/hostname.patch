@@ -1,0 +1,28 @@
+--- a/support-files/mysql.server.sh
++++ b/support-files/mysql.server.sh
+@@ -102,9 +102,15 @@
+   }
+ fi
+ 
+-PATH="/sbin:/usr/sbin:/bin:/usr/bin:$basedir/bin"
++PATH="$PATH:/sbin:/usr/sbin:/bin:/usr/bin:$basedir/bin"
+ export PATH
+ 
++if [ -n "`which hostname`" ] && [ -x "`which hostname`" ]; then
++  HOSTNAME=`hostname`
++else
++  HOSTNAME=`cat /proc/sys/kernel/hostname`
++fi
++
+ mode=$1    # start or stop
+ 
+ [ $# -ge 1 ] && shift
+@@ -260,7 +266,7 @@
+ #
+ if test -z "$mysqld_pid_file_path"
+ then
+-  mysqld_pid_file_path=$datadir/`@HOSTNAME@`.pid
++  mysqld_pid_file_path=$datadir/${HOSTNAME}.pid
+ else
+   case "$mysqld_pid_file_path" in
+     /* ) ;;
