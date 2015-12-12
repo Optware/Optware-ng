@@ -28,7 +28,7 @@ LIBXSLT_DEPENDS=libxml2
 #
 # LIBXSLT_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBXSLT_IPK_VERSION=2
+LIBXSLT_IPK_VERSION=3
 
 #
 # LIBXSLT_CONFFILES should be a list of user-editable files
@@ -187,6 +187,7 @@ $(LIBXSLT_IPK_DIR)/CONTROL/control:
 $(LIBXSLT_IPK): $(LIBXSLT_BUILD_DIR)/.built
 	rm -rf $(LIBXSLT_IPK_DIR) $(BUILD_DIR)/libxslt_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBXSLT_BUILD_DIR) DESTDIR=$(LIBXSLT_IPK_DIR) install-strip
+	sed -i 's|$(STAGING_PREFIX)||g' $(LIBXSLT_IPK_DIR)$(TARGET_PREFIX)/bin/xslt-config
 	rm -f $(LIBXSLT_IPK_DIR)$(TARGET_PREFIX)/lib/libxslt.la
 	rm -f $(LIBXSLT_IPK_DIR)$(TARGET_PREFIX)/lib/libexslt.la
 	rm -rf $(LIBXSLT_IPK_DIR)$(TARGET_PREFIX)/share/doc
