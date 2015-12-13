@@ -122,7 +122,7 @@ $(OPENOBEX_BUILD_DIR)/.configured: $(DL_DIR)/$(OPENOBEX_SOURCE) $(OPENOBEX_PATCH
 		LDFLAGS="$(STAGING_LDFLAGS) $(OPENOBEX_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
-		ac_cv_file__opt_lib_pkgconfig_libusb_pc=yes \
+		ac_cv_file_$(shell echo "$(TARGET_PREFIX)"|tr '/' '_')_lib_pkgconfig_libusb_pc=yes \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
