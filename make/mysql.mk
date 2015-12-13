@@ -35,12 +35,14 @@ ifneq ($(OPTWARE_TARGET), $(filter $(MYSQL_OLD_TARGETS), $(OPTWARE_TARGET)))
 MYSQL_SITE=https://dev.mysql.com/get/Downloads/MySQL-5.7
 MYSQL_VERSION=5.7.9
 MYSQL_DIR=mysql-$(MYSQL_VERSION)
+MYSQL_IPK_VERSION=2
 else
-# no atomic/gcc_builtins.h, which
+# some needed gcc atomic builtins are missing, which
 # makes compiling newer mysql impossible
 MYSQL_SITE=https://github.com/mysql/mysql-server/archive
 MYSQL_VERSION=5.7.4
 MYSQL_DIR=mysql-server-mysql-$(MYSQL_VERSION)
+MYSQL_IPK_VERSION=3
 endif
 MYSQL_SOURCE=mysql-$(MYSQL_VERSION).tar.gz
 MYSQL_UNZIP=zcat
@@ -54,6 +56,8 @@ MYSQL_DEPENDS +=, libstdc++
 endif
 ifneq ($(OPTWARE_TARGET), $(filter $(MYSQL_OLD_TARGETS), $(OPTWARE_TARGET)))
 MYSQL_DEPENDS +=, openssl
+else
+MYSQL_DEPENDS +=, perl
 endif
 MYSQL_CONFLICTS=
 
@@ -62,10 +66,6 @@ MYSQL_CONFLICTS=
 MYSQL_BOOST_VERSION=1_59_0
 MYSQL_BOOST_SOURCE=boost_$(BOOST_VERSION).tar.gz
 
-#
-# MYSQL_IPK_VERSION should be incremented when the ipk changes.
-#
-MYSQL_IPK_VERSION=2
 
 #
 # MYSQL_CONFFILES should be a list of user-editable files
@@ -343,6 +343,7 @@ ifneq ($(OPTWARE_TARGET), $(filter $(MYSQL_OLD_TARGETS), $(OPTWARE_TARGET)))
 	$(INSTALL) -m 755 $(MYSQL_SOURCE_DIR)/postinst $(MYSQL_IPK_DIR)/CONTROL/postinst
 else
 	$(INSTALL) -m 755 $(MYSQL_SOURCE_DIR)/postinst.old $(MYSQL_IPK_DIR)/CONTROL/postinst
+	sed -i -e '/^#!.*perl/s|.*|#!$(TARGET_PREFIX)/bin/perl|' $(MYSQL_IPK_DIR)$(TARGET_PREFIX)/scripts/mysql_install_db
 endif
 	$(INSTALL) -m 755 $(MYSQL_SOURCE_DIR)/prerm $(MYSQL_IPK_DIR)/CONTROL/prerm
 	echo $(MYSQL_CONFFILES) | sed -e 's/ /\n/g' > $(MYSQL_IPK_DIR)/CONTROL/conffiles
