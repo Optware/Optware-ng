@@ -90,8 +90,8 @@ $(POSTFIX_BUILD_DIR)/.built: $(POSTFIX_BUILD_DIR)/.configured
 	rm -f $@
 	$(MAKE) -C $(@D)
 	(cd $(@D); \
-		sed -i 's/fmt/\$(TARGET_PREFIX)\/bin\/fmt/g' postfix-install; \
-		sed -i 's/cmp/\$(TARGET_PREFIX)\/bin\/cmp/g' postfix-install; \
+		sed -i 's|fmt|$(TARGET_PREFIX)/bin/fmt|g' postfix-install; \
+		sed -i 's|cmp|$(TARGET_PREFIX)/bin/cmp|g' postfix-install; \
 		rm -f conf/LICENSE; \
 		cp LICENSE conf/; \
 		rm -f README_FILES/RELEASE_NOTES; \
@@ -164,7 +164,7 @@ $(POSTFIX_IPK): $(POSTFIX_BUILD_DIR)/.built
 					sample_directory= \
 					readme_directory=$(TARGET_PREFIX)/share/doc/postfix/readme \
 					upgrade
-	/bin/sed -i 's/\(\bPATH=\)/\1\$(TARGET_PREFIX)\/bin:\$(TARGET_PREFIX)\/sbin:/g' $(POSTFIX_IPK_DIR)$(TARGET_PREFIX)/etc/postfix/post-install
+	/bin/sed -i 's|\(\bPATH=\)|\1$(TARGET_PREFIX)/bin:$(TARGET_PREFIX)/sbin:|g' $(POSTFIX_IPK_DIR)$(TARGET_PREFIX)/etc/postfix/post-install
 	$(INSTALL) -m 600 $(POSTFIX_SOURCE_DIR)/aliases $(POSTFIX_IPK_DIR)$(TARGET_PREFIX)/etc/aliases
 	$(INSTALL) -m 644 $(POSTFIX_SOURCE_DIR)/main.cf $(POSTFIX_IPK_DIR)$(TARGET_PREFIX)/etc/postfix/main.cf
 ifeq (${OPTWARE_TARGET}, vt4)
