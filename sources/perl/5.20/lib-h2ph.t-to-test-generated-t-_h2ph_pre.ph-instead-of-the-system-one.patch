@@ -1,0 +1,15 @@
+X-Git-Url: http://perl5.git.perl.org/perl.git/blobdiff_plain/d3db15144cd5a765432a4454baa35bc2e847a1eb..33593911f214382b592d05aa902655301915e666:/lib/h2ph.t
+
+diff --git a/lib/h2ph.t b/lib/h2ph.t
+index 2b58f6a..64d9dc0 100644
+--- a/lib/h2ph.t
++++ b/lib/h2ph.t
+@@ -48,7 +48,7 @@ $result = runperl( progfile => '_h2ph_pre.ph',
+                    stderr => 1 );
+ like( $result, qr/syntax OK$/, "preamble compiles");
+ 
+-$result = runperl( switches => ["-w"],
++$result = runperl( switches => ['-I.', "-w"],
+                    stderr => 1,
+                    prog => <<'PROG' );
+ $SIG{__WARN__} = sub { die $_[0] }; require q(lib/h2ph.pht);

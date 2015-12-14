@@ -23,7 +23,11 @@ perl-source: $(DL_DIR)/$(PERL_CROSS_SOURCE)
 # PERL_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#PERL_PATCHES=$(PERL_SOURCE_DIR)/$(PERL_MAJOR_VER)/INET.pm.patch
+PERL_PATCHES=\
+$(PERL_SOURCE_DIR)/$(PERL_MAJOR_VER)/Fix-Errno.pm-generation-for-gcc-5.0.patch \
+$(PERL_SOURCE_DIR)/$(PERL_MAJOR_VER)/h2ph-correct-handling-of-hex-constants-for-the-preamble.patch \
+$(PERL_SOURCE_DIR)/$(PERL_MAJOR_VER)/lib-h2ph.t-to-test-generated-t-_h2ph_pre.ph-instead-of-the-system-one.patch \
+
 PERL_CROSS_PATCHES=$(PERL_SOURCE_DIR)/$(PERL_MAJOR_VER)/dynamic_ext.fix.patch
 
 #PERL_POST_CONFIGURE_PATCHES=$(PERL_SOURCE_DIR)/Makefile-pp_hot.patch
@@ -121,13 +125,13 @@ perl-hostperl: $(PERL_HOST_BUILD_DIR)/.hostbuilt
 ifeq ($(HOSTCC), $(TARGET_CC))
 $(PERL_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL_SOURCE) $(PERL_PATCHES) $(SOURCE_DIR)/perl/$(PERL_MAJOR_VER)/perl.mk
 else
-$(PERL_BUILD_DIR)/.configured: $(PERL_PATCHES) $(DL_DIR)/$(PERL_CROSS_SOURCE) $(PERL_HOST_BUILD_DIR)/.hostbuilt
+$(PERL_BUILD_DIR)/.configured: $(PERL_PATCHES) $(DL_DIR)/$(PERL_CROSS_SOURCE) $(PERL_HOST_BUILD_DIR)/.hostbuilt $(SOURCE_DIR)/perl/$(PERL_MAJOR_VER)/perl.mk
 endif
 	$(MAKE) libdb-stage gdbm-stage
 	rm -rf $(BUILD_DIR)/$(PERL_DIR) $(@D)
 	$(PERL_UNZIP) $(DL_DIR)/$(PERL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PERL_PATCHES)" ; then \
-		cat $(PERL_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PERL_DIR) -p0 ; \
+		cat $(PERL_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PERL_DIR) -p1 ; \
 	fi
 ifneq ($(HOSTCC), $(TARGET_CC))
 	$(PERL_CROSS_UNZIP) $(DL_DIR)/$(PERL_CROSS_SOURCE) | tar --overwrite -C $(BUILD_DIR) -xvf -
