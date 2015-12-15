@@ -8,7 +8,12 @@
 # it also starts mysqld after install
 
 if [ ! -f %OPTWARE_TARGET_PREFIX%/var/lib/mysql/mysql/db.frm ] ; then
-	%OPTWARE_TARGET_PREFIX%/scripts/mysql_install_db --basedir=%OPTWARE_TARGET_PREFIX% --datadir=%OPTWARE_TARGET_PREFIX%/var/lib/mysql  --lc-messages-dir=%OPTWARE_TARGET_PREFIX%/share/english
+	%OPTWARE_TARGET_PREFIX%/scripts/mysql_install_db --basedir=%OPTWARE_TARGET_PREFIX% --datadir=%OPTWARE_TARGET_PREFIX%/var/lib/mysql  --lc-messages-dir=%OPTWARE_TARGET_PREFIX%/share/english --skip-random-passwords --keep-my-cnf
+	echo '====================================================='
+	echo "After mysqld starts, don't forget to execute" 
+	echo "%OPTWARE_TARGET_PREFIX%/bin/mysqladmin password"
+	echo "to set root password"
+	echo '====================================================='
 fi
 
 %OPTWARE_TARGET_PREFIX%/etc/init.d/S70mysqld start

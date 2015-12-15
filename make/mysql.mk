@@ -35,14 +35,14 @@ ifneq ($(OPTWARE_TARGET), $(filter $(MYSQL_OLD_TARGETS), $(OPTWARE_TARGET)))
 MYSQL_SITE=https://dev.mysql.com/get/Downloads/MySQL-5.7
 MYSQL_VERSION=5.7.9
 MYSQL_DIR=mysql-$(MYSQL_VERSION)
-MYSQL_IPK_VERSION=2
+MYSQL_IPK_VERSION=3
 else
 # some needed gcc atomic builtins are missing, which
 # makes compiling newer mysql impossible
 MYSQL_SITE=https://github.com/mysql/mysql-server/archive
 MYSQL_VERSION=5.7.4
 MYSQL_DIR=mysql-server-mysql-$(MYSQL_VERSION)
-MYSQL_IPK_VERSION=3
+MYSQL_IPK_VERSION=4
 endif
 MYSQL_SOURCE=mysql-$(MYSQL_VERSION).tar.gz
 MYSQL_UNZIP=zcat
@@ -327,7 +327,12 @@ $(MYSQL_IPK_DIR)/CONTROL/control:
 $(MYSQL_IPK): $(MYSQL_BUILD_DIR)/.built
 	rm -rf $(MYSQL_IPK_DIR) $(BUILD_DIR)/mysql_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MYSQL_BUILD_DIR)/BUILD DESTDIR=$(MYSQL_IPK_DIR) install
-	rm -rf $(MYSQL_IPK_DIR)$(TARGET_PREFIX)/mysql-test $(MYSQL_IPK_DIR)$(TARGET_PREFIX)/lib/*.a
+	rm -rf 	$(MYSQL_IPK_DIR)$(TARGET_PREFIX)/{mysql-test,docs} $(MYSQL_IPK_DIR)$(TARGET_PREFIX)/lib/*.a \
+		$(MYSQL_IPK_DIR)$(TARGET_PREFIX)/{COPYING,INSTALL-BINARY,README}
+	mv -f $(MYSQL_IPK_DIR)$(TARGET_PREFIX)/{man,share/}
+	mv -f $(MYSQL_IPK_DIR)$(TARGET_PREFIX)/{include,mysql}
+	$(INSTALL) -d $(MYSQL_IPK_DIR)$(TARGET_PREFIX)/include
+	mv -f $(MYSQL_IPK_DIR)$(TARGET_PREFIX)/{mysql,include/}
 	-$(STRIP_COMMAND) $(MYSQL_IPK_DIR)$(TARGET_PREFIX)/{bin/*,lib/*.so,lib/plugin/*.so} 2>/dev/null
 	$(INSTALL) -d $(MYSQL_IPK_DIR)$(TARGET_PREFIX)/var/lib/mysql
 	$(INSTALL) -d $(MYSQL_IPK_DIR)$(TARGET_PREFIX)/var/log
