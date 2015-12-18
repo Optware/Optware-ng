@@ -352,7 +352,7 @@ ifneq ($(OPTWARE_TARGET), $(filter $(MYSQL_OLD_TARGETS), $(OPTWARE_TARGET)))
 	$(INSTALL) -m 755 $(MYSQL_SOURCE_DIR)/postinst $(MYSQL_IPK_DIR)/CONTROL/postinst
 else
 	$(INSTALL) -m 755 $(MYSQL_SOURCE_DIR)/postinst.old $(MYSQL_IPK_DIR)/CONTROL/postinst
-	sed -i -e '/^#!.*perl/s|.*|#!$(TARGET_PREFIX)/bin/perl|' $(MYSQL_IPK_DIR)$(TARGET_PREFIX)/scripts/mysql_install_db
+	sed -i -e '/^#!.*perl/s|.*|#!$(TARGET_PREFIX)/bin/perl|' $(MYSQL_IPK_DIR)$(TARGET_PREFIX)/bin/mysql_install_db
 endif
 	$(INSTALL) -m 755 $(MYSQL_SOURCE_DIR)/prerm $(MYSQL_IPK_DIR)/CONTROL/prerm
 	echo $(MYSQL_CONFFILES) | sed -e 's/ /\n/g' > $(MYSQL_IPK_DIR)/CONTROL/conffiles
