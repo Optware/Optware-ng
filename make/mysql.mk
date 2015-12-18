@@ -80,6 +80,7 @@ $(TARGET_PREFIX)/support-files/mysql.server
 ifneq ($(OPTWARE_TARGET), $(filter $(MYSQL_OLD_TARGETS), $(OPTWARE_TARGET)))
 MYSQL_PATCHES=\
 $(MYSQL_SOURCE_DIR)/auth_utils.patch \
+$(MYSQL_SOURCE_DIR)/disable-mysql-test.patch \
 $(MYSQL_SOURCE_DIR)/find-system-zlib.patch \
 $(MYSQL_SOURCE_DIR)/gen_lex.patch \
 $(MYSQL_SOURCE_DIR)/hostname.patch \
@@ -90,6 +91,7 @@ $(MYSQL_SOURCE_DIR)/sasl_defs.patch
 else
 MYSQL_PATCHES=\
 $(MYSQL_SOURCE_DIR)/bison3.fix.patch \
+$(MYSQL_SOURCE_DIR)/disable-mysql-test.patch \
 $(MYSQL_SOURCE_DIR)/find-system-zlib.old.patch \
 $(MYSQL_SOURCE_DIR)/gen_lex.patch \
 $(MYSQL_SOURCE_DIR)/hostname.patch \
