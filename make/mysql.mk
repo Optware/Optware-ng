@@ -35,14 +35,14 @@ ifneq ($(OPTWARE_TARGET), $(filter $(MYSQL_OLD_TARGETS), $(OPTWARE_TARGET)))
 MYSQL_SITE=https://dev.mysql.com/get/Downloads/MySQL-5.7
 MYSQL_VERSION=5.7.9
 MYSQL_DIR=mysql-$(MYSQL_VERSION)
-MYSQL_IPK_VERSION=3
+MYSQL_IPK_VERSION=4
 else
 # some needed gcc atomic builtins are missing, which
 # makes compiling newer mysql impossible
 MYSQL_SITE=https://github.com/mysql/mysql-server/archive
 MYSQL_VERSION=5.7.4
 MYSQL_DIR=mysql-server-mysql-$(MYSQL_VERSION)
-MYSQL_IPK_VERSION=4
+MYSQL_IPK_VERSION=5
 endif
 MYSQL_SOURCE=mysql-$(MYSQL_VERSION).tar.gz
 MYSQL_UNZIP=zcat
@@ -71,7 +71,7 @@ MYSQL_BOOST_SOURCE=boost_$(BOOST_VERSION).tar.gz
 # MYSQL_CONFFILES should be a list of user-editable files
 MYSQL_CONFFILES=\
 $(TARGET_PREFIX)/etc/my.cnf\
-$(TARGET_PREFIX)/support-files/mysql.server
+$(TARGET_PREFIX)/share/mysql/support-files/mysql.server
 
 #
 # MYSQL_PATCHES should list any patches, in the the order in
@@ -247,6 +247,10 @@ endif
 		-DCMAKE_SKIP_RPATH=TRUE \
 		-DCMAKE_INCLUDE_PATH=$(STAGING_INCLUDE_DIR) \
 		-DCMAKE_INSTALL_PREFIX=$(TARGET_PREFIX) \
+		-DINSTALL_MYSQLSHAREDIR=share/mysql \
+		-DINSTALL_SUPPORTFILESDIR=share/mysql/support-files \
+		-DINSTALL_INCLUDEDIR=include/mysql \
+		-DINSTALL_MANDIR=share/man \
 		-DSTACK_DIRECTION=1 \
 		-DHAVE_LLVM_LIBCPP_EXITCODE=1 \
 		-DHAVE_FALLOC_PUNCH_HOLE_AND_KEEP_SIZE_EXITCODE=1 \
@@ -329,21 +333,17 @@ $(MYSQL_IPK_DIR)/CONTROL/control:
 $(MYSQL_IPK): $(MYSQL_BUILD_DIR)/.built
 	rm -rf $(MYSQL_IPK_DIR) $(BUILD_DIR)/mysql_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MYSQL_BUILD_DIR)/BUILD DESTDIR=$(MYSQL_IPK_DIR) install
-	rm -rf 	$(MYSQL_IPK_DIR)$(TARGET_PREFIX)/{mysql-test,docs} $(MYSQL_IPK_DIR)$(TARGET_PREFIX)/lib/*.a \
+	rm -rf 	$(MYSQL_IPK_DIR)$(TARGET_PREFIX)/docs $(MYSQL_IPK_DIR)$(TARGET_PREFIX)/lib/*.a \
 		$(MYSQL_IPK_DIR)$(TARGET_PREFIX)/{COPYING,INSTALL-BINARY,README}
-	mv -f $(MYSQL_IPK_DIR)$(TARGET_PREFIX)/{man,share/}
-	mv -f $(MYSQL_IPK_DIR)$(TARGET_PREFIX)/{include,mysql}
-	$(INSTALL) -d $(MYSQL_IPK_DIR)$(TARGET_PREFIX)/include
-	mv -f $(MYSQL_IPK_DIR)$(TARGET_PREFIX)/{mysql,include/}
-	-$(STRIP_COMMAND) $(MYSQL_IPK_DIR)$(TARGET_PREFIX)/{bin/*,lib/*.so,lib/plugin/*.so} 2>/dev/null
+	-$(STRIP_COMMAND) $(MYSQL_IPK_DIR)$(TARGET_PREFIX)/{bin/*,lib/*.so,lib/mysql/plugin/*.so} 2>/dev/null
 	$(INSTALL) -d $(MYSQL_IPK_DIR)$(TARGET_PREFIX)/var/lib/mysql
 	$(INSTALL) -d $(MYSQL_IPK_DIR)$(TARGET_PREFIX)/var/log
 	$(INSTALL) -d $(MYSQL_IPK_DIR)$(TARGET_PREFIX)/etc/
 	$(INSTALL) -m 644 $(MYSQL_SOURCE_DIR)/my.cnf $(MYSQL_IPK_DIR)$(TARGET_PREFIX)/etc/my.cnf
 	$(INSTALL) -d $(MYSQL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
 	( cd $(MYSQL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d ; \
-		ln -s ../../support-files/mysql.server S70mysqld ; \
-		ln -s ../../support-files/mysql.server K70mysqld ; \
+		ln -s ../../share/mysql/support-files/mysql.server S70mysqld ; \
+		ln -s ../../share/mysql/support-files/mysql.server K70mysqld ; \
 	)
 	$(MAKE) $(MYSQL_IPK_DIR)/CONTROL/control
 ifneq ($(OPTWARE_TARGET), $(filter $(MYSQL_OLD_TARGETS), $(OPTWARE_TARGET)))
