@@ -1,0 +1,11 @@
+--- a/scripts/mysql_install_db.pl.in
++++ b/scripts/mysql_install_db.pl.in
+@@ -488,7 +488,7 @@
+ $config_file= "$basedir/my.cnf";
+ 
+ my $cfg_template= find_in_basedir($opt,"file","my-default.cnf",
+-				  "share","share/mysql","support-files");
++				  "share","share/mysql","share/mysql/support-files");
+ # Distros might move files
+ if ((! -r $cfg_template) && (-r "@pkgdatadir@/my-default.cnf")) {
+   $cfg_template = "@pkgdatadir@/my-default.cnf";
