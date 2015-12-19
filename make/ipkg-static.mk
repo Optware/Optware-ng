@@ -30,7 +30,7 @@ IPKG-STATIC_VERSION:=$(shell sed -n -e 's/^IPKG-OPT_VERSION *=//p' make/ipkg-opt
 #
 # IPKG-STATIC_IPK_VERSION should be incremented when the ipk changes.
 #
-IPKG-STATIC_IPK_VERSION=2
+IPKG-STATIC_IPK_VERSION=3
 
 #
 # IPKG-STATIC_CONFFILES should be a list of user-editable files
@@ -71,11 +71,9 @@ IPKG-STATIC_PATCHES=$(IPKG-STATIC_SOURCE_DIR)/args.h.patch \
 	$(IPKG-STATIC_SOURCE_DIR)/update-alternatives.android.patch \
 	$(IPKG-STATIC_SOURCE_DIR)/ipkg-va_start_segfault.diff \
 	$(IPKG-STATIC_SOURCE_DIR)/list_installed.patch \
-	$(IPKG-STATIC_SOURCE_DIR)/ipkg_install.c.patch
+	$(IPKG-STATIC_SOURCE_DIR)/ipkg_install.c.patch \
+	$(IPKG-STATIC_SOURCE_DIR)/ipkg_download.c.patch
 
-ifeq ($(LIBC_STYLE), uclibc)
-IPKG-STATIC_PATCHES += $(IPKG-STATIC_SOURCE_DIR)/ipkg_download.c.patch
-endif
 ifeq ($(TARGET_OS), darwin)
 IPKG-STATIC_PATCHES += $(IPKG-STATIC_SOURCE_DIR)/darwin.patch
 endif
