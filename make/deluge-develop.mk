@@ -21,8 +21,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-DELUGE_DEVELOP_REPOSITORY=git://deluge-torrent.org/deluge.git
-DELUGE_DEVELOP_VERSION=20150922
+DELUGE_DEVELOP_REPOSITORY=https://github.com/deluge-torrent/deluge.git
+DELUGE_DEVELOP_VERSION=20151214
 DELUGE_DEVELOP_TREEISH=`git rev-list -b develop --max-count=1 --until=2015-09-22 HEAD`
 DELUGE_DEVELOP_SOURCE=deluge-develop-$(DELUGE_DEVELOP_VERSION).tar.bz2
 #DELUGE_DEVELOP_DIR=deluge-develop-$(DELUGE_DEVELOP_VERSION)
