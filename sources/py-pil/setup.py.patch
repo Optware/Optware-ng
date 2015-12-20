@@ -14,7 +14,7 @@
      if dir and os.path.isdir(dir) and dir not in path:
 @@ -150,7 +147,7 @@
          add_directory(library_dirs, "/usr/local/lib")
-         # FIXME: check %OPTWARE_TARGET_PREFIX%/stuff directories here?
+         # FIXME: check /opt/stuff directories here?
  
 -        prefix = sysconfig.get_config_var("prefix")
 +        prefix = "@STAGING_PREFIX@"

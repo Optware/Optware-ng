@@ -10,7 +10,7 @@
 +#C89	= c89
  GCC	= gcc
  CCS	= /usr/ccs/bin/cc
- NACC	= %OPTWARE_TARGET_PREFIX%/ansic/bin/cc
+ NACC	= /opt/ansic/bin/cc
 -CFLAGS	=
 +#CFLAGS	=
  S10GCCFLAGS    = -m64 -mcpu=v9

@@ -4,7 +4,7 @@
        ;;
  esac
  
--CUPSSEARCHPATH="/usr/share /usr/local/share /usr/lib /usr/local/lib /usr/libexec %OPTWARE_TARGET_PREFIX% /usr/lib64"
+-CUPSSEARCHPATH="/usr/share /usr/local/share /usr/lib /usr/local/lib /usr/libexec /opt /usr/lib64"
 +CUPSSEARCHPATH="%OPTWARE_TARGET_PREFIX%"
  
  echo "$as_me:$LINENO: checking \"for cups ppd path\"" >&5

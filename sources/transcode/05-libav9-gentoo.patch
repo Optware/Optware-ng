@@ -110,8 +110,8 @@ diff -urN transcode-1.1.7-orig/export/export_ffmpeg.c transcode-1.1.7/export/exp
  
  
  /* START: COPIED FROM ffmpeg-0.5_p22846(ffmpeg.c, cmdutils.c) */
--#include <libavcodec%OPTWARE_TARGET_PREFIX%.h>
-+#include <libavutil%OPTWARE_TARGET_PREFIX%.h>
+-#include <libavcodec/opt.h>
++#include <libavutil/opt.h>
  #include <libavutil/avstring.h>
  #include <libswscale/swscale.h>
  

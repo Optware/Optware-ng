@@ -2,7 +2,7 @@
 +++ Makefile.in	2007-06-05 22:56:26.000000000 -0700
 @@ -52,7 +52,7 @@
  hping3: byteorder.h $(OBJ)
- 	$(CC) -o hping3 $(CCOPT) $(DEBUG) $(OBJ)  -L/home/bzhou/slug/optware/nslu2/staging%OPTWARE_TARGET_PREFIX%/lib -Wl,-rpath,%OPTWARE_TARGET_PREFIX%/lib -Wl,-rpath-link,/home/bzhou/slug/optware/nslu2/staging%OPTWARE_TARGET_PREFIX%/lib $(PCAP) @SOLARISLIB@ @TCL_LIB@
+ 	$(CC) -o hping3 $(CCOPT) $(DEBUG) $(OBJ)  -L/home/bzhou/slug/optware/nslu2/staging/opt/lib -Wl,-rpath,%OPTWARE_TARGET_PREFIX%/lib -Wl,-rpath-link,/home/bzhou/slug/optware/nslu2/staging/opt/lib $(PCAP) @SOLARISLIB@ @TCL_LIB@
  	@echo
 -	./hping3 -v
 +	# ./hping3 -v
