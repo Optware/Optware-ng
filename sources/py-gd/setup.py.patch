@@ -9,7 +9,7 @@
  libdirs = dirtest([
 -    "/usr/local/lib", "/sw/lib", "/usr/lib",
 -    "/usr/lib/X11", "/usr/X11R6/lib",
--    "%OPTWARE_TARGET_PREFIX%/gnome/lib",
+-    "/opt/gnome/lib",
 +    prefix + "/lib",
  ])
  
@@ -18,7 +18,7 @@
  incdirs = dirtest([
 -    "/usr/local/include", "/sw/include", "/usr/include",
 -    "/usr/include/X11", "/usr/X11R6/include",
--    "%OPTWARE_TARGET_PREFIX%/gnome/include",
+-    "/opt/gnome/include",
 +    prefix + "/include",
  ])
  
