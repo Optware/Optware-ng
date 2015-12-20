@@ -243,7 +243,7 @@ $(QUILT-LITE_IPK): $(QUILT_BUILD_DIR)/.built
 	  rm -f annotate )
 	( cd $(QUILT-LITE_IPK_DIR)$(TARGET_PREFIX)/share/quilt/scripts ; \
 	  rm -f dependency-graph edmail parse-patch remove-trailing-ws )
-	( cd $(QUILT-LITE_IPK_DIR) ; $(PATCH) -p0 < $(QUILT_SOURCE_DIR)/quilt-lite.patch )
+	( cd $(QUILT-LITE_IPK_DIR)$(TARGET_PREFIX) ; $(PATCH) -p1 < $(QUILT_SOURCE_DIR)/quilt-lite.patch )
 	$(STRIP_COMMAND) $(QUILT-LITE_IPK_DIR)$(TARGET_PREFIX)/lib/quilt/backup-files
 	$(INSTALL) -d $(QUILT-LITE_IPK_DIR)$(TARGET_PREFIX)/etc/
 	$(INSTALL) -m 644 $(QUILT_SOURCE_DIR)/quilt.quiltrc $(QUILT-LITE_IPK_DIR)$(TARGET_PREFIX)/etc/quilt.quiltrc
