@@ -103,7 +103,7 @@ ifdef RTORRENT_SVN_REV
 		rm -rf $(RTORRENT_DIR) \
 	)
 else
-	$(WGET) -O $@ $(RTORRENT_SITE_GITHUB)/$(RTORRENT_VERSION).tar.gz || \
+	$(WGET) -O $@ $(RTORRENT_SITE)/$(RTORRENT_VERSION).tar.gz || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 endif
 
