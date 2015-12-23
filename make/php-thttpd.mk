@@ -47,7 +47,7 @@ PHP_THTTPD_LIBPHP_UNZIP=$(PHP_UNZIP)
 #
 # PHP_THTTPD_IPK_VERSION should be incremented when the ipk changes.
 #
-PHP_THTTPD_IPK_VERSION=1
+PHP_THTTPD_IPK_VERSION=2
 
 #
 # PHP_THTTPD_CONFFILES should be a list of user-editable files
@@ -212,7 +212,7 @@ endif
 		--with-gdbm=$(STAGING_PREFIX) \
 		--with-gd=shared,$(STAGING_PREFIX) \
 		--with-imap=shared,$(STAGING_PREFIX) \
-		--with-mysql=shared,$(STAGING_PREFIX) \
+		--without-mysql \
 		--with-mysql-sock=/tmp/mysql.sock \
 		--with-mysqli=shared,$(STAGING_PREFIX)/bin/mysql_config \
 		--with-pgsql=shared,$(STAGING_PREFIX) \
