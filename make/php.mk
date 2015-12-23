@@ -37,7 +37,7 @@ PHP_HOST_CLI=$(HOST_STAGING_PREFIX)/bin/php
 #
 # PHP_IPK_VERSION should be incremented when the ipk changes.
 #
-PHP_IPK_VERSION=2
+PHP_IPK_VERSION=3
 
 #
 # PHP_CONFFILES should be a list of user-editable files
@@ -70,7 +70,7 @@ PHP_PATCHES=\
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-PHP_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/libxml2 -I$(STAGING_INCLUDE_DIR)/libxslt -I$(STAGING_INCLUDE_DIR)/libexslt -I$(STAGING_INCLUDE_DIR)/freetype2
+PHP_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/mysql -I$(STAGING_INCLUDE_DIR)/libxml2 -I$(STAGING_INCLUDE_DIR)/libxslt -I$(STAGING_INCLUDE_DIR)/libexslt -I$(STAGING_INCLUDE_DIR)/freetype2
 PHP_LDFLAGS=-ldl -lpthread -lgcc_s
 
 #
@@ -376,7 +376,7 @@ $(PHP_MYSQL_IPK_DIR)/CONTROL/control:
 	@echo "Version: $(PHP_VERSION)-$(PHP_IPK_VERSION)" >>$@
 	@echo "Maintainer: $(PHP_MAINTAINER)" >>$@
 	@echo "Source: $(PHP_SITE)/$(PHP_SOURCE)" >>$@
-	@echo "Description: mysql extension for php" >>$@
+	@echo "Description: mysqli and pdo_mysql extensions for php" >>$@
 	@echo "Depends: php, mysql" >>$@
 
 $(PHP_PEAR_IPK_DIR)/CONTROL/control:
@@ -584,7 +584,7 @@ endif
 		--with-gdbm=$(STAGING_PREFIX) \
 		--with-gd=shared,$(STAGING_PREFIX) \
 		--with-imap=shared,$(STAGING_PREFIX) \
-		--with-mysql=shared,$(STAGING_PREFIX) \
+		--without-mysql \
 		--with-mysql-sock=/tmp/mysql.sock \
 		--with-mysqli=shared,$(STAGING_PREFIX)/bin/mysql_config \
 		--with-pgsql=shared,$(STAGING_PREFIX) \
@@ -815,8 +815,8 @@ endif
 	$(INSTALL) -d $(PHP_MYSQL_IPK_DIR)$(TARGET_PREFIX)/lib/php/extensions
 	$(INSTALL) -d $(PHP_MYSQL_IPK_DIR)$(TARGET_PREFIX)/etc/php.d
 	mv $(PHP_IPK_DIR)$(TARGET_PREFIX)/lib/php/extensions/*mysql*.so $(PHP_MYSQL_IPK_DIR)$(TARGET_PREFIX)/lib/php/extensions/
-	echo extension=mysql.so >$(PHP_MYSQL_IPK_DIR)$(TARGET_PREFIX)/etc/php.d/mysql.ini
-	echo extension=mysqli.so >>$(PHP_MYSQL_IPK_DIR)$(TARGET_PREFIX)/etc/php.d/mysql.ini
+	echo extension=mysqli.so >$(PHP_MYSQL_IPK_DIR)$(TARGET_PREFIX)/etc/php.d/mysql.ini
+	echo extension=pdo_mysql.so >>$(PHP_MYSQL_IPK_DIR)$(TARGET_PREFIX)/etc/php.d/mysql.ini
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PHP_MYSQL_IPK_DIR)
 	### now make php-pear
 	rm -rf $(PHP_PEAR_IPK_DIR) $(BUILD_DIR)/php-pear_*_$(TARGET_ARCH).ipk
