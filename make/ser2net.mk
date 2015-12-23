@@ -115,8 +115,8 @@ $(SER2NET_BUILD_DIR)/.configured: $(DL_DIR)/$(SER2NET_SOURCE) $(SER2NET_PATCHES)
 	if test "$(BUILD_DIR)/$(SER2NET_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(SER2NET_DIR) $(@D) ; \
 	fi
-	sed -i -e 's/\/etc\/ser2net\.conf/\$(TARGET_PREFIX)\/etc\/ser2net.conf/g' $(SER2NET_BUILD_DIR)/ser2net.8 $(SER2NET_BUILD_DIR)/ser2net.c
-	sed -i -e 's/ttyS/usb\/tts\//g' $(SER2NET_BUILD_DIR)/ser2net.conf
+	sed -i -e 's|/etc/ser2net\.conf|$(TARGET_PREFIX)/etc/ser2net.conf|g' $(SER2NET_BUILD_DIR)/ser2net.8 $(SER2NET_BUILD_DIR)/ser2net.c
+	sed -i -e 's|ttyS|usb/tts/|g' $(SER2NET_BUILD_DIR)/ser2net.conf
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SER2NET_CPPFLAGS)" \
