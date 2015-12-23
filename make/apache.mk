@@ -14,7 +14,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 APACHE_SITE=http://archive.apache.org/dist/httpd
-APACHE_VERSION=2.4.16
+APACHE_VERSION=2.4.18
 APACHE_SOURCE=httpd-$(APACHE_VERSION).tar.bz2
 APACHE_DIR=httpd-$(APACHE_VERSION)
 APACHE_UNZIP=bzcat
@@ -275,6 +275,8 @@ $(APACHE_IPK) $(APACHE_MANUAL_IPK): $(APACHE_BUILD_DIR)/.built
 	sed -i -e "s%$(STAGING_DIR)%%" $(APACHE_IPK_DIR)$(TARGET_PREFIX)/sbin/apxs
 	sed -i -e "s%^#!.*perl%#!$(TARGET_PREFIX)/bin/perl%" $(APACHE_IPK_DIR)$(TARGET_PREFIX)/sbin/apxs
 	sed -i -e "s%^#!.*perl%#!$(TARGET_PREFIX)/bin/perl%" $(APACHE_IPK_DIR)$(TARGET_PREFIX)/sbin/dbmmanage
+	rm -f $(APACHE_IPK_DIR)$(TARGET_PREFIX)/etc/apache2/httpd.conf
+	$(INSTALL) -m 644 $(APACHE_SOURCE_DIR)/httpd.conf $(APACHE_IPK_DIR)$(TARGET_PREFIX)/etc/apache2
 	$(INSTALL) -d $(APACHE_IPK_DIR)$(TARGET_PREFIX)/etc/apache2/conf.d
 	$(INSTALL) -d $(APACHE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
 	$(INSTALL) -m 755 $(APACHE_SOURCE_DIR)/rc.apache $(APACHE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S80apache
