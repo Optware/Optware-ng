@@ -275,8 +275,9 @@ $(APACHE_IPK) $(APACHE_MANUAL_IPK): $(APACHE_BUILD_DIR)/.built
 	sed -i -e "s%$(STAGING_DIR)%%" $(APACHE_IPK_DIR)$(TARGET_PREFIX)/sbin/apxs
 	sed -i -e "s%^#!.*perl%#!$(TARGET_PREFIX)/bin/perl%" $(APACHE_IPK_DIR)$(TARGET_PREFIX)/sbin/apxs
 	sed -i -e "s%^#!.*perl%#!$(TARGET_PREFIX)/bin/perl%" $(APACHE_IPK_DIR)$(TARGET_PREFIX)/sbin/dbmmanage
-	rm -f $(APACHE_IPK_DIR)$(TARGET_PREFIX)/etc/apache2/httpd.conf
-	$(INSTALL) -m 644 $(APACHE_SOURCE_DIR)/httpd.conf $(APACHE_IPK_DIR)$(TARGET_PREFIX)/etc/apache2
+	sed -i -e '/LoadModule slotmem_shm_module\|LoadModule ssl_module/s/^#//' \
+		$(APACHE_IPK_DIR)$(TARGET_PREFIX)/etc/apache2/httpd.conf \
+		$(APACHE_IPK_DIR)$(TARGET_PREFIX)/etc/apache2/original/httpd.conf
 	$(INSTALL) -d $(APACHE_IPK_DIR)$(TARGET_PREFIX)/etc/apache2/conf.d
 	$(INSTALL) -d $(APACHE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
 	$(INSTALL) -m 755 $(APACHE_SOURCE_DIR)/rc.apache $(APACHE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S80apache
