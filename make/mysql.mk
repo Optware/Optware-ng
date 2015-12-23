@@ -26,7 +26,12 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-MYSQL_OLD_TARGETS:=\
+#MYSQL_OLD_TARGETS:=\
+buildroot-mipsel-ng \
+buildroot-armv5eabi-ng \
+buildroot-ppc-603e
+
+MYSQL_NO_64BIT_ATOMICS:=\
 buildroot-mipsel-ng \
 buildroot-armv5eabi-ng \
 buildroot-ppc-603e
@@ -87,6 +92,7 @@ $(MYSQL_SOURCE_DIR)/hostname.patch \
 $(MYSQL_SOURCE_DIR)/my.cnf_location.patch \
 $(MYSQL_SOURCE_DIR)/my_default.patch \
 $(MYSQL_SOURCE_DIR)/mysqld.patch \
+$(MYSQL_SOURCE_DIR)/no_64bit_atomics.patch \
 $(MYSQL_SOURCE_DIR)/sasl_defs.patch
 else
 MYSQL_PATCHES=\
@@ -112,6 +118,12 @@ MYSQL_CPPFLAGS=\
 -DHAVE_IB_GCC_ATOMIC_COMPARE_EXCHANGE \
 -DHAVE_IB_GCC_ATOMIC_THREAD_FENCE \
 -DHAVE_IB_ATOMIC_PTHREAD_T_GCC
+
+ifeq ($(OPTWARE_TARGET), $(filter $(MYSQL_NO_64BIT_ATOMICS), $(OPTWARE_TARGET)))
+MYSQL_CPPFLAGS += \
+-DHAVE_GCC_ATOMIC_BUILTINS \
+-DHAVE_NO_64BIT_ATOMICS
+endif
 
 ifneq ($(OPTWARE_TARGET), $(filter $(MYSQL_OLD_TARGETS), $(OPTWARE_TARGET)))
 MYSQL_CONFIGURE_ARGS=\
