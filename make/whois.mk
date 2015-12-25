@@ -21,8 +21,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-WHOIS_SITE=http://ftp.debian.org/debian/pool/main/w/whois
-WHOIS_VERSION=5.2.10
+WHOIS_SITE=http://ftp.lfs-matrix.net/pub/blfs/conglomeration/whois
+WHOIS_VERSION=5.2.11
 WHOIS_SOURCE=whois_$(WHOIS_VERSION).tar.xz
 WHOIS_DIR=whois-$(WHOIS_VERSION)
 WHOIS_UNZIP=$(HOST_STAGING_PREFIX)/bin/xzcat
