@@ -1,5 +1,5 @@
---- src/os/unix/ngx_errno.c.orig	2012-02-05 20:02:59.000000000 +0000
-+++ src/os/unix/ngx_errno.c	2012-02-26 04:51:45.527049223 +0000
+--- src/os/unix/ngx_errno.c.orig
++++ src/os/unix/ngx_errno.c
 @@ -32,56 +32,12 @@
  u_char *
  ngx_strerror(ngx_err_t err, u_char *errstr, size_t size)
@@ -15,7 +15,7 @@
  }
  
  
- ngx_uint_t
+ ngx_int_t
  ngx_strerror_init(void)
  {
 -    char       *msg;
@@ -43,13 +43,13 @@
 -        if (p == NULL) {
 -            goto failed;
 -        }
--
+ 
 -        ngx_memcpy(p, msg, len);
 -        ngx_sys_errlist[err].len = len;
 -        ngx_sys_errlist[err].data = p;
 -    }
 -
-     return NGX_OK;
+-    return NGX_OK;
 -
 -failed:
 -
