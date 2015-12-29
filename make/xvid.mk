@@ -33,7 +33,7 @@ XVID_CONFLICTS=
 #
 # XVID_IPK_VERSION should be incremented when the ipk changes.
 #
-XVID_IPK_VERSION=1
+XVID_IPK_VERSION=2
 
 #
 # XVID_PATCHES should list any patches, in the the order in
@@ -200,7 +200,7 @@ $(XVID_IPK): $(XVID_BUILD_DIR)/.built
 	$(MAKE) DESTDIR=$(XVID_IPK_DIR) -C $(XVID_BUILD_DIR)/build/generic install
 	rm -f $(XVID_IPK_DIR)$(TARGET_PREFIX)/lib/libxvidcore.a
 	$(STRIP_COMMAND) $(XVID_IPK_DIR)$(TARGET_PREFIX)/lib/libxvidcore.so.$(XVID_LIB_VER)
-	ln -s $(XVID_IPK_DIR)$(TARGET_PREFIX)/lib/libxvidcore.so.$(XVID_LIB_VER) $(XVID_IPK_DIR)$(TARGET_PREFIX)/lib/libxvidcore.so
+	ln -s libxvidcore.so.$(XVID_LIB_VER) $(XVID_IPK_DIR)$(TARGET_PREFIX)/lib/libxvidcore.so
 	$(MAKE) $(XVID_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XVID_IPK_DIR)
 
