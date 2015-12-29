@@ -84,14 +84,14 @@
      echo " $ngx_size bytes"
  fi
  
---- auto/endianess.orig	2007-06-15 17:16:01.000000000 -0700
-+++ auto/endianess	2007-06-15 17:18:33.000000000 -0700
-@@ -26,7 +26,7 @@
+--- auto/endianness.orig
++++ auto/endianness
+@@ -32,7 +32,7 @@
  eval "$ngx_test >> $NGX_AUTOCONF_ERR 2>&1"
  
  if [ -x $NGX_AUTOTEST ]; then
 -    if $NGX_AUTOTEST >/dev/null 2>&1; then
 +    if test "$ngx_cache_ENDIAN" = "LITTLE" || $NGX_AUTOTEST >/dev/null 2>&1; then
-         echo " little endianess"
+         echo " little endian"
          have=NGX_HAVE_LITTLE_ENDIAN . auto/have
      else
