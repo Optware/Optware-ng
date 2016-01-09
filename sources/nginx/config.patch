@@ -1,0 +1,43 @@
+--- conf/nginx.conf.orig
++++ conf/nginx.conf
+@@ -1,16 +1,16 @@
+ 
+-#user  nobody;
++user  nobody;
+ worker_processes  1;
+ 
+-#error_log  logs/error.log;
+-#error_log  logs/error.log  notice;
+-#error_log  logs/error.log  info;
++#error_log  %OPTWARE_TARGET_PREFIX%/var/log/nginx/error.log;
++#error_log  %OPTWARE_TARGET_PREFIX%/var/log/nginx/error.log  notice;
++#error_log  %OPTWARE_TARGET_PREFIX%/var/log/nginx/error.log  info;
+ 
+-#pid        logs/nginx.pid;
++#pid        %OPTWARE_TARGET_PREFIX%/var/run/nginx.pid;
+ 
+ 
+ events {
+-    worker_connections  1024;
++    worker_connections  64;
+ }
+ 
+ 
+@@ -22,7 +22,7 @@
+     #                  '$status $body_bytes_sent "$http_referer" '
+     #                  '"$http_user_agent" "$http_x_forwarded_for"';
+ 
+-    #access_log  logs/access.log  main;
++    #access_log  %OPTWARE_TARGET_PREFIX%/var/log/nginx/access.log;
+ 
+     sendfile        on;
+     #tcp_nopush     on;
+@@ -38,7 +38,7 @@
+ 
+         #charset koi8-r;
+ 
+-        #access_log  logs/host.access.log  main;
++        #access_log  %OPTWARE_TARGET_PREFIX%/var/log/nginx/host.access.log;
+ 
+         location / {
+             root   html;

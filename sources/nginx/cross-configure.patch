@@ -68,19 +68,29 @@
                  echo " not found"
  
              else
---- auto/types/sizeof.orig	2006-08-30 03:39:17.000000000 -0700
-+++ auto/types/sizeof	2007-06-15 16:36:05.000000000 -0700
-@@ -38,7 +38,12 @@
+--- auto/types/sizeof.orig
++++ auto/types/sizeof
+@@ -25,8 +25,13 @@ $NGX_INCLUDE_UNISTD_H
+ $NGX_INCLUDE_INTTYPES_H
+ $NGX_INCLUDE_AUTO_CONFIG_H
+ 
++char object_code_block[] = {
++	'\n', 'e', '4', 'V', 'A',
++	'0', 'x', ('0' + sizeof($ngx_type)),
++	'Y', '3', 'p', 'M', '\n'
++};
++
+ int main() {
+-    printf("%d", (int) sizeof($ngx_type));
+     return 0;
+ }
+ 
+@@ -40,7 +45,7 @@ eval "$ngx_test >> $NGX_AUTOCONF_ERR 2>&
  
  
  if [ -x $NGX_AUTOTEST ]; then
 -    ngx_size=`$NGX_AUTOTEST`
-+    varname=`echo "ngx_cache_sizeof_$ngx_type" | tr ' *' '__'`
-+    if test -n `eval echo '$'"$varname"`; then
-+        ngx_size=`eval echo '$'"$varname"`
-+    else
-+        ngx_size=`$NGX_AUTOTEST`
-+    fi
++    ngx_size=`sed -ne 's/^e4VA0x\(.\)Y3pM$/\1/p' < $NGX_AUTOTEST`
      echo " $ngx_size bytes"
  fi
  
@@ -95,3 +105,110 @@
          echo " little endian"
          have=NGX_HAVE_LITTLE_ENDIAN . auto/have
      else
+--- auto/cc/name.orig
++++ auto/cc/name
+@@ -7,7 +7,7 @@ if [ "$NGX_PLATFORM" != win32 ]; then
+ 
+     ngx_feature="C compiler"
+     ngx_feature_name=
+-    ngx_feature_run=yes
++    ngx_feature_run=
+     ngx_feature_incs=
+     ngx_feature_path=
+     ngx_feature_libs=
+--- auto/cc/conf.orig
++++ auto/cc/conf
+@@ -178,7 +178,7 @@ if [ "$NGX_PLATFORM" != win32 ]; then
+     else
+         ngx_feature="C99 variadic macros"
+         ngx_feature_name="NGX_HAVE_C99_VARIADIC_MACROS"
+-        ngx_feature_run=yes
++        ngx_feature_run=no
+         ngx_feature_incs="#include <stdio.h>
+ #define var(dummy, ...)  sprintf(__VA_ARGS__)"
+         ngx_feature_path=
+@@ -192,7 +192,7 @@ if [ "$NGX_PLATFORM" != win32 ]; then
+ 
+     ngx_feature="gcc variadic macros"
+     ngx_feature_name="NGX_HAVE_GCC_VARIADIC_MACROS"
+-    ngx_feature_run=yes
++    ngx_feature_run=no
+     ngx_feature_incs="#include <stdio.h>
+ #define var(dummy, args...)  sprintf(args)"
+     ngx_feature_path=
+--- auto/os/linux.orig
++++ auto/os/linux
+@@ -36,7 +36,7 @@ fi
+ 
+ ngx_feature="epoll"
+ ngx_feature_name="NGX_HAVE_EPOLL"
+-ngx_feature_run=yes
++ngx_feature_run=no
+ ngx_feature_incs="#include <sys/epoll.h>"
+ ngx_feature_path=
+ ngx_feature_libs=
+@@ -93,7 +93,7 @@ ngx_feature_test="int fd; struct stat sb
+ CC_AUX_FLAGS="$cc_aux_flags -D_GNU_SOURCE"
+ ngx_feature="sendfile()"
+ ngx_feature_name="NGX_HAVE_SENDFILE"
+-ngx_feature_run=yes
++ngx_feature_run=no
+ ngx_feature_incs="#include <sys/sendfile.h>
+                   #include <errno.h>"
+ ngx_feature_path=
+@@ -114,7 +114,7 @@ fi
+ CC_AUX_FLAGS="$cc_aux_flags -D_GNU_SOURCE -D_FILE_OFFSET_BITS=64"
+ ngx_feature="sendfile64()"
+ ngx_feature_name="NGX_HAVE_SENDFILE64"
+-ngx_feature_run=yes
++ngx_feature_run=no
+ ngx_feature_incs="#include <sys/sendfile.h>
+                   #include <errno.h>"
+ ngx_feature_path=
+@@ -132,7 +132,7 @@ ngx_include="sys/prctl.h"; . auto/includ
+ 
+ ngx_feature="prctl(PR_SET_DUMPABLE)"
+ ngx_feature_name="NGX_HAVE_PR_SET_DUMPABLE"
+-ngx_feature_run=yes
++ngx_feature_run=no
+ ngx_feature_incs="#include <sys/prctl.h>"
+ ngx_feature_path=
+ ngx_feature_libs=
+--- auto/unix.orig
++++ auto/unix
+@@ -678,7 +678,7 @@ ngx_feature_test="void *p; p = memalign(
+ 
+ ngx_feature="mmap(MAP_ANON|MAP_SHARED)"
+ ngx_feature_name="NGX_HAVE_MAP_ANON"
+-ngx_feature_run=yes
++ngx_feature_run=no
+ ngx_feature_incs="#include <sys/mman.h>"
+ ngx_feature_path=
+ ngx_feature_libs=
+@@ -691,7 +691,7 @@ ngx_feature_test="void *p;
+ 
+ ngx_feature='mmap("/dev/zero", MAP_SHARED)'
+ ngx_feature_name="NGX_HAVE_MAP_DEVZERO"
+-ngx_feature_run=yes
++ngx_feature_run=no
+ ngx_feature_incs="#include <sys/mman.h>
+                   #include <sys/stat.h>
+                   #include <fcntl.h>"
+@@ -706,7 +706,7 @@ ngx_feature_test='void *p; int  fd;
+ 
+ ngx_feature="System V shared memory"
+ ngx_feature_name="NGX_HAVE_SYSVSHM"
+-ngx_feature_run=yes
++ngx_feature_run=no
+ ngx_feature_incs="#include <sys/ipc.h>
+                   #include <sys/shm.h>"
+ ngx_feature_path=
+@@ -720,7 +720,7 @@ ngx_feature_test="int  id;
+ 
+ ngx_feature="POSIX semaphores"
+ ngx_feature_name="NGX_HAVE_POSIX_SEM"
+-ngx_feature_run=yes
++ngx_feature_run=no
+ ngx_feature_incs="#include <semaphore.h>"
+ ngx_feature_path=
+ ngx_feature_libs=

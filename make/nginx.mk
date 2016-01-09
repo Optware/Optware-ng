@@ -36,7 +36,7 @@ NGINX_CONFLICTS=
 #
 # NGINX_IPK_VERSION should be incremented when the ipk changes.
 #
-NGINX_IPK_VERSION?=1
+NGINX_IPK_VERSION?=2
 
 #
 # NGINX_CONFFILES should be a list of user-editable files
@@ -52,30 +52,24 @@ NGINX_CONFFILES=\
 # NGINX_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-NGINX_PATCHES=
+NGINX_PATCHES=\
+$(NGINX_SOURCE_DIR)/sys_nerr.patch \
+$(NGINX_SOURCE_DIR)/config.patch \
+
 
 ifeq ($(LIBC_STYLE), uclibc)
-NGINX_PATCHES+=$(NGINX_SOURCE_DIR)/ngx_errno.patch
+#NGINX_PATCHES+=$(NGINX_SOURCE_DIR)/ngx_errno.patch
 endif
 
 ifneq ($(HOSTCC), $(TARGET_CC))
-NGINX_PATCHES+=$(NGINX_SOURCE_DIR)/cross-configure$(if $(filter 0.8.54, $(NGINX_VERSION)),-$(NGINX_VERSION),).patch
+NGINX_PATCHES+=$(NGINX_SOURCE_DIR)/cross-configure$(if $(filter 0.8.54, $(NGINX_VERSION)),-$(NGINX_VERSION),).patch \
 
 NGINX_CONFIGURE_ENV=NGX_SYSTEM=Linux NGX_MACHINE=$(TARGET_ARCH) \
 NGX_RELEASE=$(if $(filter module-init-tools, $(PACKAGES)),2.6,2.4) \
 
 NGINX_CONFIGURE_ENV+=\
 cross_compiling=yes \
-ngx_cache_NGX_HAVE_STRERROR_R=no \
-ngx_cache_NGX_SYS_NERR=sys_nerr \
-ngx_cache_sizeof_int=4 \
-ngx_cache_sizeof_long=4 \
-ngx_cache_sizeof_long_long=8 \
-ngx_cache_sizeof_void__=4 \
-ngx_cache_sizeof_sig_atomic_t=4 \
-ngx_cache_sizeof_size_t=4 \
-ngx_cache_sizeof_off_t=8 \
-ngx_cache_sizeof_time_t=4
+ngx_cache_NGX_HAVE_STRERROR_R=no
 endif
 
 NGINX_CONFIGURE_ENV += ngx_cache_NGX_HAVE_EPOLL=$(strip \
@@ -152,13 +146,6 @@ $(NGINX_BUILD_DIR)/.configured: $(DL_DIR)/$(NGINX_SOURCE) $(NGINX_PATCHES) make/
 	if test "$(BUILD_DIR)/$(NGINX_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(NGINX_DIR) $(@D) ; \
 	fi
-#		--build=$(GNU_HOST_NAME) \
-		--host=$(GNU_TARGET_NAME) \
-		--target=$(GNU_TARGET_NAME) \
-		--crossbuild=linux \
-                --with-threads \
-		--disable-nls \
-		--disable-static
 	sed -i -e 's|/usr/include/|$(TARGET_INCDIR)/|' $(@D)/auto/os/linux
 	(cd $(@D); \
 	    if $(TARGET_CC) -E -P $(SOURCE_DIR)/common/endianness.c | grep -q puts.*LITTLE_ENDIAN; \
@@ -166,6 +153,7 @@ $(NGINX_BUILD_DIR)/.configured: $(DL_DIR)/$(NGINX_SOURCE) $(NGINX_PATCHES) make/
 	    fi; \
 	    $(NGINX_CONFIGURE_ENV) \
 	    ./configure \
+		--crossbuild=Linux::$(TARGET_ARCH) \
 		--prefix=$(TARGET_PREFIX)/share/nginx \
 		--sbin-path=$(TARGET_PREFIX)/sbin/nginx \
 		--conf-path=$(TARGET_PREFIX)/etc/nginx/nginx.conf \
@@ -183,6 +171,7 @@ $(NGINX_BUILD_DIR)/.configured: $(DL_DIR)/$(NGINX_SOURCE) $(NGINX_PATCHES) make/
 		--with-md5=$(STAGING_LIB_DIR) \
 		--with-sha1=$(STAGING_LIB_DIR) \
                 --with-http_ssl_module \
+		--without-http_upstream_zone_module \
 		; \
 	)
 	sed -i.orig \
