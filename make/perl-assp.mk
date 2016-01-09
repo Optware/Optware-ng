@@ -36,7 +36,7 @@ PERL_ASSP_CONFLICTS=
 #
 # PERL_ASSP_IPK_VERSION should be incremented when the ipk changes.
 #
-PERL_ASSP_IPK_VERSION=1
+PERL_ASSP_IPK_VERSION=2
 
 #
 # PERL_ASSP_CONFFILES should be a list of user-editable files
@@ -214,8 +214,8 @@ $(PERL_ASSP_IPK): $(PERL_ASSP_BUILD_DIR)/.built
 	$(INSTALL) -m 644 $(PERL_ASSP_BUILD_DIR)/*report.txt $(PERL_ASSP_IPK_DIR)$(TARGET_PREFIX)/lib/assp/reports
 	$(INSTALL) -d $(PERL_ASSP_IPK_DIR)$(TARGET_PREFIX)/lib/assp/images
 	$(INSTALL) -m 644 $(PERL_ASSP_BUILD_DIR)/images/* $(PERL_ASSP_IPK_DIR)$(TARGET_PREFIX)/lib/assp/images
-	ln -s $(PERL_ASSP_IPK_DIR)$(TARGET_PREFIX)/lib/assp/assp.pl $(PERL_ASSP_IPK_DIR)$(TARGET_PREFIX)/sbin/assp
-	ln -s $(PERL_ASSP_IPK_DIR)$(TARGET_PREFIX)/lib/assp/stats.sh $(PERL_ASSP_IPK_DIR)$(TARGET_PREFIX)/sbin/assplog
+	ln -s ../lib/assp/assp.pl $(PERL_ASSP_IPK_DIR)$(TARGET_PREFIX)/sbin/assp
+	ln -s ../lib/assp/stats.sh $(PERL_ASSP_IPK_DIR)$(TARGET_PREFIX)/sbin/assplog
 #	$(INSTALL) -d $(PERL_ASSP_IPK_DIR)$(TARGET_PREFIX)/man/man8
 #	$(INSTALL) -m 644 $(PERL_ASSP_BUILD_DIR)/assp.8 $(PERL_ASSP_IPK_DIR)$(TARGET_PREFIX)/man/man8
 #	$(INSTALL) -m 644 $(PERL_ASSP_BUILD_DIR)/assplog.8 $(PERL_ASSP_IPK_DIR)$(TARGET_PREFIX)/man/man8
