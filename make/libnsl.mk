@@ -30,24 +30,18 @@ else
 LIBNSL_SO_DIR ?= $(TARGET_LIBDIR)
 endif
 
-$(LIBNSL_BUILD_DIR)/.configured: make/libnsl.mk
-	rm -rf $(BUILD_DIR)/$(LIBNSL_DIR) $(LIBNSL_BUILD_DIR)
-	mkdir -p $(LIBNSL_BUILD_DIR)
+$(LIBNSL_BUILD_DIR)/.configured: make/libnsl.mk $(OPTWARE_TOP)/platforms/toolchain-$(OPTWARE_TARGET).mk
+	$(MAKE) toolchain
 	touch $@
 
 libnsl-unpack: $(LIBNSL_BUILD_DIR)/.configured
 
-$(LIBNSL_BUILD_DIR)/.built: $(LIBNSL_BUILD_DIR)/.configured
-	rm -f $@
-	cp $(LIBNSL_SO_DIR)/$(LIBNSL_LIBNAME)-$(LIBNSL_VERSION).so $(LIBNSL_BUILD_DIR)/
-	touch $@
+libnsl: $(LIBNSL_BUILD_DIR)/.configured
 
-libnsl: $(LIBNSL_BUILD_DIR)/.built
-
-$(LIBNSL_BUILD_DIR)/.staged: $(LIBNSL_BUILD_DIR)/.built
+$(LIBNSL_BUILD_DIR)/.staged: $(LIBNSL_BUILD_DIR)/.configured
 	rm -f $@
 	$(INSTALL) -d $(STAGING_LIB_DIR)
-	$(INSTALL) -m 644 $(LIBNSL_BUILD_DIR)/$(LIBNSL_LIBNAME)-$(LIBNSL_VERSION).so $(STAGING_LIB_DIR)
+	$(INSTALL) -m 644 $(LIBNSL_SO_DIR)/$(LIBNSL_LIBNAME)-$(LIBNSL_VERSION).so $(STAGING_LIB_DIR)
 	(cd $(STAGING_LIB_DIR); \
 	 ln -nfs $(LIBNSL_LIBNAME)-$(LIBNSL_VERSION).so \
                  $(LIBNSL_LIBNAME).so; \
@@ -74,10 +68,11 @@ $(LIBNSL_IPK_DIR)/CONTROL/control:
 	@echo "Depends: $(LIBNSL_DEPENDS)" >>$@
 	@echo "Conflicts: $(LIBNSL_CONFLICTS)" >>$@
 
-$(LIBNSL_IPK): $(LIBNSL_BUILD_DIR)/.built
+$(LIBNSL_IPK): $(LIBNSL_BUILD_DIR)/.configured
 	rm -rf $(LIBNSL_IPK_DIR) $(BUILD_DIR)/libnsl_*_$(TARGET_ARCH).ipk
 	$(INSTALL) -d $(LIBNSL_IPK_DIR)$(TARGET_PREFIX)/lib
-	$(INSTALL) -m 644 $(LIBNSL_BUILD_DIR)/$(LIBNSL_LIBNAME)-$(LIBNSL_VERSION).so $(LIBNSL_IPK_DIR)$(TARGET_PREFIX)/lib
+	$(INSTALL) -m 644 $(LIBNSL_SO_DIR)/$(LIBNSL_LIBNAME)-$(LIBNSL_VERSION).so $(LIBNSL_IPK_DIR)$(TARGET_PREFIX)/lib
+	$(STRIP_COMMAND) $(LIBNSL_IPK_DIR)$(TARGET_PREFIX)/lib/$(LIBNSL_LIBNAME)-$(LIBNSL_VERSION).so
 	(cd $(LIBNSL_IPK_DIR)$(TARGET_PREFIX)/lib; \
 	 ln -s $(LIBNSL_LIBNAME)-$(LIBNSL_VERSION).so \
                $(LIBNSL_LIBNAME).so; \
