@@ -23,8 +23,8 @@
 OPENJDK8_HG=http://hg.openjdk.java.net/jdk8u/jdk8u
 OPENJDK8_ICEDTEA_HG=http://icedtea.classpath.org/hg
 OPENJDK8_SITE=http://icedtea.wildebeest.org/download
-OPENJDK8_UPDATE_VERSION=72
-OPENJDK8_BUILD_NUMBER=b05
+OPENJDK8_UPDATE_VERSION=76
+OPENJDK8_BUILD_NUMBER=b01
 OPENJDK8_VERSION=8u$(OPENJDK8_UPDATE_VERSION)-$(OPENJDK8_BUILD_NUMBER)
 OPENJDK8_SOURCE=jdk$(OPENJDK8_VERSION).tar.bz2
 OPENJDK8_ICEDTEA_TAG=icedtea-3.0.0pre06
@@ -131,7 +131,6 @@ $(OPENJDK8_SOURCE_DIR)/openjdk/hotspot-set-compiler.diff \
 $(OPENJDK8_SOURCE_DIR)/openjdk/hotspot-sparc-arch.diff \
 $(OPENJDK8_SOURCE_DIR)/openjdk/os_linux.uclibc.patch \
 $(OPENJDK8_SOURCE_DIR)/openjdk/os_linux.fix-i386-zero-build.patch \
-$(OPENJDK8_SOURCE_DIR)/openjdk/rhbz1206656_fix_current_stack_pointer.patch \
 $(OPENJDK8_SOURCE_DIR)/openjdk/xtoolkit.uclibc.patch \
 $(OPENJDK8_SOURCE_DIR)/openjdk/zero-architectures.diff \
 $(OPENJDK8_SOURCE_DIR)/openjdk/zero-fpu-control-is-noop.diff \
@@ -148,7 +147,7 @@ $(OPENJDK8_SOURCE_DIR)/jamvm/URLClassPath.stub.diff \
 OPENJDK8_CPPFLAGS=
 OPENJDK8_LDFLAGS=
 
-OPENJDK8_CPPFLAGS=-I$(OPENJDK8_BUILD_DIR)/openjdk/jdk/src/share/npt \
+OPENJDK8_CPPFLAGS=-g3 -I$(OPENJDK8_BUILD_DIR)/openjdk/jdk/src/share/npt \
 -I$(OPENJDK8_BUILD_DIR)/openjdk/jdk/src/share/native/sun/awt/image/jpeg \
 -I$(OPENJDK8_BUILD_DIR)/jamvm/install/include \
 $(STAGING_CPPFLAGS)
