@@ -1,9 +1,9 @@
-# This toolchain is gcc 5.2.0 on uClibc-ng 1.0.9
+# This toolchain is gcc 5.2.0 on uClibc-ng 1.0.10
 
 GNU_TARGET_NAME = arm-linux
 EXACT_TARGET_NAME = arm-buildroot-linux-uclibcgnueabi
 
-UCLIBC_VERSION=1.0.9
+UCLIBC_VERSION=1.0.10
 
 DEFAULT_TARGET_PREFIX=/opt
 TARGET_PREFIX ?= /opt
@@ -76,7 +76,10 @@ $(DL_DIR)/$(TOOLCHAIN_SOURCE):
 	$(WGET) -P $(@D) $(TOOLCHAIN_SITE)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
-$(TARGET_CROSS_TOP)/.configured: $(DL_DIR)/$(TOOLCHAIN_SOURCE) #$(OPTWARE_TOP)/platforms/toolchain-$(OPTWARE_TARGET).mk
+$(TARGET_CROSS_TOP)/.configured: $(DL_DIR)/$(TOOLCHAIN_SOURCE) \
+		$(BUILDROOT-ARMv5EABI-NG_SOURCE_DIR)/config \
+		$(BUILDROOT-ARMv5EABI-NG_PATCHES) \
+		#$(OPTWARE_TOP)/platforms/toolchain-$(OPTWARE_TARGET).mk
 	rm -rf $(TARGET_CROSS_TOP) $(TARGET_CROSS_BUILD_DIR)
 	mkdir -p $(TARGET_CROSS_TOP)/arm-buildroot-linux-uclibcgnueabi/sysroot
 	tar -xjvf $(DL_DIR)/$(TOOLCHAIN_SOURCE) -C $(BASE_DIR)/toolchain
