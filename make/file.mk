@@ -20,9 +20,15 @@
 # You should change all these variables to suit your package.
 #
 FILE_SITE=ftp://ftp.astron.com/pub/file
-FILE_VERSION=5.25
-FILE_SOURCE=file-$(FILE_VERSION).tar.gz
-FILE_DIR=file-$(FILE_VERSION)
+FILE_BASE_VERSION=5.25
+FILE_GIT_VERSION=20160111
+ifneq ($(FILE_GIT_VERSION),)
+FILE_VERSION=$(FILE_BASE_VERSION)+git$(FILE_GIT_VERSION)
+else
+FILE_VERSION=$(FILE_BASE_VERSION)
+endif
+FILE_SOURCE=file-$(FILE_BASE_VERSION).tar.gz
+FILE_DIR=file-$(FILE_BASE_VERSION)
 FILE_UNZIP=zcat
 FILE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 FILE_DESCRIPTION=Ubiquitous file identification utility.
@@ -40,13 +46,16 @@ FILE_IPK_VERSION=1
 # FILE_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#FILE_PATCHES=$(FILE_SOURCE_DIR)/REG_STARTEND.patch
+FILE_PATCHES=
+ifneq ($(FILE_GIT_VERSION),)
+FILE_PATCHES+=$(FILE_SOURCE_DIR)/file-$(FILE_BASE_VERSION)-to-git$(FILE_GIT_VERSION).patch
+endif
 
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-FILE_CPPFLAGS=
+FILE_CPPFLAGS=-DTEST_DER
 FILE_LDFLAGS=
 
 #
@@ -91,6 +100,9 @@ $(FILE_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(FILE_SOURCE) make/fi
 	$(MAKE) zlib-host-stage
 	rm -rf $(HOST_BUILD_DIR)/$(FILE_DIR) $(@D)
 	$(FILE_UNZIP) $(DL_DIR)/$(FILE_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
+	if test -n "$(FILE_PATCHES)"; \
+		then cat $(FILE_PATCHES) | $(PATCH) -fTd $(HOST_BUILD_DIR)/$(FILE_DIR) -p1; \
+	fi
 	mv $(HOST_BUILD_DIR)/$(FILE_DIR) $(@D)
 	if test `$(HOSTCC) -dumpversion | cut -c1` = 3 ; \
 		then sed -i -e 's/ -Wextra//' $(@D)/configure ; \
@@ -130,7 +142,7 @@ endif
 	rm -rf $(BUILD_DIR)/$(FILE_DIR) $(@D)
 	$(FILE_UNZIP) $(DL_DIR)/$(FILE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(FILE_PATCHES)"; \
-		then cat $(FILE_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(FILE_DIR) -p0; \
+		then cat $(FILE_PATCHES) | $(PATCH) -fTd $(BUILD_DIR)/$(FILE_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(FILE_DIR) $(@D)
 	if test `$(TARGET_CC) -dumpversion | cut -c1` = 3 ; \
