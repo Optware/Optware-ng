@@ -129,7 +129,7 @@ libpam-source: $(DL_DIR)/$(LIBPAM_SOURCE) $(LIBPAM_PATCHES)
 # shown below to make various patches to it.
 #
 $(LIBPAM_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBPAM_SOURCE) $(LIBPAM_PATCHES) make/libpam.mk
-#	$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) gettext-host-stage
 	rm -rf $(BUILD_DIR)/$(LIBPAM_DIR) $(@D)
 	$(LIBPAM_UNZIP) $(DL_DIR)/$(LIBPAM_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBPAM_PATCHES)" ; \
