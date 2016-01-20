@@ -55,7 +55,7 @@ endif
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-FILE_CPPFLAGS=-DTEST_DER
+FILE_CPPFLAGS=
 FILE_LDFLAGS=
 
 #
