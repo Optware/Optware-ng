@@ -19,7 +19,7 @@
 #
 # You should change all these variables to suit your package.
 #
-CUPS_VERSION=2.0.1
+CUPS_VERSION=2.1.2
 CUPS_SITE=https://www.cups.org/software/$(CUPS_VERSION)
 CUPS_SOURCE=cups-$(CUPS_VERSION)-source.tar.bz2
 CUPS_DIR=cups-$(CUPS_VERSION)
@@ -28,7 +28,7 @@ CUPS_MAINTAINER=Inge Arnesen <inge.arnesen@gmail.com>
 CUPS_DESCRIPTION=Common Unix Printing System
 CUPS_SECTION=net
 CUPS_PRIORITY=optional
-CUPS_DEPENDS=libjpeg, libpng, libpam, libtiff, openssl, zlib, psmisc
+CUPS_DEPENDS=libjpeg, libpng, libpam, libtiff, openssl, zlib, psmisc, libusb1, dbus
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
 CUPS_DEPENDS+=, openldap-libs
 endif
@@ -44,7 +44,7 @@ CUPS_CONFLICTS=
 #
 # CUPS_IPK_VERSION should be incremented when the ipk changes.
 #
-CUPS_IPK_VERSION=2
+CUPS_IPK_VERSION=1
 
 CUPS_DOC_DESCRIPTION=Common Unix Printing System documentation.
 CUPS-DEV_DESCRIPTION=Development files for CUPS
@@ -60,7 +60,7 @@ CUPS_CONFFILES=$(TARGET_PREFIX)/etc/cups/cupsd.conf $(TARGET_PREFIX)/etc/cups/pr
 # which they should be applied to the source code.
 #
 #CUPS_PATCHES=$(CUPS_SOURCE_DIR)/man-Makefile.patch $(CUPS_SOURCE_DIR)/ppdc-Makefile.patch
-CUPS_PATCHES=$(CUPS_SOURCE_DIR)/build_without_gnutls.patch
+CUPS_PATCHES=#$(CUPS_SOURCE_DIR)/build_without_gnutls.patch
 
 ifeq ($(LIBC_STYLE), uclibc)
 ifneq ($(OPTWARE_TARGET), ts101)
@@ -97,7 +97,7 @@ endif
 ifeq ($(OPTWARE_TARGET), $(filter syno-e500, $(OPTWARE_TARGET)))
 CUPS_CONFIG_OPTS=--disable-pam
 endif
-ifeq (libiconv, $(filter gnutls, $(PACKAGES)))
+ifeq (gnutls, $(filter gnutls, $(PACKAGES)))
 CUPS_CONFIG_OPTS+= --enable-gnutls
 else
 CUPS_CONFIG_OPTS+= --disable-gnutls
@@ -149,7 +149,7 @@ $(CUPS_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(CUPS_SOURCE) make/cu
 	rm -rf  $(HOST_BUILD_DIR)/$(CUPS_DIR) $(@D) \
 		$(HOST_STAGING_PREFIX)/share/cups $(HOST_STAGING_PREFIX)/etc/cups
 	$(CUPS_UNZIP) $(DL_DIR)/$(CUPS_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
-	cat $(CUPS_SOURCE_DIR)/build_without_gnutls.patch | $(PATCH) -d $(HOST_BUILD_DIR)/$(CUPS_DIR) -p1
+#	cat $(CUPS_SOURCE_DIR)/build_without_gnutls.patch | $(PATCH) -d $(HOST_BUILD_DIR)/$(CUPS_DIR) -p1
 	if test "$(HOST_BUILD_DIR)/$(CUPS_DIR)" != "$(@D)" ; \
 		then mv $(HOST_BUILD_DIR)/$(CUPS_DIR) $(@D) ; \
 	fi
@@ -191,7 +191,8 @@ cups-host-stage: $(CUPS_HOST_BUILD_DIR)/.staged
 
 $(CUPS_BUILD_DIR)/.configured: $(CUPS_HOST_BUILD_DIR)/.built $(DL_DIR)/$(CUPS_SOURCE) $(CUPS_PATCHES) make/cups.mk
 	$(MAKE) openssl-stage zlib-stage libpng-stage \
-		libjpeg-stage libtiff-stage libpam-stage
+		libjpeg-stage libtiff-stage libpam-stage \
+		libusb1-stage dbus-stage
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
 	$(MAKE) openldap-stage
 endif
@@ -217,6 +218,8 @@ endif
 		CPPFLAGS="$(CUPS_CPPFLAGS) $(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(CUPS_LDFLAGS) $(STAGING_LDFLAGS)" \
 		LIBS="$(CUPS_LIBS)" \
+		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
+		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
 		$(CUPS_CONFIG_ENV) \
 		./configure \
 		--verbose \
