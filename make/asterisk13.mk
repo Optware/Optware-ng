@@ -362,7 +362,7 @@ endif
 		--with-unixodbc=$(STAGING_PREFIX) \
 		--with-netsnmp=$(STAGING_PREFIX) \
 		--with-ltdl=$(STAGING_PREFIX) \
-		--with-mysqlclient=$(STAGING_PREFIX) \
+		--with-mysqlclient \
 		--with-bluetooth=$(STAGING_PREFIX) \
 		--with-jansson=$(STAGING_PREFIX) \
 		--without-srtp \
