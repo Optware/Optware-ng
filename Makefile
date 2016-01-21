@@ -335,7 +335,7 @@ COMMON_CROSS_PACKAGES = \
 	libdvb libdvbpsi libdvdnav libdvdread libdrm \
 	libebml libexosip2 \
 	libepoxy libevent \
-	libesmtp libexif libexplain libffi libftdi \
+	libesmtp libexif libexplain libfdk-aac libffi libftdi \
 	libgc libgcrypt libgd libghttp libgmp libgpg-error libgssapi \
 	libglade libhid \
 	libical \
