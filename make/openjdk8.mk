@@ -24,7 +24,7 @@ OPENJDK8_HG=http://hg.openjdk.java.net/jdk8u/jdk8u
 OPENJDK8_ICEDTEA_HG=http://icedtea.classpath.org/hg
 OPENJDK8_SITE=http://icedtea.wildebeest.org/download
 OPENJDK8_UPDATE_VERSION=76
-OPENJDK8_BUILD_NUMBER=b01
+OPENJDK8_BUILD_NUMBER=b02
 OPENJDK8_VERSION=8u$(OPENJDK8_UPDATE_VERSION)-$(OPENJDK8_BUILD_NUMBER)
 OPENJDK8_SOURCE=jdk$(OPENJDK8_VERSION).tar.bz2
 OPENJDK8_ICEDTEA_TAG=icedtea-3.0.0pre06
@@ -123,18 +123,19 @@ release \
 #OPENJDK8_PATCHES=$(OPENJDK8_SOURCE_DIR)/configure.patch
 
 OPENJDK8_OPENJDK_PATCHES=\
+$(OPENJDK8_SOURCE_DIR)/openjdk/toolchain.patch \
 $(OPENJDK8_SOURCE_DIR)/openjdk/gcc_definitions.uclibc.patch \
 $(OPENJDK8_SOURCE_DIR)/openjdk/hotspot-mips-align.diff \
 $(OPENJDK8_SOURCE_DIR)/openjdk/hotspot-no-march-i586.diff \
 $(OPENJDK8_SOURCE_DIR)/openjdk/hotspot-powerpcspe.diff \
 $(OPENJDK8_SOURCE_DIR)/openjdk/hotspot-set-compiler.diff \
-$(OPENJDK8_SOURCE_DIR)/openjdk/hotspot-sparc-arch.diff \
 $(OPENJDK8_SOURCE_DIR)/openjdk/os_linux.uclibc.patch \
 $(OPENJDK8_SOURCE_DIR)/openjdk/os_linux.fix-i386-zero-build.patch \
 $(OPENJDK8_SOURCE_DIR)/openjdk/xtoolkit.uclibc.patch \
 $(OPENJDK8_SOURCE_DIR)/openjdk/zero-architectures.diff \
 $(OPENJDK8_SOURCE_DIR)/openjdk/zero-fpu-control-is-noop.diff \
 $(OPENJDK8_SOURCE_DIR)/openjdk/zero-missing-headers.diff \
+$(OPENJDK8_SOURCE_DIR)/openjdk/fix-ipv6-init.patch \
 
 OPENJDK8_JAMVM_PATCHES=\
 $(OPENJDK8_SOURCE_DIR)/jamvm/jamvm-fix.diff \
@@ -147,12 +148,14 @@ $(OPENJDK8_SOURCE_DIR)/jamvm/URLClassPath.stub.diff \
 OPENJDK8_CPPFLAGS=
 OPENJDK8_LDFLAGS=
 
+OPENJDK8_DEBUG_LEVEL=release
+
 OPENJDK8_CPPFLAGS=-g3 -I$(OPENJDK8_BUILD_DIR)/openjdk/jdk/src/share/npt \
 -I$(OPENJDK8_BUILD_DIR)/openjdk/jdk/src/share/native/sun/awt/image/jpeg \
 -I$(OPENJDK8_BUILD_DIR)/jamvm/install/include \
 $(STAGING_CPPFLAGS)
 # commas in LDFLAGS cause make functions parse errors
-OPENJDK8_LDFLAGS=-L$(OPENJDK8_BUILD_DIR)/openjdk/build/linux-$(OPENJDK8_ARCH)-normal-zero-release/jdk/lib/$(OPENJDK8_LIBARCH) \
+OPENJDK8_LDFLAGS=-L$(OPENJDK8_BUILD_DIR)/openjdk/build/linux-$(OPENJDK8_ARCH)-normal-zero-$(OPENJDK8_DEBUG_LEVEL)/jdk/lib/$(OPENJDK8_LIBARCH) \
 -Xlinker -rpath -Xlinker $(TARGET_PREFIX)/lib/openjdk8/$(OPENJDK8_LIBARCH)/jli \
 -Xlinker -rpath -Xlinker $(TARGET_PREFIX)/lib/openjdk8/$(OPENJDK8_LIBARCH)/server \
 -Xlinker -rpath -Xlinker $(TARGET_PREFIX)/lib/openjdk8/$(OPENJDK8_LIBARCH) \
@@ -168,7 +171,7 @@ OPENJDK8_MAKE_ARGS=\
 		BUILD_LD=$(HOSTCC) \
 		WARNINGS_ARE_ERRORS='' \
 		LOG=debug \
-		CONF=linux-$(OPENJDK8_ARCH)-normal-zero-release
+		CONF=linux-$(OPENJDK8_ARCH)-normal-zero-$(OPENJDK8_DEBUG_LEVEL)
 
 OPENJDK8_ARCH=$(strip \
 	$(if $(filter powerpc, $(TARGET_ARCH)), ppc, \
@@ -183,7 +186,7 @@ OPENJDK8_LIBARCH=$(strip \
 	$(if $(filter x86_64, $(OPENJDK8_ARCH)), amd64, \
 	$(OPENJDK8_ARCH))))
 
-OPENJDK8_JDK_IMAGE_DIR=$(OPENJDK8_BUILD_DIR)/openjdk/build/linux-$(OPENJDK8_ARCH)-normal-zero-release/images/j2sdk-image
+OPENJDK8_JDK_IMAGE_DIR=$(OPENJDK8_BUILD_DIR)/openjdk/build/linux-$(OPENJDK8_ARCH)-normal-zero-$(OPENJDK8_DEBUG_LEVEL)/images/j2sdk-image
 
 #
 # OPENJDK8_BUILD_DIR is the directory in which the build is done.
@@ -371,9 +374,9 @@ endif
 		--x-includes=$(STAGING_INCLUDE_DIR) \
 		--x-libraries=$(STAGING_LIB_DIR) \
 		--prefix=$(TARGET_PREFIX) \
-		--disable-debug-symbols \
-		--disable-zip-debug-info \
-		--with-debug-level=release \
+		--enable-debug-symbols \
+		--enable-zip-debug-info \
+		--with-debug-level=$(OPENJDK8_DEBUG_LEVEL) \
 		--enable-unlimited-crypto \
 		--with-stdc++lib=dynamic \
 		--with-extra-cflags="$(OPENJDK8_CPPFLAGS)" \
@@ -383,7 +386,7 @@ endif
 		--with-giflib=bundled \
 	)
 	sed -i 	-e 's/@OPENJDK_TARGET_OS_ENV@/linux/g' -e 's|@THEPWDCMD@|$(shell which pwd)|g' \
-		-e 's/@ENABLE_JFR@/no/g' $(@D)/openjdk/build/linux-$(OPENJDK8_ARCH)-normal-zero-release/spec.gmk
+		-e 's/@ENABLE_JFR@/no/g' $(@D)/openjdk/build/linux-$(OPENJDK8_ARCH)-normal-zero-$(OPENJDK8_DEBUG_LEVEL)/spec.gmk
 #	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
@@ -480,6 +483,7 @@ $(OPENJDK8_JRE_HEADLESS_IPK): $(OPENJDK8_BUILD_DIR)/.built
 	cd $(OPENJDK8_JDK_IMAGE_DIR); \
 		cp -af --parents $(OPENJDK8_JRE_HEADLESS_FILES) $(OPENJDK8_JRE_HEADLESS_IPK_DIR)$(TARGET_PREFIX)/lib/jvm/openjdk8
 	ln -sf jvm/openjdk8/jre/lib $(OPENJDK8_JRE_HEADLESS_IPK_DIR)$(TARGET_PREFIX)/lib/openjdk8
+	find $(OPENJDK8_JRE_HEADLESS_IPK_DIR)$(TARGET_PREFIX)/lib/jvm/openjdk8 -type f -name '*.diz' -exec rm -f {} \;
 	-$(STRIP_COMMAND) `find $(OPENJDK8_JRE_HEADLESS_IPK_DIR)$(TARGET_PREFIX)/lib/jvm/openjdk8 -type f` 2>/dev/null
 	$(MAKE) $(OPENJDK8_JRE_HEADLESS_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(OPENJDK8_SOURCE_DIR)/postinst $(OPENJDK8_IPK_DIR)/CONTROL/postinst
@@ -515,6 +519,7 @@ $(OPENJDK8_JRE_IPK): $(OPENJDK8_BUILD_DIR)/.built
 	cd $(OPENJDK8_JRE_IPK_DIR)$(TARGET_PREFIX)/lib/jvm/openjdk8; rm -f $(OPENJDK8_JRE_HEADLESS_FILES)
 	rmdir `find $(OPENJDK8_JRE_IPK_DIR)$(TARGET_PREFIX)/lib/jvm/openjdk8 -type d -empty`
 #
+	find $(OPENJDK8_JRE_IPK_DIR)$(TARGET_PREFIX)/lib/jvm/openjdk8 -type f -name '*.diz' -exec rm -f {} \;
 	-$(STRIP_COMMAND) `find $(OPENJDK8_JRE_IPK_DIR)$(TARGET_PREFIX)/lib/jvm/openjdk8 -type f` 2>/dev/null
 	$(MAKE) $(OPENJDK8_JRE_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(OPENJDK8_SOURCE_DIR)/postinst $(OPENJDK8_IPK_DIR)/CONTROL/postinst
@@ -550,6 +555,7 @@ $(OPENJDK8_JDK_IPK): $(OPENJDK8_BUILD_DIR)/.built
 	rm -rf  $(OPENJDK8_JDK_IPK_DIR)$(TARGET_PREFIX)/lib/jvm/openjdk8/jre \
 		$(OPENJDK8_JDK_IPK_DIR)$(TARGET_PREFIX)/lib/jvm/openjdk8/release
 #
+	find $(OPENJDK8_JDK_IPK_DIR)$(TARGET_PREFIX)/lib/jvm/openjdk8 -type f -name '*.diz' -exec rm -f {} \;
 	-$(STRIP_COMMAND) `find $(OPENJDK8_JDK_IPK_DIR)$(TARGET_PREFIX)/lib/jvm/openjdk8 -type f` 2>/dev/null
 	$(MAKE) $(OPENJDK8_JDK_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(OPENJDK8_SOURCE_DIR)/postinst $(OPENJDK8_IPK_DIR)/CONTROL/postinst
