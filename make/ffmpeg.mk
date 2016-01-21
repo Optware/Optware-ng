@@ -50,14 +50,17 @@ FFMPEG_MAINTAINER=Keith Garry Boyce <nslu2-linux@yahoogroups.com>
 FFMPEG_DESCRIPTION=FFmpeg is an audio/video conversion tool.
 FFMPEG_SECTION=tool
 FFMPEG_PRIORITY=optional
-FFMPEG_DEPENDS=
+FFMPEG_DEPENDS=liblzma0, bzip2, zlib, alsa-lib, lame, libvorbis, x264, libfdk-aac
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+FFMPEG_DEPENDS+=, libiconv
+endif
 FFMPEG_SUGGESTS=
 FFMPEG_CONFLICTS=
 
 #
 # FFMPEG_IPK_VERSION should be incremented when the ipk changes.
 #
-FFMPEG_IPK_VERSION ?= 1
+FFMPEG_IPK_VERSION ?= 2
 
 #
 # FFMPEG_CONFFILES should be a list of user-editable files
@@ -159,7 +162,11 @@ FFMPEG_ARCH=$(strip \
 # Snow is know to create build problems on ds101 
 
 $(FFMPEG_BUILD_DIR)/.configured: $(DL_DIR)/$(FFMPEG_SOURCE) $(FFMPEG_PATCHES) make/ffmpeg.mk
-#	$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) xz-utils-stage bzip2-stage zlib-stage \
+		alsa-lib-stage lame-stage libvorbis-stage x264-stage libfdk-aac-stage
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+	$(MAKE) libiconv-stage
+endif
 	rm -rf $(BUILD_DIR)/$(FFMPEG_DIR) $(@D)
 	$(FFMPEG_UNZIP) $(DL_DIR)/$(FFMPEG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(FFMPEG_PATCHES)" ; \
@@ -188,6 +195,11 @@ endif
 		$(FFMPEG_CONFIG_OPTS) \
 		--disable-encoder=snow \
 		--disable-decoder=snow \
+		--enable-libmp3lame \
+		--enable-libvorbis \
+		--enable-libx264 \
+		--enable-libfdk-aac \
+		--enable-nonfree \
 		--enable-shared \
 		--disable-static \
 		--enable-gpl \
