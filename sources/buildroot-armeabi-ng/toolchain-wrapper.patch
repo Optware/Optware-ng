@@ -1,0 +1,76 @@
+--- a/toolchain/toolchain-wrapper.c
++++ b/toolchain/toolchain-wrapper.c
+@@ -102,26 +102,20 @@ static void check_unsafe_path(const char
+ int main(int argc, char **argv)
+ {
+ 	char **args, **cur, **exec_args;
+-	char *relbasedir, *absbasedir;
++	char *absbasedir;
+ 	char *progpath = argv[0];
+ 	char *basename;
+ 	char *env_debug;
+ 	char *paranoid_wrapper;
+ 	int paranoid;
+-	int ret, i, count = 0, debug;
++	int ret, i, debug;
+ 
+ 	/* Calculate the relative paths */
+ 	basename = strrchr(progpath, '/');
+ 	if (basename) {
+ 		*basename = '\0';
+ 		basename++;
+-		relbasedir = malloc(strlen(progpath) + 7);
+-		if (relbasedir == NULL) {
+-			perror(__FILE__ ": malloc");
+-			return 2;
+-		}
+-		sprintf(relbasedir, "%s/../..", argv[0]);
+-		absbasedir = realpath(relbasedir, NULL);
++		absbasedir = realpath(progpath, NULL);
+ 	} else {
+ 		basename = progpath;
+ 		absbasedir = malloc(PATH_MAX + 1);
+@@ -134,10 +128,13 @@ int main(int argc, char **argv)
+ 		for (i = ret; i > 0; i--) {
+ 			if (absbasedir[i] == '/') {
+ 				absbasedir[i] = '\0';
+-				if (++count == 3)
+-					break;
++				break;
+ 			}
+ 		}
++		if (absbasedir[0] == '\0') {
++			absbasedir[0] = '/';
++			absbasedir[1] = '\0';
++		}
+ 	}
+ 	if (absbasedir == NULL) {
+ 		perror(__FILE__ ": realpath");
+@@ -150,14 +147,14 @@ int main(int argc, char **argv)
+ #elif defined(BR_CROSS_PATH_ABS)
+ 	ret = snprintf(path, sizeof(path), BR_CROSS_PATH_ABS "/%s" BR_CROSS_PATH_SUFFIX, basename);
+ #else
+-	ret = snprintf(path, sizeof(path), "%s/usr/bin/%s" BR_CROSS_PATH_SUFFIX, absbasedir, basename);
++	ret = snprintf(path, sizeof(path), "%s/%s" BR_CROSS_PATH_SUFFIX, absbasedir, basename);
+ #endif
+ 	if (ret >= sizeof(path)) {
+ 		perror(__FILE__ ": overflow");
+ 		return 3;
+ 	}
+ #ifdef BR_CCACHE
+-	ret = snprintf(ccache_path, sizeof(ccache_path), "%s/usr/bin/ccache", absbasedir);
++	ret = snprintf(ccache_path, sizeof(ccache_path), "%s/ccache", absbasedir);
+ 	if (ret >= sizeof(ccache_path)) {
+ 		perror(__FILE__ ": overflow");
+ 		return 3;
+--- a/toolchain/toolchain-wrapper.mk
++++ b/toolchain/toolchain-wrapper.mk
+@@ -10,7 +10,7 @@
+ endif
+ 
+ TOOLCHAIN_WRAPPER_ARGS = $($(PKG)_TOOLCHAIN_WRAPPER_ARGS)
+-TOOLCHAIN_WRAPPER_ARGS += -DBR_SYSROOT='"$(STAGING_SUBDIR)"'
++TOOLCHAIN_WRAPPER_ARGS += -DBR_SYSROOT='"../$(GNU_TARGET_NAME)/sysroot"'
+ 
+ # We create a list like '"-mfoo", "-mbar", "-mbarfoo"' so that each flag is a
+ # separate argument when used in execv() by the toolchain wrapper.

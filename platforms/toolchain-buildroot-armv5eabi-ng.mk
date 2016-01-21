@@ -1,9 +1,9 @@
-# This toolchain is gcc 5.2.0 on uClibc-ng 1.0.10
+# This toolchain is gcc 5.2.0 on uClibc-ng 1.0.11
 
 GNU_TARGET_NAME = arm-linux
 EXACT_TARGET_NAME = arm-buildroot-linux-uclibcgnueabi
 
-UCLIBC_VERSION=1.0.10
+UCLIBC_VERSION=1.0.11
 
 DEFAULT_TARGET_PREFIX=/opt
 TARGET_PREFIX ?= /opt
@@ -43,7 +43,7 @@ GNU_HOST_NAME = $(HOST_MACHINE)-pc-linux-gnu
 CROSS_CONFIGURATION_GCC=gcc-$(CROSS_CONFIGURATION_GCC_VERSION)
 CROSS_CONFIGURATION_UCLIBC=uclibc-$(CROSS_CONFIGURATION_UCLIBC_VERSION)
 CROSS_CONFIGURATION=$(CROSS_CONFIGURATION_GCC)-$(CROSS_CONFIGURATION_UCLIBC)
-TARGET_CROSS_BUILD_DIR = $(BASE_DIR)/toolchain/buildroot-2015.08
+TARGET_CROSS_BUILD_DIR = $(BASE_DIR)/toolchain/buildroot-2015.11.1
 TARGET_CROSS_TOP = $(BASE_DIR)/toolchain/buildroot-armv5-linux-2.6.36-uclibc-ng-5.2.0
 TARGET_CROSS = $(TARGET_CROSS_TOP)/bin/arm-buildroot-linux-uclibcgnueabi-
 TARGET_LIBDIR = $(TARGET_CROSS_TOP)/arm-buildroot-linux-uclibcgnueabi/sysroot/usr/lib
@@ -59,7 +59,7 @@ TARGET_CUSTOM_FLAGS= -pipe
 TARGET_CFLAGS=$(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
 
 TOOLCHAIN_SITE=http://buildroot.uclibc.org/downloads
-TOOLCHAIN_SOURCE=buildroot-2015.08.tar.bz2
+TOOLCHAIN_SOURCE=buildroot-2015.11.1.tar.bz2
 
 UCLIBC-OPT_VERSION = $(UCLIBC_VERSION)
 UCLIBC-OPT_IPK_VERSION = 1
@@ -68,7 +68,10 @@ UCLIBC-OPT_LIBS_SOURCE_DIR = $(TARGET_CROSS_TOP)/arm-buildroot-linux-uclibcgnuea
 
 BUILDROOT-ARMv5EABI-NG_SOURCE_DIR=$(SOURCE_DIR)/buildroot-armv5eabi-ng
 
-BUILDROOT-ARMv5EABI-NG_PATCHES=$(BUILDROOT-ARMv5EABI-NG_SOURCE_DIR)/uclibc-ng-bump.patch
+BUILDROOT-ARMv5EABI-NG_PATCHES=\
+$(BUILDROOT-ARMv5EABI-NG_SOURCE_DIR)/uclibc-ng-bump.patch \
+$(BUILDROOT-ARMv5EABI-NG_SOURCE_DIR)/uclibc-ng-config.patch \
+$(BUILDROOT-ARMv5EABI-NG_SOURCE_DIR)/toolchain-wrapper.patch \
 
 toolchain: $(TARGET_CROSS_TOP)/.built
 
@@ -85,10 +88,9 @@ $(TARGET_CROSS_TOP)/.configured: $(DL_DIR)/$(TOOLCHAIN_SOURCE) \
 	tar -xjvf $(DL_DIR)/$(TOOLCHAIN_SOURCE) -C $(BASE_DIR)/toolchain
 	if test -n "$(BUILDROOT-ARMv5EABI-NG_PATCHES)" ; \
 		then cat $(BUILDROOT-ARMv5EABI-NG_PATCHES) | \
-		patch -bd $(TARGET_CROSS_BUILD_DIR) -p1 ; \
+		$(PATCH) -bd $(TARGET_CROSS_BUILD_DIR) -p1 ; \
 	fi
 	sed 's|^BR2_DL_DIR=.*|BR2_DL_DIR="$(DL_DIR)"|' $(BUILDROOT-ARMv5EABI-NG_SOURCE_DIR)/config > $(TARGET_CROSS_BUILD_DIR)/.config
-	sed -i.orig -e '/^RUNTIME_PREFIX=\|^DEVEL_PREFIX=/s|=.*|="$(TARGET_PREFIX)/"|' $(TARGET_CROSS_BUILD_DIR)/package/uclibc/uClibc-ng.config
 	touch $@
 
 $(TARGET_CROSS_TOP)/.built: $(TARGET_CROSS_TOP)/.configured
