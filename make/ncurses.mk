@@ -65,7 +65,7 @@ $(NCURSES_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(NCURSES_SOURCE) m
 
 ncurses-host: $(NCURSES_HOST_BUILD_DIR)/.built
 
-$(NCURSES_HOST_BUILD_DIR)/.staged: $(NCURSES_DIR)/.built
+$(NCURSES_HOST_BUILD_DIR)/.staged: $(NCURSES_HOST_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(@D) install
 	ln -sf ncurses/ncurses.h $(HOST_STAGING_INCLUDE_DIR)
