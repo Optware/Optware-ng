@@ -175,6 +175,7 @@ endif
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--with-ssl \
+		--with-openssl=$(STAGING_PREFIX) \
 		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
