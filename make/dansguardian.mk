@@ -126,6 +126,7 @@ endif
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(DANSGUARDIAN_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(DANSGUARDIAN_LDFLAGS)" \
+		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PATH="$(STAGING_PREFIX)/bin:$$PATH" \
 		ac_cv_func_malloc_0_nonnull=yes \
 		./configure \
