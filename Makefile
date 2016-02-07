@@ -21,7 +21,7 @@
 #
 
 # one of `ls platforms/toolchain-*.mk | sed 's|^platforms/toolchain-\(.*\)\.mk$$|\1|'`
-OPTWARE_TARGET ?= nslu2
+OPTWARE_TARGET ?= buildroot-armeabi-ng
 
 #PACKAGES_BROKEN_ON_64BIT_HOST = \
 apcupsd appweb atop 9base alsa-oss appweb \
