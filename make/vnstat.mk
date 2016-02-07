@@ -36,7 +36,7 @@ VNSTAT_CONFLICTS=
 #
 # VNSTAT_IPK_VERSION should be incremented when the ipk changes.
 #
-VNSTAT_IPK_VERSION=2
+VNSTAT_IPK_VERSION=3
 
 #
 # VNSTAT_CONFFILES should be a list of user-editable files
@@ -138,7 +138,10 @@ vnstat-unpack: $(VNSTAT_BUILD_DIR)/.configured
 #
 $(VNSTAT_BUILD_DIR)/.built: $(VNSTAT_BUILD_DIR)/.configured
 	rm -f $@
-	$(TARGET_CONFIGURE_OPTS) CPPFLAGS="$(STAGING_CPPFLAGS) $(VNSTAT_CPPFLAGS)" $(MAKE) -C $(@D)
+	$(TARGET_CONFIGURE_OPTS) \
+		CPPFLAGS="$(STAGING_CPPFLAGS) $(VNSTAT_CPPFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS) $(VNSTAT_LDFLAGS)" \
+		$(MAKE) -C $(@D)
 	touch $@
 
 #
