@@ -1,9 +1,9 @@
-# This toolchain is gcc 5.2.0 on uClibc-ng 1.0.11
+# This toolchain is gcc 5.2.0 on uClibc-ng 1.0.12
 
 GNU_TARGET_NAME = mipsel-linux
 EXACT_TARGET_NAME = mipsel-buildroot-linux-uclibc
 
-UCLIBC_VERSION=1.0.11
+UCLIBC_VERSION=1.0.12
 
 DEFAULT_TARGET_PREFIX=/opt
 TARGET_PREFIX ?= /opt
@@ -44,7 +44,7 @@ CROSS_CONFIGURATION_GCC=gcc-$(CROSS_CONFIGURATION_GCC_VERSION)
 CROSS_CONFIGURATION_UCLIBC=uclibc-$(CROSS_CONFIGURATION_UCLIBC_VERSION)
 CROSS_CONFIGURATION=$(CROSS_CONFIGURATION_GCC)-$(CROSS_CONFIGURATION_UCLIBC)
 TARGET_CROSS_BUILD_DIR = $(BASE_DIR)/toolchain/buildroot-2015.11.1
-TARGET_CROSS_TOP = $(BASE_DIR)/toolchain/buildroot-mipsel-linux-2.6.36-uclibc-ng-5.2.0
+TARGET_CROSS_TOP = $(BASE_DIR)/toolchain/buildroot-mipsel-linux-2.6.22.19-uclibc-ng-5.2.0
 TARGET_CROSS = $(TARGET_CROSS_TOP)/bin/mipsel-buildroot-linux-uclibc-
 TARGET_LIBDIR = $(TARGET_CROSS_TOP)/mipsel-buildroot-linux-uclibc/sysroot/usr/lib
 TARGET_INCDIR = $(TARGET_CROSS_TOP)/mipsel-buildroot-linux-uclibc/sysroot/usr/include
@@ -60,6 +60,11 @@ TARGET_CFLAGS=$(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
 
 TOOLCHAIN_SITE=http://buildroot.uclibc.org/downloads
 TOOLCHAIN_SOURCE=buildroot-2015.11.1.tar.bz2
+
+TOOLCHAIN_KERNEL_GIT=https://github.com/wl500g/wl500g.git
+TOOLCHAIN_KERNEL_VERSION=2.6.22.19-wl500g-20151205
+TOOLCHAIN_KERNEL_HASH=4424ebabf6ea50f5b2296f95d4471a51a1ce5430
+TOOLCHAIN_KERNEL_SOURCE=linux-$(TOOLCHAIN_KERNEL_VERSION).tar.xz
 
 UCLIBC-OPT_VERSION = $(UCLIBC_VERSION)
 UCLIBC-OPT_IPK_VERSION = 1
@@ -81,7 +86,21 @@ $(DL_DIR)/$(TOOLCHAIN_SOURCE):
 	$(WGET) -P $(@D) $(TOOLCHAIN_SITE)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
+$(DL_DIR)/$(TOOLCHAIN_KERNEL_SOURCE):
+	(cd $(BUILD_DIR) ; \
+		rm -rf linux-$(TOOLCHAIN_KERNEL_VERSION) && \
+		git clone $(TOOLCHAIN_KERNEL_GIT) linux-$(TOOLCHAIN_KERNEL_VERSION) && \
+		(cd linux-$(TOOLCHAIN_KERNEL_VERSION) && \
+		git checkout $(TOOLCHAIN_KERNEL_HASH) && \
+		git submodule update && \
+		cd linux && \
+		touch linux-2.6.22.19/include/linux/utsrelease.h && \
+		tar -cJf $@ linux-2.6.22.19) && \
+		rm -rf linux-$(TOOLCHAIN_KERNEL_VERSION) ; \
+	)
+
 $(TARGET_CROSS_TOP)/.configured: $(DL_DIR)/$(TOOLCHAIN_SOURCE) \
+		$(DL_DIR)/$(TOOLCHAIN_KERNEL_SOURCE) \
 		$(BUILDROOT-MIPSEL-NG_SOURCE_DIR)/config \
 		$(BUILDROOT-MIPSEL-NG_PATCHES) \
 		#$(OPTWARE_TOP)/platforms/toolchain-$(OPTWARE_TARGET).mk
@@ -92,7 +111,8 @@ $(TARGET_CROSS_TOP)/.configured: $(DL_DIR)/$(TOOLCHAIN_SOURCE) \
 		then cat $(BUILDROOT-MIPSEL-NG_PATCHES) | \
 		$(PATCH) -bd $(TARGET_CROSS_BUILD_DIR) -p1 ; \
 	fi
-	sed 's|^BR2_DL_DIR=.*|BR2_DL_DIR="$(DL_DIR)"|' $(BUILDROOT-MIPSEL-NG_SOURCE_DIR)/config > $(TARGET_CROSS_BUILD_DIR)/.config
+	sed -e 's|^BR2_DL_DIR=.*|BR2_DL_DIR="$(DL_DIR)"|' -e 's|@KERNEL_VERSION@|$(TOOLCHAIN_KERNEL_VERSION)|' \
+		$(BUILDROOT-MIPSEL-NG_SOURCE_DIR)/config > $(TARGET_CROSS_BUILD_DIR)/.config
 	touch $@
 
 $(TARGET_CROSS_TOP)/.built: $(TARGET_CROSS_TOP)/.configured
