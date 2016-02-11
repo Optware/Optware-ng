@@ -31,7 +31,9 @@ LIBNSL_SO_DIR ?= $(TARGET_LIBDIR)
 endif
 
 $(LIBNSL_BUILD_DIR)/.configured: make/libnsl.mk $(OPTWARE_TOP)/platforms/toolchain-$(OPTWARE_TARGET).mk
+	rm -rf $(@D)
 	$(MAKE) toolchain
+	mkdir $(@D)
 	touch $@
 
 libnsl-unpack: $(LIBNSL_BUILD_DIR)/.configured
