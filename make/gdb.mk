@@ -20,6 +20,7 @@
 # You should change all these variables to suit your package.
 #
 GDB_SITE=http://ftp.gnu.org/gnu/gdb
+GDB_DEPENDS=termcap,ncurses,expat
 ifeq ($(OPTWARE_TARGET), $(filter wl500g mss, $(OPTWARE_TARGET)))
 GDB_VERSION=6.3
 GDB_IPK_VERSION=4
@@ -27,7 +28,7 @@ GDB_SOURCE=gdb-$(GDB_VERSION).tar.bz2
 GDB_UNZIP=bzcat
 else
 GDB_VERSION=7.10.1
-GDB_IPK_VERSION=1
+GDB_IPK_VERSION=2
 GDB_SOURCE=gdb-$(GDB_VERSION).tar.xz
 GDB_DEPENDS+=, liblzma0
 GDB_UNZIP=xzcat
@@ -37,7 +38,6 @@ GDB_MAINTAINER=Steve Henson <snhenson@gmail.com>
 GDB_DESCRIPTION=gdb is the standard GNU debugger
 GDB_SECTION=utility
 GDB_PRIORITY=optional
-GDB_DEPENDS=termcap,ncurses,expat
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 GDB_DEPENDS+=, libiconv
 endif
