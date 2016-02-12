@@ -37,7 +37,7 @@ MKVTOOLNIX_PRIORITY=optional
 MKVTOOLNIX_DEPENDS=boost-system (= $(BOOST_VERSION)-$(BOOST_IPK_VERSION)), \
 		boost-filesystem (= $(BOOST_VERSION)-$(BOOST_IPK_VERSION)), \
 		boost-regex (= $(BOOST_VERSION)-$(BOOST_IPK_VERSION)), expat, \
-		file, flac, libebml, libmatroska, libogg, libvorbis, lzo
+		file, flac, libebml, libmatroska, libogg, libvorbis, lzo, icu
 ifeq (enable, $(GETTEXT_NLS))
 MKVTOOLNIX_DEPENDS +=, gettext
 endif
@@ -125,8 +125,8 @@ mkvtoolnix-source: $(DL_DIR)/$(MKVTOOLNIX_SOURCE) $(MKVTOOLNIX_PATCHES)
 # shown below to make various patches to it.
 #
 $(MKVTOOLNIX_BUILD_DIR)/.configured: $(DL_DIR)/$(MKVTOOLNIX_SOURCE) $(MKVTOOLNIX_PATCHES) make/mkvtoolnix.mk
-	$(MAKE) boost-stage bzip2-stage expat-stage file-stage flac-stage zlib-stage libcurl-stage
-	$(MAKE) libebml-stage libmatroska-stage libogg-stage libvorbis-stage lzo-stage
+	$(MAKE) boost-stage bzip2-stage expat-stage file-stage flac-stage zlib-stage libcurl-stage \
+		libebml-stage libmatroska-stage libogg-stage libvorbis-stage lzo-stage icu-stage
 ifeq (enable, $(GETTEXT_NLS))
 	$(MAKE) gettext-stage
 endif

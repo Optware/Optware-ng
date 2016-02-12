@@ -1,0 +1,304 @@
+--- a/src/common/hevc.cpp
++++ b/src/common/hevc.cpp
+@@ -2182,8 +2182,8 @@
+   if (0 >= height)
+     height = get_height();
+ 
+-  return std::make_pair<int64_t, int64_t>(1 <= m_par ? std::llround(width * boost::rational_cast<double>(m_par)) : width,
+-                                          1 <= m_par ? height                                                    : std::llround(height / boost::rational_cast<double>(m_par)));
++  return std::make_pair<int64_t, int64_t>(1 <= m_par ? llround(width * boost::rational_cast<double>(m_par)) : width,
++                                          1 <= m_par ? height                                                    : llround(height / boost::rational_cast<double>(m_par)));
+ }
+ 
+ size_t
+--- a/src/common/mpeg4_p10.cpp
++++ b/src/common/mpeg4_p10.cpp
+@@ -1709,8 +1709,8 @@
+   if (0 >= height)
+     height = get_height();
+ 
+-  return std::make_pair<int64_t, int64_t>(1 <= m_par ? std::llround(width * boost::rational_cast<double>(m_par)) : width,
+-                                          1 <= m_par ? height                                                    : std::llround(height / boost::rational_cast<double>(m_par)));
++  return std::make_pair<int64_t, int64_t>(1 <= m_par ? llround(width * boost::rational_cast<double>(m_par)) : width,
++                                          1 <= m_par ? height                                                    : llround(height / boost::rational_cast<double>(m_par)));
+ }
+ 
+ size_t
+--- a/src/common/theora.cpp
++++ b/src/common/theora.cpp
+@@ -68,11 +68,11 @@
+ 
+   if ((0 != header.parn) && (0 != header.pard)) {
+     if (((float)header.fmbw / (float)header.fmbh) < ((float)header.parn / (float)header.pard)) {
+-      header.display_width  = std::llround(static_cast<double>(header.fmbw) * header.parn / header.pard);
++      header.display_width  = llround(static_cast<double>(header.fmbw) * header.parn / header.pard);
+       header.display_height = header.fmbh;
+     } else {
+       header.display_width  = header.fmbw;
+-      header.display_height = std::llround(static_cast<double>(header.fmbh) * header.pard / header.parn);
++      header.display_height = llround(static_cast<double>(header.fmbh) * header.pard / header.parn);
+     }
+   }
+ }
+--- a/src/extract/cuesheets.cpp
++++ b/src/extract/cuesheets.cpp
+@@ -182,7 +182,7 @@
+                % k
+                % (temp_index / 1000000 / 1000 / 60)
+                % ((temp_index / 1000000 / 1000) % 60)
+-               % std::llround(static_cast<double>(temp_index % 1000000000ll) * 75.0 / 1000000000.0));
++               % llround(static_cast<double>(temp_index % 1000000000ll) * 75.0 / 1000000000.0));
+     }
+ 
+     print_if_available("DATE",          "    REM DATE \"%1%\"\n"); // until 0.9.6
+--- a/src/extract/xtr_avi.cpp
++++ b/src/extract/xtr_avi.cpp
+@@ -90,7 +90,7 @@
+ 
+   if (((double)f.duration / 1000000.0 - (1000.0 / m_fps)) >= 1.5) {
+     int k;
+-    int nfr = std::llround(static_cast<double>(f.duration) / 1000000.0 * m_fps / 1000.0);
++    int nfr = llround(static_cast<double>(f.duration) / 1000000.0 * m_fps / 1000.0);
+     for (k = 2; k <= nfr; k++)
+       AVI_write_frame(m_avi, nullptr, 0, 0);
+   }
+--- a/src/info/mkvinfo.cpp
++++ b/src/info/mkvinfo.cpp
+@@ -1277,7 +1277,7 @@
+         mxinfo(BF_BLOCK_GROUP_SUMMARY_WITH_DURATION
+                % (num_references >= 2 ? 'B' : num_references == 1 ? 'P' : 'I')
+                % lf_tnum
+-               % std::llround(lf_timecode / 1000000.0)
++               % llround(lf_timecode / 1000000.0)
+                % format_timestamp(lf_timecode, 3)
+                % bduration
+                % frame_sizes[fidx]
+@@ -1288,7 +1288,7 @@
+         mxinfo(BF_BLOCK_GROUP_SUMMARY_NO_DURATION
+                % (num_references >= 2 ? 'B' : num_references == 1 ? 'P' : 'I')
+                % lf_tnum
+-               % std::llround(lf_timecode / 1000000.0)
++               % llround(lf_timecode / 1000000.0)
+                % format_timestamp(lf_timecode, 3)
+                % frame_sizes[fidx]
+                % frame_adlers[fidx]
+@@ -1301,7 +1301,7 @@
+                  BF_BLOCK_GROUP_SUMMARY_V2
+                  % (num_references >= 2 ? 'B' : num_references == 1 ? 'P' : 'I')
+                  % lf_tnum
+-                 % std::llround(lf_timecode / 1000000.0));
++                 % llround(lf_timecode / 1000000.0));
+ 
+   track_info_t &tinfo = s_track_info[lf_tnum];
+ 
+@@ -1335,7 +1335,7 @@
+ 
+   int64_t frame_pos   = block.GetElementPosition() + block.ElementSize();
+   auto timecode_ns    = block.GlobalTimecode();
+-  auto timecode_ms    = std::llround(static_cast<double>(timecode_ns) / 1000000.0);
++  auto timecode_ms    = llround(static_cast<double>(timecode_ns) / 1000000.0);
+   track_info_t &tinfo = s_track_info[block.TrackNum()];
+ 
+   std::string info;
+--- a/src/input/r_avi.cpp
++++ b/src/input/r_avi.cpp
+@@ -832,12 +832,12 @@
+ 
+     int disp_width, disp_height;
+     if (aspect_ratio > (static_cast<float>(width) / height)) {
+-      disp_width  = std::llround(height * aspect_ratio);
++      disp_width  = llround(height * aspect_ratio);
+       disp_height = height;
+ 
+     } else {
+       disp_width  = width;
+-      disp_height = std::llround(width / aspect_ratio);
++      disp_height = llround(width / aspect_ratio);
+     }
+ 
+     info.add(mtx::id::display_dimensions, boost::format("%1%x%2%") % disp_width % disp_height);
+--- a/src/input/r_matroska.cpp
++++ b/src/input/r_matroska.cpp
+@@ -882,7 +882,7 @@
+   info->Read(*m_es, EBML_CLASS_CONTEXT(KaxInfo), upper_lvl_el, l2, true);
+ 
+   m_tc_scale         = FindChildValue<KaxTimecodeScale, uint64_t>(info, 1000000);
+-  m_segment_duration = std::llround(FindChildValue<KaxDuration>(info) * m_tc_scale);
++  m_segment_duration = llround(FindChildValue<KaxDuration>(info) * m_tc_scale);
+   m_title            = to_utf8(FindChildValue<KaxTitle>(info));
+ 
+   m_in_file->set_timecode_scale(m_tc_scale);
+--- a/src/input/r_ogm.cpp
++++ b/src/input/r_ogm.cpp
+@@ -1505,11 +1505,11 @@
+ 
+   if ((0 != par_num) && (0 != par_den)) {
+     if ((static_cast<double>(pixel_width) / static_cast<double>(pixel_height)) < (static_cast<double>(par_num) / static_cast<double>(par_den))) {
+-      display_width  = std::llround(static_cast<double>(pixel_width) * par_num / par_den);
++      display_width  = llround(static_cast<double>(pixel_width) * par_num / par_den);
+       display_height = pixel_height;
+     } else {
+       display_width  = pixel_width;
+-      display_height = std::llround(static_cast<double>(pixel_height) * par_den / par_num);
++      display_height = llround(static_cast<double>(pixel_height) * par_den / par_num);
+     }
+ 
+   } else {
+--- a/src/input/r_tta.cpp
++++ b/src/input/r_tta.cpp
+@@ -130,7 +130,7 @@
+     double samples_left = (double)get_uint32_le(&header.data_length) - (seek_points.size() - 1) * TTA_FRAME_TIME * get_uint32_le(&header.sample_rate);
+     mxverb(2, boost::format("tta: samples_left %1%\n") % samples_left);
+ 
+-    PTZR0->process(new packet_t(mem, -1, std::llround(samples_left * 1000000000.0 / get_uint32_le(&header.sample_rate))));
++    PTZR0->process(new packet_t(mem, -1, llround(samples_left * 1000000000.0 / get_uint32_le(&header.sample_rate))));
+   } else
+     PTZR0->process(new packet_t(mem));
+ 
+--- a/src/merge/cluster_helper.h
++++ b/src/merge/cluster_helper.h
+@@ -25,7 +25,7 @@
+ #include "common/split_point.h"
+ #include "merge/libmatroska_extensions.h"
+ 
+-#define RND_TIMECODE_SCALE(a) (std::llround(static_cast<double>(a) / static_cast<double>(g_timecode_scale)) * static_cast<int64_t>(g_timecode_scale))
++#define RND_TIMECODE_SCALE(a) (llround(static_cast<double>(a) / static_cast<double>(g_timecode_scale)) * static_cast<int64_t>(g_timecode_scale))
+ 
+ class render_groups_c;
+ class packet_t;
+--- a/src/merge/generic_packetizer.cpp
++++ b/src/merge/generic_packetizer.cpp
+@@ -699,12 +699,12 @@
+             m_ti.m_aspect_ratio = (float)m_hvideo_pixel_width * m_ti.m_aspect_ratio / (float)m_hvideo_pixel_height;
+ 
+           if (m_ti.m_aspect_ratio > ((float)m_hvideo_pixel_width / (float)m_hvideo_pixel_height)) {
+-            m_hvideo_display_width  = std::llround(m_hvideo_pixel_height * m_ti.m_aspect_ratio);
++            m_hvideo_display_width  = llround(m_hvideo_pixel_height * m_ti.m_aspect_ratio);
+             m_hvideo_display_height = m_hvideo_pixel_height;
+ 
+           } else {
+             m_hvideo_display_width  = m_hvideo_pixel_width;
+-            m_hvideo_display_height = std::llround(m_hvideo_pixel_width / m_ti.m_aspect_ratio);
++            m_hvideo_display_height = llround(m_hvideo_pixel_width / m_ti.m_aspect_ratio);
+           }
+         }
+       }
+--- a/src/merge/output_control.cpp
++++ b/src/merge/output_control.cpp
+@@ -206,7 +206,7 @@
+ 
+ static int64_t
+ calculate_file_duration() {
+-  return std::llround(static_cast<double>(g_cluster_helper->get_duration()) / static_cast<double>(g_timecode_scale));
++  return llround(static_cast<double>(g_cluster_helper->get_duration()) / static_cast<double>(g_timecode_scale));
+ }
+ 
+ /** \brief Fix the file after mkvmerge has been interrupted
+--- a/src/merge/timestamp_factory.h
++++ b/src/merge/timestamp_factory.h
+@@ -187,7 +187,7 @@
+                                              const std::string &source_name,
+                                              int64_t tid)
+     : timestamp_factory_c{"", source_name, tid, 1}
+-    , m_default_duration{std::llround(default_duration * tcsync.numerator / tcsync.denominator)}
++    , m_default_duration{llround(default_duration * tcsync.numerator / tcsync.denominator)}
+     , m_tcsync{tcsync}
+   {
+   }
+--- a/src/output/p_dirac.cpp
++++ b/src/output/p_dirac.cpp
+@@ -48,9 +48,9 @@
+ 
+     if ((0 != m_seqhdr.aspect_ratio_numerator) && (0 != m_seqhdr.aspect_ratio_denominator)) {
+       if (m_seqhdr.aspect_ratio_numerator > m_seqhdr.aspect_ratio_denominator)
+-        display_width  = std::llround(display_width  * m_seqhdr.aspect_ratio_numerator   / m_seqhdr.aspect_ratio_denominator);
++        display_width  = llround(display_width  * m_seqhdr.aspect_ratio_numerator   / m_seqhdr.aspect_ratio_denominator);
+       else
+-        display_height = std::llround(display_height * m_seqhdr.aspect_ratio_denominator / m_seqhdr.aspect_ratio_numerator);
++        display_height = llround(display_height * m_seqhdr.aspect_ratio_denominator / m_seqhdr.aspect_ratio_numerator);
+     }
+ 
+     set_video_display_width(display_width);
+--- a/src/output/p_hevc.cpp
++++ b/src/output/p_hevc.cpp
+@@ -62,8 +62,8 @@
+ 
+   auto par = static_cast<double>(result.numerator) / static_cast<double>(result.denominator);
+ 
+-  set_video_display_dimensions(1 <= par ? std::llround(m_width * par) : m_width,
+-                               1 <= par ? m_height                    : std::llround(m_height / par),
++  set_video_display_dimensions(1 <= par ? llround(m_width * par) : m_width,
++                               1 <= par ? m_height                    : llround(m_height / par),
+                                OPTION_SOURCE_BITSTREAM);
+ 
+   mxinfo_tid(m_ti.m_fname, m_ti.m_id,
+--- a/src/output/p_mpeg4_p10.cpp
++++ b/src/output/p_mpeg4_p10.cpp
+@@ -86,8 +86,8 @@
+ 
+   auto par = static_cast<double>(result.numerator) / static_cast<double>(result.denominator);
+ 
+-  set_video_display_dimensions(1 <= par ? std::llround(m_width * par) : m_width,
+-                               1 <= par ? m_height                    : std::llround(m_height / par),
++  set_video_display_dimensions(1 <= par ? llround(m_width * par) : m_width,
++                               1 <= par ? m_height                    : llround(m_height / par),
+                                OPTION_SOURCE_BITSTREAM);
+ 
+   mxinfo_tid(m_ti.m_fname, m_ti.m_id,
+--- a/src/output/p_tta.cpp
++++ b/src/output/p_tta.cpp
+@@ -34,7 +34,7 @@
+   , m_samples_output(0)
+ {
+   set_track_type(track_audio);
+-  set_track_default_duration(std::llround(1000000000.0 * TTA_FRAME_TIME));
++  set_track_default_duration(llround(1000000000.0 * TTA_FRAME_TIME));
+ }
+ 
+ tta_packetizer_c::~tta_packetizer_c() {
+@@ -52,14 +52,14 @@
+ 
+ int
+ tta_packetizer_c::process(packet_cptr packet) {
+-  packet->timecode = std::llround((double)m_samples_output * 1000000000 / m_sample_rate);
++  packet->timecode = llround((double)m_samples_output * 1000000000 / m_sample_rate);
+   if (-1 == packet->duration) {
+     packet->duration  = m_htrack_default_duration;
+-    m_samples_output += std::llround(m_sample_rate * TTA_FRAME_TIME);
++    m_samples_output += llround(m_sample_rate * TTA_FRAME_TIME);
+ 
+   } else {
+     mxverb(2, boost::format("tta_packetizer: incomplete block with duration %1%\n") % packet->duration);
+-    m_samples_output += std::llround(packet->duration * m_sample_rate / 1000000000ll);
++    m_samples_output += llround(packet->duration * m_sample_rate / 1000000000ll);
+   }
+ 
+   add_packet(packet);
+--- a/src/output/p_wavpack.cpp
++++ b/src/output/p_wavpack.cpp
+@@ -58,12 +58,12 @@
+   int64_t samples = get_uint32_le(packet->data->get_buffer());
+ 
+   if (-1 == packet->duration)
+-    packet->duration = std::llround(samples * 1000000000 / m_sample_rate);
++    packet->duration = llround(samples * 1000000000 / m_sample_rate);
+   else
+     mxverb(2, boost::format("wavpack_packetizer: incomplete block with duration %1%\n") % packet->duration);
+ 
+   if (-1 == packet->timecode)
+-    packet->timecode = std::llround((double)m_samples_output * 1000000000 / m_sample_rate);
++    packet->timecode = llround((double)m_samples_output * 1000000000 / m_sample_rate);
+ 
+   m_samples_output += samples;
+   add_packet(packet);
+--- a/src/propedit/tag_target.cpp
++++ b/src/propedit/tag_target.cpp
+@@ -336,7 +336,7 @@
+ 
+     account_one_cluster(*cluster);
+ 
+-    auto current_progress = std::lround(file.getFilePointer() * 100ull / static_cast<double>(file_size));
++    auto current_progress = lround(file.getFilePointer() * 100ull / static_cast<double>(file_size));
+     if (current_progress != previous_progress) {
+       mxinfo(boost::format(Y("Progress: %1%%%%2%")) % current_progress % "\r");
+       previous_progress = current_progress;
