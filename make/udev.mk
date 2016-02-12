@@ -58,7 +58,13 @@ UDEV_CONFFILES=$(TARGET_PREFIX)/etc/udev/udev.conf
 # UDEV_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#UDEV_PATCHES=$(UDEV_SOURCE_DIR)/configure.patch
+UDEV_PATCHES=\
+$(UDEV_SOURCE_DIR)/btn_trigger_happy_define.patch \
+$(UDEV_SOURCE_DIR)/no_pipe2.patch \
+
+ifeq ($(OPTWARE_TARGET), $(filter buildroot-mipsel-ng, $(OPTWARE_TARGET)))
+UDEV_PATCHES += $(UDEV_SOURCE_DIR)/no_linux-bsg_h.patch
+endif
 
 #
 # If the compilation of the package requires additional
@@ -129,11 +135,12 @@ $(UDEV_BUILD_DIR)/.configured: $(DL_DIR)/$(UDEV_SOURCE) $(UDEV_PATCHES) make/ude
 	$(UDEV_UNZIP) $(DL_DIR)/$(UDEV_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(UDEV_PATCHES)" ; \
 		then cat $(UDEV_PATCHES) | \
-		$(PATCH) -d $(BUILD_DIR)/$(UDEV_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(UDEV_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(UDEV_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(UDEV_DIR) $(@D) ; \
 	fi
+	$(AUTORECONF1.14) -vif $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(UDEV_CPPFLAGS)" \

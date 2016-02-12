@@ -1,0 +1,25 @@
+--- a/udev/udev-event.c
++++ b/udev/udev-event.c
+@@ -751,14 +751,22 @@
+ 
+ 	/* pipes from child to parent */
+ 	if (result != NULL || udev_get_log_priority(udev) >= LOG_INFO) {
++#if defined __NR_pipe2
+ 		if (pipe2(outpipe, O_NONBLOCK) != 0) {
++#else
++		if (pipe(outpipe) != 0) {
++#endif
+ 			err = -errno;
+ 			err(udev, "pipe failed: %m\n");
+ 			goto out;
+ 		}
+ 	}
+ 	if (udev_get_log_priority(udev) >= LOG_INFO) {
++#if defined __NR_pipe2
+ 		if (pipe2(errpipe, O_NONBLOCK) != 0) {
++#else
++		if (pipe(errpipe) != 0) {
++#endif
+ 			err = -errno;
+ 			err(udev, "pipe failed: %m\n");
+ 			goto out;
