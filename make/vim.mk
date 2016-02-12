@@ -30,14 +30,14 @@ VIM_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 VIM_DESCRIPTION=Yet another version of the vi editor.
 VIM_SECTION=util
 VIM_PRIORITY=optional
-VIM_DEPENDS=ncurses, libacl
+VIM_DEPENDS=ncurses, libacl, gettext
 VIM_SUGGESTS=
 VIM_CONFLICTS=
 
 #
 # VIM_IPK_VERSION should be incremented when the ipk changes.
 #
-VIM_IPK_VERSION=3
+VIM_IPK_VERSION=4
 
 #
 # VIM_CONFFILES should be a list of user-editable files
@@ -116,7 +116,7 @@ vim-source: $(DL_DIR)/$(VIM_SOURCE) $(VIM_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(VIM_BUILD_DIR)/.configured: $(DL_DIR)/$(VIM_SOURCE) $(VIM_PATCHES) make/vim.mk
-	$(MAKE) ncurses-stage libacl-stage
+	$(MAKE) ncurses-stage libacl-stage gettext-stage
 	rm -rf $(BUILD_DIR)/$(VIM_DIR) $(@D)
 	$(VIM_UNZIP) $(DL_DIR)/$(VIM_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(VIM_PATCHES)"; then \
