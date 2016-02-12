@@ -48,6 +48,10 @@ LIBNETFILTER_ACCT_IPK_VERSION=1
 #
 #LIBNETFILTER_ACCT_PATCHES=$(LIBNETFILTER_ACCT_SOURCE_DIR)/configure.patch
 
+ifeq ($(OPTWARE_TARGET), $(filter buildroot-mipsel-ng, $(OPTWARE_TARGET)))
+LIBNETFILTER_ACCT_PATCHES += $(LIBNETFILTER_ACCT_SOURCE_DIR)/no_nfnetlink_compat.patch
+endif
+
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
@@ -106,16 +110,16 @@ libnetfilter-acct-source: $(DL_DIR)/$(LIBNETFILTER_ACCT_SOURCE) $(LIBNETFILTER_A
 #
 $(LIBNETFILTER_ACCT_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBNETFILTER_ACCT_SOURCE) $(LIBNETFILTER_ACCT_PATCHES) make/libnetfilter-acct.mk
 	$(MAKE) libmnl-stage
-	rm -rf $(BUILD_DIR)/$(LIBNETFILTER_ACCT_DIR) $(LIBNETFILTER_ACCT_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(LIBNETFILTER_ACCT_DIR) $(@D)
 	$(LIBNETFILTER_ACCT_UNZIP) $(DL_DIR)/$(LIBNETFILTER_ACCT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBNETFILTER_ACCT_PATCHES)" ; \
 		then cat $(LIBNETFILTER_ACCT_PATCHES) | \
-		$(PATCH) -d $(BUILD_DIR)/$(LIBNETFILTER_ACCT_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBNETFILTER_ACCT_DIR) -p1 ; \
 	fi
-	if test "$(BUILD_DIR)/$(LIBNETFILTER_ACCT_DIR)" != "$(LIBNETFILTER_ACCT_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(LIBNETFILTER_ACCT_DIR) $(LIBNETFILTER_ACCT_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(LIBNETFILTER_ACCT_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(LIBNETFILTER_ACCT_DIR) $(@D) ; \
 	fi
-	(cd $(LIBNETFILTER_ACCT_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBNETFILTER_ACCT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBNETFILTER_ACCT_LDFLAGS)" \
@@ -129,7 +133,7 @@ $(LIBNETFILTER_ACCT_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBNETFILTER_ACCT_SOURCE
 		--disable-nls \
 		--disable-static \
 	)
-	$(PATCH_LIBTOOL) $(LIBNETFILTER_ACCT_BUILD_DIR)/libtool
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 libnetfilter-acct-unpack: $(LIBNETFILTER_ACCT_BUILD_DIR)/.configured
@@ -139,7 +143,7 @@ libnetfilter-acct-unpack: $(LIBNETFILTER_ACCT_BUILD_DIR)/.configured
 #
 $(LIBNETFILTER_ACCT_BUILD_DIR)/.built: $(LIBNETFILTER_ACCT_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(LIBNETFILTER_ACCT_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -152,7 +156,7 @@ libnetfilter-acct: $(LIBNETFILTER_ACCT_BUILD_DIR)/.built
 #
 $(LIBNETFILTER_ACCT_BUILD_DIR)/.staged: $(LIBNETFILTER_ACCT_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(LIBNETFILTER_ACCT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	sed -i -e '/^prefix=/s|=.*|=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/libnetfilter_acct.pc
 	rm -f $(STAGING_LIB_DIR)/libnetfilter_acct.la
 	touch $@
@@ -230,4 +234,4 @@ libnetfilter-acct-dirclean:
 # Some sanity check for the package.
 #
 libnetfilter-acct-check: $(LIBNETFILTER_ACCT_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(LIBNETFILTER_ACCT_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
