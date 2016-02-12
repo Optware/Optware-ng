@@ -1,6 +1,5 @@
-diff -pur libexplain-1.4.orig/ioctl-scan/scan/linux_fs.c libexplain-1.4/ioctl-scan/scan/linux_fs.c
---- libexplain-1.4.orig/ioctl-scan/scan/linux_fs.c	2014-03-03 12:00:52.000000000 +0200
-+++ libexplain-1.4/ioctl-scan/scan/linux_fs.c	2015-02-18 18:40:05.205300559 +0200
+--- a/ioctl-scan/scan/linux_fs.c
++++ b/ioctl-scan/scan/linux_fs.c
 @@ -16,6 +16,8 @@
   * with this program. If not, see <http://www.gnu.org/licenses/>.
   */
@@ -10,9 +9,28 @@ diff -pur libexplain-1.4.orig/ioctl-scan/scan/linux_fs.c libexplain-1.4/ioctl-sc
  #include <libexplain/ac/linux/fs.h>
  #include <libexplain/ac/sys/ioctl.h>
  
-diff -pur libexplain-1.4.orig/libexplain/ac/ustat.h libexplain-1.4/libexplain/ac/ustat.h
---- libexplain-1.4.orig/libexplain/ac/ustat.h	2014-03-03 12:00:52.000000000 +0200
-+++ libexplain-1.4/libexplain/ac/ustat.h	2015-02-18 18:06:26.057371151 +0200
+--- a/libexplain/ac/linux/cyclades.h
++++ b/libexplain/ac/linux/cyclades.h
+@@ -24,6 +24,7 @@
+ #include <libexplain/ac/sys/types.h>
+ 
+ #ifdef HAVE_LINUX_CYCLADES_H
++#include <time.h>
+ #include <linux/cyclades.h>
+ #endif
+ 
+--- a/libexplain/ac/linux/msdos_fs.h
++++ b/libexplain/ac/linux/msdos_fs.h
+@@ -24,6 +24,7 @@
+ #include <libexplain/ac/sys/types.h>
+ 
+ #ifdef HAVE_LINUX_MSDOS_FS_H
++#include <sys/types.h>
+ #include <linux/msdos_fs.h>
+ #endif
+ 
+--- a/libexplain/ac/ustat.h
++++ b/libexplain/ac/ustat.h
 @@ -19,6 +19,7 @@
  
  #ifndef LIBEXPLAIN_AC_USTAT_H
@@ -21,9 +39,8 @@ diff -pur libexplain-1.4.orig/libexplain/ac/ustat.h libexplain-1.4/libexplain/ac
  
  /**
    * @file
-diff -pur libexplain-1.4.orig/libexplain/buffer/enfile.c libexplain-1.4/libexplain/buffer/enfile.c
---- libexplain-1.4.orig/libexplain/buffer/enfile.c	2014-03-03 12:00:52.000000000 +0200
-+++ libexplain-1.4/libexplain/buffer/enfile.c	2015-02-18 18:11:43.030932315 +0200
+--- a/libexplain/buffer/enfile.c
++++ b/libexplain/buffer/enfile.c
 @@ -17,6 +17,8 @@
   * along with this program. If not, see <http://www.gnu.org/licenses/>.
   */
@@ -33,9 +50,8 @@ diff -pur libexplain-1.4.orig/libexplain/buffer/enfile.c libexplain-1.4/libexpla
  #include <libexplain/ac/errno.h>
  #include <libexplain/ac/string.h>
  #include <libexplain/ac/unistd.h>
-diff -pur libexplain-1.4.orig/libexplain/buffer/errno/fseeko.h libexplain-1.4/libexplain/buffer/errno/fseeko.h
---- libexplain-1.4.orig/libexplain/buffer/errno/fseeko.h	2014-03-03 12:00:52.000000000 +0200
-+++ libexplain-1.4/libexplain/buffer/errno/fseeko.h	2015-02-18 13:06:13.612386865 +0200
+--- a/libexplain/buffer/errno/fseeko.h
++++ b/libexplain/buffer/errno/fseeko.h
 @@ -18,6 +18,7 @@
  
  #ifndef LIBEXPLAIN_BUFFER_ERRNO_FSEEKO_H
@@ -44,9 +60,8 @@ diff -pur libexplain-1.4.orig/libexplain/buffer/errno/fseeko.h libexplain-1.4/li
  
  #include <libexplain/ac/stdio.h>
  
-diff -pur libexplain-1.4.orig/libexplain/buffer/loff_t.h libexplain-1.4/libexplain/buffer/loff_t.h
---- libexplain-1.4.orig/libexplain/buffer/loff_t.h	2014-03-03 12:00:52.000000000 +0200
-+++ libexplain-1.4/libexplain/buffer/loff_t.h	2015-02-18 18:20:56.217689546 +0200
+--- a/libexplain/buffer/loff_t.h
++++ b/libexplain/buffer/loff_t.h
 @@ -18,6 +18,7 @@
  
  #ifndef LIBEXPLAIN_BUFFER_LOFF_T_H
@@ -55,9 +70,8 @@ diff -pur libexplain-1.4.orig/libexplain/buffer/loff_t.h libexplain-1.4/libexpla
  
  #include <libexplain/ac/sys/types.h>
  
-diff -pur libexplain-1.4.orig/libexplain/buffer/ssize_t.h libexplain-1.4/libexplain/buffer/ssize_t.h
---- libexplain-1.4.orig/libexplain/buffer/ssize_t.h	2014-03-03 12:00:52.000000000 +0200
-+++ libexplain-1.4/libexplain/buffer/ssize_t.h	2015-02-18 18:23:46.606075243 +0200
+--- a/libexplain/buffer/ssize_t.h
++++ b/libexplain/buffer/ssize_t.h
 @@ -18,6 +18,7 @@
  
  #ifndef LIBEXPLAIN_BUFFER_SSIZE_T_H
@@ -66,9 +80,8 @@ diff -pur libexplain-1.4.orig/libexplain/buffer/ssize_t.h libexplain-1.4/libexpl
  
  #include <libexplain/ac/sys/types.h>
  
-diff -pur libexplain-1.4.orig/libexplain/fileinfo.h libexplain-1.4/libexplain/fileinfo.h
---- libexplain-1.4.orig/libexplain/fileinfo.h	2014-03-03 12:00:52.000000000 +0200
-+++ libexplain-1.4/libexplain/fileinfo.h	2015-02-18 18:10:17.751385535 +0200
+--- a/libexplain/fileinfo.h
++++ b/libexplain/fileinfo.h
 @@ -19,6 +19,7 @@
  
  #ifndef LIBEXPLAIN_FILEINFO_H
@@ -77,9 +90,8 @@ diff -pur libexplain-1.4.orig/libexplain/fileinfo.h libexplain-1.4/libexplain/fi
  
  #include <libexplain/ac/stddef.h>
  
-diff -pur libexplain-1.4.orig/libexplain/iocontrol/blkbszget.c libexplain-1.4/libexplain/iocontrol/blkbszget.c
---- libexplain-1.4.orig/libexplain/iocontrol/blkbszget.c	2014-03-03 12:00:52.000000000 +0200
-+++ libexplain-1.4/libexplain/iocontrol/blkbszget.c	2015-02-18 18:11:33.030997676 +0200
+--- a/libexplain/iocontrol/blkbszget.c
++++ b/libexplain/iocontrol/blkbszget.c
 @@ -17,6 +17,8 @@
   * along with this program. If not, see <http://www.gnu.org/licenses/>.
   */
@@ -89,9 +101,8 @@ diff -pur libexplain-1.4.orig/libexplain/iocontrol/blkbszget.c libexplain-1.4/li
  #include <libexplain/ac/linux/fs.h>
  #include <libexplain/ac/sys/ioctl.h>
  
-diff -pur libexplain-1.4.orig/libexplain/iocontrol/blkgetsize64.c libexplain-1.4/libexplain/iocontrol/blkgetsize64.c
---- libexplain-1.4.orig/libexplain/iocontrol/blkgetsize64.c	2014-03-03 12:00:52.000000000 +0200
-+++ libexplain-1.4/libexplain/iocontrol/blkgetsize64.c	2015-02-18 18:13:02.578279858 +0200
+--- a/libexplain/iocontrol/blkgetsize64.c
++++ b/libexplain/iocontrol/blkgetsize64.c
 @@ -17,6 +17,8 @@
   * along with this program. If not, see <http://www.gnu.org/licenses/>.
   */
@@ -101,9 +112,8 @@ diff -pur libexplain-1.4.orig/libexplain/iocontrol/blkgetsize64.c libexplain-1.4
  #include <libexplain/ac/linux/fs.h>
  #include <libexplain/ac/stdint.h>
  #include <libexplain/ac/sys/ioctl.h>
-diff -pur libexplain-1.4.orig/libexplain/string_buffer.h libexplain-1.4/libexplain/string_buffer.h
---- libexplain-1.4.orig/libexplain/string_buffer.h	2014-03-03 12:00:52.000000000 +0200
-+++ libexplain-1.4/libexplain/string_buffer.h	2015-02-18 13:40:32.823018653 +0200
+--- a/libexplain/string_buffer.h
++++ b/libexplain/string_buffer.h
 @@ -19,6 +19,13 @@
  
  #ifndef LIBEXPLAIN_STRING_BUFFER_H
@@ -118,9 +128,8 @@ diff -pur libexplain-1.4.orig/libexplain/string_buffer.h libexplain-1.4/libexpla
  
  #include <libexplain/ac/stdarg.h>
  #include <libexplain/ac/stddef.h>
-diff -pur libexplain-1.4.orig/libexplain/ustat.h libexplain-1.4/libexplain/ustat.h
---- libexplain-1.4.orig/libexplain/ustat.h	2014-03-03 12:00:52.000000000 +0200
-+++ libexplain-1.4/libexplain/ustat.h	2015-02-18 13:52:02.162600782 +0200
+--- a/libexplain/ustat.h
++++ b/libexplain/ustat.h
 @@ -18,6 +18,7 @@
  
  #ifndef LIBEXPLAIN_USTAT_H
