@@ -1,9 +1,9 @@
---- man/man2html/Makefile.in.orig	2005-01-27 04:36:52.000000000 -0800
-+++ man/man2html/Makefile.in	2005-01-27 04:37:14.000000000 -0800
-@@ -1,7 +1,7 @@
- CC = @CC@
+--- a/man2html/Makefile.in
++++ b/man2html/Makefile.in
+@@ -2,7 +2,7 @@
  CFLAGS += -Wall -Wstrict-prototypes -Wmissing-prototypes
  OBJECTS = man2html.o cgibase.o abbrev.o strdefs.o
+ EXEEXT = @EXEEXT@
 -bindir = $(DESTDIR)$(PREFIX)/usr/bin
 +bindir = $(DESTDIR)$(PREFIX)@bindir@
  mandir = $(DESTDIR)$(PREFIX)@mandir@

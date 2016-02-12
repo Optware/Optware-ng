@@ -14,8 +14,8 @@
 #
 # You should change all these variables to suit your package.
 #
-MAN_SITE=http://primates.ximian.com/~flucifredi/man
-MAN_VERSION=1.6f
+MAN_SITE=ftp://ftp.vim.org/vol/2/metalab/apps/doctools/man
+MAN_VERSION=1.6g
 MAN_SOURCE=man-$(MAN_VERSION).tar.gz
 MAN_DIR=man-$(MAN_VERSION)
 MAN_UNZIP=zcat
@@ -116,7 +116,7 @@ man-unpack: $(MAN_BUILD_DIR)/.configured
 #
 $(MAN_BUILD_DIR)/.built: $(MAN_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(@D)
+	$(MAKE) -C $(@D) LDFLAGS="$(STAGING_LDFLAGS) $(MAN_LDFLAGS) -s"
 	touch $@
 
 #
