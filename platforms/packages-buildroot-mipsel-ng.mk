@@ -5,10 +5,12 @@ SPECIFIC_PACKAGES = \
 	ipkg-static \
 
 # iptraf: sys/types.h and linux/types.h conflicting
+# clamav: missing fanotify_init and fanotify_mark system calls in 2.6.22.19 kernel
 BROKEN_PACKAGES = \
 	buildroot \
 	$(UCLIBC_BROKEN_PACKAGES) \
 	bluez-hcidump \
+	clamav \
 	golang \
 	inferno \
 	phoneme-advanced \
