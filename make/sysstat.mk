@@ -43,7 +43,7 @@ SYSSTAT_CONFLICTS=
 #
 # SYSSTAT_IPK_VERSION should be incremented when the ipk changes.
 #
-SYSSTAT_IPK_VERSION=1
+SYSSTAT_IPK_VERSION=2
 
 #
 # SYSSTAT_CONFFILES should be a list of user-editable files
@@ -143,6 +143,7 @@ $(SYSSTAT_BUILD_DIR)/.built: $(SYSSTAT_BUILD_DIR)/.configured
 		SYSCONFIG_DIR=$(TARGET_PREFIX)/etc/sysconfig \
 		INIT_DIR=$(TARGET_PREFIX)/etc/init.d \
 		SA_DIR=$(TARGET_PREFIX)/var/log/sa \
+		LFLAGS="$(STAGING_LDFLAGS) $(SYSSTAT_LDFLAGS) -s" \
 		;
 	touch $@
 
