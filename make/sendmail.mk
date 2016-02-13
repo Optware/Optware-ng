@@ -20,7 +20,7 @@ SENDMAIL_CONFLICTS=postfix
 #
 # SENDMAIL_IPK_VERSION should be incremented when the ipk changes.
 #
-SENDMAIL_IPK_VERSION=3
+SENDMAIL_IPK_VERSION=4
 
 #
 # SENDMAIL_CONFFILES should be a list of user-editable files
@@ -38,10 +38,11 @@ SENDMAIL_CONFFILES=\
 #
 # uClibc 0.9.28 is missing dn_skipname and other resolver functions
 # Alternatively this could be solved by using bind-stage
+SENDMAIL_PATCHES=$(SENDMAIL_SOURCE_DIR)/upd_qs_prototype_fix.patch
 ifeq ($(LIBC_STYLE), uclibc)
-SENDMAIL_PATCHES=$(SENDMAIL_SOURCE_DIR)/config-uClibc.patch
+SENDMAIL_PATCHES += $(SENDMAIL_SOURCE_DIR)/config-uClibc.patch
 else
-SENDMAIL_PATCHES=$(SENDMAIL_SOURCE_DIR)/config.patch
+SENDMAIL_PATCHES += $(SENDMAIL_SOURCE_DIR)/config.patch
 endif
 SENDMAIL_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/openssl
 #SENDMAIL_LDFLAGS=
@@ -116,8 +117,8 @@ $(SENDMAIL_BUILD_DIR)/.built: $(SENDMAIL_BUILD_DIR)/.configured
 	rm -f $(SENDMAIL_BUILD_DIR)/.built
 	$(MAKE) -C $(SENDMAIL_BUILD_DIR) \
 		CC=$(TARGET_CC)	CCLINK=$(TARGET_CC) \
-	CCOPTS="-D_PATH_SENDMAILCF=\\\"$(TARGET_PREFIX)/etc/mail/sendmail.cf\\\" -I$(STAGING_INCLUDE_DIR) $(SENDMAIL_CPPFLAGS)" \
-		LIBDIRS="-L$(STAGING_LIB_DIR) -Wl,--rpath=$(TARGET_PREFIX)/lib"
+	CCOPTS="-D_PATH_SENDMAILCF=\\\"$(TARGET_PREFIX)/etc/mail/sendmail.cf\\\" $(STAGING_CPPFLAGS) $(SENDMAIL_CPPFLAGS)" \
+		LIBDIRS="$(STAGING_LDFLAGS) $(SENDMAIL_LDFLAGS)"
 	touch $(SENDMAIL_BUILD_DIR)/.built
 
 #
