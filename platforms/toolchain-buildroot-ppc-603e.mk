@@ -77,7 +77,9 @@ $(DL_DIR)/$(TOOLCHAIN_SOURCE):
 	$(WGET) -P $(@D) $(TOOLCHAIN_SITE)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
-$(TARGET_CROSS_TOP)/.configured: $(DL_DIR)/$(TOOLCHAIN_SOURCE) #$(OPTWARE_TOP)/platforms/toolchain-$(OPTWARE_TARGET).mk
+$(TARGET_CROSS_TOP)/.configured: $(DL_DIR)/$(TOOLCHAIN_SOURCE) \
+				$(BUILDROOT-PPC_603E_SOURCE_DIR)/glibc-patches/*.patch \
+				#$(OPTWARE_TOP)/platforms/toolchain-$(OPTWARE_TARGET).mk
 	rm -rf $(TARGET_CROSS_TOP) $(TARGET_CROSS_BUILD_DIR)
 	mkdir -p $(TARGET_CROSS_TOP)/powerpc-buildroot-linux-gnu/sysroot
 	tar -xjvf $(DL_DIR)/$(TOOLCHAIN_SOURCE) -C $(BASE_DIR)/toolchain

@@ -1,0 +1,13 @@
+--- a/iconv/Makefile
++++ b/iconv/Makefile
+@@ -62,6 +62,10 @@
+ xtests-special += $(objpfx)test-iconvconfig.out
+ endif
+ 
++rtld-LDFLAGS = -Wl,--dynamic-linker=%OPTWARE_TARGET_PREFIX%/lib/ld-linux.so.2
++LDFLAGS-iconvconfig = -Wl,-rpath,%OPTWARE_TARGET_PREFIX%/lib
++LDFLAGS-iconv_prog = -Wl,-rpath,%OPTWARE_TARGET_PREFIX%/lib
++
+ include ../Rules
+ 
+ $(inst_bindir)/iconv: $(objpfx)iconv_prog $(+force)

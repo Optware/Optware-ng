@@ -75,15 +75,15 @@ $(DL_DIR)/$(TOOLCHAIN_SOURCE):
 	$(WGET) -P $(@D) $(TOOLCHAIN_SITE)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
-$(TARGET_CROSS_TOP)/.configured: $(DL_DIR)/$(TOOLCHAIN_SOURCE) #$(OPTWARE_TOP)/platforms/toolchain-$(OPTWARE_TARGET).mk
+$(TARGET_CROSS_TOP)/.configured: $(DL_DIR)/$(TOOLCHAIN_SOURCE) \
+				$(BUILDROOT-ARMEABIHF_SOURCE_DIR)/glibc-patches/*.patch \
+				#$(OPTWARE_TOP)/platforms/toolchain-$(OPTWARE_TARGET).mk
 	rm -rf $(TARGET_CROSS_TOP) $(TARGET_CROSS_BUILD_DIR)
 	mkdir -p $(TARGET_CROSS_TOP)/arm-buildroot-linux-gnueabihf/sysroot
 	tar -xjvf $(DL_DIR)/$(TOOLCHAIN_SOURCE) -C $(BASE_DIR)/toolchain
 	sed 's|^BR2_DL_DIR=.*|BR2_DL_DIR="$(DL_DIR)"|' $(BUILDROOT-ARMEABIHF_SOURCE_DIR)/config > $(TARGET_CROSS_BUILD_DIR)/.config
 	mkdir -p $(TARGET_CROSS_BUILD_DIR)/package/glibc/2.21
-	for file in `ls $(BUILDROOT-ARMEABIHF_SOURCE_DIR)/glibc-patches/*`; do \
-		sed -e "s|%OPTWARE_TARGET_PREFIX%|$(TARGET_PREFIX)|g" $$file > $(TARGET_CROSS_BUILD_DIR)/package/glibc/2.21/`basename $$file`; \
-	done
+	$(INSTALL) -m 644 $(BUILDROOT-ARMEABIHF_SOURCE_DIR)/glibc-patches/* $(TARGET_CROSS_BUILD_DIR)/package/glibc/2.21
 	touch $@
 
 $(TARGET_CROSS_TOP)/.built: $(TARGET_CROSS_TOP)/.configured
