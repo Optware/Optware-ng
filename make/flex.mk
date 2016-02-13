@@ -16,7 +16,7 @@ FLEX_PRIORITY=optional
 FLEX_DEPENDS=m4
 FLEX_CONFLICTS=
 
-FLEX_IPK_VERSION=1
+FLEX_IPK_VERSION=2
 
 FLEX_BUILD_DIR=$(BUILD_DIR)/flex
 FLEX_SOURCE_DIR=$(SOURCE_DIR)/flex
@@ -34,6 +34,8 @@ $(FLEX_BUILD_DIR)/.configured: $(DL_DIR)/$(FLEX_SOURCE) make/flex.mk
 	mv $(BUILD_DIR)/$(FLEX_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
+		CPPFLAGS="$(STAGING_CPPFLAGS) $(FLEX_CPPFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS) $(FLEX_LDFLAGS)" \
 		ac_cv_func_malloc_0_nonnull=yes \
 		ac_cv_func_realloc_0_nonnull=yes \
 		./configure \
