@@ -64,7 +64,7 @@ PHP_PATCHES=\
 	$(PHP_SOURCE_DIR)/threads.m4.patch \
 	$(PHP_SOURCE_DIR)/endian-5.0.4.patch \
 	$(PHP_SOURCE_DIR)/ext-posix-uclibc.patch \
-#	$(PHP_SOURCE_DIR)/pcre_info.patch \
+	$(PHP_SOURCE_DIR)/no_libmysql_r.patch \
 
 #
 # If the compilation of the package requires additional

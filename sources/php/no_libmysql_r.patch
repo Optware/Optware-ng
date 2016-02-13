@@ -1,0 +1,30 @@
+--- a/ext/mysqli/config.m4
++++ ext/mysqli/config.m4
+@@ -26,9 +26,6 @@
+     MYSQL_LIB_CFG='--libmysqld-libs'
+     dnl mysqlnd doesn't support embedded, so we have to add some extra stuff
+     mysqli_extra_sources="mysqli_embedded.c"
+-  elif test "$enable_maintainer_zts" = "yes"; then
+-    MYSQL_LIB_CFG='--libs_r'
+-    MYSQL_LIB_NAME='mysqlclient_r'
+   else
+     MYSQL_LIB_CFG='--libs'
+   fi
+--- a/ext/pdo_mysql/config.m4
++++ ext/pdo_mysql/config.m4
+@@ -55,13 +55,8 @@
+       if test "x$SED" = "x"; then
+         AC_PATH_PROG(SED, sed)
+       fi
+-      if test "$enable_maintainer_zts" = "yes"; then
+-        PDO_MYSQL_LIBNAME=mysqlclient_r
+-        PDO_MYSQL_LIBS=`$PDO_MYSQL_CONFIG --libs_r | $SED -e "s/'//g"`
+-      else
+-        PDO_MYSQL_LIBNAME=mysqlclient
+-        PDO_MYSQL_LIBS=`$PDO_MYSQL_CONFIG --libs | $SED -e "s/'//g"`
+-      fi
++      PDO_MYSQL_LIBNAME=mysqlclient
++      PDO_MYSQL_LIBS=`$PDO_MYSQL_CONFIG --libs | $SED -e "s/'//g"`
+       PDO_MYSQL_INCLUDE=`$PDO_MYSQL_CONFIG --cflags | $SED -e "s/'//g"`
+     elif test -n "$PDO_MYSQL_DIR"; then
+       AC_MSG_RESULT([not found])
