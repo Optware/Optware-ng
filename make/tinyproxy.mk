@@ -40,7 +40,7 @@ TINYPROXY_CONFLICTS=
 #
 # TINYPROXY_IPK_VERSION should be incremented when the ipk changes.
 #
-TINYPROXY_IPK_VERSION=1
+TINYPROXY_IPK_VERSION=2
 
 #
 # TINYPROXY_CONFFILES should be a list of user-editable files
@@ -150,7 +150,7 @@ tinyproxy-unpack: $(TINYPROXY_BUILD_DIR)/.configured
 #
 $(TINYPROXY_BUILD_DIR)/.built: $(TINYPROXY_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(@D)
+	$(MAKE) -C $(@D) AM_MAKEFLAGS='LDFLAGS="$(STAGING_LDFLAGS) $(TINYPROXY_LDFLAGS) -Wl,-z,defs"'
 	touch $@
 
 #
