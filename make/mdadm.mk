@@ -20,7 +20,11 @@
 # You should change all these variables to suit your package.
 #
 MDADM_SITE=https://www.kernel.org/pub/linux/utils/raid/mdadm
-MDADM_VERSION=3.3.2
+ifneq ($(OPTWARE_TARGET), $(filter buildroot-mipsel-ng, $(OPTWARE_TARGET)))
+MDADM_VERSION=3.4
+else
+MDADM_VERSION=3.2.6
+endif
 MDADM_SOURCE=mdadm-$(MDADM_VERSION).tar.gz
 MDADM_DIR=mdadm-$(MDADM_VERSION)
 MDADM_UNZIP=zcat
