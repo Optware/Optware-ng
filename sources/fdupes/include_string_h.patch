@@ -1,0 +1,10 @@
+--- a/md5/md5.h
++++ b/md5/md5.h
+@@ -42,6 +42,7 @@
+ 
+ #ifndef md5_INCLUDED
+ #  define md5_INCLUDED
++#include <string.h>
+ 
+ /*
+  * This code has some adaptations for the Ghostscript environment, but it

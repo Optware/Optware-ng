@@ -36,7 +36,7 @@ FDUPES_CONFLICTS=
 #
 # FDUPES_IPK_VERSION should be incremented when the ipk changes.
 #
-FDUPES_IPK_VERSION=1
+FDUPES_IPK_VERSION=2
 
 #
 # FDUPES_CONFFILES should be a list of user-editable files
@@ -46,7 +46,7 @@ FDUPES_IPK_VERSION=1
 # FDUPES_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#FDUPES_PATCHES=$(FDUPES_SOURCE_DIR)/configure.patch
+FDUPES_PATCHES=$(FDUPES_SOURCE_DIR)/include_string_h.patch
 
 #
 # If the compilation of the package requires additional
@@ -110,7 +110,7 @@ $(FDUPES_BUILD_DIR)/.configured: $(DL_DIR)/$(FDUPES_SOURCE) $(FDUPES_PATCHES) ma
 	$(FDUPES_UNZIP) $(DL_DIR)/$(FDUPES_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(FDUPES_PATCHES)" ; \
 		then cat $(FDUPES_PATCHES) | \
-		$(PATCH) -d $(BUILD_DIR)/$(FDUPES_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(FDUPES_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(FDUPES_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(FDUPES_DIR) $(@D) ; \
@@ -139,7 +139,7 @@ fdupes-unpack: $(FDUPES_BUILD_DIR)/.configured
 $(FDUPES_BUILD_DIR)/.built: $(FDUPES_BUILD_DIR)/.configured
 	rm -f $@
 	$(MAKE) -C $(@D) fdupes \
-		$(TARGET_CONFIGURE_OPTS) \
+		CC="$(TARGET_CC) $(STAGING_CPPFLAGS) $(FDUPES_CPPFLAGS) $(STAGING_LDFLAGS) $(FDUPES_LDFLAGS)" \
 		INSTALLDIR=$(TARGET_PREFIX)/bin \
 		MANPAGEDIR=$(TARGET_PREFIX)/man \
 		;
