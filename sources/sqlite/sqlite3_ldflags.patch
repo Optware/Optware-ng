@@ -1,0 +1,11 @@
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -7,7 +7,7 @@
+ 
+ bin_PROGRAMS = sqlite3
+ sqlite3_SOURCES = shell.c sqlite3.h
+-sqlite3_LDADD = $(top_builddir)/libsqlite3.la @READLINE_LIBS@
++sqlite3_LDADD = $(top_builddir)/libsqlite3.la $(LDFLAGS) @READLINE_LIBS@
+ sqlite3_DEPENDENCIES = $(top_builddir)/libsqlite3.la
+ 
+ include_HEADERS = sqlite3.h sqlite3ext.h

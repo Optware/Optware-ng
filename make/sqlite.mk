@@ -29,13 +29,13 @@ SQLITE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SQLITE_DESCRIPTION=SQLite is a small C library that implements a self-contained, embeddable, zero-configuration SQL database engine.
 SQLITE_SECTION=misc
 SQLITE_PRIORITY=optional
-SQLITE_DEPENDS=
+SQLITE_DEPENDS=readline
 SQLITE_CONFLICTS=
 
 #
 # SQLITE_IPK_VERSION should be incremented when the ipk changes.
 #
-SQLITE_IPK_VERSION=1
+SQLITE_IPK_VERSION=2
 
 #
 # SQLITE_CONFFILES should be a list of user-editable files
@@ -45,7 +45,7 @@ SQLITE_IPK_VERSION=1
 # SQLITE_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#SQLITE_PATCHES=$(SQLITE_SOURCE_DIR)/configure.patch
+SQLITE_PATCHES=$(SQLITE_SOURCE_DIR)/sqlite3_ldflags.patch
 
 #
 # If the compilation of the package requires additional
@@ -104,7 +104,7 @@ sqlite-source: $(DL_DIR)/$(SQLITE_SOURCE) $(SQLITE_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(SQLITE_BUILD_DIR)/.configured: $(DL_DIR)/$(SQLITE_SOURCE) $(SQLITE_PATCHES) make/sqlite.mk
-#	$(MAKE)
+	$(MAKE) readline-stage
 	rm -rf $(BUILD_DIR)/$(SQLITE_DIR) $(@D)
 	$(SQLITE_UNZIP) $(DL_DIR)/$(SQLITE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SQLITE_PATCHES)"; \
@@ -118,6 +118,8 @@ $(SQLITE_BUILD_DIR)/.configured: $(DL_DIR)/$(SQLITE_SOURCE) $(SQLITE_PATCHES) ma
 	fi
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
+		CFLAGS="$(STAGING_CPPFLAGS) $(SQLITE_CPPFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS) $(SQLITE_LDFLAGS)" \
 		config_BUILD_CC="$(HOSTCC)" \
 		config_TARGET_CC="$(TARGET_CC)" \
 		./configure \
