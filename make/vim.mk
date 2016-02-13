@@ -37,7 +37,7 @@ VIM_CONFLICTS=
 #
 # VIM_IPK_VERSION should be incremented when the ipk changes.
 #
-VIM_IPK_VERSION=4
+VIM_IPK_VERSION=5
 
 #
 # VIM_CONFFILES should be a list of user-editable files
@@ -48,7 +48,9 @@ VIM_CONFFILES=
 # VIM_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-VIM_PATCHES=$(VIM_SOURCE_DIR)/configure.patch
+VIM_PATCHES=\
+$(VIM_SOURCE_DIR)/configure.patch \
+$(VIM_SOURCE_DIR)/xxd_ldflags.patch \
 
 #
 # If the compilation of the package requires additional
