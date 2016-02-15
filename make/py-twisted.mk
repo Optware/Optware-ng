@@ -21,15 +21,20 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-TWISTED_VERSION=15.0.0
+PY-TWISTED_VERSION=15.5.0
 PY-TWISTED_VERSION_MAJOR=$(shell echo $(PY-TWISTED_VERSION)|sed 's/\.[^\.]*$$//')
+PY-TWISTED_VERSION_MID=15.0.0
+PY-TWISTED_VERSION_MAJOR_MID=$(shell echo $(PY-TWISTED_VERSION_MID)|sed 's/\.[^\.]*$$//')
 PY-TWISTED_VERSION_OLD=12.1.0
 PY-TWISTED_VERSION_MAJOR_OLD=$(shell echo $(PY-TWISTED_VERSION_OLD)|sed 's/\.[^\.]*$$//')
 PY-TWISTED_SITE=http://twistedmatrix.com/Releases/Twisted/$(PY-TWISTED_VERSION_MAJOR)
+PY-TWISTED_SITE_MID=http://twistedmatrix.com/Releases/Twisted/$(PY-TWISTED_VERSION_MAJOR_MID)
 PY-TWISTED_SITE_OLD=http://twistedmatrix.com/Releases/Twisted/$(PY-TWISTED_VERSION_MAJOR_OLD)
 PY-TWISTED_SOURCE=Twisted-$(PY-TWISTED_VERSION).tar.bz2
+PY-TWISTED_SOURCE_MID=Twisted-$(PY-TWISTED_VERSION_MID).tar.bz2
 PY-TWISTED_SOURCE_OLD=Twisted-$(PY-TWISTED_VERSION_OLD).tar.bz2
 PY-TWISTED_DIR=Twisted-$(PY-TWISTED_VERSION)
+PY-TWISTED_DIR_MID=Twisted-$(PY-TWISTED_VERSION_MID)
 PY-TWISTED_DIR_OLD=Twisted-$(PY-TWISTED_VERSION_OLD)
 PY-TWISTED_UNZIP=bzcat
 PY-TWISTED_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
@@ -80,8 +85,8 @@ PY-TWISTED_HOST_BUILD_DIR=$(HOST_BUILD_DIR)/py-twisted
 PY25-TWISTED_IPK_DIR=$(BUILD_DIR)/py25-twisted-$(PY-TWISTED_VERSION_OLD)-ipk
 PY25-TWISTED_IPK=$(BUILD_DIR)/py25-twisted_$(PY-TWISTED_VERSION_OLD)-$(PY-TWISTED_IPK_VERSION)_$(TARGET_ARCH).ipk
 
-PY26-TWISTED_IPK_DIR=$(BUILD_DIR)/py26-twisted-$(PY-TWISTED_VERSION)-ipk
-PY26-TWISTED_IPK=$(BUILD_DIR)/py26-twisted_$(PY-TWISTED_VERSION)-$(PY-TWISTED_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY26-TWISTED_IPK_DIR=$(BUILD_DIR)/py26-twisted-$(PY-TWISTED_VERSION_MID)-ipk
+PY26-TWISTED_IPK=$(BUILD_DIR)/py26-twisted_$(PY-TWISTED_VERSION_MID)-$(PY-TWISTED_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY27-TWISTED_IPK_DIR=$(BUILD_DIR)/py27-twisted-$(PY-TWISTED_VERSION)-ipk
 PY27-TWISTED_IPK=$(BUILD_DIR)/py27-twisted_$(PY-TWISTED_VERSION)-$(PY-TWISTED_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -97,6 +102,10 @@ PY3-TWISTED_IPK=$(BUILD_DIR)/py3-twisted_$(PY-TWISTED_VERSION)-$(PY-TWISTED_IPK_
 #
 $(DL_DIR)/$(PY-TWISTED_SOURCE):
 	$(WGET) -P $(@D) $(PY-TWISTED_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
+
+$(DL_DIR)/$(PY-TWISTED_SOURCE_MID):
+	$(WGET) -P $(@D) $(PY-TWISTED_SITE_MID)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 $(DL_DIR)/$(PY-TWISTED_SOURCE_OLD):
@@ -125,9 +134,9 @@ py-twisted-source: $(DL_DIR)/$(PY-TWISTED_SOURCE) $(DL_DIR)/$(PY-TWISTED_SOURCE_
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(PY-TWISTED_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-TWISTED_SOURCE) $(DL_DIR)/$(PY-TWISTED_SOURCE_OLD) $(PY-TWISTED_PATCHES) make/py-twisted.mk
+$(PY-TWISTED_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-TWISTED_SOURCE) $(DL_DIR)/$(PY-TWISTED_SOURCE_MID) $(DL_DIR)/$(PY-TWISTED_SOURCE_OLD) $(PY-TWISTED_PATCHES) make/py-twisted.mk
 	$(MAKE) py-zope-interface-stage py-setuptools-stage py-setuptools-host-stage
-	rm -rf $(BUILD_DIR)/$(PY-TWISTED_DIR) $(BUILD_DIR)/$(PY-TWISTED_DIR_OLD) $(@D)
+	rm -rf $(BUILD_DIR)/$(PY-TWISTED_DIR) $(BUILD_DIR)/$(PY-TWISTED_DIR_MID) $(BUILD_DIR)/$(PY-TWISTED_DIR_OLD) $(@D)
 	mkdir -p $(PY-TWISTED_BUILD_DIR)
 	$(PY-TWISTED_UNZIP) $(DL_DIR)/$(PY-TWISTED_SOURCE_OLD) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-TWISTED_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-TWISTED_DIR_OLD) -p1
@@ -144,9 +153,9 @@ $(PY-TWISTED_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-TWISTED_SOURCE) $(DL_DIR)/$(
 		echo "install_scripts=$(TARGET_PREFIX)/bin"; \
 	    ) >> setup.cfg \
 	)
-	$(PY-TWISTED_UNZIP) $(DL_DIR)/$(PY-TWISTED_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	$(PY-TWISTED_UNZIP) $(DL_DIR)/$(PY-TWISTED_SOURCE_MID) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-TWISTED_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-TWISTED_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-TWISTED_DIR) $(@D)/2.6
+	mv $(BUILD_DIR)/$(PY-TWISTED_DIR_MID) $(@D)/2.6
 	(cd $(@D)/2.6; \
 	    ( \
 		echo "[build_ext]"; \
@@ -330,9 +339,9 @@ $(PY26-TWISTED_IPK_DIR)/CONTROL/control:
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-TWISTED_PRIORITY)" >>$@
 	@echo "Section: $(PY-TWISTED_SECTION)" >>$@
-	@echo "Version: $(PY-TWISTED_VERSION)-$(PY-TWISTED_IPK_VERSION)" >>$@
+	@echo "Version: $(PY-TWISTED_VERSION_MID)-$(PY-TWISTED_IPK_VERSION)" >>$@
 	@echo "Maintainer: $(PY-TWISTED_MAINTAINER)" >>$@
-	@echo "Source: $(PY-TWISTED_SITE)/$(PY-TWISTED_SOURCE)" >>$@
+	@echo "Source: $(PY-TWISTED_SITE)/$(PY-TWISTED_SOURCE_MID)" >>$@
 	@echo "Description: $(PY-TWISTED_DESCRIPTION)" >>$@
 	@echo "Depends: $(PY26-TWISTED_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-TWISTED_CONFLICTS)" >>$@
