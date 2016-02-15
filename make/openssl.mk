@@ -5,7 +5,7 @@
 OPENSSL_SITE=http://www.openssl.org/source
 
 ifeq ($(OPENSSL_VERSION), 1.0.2)
-override OPENSSL_VERSION := 1.0.2d
+override OPENSSL_VERSION := 1.0.2f
 export OPENSSL_VERSION
 export OPENSSL_LIB_VERSION := 1.0.0
 export OPENSSL_IPK_VERSION := 1
