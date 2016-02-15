@@ -26,10 +26,10 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-LIBTORRENT-RASTERBAR_SITE=https://github.com/arvidn/libtorrent/releases/download/libtorrent-1_0_6
+LIBTORRENT-RASTERBAR_SITE=https://github.com/arvidn/libtorrent/releases/download/libtorrent-1_0_8
 #LIBTORRENT-RASTERBAR_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/libtorrent
 #LIBTORRENT-RASTERBAR_SITE=http://libtorrent.googlecode.com/files
-LIBTORRENT-RASTERBAR_VERSION=1.0.6
+LIBTORRENT-RASTERBAR_VERSION=1.0.8
 LIBTORRENT-RASTERBAR_SOURCE=libtorrent-rasterbar-$(LIBTORRENT-RASTERBAR_VERSION).tar.gz
 LIBTORRENT-RASTERBAR_DIR=libtorrent-rasterbar-$(LIBTORRENT-RASTERBAR_VERSION)
 LIBTORRENT-RASTERBAR_UNZIP=zcat
@@ -136,7 +136,7 @@ libtorrent-rasterbar-source: $(DL_DIR)/$(LIBTORRENT-RASTERBAR_SOURCE) $(LIBTORRE
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(LIBTORRENT-RASTERBAR_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBTORRENT-RASTERBAR_SOURCE) $(LIBTORRENT-RASTERBAR_PATCHES) #make/libtorrent-rasterbar.mk
+$(LIBTORRENT-RASTERBAR_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBTORRENT-RASTERBAR_SOURCE) $(LIBTORRENT-RASTERBAR_PATCHES) make/libtorrent-rasterbar.mk
 	$(MAKE) boost-stage openssl-stage python26-host-stage python26-stage python27-host-stage python27-stage python3-host-stage python3-stage
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
