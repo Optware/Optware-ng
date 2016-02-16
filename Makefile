@@ -80,9 +80,7 @@ PACKAGES_THAT_NEED_TO_BE_FIXED = lumikki \
 	appweb bluez-utils bluez-hcidump libextractor sandbox \
 	btg \
  
-# deluge is actually a python package, but it depends on perl package intltool
 PERL_PACKAGES = \
-	deluge deluge-develop \
 	intltool \
 	perl \
 	perl-algorithm-diff \
@@ -168,6 +166,7 @@ PERL_PACKAGES = \
 PYTHON_PACKAGES = \
 	bzr bzr-rewrite bzr-svn bzrtools \
 	cherokee-pyscgi \
+	deluge deluge-develop \
 	dstat \
 	getmail \
 	gitosis \

@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 DELUGE_SITE=http://download.deluge-torrent.org/source
-DELUGE_VERSION=1.3.11
+DELUGE_VERSION=1.3.12
 DELUGE_SOURCE=deluge-$(DELUGE_VERSION).tar.bz2
 DELUGE_DIR=deluge-$(DELUGE_VERSION)
 DELUGE_UNZIP=bzcat
@@ -31,14 +31,14 @@ DELUGE_DESCRIPTION=Deluge BitTorrent client (without GTK+ client).
 DELUGE_GTK_DESCRIPTION=Deluge GTK+ client
 DELUGE_SECTION=misc
 DELUGE_PRIORITY=optional
-DELUGE_DEPENDS=python27, py27-twisted, py27-xdg, py27-chardet, py27-mako, py27-setuptools, py27-libtorrent-rasterbar-binding, geoip, intltool
+DELUGE_DEPENDS=python27, py27-twisted, py27-xdg, py27-chardet, py27-mako, py27-setuptools, py27-libtorrent-rasterbar-binding, geoip
 DELUGE_GTK_DEPENDS=deluge, py27-gtk, librsvg, xdg-utils, gnome-icon-theme
 DELUGE_CONFLICTS=deluge-develop
 
 #
 # DELUGE_IPK_VERSION should be incremented when the ipk changes.
 #
-DELUGE_IPK_VERSION=5
+DELUGE_IPK_VERSION=1
 
 #
 # DELUGE_CONFFILES should be a list of user-editable files
