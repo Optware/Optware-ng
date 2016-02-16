@@ -1,0 +1,91 @@
+--- a/prog/daemon/healthd.sh
++++ b/prog/daemon/healthd.sh
+@@ -1,4 +1,4 @@
+-#!/bin/bash
++#!%OPTWARE_TARGET_PREFIX%/bin/bash
+ #
+ # healthd -- 	This is a simple daemon which can be used to alert you in the
+ #		event of a hardware health monitoring alarm by sending an 
+@@ -21,7 +21,7 @@
+ # Version: 1.0.0
+ #
+ 
+-PATH="/bin:/usr/bin:/usr/local/bin:${PATH}"
++PATH="%OPTWARE_TARGET_PREFIX%/bin:${PATH}"
+ 
+ ADMIN_EMAIL="root@localhost"
+ 
+--- a/prog/hotplug/unhide_ICH_SMBus
++++ b/prog/hotplug/unhide_ICH_SMBus
+@@ -1,4 +1,4 @@
+-#!/bin/bash
++#!%OPTWARE_TARGET_PREFIX%/bin/bash
+ # (C) Rudolf Marek <r.marek@assembler.cz>,
+ #     Jean Delvare <khali@linux-fr.org>
+ #
+--- a/prog/pwm/pwmconfig
++++ b/prog/pwm/pwmconfig
+@@ -1,4 +1,4 @@
+-#!/bin/bash
++#!%OPTWARE_TARGET_PREFIX%/bin/bash
+ #
+ # pwmconfig
+ # Tests the pwm outputs of sensors and configures fancontrol
+@@ -31,7 +31,7 @@
+ 
+ REVISION=$(echo '$Revision: 5857 $' | cut -d' ' -f2)
+ REVDATE=$(echo '$Date: 2010-08-22 18:17:57 +0200 (dim. 22 août 2010) $' | cut -d' ' -f2)
+-PIDFILE="/var/run/fancontrol.pid"
++PIDFILE="%OPTWARE_TARGET_PREFIX%/var/run/fancontrol.pid"
+ 
+ if [ -f "$PIDFILE" ]
+ then
+@@ -595,12 +595,12 @@
+ 
+ function AskPath()
+ {
+-	echo -n 'What should be the path to your fancontrol config file (/etc/fancontrol)? '
++	echo -n 'What should be the path to your fancontrol config file (%OPTWARE_TARGET_PREFIX%/etc/fancontrol)? '
+ 
+ 	read FCCONFIG
+ 	if [ "$FCCONFIG" = "" ]
+ 	then
+-		FCCONFIG="/etc/fancontrol"
++		FCCONFIG="%OPTWARE_TARGET_PREFIX%/etc/fancontrol"
+ 	fi
+ }
+ 
+--- a/prog/pwm/fancontrol
++++ b/prog/pwm/fancontrol
+@@ -1,4 +1,4 @@
+-#!/bin/bash
++#!%OPTWARE_TARGET_PREFIX%/bin/bash
+ #
+ # Simple script implementing a temperature dependent fan speed control
+ # Supported Linux kernel versions: 2.6.5 and later
+@@ -38,7 +38,7 @@
+ #
+ #
+ 
+-PIDFILE="/var/run/fancontrol.pid"
++PIDFILE="%OPTWARE_TARGET_PREFIX%/var/run/fancontrol.pid"
+ 
+ #DEBUG=1
+ MAX=255
+@@ -260,7 +260,7 @@
+ then
+ 	LoadConfig $1
+ else
+-	LoadConfig /etc/fancontrol
++	LoadConfig %OPTWARE_TARGET_PREFIX%/etc/fancontrol
+ fi
+ 
+ # Detect path to sensors
+--- a/prog/detect/sensors-detect
++++ b/prog/detect/sensors-detect
+@@ -1,4 +1,4 @@
+-#!/usr/bin/perl -w
++#!%OPTWARE_TARGET_PREFIX%/bin/perl -w
+ #
+ #    sensors-detect - Detect hardware monitoring chips
+ #    Copyright (C) 1998 - 2002  Frodo Looijaard <frodol@dds.nl>

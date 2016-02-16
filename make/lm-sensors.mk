@@ -30,7 +30,7 @@ LM_SENSORS_DESCRIPTION=Linux hardware monitoring.
 LM_SENSORS_SECTION=sysadmin
 LM_SENSORS_PRIORITY=optional
 LM_SENSORS_DEPENDS=sysfsutils
-LM_SENSORS_SUGGESTS=
+LM_SENSORS_SUGGESTS=bash, perl
 LM_SENSORS_CONFLICTS=
 
 #
@@ -46,7 +46,7 @@ LM_SENSORS_CONFFILES=$(TARGET_PREFIX)/etc/sensors3.conf
 # LM_SENSORS_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#LM_SENSORS_PATCHES=$(LM_SENSORS_SOURCE_DIR)/configure.patch
+LM_SENSORS_PATCHES=$(LM_SENSORS_SOURCE_DIR)/optware-paths.patch
 
 #
 # If the compilation of the package requires additional
@@ -113,7 +113,7 @@ $(LM_SENSORS_BUILD_DIR)/.configured: $(DL_DIR)/$(LM_SENSORS_SOURCE) $(LM_SENSORS
 	$(LM_SENSORS_UNZIP) $(DL_DIR)/$(LM_SENSORS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LM_SENSORS_PATCHES)" ; \
 		then cat $(LM_SENSORS_PATCHES) | \
-		$(PATCH) -d $(BUILD_DIR)/$(LM_SENSORS_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LM_SENSORS_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LM_SENSORS_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LM_SENSORS_DIR) $(@D) ; \
@@ -148,6 +148,7 @@ $(LM_SENSORS_BUILD_DIR)/.built: $(LM_SENSORS_BUILD_DIR)/.configured
 		EXLDFLAGS="$(STAGING_LDFLAGS) $(LM_SENSORS_LDFLAGS)" \
 		PREFIX=$(TARGET_PREFIX) \
 		ETCDIR=$(TARGET_PREFIX)/etc \
+		BUILD_STATIC_LIB=0 \
 		;
 	touch $@
 

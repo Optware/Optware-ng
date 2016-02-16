@@ -16,6 +16,7 @@ BROKEN_PACKAGES = \
 	phoneme-advanced \
 	rssh \
 	sandbox \
+	lm-sensors \
 	libopensync msynctool obexftp \
 	modutils
 

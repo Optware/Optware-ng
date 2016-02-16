@@ -259,6 +259,7 @@ BOOST_PACKAGES = \
 
 # libao - has runtime trouble?
 COMMON_CROSS_PACKAGES = \
+	$(PACKAGES_REQUIRE_LINUX26) \
 	9base \
 	abook adduser adns aget aiccu alac-decoder \
 	alsa-lib alsa-oss alsa-utils \

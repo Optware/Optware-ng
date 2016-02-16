@@ -13,6 +13,7 @@ BROKEN_PACKAGES = \
 	qemu \
 	qemu-libc-i386 \
 	syx \
+	lm-sensors \
 	ldconfig modutils samba2
 
 PERL_MAJOR_VER := 5.20
