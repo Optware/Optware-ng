@@ -54,7 +54,6 @@ CROSS_PACKAGES_READY_FOR_TESTING = qt-embedded \
 	unbound \
 	ldns \
 	dnssec-trigger \
-	collectd \
 
 # Add new native-only packages here
 # When they have been tested, they will be promoted and uploaded.
@@ -280,7 +279,7 @@ COMMON_CROSS_PACKAGES = \
 	catdoc ccollect ccrypt ccxstream cdargs \
 	cdrtools centerim cuetools \
 	cherokee chicken chillispot chrpath cksfv \
-	classpath clamav clearsilver climm clinkcc clips cmdftp \
+	classpath clamav clearsilver climm clinkcc clips cmdftp collectd \
 	confuse connect coreutils corkscrew cpio cppunit cpufrequtils cron cryptcat \
 	cscope ctags ctcs ctorrent ctrlproxy \
 	cups cups-pdf cvs \

@@ -29,8 +29,11 @@ COLLECTD_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 COLLECTD_DESCRIPTION=statistics collection and monitoring daemon
 COLLECTD_SECTION=utils
 COLLECTD_PRIORITY=optional
-COLLECTD_DEPENDS=
-COLLECTD_SUGGESTS=libcurl, libesmtp, libgcrypt, libpcap, libxml2, lm-sensors, mysql, net-snmp, perl, postgresql, python, rrdtool
+COLLECTD_DEPENDS=libgcrypt
+COLLECTD_SUGGESTS=libcurl, libesmtp, libpcap, libxml2, mysql, net-snmp, perl, postgresql, python27, rrdtool, bash
+ifeq (lm-sensors, $(filter lm-sensors, $(PACKAGES)))
+COLLECTD_SUGGESTS+=, lm-sensors
+endif
 COLLECTD_CONFLICTS=
 
 #
@@ -54,7 +57,7 @@ COLLECTD_PATCHES=$(COLLECTD_SOURCE_DIR)/tcpconns.c.patch
 # compilation or linking flags, then list them here.
 #
 COLLECTD_CPPFLAGS=-Wno-error
-COLLECTD_LDFLAGS=
+COLLECTD_LDFLAGS=-L$(STAGING_LIB_DIR)/$(PERL_LIB_CORE_DIR) $(PERL_LDFLAGS) -lm -lgcrypt
 
 #
 # COLLECTD_BUILD_DIR is the directory in which the build is done.
@@ -106,10 +109,13 @@ collectd-source: $(DL_DIR)/$(COLLECTD_SOURCE) $(COLLECTD_PATCHES)
 # shown below to make various patches to it.
 #
 $(COLLECTD_BUILD_DIR)/.configured: $(DL_DIR)/$(COLLECTD_SOURCE) $(COLLECTD_PATCHES) make/collectd.mk
-	$(MAKE) libcurl-stage libgcrypt-stage libxml2-stage
-	$(MAKE) net-snmp-stage mysql-stage postgresql-stage
-	$(MAKE) libesmtp-stage libpcap-stage 
-	$(MAKE) lm-sensors-stage perl-stage python-stage rrdtool-stage
+	$(MAKE) libcurl-stage libgcrypt-stage libxml2-stage \
+		net-snmp-stage mysql-stage postgresql-stage \
+		libesmtp-stage libpcap-stage \
+		perl-hostperl python27-host-stage rrdtool-stage
+ifeq (lm-sensors, $(filter lm-sensors, $(PACKAGES)))
+	$(MAKE) lm-sensors-stage
+endif
 	rm -rf $(BUILD_DIR)/$(COLLECTD_DIR) $(@D)
 	$(COLLECTD_UNZIP) $(DL_DIR)/$(COLLECTD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(COLLECTD_PATCHES)" ; \
@@ -119,6 +125,9 @@ $(COLLECTD_BUILD_DIR)/.configured: $(DL_DIR)/$(COLLECTD_SOURCE) $(COLLECTD_PATCH
 	if test "$(BUILD_DIR)/$(COLLECTD_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(COLLECTD_DIR) $(@D) ; \
 	fi
+	find $(@D)/contrib -name '*.pl' -exec sed -i -e 's|^#!/usr/bin/perl|#!$(TARGET_PREFIX)/bin/perl|' {} \;
+	find $(@D)/contrib -name '*.py' -exec sed -i -e 's|^#!/usr/bin/env python|#!$(TARGET_PREFIX)/bin/python2.7|' {} \;
+	find $(@D)/contrib -name '*.pl' -exec sed -i -e 's|^#!/bin/bash|#!$(TARGET_PREFIX)/bin/bash|' {} \;
 	(cd $(@D); \
 		if $(TARGET_CC) -E -P $(SOURCE_DIR)/common/endianness.c | grep -q puts.*BIG_ENDIAN; \
 		then WITH_FP_LAYOUT="--with-fp-layout=endianflip"; \
@@ -127,7 +136,6 @@ $(COLLECTD_BUILD_DIR)/.configured: $(DL_DIR)/$(COLLECTD_SOURCE) $(COLLECTD_PATCH
 		CFLAGS="$(STAGING_CPPFLAGS) $(COLLECTD_CPPFLAGS)" \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(COLLECTD_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(COLLECTD_LDFLAGS)" \
-		PATH="$(STAGING_PREFIX)/bin:$$PATH" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -138,6 +146,8 @@ $(COLLECTD_BUILD_DIR)/.configured: $(DL_DIR)/$(COLLECTD_SOURCE) $(COLLECTD_PATCH
 		--with-libgcrypt-prefix=$(STAGING_PREFIX) \
 		--with-nan-emulation \
 		$$WITH_FP_LAYOUT \
+		--with-python=$(HOST_STAGING_PREFIX)/bin/python2.7 \
+		--with-libperl=$(PERL_HOSTPERL) \
 	)
 	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
