@@ -29,7 +29,7 @@ COLLECTD_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 COLLECTD_DESCRIPTION=statistics collection and monitoring daemon
 COLLECTD_SECTION=utils
 COLLECTD_PRIORITY=optional
-COLLECTD_DEPENDS=libgcrypt
+COLLECTD_DEPENDS=libgcrypt, libgpg-error
 COLLECTD_SUGGESTS=libcurl, libesmtp, libpcap, libxml2, mysql, net-snmp, perl, postgresql, python27, rrdtool, bash
 ifeq (lm-sensors, $(filter lm-sensors, $(PACKAGES)))
 COLLECTD_SUGGESTS+=, lm-sensors
@@ -39,7 +39,7 @@ COLLECTD_CONFLICTS=
 #
 # COLLECTD_IPK_VERSION should be incremented when the ipk changes.
 #
-COLLECTD_IPK_VERSION=1
+COLLECTD_IPK_VERSION=2
 
 #
 # COLLECTD_CONFFILES should be a list of user-editable files
@@ -111,7 +111,7 @@ collectd-source: $(DL_DIR)/$(COLLECTD_SOURCE) $(COLLECTD_PATCHES)
 $(COLLECTD_BUILD_DIR)/.configured: $(DL_DIR)/$(COLLECTD_SOURCE) $(COLLECTD_PATCHES) make/collectd.mk
 	$(MAKE) libcurl-stage libgcrypt-stage libxml2-stage \
 		net-snmp-stage mysql-stage postgresql-stage \
-		libesmtp-stage libpcap-stage \
+		libesmtp-stage libpcap-stage libgpg-error \
 		perl-hostperl python27-host-stage rrdtool-stage
 ifeq (lm-sensors, $(filter lm-sensors, $(PACKAGES)))
 	$(MAKE) lm-sensors-stage
