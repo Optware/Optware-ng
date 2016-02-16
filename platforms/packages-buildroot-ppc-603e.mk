@@ -5,6 +5,7 @@ SPECIFIC_PACKAGES = \
 	binutils libc-dev gcc \
 	ipkg-static \
 
+# lm-sensors: No rule to make target `sys/io.h'
 BROKEN_PACKAGES = \
 	ecl \
 	gnu-smalltalk \
