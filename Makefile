@@ -860,6 +860,7 @@ else
 DIRNAME_SUFFIX=$(shell echo $(TARGET_PREFIX) | sed 's/[^a-zA-Z]/-/g')
 endif
 
+ifneq ($(DEFAULT_TARGET_PREFIX), $(TARGET_PREFIX))
 %-target %$(DIRNAME_SUFFIX)/.configured:
 	[ -e ${DL_DIR} ] || mkdir -p ${DL_DIR}
 	[ -e $*$(DIRNAME_SUFFIX)/Makefile ] || ( \
@@ -874,9 +875,56 @@ endif
 		ln -s ../sources sources ; \
 	)
 	touch $*$(DIRNAME_SUFFIX)/.configured
+else
+%-target %/.configured:
+	[ -e ${DL_DIR} ] || mkdir -p ${DL_DIR}
+	[ -e $*/Makefile ] || ( \
+		mkdir -p $* ; \
+		cd $* ; \
+		echo "OPTWARE_TARGET=$*" > Makefile ; \
+		echo "include ../Makefile" >> Makefile ; \
+		ln -s ../downloads downloads ; \
+		ln -s ../make make ; \
+		ln -s ../scripts scripts ; \
+		ln -s ../sources sources ; \
+	)
+	touch $*/.configured
+endif
 
 
 make/%.mk:
 	PKG_UP=$$(echo $* | tr [a-z\-] [A-Z_]);			\
 	sed -e "s/<foo>/$*/g" -e "s/<FOO>/$${PKG_UP}/g"		\
 		 -e '6,11d' make/template.mk > $@
+
+ifeq ($(OPTWARE_TOP), $(BASE_DIR))
+
+# Use this to build *all* feeds (all targets from `cat Optware_targets_list`)
+
+OPTWARE_BUILD_TARGETS:=$(shell echo `cat Optware_targets_list`)
+
+ifneq ($(DEFAULT_TARGET_PREFIX), $(TARGET_PREFIX))
+%/.configured:
+	[ -e ${DL_DIR} ] || mkdir -p ${DL_DIR}
+	[ -e $*/Makefile ] || ( \
+		mkdir -p $* ; \
+		cd $* ; \
+		echo "OPTWARE_TARGET=$*" > Makefile ; \
+		echo "include ../Makefile" >> Makefile ; \
+		ln -s ../downloads downloads ; \
+		ln -s ../make make ; \
+		ln -s ../scripts scripts ; \
+		ln -s ../sources sources ; \
+	)
+	touch $*/.configured
+endif
+
+%-feed: %/.configured
+	$(MAKE) -C $* directories
+	$(MAKE) -C $* ipkg-utils
+	$(MAKE) -C $* toolchain
+	$(MAKE) -C $* all
+
+allfeeds: $(patsubst %,%-feed,$(OPTWARE_BUILD_TARGETS))
+
+endif
