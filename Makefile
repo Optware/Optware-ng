@@ -924,6 +924,7 @@ endif
 
 %-feed: %/.configured
 	$(MAKE) -C $* directories
+	$(MAKE) -C $* host/.configured
 	$(MAKE) -C $* ipkg-utils
 	$(MAKE) -C $* toolchain
 	$(MAKE) -C $* all
