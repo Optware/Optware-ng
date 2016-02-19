@@ -157,7 +157,7 @@ catdoc: $(CATDOC_BUILD_DIR)/.built
 #
 $(CATDOC_BUILD_DIR)/.staged: $(CATDOC_BUILD_DIR)/.built
 	rm -f $(CATDOC_BUILD_DIR)/.staged
-	$(MAKE) -C $(CATDOC_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(CATDOC_BUILD_DIR) DESTDIR=$(STAGING_DIR) install -j 1
 	touch $(CATDOC_BUILD_DIR)/.staged
 
 catdoc-stage: $(CATDOC_BUILD_DIR)/.staged
@@ -195,7 +195,7 @@ $(CATDOC_IPK_DIR)/CONTROL/control:
 #
 $(CATDOC_IPK): $(CATDOC_BUILD_DIR)/.built
 	rm -rf $(CATDOC_IPK_DIR) $(BUILD_DIR)/catdoc_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(CATDOC_BUILD_DIR) prefix=$(CATDOC_IPK_DIR)$(TARGET_PREFIX) install
+	$(MAKE) -C $(CATDOC_BUILD_DIR) prefix=$(CATDOC_IPK_DIR)$(TARGET_PREFIX) install -j 1
 	rm -f $(CATDOC_IPK_DIR)$(TARGET_PREFIX)/bin/wordview
 	$(STRIP_COMMAND) $(CATDOC_IPK_DIR)$(TARGET_PREFIX)/bin/*
 #	$(INSTALL) -d $(CATDOC_IPK_DIR)$(TARGET_PREFIX)/etc/
