@@ -133,7 +133,7 @@ cyrus-sasl-unpack: $(CYRUS-SASL_BUILD_DIR)/.configured
 #
 $(CYRUS-SASL_BUILD_DIR)/.built: $(CYRUS-SASL_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(@D) HOSTCC=$(HOSTCC)
+	$(MAKE) -C $(@D) HOSTCC=$(HOSTCC) -j 1
 	touch $@
 
 #
@@ -146,7 +146,7 @@ cyrus-sasl cyrus-sasl-libs: $(CYRUS-SASL_BUILD_DIR)/.built
 #
 $(CYRUS-SASL_BUILD_DIR)/.staged: $(CYRUS-SASL_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install -j 1
 	rm -f $(STAGING_LIB_DIR)/libsasl2.la
 	touch $@
 
@@ -202,7 +202,7 @@ $(CYRUS-SASL-LIBS_IPK_DIR)/CONTROL/control:
 $(CYRUS-SASL_IPK): $(CYRUS-SASL_BUILD_DIR)/.built
 	rm -rf $(CYRUS-SASL_IPK_DIR) $(BUILD_DIR)/cyrus-sasl_*_$(TARGET_ARCH).ipk
 	rm -rf $(CYRUS-SASL-LIBS_IPK_DIR) $(BUILD_DIR)/cyrus-sasl-libs_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(CYRUS-SASL_BUILD_DIR) DESTDIR=$(CYRUS-SASL_IPK_DIR) install-strip
+	$(MAKE) -C $(CYRUS-SASL_BUILD_DIR) DESTDIR=$(CYRUS-SASL_IPK_DIR) install-strip -j 1
 	rm -f $(CYRUS-SASL_IPK_DIR)$(TARGET_PREFIX)/lib/libsasl2.la
 	rm -f $(CYRUS-SASL_IPK_DIR)$(TARGET_PREFIX)/lib/sasl2/*.la
 	find $(CYRUS-SASL_IPK_DIR) -type d -exec chmod go+rx {} \;
