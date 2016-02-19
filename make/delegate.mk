@@ -4,7 +4,7 @@
 #
 ###########################################################
 
-DELEGATE_SITE=ftp://ftp.delegate.org/pub/DeleGate
+DELEGATE_SITE=http://fossies.org/linux/misc
 DELEGATE_VERSION=9.9.13
 DELEGATE_SOURCE=delegate$(DELEGATE_VERSION).tar.gz
 DELEGATE_DIR=delegate$(DELEGATE_VERSION)
