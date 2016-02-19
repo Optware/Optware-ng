@@ -105,16 +105,16 @@ ossp-js-source: $(DL_DIR)/$(OSSP_JS_SOURCE) $(OSSP_JS_PATCHES)
 #
 $(OSSP_JS_BUILD_DIR)/.configured: $(DL_DIR)/$(OSSP_JS_SOURCE) $(OSSP_JS_PATCHES) make/ossp-js.mk
 #	$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(BUILD_DIR)/$(OSSP_JS_DIR) $(OSSP_JS_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(OSSP_JS_DIR) $(@D)
 	$(OSSP_JS_UNZIP) $(DL_DIR)/$(OSSP_JS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(OSSP_JS_PATCHES)" ; \
 		then cat $(OSSP_JS_PATCHES) | \
 		$(PATCH) -d $(BUILD_DIR)/$(OSSP_JS_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(OSSP_JS_DIR)" != "$(OSSP_JS_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(OSSP_JS_DIR) $(OSSP_JS_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(OSSP_JS_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(OSSP_JS_DIR) $(@D) ; \
 	fi
-	(cd $(OSSP_JS_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(OSSP_JS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(OSSP_JS_LDFLAGS)" \
@@ -128,9 +128,9 @@ $(OSSP_JS_BUILD_DIR)/.configured: $(DL_DIR)/$(OSSP_JS_SOURCE) $(OSSP_JS_PATCHES)
 		--disable-static \
 	)
 ifneq ($(HOSTCC), $(TARGET_CC))
-	$(INSTALL) -m 644 $(OSSP_JS_SOURCE_DIR)/prtypes.h $(OSSP_JS_BUILD_DIR)/
+	$(INSTALL) -m 644 $(OSSP_JS_SOURCE_DIR)/prtypes.h $(@D)/
 endif
-	$(PATCH_LIBTOOL) $(OSSP_JS_BUILD_DIR)/libtool
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 ossp-js-unpack: $(OSSP_JS_BUILD_DIR)/.configured
@@ -142,12 +142,15 @@ ossp-js-unpack: $(OSSP_JS_BUILD_DIR)/.configured
 $(OSSP_JS_BUILD_DIR)/.built: $(OSSP_JS_BUILD_DIR)/.configured
 	rm -f $@
 ifneq ($(HOSTCC), $(TARGET_CC))
-	$(MAKE) -C $(OSSP_JS_BUILD_DIR) jscpucfg \
+	$(MAKE) -C $(@D) jscpucfg \
 		CC=$(HOSTCC) \
 		CPPFLAGS="-I. -DCROSS_COMPILE=1" \
 		LDFLAGS=""
+else
+	$(MAKE) -C $(@D) jscpucfg
 endif
-	$(MAKE) -C $(OSSP_JS_BUILD_DIR)
+	$(MAKE) -C $(@D) src/jsautocfg.h
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -160,7 +163,7 @@ ossp-js: $(OSSP_JS_BUILD_DIR)/.built
 #
 $(OSSP_JS_BUILD_DIR)/.staged: $(OSSP_JS_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(OSSP_JS_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/js.pc
 	touch $@
 
@@ -237,4 +240,4 @@ ossp-js-dirclean:
 # Some sanity check for the package.
 #
 ossp-js-check: $(OSSP_JS_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(OSSP_JS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
