@@ -94,7 +94,7 @@ digitemp-source: $(DL_DIR)/$(DIGITEMP_SOURCE) $(DIGITEMP_PATCHES)
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(DIGITEMP_BUILD_DIR)/.configured: $(DL_DIR)/$(DIGITEMP_SOURCE) $(DIGITEMP_PATCHES)
+$(DIGITEMP_BUILD_DIR)/.configured: $(DL_DIR)/$(DIGITEMP_SOURCE) $(DIGITEMP_PATCHES) make/digitemp.mk
 	$(MAKE) libusb-stage
 	rm -rf $(BUILD_DIR)/$(DIGITEMP_DIR) $(DIGITEMP_BUILD_DIR)
 	$(DIGITEMP_UNZIP) $(DL_DIR)/$(DIGITEMP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -118,9 +118,9 @@ $(DIGITEMP_BUILD_DIR)/.built: $(DIGITEMP_BUILD_DIR)/.configured
 	echo $(TARGET_CONFIGURE_OPTS)
 	echo
 	rm -f $(DIGITEMP_BUILD_DIR)/.built
-	$(TARGET_CONFIGURE_OPTS) $(MAKE) -C $(DIGITEMP_BUILD_DIR) \
+	$(TARGET_CONFIGURE_OPTS) $(MAKE) -C $(DIGITEMP_BUILD_DIR) -j 1 \
 			STAGING_DIR=$(STAGING_DIR) ds9097 ds9097u 
-	$(TARGET_CONFIGURE_OPTS) $(MAKE) -C $(DIGITEMP_BUILD_DIR) \
+	$(TARGET_CONFIGURE_OPTS) $(MAKE) -C $(DIGITEMP_BUILD_DIR) -j 1 \
 	                STAGING_DIR=$(STAGING_DIR) clean ds2490
 	touch $(DIGITEMP_BUILD_DIR)/.built
 
