@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 ### This script is used by Optware-ng
 ### to automatically add libtool m4 scripts

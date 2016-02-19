@@ -20,6 +20,9 @@
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307 USA
 #
 
+# shell used by make: should be bash
+SHELL=/bin/bash
+
 # one of `ls platforms/toolchain-*.mk | sed 's|^platforms/toolchain-\(.*\)\.mk$$|\1|'`
 OPTWARE_TARGET ?= buildroot-armeabi-ng
 
@@ -508,9 +511,9 @@ DEFAULT_TARGET_PREFIX ?= /opt
 
 TARGET_PREFIX ?= /opt
 
-INSTALL = TARGET_PREFIX=$(TARGET_PREFIX) sh $(BASE_DIR)/scripts/install.sh
+INSTALL = TARGET_PREFIX=$(TARGET_PREFIX) $(SHELL) $(BASE_DIR)/scripts/install.sh
 
-PATCH = TARGET_PREFIX=$(TARGET_PREFIX) sh $(BASE_DIR)/scripts/patch.sh
+PATCH = TARGET_PREFIX=$(TARGET_PREFIX) $(SHELL) $(BASE_DIR)/scripts/patch.sh
 
 ifndef TARGET_USRLIBDIR
 TARGET_USRLIBDIR = $(TARGET_LIBDIR)
@@ -560,9 +563,9 @@ SUDO=sudo
 WGET_BINARY=wget
 CREATE_CHECKSUM=0
 ifeq ($(CREATE_CHECKSUM), 1)
-WGET = TOP=$(BASE_DIR)/scripts WGET=$(WGET_BINARY) CREATE_CHECKSUM=1 sh $(BASE_DIR)/scripts/wget.sh --passive-ftp --tries=2 --no-check-certificate
+WGET = TOP=$(BASE_DIR)/scripts WGET=$(WGET_BINARY) CREATE_CHECKSUM=1 $(SHELL) $(BASE_DIR)/scripts/wget.sh --passive-ftp --tries=2 --no-check-certificate
 else
-WGET = TOP=$(BASE_DIR)/scripts WGET=$(WGET_BINARY) sh $(BASE_DIR)/scripts/wget.sh --passive-ftp --tries=2 --no-check-certificate
+WGET = TOP=$(BASE_DIR)/scripts WGET=$(WGET_BINARY) $(SHELL) $(BASE_DIR)/scripts/wget.sh --passive-ftp --tries=2 --no-check-certificate
 endif
 PERL=perl
 
@@ -593,15 +596,15 @@ HOST_TOOL_AUTOMAKE1.4 = \
 # libtool versions mismatch issue that can occur with
 # some software in most cases
 ACLOCAL1.15_SH= TOP=$(BASE_DIR) ACLOCAL=$(HOST_STAGING_PREFIX)/bin/aclocal-1.15 \
-		sh $(BASE_DIR)/scripts/aclocal.sh
+		$(SHELL) $(BASE_DIR)/scripts/aclocal.sh
 ACLOCAL1.14_SH= TOP=$(BASE_DIR) ACLOCAL=$(HOST_STAGING_PREFIX)/bin/aclocal-1.14 \
-		sh $(BASE_DIR)/scripts/aclocal.sh
+		$(SHELL) $(BASE_DIR)/scripts/aclocal.sh
 ACLOCAL1.10_SH= TOP=$(BASE_DIR) ACLOCAL=$(HOST_STAGING_PREFIX)/bin/aclocal-1.10 \
-		sh $(BASE_DIR)/scripts/aclocal.sh
+		$(SHELL) $(BASE_DIR)/scripts/aclocal.sh
 ACLOCAL1.9_SH= TOP=$(BASE_DIR) ACLOCAL=$(HOST_STAGING_PREFIX)/bin/aclocal-1.9 \
-		sh $(BASE_DIR)/scripts/aclocal.sh
+		$(SHELL) $(BASE_DIR)/scripts/aclocal.sh
 ACLOCAL1.4_SH= TOP=$(BASE_DIR) ACLOCAL=$(HOST_STAGING_PREFIX)/bin/aclocal-1.4 \
-		sh $(BASE_DIR)/scripts/aclocal.sh
+		$(SHELL) $(BASE_DIR)/scripts/aclocal.sh
 
 
 # These should be called instead of `autoreconf`
