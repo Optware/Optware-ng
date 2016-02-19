@@ -114,16 +114,16 @@ dspam-source: $(DL_DIR)/$(DSPAM_SOURCE) $(DSPAM_PATCHES)
 #
 $(DSPAM_BUILD_DIR)/.configured: $(DL_DIR)/$(DSPAM_SOURCE) $(DSPAM_PATCHES) make/dspam.mk
 	$(MAKE) mysql-stage postgresql-stage zlib-stage openssl-stage
-	rm -rf $(BUILD_DIR)/$(DSPAM_DIR) $(DSPAM_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(DSPAM_DIR) $(@D)
 	$(DSPAM_UNZIP) $(DL_DIR)/$(DSPAM_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(DSPAM_PATCHES)" ; \
 		then cat $(DSPAM_PATCHES) | \
 		$(PATCH) -d $(BUILD_DIR)/$(DSPAM_DIR) -p1 ; \
 	fi
-	if test "$(BUILD_DIR)/$(DSPAM_DIR)" != "$(DSPAM_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(DSPAM_DIR) $(DSPAM_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(DSPAM_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(DSPAM_DIR) $(@D) ; \
 	fi
-	(cd $(DSPAM_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(DSPAM_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(DSPAM_LDFLAGS)" \
@@ -142,8 +142,8 @@ $(DSPAM_BUILD_DIR)/.configured: $(DL_DIR)/$(DSPAM_SOURCE) $(DSPAM_PATCHES) make/
 		--enable-daemon \
 		--enable-clamav \
 	)
-	$(PATCH_LIBTOOL) $(DSPAM_BUILD_DIR)/libtool
-	touch $(DSPAM_BUILD_DIR)/.configured
+	$(PATCH_LIBTOOL) $(@D)/libtool
+	touch $@
 
 dspam-unpack: $(DSPAM_BUILD_DIR)/.configured
 
@@ -151,9 +151,10 @@ dspam-unpack: $(DSPAM_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(DSPAM_BUILD_DIR)/.built: $(DSPAM_BUILD_DIR)/.configured
-	rm -f $(DSPAM_BUILD_DIR)/.built
-	$(MAKE) -C $(DSPAM_BUILD_DIR)
-	touch $(DSPAM_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)/src libdspam.la
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -164,9 +165,9 @@ dspam: $(DSPAM_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(DSPAM_BUILD_DIR)/.staged: $(DSPAM_BUILD_DIR)/.built
-	rm -f $(DSPAM_BUILD_DIR)/.staged
-	$(MAKE) -C $(DSPAM_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(DSPAM_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	touch $@
 
 dspam-stage: $(DSPAM_BUILD_DIR)/.staged
 
@@ -175,7 +176,7 @@ dspam-stage: $(DSPAM_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/dspam
 #
 $(DSPAM_IPK_DIR)/CONTROL/control:
-	@$(INSTALL) -d $(DSPAM_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: dspam" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -190,7 +191,7 @@ $(DSPAM_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(DSPAM_CONFLICTS)" >>$@
 
 $(DSPAM_PGSQL_IPK_DIR)/CONTROL/control:
-	@$(INSTALL) -d $(DSPAM_PGSQL_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: dspam-pgsql" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -205,7 +206,7 @@ $(DSPAM_PGSQL_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(DSPAM_CONFLICTS)" >>$@
 
 $(DSPAM_MYSQL_IPK_DIR)/CONTROL/control:
-	@$(INSTALL) -d $(DSPAM_MYSQL_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: dspam-mysql" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
