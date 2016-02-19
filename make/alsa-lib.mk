@@ -127,7 +127,7 @@ alsa-lib-unpack: $(ALSA-LIB_BUILD_DIR)/.configured
 #
 $(ALSA-LIB_BUILD_DIR)/.built: $(ALSA-LIB_BUILD_DIR)/.configured
 	rm -f $(ALSA-LIB_BUILD_DIR)/.built
-	$(MAKE) -C $(ALSA-LIB_BUILD_DIR)
+	$(MAKE) -C $(ALSA-LIB_BUILD_DIR) -j 1
 	touch $(ALSA-LIB_BUILD_DIR)/.built
 
 #
@@ -140,7 +140,7 @@ alsa-lib: $(ALSA-LIB_BUILD_DIR)/.built
 #
 $(ALSA-LIB_BUILD_DIR)/.staged: $(ALSA-LIB_BUILD_DIR)/.built
 	rm -f $(ALSA-LIB_BUILD_DIR)/.staged
-	$(MAKE) -C $(ALSA-LIB_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(ALSA-LIB_BUILD_DIR) DESTDIR=$(STAGING_DIR) install -j 1
 	rm -f $(STAGING_LIB_DIR)/libasound.la $(STAGING_LIB_DIR)/alsa-lib/smixer/*.la
 	touch $(ALSA-LIB_BUILD_DIR)/.staged
 
@@ -179,7 +179,7 @@ $(ALSA-LIB_IPK_DIR)/CONTROL/control:
 #
 $(ALSA-LIB_IPK): $(ALSA-LIB_BUILD_DIR)/.built
 	rm -rf $(ALSA-LIB_IPK_DIR) $(BUILD_DIR)/alsa-lib_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(ALSA-LIB_BUILD_DIR) DESTDIR=$(ALSA-LIB_IPK_DIR) install-strip
+	$(MAKE) -C $(ALSA-LIB_BUILD_DIR) DESTDIR=$(ALSA-LIB_IPK_DIR) install-strip -j 1
 	$(MAKE) $(ALSA-LIB_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 644 $(ALSA-LIB_SOURCE_DIR)/control $(ALSA-LIB_IPK_DIR)/CONTROL/control
 	echo $(ALSA-LIB_CONFFILES) | sed -e 's/ /\n/g' > $(ALSA-LIB_IPK_DIR)/CONTROL/conffiles
