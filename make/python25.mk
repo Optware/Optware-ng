@@ -191,14 +191,14 @@ python25: $(PYTHON25_BUILD_DIR)/.built
 #
 $(PYTHON25_BUILD_DIR)/.staged: $(PYTHON25_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install -j 1
 	touch $@
 
 python25-stage: $(PYTHON25_BUILD_DIR)/.staged
 
 $(HOST_STAGING_PREFIX)/bin/python2.5: host/.configured make/python25.mk
 	$(MAKE) $(PYTHON25_BUILD_DIR)/.built
-	$(MAKE) -C $(PYTHON25_BUILD_DIR)/buildpython25 DESTDIR=$(HOST_STAGING_DIR) install
+	$(MAKE) -C $(PYTHON25_BUILD_DIR)/buildpython25 DESTDIR=$(HOST_STAGING_DIR) install -j 1
 	rm -f $(@D)/python
 
 python25-host-stage: $(HOST_STAGING_PREFIX)/bin/python2.5
@@ -234,7 +234,7 @@ $(PYTHON25_IPK_DIR)/CONTROL/control:
 #
 $(PYTHON25_IPK): $(PYTHON25_BUILD_DIR)/.built
 	rm -rf $(PYTHON25_IPK_DIR) $(BUILD_DIR)/python25_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(PYTHON25_BUILD_DIR) DESTDIR=$(PYTHON25_IPK_DIR) install
+	$(MAKE) -C $(PYTHON25_BUILD_DIR) DESTDIR=$(PYTHON25_IPK_DIR) install -j 1
 	$(STRIP_COMMAND) $(PYTHON25_IPK_DIR)$(TARGET_PREFIX)/bin/python$(PYTHON25_VERSION_MAJOR)
 	$(STRIP_COMMAND) $(PYTHON25_IPK_DIR)$(TARGET_PREFIX)/lib/python$(PYTHON25_VERSION_MAJOR)/lib-dynload/*.so
 	chmod 755 $(PYTHON25_IPK_DIR)$(TARGET_PREFIX)/lib/libpython$(PYTHON25_VERSION_MAJOR).so.1.0
