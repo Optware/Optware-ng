@@ -22,6 +22,7 @@
 #
 
 PCRE_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/pcre
+PCRE_SITE2=http://ftp.cs.stanford.edu/pub/exim/pcre
 PCRE_VERSION=8.36
 PCRE_SOURCE=pcre-$(PCRE_VERSION).tar.bz2
 PCRE_DIR=pcre-$(PCRE_VERSION)
@@ -87,6 +88,7 @@ PCRE-DEV_IPK=$(BUILD_DIR)/pcre-dev_$(PCRE_VERSION)-$(PCRE_IPK_VERSION)_$(TARGET_
 #
 $(DL_DIR)/$(PCRE_SOURCE):
 	$(WGET) -P $(@D) $(PCRE_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(PCRE_SITE2)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
