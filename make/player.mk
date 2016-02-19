@@ -170,6 +170,7 @@ player-unpack: $(PLAYER_BUILD_DIR)/.configured
 #
 $(PLAYER_BUILD_DIR)/.built: $(PLAYER_BUILD_DIR)/.configured
 	rm -f $@
+	$(MAKE) -C $(@D)/libplayercore libplayererror.la
 	$(MAKE) -C $(@D)
 	touch $@
 
