@@ -789,6 +789,8 @@ TARGET_CC_VER = $(shell test -x "$(TARGET_CC)" && $(TARGET_CC) -dumpversion)
 
 include make/*.mk
 
+.NOTPARALLEL: %/.configured
+
 directories: $(DL_DIR) $(BUILD_DIR) $(STAGING_DIR) $(STAGING_PREFIX) \
 	$(STAGING_LIB_DIR) $(STAGING_INCLUDE_DIR) $(TOOL_BUILD_DIR) \
 	$(PACKAGE_DIR) $(TMPDIR)
