@@ -155,6 +155,8 @@ cyrus-imapd-unpack: $(CYRUS-IMAPD_BUILD_DIR)/.configured
 $(CYRUS-IMAPD_BUILD_DIR)/.built: $(CYRUS-IMAPD_BUILD_DIR)/.configured
 	rm -f $@
 	PATH="`dirname $(TARGET_CC)`:$$PATH" \
+	$(MAKE) -C $(@D)/com_err/et compile_et && \
+	$(MAKE) -C $(@D)/sieve sieve_err.h && \
 	$(MAKE) -C $(@D)
 ifneq (,$(filter perl, $(PACKAGES)))
 	$(MAKE) -C $(CYRUS-IMAPD_BUILD_DIR)/perl/imap \
@@ -164,6 +166,13 @@ ifneq (,$(filter perl, $(PACKAGES)))
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		LDDLFLAGS="-shared $(STAGING_LDFLAGS)" \
 		LD=$(TARGET_CC)
+	$(MAKE) -C $(CYRUS-IMAPD_BUILD_DIR)/perl/sieve \
+		$(PERL_INC) \
+		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
+		LD_RUN_PATH=$(TARGET_PREFIX)/lib \
+		LDFLAGS="$(STAGING_LDFLAGS)" \
+		LDDLFLAGS="-shared $(STAGING_LDFLAGS)" \
+		LD=$(TARGET_CC) 
 	$(MAKE) -C $(CYRUS-IMAPD_BUILD_DIR)/perl/sieve \
 		$(PERL_INC) \
 		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
