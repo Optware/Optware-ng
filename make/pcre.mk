@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 
-PCRE_SITE=ftp://ftp.csx.cam.ac.uk/pub/software/programming/pcre
+PCRE_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/pcre
 PCRE_VERSION=8.36
 PCRE_SOURCE=pcre-$(PCRE_VERSION).tar.bz2
 PCRE_DIR=pcre-$(PCRE_VERSION)
