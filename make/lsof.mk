@@ -20,7 +20,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-LSOF_SITE=ftp://lsof.itap.purdue.edu/pub/tools/unix/lsof
+LSOF_SITE=ftp://ftp.tw.freebsd.org/pub/ports/distfiles
 LSOF_VERSION=4.82
 LSOF_SOURCE=lsof_$(LSOF_VERSION).tar.bz2
 LSOF_DIR=lsof_$(LSOF_VERSION)_src
