@@ -170,7 +170,7 @@ $(FREERADIUS_BUILD_DIR)/.built: $(FREERADIUS_BUILD_DIR)/.configured
 	$(HOSTCC) $(@D)/scripts/jlibtool.c -o $(@D)/jlibtool
 	$(MAKE) -C $(@D) headers
 	$(MAKE) -C $(@D) JLIBTOOL=$(@D)/jlibtool
-	$(MAKE) install -C $(@D) JLIBTOOL=$(@D)/jlibtool \
+	$(MAKE) install -C $(@D) JLIBTOOL=$(@D)/jlibtool -j 1 \
 		R=$(@D)/install \
 		STRIPPROG=$(TARGET_STRIP) \
 		;
