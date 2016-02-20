@@ -93,7 +93,7 @@ ncursesw: $(NCURSESW_DIR)/.built
 
 $(NCURSESW_DIR)/.staged: $(NCURSESW_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(NCURSESW_DIR) DESTDIR=$(STAGING_DIR) install.includes install.libs
+	$(MAKE) -C $(NCURSESW_DIR) DESTDIR=$(STAGING_DIR) install.includes install.libs  -j 1
 	sed -i -e '/^prefix=/s|=.*|=$(STAGING_PREFIX)|' $(STAGING_PREFIX)/bin/ncursesw[0-9]*-config
 	$(INSTALL) -d $(STAGING_LIB_DIR)/pkgconfig
 	$(INSTALL) -m 644 $(NCURSESW_SOURCE_DIR)/ncursesw.pc $(STAGING_LIB_DIR)/pkgconfig
@@ -133,7 +133,7 @@ $(NCURSESW-DEV_IPK_DIR)/CONTROL/control:
 $(NCURSESW_IPK) $(NCURSESW-DEV_IPK): $(NCURSESW_DIR)/.built
 	rm -rf $(NCURSESW_IPK_DIR) $(BUILD_DIR)/ncursesw_*_$(TARGET_ARCH).ipk
 	rm -rf $(NCURSESW-DEV_IPK_DIR) $(BUILD_DIR)/ncursesw-dev_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(NCURSESW_DIR) DESTDIR=$(NCURSESW_IPK_DIR) install.libs
+	$(MAKE) -C $(NCURSESW_DIR) DESTDIR=$(NCURSESW_IPK_DIR) install.libs  -j 1
 	rm -rf $(NCURSESW_IPK_DIR)$(TARGET_PREFIX)/include
 	rm -f $(NCURSESW_IPK_DIR)$(TARGET_PREFIX)/lib/*.a
 #	$(STRIP_COMMAND) $(NCURSESW_IPK_DIR)$(TARGET_PREFIX)/bin/*
@@ -141,7 +141,7 @@ $(NCURSESW_IPK) $(NCURSESW-DEV_IPK): $(NCURSESW_DIR)/.built
 	$(MAKE) $(NCURSESW_IPK_DIR)/CONTROL/control
 	# ncursesw-dev
 	$(INSTALL) -d $(NCURSESW-DEV_IPK_DIR)$(TARGET_PREFIX)/include/ncursesw
-	$(MAKE) -C $(NCURSESW_DIR) DESTDIR=$(NCURSESW-DEV_IPK_DIR) install.includes
+	$(MAKE) -C $(NCURSESW_DIR) DESTDIR=$(NCURSESW-DEV_IPK_DIR) install.includes  -j 1
 	# building ipk's
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NCURSESW_IPK_DIR)
 	$(MAKE) $(NCURSESW-DEV_IPK_DIR)/CONTROL/control

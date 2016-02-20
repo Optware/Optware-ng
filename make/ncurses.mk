@@ -67,7 +67,7 @@ ncurses-host: $(NCURSES_HOST_BUILD_DIR)/.built
 
 $(NCURSES_HOST_BUILD_DIR)/.staged: $(NCURSES_HOST_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(@D) install
+	$(MAKE) -C $(@D) install -j 1
 	ln -sf ncurses/ncurses.h $(HOST_STAGING_INCLUDE_DIR)
 	ln -sf ncurses/curses.h $(HOST_STAGING_INCLUDE_DIR)
 	touch $@
@@ -120,7 +120,7 @@ ncurses: $(NCURSES_DIR)/.built
 
 $(NCURSES_DIR)/.staged: $(NCURSES_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(NCURSES_DIR) DESTDIR=$(STAGING_DIR) install.includes install.libs
+	$(MAKE) -C $(NCURSES_DIR) DESTDIR=$(STAGING_DIR) install.includes install.libs  -j 1
 	sed -i -e '/^prefix=/s|=.*|=$(STAGING_PREFIX)|' $(STAGING_PREFIX)/bin/ncurses[0-9]*-config
 	ln -sf ncurses/ncurses.h $(STAGING_INCLUDE_DIR)
 	ln -sf ncurses/curses.h $(STAGING_INCLUDE_DIR)
@@ -164,7 +164,7 @@ $(NCURSES_IPK) $(NCURSES-DEV_IPK): $(NCURSES_DIR)/.built
 		$(NCURSES-DEV_IPK_DIR) $(BUILD_DIR)/ncurses-dev_*_$(TARGET_ARCH).ipk
 	$(if $(filter $(HOSTCC), $(TARGET_CC)),,PATH=$(NCURSES_HOST_BUILD_DIR)/progs:$$PATH) \
 		$(MAKE) -C $(NCURSES_DIR) DESTDIR=$(NCURSES_IPK_DIR) \
-		install.libs install.progs install.data
+		install.libs install.progs install.data  -j 1
 	rm -rf $(NCURSES_IPK_DIR)$(TARGET_PREFIX)/include
 	rm -f $(NCURSES_IPK_DIR)$(TARGET_PREFIX)/lib/*.a
 	$(STRIP_COMMAND) $(NCURSES_IPK_DIR)$(TARGET_PREFIX)/bin/clear \
@@ -189,7 +189,7 @@ endif
 	fi
 	# ncurses-dev
 	$(INSTALL) -d $(NCURSES-DEV_IPK_DIR)$(TARGET_PREFIX)/include/ncurses
-	$(MAKE) -C $(NCURSES_DIR) DESTDIR=$(NCURSES-DEV_IPK_DIR) install.includes
+	$(MAKE) -C $(NCURSES_DIR) DESTDIR=$(NCURSES-DEV_IPK_DIR) install.includes  -j 1
 	ln -sf ncurses/ncurses.h $(NCURSES-DEV_IPK_DIR)$(TARGET_PREFIX)/include/
 	ln -sf ncurses/curses.h $(NCURSES-DEV_IPK_DIR)$(TARGET_PREFIX)/include/
 	# building ipk's
