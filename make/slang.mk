@@ -165,6 +165,7 @@ slang-unpack: $(SLANG_BUILD_DIR)/.configured
 #
 $(SLANG_BUILD_DIR)/.built: $(SLANG_BUILD_DIR)/.configured
 	rm -f $@
+	mkdir -p $(@D)/modules/objs $(@D)/src/elfobjs
 	$(MAKE) -C $(@D)
 	touch $@
 
@@ -178,7 +179,7 @@ slang: $(SLANG_BUILD_DIR)/.built
 #
 $(SLANG_BUILD_DIR)/.staged: $(SLANG_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install-elf
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install-elf -j1
 	rm -f $(STAGING_LIB_DIR)/libslang.a
 	touch $@
 
@@ -217,7 +218,7 @@ $(SLANG_IPK_DIR)/CONTROL/control:
 #
 $(SLANG_IPK): $(SLANG_BUILD_DIR)/.built
 	rm -rf $(SLANG_IPK_DIR) $(BUILD_DIR)/slang_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(SLANG_BUILD_DIR) DESTDIR=$(SLANG_IPK_DIR) install-elf
+	$(MAKE) -C $(SLANG_BUILD_DIR) DESTDIR=$(SLANG_IPK_DIR) install-elf -j1
 	rm -f $(SLANG_IPK_DIR)$(TARGET_PREFIX)/lib/libslang.a
 	$(STRIP_COMMAND) $(SLANG_IPK_DIR)$(TARGET_PREFIX)/bin/slsh \
 		$(SLANG_IPK_DIR)$(TARGET_PREFIX)/lib/libslang.so.$(SLANG_VERSION) \
