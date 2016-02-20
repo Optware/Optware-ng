@@ -82,12 +82,12 @@ groff-source: $(DL_DIR)/$(GROFF_SOURCE) $(GROFF_PATCHES)
 #
 # You may need to patch your application to make it use these locations.
 #
-$(GROFF_BUILD_DIR)/.configured: $(DL_DIR)/$(GROFF_SOURCE) $(GROFF_PATCHES)
-	rm -rf $(BUILD_DIR)/$(GROFF_DIR) $(GROFF_BUILD_DIR)
+$(GROFF_BUILD_DIR)/.configured: $(DL_DIR)/$(GROFF_SOURCE) $(GROFF_PATCHES) make/groff.mk
+	rm -rf $(BUILD_DIR)/$(GROFF_DIR) $(@D)
 	$(GROFF_UNZIP) $(DL_DIR)/$(GROFF_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(GROFF_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(GROFF_DIR) -p1
-	mv $(BUILD_DIR)/$(GROFF_DIR) $(GROFF_BUILD_DIR)
-	(cd $(GROFF_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(GROFF_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GROFF_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(GROFF_LDFLAGS)" \
@@ -99,14 +99,16 @@ $(GROFF_BUILD_DIR)/.configured: $(DL_DIR)/$(GROFF_SOURCE) $(GROFF_PATCHES)
 		--without-x \
 		--disable-nls \
 	)
-	touch $(GROFF_BUILD_DIR)/.configured
+	touch $@
 
 groff-unpack: $(GROFF_BUILD_DIR)/.configured
 
 $(GROFF_BUILD_DIR)/.built: $(GROFF_BUILD_DIR)/.configured
-	rm -f $(GROFF_BUILD_DIR)/.built
-	$(MAKE) -C $(GROFF_BUILD_DIR)
-	touch $(GROFF_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D) src/include
+	$(MAKE) -C $(@D) src/libs/libgroff
+	$(MAKE) -C $(@D)
+	touch $@
 
 groff: $(GROFF_BUILD_DIR)/.built
 
@@ -115,7 +117,7 @@ groff: $(GROFF_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/groff
 #
 $(GROFF_IPK_DIR)/CONTROL/control:
-	@$(INSTALL) -d $(GROFF_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: groff" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -182,4 +184,4 @@ groff-dirclean:
 # Some sanity check for the package.
 #
 groff-check: $(GROFF_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(GROFF_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
