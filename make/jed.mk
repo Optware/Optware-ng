@@ -197,7 +197,7 @@ $(JED_IPK_DIR)/CONTROL/control:
 #
 $(JED_IPK): $(JED_BUILD_DIR)/.built
 	rm -rf $(JED_IPK_DIR) $(BUILD_DIR)/jed_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(JED_BUILD_DIR) install \
+	$(MAKE) -C $(JED_BUILD_DIR) install -j1 \
 		DESTDIR=$(JED_IPK_DIR) JED_ROOT=$(TARGET_PREFIX)/share/jed
 	$(STRIP_COMMAND) $(JED_IPK_DIR)$(TARGET_PREFIX)/bin/jed
 #	$(INSTALL) -d $(JED_IPK_DIR)$(TARGET_PREFIX)/etc/
