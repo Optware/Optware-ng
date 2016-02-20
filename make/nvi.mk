@@ -26,7 +26,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-NVI_SITE=ftp://ftp.sleepycat.com/pub
+NVI_SITE=http://pkgs.fedoraproject.org/repo/pkgs/nvi-m17n/$(NVI_SOURCE)/765e2153f5fc4f21793f2edc2647305a
 NVI_VERSION=1.79
 NVI_SOURCE=nvi-$(NVI_VERSION).tar.gz
 NVI_DIR=nvi-$(NVI_VERSION)
