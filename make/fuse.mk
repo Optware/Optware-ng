@@ -20,7 +20,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-FUSE_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/fuse
+FUSE_SITE=http://pkgs.fedoraproject.org/repo/pkgs/fuse/$(FUSE_SOURCE)/ecb712b5ffc6dffd54f4a405c9b372d8
 FUSE_VERSION=2.9.4
 FUSE_SOURCE=fuse-$(FUSE_VERSION).tar.gz
 FUSE_DIR=fuse-$(FUSE_VERSION)
