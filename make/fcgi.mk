@@ -85,7 +85,8 @@ fcgi-unpack: $(FCGI_BUILD_DIR)/.configured
 #
 $(FCGI_BUILD_DIR)/.built: $(FCGI_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(@D)/libfcgi libfcgi.la libfcgi++.la
+	$(MAKE) -C $(@D)/libfcgi libfcgi.la
+	$(MAKE) -C $(@D)/libfcgi libfcgi++.la
 	$(MAKE) -C $(@D)
 	touch $@
 
