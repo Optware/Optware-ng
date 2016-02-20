@@ -146,7 +146,7 @@ memtester: $(MEMTESTER_BUILD_DIR)/.built
 #
 $(MEMTESTER_BUILD_DIR)/.staged: $(MEMTESTER_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install -j1
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 memtester-stage: $(MEMTESTER_BUILD_DIR)/.staged
@@ -184,7 +184,7 @@ $(MEMTESTER_IPK_DIR)/CONTROL/control:
 #
 $(MEMTESTER_IPK): $(MEMTESTER_BUILD_DIR)/.built
 	rm -rf $(MEMTESTER_IPK_DIR) $(BUILD_DIR)/memtester_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(MEMTESTER_BUILD_DIR) INSTALLPATH=$(MEMTESTER_IPK_DIR)$(TARGET_PREFIX) install -j1
+	$(MAKE) -C $(MEMTESTER_BUILD_DIR) INSTALLPATH=$(MEMTESTER_IPK_DIR)$(TARGET_PREFIX) install
 	#$(INSTALL) -d $(MEMTESTER_IPK_DIR)$(TARGET_PREFIX)/etc/
 	#$(INSTALL) -m 644 $(MEMTESTER_SOURCE_DIR)/memtester.conf $(MEMTESTER_IPK_DIR)$(TARGET_PREFIX)/etc/memtester.conf
 	#$(INSTALL) -d $(MEMTESTER_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
