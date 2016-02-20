@@ -94,8 +94,8 @@ ecl-source: $(DL_DIR)/$(ECL_SOURCE) $(ECL_PATCHES)
 
 $(ECL_HOST_BUILD_DIR)/.host-built: $(DL_DIR)/$(ECL_SOURCE) $(ECL_PATCHES)
 	rm -rf $(BUILD_DIR)/$(ECL_DIR) $(@D)
-	$(ECL_UNZIP) $(DL_DIR)/$(ECL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	mv $(BUILD_DIR)/$(ECL_DIR) $(@D)
+	$(ECL_UNZIP) $(DL_DIR)/$(ECL_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
+	mv $(HOST_BUILD_DIR)/$(ECL_DIR) $(@D)
 	(cd $(@D); \
 		ac_cv_path_INSTALL_INFO=/bin/true \
 		./configure \
@@ -108,7 +108,10 @@ $(ECL_HOST_BUILD_DIR)/.host-built: $(DL_DIR)/$(ECL_SOURCE) $(ECL_PATCHES)
 		--without-defsystem \
 		--without-asdf \
 	)
-	$(MAKE) -C $(@D) all install
+	$(MAKE) -C $(@D)/build libeclgc.a libeclgmp.a
+	$(MAKE) -C $(@D)/build/c dpp
+	$(MAKE) -C $(@D)
+	$(MAKE) -C $(@D) install -j 1
 # now ready to invoke like this:
 #	LD_LIBRARY_PATH=$(ECL_HOST_BUILD_DIR)/build $(ECL_HOST_BUILD_DIR)/build/ecl -dir $(ECL_HOST_BUILD_DIR)/build
 	touch $@
