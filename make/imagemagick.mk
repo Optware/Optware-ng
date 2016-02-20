@@ -22,8 +22,8 @@
 IMAGEMAGICK_SITE=ftp://ftp.imagemagick.org/pub/ImageMagick/releases
 IMAGEMAGICK_SITE2=http://ftp.sunet.se/pub/multimedia/graphics/ImageMagic
 ifneq ($(OPTWARE_TARGET), $(filter wl500g mss, $(OPTWARE_TARGET)))
-IMAGEMAGICK_VER=6.9.2
-IMAGEMAGICK_REV=6
+IMAGEMAGICK_VER=6.9.3
+IMAGEMAGICK_REV=5
 IMAGEMAGICK_IPK_VERSION=1
 IMAGEMAGICK_SOURCE=ImageMagick-$(IMAGEMAGICK_VER)-$(IMAGEMAGICK_REV).tar.xz
 IMAGEMAGICK_UNZIP=xzcat
