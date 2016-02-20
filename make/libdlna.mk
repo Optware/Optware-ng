@@ -149,6 +149,7 @@ $(LIBDLNA_BUILD_DIR)/.built: $(LIBDLNA_BUILD_DIR)/.configured
 		$(TARGET_CONFIGURE_OPTS) \
 		CFLAGS="$(STAGING_CPPFLAGS) $(LIBDLNA_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBDLNA_LDFLAGS)" \
+	$(MAKE) -C $(@D)/src lib_shared lib_static && \
 	$(MAKE) -C $(@D)
 	touch $@
 
