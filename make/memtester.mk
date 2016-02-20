@@ -96,16 +96,16 @@ memtester-source: $(DL_DIR)/$(MEMTESTER_SOURCE) $(MEMTESTER_PATCHES)
 #
 $(MEMTESTER_BUILD_DIR)/.configured: $(DL_DIR)/$(MEMTESTER_SOURCE) $(MEMTESTER_PATCHES) make/memtester.mk
 #	$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(BUILD_DIR)/$(MEMTESTER_DIR) $(MEMTESTER_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(MEMTESTER_DIR) $(@D)
 	$(MEMTESTER_UNZIP) $(DL_DIR)/$(MEMTESTER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MEMTESTER_PATCHES)" ; \
 		then cat $(MEMTESTER_PATCHES) | \
 		$(PATCH) -d $(BUILD_DIR)/$(MEMTESTER_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(MEMTESTER_DIR)" != "$(MEMTESTER_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(MEMTESTER_DIR) $(MEMTESTER_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(MEMTESTER_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(MEMTESTER_DIR) $(@D) ; \
 	fi
-	#(cd $(MEMTESTER_BUILD_DIR); \
+	#(cd $(@D); \
 	#	$(TARGET_CONFIGURE_OPTS) \
 	#	CPPFLAGS="$(STAGING_CPPFLAGS) $(MEMTESTER_CPPFLAGS)" \
 	#	LDFLAGS="$(STAGING_LDFLAGS) $(MEMTESTER_LDFLAGS)" \
@@ -117,8 +117,8 @@ $(MEMTESTER_BUILD_DIR)/.configured: $(DL_DIR)/$(MEMTESTER_SOURCE) $(MEMTESTER_PA
 	#	--disable-nls \
 	#	--disable-static \
 	#)
-	#$(PATCH_LIBTOOL) $(MEMTESTER_BUILD_DIR)/libtool
-	cd $(MEMTESTER_BUILD_DIR); \
+	#$(PATCH_LIBTOOL) $(@D)/libtool
+	cd $(@D); \
 		sed -i 's#^cc#$(TARGET_CC) $(STAGING_CPPFLAGS) $(MEMTESTER_CPPFLAGS) #' conf-cc; \
 		sed -i 's#cc -s#$(TARGET_CC) -s $(STAGING_LDFLAGS) $(MEMTESTER_LDFLAGS)#' conf-ld;
 	touch $@
@@ -133,7 +133,7 @@ $(MEMTESTER_BUILD_DIR)/.built: $(MEMTESTER_BUILD_DIR)/.configured
 	$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(VBLADE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(VBLADE_LDFLAGS)" \
-		$(MAKE) -C $(MEMTESTER_BUILD_DIR)
+		$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -146,7 +146,7 @@ memtester: $(MEMTESTER_BUILD_DIR)/.built
 #
 $(MEMTESTER_BUILD_DIR)/.staged: $(MEMTESTER_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(MEMTESTER_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install -j10
 	touch $@
 
 memtester-stage: $(MEMTESTER_BUILD_DIR)/.staged
@@ -184,7 +184,7 @@ $(MEMTESTER_IPK_DIR)/CONTROL/control:
 #
 $(MEMTESTER_IPK): $(MEMTESTER_BUILD_DIR)/.built
 	rm -rf $(MEMTESTER_IPK_DIR) $(BUILD_DIR)/memtester_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(MEMTESTER_BUILD_DIR) INSTALLPATH=$(MEMTESTER_IPK_DIR)$(TARGET_PREFIX) install
+	$(MAKE) -C $(MEMTESTER_BUILD_DIR) INSTALLPATH=$(MEMTESTER_IPK_DIR)$(TARGET_PREFIX) install -j10
 	#$(INSTALL) -d $(MEMTESTER_IPK_DIR)$(TARGET_PREFIX)/etc/
 	#$(INSTALL) -m 644 $(MEMTESTER_SOURCE_DIR)/memtester.conf $(MEMTESTER_IPK_DIR)$(TARGET_PREFIX)/etc/memtester.conf
 	#$(INSTALL) -d $(MEMTESTER_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
