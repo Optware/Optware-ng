@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBDRM_SITE=http://dri.freedesktop.org/libdrm
-LIBDRM_VERSION=2.4.60
+LIBDRM_VERSION=2.4.67
 LIBDRM_SOURCE=libdrm-$(LIBDRM_VERSION).tar.bz2
 LIBDRM_DIR=libdrm-$(LIBDRM_VERSION)
 LIBDRM_UNZIP=bzcat
