@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MESALIB_SITE=ftp://ftp.freedesktop.org/pub/mesa/$(MESALIB_VERSION)
-MESALIB_VERSION=10.5.2
+MESALIB_VERSION=11.1.2
 MESALIB_SOURCE=mesa-$(MESALIB_VERSION).tar.xz
 MESALIB_DIR=mesa-$(MESALIB_VERSION)
 MESALIB_UNZIP=xzcat
@@ -42,7 +42,7 @@ MESALIB_CONFLICTS=
 #
 # MESALIB_IPK_VERSION should be incremented when the ipk changes.
 #
-MESALIB_IPK_VERSION=2
+MESALIB_IPK_VERSION=1
 
 #
 # MESALIB_CONFFILES should be a list of user-editable files
@@ -127,7 +127,7 @@ $(MESALIB_BUILD_DIR)/.configured: $(DL_DIR)/$(MESALIB_SOURCE) $(MESALIB_PATCHES)
 	$(AUTORECONF1.14) -vif $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
-		CPPFLAGS="$(STAGING_CPPFLAGS) $(MESALIB_CPPFLAGS)" \
+		CPPFLAGS="-I$(@D)/include $(STAGING_CPPFLAGS) $(MESALIB_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MESALIB_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
