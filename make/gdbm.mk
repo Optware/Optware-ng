@@ -35,11 +35,11 @@ $(DL_DIR)/$(GDBM_SOURCE):
 gdbm-source: $(DL_DIR)/$(GDBM_SOURCE) $(GDBM_PATCHES)
 
 $(GDBM_BUILD_DIR)/.configured: $(DL_DIR)/$(GDBM_SOURCE) $(GDBM_PATCHES) make/gdbm.mk
-	rm -rf $(BUILD_DIR)/$(GDBM_DIR) $(GDBM_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(GDBM_DIR) $(@D)
 	$(GDBM_UNZIP) $(DL_DIR)/$(GDBM_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(GDBM_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(GDBM_DIR) -p1
-	mv $(BUILD_DIR)/$(GDBM_DIR) $(GDBM_BUILD_DIR)
-	(cd $(GDBM_BUILD_DIR); \
+	mv $(BUILD_DIR)/$(GDBM_DIR) $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
@@ -55,14 +55,14 @@ gdbm-unpack: $(GDBM_BUILD_DIR)/.configured
 
 $(GDBM_BUILD_DIR)/.built: $(GDBM_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(GDBM_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 gdbm: $(GDBM_BUILD_DIR)/.built
 
 $(GDBM_BUILD_DIR)/.staged: $(GDBM_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(GDBM_BUILD_DIR) INSTALL_ROOT=$(STAGING_DIR) install install-compat
+	$(MAKE) -C $(@D) INSTALL_ROOT=$(STAGING_DIR) install install-compat -j1
 	rm -rf $(STAGING_LIB_DIR)/libgdbm.la
 	rm -rf $(STAGING_LIB_DIR)/libgdbm_compat.la
 	touch $@
@@ -70,7 +70,7 @@ $(GDBM_BUILD_DIR)/.staged: $(GDBM_BUILD_DIR)/.built
 gdbm-stage: $(GDBM_BUILD_DIR)/.staged
 
 $(GDBM_IPK_DIR)/CONTROL/control:
-	@$(INSTALL) -d $(GDBM_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: gdbm" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -86,7 +86,7 @@ $(GDBM_IPK_DIR)/CONTROL/control:
 
 $(GDBM_IPK): $(GDBM_BUILD_DIR)/.built
 	rm -rf $(GDBM_IPK_DIR) $(GDBM_IPK)
-	$(MAKE) -C $(GDBM_BUILD_DIR) INSTALL_ROOT=$(GDBM_IPK_DIR) install install-compat
+	$(MAKE) -C $(GDBM_BUILD_DIR) INSTALL_ROOT=$(GDBM_IPK_DIR) install install-compat -j1
 	$(STRIP_COMMAND) $(GDBM_IPK_DIR)$(TARGET_PREFIX)/lib/*.so.*
 	rm -rf $(GDBM_IPK_DIR)$(TARGET_PREFIX)/{man,info}
 	rm -f $(GDBM_IPK_DIR)$(TARGET_PREFIX)/lib/*.{la,a}
