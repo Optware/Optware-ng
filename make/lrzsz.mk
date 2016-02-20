@@ -108,16 +108,16 @@ lrzsz-source: $(DL_DIR)/$(LRZSZ_SOURCE) $(LRZSZ_PATCHES)
 # shown below to make various patches to it.
 #
 $(LRZSZ_BUILD_DIR)/.configured: $(DL_DIR)/$(LRZSZ_SOURCE) $(LRZSZ_PATCHES) make/lrzsz.mk
-	rm -rf $(BUILD_DIR)/$(LRZSZ_DIR) $(LRZSZ_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(LRZSZ_DIR) $(@D)
 	$(LRZSZ_UNZIP) $(DL_DIR)/$(LRZSZ_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LRZSZ_PATCHES)" ; \
 		then cat $(LRZSZ_PATCHES) | \
 		$(PATCH) -d $(BUILD_DIR)/$(LRZSZ_DIR) -p1 ; \
 	fi
-	if test "$(BUILD_DIR)/$(LRZSZ_DIR)" != "$(LRZSZ_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(LRZSZ_DIR) $(LRZSZ_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(LRZSZ_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(LRZSZ_DIR) $(@D) ; \
 	fi
-	(cd $(LRZSZ_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LRZSZ_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LRZSZ_LDFLAGS)" \
@@ -129,7 +129,7 @@ $(LRZSZ_BUILD_DIR)/.configured: $(DL_DIR)/$(LRZSZ_SOURCE) $(LRZSZ_PATCHES) make/
 		--disable-nls \
 		--disable-static \
 	)
-	touch $(LRZSZ_BUILD_DIR)/.configured
+	touch $@
 
 lrzsz-unpack: $(LRZSZ_BUILD_DIR)/.configured
 
@@ -137,9 +137,9 @@ lrzsz-unpack: $(LRZSZ_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(LRZSZ_BUILD_DIR)/.built: $(LRZSZ_BUILD_DIR)/.configured
-	rm -f $(LRZSZ_BUILD_DIR)/.built
+	rm -f $@
 	$(MAKE) -C $(LRZSZ_BUILD_DIR)
-	touch $(LRZSZ_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -151,7 +151,7 @@ lrzsz: $(LRZSZ_BUILD_DIR)/.built
 # necessary to create a seperate control file under sources/lrzsz
 #
 $(LRZSZ_IPK_DIR)/CONTROL/control:
-	@$(INSTALL) -d $(LRZSZ_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: lrzsz" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -179,7 +179,7 @@ $(LRZSZ_IPK_DIR)/CONTROL/control:
 #
 $(LRZSZ_IPK): $(LRZSZ_BUILD_DIR)/.built
 	rm -rf $(LRZSZ_IPK_DIR) $(BUILD_DIR)/lrzsz_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(LRZSZ_BUILD_DIR) DESTDIR=$(LRZSZ_IPK_DIR) install
+	$(MAKE) -C $(LRZSZ_BUILD_DIR) DESTDIR=$(LRZSZ_IPK_DIR) install -j1
 	$(MAKE) $(LRZSZ_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LRZSZ_IPK_DIR)
 
