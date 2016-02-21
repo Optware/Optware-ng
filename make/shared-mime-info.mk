@@ -149,6 +149,7 @@ shared-mime-info-unpack: $(SHARED-MIME-INFO_BUILD_DIR)/.configured
 #
 $(SHARED-MIME-INFO_BUILD_DIR)/.built: $(SHARED-MIME-INFO_BUILD_DIR)/.configured
 	rm -f $@
+	$(MAKE) -C $(@D) update_mime_database-update-mime-database.o
 	$(MAKE) -C $(@D)
 	touch $@
 
