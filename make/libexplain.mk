@@ -161,7 +161,8 @@ libexplain: $(LIBEXPLAIN_BUILD_DIR)/.built
 #
 $(LIBEXPLAIN_BUILD_DIR)/.staged: $(LIBEXPLAIN_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) clean-misc install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) clean-misc
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install -j1
 	rm -f $(STAGING_LIB_DIR)/libexplain.la
 	sed -i -e 's|$(TARGET_PREFIX)/|$(STAGING_PREFIX)/|' $(STAGING_LIB_DIR)/pkgconfig/libexplain.pc
 	touch $@
@@ -200,7 +201,8 @@ $(LIBEXPLAIN_IPK_DIR)/CONTROL/control:
 #
 $(LIBEXPLAIN_IPK): $(LIBEXPLAIN_BUILD_DIR)/.built
 	rm -rf $(LIBEXPLAIN_IPK_DIR) $(BUILD_DIR)/libexplain_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(LIBEXPLAIN_BUILD_DIR) DESTDIR=$(LIBEXPLAIN_IPK_DIR) clean-misc install
+	$(MAKE) -C $(LIBEXPLAIN_BUILD_DIR) DESTDIR=$(LIBEXPLAIN_IPK_DIR) clean-misc
+	$(MAKE) -C $(LIBEXPLAIN_BUILD_DIR) DESTDIR=$(LIBEXPLAIN_IPK_DIR) install -j1
 	$(STRIP_COMMAND) $(LIBEXPLAIN_IPK_DIR)$(TARGET_PREFIX)/bin/* $(LIBEXPLAIN_IPK_DIR)$(TARGET_PREFIX)/lib/*.so
 	rm -f $(LIBEXPLAIN_IPK_DIR)$(TARGET_PREFIX)/lib/*.la
 #	$(INSTALL) -d $(LIBEXPLAIN_IPK_DIR)$(TARGET_PREFIX)/etc/
