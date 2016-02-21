@@ -46,7 +46,7 @@ SRECORD_IPK_VERSION=1
 # SRECORD_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#SRECORD_PATCHES=$(SRECORD_SOURCE_DIR)/configure.patch
+SRECORD_PATCHES=$(SRECORD_SOURCE_DIR)/parallelize_build.patch
 
 #
 # If the compilation of the package requires additional
@@ -110,7 +110,7 @@ $(SRECORD_BUILD_DIR)/.configured: $(DL_DIR)/$(SRECORD_SOURCE) $(SRECORD_PATCHES)
 	$(SRECORD_UNZIP) $(DL_DIR)/$(SRECORD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SRECORD_PATCHES)" ; \
 		then cat $(SRECORD_PATCHES) | \
-		$(PATCH) -d $(BUILD_DIR)/$(SRECORD_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(SRECORD_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(SRECORD_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(SRECORD_DIR) $(@D) ; \
@@ -151,7 +151,7 @@ srecord: $(SRECORD_BUILD_DIR)/.built
 #
 $(SRECORD_BUILD_DIR)/.staged: $(SRECORD_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install -j1
 	touch $@
 
 srecord-stage: $(SRECORD_BUILD_DIR)/.staged
@@ -190,7 +190,7 @@ $(SRECORD_IPK_DIR)/CONTROL/control:
 $(SRECORD_IPK): $(SRECORD_BUILD_DIR)/.built
 	rm -rf $(SRECORD_IPK_DIR) $(BUILD_DIR)/srecord_*_$(TARGET_ARCH).ipk
 	rm -f $(SRECORD_BUILD_DIR)/.bindir $(SRECORD_BUILD_DIR)/man/.mandir
-	$(MAKE) -C $(SRECORD_BUILD_DIR) DESTDIR=$(SRECORD_IPK_DIR) install
+	$(MAKE) -C $(SRECORD_BUILD_DIR) DESTDIR=$(SRECORD_IPK_DIR) install -j1
 	$(STRIP_COMMAND) $(SRECORD_IPK_DIR)$(TARGET_PREFIX)/bin/srec_*
 	$(MAKE) $(SRECORD_IPK_DIR)/CONTROL/control
 	echo $(SRECORD_CONFFILES) | sed -e 's/ /\n/g' > $(SRECORD_IPK_DIR)/CONTROL/conffiles
