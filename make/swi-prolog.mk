@@ -145,7 +145,7 @@ ifneq ($(HOSTCC), $(TARGET_CC))
 		CMFLAGS="-fPIC" \
 		CIFLAGS="-O2 -pipe -I$(STAGING_INCLUDE_DIR)" \
 		LDFLAGS="-O2 $(STAGING_LDFLAGS) $(SWI-PROLOG_LDFLAGS)"
-	$(MAKE) -C $(@D)/hostbuild/$(SWI-PROLOG_DIR) all install DESTDIR=$(@D)/hostbuild
+	$(MAKE) -C $(@D)/hostbuild/$(SWI-PROLOG_DIR) all install DESTDIR=$(@D)/hostbuild -j1
 endif
 	touch $@
 
@@ -250,7 +250,7 @@ swi-prolog: $(SWI-PROLOG_BUILD_DIR)/.built
 #
 $(SWI-PROLOG_BUILD_DIR)/.staged: $(SWI-PROLOG_BUILD_DIR)/.core-built
 	rm -f $@
-	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install -j1
 	touch $@
 
 swi-prolog-stage: $(SWI-PROLOG_BUILD_DIR)/.staged
@@ -288,9 +288,9 @@ $(SWI-PROLOG_IPK_DIR)/CONTROL/control:
 #
 $(SWI-PROLOG_IPK): $(SWI-PROLOG_BUILD_DIR)/.built
 	rm -rf $(SWI-PROLOG_IPK_DIR) $(BUILD_DIR)/swi-prolog_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(SWI-PROLOG_BUILD_DIR) install DESTDIR=$(SWI-PROLOG_IPK_DIR)
+	$(MAKE) -C $(SWI-PROLOG_BUILD_DIR) install DESTDIR=$(SWI-PROLOG_IPK_DIR) -j1
 	$(STRIP_COMMAND) $(SWI-PROLOG_IPK_DIR)$(TARGET_PREFIX)/lib/$(SWI-PROLOG_PL)-$(SWI-PROLOG_VERSION)/bin/$(SWI-PROLOG_TARGET)/*pl*
-	$(MAKE) -C $(SWI-PROLOG_BUILD_DIR)/packages install DESTDIR=$(SWI-PROLOG_IPK_DIR)
+	$(MAKE) -C $(SWI-PROLOG_BUILD_DIR)/packages install DESTDIR=$(SWI-PROLOG_IPK_DIR) -j1
 	rm $(SWI-PROLOG_IPK_DIR)$(TARGET_PREFIX)/lib/$(SWI-PROLOG_PL)-$(SWI-PROLOG_VERSION)/lib/$(SWI-PROLOG_TARGET)/lib*.a
 	(cd $(SWI-PROLOG_IPK_DIR)$(TARGET_PREFIX)/lib/$(SWI-PROLOG_PL)-$(SWI-PROLOG_VERSION); \
 		for f in `find . -name '*.so'`; do \
