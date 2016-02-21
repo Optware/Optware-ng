@@ -207,7 +207,7 @@ $(SQSH_IPK_DIR)/CONTROL/control:
 #
 $(SQSH_IPK): $(SQSH_BUILD_DIR)/.built
 	rm -rf $(SQSH_IPK_DIR) $(BUILD_DIR)/sqsh_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(SQSH_BUILD_DIR) prefix=$(SQSH_IPK_DIR)$(TARGET_PREFIX) install install.man
+	$(MAKE) -C $(SQSH_BUILD_DIR) prefix=$(SQSH_IPK_DIR)$(TARGET_PREFIX) install install.man -j1
 	$(STRIP_COMMAND) $(SQSH_IPK_DIR)$(TARGET_PREFIX)/bin/sqsh
 #	$(INSTALL) -d $(SQSH_IPK_DIR)$(TARGET_PREFIX)/etc/
 #	$(INSTALL) -m 644 $(SQSH_SOURCE_DIR)/sqsh.conf $(SQSH_IPK_DIR)$(TARGET_PREFIX)/etc/sqsh.conf
