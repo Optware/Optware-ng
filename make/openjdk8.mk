@@ -269,7 +269,7 @@ openjdk8-source: $(OPENJDK8_SOURCES) $(OPENJDK8_PATCHES)
 # shown below to make various patches to it.
 #
 $(OPENJDK8_BUILD_DIR)/.configured: $(OPENJDK8_SOURCES) $(OPENJDK8_PATCHES) \
-		$(OPENJDK8_JAMVM_PATCHES) $(OPENJDK8_OPENJDK_PATCHES) make/openjdk8.mk
+		$(OPENJDK8_JAMVM_PATCHES) $(OPENJDK8_OPENJDK_PATCHES) #make/openjdk8.mk
 	$(MAKE) libstdc++-stage freetype-stage x11-stage autoconf-host-stage libffi-stage
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
@@ -397,7 +397,7 @@ openjdk8-unpack: $(OPENJDK8_BUILD_DIR)/.configured
 #
 $(OPENJDK8_BUILD_DIR)/.built: $(OPENJDK8_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(@D)/openjdk $(OPENJDK8_MAKE_ARGS) images
+	$(MAKE) -C $(@D)/openjdk $(OPENJDK8_MAKE_ARGS) images -j1 JOBS=`nproc`
 #	printf -- '-jamvm ALIASED_TO -server\n' >> $(OPENJDK8_JDK_IMAGE_DIR)/jre/lib/$(OPENJDK8_LIBARCH)/jvm.cfg
 	touch $@
 
