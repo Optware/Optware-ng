@@ -101,9 +101,9 @@ ocaml-hostbuild: $(OCAML_HOST_BUILD_DIR)/.built
 ifeq ($(HOSTCC), $(TARGET_CC))
 $(OCAML_BUILD_DIR)/.configured: $(DL_DIR)/$(OCAML_SOURCE) $(OCAML_PATCHES)
 else
-$(OCAML_BUILD_DIR)/.configured: $(OCAML_HOST_BUILD_DIR)/.built $(DL_DIR)/$(OCAML_SOURCE) $(OCAML_PATCHES)
+$(OCAML_BUILD_DIR)/.configured: $(OCAML_HOST_BUILD_DIR)/.built $(DL_DIR)/$(OCAML_SOURCE) $(OCAML_PATCHES) make/ocalm.mk
 endif
-	rm -rf $(BUILD_DIR)/$(OCAML_DIR) $(OCAML_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(OCAML_DIR) $(@D)
 	$(OCAML_UNZIP) $(DL_DIR)/$(OCAML_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(OCAML_PATCHES)"; then \
 		cat $(OCAML_PATCHES) | $(PATCH) -bd $(BUILD_DIR)/$(OCAML_DIR) -p1; \
@@ -139,6 +139,9 @@ ocaml-unpack: $(OCAML_BUILD_DIR)/.configured
 # http://caml.inria.fr/mantis/view.php?id=3746
 $(OCAML_BUILD_DIR)/.built: $(OCAML_BUILD_DIR)/.configured
 	rm -f $@
+	$(MAKE) -C $(@D) coldstart
+	$(MAKE) -C $(@D) ocamlc ocamltools
+	$(MAKE) -C $(@D)/otherlibs/str LIBNAME=str
 	$(MAKE) -C $(@D) world # opt
 	for f in byterun/ocamlrun yacc/ocamlyacc otherlibs/unix/dllunix.so otherlibs/str/dllcamlstr.so; \
 	    do cp -p $(@D)/$${f}.target $(@D)/$$f; done
