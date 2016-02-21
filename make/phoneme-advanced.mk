@@ -187,7 +187,7 @@ phoneme-advanced-unpack: $(PHONEME_ADVANCED_BUILD_DIR)/.configured
 #
 $(PHONEME_ADVANCED_BUILD_DIR)/.built: $(PHONEME_ADVANCED_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(PHONEME_ADVANCED_CDC_BUILD_DIR) bin \
+	$(MAKE) -C $(PHONEME_ADVANCED_CDC_BUILD_DIR) bin -j1 JOBS=`nproc` \
 		USE_VERBOSE_MAKE=true \
 		TOOLS_DIR=$(PHONEME_ADVANCED_BUILD_DIR)/tools \
 		J2ME_CLASSLIB=foundation \
