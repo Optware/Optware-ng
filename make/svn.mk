@@ -278,7 +278,7 @@ svn: $(SVN_BUILD_DIR)/.built $(SVN_BUILD_DIR)/.py-built $(SVN_BUILD_DIR)/.rb-bui
 #
 $(SVN_BUILD_DIR)/.staged: $(SVN_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) local-install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) local-install -j1
 	touch $@
 
 svn-stage: $(SVN_BUILD_DIR)/.staged
@@ -369,7 +369,7 @@ endif
 	rm -rf $(SVN_IPK_DIR) $(BUILD_DIR)/svn_*_$(TARGET_ARCH).ipk
 	$(INSTALL) -d $(SVN_IPK_DIR)$(TARGET_PREFIX)/lib/svn-python/libsvn
 	$(MAKE) -C $(SVN_BUILD_DIR) DESTDIR=$(SVN_IPK_DIR) \
-		local-install $(SVN_INSTALL_SWIG_TARGETS)
+		local-install $(SVN_INSTALL_SWIG_TARGETS) -j1
 	$(STRIP_COMMAND) $(SVN_IPK_DIR)$(TARGET_PREFIX)/bin/*
 	for f in `find $(SVN_IPK_DIR)$(TARGET_PREFIX) -name '*.so'`; do \
 		chmod +w $$f; \
