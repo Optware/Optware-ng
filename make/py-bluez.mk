@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-BLUEZ_SITE=https://downloads.openwrt.org/sources
+PY-BLUEZ_SITE=ftp://mirabel.opf.slu.cz/openwrt/sources
 PY-BLUEZ_VERSION=0.13
 PY-BLUEZ_SOURCE=pybluez-src-$(PY-BLUEZ_VERSION).tar.gz
 PY-BLUEZ_DIR=pybluez-$(PY-BLUEZ_VERSION)
