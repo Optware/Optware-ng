@@ -196,7 +196,7 @@ $(SLRN_IPK_DIR)/CONTROL/control:
 #
 $(SLRN_IPK): $(SLRN_BUILD_DIR)/.built
 	rm -rf $(SLRN_IPK_DIR) $(BUILD_DIR)/slrn_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(SLRN_BUILD_DIR) DESTDIR=$(SLRN_IPK_DIR) install
+	$(MAKE) -C $(SLRN_BUILD_DIR) DESTDIR=$(SLRN_IPK_DIR) install -j1
 	$(STRIP_COMMAND) $(SLRN_IPK_DIR)$(TARGET_PREFIX)/bin/slrn
 	$(MAKE) $(SLRN_IPK_DIR)/CONTROL/control
 	echo $(SLRN_CONFFILES) | sed -e 's/ /\n/g' > $(SLRN_IPK_DIR)/CONTROL/conffiles
