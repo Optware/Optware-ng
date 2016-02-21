@@ -124,6 +124,7 @@ $(TAGLIB_BUILD_DIR)/.configured: $(DL_DIR)/$(TAGLIB_SOURCE) $(TAGLIB_PATCHES) ma
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=$(TARGET_PREFIX) \
+		--libdir='$${prefix}/lib' \
 		--disable-nls \
 		--disable-static \
 	)
