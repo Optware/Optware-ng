@@ -266,8 +266,8 @@ $(PY-TWISTED_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(PY-TWISTED_SO
 	        echo "rpath=$(HOST_STAGING_LIB_DIR)"; \
 	    ) >> setup.cfg; \
 	)
-	$(PY-TWISTED_UNZIP) $(DL_DIR)/$(PY-TWISTED_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
-	mv $(HOST_BUILD_DIR)/$(PY-TWISTED_DIR) $(@D)/2.6
+	$(PY-TWISTED_UNZIP) $(DL_DIR)/$(PY-TWISTED_SOURCE_MID) | tar -C $(HOST_BUILD_DIR) -xvf -
+	mv $(HOST_BUILD_DIR)/$(PY-TWISTED_DIR_MID) $(@D)/2.6
 	(cd $(@D)/2.6; \
 	    ( \
 		echo "[build_ext]"; \
