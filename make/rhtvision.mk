@@ -115,7 +115,7 @@ rhtvision-source: $(DL_DIR)/$(RHTVISION_SOURCE) $(RHTVISION_PATCHES)
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(RHTVISION_BUILD_DIR)/.configured: $(DL_DIR)/$(RHTVISION_SOURCE) $(RHTVISION_PATCHES) # make/rhtvision.mk
+$(RHTVISION_BUILD_DIR)/.configured: $(DL_DIR)/$(RHTVISION_SOURCE) $(RHTVISION_PATCHES) make/rhtvision.mk
 	$(MAKE) ncurses-stage
 	rm -rf $(BUILD_DIR)/$(RHTVISION_DIR) $(RHTVISION_BUILD_DIR)
 	$(RHTVISION_UNZIP) $(DL_DIR)/$(RHTVISION_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -161,7 +161,10 @@ rhtvision-unpack: $(RHTVISION_BUILD_DIR)/.configured
 #
 $(RHTVISION_BUILD_DIR)/.built: $(RHTVISION_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(RHTVISION_BUILD_DIR) all examples \
+	$(MAKE) -C $(RHTVISION_BUILD_DIR) all \
+		LDFLAGS="$(STAGING_LDFLAGS) $(RHTVISION_LDFLAGS)" \
+		;
+	$(MAKE) -C $(RHTVISION_BUILD_DIR) examples \
 		LDFLAGS="$(STAGING_LDFLAGS) $(RHTVISION_LDFLAGS)" \
 		;
 	touch $@
@@ -176,7 +179,7 @@ rhtvision: $(RHTVISION_BUILD_DIR)/.built
 #
 $(RHTVISION_BUILD_DIR)/.staged: $(RHTVISION_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(RHTVISION_BUILD_DIR) DESTDIR=$(STAGING_DIR) install -j1
+	$(MAKE) -C $(RHTVISION_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 rhtvision-stage: $(RHTVISION_BUILD_DIR)/.staged
@@ -214,7 +217,7 @@ $(RHTVISION_IPK_DIR)/CONTROL/control:
 #
 $(RHTVISION_IPK): $(RHTVISION_BUILD_DIR)/.built
 	rm -rf $(RHTVISION_IPK_DIR) $(BUILD_DIR)/rhtvision_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(RHTVISION_BUILD_DIR) install -j1 \
+	$(MAKE) -C $(RHTVISION_BUILD_DIR) install \
 		prefix=$(RHTVISION_IPK_DIR)$(TARGET_PREFIX)
 	rm -f $(RHTVISION_IPK_DIR)$(TARGET_PREFIX)/lib/librhtv.a
 	$(INSTALL) $(RHTVISION_BUILD_DIR)/examples/demo/demo.exe $(RHTVISION_IPK_DIR)$(TARGET_PREFIX)/bin/rhtv-demo
