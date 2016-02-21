@@ -154,7 +154,7 @@ $(LIBSERF_BUILD_DIR)/.staged: $(LIBSERF_BUILD_DIR)/.built
 	rm -f $@
 	rm -f $(STAGING_LIB_DIR)/libserf-1.*
 	cd $(@D); \
-		scons install $(LIBSERF_SCONS_VARS) PREFIX=$(STAGING_PREFIX)
+		scons install -j1 $(LIBSERF_SCONS_VARS) PREFIX=$(STAGING_PREFIX)
 	rm -f $(STAGING_LIB_DIR)/libserf-1.la
 	sed -i -e '/^prefix=/s|=.*|=$(STAGING_PREFIX)|' -e '/^libdir=/s|=.*|=$(STAGING_LIB_DIR)|' \
 			$(STAGING_LIB_DIR)/pkgconfig/serf-1.pc
@@ -196,7 +196,7 @@ $(LIBSERF_IPK_DIR)/CONTROL/control:
 $(LIBSERF_IPK): $(LIBSERF_BUILD_DIR)/.built
 	rm -rf $(LIBSERF_IPK_DIR) $(BUILD_DIR)/libserf_*_$(TARGET_ARCH).ipk
 	cd $(LIBSERF_BUILD_DIR); \
-		scons install $(LIBSERF_SCONS_VARS) PREFIX=$(LIBSERF_IPK_DIR)$(TARGET_PREFIX)
+		scons install -j1 $(LIBSERF_SCONS_VARS) PREFIX=$(LIBSERF_IPK_DIR)$(TARGET_PREFIX)
 	rm -f $(LIBSERF_IPK_DIR)$(TARGET_PREFIX)/lib/libserf-1.a
 	$(STRIP_COMMAND) $(LIBSERF_IPK_DIR)$(TARGET_PREFIX)/lib/*.so
 #	$(INSTALL) -d $(LIBSERF_IPK_DIR)$(TARGET_PREFIX)/etc/
