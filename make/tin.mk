@@ -26,12 +26,11 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-TIN_SITE=ftp://ftp.tin.org/pub/news/clients/tin/v1.8
-TIN_SITE2=ftp://ftp.stikman.com/pub/tin/v1.8
+TIN_SITE=http://ftp.osuosl.org/pub/blfs/6.3/t
 TIN_VERSION=1.8.3
-TIN_SOURCE=tin-$(TIN_VERSION).tar.gz
+TIN_SOURCE=tin-$(TIN_VERSION).tar.bz2
 TIN_DIR=tin-$(TIN_VERSION)
-TIN_UNZIP=zcat
+TIN_UNZIP=bzcat
 TIN_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 TIN_DESCRIPTION=tin is a threaded NNTP and spool based UseNet newsreader
 TIN_SECTION=misc
@@ -82,7 +81,7 @@ TIN_IPK=$(BUILD_DIR)/tin_$(TIN_VERSION)-$(TIN_IPK_VERSION)_$(TARGET_ARCH).ipk
 #
 $(DL_DIR)/$(TIN_SOURCE):
 	$(WGET) -P $(@D) $(TIN_SITE)/$(@F) || \
-	$(WGET) -P $(@D) $(TIN_SITE2)/$(@F)
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
