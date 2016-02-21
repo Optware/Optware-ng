@@ -176,7 +176,7 @@ rhtvision: $(RHTVISION_BUILD_DIR)/.built
 #
 $(RHTVISION_BUILD_DIR)/.staged: $(RHTVISION_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(RHTVISION_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(RHTVISION_BUILD_DIR) DESTDIR=$(STAGING_DIR) install -j1
 	touch $@
 
 rhtvision-stage: $(RHTVISION_BUILD_DIR)/.staged
@@ -214,7 +214,7 @@ $(RHTVISION_IPK_DIR)/CONTROL/control:
 #
 $(RHTVISION_IPK): $(RHTVISION_BUILD_DIR)/.built
 	rm -rf $(RHTVISION_IPK_DIR) $(BUILD_DIR)/rhtvision_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(RHTVISION_BUILD_DIR) install \
+	$(MAKE) -C $(RHTVISION_BUILD_DIR) install -j1 \
 		prefix=$(RHTVISION_IPK_DIR)$(TARGET_PREFIX)
 	rm -f $(RHTVISION_IPK_DIR)$(TARGET_PREFIX)/lib/librhtv.a
 	$(INSTALL) $(RHTVISION_BUILD_DIR)/examples/demo/demo.exe $(RHTVISION_IPK_DIR)$(TARGET_PREFIX)/bin/rhtv-demo
