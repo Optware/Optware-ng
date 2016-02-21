@@ -252,7 +252,7 @@ $(PY-TWISTED_BUILD_DIR)/.staged: $(PY-TWISTED_BUILD_DIR)/.built
 		$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(STAGING_DIR) --prefix=$(TARGET_PREFIX))
 	touch $@
 
-$(PY-TWISTED_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(PY-TWISTED_SOURCE) $(DL_DIR)/$(PY-TWISTED_SOURCE_OLD) make/py-twisted.mk
+$(PY-TWISTED_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(PY-TWISTED_SOURCE) $(DL_DIR)/$(PY-TWISTED_SOURCE_MID) $(DL_DIR)/$(PY-TWISTED_SOURCE_OLD) make/py-twisted.mk
 	rm -rf $(HOST_BUILD_DIR)/$(PY-TWISTED_DIR) $(HOST_BUILD_DIR)/$(PY-TWISTED_DIR_OLD) $(@D)
 	$(MAKE) py-zope-interface-host-stage py-openssl-host-stage
 	mkdir -p $(@D)/
