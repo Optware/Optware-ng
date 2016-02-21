@@ -49,6 +49,7 @@ QUICKIE_IPK_VERSION=3
 QUICKIE_PATCHES=\
 $(QUICKIE_SOURCE_DIR)/gcc4.patch \
 $(QUICKIE_SOURCE_DIR)/missing-includes.patch \
+$(QUICKIE_SOURCE_DIR)/parallelize_build.patch \
 $(QUICKIE_SOURCE_DIR)/Makefile.in.patch
 
 #
@@ -112,7 +113,7 @@ $(QUICKIE_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(QUICKIE_SOURCE) m
 	rm -f $(QUICKIE_HOST_BUILD_DIR)/.built
 	rm -rf $(HOST_BUILD_DIR)/$(QUICKIE_DIR) $(QUICKIE_HOST_BUILD_DIR)
 	$(QUICKIE_UNZIP) $(DL_DIR)/$(QUICKIE_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
-	cat $(QUICKIE_SOURCE_DIR)/gcc4.patch $(QUICKIE_SOURCE_DIR)/missing-includes.patch | $(PATCH) -d $(HOST_BUILD_DIR)/$(QUICKIE_DIR) -p0
+	cat $(QUICKIE_SOURCE_DIR)/gcc4.patch $(QUICKIE_SOURCE_DIR)/parallelize_build.patch $(QUICKIE_SOURCE_DIR)/missing-includes.patch | $(PATCH) -d $(HOST_BUILD_DIR)/$(QUICKIE_DIR) -p0
 	mv $(HOST_BUILD_DIR)/$(QUICKIE_DIR) $(QUICKIE_HOST_BUILD_DIR)
 	(cd $(QUICKIE_HOST_BUILD_DIR); \
 		./configure \

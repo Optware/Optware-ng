@@ -1,0 +1,1404 @@
+--- a/Makefile.in
++++ Makefile.in
+@@ -151,13 +151,11 @@
+ cklinlen/check.o: cklinlen/check.cc cklinlen/check.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h lib/quit.h lib/format_printf.h \
+ 		lib/quit/atexit_list.h lib/rcstring/accumulator.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -Icklinlen -Ilib -c cklinlen/check.cc
+-	mv check.o cklinlen/check.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -Icklinlen -Ilib -c cklinlen/check.cc -o cklinlen/check.o
+ 
+ cklinlen/main.o: cklinlen/main.cc cklinlen/check.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h lib/progname.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -Icklinlen -Ilib -c cklinlen/main.cc
+-	mv main.o cklinlen/main.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -Icklinlen -Ilib -c cklinlen/main.cc -o cklinlen/main.o
+ 
+ etc/BUILDING.ps: etc/BUILDING.man etc/version.so \
+ 		man/man1/z_post_install.so 
+@@ -251,44 +249,37 @@
+ 
+ lib/ac/magic.o: lib/ac/magic.cc lib/ac/magic.h lib/config.h \
+ 		lib/config.messy.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/ac/magic.cc
+-	mv magic.o lib/ac/magic.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/ac/magic.cc -o lib/ac/magic.o
+ 
+ lib/ac/zlib.o: lib/ac/zlib.cc lib/ac/zlib.h lib/config.h \
+ 		lib/config.messy.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/ac/zlib.cc
+-	mv zlib.o lib/ac/zlib.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/ac/zlib.cc -o lib/ac/zlib.o
+ 
+ lib/adler32.o: lib/adler32.cc lib/ac/zlib.h lib/config.h \
+ 		lib/config.messy.h lib/adler32.h lib/input/file.h \
+ 		lib/input.h lib/format_printf.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/adler32.cc
+-	mv adler32.o lib/adler32.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/adler32.cc -o lib/adler32.o
+ 
+ lib/arglex.o: lib/arglex.cc lib/arglex.h lib/format_printf.h \
+ 		lib/progname.h lib/quit.h lib/quit/atexit_list.h \
+ 		lib/rcstring/list.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h lib/versn_stamp.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/arglex.cc
+-	mv arglex.o lib/arglex.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/arglex.cc -o lib/arglex.o
+ 
+ lib/boolean.o: lib/boolean.cc lib/boolean.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/boolean.cc
+-	mv boolean.o lib/boolean.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/boolean.cc -o lib/boolean.o
+ 
+ lib/careful/rename.o: lib/careful/rename.cc lib/careful.h lib/quit.h \
+ 		lib/format_printf.h lib/quit/atexit_list.h \
+ 		lib/rcstring.h lib/rcstring/gizzards.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/careful/rename.cc
+-	mv rename.o lib/careful/rename.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/careful/rename.cc -o lib/careful/rename.o
+ 
+ lib/careful/unlink.o: lib/careful/unlink.cc lib/careful.h lib/quit.h \
+ 		lib/format_printf.h lib/quit/atexit_list.h \
+ 		lib/rcstring.h lib/rcstring/gizzards.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/careful/unlink.cc
+-	mv unlink.o lib/careful/unlink.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/careful/unlink.cc -o lib/careful/unlink.o
+ 
+ lib/cgi.o: lib/cgi.cc lib/cgi.h lib/format_printf.h \
+ 		lib/symtab/template.h lib/rcstring/list.h \
+@@ -296,37 +287,31 @@
+ 		lib/configuration.h lib/rfc822.h lib/input/crop.h \
+ 		lib/input.h lib/input/stdin.h lib/mime_lex.h \
+ 		lib/rcstring/accumulator.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/cgi.cc
+-	mv cgi.o lib/cgi.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/cgi.cc -o lib/cgi.o
+ 
+ lib/configuration.o: lib/configuration.cc lib/boolean.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h lib/configuration.h \
+ 		lib/rfc822.h lib/symtab/template.h lib/rcstring/list.h \
+ 		lib/symtab.h lib/libdir.h lib/output.h \
+ 		lib/format_printf.h lib/rcstring/accumulator.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/configuration.cc
+-	mv configuration.o lib/configuration.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/configuration.cc -o lib/configuration.o
+ 
+ lib/configuration/chroot.o: lib/configuration/chroot.cc \
+ 		lib/configuration.h lib/rfc822.h lib/symtab/template.h \
+ 		lib/rcstring/list.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h lib/symtab.h lib/quit.h \
+ 		lib/format_printf.h lib/quit/atexit_list.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/configuration/chroot.cc
+-	mv chroot.o lib/configuration/chroot.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/configuration/chroot.cc -o lib/configuration/chroot.o
+ 
+ lib/crc16.o: lib/crc16.cc lib/crc16.h
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/crc16.cc
+-	mv crc16.o lib/crc16.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/crc16.cc -o lib/crc16.o
+ 
+ lib/crc32.o: lib/crc32.cc lib/crc32.h
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/crc32.cc
+-	mv crc32.o lib/crc32.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/crc32.cc -o lib/crc32.o
+ 
+ lib/exists_and.o: lib/exists_and.cc lib/exists_and.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/exists_and.cc
+-	mv exists_and.o lib/exists_and.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/exists_and.cc -o lib/exists_and.o
+ 
+ lib/file.o: lib/file.cc lib/cgi.h lib/format_printf.h \
+ 		lib/symtab/template.h lib/rcstring/list.h \
+@@ -337,8 +322,7 @@
+ 		lib/rcstring/accumulator.h lib/relative_path.h \
+ 		lib/wiki_to/html.h lib/wiki_to.h lib/wiki_mode/stack.h \
+ 		lib/wiki_mode.h lib/wiki_word.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/file.cc
+-	mv file.o lib/file.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/file.cc -o lib/file.o
+ 
+ lib/file/admin.o: lib/file/admin.cc lib/cgi.h lib/format_printf.h \
+ 		lib/symtab/template.h lib/rcstring/list.h \
+@@ -348,24 +332,21 @@
+ 		lib/file/literal.h lib/file/login.h lib/file/new_user.h \
+ 		lib/file/recent.h lib/file/settings.h \
+ 		lib/output/stdout.h lib/output.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/file/admin.cc
+-	mv admin.o lib/file/admin.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/file/admin.cc -o lib/file/admin.o
+ 
+ lib/file/catalogue.o: lib/file/catalogue.cc lib/file/catalogue.h \
+ 		lib/file.h lib/rcstring.h lib/rcstring/gizzards.h \
+ 		lib/output/stdout.h lib/output.h lib/format_printf.h \
+ 		lib/tree_walk.h lib/tree_walk/functor/catalogue.h \
+ 		lib/rcstring/list.h lib/tree_walk/functor.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/file/catalogue.cc
+-	mv catalogue.o lib/file/catalogue.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/file/catalogue.cc -o lib/file/catalogue.o
+ 
+ lib/file/factory.o: lib/file/factory.cc lib/configuration.h \
+ 		lib/rfc822.h lib/symtab/template.h lib/rcstring/list.h \
+ 		lib/rcstring.h lib/rcstring/gizzards.h lib/symtab.h \
+ 		lib/file/regular.h lib/file.h lib/file/admin.h \
+ 		lib/wiki_word.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/file/factory.cc
+-	mv factory.o lib/file/factory.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/file/factory.cc -o lib/file/factory.o
+ 
+ lib/file/literal.o: lib/file/literal.cc lib/cgi.h lib/format_printf.h \
+ 		lib/symtab/template.h lib/rcstring/list.h \
+@@ -373,8 +354,7 @@
+ 		lib/file/literal.h lib/file.h lib/input/file.h \
+ 		lib/input.h lib/mime_type.h lib/output/stdout.h \
+ 		lib/output.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/file/literal.cc
+-	mv literal.o lib/file/literal.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/file/literal.cc -o lib/file/literal.o
+ 
+ lib/file/login.o: lib/file/login.cc lib/cgi.h lib/format_printf.h \
+ 		lib/symtab/template.h lib/rcstring/list.h \
+@@ -382,24 +362,21 @@
+ 		lib/file/login.h lib/file.h lib/output/stdout.h \
+ 		lib/output.h lib/relative_path.h lib/user.h \
+ 		lib/rfc822.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/file/login.cc
+-	mv login.o lib/file/login.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/file/login.cc -o lib/file/login.o
+ 
+ lib/file/new_user.o: lib/file/new_user.cc lib/cgi.h lib/format_printf.h \
+ 		lib/symtab/template.h lib/rcstring/list.h \
+ 		lib/rcstring.h lib/rcstring/gizzards.h lib/symtab.h \
+ 		lib/file/new_user.h lib/file.h lib/output/stdout.h \
+ 		lib/output.h lib/user.h lib/rfc822.h lib/wiki_word.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/file/new_user.cc
+-	mv new_user.o lib/file/new_user.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/file/new_user.cc -o lib/file/new_user.o
+ 
+ lib/file/recent.o: lib/file/recent.cc lib/output/stdout.h lib/output.h \
+ 		lib/format_printf.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h lib/file/recent.h lib/file.h \
+ 		lib/tree_walk.h lib/tree_walk/functor/recent.h \
+ 		lib/tree_walk/functor.h lib/recent/list.h lib/recent.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/file/recent.cc
+-	mv recent.o lib/file/recent.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/file/recent.cc -o lib/file/recent.o
+ 
+ lib/file/regular.o: lib/file/regular.cc lib/careful.h lib/cgi.h \
+ 		lib/format_printf.h lib/symtab/template.h \
+@@ -416,76 +393,64 @@
+ 		lib/rfc822_functor.h lib/simple_version_tool.h \
+ 		lib/user.h lib/wiki_to/html.h lib/wiki_to.h \
+ 		lib/wiki_mode/stack.h lib/wiki_mode.h lib/wiki_word.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/file/regular.cc
+-	mv regular.o lib/file/regular.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/file/regular.cc -o lib/file/regular.o
+ 
+ lib/file/settings.o: lib/file/settings.cc lib/configuration.h \
+ 		lib/rfc822.h lib/symtab/template.h lib/rcstring/list.h \
+ 		lib/rcstring.h lib/rcstring/gizzards.h lib/symtab.h \
+ 		lib/file/settings.h lib/file.h lib/output/stdout.h \
+ 		lib/output.h lib/format_printf.h lib/versn_stamp.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/file/settings.cc
+-	mv settings.o lib/file/settings.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/file/settings.cc -o lib/file/settings.o
+ 
+ lib/fstrcmp.o: lib/fstrcmp.cc lib/fstrcmp.h
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/fstrcmp.cc
+-	mv fstrcmp.o lib/fstrcmp.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/fstrcmp.cc -o lib/fstrcmp.o
+ 
+ lib/input.o: lib/input.cc lib/input.h lib/format_printf.h \
+ 		lib/rcstring.h lib/rcstring/gizzards.h lib/quit.h \
+ 		lib/quit/atexit_list.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/input.cc
+-	mv input.o lib/input.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/input.cc -o lib/input.o
+ 
+ lib/input/crlf.o: lib/input/crlf.cc lib/input/crlf.h lib/input.h \
+ 		lib/format_printf.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/input/crlf.cc
+-	mv crlf.o lib/input/crlf.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/input/crlf.cc -o lib/input/crlf.o
+ 
+ lib/input/crop.o: lib/input/crop.cc lib/input/crop.h lib/input.h \
+ 		lib/format_printf.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/input/crop.cc
+-	mv crop.o lib/input/crop.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/input/crop.cc -o lib/input/crop.o
+ 
+ lib/input/file.o: lib/input/file.cc lib/input/file.h lib/input.h \
+ 		lib/format_printf.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/input/file.cc
+-	mv file.o lib/input/file.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/input/file.cc -o lib/input/file.o
+ 
+ lib/input/gunzip.o: lib/input/gunzip.cc lib/input/gunzip.h \
+ 		lib/ac/zlib.h lib/config.h lib/config.messy.h \
+ 		lib/input.h lib/format_printf.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/input/gunzip.cc
+-	mv gunzip.o lib/input/gunzip.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/input/gunzip.cc -o lib/input/gunzip.o
+ 
+ lib/input/one_line.o: lib/input/one_line.cc lib/input/one_line.h \
+ 		lib/input.h lib/format_printf.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/input/one_line.cc
+-	mv one_line.o lib/input/one_line.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/input/one_line.cc -o lib/input/one_line.o
+ 
+ lib/input/remove_comments.o: lib/input/remove_comments.cc \
+ 		lib/input/remove_comments.h lib/input.h \
+ 		lib/format_printf.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/input/remove_comments.cc
+-	mv remove_comments.o lib/input/remove_comments.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/input/remove_comments.cc -o lib/input/remove_comments.o
+ 
+ lib/input/stdin.o: lib/input/stdin.cc lib/input/stdin.h lib/input.h \
+ 		lib/format_printf.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/input/stdin.cc
+-	mv stdin.o lib/input/stdin.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/input/stdin.cc -o lib/input/stdin.o
+ 
+ lib/input/string.o: lib/input/string.cc lib/input/string.h lib/input.h \
+ 		lib/format_printf.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/input/string.cc
+-	mv string.o lib/input/string.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/input/string.cc -o lib/input/string.o
+ 
+ lib/input/svt_checkout.o: lib/input/svt_checkout.cc lib/input/crop.h \
+ 		lib/input.h lib/format_printf.h lib/rcstring.h \
+@@ -495,513 +460,426 @@
+ 		lib/input/svt_checkout.h lib/output/null.h lib/output.h \
+ 		lib/rfc822.h lib/symtab/template.h lib/rcstring/list.h \
+ 		lib/symtab.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/input/svt_checkout.cc
+-	mv svt_checkout.o lib/input/svt_checkout.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/input/svt_checkout.cc -o lib/input/svt_checkout.o
+ 
+ lib/input/uudecode.o: lib/input/uudecode.cc lib/input/uudecode.h \
+ 		lib/input.h lib/format_printf.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/input/uudecode.cc
+-	mv uudecode.o lib/input/uudecode.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/input/uudecode.cc -o lib/input/uudecode.o
+ 
+ lib/input/verify_checksum.o: lib/input/verify_checksum.cc lib/ac/zlib.h \
+ 		lib/config.h lib/config.messy.h \
+ 		lib/input/verify_checksum.h lib/input.h \
+ 		lib/format_printf.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/input/verify_checksum.cc
+-	mv verify_checksum.o lib/input/verify_checksum.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/input/verify_checksum.cc -o lib/input/verify_checksum.o
+ 
+ lib/interval.o: lib/interval.cc lib/interval.h
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/interval.cc
+-	mv interval.o lib/interval.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/interval.cc -o lib/interval.o
+ 
+ lib/libdir.o: lib/libdir.cc
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/libdir.cc
+-	mv libdir.o lib/libdir.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/libdir.cc -o lib/libdir.o
+ 
+ lib/link_tracker.o: lib/link_tracker.cc lib/link_tracker.h \
+ 		lib/rcstring.h lib/rcstring/gizzards.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/link_tracker.cc
+-	mv link_tracker.o lib/link_tracker.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/link_tracker.cc -o lib/link_tracker.o
+ 
+ lib/link_tracker/null.o: lib/link_tracker/null.cc \
+ 		lib/link_tracker/null.h lib/link_tracker.h \
+ 		lib/rcstring.h lib/rcstring/gizzards.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/link_tracker/null.cc
+-	mv null.o lib/link_tracker/null.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/link_tracker/null.cc -o lib/link_tracker/null.o
+ 
+ lib/link_tracker/wiki.o: lib/link_tracker/wiki.cc lib/careful.h \
+ 		lib/configuration.h lib/rfc822.h lib/symtab/template.h \
+ 		lib/rcstring/list.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h lib/symtab.h \
+ 		lib/link_tracker/wiki.h lib/link_tracker.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/link_tracker/wiki.cc
+-	mv wiki.o lib/link_tracker/wiki.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/link_tracker/wiki.cc -o lib/link_tracker/wiki.o
+ 
+ lib/mime_lex.o: lib/mime_lex.cc lib/mime_lex.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h lib/rcstring/accumulator.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/mime_lex.cc
+-	mv mime_lex.o lib/mime_lex.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/mime_lex.cc -o lib/mime_lex.o
+ 
+ lib/mime_type.o: lib/mime_type.cc lib/ac/magic.h lib/config.h \
+ 		lib/config.messy.h lib/mime_type.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h lib/quit.h lib/format_printf.h \
+ 		lib/quit/atexit_list.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/mime_type.cc
+-	mv mime_type.o lib/mime_type.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/mime_type.cc -o lib/mime_type.o
+ 
+ lib/mkdir_p.o: lib/mkdir_p.cc lib/mkdir_p.h lib/quit.h \
+ 		lib/format_printf.h lib/quit/atexit_list.h \
+ 		lib/rcstring.h lib/rcstring/gizzards.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/mkdir_p.cc
+-	mv mkdir_p.o lib/mkdir_p.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/mkdir_p.cc -o lib/mkdir_p.o
+ 
+ lib/output.o: lib/output.cc lib/output.h lib/format_printf.h \
+ 		lib/rcstring.h lib/rcstring/gizzards.h lib/input.h \
+ 		lib/quit.h lib/quit/atexit_list.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/output.cc
+-	mv output.o lib/output.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/output.cc -o lib/output.o
+ 
+ lib/output/file.o: lib/output/file.cc lib/mkdir_p.h lib/output/file.h \
+ 		lib/output.h lib/format_printf.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/output/file.cc
+-	mv file.o lib/output/file.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/output/file.cc -o lib/output/file.o
+ 
+ lib/output/gzip.o: lib/output/gzip.cc lib/ac/zlib.h lib/config.h \
+ 		lib/config.messy.h lib/output/gzip.h lib/output.h \
+ 		lib/format_printf.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/output/gzip.cc
+-	mv gzip.o lib/output/gzip.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/output/gzip.cc -o lib/output/gzip.o
+ 
+ lib/output/html_quote.o: lib/output/html_quote.cc \
+ 		lib/output/html_quote.h lib/output.h \
+ 		lib/format_printf.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/output/html_quote.cc
+-	mv html_quote.o lib/output/html_quote.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/output/html_quote.cc -o lib/output/html_quote.o
+ 
+ lib/output/null.o: lib/output/null.cc lib/output/null.h lib/output.h \
+ 		lib/format_printf.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/output/null.cc
+-	mv null.o lib/output/null.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/output/null.cc -o lib/output/null.o
+ 
+ lib/output/stdout.o: lib/output/stdout.cc lib/output/stdout.h \
+ 		lib/output.h lib/format_printf.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/output/stdout.cc
+-	mv stdout.o lib/output/stdout.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/output/stdout.cc -o lib/output/stdout.o
+ 
+ lib/output/string.o: lib/output/string.cc lib/output/string.h \
+ 		lib/output.h lib/format_printf.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h lib/rcstring/accumulator.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/output/string.cc
+-	mv string.o lib/output/string.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/output/string.cc -o lib/output/string.o
+ 
+ lib/path_join.o: lib/path_join.cc lib/path_join.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/path_join.cc
+-	mv path_join.o lib/path_join.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/path_join.cc -o lib/path_join.o
+ 
+ lib/post_install.o: lib/post_install.cc lib/libdir.h lib/path_join.h \
+ 		lib/rcstring.h lib/rcstring/gizzards.h \
+ 		lib/post_install.h lib/quit.h lib/format_printf.h \
+ 		lib/quit/atexit_list.h lib/rcstring/list.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/post_install.cc
+-	mv post_install.o lib/post_install.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/post_install.cc -o lib/post_install.o
+ 
+ lib/progname.o: lib/progname.cc lib/progname.h
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/progname.cc
+-	mv progname.o lib/progname.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/progname.cc -o lib/progname.o
+ 
+ lib/quit.o: lib/quit.cc lib/quit.h lib/format_printf.h \
+ 		lib/quit/atexit_list.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/quit.cc
+-	mv quit.o lib/quit.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/quit.cc -o lib/quit.o
+ 
+ lib/quit/atexit.o: lib/quit/atexit.cc lib/quit/atexit.h
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/quit/atexit.cc
+-	mv atexit.o lib/quit/atexit.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/quit/atexit.cc -o lib/quit/atexit.o
+ 
+ lib/quit/atexit/unlink.o: lib/quit/atexit/unlink.cc \
+ 		lib/quit/atexit/unlink.h lib/quit/atexit.h \
+ 		lib/rcstring.h lib/rcstring/gizzards.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/quit/atexit/unlink.cc
+-	mv unlink.o lib/quit/atexit/unlink.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/quit/atexit/unlink.cc -o lib/quit/atexit/unlink.o
+ 
+ lib/quit/atexit_list.o: lib/quit/atexit_list.cc lib/quit/atexit_list.h \
+ 		lib/quit/atexit.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/quit/atexit_list.cc
+-	mv atexit_list.o lib/quit/atexit_list.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/quit/atexit_list.cc -o lib/quit/atexit_list.o
+ 
+ lib/quit/cgi.o: lib/quit/cgi.cc lib/quit/cgi.h lib/quit.h \
+ 		lib/format_printf.h lib/quit/atexit_list.h lib/cgi.h \
+ 		lib/symtab/template.h lib/rcstring/list.h \
+ 		lib/rcstring.h lib/rcstring/gizzards.h lib/symtab.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/quit/cgi.cc
+-	mv cgi.o lib/quit/cgi.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/quit/cgi.cc -o lib/quit/cgi.o
+ 
+ lib/quit/normal.o: lib/quit/normal.cc lib/progname.h lib/quit/normal.h \
+ 		lib/quit.h lib/format_printf.h lib/quit/atexit_list.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/quit/normal.cc
+-	mv normal.o lib/quit/normal.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/quit/normal.cc -o lib/quit/normal.o
+ 
+ lib/quit/prefix.o: lib/quit/prefix.cc lib/quit/prefix.h lib/quit.h \
+ 		lib/format_printf.h lib/quit/atexit_list.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/quit/prefix.cc
+-	mv prefix.o lib/quit/prefix.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/quit/prefix.cc -o lib/quit/prefix.o
+ 
+ lib/quit/quitter.o: lib/quit/quitter.cc lib/quit/normal.h lib/quit.h \
+ 		lib/format_printf.h lib/quit/atexit_list.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/quit/quitter.cc
+-	mv quitter.o lib/quit/quitter.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/quit/quitter.cc -o lib/quit/quitter.o
+ 
+ lib/r250.o: lib/r250.cc lib/r250.h
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/r250.cc
+-	mv r250.o lib/r250.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/r250.cc -o lib/r250.o
+ 
+ lib/rcstring.o: lib/rcstring.cc lib/rcstring.h lib/rcstring/gizzards.h
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring.cc
+-	mv rcstring.o lib/rcstring.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring.cc -o lib/rcstring.o
+ 
+ lib/rcstring/accumulator.o: lib/rcstring/accumulator.cc \
+ 		lib/rcstring/accumulator.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/accumulator.cc
+-	mv accumulator.o lib/rcstring/accumulator.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/accumulator.cc -o lib/rcstring/accumulator.o
+ 
+ lib/rcstring/basename.o: lib/rcstring/basename.cc lib/rcstring.h \
+ 		lib/rcstring/gizzards.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/basename.cc
+-	mv basename.o lib/rcstring/basename.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/basename.cc -o lib/rcstring/basename.o
+ 
+ lib/rcstring/bool.o: lib/rcstring/bool.cc lib/rcstring.h \
+ 		lib/rcstring/gizzards.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/bool.cc
+-	mv bool.o lib/rcstring/bool.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/bool.cc -o lib/rcstring/bool.o
+ 
+ lib/rcstring/capitalize.o: lib/rcstring/capitalize.cc \
+ 		lib/rcstring/accumulator.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/capitalize.cc
+-	mv capitalize.o lib/rcstring/capitalize.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/capitalize.cc -o lib/rcstring/capitalize.o
+ 
+ lib/rcstring/catenate.o: lib/rcstring/catenate.cc \
+ 		lib/rcstring/accumulator.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/catenate.cc
+-	mv catenate.o lib/rcstring/catenate.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/catenate.cc -o lib/rcstring/catenate.o
+ 
+ lib/rcstring/clear.o: lib/rcstring/clear.cc lib/rcstring.h \
+ 		lib/rcstring/gizzards.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/clear.cc
+-	mv clear.o lib/rcstring/clear.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/clear.cc -o lib/rcstring/clear.o
+ 
+ lib/rcstring/dirname.o: lib/rcstring/dirname.cc lib/rcstring.h \
+ 		lib/rcstring/gizzards.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/dirname.cc
+-	mv dirname.o lib/rcstring/dirname.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/dirname.cc -o lib/rcstring/dirname.o
+ 
+ lib/rcstring/downcase.o: lib/rcstring/downcase.cc \
+ 		lib/rcstring/accumulator.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/downcase.cc
+-	mv downcase.o lib/rcstring/downcase.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/downcase.cc -o lib/rcstring/downcase.o
+ 
+ lib/rcstring/field.o: lib/rcstring/field.cc lib/rcstring.h \
+ 		lib/rcstring/gizzards.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/field.cc
+-	mv field.o lib/rcstring/field.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/field.cc -o lib/rcstring/field.o
+ 
+ lib/rcstring/gizzards.o: lib/rcstring/gizzards.cc \
+ 		lib/rcstring/gizzards.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/gizzards.cc
+-	mv gizzards.o lib/rcstring/gizzards.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/gizzards.cc -o lib/rcstring/gizzards.o
+ 
+ lib/rcstring/html_quote.o: lib/rcstring/html_quote.cc \
+ 		lib/input/string.h lib/input.h lib/format_printf.h \
+ 		lib/rcstring.h lib/rcstring/gizzards.h \
+ 		lib/output/html_quote.h lib/output.h \
+ 		lib/output/string.h lib/rcstring/accumulator.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/html_quote.cc
+-	mv html_quote.o lib/rcstring/html_quote.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/html_quote.cc -o lib/rcstring/html_quote.o
+ 
+ lib/rcstring/html_unquote.o: lib/rcstring/html_unquote.cc \
+ 		lib/rcstring/accumulator.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/html_unquote.cc
+-	mv html_unquote.o lib/rcstring/html_unquote.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/html_unquote.cc -o lib/rcstring/html_unquote.o
+ 
+ lib/rcstring/identifier.o: lib/rcstring/identifier.cc \
+ 		lib/rcstring/accumulator.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/identifier.cc
+-	mv identifier.o lib/rcstring/identifier.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/identifier.cc -o lib/rcstring/identifier.o
+ 
+ lib/rcstring/lead_prefix.o: lib/rcstring/lead_prefix.cc lib/rcstring.h \
+ 		lib/rcstring/gizzards.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/lead_prefix.cc
+-	mv lead_prefix.o lib/rcstring/lead_prefix.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/lead_prefix.cc -o lib/rcstring/lead_prefix.o
+ 
+ lib/rcstring/list/appelistuniq.o: lib/rcstring/list/appelistuniq.cc \
+ 		lib/rcstring/list.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h 
+ 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -Ilib -c \
+-		lib/rcstring/list/appelistuniq.cc 
+-	mv appelistuniq.o lib/rcstring/list/appelistuniq.o
++		lib/rcstring/list/appelistuniq.cc  -o lib/rcstring/list/appelistuniq.o
+ 
+ lib/rcstring/list/append.o: lib/rcstring/list/append.cc \
+ 		lib/rcstring/list.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/list/append.cc
+-	mv append.o lib/rcstring/list/append.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/list/append.cc -o lib/rcstring/list/append.o
+ 
+ lib/rcstring/list/append_list.o: lib/rcstring/list/append_list.cc \
+ 		lib/rcstring/list.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h 
+ 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -Ilib -c \
+-		lib/rcstring/list/append_list.cc 
+-	mv append_list.o lib/rcstring/list/append_list.o
++		lib/rcstring/list/append_list.cc  -o lib/rcstring/list/append_list.o
+ 
+ lib/rcstring/list/append_uniqu.o: lib/rcstring/list/append_uniqu.cc \
+ 		lib/rcstring/list.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h 
+ 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -Ilib -c \
+-		lib/rcstring/list/append_uniqu.cc 
+-	mv append_uniqu.o lib/rcstring/list/append_uniqu.o
++		lib/rcstring/list/append_uniqu.cc  -o lib/rcstring/list/append_uniqu.o
+ 
+ lib/rcstring/list/assign_op.o: lib/rcstring/list/assign_op.cc \
+ 		lib/rcstring/list.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/list/assign_op.cc
+-	mv assign_op.o lib/rcstring/list/assign_op.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/list/assign_op.cc -o lib/rcstring/list/assign_op.o
+ 
+ lib/rcstring/list/clear.o: lib/rcstring/list/clear.cc \
+ 		lib/rcstring/list.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/list/clear.cc
+-	mv clear.o lib/rcstring/list/clear.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/list/clear.cc -o lib/rcstring/list/clear.o
+ 
+ lib/rcstring/list/constructor.o: lib/rcstring/list/constructor.cc \
+ 		lib/rcstring/list.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h 
+ 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -Ilib -c \
+-		lib/rcstring/list/constructor.cc 
+-	mv constructor.o lib/rcstring/list/constructor.o
++		lib/rcstring/list/constructor.cc  -o lib/rcstring/list/constructor.o
+ 
+ lib/rcstring/list/copy.o: lib/rcstring/list/copy.cc lib/rcstring/list.h \
+ 		lib/rcstring.h lib/rcstring/gizzards.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/list/copy.cc
+-	mv copy.o lib/rcstring/list/copy.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/list/copy.cc -o lib/rcstring/list/copy.o
+ 
+ lib/rcstring/list/destructor.o: lib/rcstring/list/destructor.cc \
+ 		lib/rcstring/list.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h 
+ 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -Ilib -c \
+-		lib/rcstring/list/destructor.cc 
+-	mv destructor.o lib/rcstring/list/destructor.o
++		lib/rcstring/list/destructor.cc  -o lib/rcstring/list/destructor.o
+ 
+ lib/rcstring/list/equal.o: lib/rcstring/list/equal.cc \
+ 		lib/rcstring/list.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/list/equal.cc
+-	mv equal.o lib/rcstring/list/equal.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/list/equal.cc -o lib/rcstring/list/equal.o
+ 
+ lib/rcstring/list/intersection.o: lib/rcstring/list/intersection.cc \
+ 		lib/rcstring/list.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h 
+ 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -Ilib -c \
+-		lib/rcstring/list/intersection.cc 
+-	mv intersection.o lib/rcstring/list/intersection.o
++		lib/rcstring/list/intersection.cc  -o lib/rcstring/list/intersection.o
+ 
+ lib/rcstring/list/member.o: lib/rcstring/list/member.cc \
+ 		lib/rcstring/list.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/list/member.cc
+-	mv member.o lib/rcstring/list/member.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/list/member.cc -o lib/rcstring/list/member.o
+ 
+ lib/rcstring/list/member_nocas.o: lib/rcstring/list/member_nocas.cc \
+ 		lib/rcstring/list.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h 
+ 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -Ilib -c \
+-		lib/rcstring/list/member_nocas.cc 
+-	mv member_nocas.o lib/rcstring/list/member_nocas.o
++		lib/rcstring/list/member_nocas.cc  -o lib/rcstring/list/member_nocas.o
+ 
+ lib/rcstring/list/pop_back.o: lib/rcstring/list/pop_back.cc \
+ 		lib/rcstring/list.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/list/pop_back.cc
+-	mv pop_back.o lib/rcstring/list/pop_back.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/list/pop_back.cc -o lib/rcstring/list/pop_back.o
+ 
+ lib/rcstring/list/pop_front.o: lib/rcstring/list/pop_front.cc \
+ 		lib/rcstring/list.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/list/pop_front.cc
+-	mv pop_front.o lib/rcstring/list/pop_front.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/list/pop_front.cc -o lib/rcstring/list/pop_front.o
+ 
+ lib/rcstring/list/prepend.o: lib/rcstring/list/prepend.cc \
+ 		lib/rcstring/list.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/list/prepend.cc
+-	mv prepend.o lib/rcstring/list/prepend.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/list/prepend.cc -o lib/rcstring/list/prepend.o
+ 
+ lib/rcstring/list/prepend_list.o: lib/rcstring/list/prepend_list.cc \
+ 		lib/rcstring/list.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h 
+ 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -Ilib -c \
+-		lib/rcstring/list/prepend_list.cc 
+-	mv prepend_list.o lib/rcstring/list/prepend_list.o
++		lib/rcstring/list/prepend_list.cc  -o lib/rcstring/list/prepend_list.o
+ 
+ lib/rcstring/list/quote.o: lib/rcstring/list/quote.cc \
+ 		lib/rcstring/list.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/list/quote.cc
+-	mv quote.o lib/rcstring/list/quote.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/list/quote.cc -o lib/rcstring/list/quote.o
+ 
+ lib/rcstring/list/read_from.o: lib/rcstring/list/read_from.cc \
+ 		lib/input/file.h lib/input.h lib/format_printf.h \
+ 		lib/rcstring.h lib/rcstring/gizzards.h \
+ 		lib/rcstring/list.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/list/read_from.cc
+-	mv read_from.o lib/rcstring/list/read_from.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/list/read_from.cc -o lib/rcstring/list/read_from.o
+ 
+ lib/rcstring/list/remove.o: lib/rcstring/list/remove.cc \
+ 		lib/rcstring/list.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/list/remove.cc
+-	mv remove.o lib/rcstring/list/remove.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/list/remove.cc -o lib/rcstring/list/remove.o
+ 
+ lib/rcstring/list/remove_list.o: lib/rcstring/list/remove_list.cc \
+ 		lib/rcstring/list.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h 
+ 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -Ilib -c \
+-		lib/rcstring/list/remove_list.cc 
+-	mv remove_list.o lib/rcstring/list/remove_list.o
++		lib/rcstring/list/remove_list.cc  -o lib/rcstring/list/remove_list.o
+ 
+ lib/rcstring/list/sort.o: lib/rcstring/list/sort.cc lib/rcstring/list.h \
+ 		lib/rcstring.h lib/rcstring/gizzards.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/list/sort.cc
+-	mv sort.o lib/rcstring/list/sort.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/list/sort.cc -o lib/rcstring/list/sort.o
+ 
+ lib/rcstring/list/sort_nocase.o: lib/rcstring/list/sort_nocase.cc \
+ 		lib/rcstring/list.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h 
+ 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -Ilib -c \
+-		lib/rcstring/list/sort_nocase.cc 
+-	mv sort_nocase.o lib/rcstring/list/sort_nocase.o
++		lib/rcstring/list/sort_nocase.cc  -o lib/rcstring/list/sort_nocase.o
+ 
+ lib/rcstring/list/sort_vers.o: lib/rcstring/list/sort_vers.cc \
+ 		lib/rcstring/list.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/list/sort_vers.cc
+-	mv sort_vers.o lib/rcstring/list/sort_vers.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/list/sort_vers.cc -o lib/rcstring/list/sort_vers.o
+ 
+ lib/rcstring/list/str2wl.o: lib/rcstring/list/str2wl.cc \
+ 		lib/rcstring/list.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/list/str2wl.cc
+-	mv str2wl.o lib/rcstring/list/str2wl.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/list/str2wl.cc -o lib/rcstring/list/str2wl.o
+ 
+ lib/rcstring/list/subset.o: lib/rcstring/list/subset.cc \
+ 		lib/rcstring/list.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/list/subset.cc
+-	mv subset.o lib/rcstring/list/subset.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/list/subset.cc -o lib/rcstring/list/subset.o
+ 
+ lib/rcstring/list/validate.o: lib/rcstring/list/validate.cc \
+ 		lib/rcstring/list.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/list/validate.cc
+-	mv validate.o lib/rcstring/list/validate.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/list/validate.cc -o lib/rcstring/list/validate.o
+ 
+ lib/rcstring/list/wl2str.o: lib/rcstring/list/wl2str.cc \
+ 		lib/rcstring/accumulator.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h lib/rcstring/list.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/list/wl2str.cc
+-	mv wl2str.o lib/rcstring/list/wl2str.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/list/wl2str.cc -o lib/rcstring/list/wl2str.o
+ 
+ lib/rcstring/list/write_to.o: lib/rcstring/list/write_to.cc \
+ 		lib/careful.h lib/output/file.h lib/output.h \
+ 		lib/format_printf.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h lib/rcstring/list.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/list/write_to.cc
+-	mv write_to.o lib/rcstring/list/write_to.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/list/write_to.cc -o lib/rcstring/list/write_to.o
+ 
+ lib/rcstring/list/xor.o: lib/rcstring/list/xor.cc lib/rcstring/list.h \
+ 		lib/rcstring.h lib/rcstring/gizzards.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/list/xor.cc
+-	mv xor.o lib/rcstring/list/xor.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/list/xor.cc -o lib/rcstring/list/xor.o
+ 
+ lib/rcstring/long.o: lib/rcstring/long.cc lib/rcstring.h \
+ 		lib/rcstring/gizzards.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/long.cc
+-	mv long.o lib/rcstring/long.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/long.cc -o lib/rcstring/long.o
+ 
+ lib/rcstring/quote.o: lib/rcstring/quote.cc lib/rcstring/accumulator.h \
+ 		lib/rcstring.h lib/rcstring/gizzards.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/quote.cc
+-	mv quote.o lib/rcstring/quote.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/quote.cc -o lib/rcstring/quote.o
+ 
+ lib/rcstring/replace.o: lib/rcstring/replace.cc \
+ 		lib/rcstring/accumulator.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/replace.cc
+-	mv replace.o lib/rcstring/replace.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/replace.cc -o lib/rcstring/replace.o
+ 
+ lib/rcstring/substring.o: lib/rcstring/substring.cc lib/rcstring.h \
+ 		lib/rcstring/gizzards.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/substring.cc
+-	mv substring.o lib/rcstring/substring.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/substring.cc -o lib/rcstring/substring.o
+ 
+ lib/rcstring/traili_suffi.o: lib/rcstring/traili_suffi.cc \
+ 		lib/rcstring.h lib/rcstring/gizzards.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/traili_suffi.cc
+-	mv traili_suffi.o lib/rcstring/traili_suffi.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/traili_suffi.cc -o lib/rcstring/traili_suffi.o
+ 
+ lib/rcstring/trim.o: lib/rcstring/trim.cc lib/rcstring/accumulator.h \
+ 		lib/rcstring.h lib/rcstring/gizzards.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/trim.cc
+-	mv trim.o lib/rcstring/trim.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/trim.cc -o lib/rcstring/trim.o
+ 
+ lib/rcstring/upcase.o: lib/rcstring/upcase.cc \
+ 		lib/rcstring/accumulator.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/upcase.cc
+-	mv upcase.o lib/rcstring/upcase.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/upcase.cc -o lib/rcstring/upcase.o
+ 
+ lib/rcstring/url_quote.o: lib/rcstring/url_quote.cc \
+ 		lib/rcstring/accumulator.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/url_quote.cc
+-	mv url_quote.o lib/rcstring/url_quote.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/url_quote.cc -o lib/rcstring/url_quote.o
+ 
+ lib/rcstring/url_unquote.o: lib/rcstring/url_unquote.cc lib/rcstring.h \
+ 		lib/rcstring/gizzards.h lib/rcstring/accumulator.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/url_unquote.cc
+-	mv url_unquote.o lib/rcstring/url_unquote.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rcstring/url_unquote.cc -o lib/rcstring/url_unquote.o
+ 
+ lib/recent.o: lib/recent.cc lib/output.h lib/format_printf.h \
+ 		lib/rcstring.h lib/rcstring/gizzards.h lib/recent.h \
+ 		lib/relative_path.h lib/wiki_word.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/recent.cc
+-	mv recent.o lib/recent.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/recent.cc -o lib/recent.o
+ 
+ lib/recent/list.o: lib/recent/list.cc lib/configuration.h lib/rfc822.h \
+ 		lib/symtab/template.h lib/rcstring/list.h \
+ 		lib/rcstring.h lib/rcstring/gizzards.h lib/symtab.h \
+ 		lib/output.h lib/format_printf.h lib/recent/list.h \
+ 		lib/recent.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/recent/list.cc
+-	mv list.o lib/recent/list.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/recent/list.cc -o lib/recent/list.o
+ 
+ lib/relative_path.o: lib/relative_path.cc lib/relative_path.h \
+ 		lib/rcstring.h lib/rcstring/gizzards.h \
+ 		lib/rcstring/accumulator.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/relative_path.cc
+-	mv relative_path.o lib/relative_path.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/relative_path.cc -o lib/relative_path.o
+ 
+ lib/rfc822.o: lib/rfc822.cc lib/boolean.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h lib/input/file.h lib/input.h \
+@@ -1010,14 +888,12 @@
+ 		lib/quit/atexit_list.h lib/rcstring/accumulator.h \
+ 		lib/rfc822.h lib/symtab/template.h lib/rcstring/list.h \
+ 		lib/symtab.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rfc822.cc
+-	mv rfc822.o lib/rfc822.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rfc822.cc -o lib/rfc822.o
+ 
+ lib/rfc822_functor.o: lib/rfc822_functor.cc lib/rfc822_functor.h \
+ 		lib/rfc822.h lib/symtab/template.h lib/rcstring/list.h \
+ 		lib/rcstring.h lib/rcstring/gizzards.h lib/symtab.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rfc822_functor.cc
+-	mv rfc822_functor.o lib/rfc822_functor.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/rfc822_functor.cc -o lib/rfc822_functor.o
+ 
+ lib/rfc822_functor/html_history.o: lib/rfc822_functor/html_history.cc \
+ 		lib/output.h lib/format_printf.h lib/rcstring.h \
+@@ -1026,24 +902,21 @@
+ 		lib/rfc822.h lib/symtab/template.h lib/rcstring/list.h \
+ 		lib/symtab.h lib/user.h 
+ 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -Ilib -c \
+-		lib/rfc822_functor/html_history.cc 
+-	mv html_history.o lib/rfc822_functor/html_history.o
++		lib/rfc822_functor/html_history.cc  -o lib/rfc822_functor/html_history.o
+ 
+ lib/rfc822_functor/list_meta.o: lib/rfc822_functor/list_meta.cc \
+ 		lib/rfc822_functor/list_meta.h lib/rfc822_functor.h \
+ 		lib/rfc822.h lib/symtab/template.h lib/rcstring/list.h \
+ 		lib/rcstring.h lib/rcstring/gizzards.h lib/symtab.h 
+ 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -Ilib -c \
+-		lib/rfc822_functor/list_meta.cc 
+-	mv list_meta.o lib/rfc822_functor/list_meta.o
++		lib/rfc822_functor/list_meta.cc  -o lib/rfc822_functor/list_meta.o
+ 
+ lib/rfc822_functor/print_version.o: lib/rfc822_functor/print_version.cc \
+ 		lib/rfc822_functor/print_version.h lib/rfc822_functor.h \
+ 		lib/rfc822.h lib/symtab/template.h lib/rcstring/list.h \
+ 		lib/rcstring.h lib/rcstring/gizzards.h lib/symtab.h 
+ 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -Ilib -c \
+-		lib/rfc822_functor/print_version.cc 
+-	mv print_version.o lib/rfc822_functor/print_version.o
++		lib/rfc822_functor/print_version.cc  -o lib/rfc822_functor/print_version.o
+ 
+ lib/rfc822_functor/version_previous.o: \
+ 		lib/rfc822_functor/version_previous.cc \
+@@ -1052,8 +925,7 @@
+ 		lib/rcstring/list.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h lib/symtab.h 
+ 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -Ilib -c \
+-		lib/rfc822_functor/version_previous.cc 
+-	mv version_previous.o lib/rfc822_functor/version_previous.o
++		lib/rfc822_functor/version_previous.cc  -o lib/rfc822_functor/version_previous.o
+ 
+ lib/rfc822_functor/version_search.o: \
+ 		lib/rfc822_functor/version_search.cc \
+@@ -1062,14 +934,12 @@
+ 		lib/rcstring/list.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h lib/symtab.h 
+ 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -Ilib -c \
+-		lib/rfc822_functor/version_search.cc 
+-	mv version_search.o lib/rfc822_functor/version_search.o
++		lib/rfc822_functor/version_search.cc  -o lib/rfc822_functor/version_search.o
+ 
+ lib/simple_version_tool.o: lib/simple_version_tool.cc \
+ 		lib/simple_version_tool.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/simple_version_tool.cc
+-	mv simple_version_tool.o lib/simple_version_tool.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/simple_version_tool.cc -o lib/simple_version_tool.o
+ 
+ lib/simple_version_tool/checkin.o: lib/simple_version_tool/checkin.cc \
+ 		lib/adler32.h lib/careful.h lib/input/file.h \
+@@ -1085,8 +955,7 @@
+ 		lib/rfc822_functor/version_previous.h \
+ 		lib/simple_version_tool.h 
+ 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -Ilib -c \
+-		lib/simple_version_tool/checkin.cc 
+-	mv checkin.o lib/simple_version_tool/checkin.o
++		lib/simple_version_tool/checkin.cc  -o lib/simple_version_tool/checkin.o
+ 
+ lib/simple_version_tool/checkout.o: lib/simple_version_tool/checkout.cc \
+ 		lib/input/crop.h lib/input.h lib/format_printf.h \
+@@ -1098,8 +967,7 @@
+ 		lib/symtab/template.h lib/rcstring/list.h lib/symtab.h \
+ 		lib/simple_version_tool.h 
+ 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -Ilib -c \
+-		lib/simple_version_tool/checkout.cc 
+-	mv checkout.o lib/simple_version_tool/checkout.o
++		lib/simple_version_tool/checkout.cc  -o lib/simple_version_tool/checkout.o
+ 
+ lib/simple_version_tool/list.o: lib/simple_version_tool/list.cc \
+ 		lib/input/file.h lib/input.h lib/format_printf.h \
+@@ -1110,70 +978,57 @@
+ 		lib/symtab/template.h lib/rcstring/list.h lib/symtab.h \
+ 		lib/simple_version_tool.h 
+ 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -Ilib -c \
+-		lib/simple_version_tool/list.cc 
+-	mv list.o lib/simple_version_tool/list.o
++		lib/simple_version_tool/list.cc  -o lib/simple_version_tool/list.o
+ 
+ lib/symtab.o: lib/symtab.cc lib/symtab.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h lib/rcstring/list.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/symtab.cc
+-	mv symtab.o lib/symtab.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/symtab.cc -o lib/symtab.o
+ 
+ lib/symtab/assign.o: lib/symtab/assign.cc lib/symtab.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h lib/rcstring/list.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/symtab/assign.cc
+-	mv assign.o lib/symtab/assign.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/symtab/assign.cc -o lib/symtab/assign.o
+ 
+ lib/symtab/assign_push.o: lib/symtab/assign_push.cc lib/symtab.h \
+ 		lib/rcstring.h lib/rcstring/gizzards.h \
+ 		lib/rcstring/list.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/symtab/assign_push.cc
+-	mv assign_push.o lib/symtab/assign_push.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/symtab/assign_push.cc -o lib/symtab/assign_push.o
+ 
+ lib/symtab/clear.o: lib/symtab/clear.cc lib/symtab.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h lib/rcstring/list.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/symtab/clear.cc
+-	mv clear.o lib/symtab/clear.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/symtab/clear.cc -o lib/symtab/clear.o
+ 
+ lib/symtab/delete.o: lib/symtab/delete.cc lib/symtab.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h lib/rcstring/list.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/symtab/delete.cc
+-	mv delete.o lib/symtab/delete.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/symtab/delete.cc -o lib/symtab/delete.o
+ 
+ lib/symtab/dump.o: lib/symtab/dump.cc lib/symtab.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h lib/rcstring/list.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/symtab/dump.cc
+-	mv dump.o lib/symtab/dump.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/symtab/dump.cc -o lib/symtab/dump.o
+ 
+ lib/symtab/keys.o: lib/symtab/keys.cc lib/symtab.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h lib/rcstring/list.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/symtab/keys.cc
+-	mv keys.o lib/symtab/keys.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/symtab/keys.cc -o lib/symtab/keys.o
+ 
+ lib/symtab/query.o: lib/symtab/query.cc lib/symtab.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h lib/rcstring/list.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/symtab/query.cc
+-	mv query.o lib/symtab/query.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/symtab/query.cc -o lib/symtab/query.o
+ 
+ lib/symtab/query_fuzzy.o: lib/symtab/query_fuzzy.cc lib/fstrcmp.h \
+ 		lib/symtab.h lib/rcstring.h lib/rcstring/gizzards.h \
+ 		lib/rcstring/list.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/symtab/query_fuzzy.cc
+-	mv query_fuzzy.o lib/symtab/query_fuzzy.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/symtab/query_fuzzy.cc -o lib/symtab/query_fuzzy.o
+ 
+ lib/symtab/split.o: lib/symtab/split.cc lib/symtab.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h lib/rcstring/list.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/symtab/split.cc
+-	mv split.o lib/symtab/split.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/symtab/split.cc -o lib/symtab/split.o
+ 
+ lib/symtab/valid.o: lib/symtab/valid.cc lib/symtab.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h lib/rcstring/list.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/symtab/valid.cc
+-	mv valid.o lib/symtab/valid.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/symtab/valid.cc -o lib/symtab/valid.o
+ 
+ lib/symtab/walk.o: lib/symtab/walk.cc lib/symtab.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h lib/rcstring/list.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/symtab/walk.cc
+-	mv walk.o lib/symtab/walk.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/symtab/walk.cc -o lib/symtab/walk.o
+ 
+ lib/tree_walk.o: lib/tree_walk.cc lib/configuration.h lib/rfc822.h \
+ 		lib/symtab/template.h lib/rcstring/list.h \
+@@ -1181,14 +1036,12 @@
+ 		lib/path_join.h lib/quit.h lib/format_printf.h \
+ 		lib/quit/atexit_list.h lib/tree_walk.h \
+ 		lib/tree_walk/functor.h lib/wiki_word.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/tree_walk.cc
+-	mv tree_walk.o lib/tree_walk.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/tree_walk.cc -o lib/tree_walk.o
+ 
+ lib/tree_walk/functor.o: lib/tree_walk/functor.cc \
+ 		lib/tree_walk/functor.h lib/tree_walk.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/tree_walk/functor.cc
+-	mv functor.o lib/tree_walk/functor.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/tree_walk/functor.cc -o lib/tree_walk/functor.o
+ 
+ lib/tree_walk/functor/catalogue.o: lib/tree_walk/functor/catalogue.cc \
+ 		lib/tree_walk/functor/catalogue.h lib/rcstring/list.h \
+@@ -1196,41 +1049,34 @@
+ 		lib/tree_walk/functor.h lib/tree_walk.h lib/output.h \
+ 		lib/format_printf.h lib/relative_path.h lib/wiki_word.h 
+ 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -Ilib -c \
+-		lib/tree_walk/functor/catalogue.cc 
+-	mv catalogue.o lib/tree_walk/functor/catalogue.o
++		lib/tree_walk/functor/catalogue.cc  -o lib/tree_walk/functor/catalogue.o
+ 
+ lib/tree_walk/functor/recent.o: lib/tree_walk/functor/recent.cc \
+ 		lib/tree_walk/functor/recent.h lib/tree_walk/functor.h \
+ 		lib/tree_walk.h lib/rcstring.h lib/rcstring/gizzards.h \
+ 		lib/recent/list.h lib/recent.h 
+ 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -Ilib -c \
+-		lib/tree_walk/functor/recent.cc 
+-	mv recent.o lib/tree_walk/functor/recent.o
++		lib/tree_walk/functor/recent.cc  -o lib/tree_walk/functor/recent.o
+ 
+ lib/unctrl.o: lib/unctrl.cc lib/unctrl.h
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/unctrl.cc
+-	mv unctrl.o lib/unctrl.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/unctrl.cc -o lib/unctrl.o
+ 
+ lib/user.o: lib/user.cc lib/boolean.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h lib/cgi.h lib/format_printf.h \
+ 		lib/symtab/template.h lib/rcstring/list.h lib/symtab.h \
+ 		lib/configuration.h lib/rfc822.h lib/exists_and.h \
+ 		lib/mkdir_p.h lib/output.h lib/user.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/user.cc
+-	mv user.o lib/user.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/user.cc -o lib/user.o
+ 
+ lib/versn_stamp.o: lib/versn_stamp.cc lib/versn_stamp.h lib/patchlevel.h
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/versn_stamp.cc
+-	mv versn_stamp.o lib/versn_stamp.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/versn_stamp.cc -o lib/versn_stamp.o
+ 
+ lib/vsnprintf.o: lib/vsnprintf.cc lib/config.h lib/config.messy.h
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/vsnprintf.cc
+-	mv vsnprintf.o lib/vsnprintf.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/vsnprintf.cc -o lib/vsnprintf.o
+ 
+ lib/wiki_mode.o: lib/wiki_mode.cc lib/wiki_mode.h lib/format_printf.h \
+ 		lib/output.h lib/rcstring.h lib/rcstring/gizzards.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/wiki_mode.cc
+-	mv wiki_mode.o lib/wiki_mode.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/wiki_mode.cc -o lib/wiki_mode.o
+ 
+ lib/wiki_mode/anchor.o: lib/wiki_mode/anchor.cc lib/cgi.h \
+ 		lib/format_printf.h lib/symtab/template.h \
+@@ -1240,42 +1086,36 @@
+ 		lib/wiki_mode/anchor.h lib/wiki_mode.h \
+ 		lib/relative_path.h lib/rcstring/accumulator.h \
+ 		lib/wiki_word.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/wiki_mode/anchor.cc
+-	mv anchor.o lib/wiki_mode/anchor.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/wiki_mode/anchor.cc -o lib/wiki_mode/anchor.o
+ 
+ lib/wiki_mode/groff_anchor.o: lib/wiki_mode/groff_anchor.cc \
+ 		lib/output.h lib/format_printf.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h lib/wiki_mode/groff_anchor.h \
+ 		lib/wiki_mode.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/wiki_mode/groff_anchor.cc
+-	mv groff_anchor.o lib/wiki_mode/groff_anchor.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/wiki_mode/groff_anchor.cc -o lib/wiki_mode/groff_anchor.o
+ 
+ lib/wiki_mode/groff_heading.o: lib/wiki_mode/groff_heading.cc \
+ 		lib/output.h lib/format_printf.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h lib/wiki_mode/groff_heading.h \
+ 		lib/wiki_mode.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/wiki_mode/groff_heading.cc
+-	mv groff_heading.o lib/wiki_mode/groff_heading.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/wiki_mode/groff_heading.cc -o lib/wiki_mode/groff_heading.o
+ 
+ lib/wiki_mode/groff_pre.o: lib/wiki_mode/groff_pre.cc \
+ 		lib/wiki_mode/groff_pre.h lib/wiki_mode.h \
+ 		lib/format_printf.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/wiki_mode/groff_pre.cc
+-	mv groff_pre.o lib/wiki_mode/groff_pre.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/wiki_mode/groff_pre.cc -o lib/wiki_mode/groff_pre.o
+ 
+ lib/wiki_mode/man_font.o: lib/wiki_mode/man_font.cc \
+ 		lib/wiki_mode/man_font.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h lib/wiki_mode.h \
+ 		lib/format_printf.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/wiki_mode/man_font.cc
+-	mv man_font.o lib/wiki_mode/man_font.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/wiki_mode/man_font.cc -o lib/wiki_mode/man_font.o
+ 
+ lib/wiki_mode/man_font/bold.o: lib/wiki_mode/man_font/bold.cc \
+ 		lib/wiki_mode/man_font/bold.h lib/wiki_mode/man_font.h \
+ 		lib/rcstring.h lib/rcstring/gizzards.h lib/wiki_mode.h \
+ 		lib/format_printf.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/wiki_mode/man_font/bold.cc
+-	mv bold.o lib/wiki_mode/man_font/bold.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/wiki_mode/man_font/bold.cc -o lib/wiki_mode/man_font/bold.o
+ 
+ lib/wiki_mode/man_font/italics.o: lib/wiki_mode/man_font/italics.cc \
+ 		lib/wiki_mode/man_font/italics.h \
+@@ -1283,8 +1123,7 @@
+ 		lib/rcstring/gizzards.h lib/wiki_mode.h \
+ 		lib/format_printf.h 
+ 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -Ilib -c \
+-		lib/wiki_mode/man_font/italics.cc 
+-	mv italics.o lib/wiki_mode/man_font/italics.o
++		lib/wiki_mode/man_font/italics.cc  -o lib/wiki_mode/man_font/italics.o
+ 
+ lib/wiki_mode/man_font/typewriter.o: \
+ 		lib/wiki_mode/man_font/typewriter.cc \
+@@ -1293,59 +1132,51 @@
+ 		lib/rcstring/gizzards.h lib/wiki_mode.h \
+ 		lib/format_printf.h 
+ 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -Ilib -c \
+-		lib/wiki_mode/man_font/typewriter.cc 
+-	mv typewriter.o lib/wiki_mode/man_font/typewriter.o
++		lib/wiki_mode/man_font/typewriter.cc  -o lib/wiki_mode/man_font/typewriter.o
+ 
+ lib/wiki_mode/paragraph.o: lib/wiki_mode/paragraph.cc \
+ 		lib/wiki_mode/paragraph.h lib/wiki_mode.h \
+ 		lib/format_printf.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/wiki_mode/paragraph.cc
+-	mv paragraph.o lib/wiki_mode/paragraph.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/wiki_mode/paragraph.cc -o lib/wiki_mode/paragraph.o
+ 
+ lib/wiki_mode/paragraph/groff.o: lib/wiki_mode/paragraph/groff.cc \
+ 		lib/wiki_mode/paragraph/groff.h \
+ 		lib/wiki_mode/paragraph.h lib/wiki_mode.h \
+ 		lib/format_printf.h 
+ 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -Ilib -c \
+-		lib/wiki_mode/paragraph/groff.cc 
+-	mv groff.o lib/wiki_mode/paragraph/groff.o
++		lib/wiki_mode/paragraph/groff.cc  -o lib/wiki_mode/paragraph/groff.o
+ 
+ lib/wiki_mode/paragraph/html.o: lib/wiki_mode/paragraph/html.cc \
+ 		lib/wiki_mode/paragraph/html.h lib/rcstring.h \
+ 		lib/rcstring/gizzards.h lib/wiki_mode/paragraph.h \
+ 		lib/wiki_mode.h lib/format_printf.h 
+ 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -Ilib -c \
+-		lib/wiki_mode/paragraph/html.cc 
+-	mv html.o lib/wiki_mode/paragraph/html.o
++		lib/wiki_mode/paragraph/html.cc  -o lib/wiki_mode/paragraph/html.o
+ 
+ lib/wiki_mode/simple.o: lib/wiki_mode/simple.cc lib/wiki_mode/simple.h \
+ 		lib/rcstring.h lib/rcstring/gizzards.h lib/wiki_mode.h \
+ 		lib/format_printf.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/wiki_mode/simple.cc
+-	mv simple.o lib/wiki_mode/simple.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/wiki_mode/simple.cc -o lib/wiki_mode/simple.o
+ 
+ lib/wiki_mode/simple/bold.o: lib/wiki_mode/simple/bold.cc \
+ 		lib/wiki_mode/simple/bold.h lib/wiki_mode/simple.h \
+ 		lib/rcstring.h lib/rcstring/gizzards.h lib/wiki_mode.h \
+ 		lib/format_printf.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/wiki_mode/simple/bold.cc
+-	mv bold.o lib/wiki_mode/simple/bold.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/wiki_mode/simple/bold.cc -o lib/wiki_mode/simple/bold.o
+ 
+ lib/wiki_mode/simple/heading.o: lib/wiki_mode/simple/heading.cc \
+ 		lib/wiki_mode/simple/heading.h lib/wiki_mode/simple.h \
+ 		lib/rcstring.h lib/rcstring/gizzards.h lib/wiki_mode.h \
+ 		lib/format_printf.h 
+ 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -Ilib -c \
+-		lib/wiki_mode/simple/heading.cc 
+-	mv heading.o lib/wiki_mode/simple/heading.o
++		lib/wiki_mode/simple/heading.cc  -o lib/wiki_mode/simple/heading.o
+ 
+ lib/wiki_mode/simple/italics.o: lib/wiki_mode/simple/italics.cc \
+ 		lib/wiki_mode/simple/italics.h lib/wiki_mode/simple.h \
+ 		lib/rcstring.h lib/rcstring/gizzards.h lib/wiki_mode.h \
+ 		lib/format_printf.h 
+ 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -Ilib -c \
+-		lib/wiki_mode/simple/italics.cc 
+-	mv italics.o lib/wiki_mode/simple/italics.o
++		lib/wiki_mode/simple/italics.cc  -o lib/wiki_mode/simple/italics.o
+ 
+ lib/wiki_mode/simple/preformatted.o: \
+ 		lib/wiki_mode/simple/preformatted.cc \
+@@ -1354,8 +1185,7 @@
+ 		lib/rcstring/gizzards.h lib/wiki_mode.h \
+ 		lib/format_printf.h 
+ 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -Ilib -c \
+-		lib/wiki_mode/simple/preformatted.cc 
+-	mv preformatted.o lib/wiki_mode/simple/preformatted.o
++		lib/wiki_mode/simple/preformatted.cc  -o lib/wiki_mode/simple/preformatted.o
+ 
+ lib/wiki_mode/simple/typewriter.o: lib/wiki_mode/simple/typewriter.cc \
+ 		lib/wiki_mode/simple/typewriter.h \
+@@ -1363,20 +1193,17 @@
+ 		lib/rcstring/gizzards.h lib/wiki_mode.h \
+ 		lib/format_printf.h 
+ 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -Ilib -c \
+-		lib/wiki_mode/simple/typewriter.cc 
+-	mv typewriter.o lib/wiki_mode/simple/typewriter.o
++		lib/wiki_mode/simple/typewriter.cc  -o lib/wiki_mode/simple/typewriter.o
+ 
+ lib/wiki_mode/stack.o: lib/wiki_mode/stack.cc lib/wiki_mode/stack.h \
+ 		lib/wiki_mode.h lib/format_printf.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/wiki_mode/stack.cc
+-	mv stack.o lib/wiki_mode/stack.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/wiki_mode/stack.cc -o lib/wiki_mode/stack.o
+ 
+ lib/wiki_to.o: lib/wiki_to.cc lib/input.h lib/format_printf.h \
+ 		lib/rcstring.h lib/rcstring/gizzards.h lib/output.h \
+ 		lib/rcstring/accumulator.h lib/wiki_to.h \
+ 		lib/wiki_mode/stack.h lib/wiki_mode.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/wiki_to.cc
+-	mv wiki_to.o lib/wiki_to.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/wiki_to.cc -o lib/wiki_to.o
+ 
+ lib/wiki_to/html.o: lib/wiki_to/html.cc lib/output.h \
+ 		lib/format_printf.h lib/rcstring.h \
+@@ -1388,8 +1215,7 @@
+ 		lib/wiki_mode/simple/preformatted.h \
+ 		lib/wiki_mode/simple/typewriter.h lib/wiki_to/html.h \
+ 		lib/wiki_to.h lib/wiki_mode/stack.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/wiki_to/html.cc
+-	mv html.o lib/wiki_to/html.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/wiki_to/html.cc -o lib/wiki_to/html.o
+ 
+ lib/wiki_to/look_for_h1.o: lib/wiki_to/look_for_h1.cc \
+ 		lib/input/one_line.h lib/input.h lib/format_printf.h \
+@@ -1397,8 +1223,7 @@
+ 		lib/output/string.h lib/output.h \
+ 		lib/rcstring/accumulator.h lib/wiki_to/html.h \
+ 		lib/wiki_to.h lib/wiki_mode/stack.h lib/wiki_mode.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/wiki_to/look_for_h1.cc
+-	mv look_for_h1.o lib/wiki_to/look_for_h1.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/wiki_to/look_for_h1.cc -o lib/wiki_to/look_for_h1.o
+ 
+ lib/wiki_to/man.o: lib/wiki_to/man.cc lib/output.h lib/format_printf.h \
+ 		lib/rcstring.h lib/rcstring/gizzards.h \
+@@ -1410,13 +1235,11 @@
+ 		lib/wiki_mode/man_font/typewriter.h \
+ 		lib/wiki_mode/paragraph/groff.h \
+ 		lib/wiki_mode/paragraph.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/wiki_to/man.cc
+-	mv man.o lib/wiki_to/man.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/wiki_to/man.cc -o lib/wiki_to/man.o
+ 
+ lib/wiki_word.o: lib/wiki_word.cc lib/rcstring/accumulator.h \
+ 		lib/rcstring.h lib/rcstring/gizzards.h lib/wiki_word.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/wiki_word.cc
+-	mv wiki_word.o lib/wiki_word.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS)  -Ilib -c lib/wiki_word.cc -o lib/wiki_word.o
+ 
+ $(mandir)/man1/quickie-config.1: man/man1/quickie-config.1 \
+ 		man/man1/z_exit.so man/man1/z_copyright.so \
+@@ -1465,8 +1288,7 @@
+ 		lib/rcstring.h lib/rcstring/gizzards.h lib/symtab.h \
+ 		lib/progname.h lib/versn_stamp.h 
+ 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -Iquickie-config -Ilib -c \
+-		quickie-config/main.cc 
+-	mv main.o quickie-config/main.o
++		quickie-config/main.cc  -o quickie-config/main.o
+ 
+ quickie/main.o: quickie/main.cc lib/cgi.h lib/format_printf.h \
+ 		lib/symtab/template.h lib/rcstring/list.h \
+@@ -1474,23 +1296,20 @@
+ 		lib/configuration.h lib/rfc822.h lib/file.h \
+ 		lib/post_install.h lib/progname.h lib/quit/cgi.h \
+ 		lib/quit.h lib/quit/atexit_list.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -Iquickie -Ilib -c quickie/main.cc
+-	mv main.o quickie/main.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -Iquickie -Ilib -c quickie/main.cc -o quickie/main.o
+ 
+ quickie_post_install/arglex/po.o: quickie_post_install/arglex/po.cc \
+ 		quickie_post_install/arglex/po.h lib/arglex.h \
+ 		lib/format_printf.h 
+ 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -Iquickie_post_install -Ilib -c \
+-		quickie_post_install/arglex/po.cc 
+-	mv po.o quickie_post_install/arglex/po.o
++		quickie_post_install/arglex/po.cc  -o quickie_post_install/arglex/po.o
+ 
+ quickie_post_install/main.o: quickie_post_install/main.cc \
+ 		quickie_post_install/arglex/po.h lib/arglex.h \
+ 		lib/format_printf.h lib/post_install.h lib/quit.h \
+ 		lib/quit/atexit_list.h 
+ 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -Iquickie_post_install -Ilib -c \
+-		quickie_post_install/main.cc 
+-	mv main.o quickie_post_install/main.o
++		quickie_post_install/main.cc  -o quickie_post_install/main.o
+ 
+ quickie_prime/main.o: quickie_prime/main.cc lib/configuration.h \
+ 		lib/rfc822.h lib/symtab/template.h lib/rcstring/list.h \
+@@ -1499,15 +1318,13 @@
+ 		lib/progname.h lib/quit.h lib/format_printf.h \
+ 		lib/quit/atexit_list.h lib/simple_version_tool.h 
+ 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -Iquickie_prime -Ilib -c \
+-		quickie_prime/main.cc 
+-	mv main.o quickie_prime/main.o
++		quickie_prime/main.cc  -o quickie_prime/main.o
+ 
+ quickie_svt/arglex/svt.o: quickie_svt/arglex/svt.cc \
+ 		quickie_svt/arglex/svt.h lib/arglex.h \
+ 		lib/format_printf.h 
+ 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -Iquickie_svt -Ilib -c \
+-		quickie_svt/arglex/svt.cc 
+-	mv svt.o quickie_svt/arglex/svt.o
++		quickie_svt/arglex/svt.cc  -o quickie_svt/arglex/svt.o
+ 
+ quickie_svt/main.o: quickie_svt/main.cc quickie_svt/arglex/svt.h \
+ 		lib/arglex.h lib/format_printf.h lib/quit.h \
+@@ -1518,8 +1335,7 @@
+ 		lib/rfc822_functor/print_version.h \
+ 		lib/simple_version_tool.h 
+ 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -Iquickie_svt -Ilib -c \
+-		quickie_svt/main.cc 
+-	mv main.o quickie_svt/main.o
++		quickie_svt/main.cc  -o quickie_svt/main.o
+ 
+ quickie_uudecode/main.o: quickie_uudecode/main.cc lib/arglex.h \
+ 		lib/format_printf.h lib/input/file.h lib/input.h \
+@@ -1527,8 +1343,7 @@
+ 		lib/input/stdin.h lib/input/uudecode.h \
+ 		lib/output/file.h lib/output.h lib/output/stdout.h 
+ 	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -Iquickie_uudecode -Ilib -c \
+-		quickie_uudecode/main.cc 
+-	mv main.o quickie_uudecode/main.o
++		quickie_uudecode/main.cc  -o quickie_uudecode/main.o
+ 
+ t0001a: test/00/t0001a.sh all
+ 	$(SH) test/00/t0001a.sh
+@@ -1686,8 +1501,7 @@
+ 		lib/output/file.h lib/output.h lib/output/stdout.h \
+ 		lib/progname.h lib/wiki_to/man.h lib/wiki_to.h \
+ 		lib/wiki_mode/stack.h lib/wiki_mode.h 
+-	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -Iwiki2man -Ilib -c wiki2man/main.cc
+-	mv main.o wiki2man/main.o
++	$(CXX) $(CPPFLAGS) $(CXXFLAGS) -Iwiki2man -Ilib -c wiki2man/main.cc -o wiki2man/main.o
+ 
+ man/man1/.mandir: man/.mandir
+ 	-$(INSTALL) -m 0755 -d $(mandir)/man1
