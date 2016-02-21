@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 START-STOP-DAEMON_SITE=http://ftp.debian.org/debian/pool/main/d/dpkg
-START-STOP-DAEMON_VERSION=1.18.3
+START-STOP-DAEMON_VERSION=1.18.4
 START-STOP-DAEMON_SOURCE=dpkg_$(START-STOP-DAEMON_VERSION).tar.xz
 START-STOP-DAEMON_DIR=dpkg-$(START-STOP-DAEMON_VERSION)
 START-STOP-DAEMON_UNZIP=xzcat
