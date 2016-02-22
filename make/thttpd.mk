@@ -146,7 +146,7 @@ thttpd: $(THTTPD_BUILD_DIR)/.built
 #
 $(THTTPD_BUILD_DIR)/.staged: $(THTTPD_BUILD_DIR)/.built
 	rm -f $(THTTPD_BUILD_DIR)/.staged
-	$(MAKE) -C $(THTTPD_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(THTTPD_BUILD_DIR) DESTDIR=$(STAGING_DIR) install -j1
 	touch $(THTTPD_BUILD_DIR)/.staged
 
 thttpd-stage: $(THTTPD_BUILD_DIR)/.staged
@@ -183,7 +183,7 @@ $(THTTPD_IPK_DIR)/CONTROL/control:
 #
 $(THTTPD_IPK): $(THTTPD_BUILD_DIR)/.built
 	rm -rf $(THTTPD_IPK_DIR) $(BUILD_DIR)/thttpd_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(THTTPD_BUILD_DIR) DESTDIR=$(THTTPD_IPK_DIR) install
+	$(MAKE) -C $(THTTPD_BUILD_DIR) DESTDIR=$(THTTPD_IPK_DIR) install -j1
 	chmod +w $(THTTPD_IPK_DIR)$(TARGET_PREFIX)/sbin/thttpd && \
 	$(STRIP_COMMAND) $(THTTPD_IPK_DIR)$(TARGET_PREFIX)/sbin/thttpd && \
 	chmod -w $(THTTPD_IPK_DIR)$(TARGET_PREFIX)/sbin/thttpd && \
