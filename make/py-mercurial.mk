@@ -21,10 +21,13 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-MERCURIAL_VERSION=1.9
+PY-MERCURIAL_VERSION=3.7.1
+PY-MERCURIAL_VERSION_OLD=1.9
 PY-MERCURIAL_SITE=http://mercurial.selenic.com/release
 PY-MERCURIAL_SOURCE=mercurial-$(PY-MERCURIAL_VERSION).tar.gz
+PY-MERCURIAL_SOURCE_OLD=mercurial-$(PY-MERCURIAL_VERSION_OLD).tar.gz
 PY-MERCURIAL_DIR=mercurial-$(PY-MERCURIAL_VERSION)
+PY-MERCURIAL_DIR_OLD=mercurial-$(PY-MERCURIAL_VERSION_OLD)
 PY-MERCURIAL_UNZIP=zcat
 PY-MERCURIAL_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-MERCURIAL_DESCRIPTION=A fast, lightweight Source Control Management system designed for efficient handling of very large distributed projects.
@@ -48,7 +51,8 @@ PY-MERCURIAL_IPK_VERSION=1
 # PY-MERCURIAL_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-PY-MERCURIAL_PATCHES=$(PY-MERCURIAL_SOURCE_DIR)/setup.py.patch
+PY-MERCURIAL_PATCHES=$(PY-MERCURIAL_SOURCE_DIR)/setup.py.new.patch
+PY-MERCURIAL_PATCHES_OLD=$(PY-MERCURIAL_SOURCE_DIR)/setup.py.patch
 
 #
 # If the compilation of the package requires additional
@@ -70,6 +74,7 @@ $(filter cs08q1armel slugosbe slugosle slugos7be slugos7le, $(OPTWARE_TARGET)), 
 # You should not change any of these variables.
 #
 PY-MERCURIAL_BUILD_DIR=$(BUILD_DIR)/py-mercurial
+PY-MERCURIAL_HOST_BUILD_DIR=$(HOST_BUILD_DIR)/py-mercurial
 PY-MERCURIAL_SOURCE_DIR=$(SOURCE_DIR)/py-mercurial
 
 PY25-MERCURIAL_IPK_DIR=$(BUILD_DIR)/py25-mercurial-$(PY-MERCURIAL_VERSION)-ipk
@@ -88,6 +93,10 @@ PY27-MERCURIAL_IPK=$(BUILD_DIR)/py27-mercurial_$(PY-MERCURIAL_VERSION)-$(PY-MERC
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-MERCURIAL_SOURCE):
+	$(WGET) -P $(@D) $(PY-MERCURIAL_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
+
+$(DL_DIR)/$(PY-MERCURIAL_SOURCE_OLD):
 	$(WGET) -P $(@D) $(PY-MERCURIAL_SITE)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
@@ -113,16 +122,16 @@ py-mercurial-source: $(DL_DIR)/$(PY-MERCURIAL_SOURCE) $(PY-MERCURIAL_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(PY-MERCURIAL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MERCURIAL_SOURCE) $(PY-MERCURIAL_PATCHES) make/py-mercurial.mk
-	$(MAKE) py-setuptools-stage
+$(PY-MERCURIAL_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MERCURIAL_SOURCE) $(DL_DIR)/$(PY-MERCURIAL_SOURCE_OLD) $(PY-MERCURIAL_PATCHES) make/py-mercurial.mk
+	$(MAKE) py-setuptools-host-stage
 	rm -rf $(BUILD_DIR)/$(PY-MERCURIAL_DIR) $(@D)
 	mkdir -p $(@D)
 	# 2.5
-	$(PY-MERCURIAL_UNZIP) $(DL_DIR)/$(PY-MERCURIAL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	if test -n "$(PY-MERCURIAL_PATCHES)"; then \
-		cat $(PY-MERCURIAL_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-MERCURIAL_DIR) -p0; \
+	$(PY-MERCURIAL_UNZIP) $(DL_DIR)/$(PY-MERCURIAL_SOURCE_OLD) | tar -C $(BUILD_DIR) -xvf -
+	if test -n "$(PY-MERCURIAL_PATCHES_OLD)"; then \
+		cat $(PY-MERCURIAL_PATCHES_OLD) | $(PATCH) -d $(BUILD_DIR)/$(PY-MERCURIAL_DIR_OLD) -p0; \
 	fi
-	mv $(BUILD_DIR)/$(PY-MERCURIAL_DIR) $(@D)/2.5
+	mv $(BUILD_DIR)/$(PY-MERCURIAL_DIR_OLD) $(@D)/2.5
 	(cd $(@D)/2.5; \
 	    ( \
 		echo "[build_ext]"; \
@@ -205,6 +214,51 @@ $(PY-MERCURIAL_BUILD_DIR)/.built: $(PY-MERCURIAL_BUILD_DIR)/.configured
 #
 py-mercurial: $(PY-MERCURIAL_BUILD_DIR)/.built
 
+$(PY-MERCURIAL_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(PY-MERCURIAL_SOURCE) $(DL_DIR)/$(PY-MERCURIAL_SOURCE_OLD) make/py-mercurial.mk
+	rm -rf $(HOST_BUILD_DIR)/$(PY-MERCURIAL_DIR) $(HOST_BUILD_DIR)/$(PY-MERCURIAL_DIR_OLD) $(@D)
+	$(MAKE) python25-host-stage python26-host-stage python27-host-stage py-setuptools-host-stage
+	mkdir -p $(@D)/
+	$(PY-MERCURIAL_UNZIP) $(DL_DIR)/$(PY-MERCURIAL_SOURCE_OLD) | tar -C $(HOST_BUILD_DIR) -xvf -
+	cat $(PY-MERCURIAL_SOURCE_DIR)/setup.py.patch | $(PATCH) -d $(HOST_BUILD_DIR)/$(PY-MERCURIAL_DIR_OLD) -p0
+	mv $(HOST_BUILD_DIR)/$(PY-MERCURIAL_DIR_OLD) $(@D)/2.5
+	$(PY-MERCURIAL_UNZIP) $(DL_DIR)/$(PY-MERCURIAL_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
+	cat $(PY-MERCURIAL_SOURCE_DIR)/setup.py.new.patch | $(PATCH) -d $(HOST_BUILD_DIR)/$(PY-MERCURIAL_DIR) -p0
+	mv $(HOST_BUILD_DIR)/$(PY-MERCURIAL_DIR) $(@D)/2.6
+	(cd $(@D)/2.6; \
+	    ( \
+		echo "[build_ext]"; \
+	        echo "include-dirs=$(HOST_STAGING_INCLUDE_DIR):$(HOST_STAGING_INCLUDE_DIR)/python2.6"; \
+	        echo "library-dirs=$(HOST_STAGING_LIB_DIR)"; \
+	        echo "rpath=$(HOST_STAGING_LIB_DIR)"; \
+	    ) >> setup.cfg; \
+	)
+	$(PY-MERCURIAL_UNZIP) $(DL_DIR)/$(PY-MERCURIAL_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
+	cat $(PY-MERCURIAL_SOURCE_DIR)/setup.py.new.patch | $(PATCH) -d $(HOST_BUILD_DIR)/$(PY-MERCURIAL_DIR) -p0
+	mv $(HOST_BUILD_DIR)/$(PY-MERCURIAL_DIR) $(@D)/2.7
+	(cd $(@D)/2.7; \
+	    ( \
+		echo "[build_ext]"; \
+	        echo "include-dirs=$(HOST_STAGING_INCLUDE_DIR):$(HOST_STAGING_INCLUDE_DIR)/python2.7"; \
+	        echo "library-dirs=$(HOST_STAGING_LIB_DIR)"; \
+	        echo "rpath=$(HOST_STAGING_LIB_DIR)"; \
+	    ) >> setup.cfg; \
+	)
+	(cd $(@D)/2.5; $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build)
+	(cd $(@D)/2.5; \
+	$(HOST_STAGING_PREFIX)/bin/python2.5 setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+	mv -f $(HOST_STAGING_PREFIX)/bin/hg{,-py2.5}
+	(cd $(@D)/2.6; $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py build)
+	(cd $(@D)/2.6; \
+	$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+	mv -f $(HOST_STAGING_PREFIX)/bin/hg{,-py2.6}
+	(cd $(@D)/2.7; $(HOST_STAGING_PREFIX)/bin/python2.7 setup.py build)
+	(cd $(@D)/2.7; \
+	$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+	mv -f $(HOST_STAGING_PREFIX)/bin/hg{,-py2.7}
+	touch $@
+
+py-mercurial-host-stage: $(PY-MERCURIAL_HOST_BUILD_DIR)/.staged
+
 #
 # If you are building a library, then you need to stage it too.
 #
@@ -226,9 +280,9 @@ $(PY25-MERCURIAL_IPK_DIR)/CONTROL/control:
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-MERCURIAL_PRIORITY)" >>$@
 	@echo "Section: $(PY-MERCURIAL_SECTION)" >>$@
-	@echo "Version: $(PY-MERCURIAL_VERSION)-$(PY-MERCURIAL_IPK_VERSION)" >>$@
+	@echo "Version: $(PY-MERCURIAL_VERSION_OLD)-$(PY-MERCURIAL_IPK_VERSION)" >>$@
 	@echo "Maintainer: $(PY-MERCURIAL_MAINTAINER)" >>$@
-	@echo "Source: $(PY-MERCURIAL_SITE)/$(PY-MERCURIAL_SOURCE)" >>$@
+	@echo "Source: $(PY-MERCURIAL_SITE)/$(PY-MERCURIAL_SOURCE_OLD)" >>$@
 	@echo "Description: $(PY-MERCURIAL_DESCRIPTION)" >>$@
 	@echo "Depends: $(PY25-MERCURIAL_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-MERCURIAL_CONFLICTS)" >>$@
