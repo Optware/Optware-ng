@@ -106,7 +106,7 @@ ser-source: $(DL_DIR)/$(SER_SOURCE) $(SER_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(SER_BUILD_DIR)/.configured: $(DL_DIR)/$(SER_SOURCE) $(SER_PATCHES)
+$(SER_BUILD_DIR)/.configured: $(DL_DIR)/$(SER_SOURCE) $(SER_PATCHES) make/ser.mk
 	$(MAKE) flex-stage
 	rm -rf $(BUILD_DIR)/$(SER_DIR) $(SER_BUILD_DIR)
 	$(SER_UNZIP) $(DL_DIR)/$(SER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -154,7 +154,7 @@ $(SER_BUILD_DIR)/.staged: $(SER_BUILD_DIR)/.built
 	$(MAKE) -C $(SER_BUILD_DIR) DESTDIR=$(TARGET_PREFIX) \
 	BASEDIR=$(STAGING_DIR) \
 	LOCALBASE=$(STAGING_DIR) \
-		$(SER_MAKEFLAGS) install
+		$(SER_MAKEFLAGS) install -j1
 	touch $(SER_BUILD_DIR)/.staged
 
 ser-stage: $(SER_BUILD_DIR)/.staged
@@ -196,7 +196,7 @@ $(SER_IPK): $(SER_BUILD_DIR)/.built
 	CC="$(TARGET_CC)" \
 	$(MAKE) -C $(SER_BUILD_DIR) DESTDIR=$(TARGET_PREFIX) \
 		BASEDIR=$(SER_IPK_DIR) LOCALBASE=$(SER_IPK_DIR) \
-		$(SER_MAKEFLAGS) install
+		$(SER_MAKEFLAGS) install -j1
 	$(STRIP_COMMAND) $(SER_IPK_DIR)$(TARGET_PREFIX)/sbin/ser $(SER_IPK_DIR)$(TARGET_PREFIX)/sbin/gen_ha1
 	$(STRIP_COMMAND) $(SER_IPK_DIR)$(TARGET_PREFIX)/lib/ser/modules/*.so
 #	$(INSTALL) -d $(SER_IPK_DIR)$(TARGET_PREFIX)/etc/
