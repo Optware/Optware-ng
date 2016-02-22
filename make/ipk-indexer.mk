@@ -41,9 +41,10 @@ ipk-indexer-source: $(DL_DIR)/$(IPK_INDEXER_SOURCE_FILE)
 #
 # This builds the actual binary.
 #
-$(HOST_STAGING_DIR)/bin/ipk_indexer_html_sorted.sh: $(DL_DIR)/$(IPK_INDEXER_SOURCE_FILE)
+$(HOST_STAGING_DIR)/bin/ipk_indexer_html_sorted.sh: $(DL_DIR)/$(IPK_INDEXER_SOURCE_FILE) make/ipk-indexer.mk
 	mkdir -p $(HOST_STAGING_DIR)/bin
 	tar -C $(HOST_STAGING_DIR)/bin -xzvf $(DL_DIR)/$(IPK_INDEXER_SOURCE_FILE) --wildcards --touch --strip-components=3 usr/local/bin/*
+	sed -i -e 's;"\(/css/\|/js/\);"/optware-ng\1;' $@
 
 #
 # This is the build convenience target.
