@@ -133,6 +133,8 @@ net-tools-unpack: $(NET-TOOLS_BUILD_DIR)/.configured
 #
 $(NET-TOOLS_BUILD_DIR)/.built: $(NET-TOOLS_BUILD_DIR)/.configured
 	rm -f $@
+	$(MAKE) $(NET-TOOLS_MAKEOPTS) -C $(@D) version.h
+	$(MAKE) $(NET-TOOLS_MAKEOPTS) -C $(@D)/lib
 	$(MAKE) $(NET-TOOLS_MAKEOPTS) -C $(@D)
 	touch $@
 
