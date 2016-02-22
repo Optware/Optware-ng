@@ -4,8 +4,8 @@
 #
 ###########################################################
 
-TRICKLE_SITE=http://monkey.org/~marius/trickle
-TRICKLE_VERSION=1.06
+TRICKLE_SITE=http://pkgs.fedoraproject.org/repo/pkgs/trickle/$(TRICKLE_SOURCE)/860ebc4abbbd82957c20a28bd9390d7d
+TRICKLE_VERSION=1.07
 TRICKLE_SOURCE=trickle-$(TRICKLE_VERSION).tar.gz
 TRICKLE_DIR=trickle-$(TRICKLE_VERSION)
 TRICKLE_UNZIP=zcat
@@ -21,13 +21,15 @@ TRICKLE_CONFLICTS=
 #
 # TRICKLE_IPK_VERSION should be incremented when the ipk changes.
 #
-TRICKLE_IPK_VERSION=3
+TRICKLE_IPK_VERSION=1
 
 #
 # TRICKLE_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-TRICKLE_PATCHES=$(TRICKLE_SOURCE_DIR)/configure.in.patch
+TRICKLE_PATCHES=\
+$(TRICKLE_SOURCE_DIR)/configure.in.patch \
+$(TRICKLE_SOURCE_DIR)/Makefile.am.patch \
 
 #
 # If the compilation of the package requires additional
@@ -80,13 +82,13 @@ trickle-source: $(DL_DIR)/$(TRICKLE_SOURCE) $(TRICKLE_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(TRICKLE_BUILD_DIR)/.configured: $(DL_DIR)/$(TRICKLE_SOURCE) $(TRICKLE_PATCHES)
+$(TRICKLE_BUILD_DIR)/.configured: $(DL_DIR)/$(TRICKLE_SOURCE) $(TRICKLE_PATCHES) make/trickle.mk
 	$(MAKE) libevent-stage
 	rm -rf $(BUILD_DIR)/$(TRICKLE_DIR) $(TRICKLE_BUILD_DIR)
 	$(TRICKLE_UNZIP) $(DL_DIR)/$(TRICKLE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(TRICKLE_PATCHES) | $(PATCH) -bd $(BUILD_DIR)/$(TRICKLE_DIR) -p0
 	mv $(BUILD_DIR)/$(TRICKLE_DIR) $(@D)
-	sed -i -e '/^AM_CFLAGS/s/+=/=/' $(@D)/Makefile.am
+	touch $(@D)/'.c'
 	$(AUTORECONF1.10) -vif $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \

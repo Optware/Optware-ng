@@ -1,0 +1,17 @@
+--- a/Makefile.am
++++ Makefile.am
+@@ -28,12 +28,13 @@
+ tricklectl_SOURCES = tricklectl.c trickledu.c atomicio.c xdr.c
+ tricklectl_LDADD = @ERRO@ @LIBOBJS@
+ 
+-AM_CFLAGS += -Wall -Icompat @EVENTINC@
++AM_CFLAGS = -Wall -Icompat @EVENTINC@
+ 
+ overloaddir = $(libdir)
+ overload_DATA = libtrickle.so
+ 
+ libtrickle.so: trickle-overload.c atomicio.c
++.NOTPARALLEL: tricklectl$(EXEEXT) $(tricklectl_OBJECTS)
+ $(overload_DATA):
+ 
+ CLEANFILES = *.so
