@@ -139,6 +139,7 @@ uncia-unpack: $(UNCIA_BUILD_DIR)/.configured
 #
 $(UNCIA_BUILD_DIR)/.built: $(UNCIA_BUILD_DIR)/.configured
 	rm -f $@
+	$(MAKE) -C $(@D) uncia/gram.yacc.cc
 	$(MAKE) -C $(@D)
 	touch $@
 
