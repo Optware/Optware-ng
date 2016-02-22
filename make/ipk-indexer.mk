@@ -21,7 +21,7 @@ IPK_INDEXER_SOURCE_FILE=ipk-indexer.tgz
 #
 #IPK_INDEXER_PATCHES=
 
-.PHONY: ipk-indexer-source ipk-indexer ipk-indexer-dirclean
+.PHONY: ipk-indexer-source ipk-indexer ipk-indexer-htdocs ipk-indexer-dirclean
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -43,16 +43,22 @@ ipk-indexer-source: $(DL_DIR)/$(IPK_INDEXER_SOURCE_FILE)
 #
 $(HOST_STAGING_DIR)/bin/ipk_indexer_html_sorted.sh: $(DL_DIR)/$(IPK_INDEXER_SOURCE_FILE) make/ipk-indexer.mk
 	mkdir -p $(HOST_STAGING_DIR)/bin
-	tar -C $(HOST_STAGING_DIR)/bin -xzvf $(DL_DIR)/$(IPK_INDEXER_SOURCE_FILE) --wildcards --touch --strip-components=3 usr/local/bin/*
+	tar -C $(HOST_STAGING_DIR)/bin -xzvf $(DL_DIR)/$(IPK_INDEXER_SOURCE_FILE) --touch --strip-components=3 usr/local/bin
 	sed -i -e 's;"\(/css/\|/js/\);"/optware-ng\1;' $@
+
+$(HOST_STAGING_DIR)/htdocs/css/packages.css $(HOST_STAGING_DIR)/htdocs/js/list.js: $(DL_DIR)/$(IPK_INDEXER_SOURCE_FILE) make/ipk-indexer.mk
+	mkdir -p $(HOST_STAGING_DIR)/htdocs
+	tar -C $(HOST_STAGING_DIR)/htdocs -xzvf $(DL_DIR)/$(IPK_INDEXER_SOURCE_FILE) --touch --strip-components=4 usr/share/nginx/entware
 
 #
 # This is the build convenience target.
 #
 ipk-indexer: $(HOST_STAGING_DIR)/bin/ipk_indexer_html_sorted.sh
 
+ipk-indexer-htdocs: $(HOST_STAGING_DIR)/htdocs/css/packages.css $(HOST_STAGING_DIR)/htdocs/js/list.js
+
 ipk-indexer-dirclean:
-	rm -rf $(HOST_STAGING_DIR)/bin/ipk_indexer_*.sh
+	rm -rf $(HOST_STAGING_DIR)/bin/ipk_indexer_*.sh $(HOST_STAGING_DIR)/htdocs
 
 
 IPK_INDEXER_MAKE_HTML_INDEX := $(HOST_STAGING_DIR)/bin/ipk_indexer_html_sorted.sh > Packages.html
