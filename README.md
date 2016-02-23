@@ -1,10 +1,19 @@
 # Description
 
-This is an Optware fork. It targets to be firmware-independent and currently supports hard-float ARMv7, I686, PowerPC 603e and soft-float ARMv5, ARMv7 EABI and MIPSEL targets.
+This is an Optware fork. It targets to be firmware-independent and currently supports hard-float ARMv7, I686, PowerPC 603e and soft-float ARMv5, ARMv7 EABI and MIPSEL targets. Feeds building and hosting resources are kindly provided by [Nas-Admin.org project](http://www.nas-admin.org).
 
 # Attention!
 
-buildroot-mipsel-ng feed is now rebuilt with 2.6.22.19 kernel headers. Please reinstall all currently installed packages if you're running this feed:
+Optware-ng feeds have moved to [http://ipkg.nslu2-linux.org/optware-ng](http://ipkg.nslu2-linux.org/optware-ng). Please run this command to update ipkg configuration if you installed Optware-ng prior to this announcement:
+
+```
+sed -i -e 's|optware-ng\.zyxmon\.org/|ipkg.nslu2-linux.org/optware-ng/|' /opt/etc/ipkg.conf
+ipkg update
+```
+
+# Attention!
+
+buildroot-mipsel-ng feed is now rebuilt with 2.6.22.19 kernel headers. Please reinstall all currently installed packages if you installed this feed earlier:
 
 ```
 ipkg update
@@ -13,35 +22,35 @@ ipkg -force-reinstall install `ipkg list_installed|cut -d ' ' -f1`
 
 # Getting started
 
-The instructions below only download, unpack and configure the package manager `ipkg`. You must previously make sure that `/opt` is writable, by preparing USB storage or router's `jffs` partition (for routers that support them), or symlink/mount-bind `/opt` to a location on your data volume (e.g., for a NAS). If you have MIPSEL/ARM Asus router running [Asuswrt-Merlin firmware](http://asuswrt.lostrealm.ca/download), check out [How To Install New Generation Optware]( https://www.hqt.ro/how-to-install-new-generation-optware) guide by @TeHashX.
+The instructions below only download, unpack and configure the package manager `ipkg`. You must previously make sure that `/opt` is writable, by preparing USB storage or router's `jffs` partition (for routers that support them), or symlink/mount-bind `/opt` to a location on your data volume (e.g., for a NAS). If you have MIPSEL/ARM Asus router running [Asuswrt-Merlin firmware](http://asuswrt.lostrealm.ca/download), check out [How To Install New Generation Optware](https://www.hqt.ro/how-to-install-new-generation-optware) guide by @TeHashX.
 
 To bootstrap the feed, connect over SSH/Telnet and type:
 
 ARMv7 EABI hardfloat:
 (Use this if you have a modern ARM device with FPU, e.g., a NAS)
 ```
-wget -O - http://optware-ng.zyxmon.org/buildroot-armeabihf/buildroot-armeabihf-bootstrap.sh | sh
+wget -O - http://ipkg.nslu2-linux.org/optware-ng/bootstrap/buildroot-armeabihf-bootstrap.sh | sh
 ```
 ARMv7 EABI softfloat:
 (Use this for a modern ARM device without FPU, e.g., an ARMv7 router)
 ```
-wget -O - http://optware-ng.zyxmon.org/buildroot-armeabi-ng/buildroot-armeabi-ng-bootstrap.sh | sh
+wget -O - http://ipkg.nslu2-linux.org/optware-ng/bootstrap/buildroot-armeabi-ng-bootstrap.sh | sh
 ```
 ARMv5 EABI:
 ```
-wget -O - http://optware-ng.zyxmon.org/buildroot-armv5eabi-ng/buildroot-armv5eabi-ng-bootstrap.sh | sh
+wget -O - http://ipkg.nslu2-linux.org/optware-ng/bootstrap/buildroot-armv5eabi-ng-bootstrap.sh | sh
 ```
 MIPSEL:
 ```
-wget -O - http://optware-ng.zyxmon.org/buildroot-mipsel-ng/buildroot-mipsel-ng-bootstrap.sh | sh
+wget -O - http://ipkg.nslu2-linux.org/optware-ng/bootstrap/buildroot-mipsel-ng-bootstrap.sh | sh
 ```
 PowerPC 603e:
 ```
-wget -O - http://optware-ng.zyxmon.org/buildroot-ppc-603e/buildroot-ppc-603e-bootstrap.sh | sh
+wget -O - http://ipkg.nslu2-linux.org/optware-ng/bootstrap/buildroot-ppc-603e-bootstrap.sh | sh
 ```
 I686:
 ```
-wget -O - http://optware-ng.zyxmon.org/buildroot-i686/buildroot-i686-bootstrap.sh | sh
+wget -O - http://ipkg.nslu2-linux.org/optware-ng/bootstrap/buildroot-i686-bootstrap.sh | sh
 ```
 ipkg package manager will be bootstrapped and configured. See available packages:
 ```
@@ -56,22 +65,18 @@ Install desired ones:
 
 # Available packages
 
-* [ARMv7 EABI hardfloat](http://optware-ng.zyxmon.org/buildroot-armeabihf/Packages.html)
-* [ARMv7 EABI softfloat](http://optware-ng.zyxmon.org/buildroot-armeabi-ng/Packages.html)
-* [ARMv5 EABI](http://optware-ng.zyxmon.org/buildroot-armv5eabi-ng/Packages.html)
-* [MIPSEL](http://optware-ng.zyxmon.org/buildroot-mipsel-ng/Packages.html)
-* [PowerPC 603e](http://optware-ng.zyxmon.org/buildroot-ppc-603e/Packages.html)
-* [I686](http://optware-ng.zyxmon.org/buildroot-i686/Packages.html)
-
-# Migrating to uClibc-ng feeds from deprecated uClibc ones
-
-If you're running a deprecated uClibc-0.9.33.2 (ARMv7 softfloat or MIPSEL) feed, you can either start from scratch, or use this script that should work for most of the cases (don't forget to backup `/opt` before you proceed!):
-
-```
-wget -O - http://optware-ng.zyxmon.org/scripts/move-to-uclibc-ng.sh | sh
-```
+* [ARMv7 EABI hardfloat](http://ipkg.nslu2-linux.org/optware-ng/buildroot-armeabihf/Packages.html)
+* [ARMv7 EABI softfloat](http://ipkg.nslu2-linux.org/optware-ng/buildroot-armeabi-ng/Packages.html)
+* [ARMv5 EABI](http://ipkg.nslu2-linux.org/optware-ng/buildroot-armv5eabi-ng/Packages.html)
+* [MIPSEL](http://ipkg.nslu2-linux.org/optware-ng/buildroot-mipsel-ng/Packages.html)
+* [PowerPC 603e](http://ipkg.nslu2-linux.org/optware-ng/buildroot-ppc-603e/Packages.html)
+* [I686](http://ipkg.nslu2-linux.org/optware-ng/buildroot-i686/Packages.html)
 
 # News
+
+## 2016-02-23
+
+Optawre-ng is now official. Feeds are built and hosted by [Nas-Admin.org project](http://www.nas-admin.org). See http://jenkins.nas-admin.org/view/Optware
 
 ## 2016-02-14
 
