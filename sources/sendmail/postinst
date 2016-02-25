@@ -22,6 +22,7 @@ fi
 /bin/chmod 2755       %OPTWARE_TARGET_PREFIX%/sbin/sendmail
 # newaliases will complain if / is writeable to anybody.
 chmod og-w /
+chmod 644 %OPTWARE_TARGET_PREFIX%/etc/mail
 %OPTWARE_TARGET_PREFIX%/bin/newaliases
 echo "sendmail will run as a daemon now. Alternatively, execute:"
 echo "echo 'smtp    stream  tcp     nowait  root    %OPTWARE_TARGET_PREFIX%/sbin/sendmail -bs' >> /etc/inetd.conf"

@@ -1,0 +1,109 @@
+--- a/cf/cf/Makefile
++++ cf/cf/Makefile
+@@ -12,11 +12,11 @@
+ #
+ 
+ # name of source for sendmail.cf (without extension)
+-CF=	sendmail
++CF=	optware-sendmail
+ # name of source for submit.cf (without extension)
+-SUBMIT=	submit
++SUBMIT=	optware-submit
+ # directory for .cf files
+-MAILDIR=/etc/mail
++MAILDIR=%OPTWARE_TARGET_PREFIX%/etc/mail
+ M4=	m4
+ CFDIR=	..
+ SED=  sed
+@@ -25,12 +25,15 @@
+ ROMODE=	444
+ RM=	rm -f
+ # use our own install program; should be really confINSTALL
+-INSTALL=../../devtools/bin/install.sh
++INSTALL=%OPTWARE_TARGET_PREFIX%/bin/install
+ # CF file ownership/permissions
+ CFOWN=root
+-CFGRP=bin
++CFGRP=root
+ CFMODE=0444
+ 
++DEFAULT= $(SUBMIT).cf $(CF).cf
++default: $(DEFAULT)
++
+ 
+ .SUFFIXES:  .mc .cf
+ 
+--- a/cf/cf/optware-sendmail.mc
++++ cf/cf/optware-sendmail.mc
+@@ -0,0 +1,34 @@
++divert(-1)
++#
++# Copyright (c) 1998, 1999 Sendmail, Inc. and its suppliers.
++#       All rights reserved.
++# Copyright (c) 1983 Eric P. Allman.  All rights reserved.
++# Copyright (c) 1988, 1993
++#       The Regents of the University of California.  All rights reserved.
++#
++# By using this file, you agree to the terms and conditions set
++# forth in the LICENSE file which can be found at the top level of
++# the sendmail distribution.
++#
++#
++
++#
++#  This is a generic configuration file for Linux.
++#  It has support for local and SMTP mail only.  If you want to
++#  customize it, copy it to a name appropriate for your environment
++#  and do the modifications there.
++#
++
++divert(0)dnl
++VERSIONID(`$Id: generic-linux.mc,v 8.1 1999/09/24 22:48:05 gshapiro Exp $')
++OSTYPE(linux)dnl
++DOMAIN(generic)dnl
++define(`confOPTWARE',`%OPTWARE_TARGET_PREFIX%')dnl
++define(`LOCAL_MAILER_PATH',confOPTWARE`/bin/procmail')dnl
++define(`MAIL_SETTINGS_DIR',confOPTWARE`/etc/mail/')dnl
++define(`QUEUE_DIR',confOPTWARE`/var/spool/mqueue')dnl
++define(`confDEAD_LETTER_DROP',confOPTWARE`/var/tmp/dead.letter')dnl
++define(`confCONTROL_SOCKET_NAME',QUEUE_DIR`/.control')dnl
++define(`confPID_FILE',confOPTWARE`/var/run/sendmail.pid')dnl
++MAILER(local)dnl
++MAILER(smtp)dnl
+--- a/cf/cf/optware-submit.mc
++++ cf/cf/optware-submit.mc
+@@ -0,0 +1,34 @@
++divert(-1)
++#
++# Copyright (c) 2001-2003 Sendmail, Inc. and its suppliers.
++#       All rights reserved.
++#
++# By using this file, you agree to the terms and conditions set
++# forth in the LICENSE file which can be found at the top level of
++# the sendmail distribution.
++#
++#
++
++#
++#  This is the prototype file for a set-group-ID sm-msp sendmail that
++#  acts as a initial mail submission program.
++#
++
++divert(0)dnl
++VERSIONID(`$Id: submit.mc,v 8.14 2006/04/05 05:54:41 ca Exp $')
++define(`confCF_VERSION', `Submit')dnl
++define(`__OSTYPE__',`')dnl dirty hack to keep proto.m4 from complaining
++define(`_USE_DECNET_SYNTAX_', `1')dnl support DECnet
++define(`confTIME_ZONE', `USE_TZ')dnl
++define(`confDONT_INIT_GROUPS', `True')dnl
++dnl
++dnl If you use IPv6 only, change [127.0.0.1] to [IPv6:::1]
++FEATURE(`msp', `[127.0.0.1]')dnl
++define(`confOPTWARE',`%OPTWARE_TARGET_PREFIX%/')dnl
++define(`LOCAL_MAILER_PATH',confOPTWARE`/bin/procmail')dnl
++define(`MAIL_SETTINGS_DIR',confOPTWARE`/etc/mail/')dnl
++define(`QUEUE_DIR',confOPTWARE`/var/spool/mqueue')dnl
++define(`STATUS_FILE',confOPTWARE`/var/spool/clientmqueue/sm-client.st')dnl
++define(`confDEAD_LETTER_DROP',confOPTWARE`/var/tmp/dead.letter')dnl
++define(`confCONTROL_SOCKET_NAME',QUEUE_DIR`/.control')dnl
++define(`confPID_FILE',confOPTWARE`/var/spool/clientmqueue/sm-client.pid')dnl

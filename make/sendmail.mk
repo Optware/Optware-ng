@@ -20,7 +20,7 @@ SENDMAIL_CONFLICTS=postfix
 #
 # SENDMAIL_IPK_VERSION should be incremented when the ipk changes.
 #
-SENDMAIL_IPK_VERSION=5
+SENDMAIL_IPK_VERSION=6
 
 #
 # SENDMAIL_CONFFILES should be a list of user-editable files
@@ -30,7 +30,9 @@ SENDMAIL_CONFFILES=\
 	$(TARGET_PREFIX)/etc/mail/helpfile \
 	$(TARGET_PREFIX)/etc/mail/relay-domains \
 	$(TARGET_PREFIX)/etc/mail/sendmail.cf \
-	$(TARGET_PREFIX)/etc/init.d/S69sendmail
+	$(TARGET_PREFIX)/etc/init.d/S69sendmail \
+	$(TARGET_PREFIX)/share/sendmail/cf/cf/optware-sendmail.mc \
+	$(TARGET_PREFIX)/share/sendmail/cf/cf/optware-submit.mc \
 
 #
 # SENDMAIL_PATCHES should list any patches, in the the order in
@@ -191,6 +193,9 @@ $(SENDMAIL_IPK): $(SENDMAIL_BUILD_DIR)/.built
 		CFGRP=$(LOGNAME)   CFOWN=$(LOGNAME) \
 		MAILDIR=$(TARGET_PREFIX)/etc/mail \
 		CF=generic-linux install-sendmail-cf
+	$(INSTALL) -d $(SENDMAIL_IPK_DIR)$(TARGET_PREFIX)/share/sendmail
+	cp -af $(SENDMAIL_BUILD_DIR)/cf $(SENDMAIL_IPK_DIR)$(TARGET_PREFIX)/share/sendmail
+	cat $(SENDMAIL_SOURCE_DIR)/cf_optware.patch | $(PATCH) -p0 -d $(SENDMAIL_IPK_DIR)$(TARGET_PREFIX)/share/sendmail
 	for i in $(SENDMAIL_IPK_DIR)$(TARGET_PREFIX)/sbin/* $(SENDMAIL_IPK_DIR)$(TARGET_PREFIX)/bin/vacation; do chmod u+w $$i; $(STRIP_COMMAND) $$i; chmod a-w $$i; done
 	( umask 022;\
 	echo "# local-host-names - include all aliases for your machine here."\
