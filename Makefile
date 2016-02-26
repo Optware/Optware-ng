@@ -194,7 +194,7 @@ PYTHON_PACKAGES = \
 	py-decorator py-decoratortools py-django py-docutils py-duplicity \
 	py-elementtree py-feedparser py-flup py-formencode \
 	py-gdchart2 py-gd py-genshi py-gnosis-utils py-gobject2 py-gtk \
-	py-idna py-ipaddress \
+	py-idna py-ipaddress py-jinja2 \
 	py-hgsubversion py-hgsvn py-jsmin py-kid py-lepl py-lxml \
 	py-mako py-markdown py-mercurial \
 	py-moin py-mssql py-mx-base py-mysql \
