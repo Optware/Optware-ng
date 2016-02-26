@@ -51,7 +51,7 @@ CDRTOOLS_PATCHES=$(CDRTOOLS_SOURCE_DIR)/cdrtools-$(CDRTOOLS_VERSION).patch
 # compilation or linking flags, then list them here.
 #
 CDRTOOLS_CPPFLAGS=
-CDRTOOLS_LDFLAGS=-Wl,--strip-all
+CDRTOOLS_LDFLAGS=-lm -Wl,--strip-all
 
 ifneq ($(HOSTCC), $(TARGET_CC))
 ifeq (uclibc, $(LIBC_STYLE))
@@ -139,7 +139,7 @@ cdrtools-source: $(DL_DIR)/$(CDRTOOLS_SOURCE) $(CDRTOOLS_PATCHES)
 # It does not do any configuration, since that happens as part of the
 # first "make".
 #
-$(CDRTOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(CDRTOOLS_SOURCE) $(CDRTOOLS_PATCHES)
+$(CDRTOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(CDRTOOLS_SOURCE) $(CDRTOOLS_PATCHES) make/cdrtools.mk
 	rm -rf $(BUILD_DIR)/$(CDRTOOLS_DIR) $(@D)
 	$(CDRTOOLS_UNZIP) $(DL_DIR)/$(CDRTOOLS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(CDRTOOLS_PATCHES)" ; \
@@ -175,6 +175,7 @@ ifneq ($(HOSTCC), $(TARGET_CC))
 			$(@D)/incs/arch-linux-gcc/config.cache || \
 	true
 endif
+	find $(@D) -type f \( -name '*.[ch]' -o -name '*.in' \) -exec sed -i -e 's/fexecve\|getline\|blksize_t\|getdelim/_&_/g' {} \;
 	touch $@
 
 cdrtools-unpack: $(CDRTOOLS_BUILD_DIR)/.configured
@@ -245,6 +246,7 @@ $(CDRTOOLS_IPK): $(CDRTOOLS_BUILD_DIR)/.built
 	$(TARGET_CONFIGURE_OPTS) \
 	$(CDRTOOLS_MAKE) -C $(CDRTOOLS_BUILD_DIR) LDOPTX=$(CDRTOOLS_LDFLAGS) \
 		INS_BASE=$(CDRTOOLS_IPK_DIR)$(TARGET_PREFIX) install
+	rm -rf $(CDRTOOLS_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
 	$(MAKE) $(CDRTOOLS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CDRTOOLS_IPK_DIR)
 
