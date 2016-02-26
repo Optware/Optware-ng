@@ -22,8 +22,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-CURL_SITE=http://pycurl.sourceforge.net/download
-PY-CURL_VERSION=7.19.5.1
-PY-CURL_VERSION_OLD=7.19.5.1
+PY-CURL_VERSION=7.21.5
+PY-CURL_VERSION_OLD=7.21.5
 PY-CURL_SOURCE=pycurl-$(PY-CURL_VERSION).tar.gz
 PY-CURL_SOURCE_OLD=pycurl-$(PY-CURL_VERSION_OLD).tar.gz
 PY-CURL_DIR=pycurl-$(PY-CURL_VERSION)
