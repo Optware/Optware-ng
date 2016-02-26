@@ -22,10 +22,13 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PY-LXML_SITE=http://pypi.python.org/packages/source/l/lxml
-PY-LXML_VERSION ?= 2.2.8
-PY-LXML_IPK_VERSION ?= 1
+PY-LXML_VERSION=3.5.0
+PY-LXML_VERSION_OLD=2.2.8
+PY-LXML_IPK_VERSION=1
 PY-LXML_SOURCE=lxml-$(PY-LXML_VERSION).tar.gz
+PY-LXML_SOURCE_OLD=lxml-$(PY-LXML_VERSION_OLD).tar.gz
 PY-LXML_DIR=lxml-$(PY-LXML_VERSION)
+PY-LXML_DIR_OLD=lxml-$(PY-LXML_VERSION_OLD)
 PY-LXML_UNZIP=zcat
 PY-LXML_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-LXML_DESCRIPTION=A Pythonic binding for the libxml2 and libxslt libraries.
@@ -33,6 +36,8 @@ PY-LXML_SECTION=misc
 PY-LXML_PRIORITY=optional
 PY25-LXML_DEPENDS=python25, libxml2, libxslt
 PY26-LXML_DEPENDS=python26, libxml2, libxslt
+PY27-LXML_DEPENDS=python27, libxml2, libxslt
+PY3-LXML_DEPENDS=python3, libxml2, libxslt
 PY-LXML_CONFLICTS=
 
 
@@ -71,6 +76,12 @@ PY25-LXML_IPK=$(BUILD_DIR)/py25-lxml_$(PY-LXML_VERSION)-$(PY-LXML_IPK_VERSION)_$
 PY26-LXML_IPK_DIR=$(BUILD_DIR)/py26-lxml-$(PY-LXML_VERSION)-ipk
 PY26-LXML_IPK=$(BUILD_DIR)/py26-lxml_$(PY-LXML_VERSION)-$(PY-LXML_IPK_VERSION)_$(TARGET_ARCH).ipk
 
+PY27-LXML_IPK_DIR=$(BUILD_DIR)/py27-lxml-$(PY-LXML_VERSION)-ipk
+PY27-LXML_IPK=$(BUILD_DIR)/py27-lxml_$(PY-LXML_VERSION)-$(PY-LXML_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+PY3-LXML_IPK_DIR=$(BUILD_DIR)/py3-lxml-$(PY-LXML_VERSION)-ipk
+PY3-LXML_IPK=$(BUILD_DIR)/py3-lxml_$(PY-LXML_VERSION)-$(PY-LXML_IPK_VERSION)_$(TARGET_ARCH).ipk
+
 .PHONY: py-lxml-source py-lxml-unpack py-lxml py-lxml-stage py-lxml-ipk py-lxml-clean py-lxml-dirclean py-lxml-check
 
 #
@@ -81,12 +92,16 @@ $(DL_DIR)/$(PY-LXML_SOURCE):
 	$(WGET) -P $(@D) $(PY-LXML_SITE)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
+$(DL_DIR)/$(PY-LXML_SOURCE_OLD):
+	$(WGET) -P $(@D) $(PY-LXML_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
+
 #
 # The source code depends on it existing within the download directory.
 # This target will be called by the top level Makefile to download the
 # source code's archive (.tar.gz, .bz2, etc.)
 #
-py-lxml-source: $(DL_DIR)/$(PY-LXML_SOURCE) $(PY-LXML_PATCHES)
+py-lxml-source: $(DL_DIR)/$(PY-LXML_SOURCE) $(DL_DIR)/$(PY-LXML_SOURCE_OLD) $(PY-LXML_PATCHES)
 
 #
 # This target unpacks the source code in the build directory.
@@ -103,15 +118,15 @@ py-lxml-source: $(DL_DIR)/$(PY-LXML_SOURCE) $(PY-LXML_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(PY-LXML_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-LXML_SOURCE) $(PY-LXML_PATCHES) make/py-lxml.mk
+$(PY-LXML_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-LXML_SOURCE) $(DL_DIR)/$(PY-LXML_SOURCE_OLD) $(PY-LXML_PATCHES) make/py-lxml.mk
 	$(MAKE) py-setuptools-stage libxml2-stage libxslt-stage pyrex-stage
 	rm -rf $(@D)
 	mkdir -p $(@D)
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-LXML_DIR)
-	$(PY-LXML_UNZIP) $(DL_DIR)/$(PY-LXML_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PY-LXML_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-LXML_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-LXML_DIR) $(@D)/2.5
+	$(PY-LXML_UNZIP) $(DL_DIR)/$(PY-LXML_SOURCE_OLD) | tar -C $(BUILD_DIR) -xvf -
+#	cat $(PY-LXML_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-LXML_DIR_OLD) -p1
+	mv $(BUILD_DIR)/$(PY-LXML_DIR_OLD) $(@D)/2.5
 	(cd $(@D)/2.5; \
 	    (\
 	    echo "[build_ext]"; \
@@ -137,6 +152,36 @@ $(PY-LXML_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-LXML_SOURCE) $(PY-LXML_PATCHES)
 	    echo "[build_scripts]"; \
 	    echo "executable=$(TARGET_PREFIX)/bin/python2.6") >> setup.cfg; \
 	)
+	# 2.7
+	rm -rf $(BUILD_DIR)/$(PY-LXML_DIR)
+	$(PY-LXML_UNZIP) $(DL_DIR)/$(PY-LXML_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+#	cat $(PY-LXML_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-LXML_DIR) -p1
+	mv $(BUILD_DIR)/$(PY-LXML_DIR) $(@D)/2.7
+	(cd $(@D)/2.7; \
+	    (\
+	    echo "[build_ext]"; \
+	    echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/libxml2:$(STAGING_INCLUDE_DIR)/libxslt:$(STAGING_INCLUDE_DIR)/python2.7"; \
+	    echo "library-dirs=$(STAGING_LIB_DIR)"; \
+	    echo "libraries=xslt"; \
+	    echo "rpath=$(TARGET_PREFIX)/lib"; \
+	    echo "[build_scripts]"; \
+	    echo "executable=$(TARGET_PREFIX)/bin/python2.7") >> setup.cfg; \
+	)
+	# 3
+	rm -rf $(BUILD_DIR)/$(PY-LXML_DIR)
+	$(PY-LXML_UNZIP) $(DL_DIR)/$(PY-LXML_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+#	cat $(PY-LXML_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-LXML_DIR) -p1
+	mv $(BUILD_DIR)/$(PY-LXML_DIR) $(@D)/3
+	(cd $(@D)/3; \
+	    (\
+	    echo "[build_ext]"; \
+	    echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/libxml2:$(STAGING_INCLUDE_DIR)/libxslt:$(STAGING_INCLUDE_DIR)/python$(PYTHON3_VERSION_MAJOR)m"; \
+	    echo "library-dirs=$(STAGING_LIB_DIR)"; \
+	    echo "libraries=xslt"; \
+	    echo "rpath=$(TARGET_PREFIX)/lib"; \
+	    echo "[build_scripts]"; \
+	    echo "executable=$(TARGET_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR)") >> setup.cfg; \
+	)
 	touch $@
 
 py-lxml-unpack: $(PY-LXML_BUILD_DIR)/.configured
@@ -156,6 +201,18 @@ $(PY-LXML_BUILD_DIR)/.built: $(PY-LXML_BUILD_DIR)/.configured
 	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.6/site-packages \
 	    CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py build \
+	    --with-xslt-config=$(STAGING_PREFIX)/bin/xslt-config; \
+	)
+	(cd $(@D)/2.7; \
+	    PYTHONPATH=$(STAGING_LIB_DIR)/python2.7/site-packages \
+	    CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
+	    $(HOST_STAGING_PREFIX)/bin/python2.7 setup.py build \
+	    --with-xslt-config=$(STAGING_PREFIX)/bin/xslt-config; \
+	)
+	(cd $(@D)/3; \
+	    PYTHONPATH=$(STAGING_LIB_DIR)/python$(PYTHON3_VERSION_MAJOR)/site-packages \
+	    CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
+	    $(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py build \
 	    --with-xslt-config=$(STAGING_PREFIX)/bin/xslt-config; \
 	)
 	touch $@
@@ -186,9 +243,9 @@ $(PY25-LXML_IPK_DIR)/CONTROL/control:
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-LXML_PRIORITY)" >>$@
 	@echo "Section: $(PY-LXML_SECTION)" >>$@
-	@echo "Version: $(PY-LXML_VERSION)-$(PY-LXML_IPK_VERSION)" >>$@
+	@echo "Version: $(PY-LXML_VERSION_OLD)-$(PY-LXML_IPK_VERSION)" >>$@
 	@echo "Maintainer: $(PY-LXML_MAINTAINER)" >>$@
-	@echo "Source: $(PY-LXML_SITE)/$(PY-LXML_SOURCE)" >>$@
+	@echo "Source: $(PY-LXML_SITE)/$(PY-LXML_SOURCE_OLD)" >>$@
 	@echo "Description: $(PY-LXML_DESCRIPTION)" >>$@
 	@echo "Depends: $(PY25-LXML_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-LXML_CONFLICTS)" >>$@
@@ -205,6 +262,34 @@ $(PY26-LXML_IPK_DIR)/CONTROL/control:
 	@echo "Source: $(PY-LXML_SITE)/$(PY-LXML_SOURCE)" >>$@
 	@echo "Description: $(PY-LXML_DESCRIPTION)" >>$@
 	@echo "Depends: $(PY26-LXML_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-LXML_CONFLICTS)" >>$@
+
+$(PY27-LXML_IPK_DIR)/CONTROL/control:
+	@$(INSTALL) -d $(@D)
+	@rm -f $@
+	@echo "Package: py27-lxml" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-LXML_PRIORITY)" >>$@
+	@echo "Section: $(PY-LXML_SECTION)" >>$@
+	@echo "Version: $(PY-LXML_VERSION)-$(PY-LXML_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-LXML_MAINTAINER)" >>$@
+	@echo "Source: $(PY-LXML_SITE)/$(PY-LXML_SOURCE)" >>$@
+	@echo "Description: $(PY-LXML_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY27-LXML_DEPENDS)" >>$@
+	@echo "Conflicts: $(PY-LXML_CONFLICTS)" >>$@
+
+$(PY3-LXML_IPK_DIR)/CONTROL/control:
+	@$(INSTALL) -d $(@D)
+	@rm -f $@
+	@echo "Package: py3-lxml" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PY-LXML_PRIORITY)" >>$@
+	@echo "Section: $(PY-LXML_SECTION)" >>$@
+	@echo "Version: $(PY-LXML_VERSION)-$(PY-LXML_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PY-LXML_MAINTAINER)" >>$@
+	@echo "Source: $(PY-LXML_SITE)/$(PY-LXML_SOURCE)" >>$@
+	@echo "Description: $(PY-LXML_DESCRIPTION)" >>$@
+	@echo "Depends: $(PY3-LXML_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-LXML_CONFLICTS)" >>$@
 
 #
@@ -246,10 +331,36 @@ $(PY26-LXML_IPK): $(PY-LXML_BUILD_DIR)/.built
 #	echo $(PY-LXML_CONFFILES) | sed -e 's/ /\n/g' > $(PY26-LXML_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-LXML_IPK_DIR)
 
+$(PY27-LXML_IPK): $(PY-LXML_BUILD_DIR)/.built
+	rm -rf $(PY27-LXML_IPK_DIR) $(BUILD_DIR)/py27-lxml_*_$(TARGET_ARCH).ipk
+	(cd $(PY-LXML_BUILD_DIR)/2.7; \
+		PYTHONPATH=$(STAGING_LIB_DIR)/python2.7/site-packages \
+		CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
+		$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py \
+		install --root=$(PY27-LXML_IPK_DIR) --prefix=$(TARGET_PREFIX) \
+		--with-xslt-config=$(STAGING_PREFIX)/bin/xslt-config)
+	$(STRIP_COMMAND) `find $(PY27-LXML_IPK_DIR)$(TARGET_PREFIX)/lib/ -name '*.so'`
+	$(MAKE) $(PY27-LXML_IPK_DIR)/CONTROL/control
+#	echo $(PY-LXML_CONFFILES) | sed -e 's/ /\n/g' > $(PY27-LXML_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY27-LXML_IPK_DIR)
+
+$(PY3-LXML_IPK): $(PY-LXML_BUILD_DIR)/.built
+	rm -rf $(PY3-LXML_IPK_DIR) $(BUILD_DIR)/py3-lxml_*_$(TARGET_ARCH).ipk
+	(cd $(PY-LXML_BUILD_DIR)/3; \
+		PYTHONPATH=$(STAGING_LIB_DIR)/python$(PYTHON3_VERSION_MAJOR)/site-packages \
+		CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
+		$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py \
+		install --root=$(PY3-LXML_IPK_DIR) --prefix=$(TARGET_PREFIX) \
+		--with-xslt-config=$(STAGING_PREFIX)/bin/xslt-config)
+	$(STRIP_COMMAND) `find $(PY3-LXML_IPK_DIR)$(TARGET_PREFIX)/lib/ -name '*.so'`
+	$(MAKE) $(PY3-LXML_IPK_DIR)/CONTROL/control
+#	echo $(PY-LXML_CONFFILES) | sed -e 's/ /\n/g' > $(PY3-LXML_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY3-LXML_IPK_DIR)
+
 #
 # This is called from the top level makefile to create the IPK file.
 #
-py-lxml-ipk: $(PY25-LXML_IPK) $(PY26-LXML_IPK)
+py-lxml-ipk: $(PY25-LXML_IPK) $(PY26-LXML_IPK) $(PY27-LXML_IPK) $(PY3-LXML_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -265,9 +376,11 @@ py-lxml-dirclean:
 	rm -rf $(BUILD_DIR)/$(PY-LXML_DIR) $(PY-LXML_BUILD_DIR)
 	rm -rf $(PY25-LXML_IPK_DIR) $(PY25-LXML_IPK)
 	rm -rf $(PY26-LXML_IPK_DIR) $(PY26-LXML_IPK)
+	rm -rf $(PY27-LXML_IPK_DIR) $(PY27-LXML_IPK)
+	rm -rf $(PY3-LXML_IPK_DIR) $(PY3-LXML_IPK)
 
 #
 # Some sanity check for the package.
 #
-py-lxml-check: $(PY25-LXML_IPK) $(PY26-LXML_IPK)
+py-lxml-check: $(PY25-LXML_IPK) $(PY26-LXML_IPK) $(PY27-LXML_IPK) $(PY3-LXML_IPK)
 	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
