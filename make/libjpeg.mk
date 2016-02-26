@@ -34,7 +34,7 @@ LIBJPEG_CONFLICTS=
 #
 # LIBJPEG_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBJPEG_IPK_VERSION=1
+LIBJPEG_IPK_VERSION=2
 
 #
 # LIBJPEG_PATCHES should list any patches, in the the order in
@@ -115,6 +115,7 @@ $(LIBJPEG_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBJPEG_SOURCE) $(LIBJPEG_PATCHES)
 		--enable-shared \
 		--disable-static \
 		--prefix=$(TARGET_PREFIX) \
+		--program-transform-name='s/^//' \
 	)
 	touch $@
 
