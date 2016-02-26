@@ -1,0 +1,27 @@
+--- a/man/texinfo2man.c
++++ a/man/texinfo2man.c
+@@ -143,13 +143,23 @@
+ 	printf (" .");
+       return;
+     }
++  if (c == '\'')
++    {
++      printf("\\(cq");
++      return;
++    }
++  if (c == '`')
++    {
++      printf("\\(oq");
++      return;
++    }
+   if (no_break && c == '\n')
+     c = ' ';
+   if (no_break && c == ' ')
+     putchar ('\\');
+   if (to_upper)
+     c = toupper (c);
+-  if (c == '\'' || c == '`' || c == '\\')
++  if (c == '\\')
+     putchar ('\\');
+   putchar (c);
+   at_start_of_line = at_start_of_line_for_dot = (c == '\n');

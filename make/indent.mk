@@ -36,7 +36,7 @@ INDENT_CONFLICTS=
 #
 # INDENT_IPK_VERSION should be incremented when the ipk changes.
 #
-INDENT_IPK_VERSION=1
+INDENT_IPK_VERSION=2
 
 #
 # INDENT_CONFFILES should be a list of user-editable files
@@ -46,7 +46,10 @@ INDENT_IPK_VERSION=1
 # INDENT_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-INDENT_PATCHES=$(INDENT_SOURCE_DIR)/output.c.path
+INDENT_PATCHES=\
+$(INDENT_SOURCE_DIR)/output.c.path \
+$(INDENT_SOURCE_DIR)/texinfo2man.patch \
+$(INDENT_SOURCE_DIR)/man_Makefile.in.patch \
 
 #
 # If the compilation of the package requires additional
@@ -142,6 +145,7 @@ indent-unpack: $(INDENT_BUILD_DIR)/.configured
 #
 $(INDENT_BUILD_DIR)/.built: $(INDENT_BUILD_DIR)/.configured
 	rm -f $@
+	$(HOSTCC) $(@D)/man/texinfo2man.c -o $(@D)/man/texinfo2man.host
 	$(MAKE) -C $(@D)
 	touch $@
 
