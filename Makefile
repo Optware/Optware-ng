@@ -210,7 +210,7 @@ PYTHON_PACKAGES = \
 	py-scgi py-selector py-serial py-setuptools \
 	py-silvercity py-simplejson py-simpy py-slimit py-soappy \
 	py-sqlalchemy py-sqlite py-sqlobject py-statlib \
-	py-tailor py-tgfastdata py-trac \
+	py-tailor py-tgfastdata py-trac py-urllib3 \
 	py-turbocheetah py-turbogears py-turbojson py-turbokid \
 	py-urwid py-usb py-weatherget py-webpy py-wsgiref py-webhelpers \
 	py-xdg py-xml py-yaml py-yenc py-zope-interface \
