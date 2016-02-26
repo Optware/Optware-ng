@@ -30,9 +30,9 @@ PY-URLLIB3_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-URLLIB3_DESCRIPTION=HTTP library with thread-safe connection pooling, file post, and more.
 PY-URLLIB3_SECTION=misc
 PY-URLLIB3_PRIORITY=optional
-PY26-URLLIB3_DEPENDS=python26
-PY27-URLLIB3_DEPENDS=python27
-PY3-URLLIB3_DEPENDS=python3
+PY26-URLLIB3_DEPENDS=python26, py26-six
+PY27-URLLIB3_DEPENDS=python27, py27-six
+PY3-URLLIB3_DEPENDS=python3, py3-six
 PY-URLLIB3_CONFLICTS=
 
 #
