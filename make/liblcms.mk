@@ -36,7 +36,7 @@ LIBLCMS_CONFLICTS=
 #
 # LIBLCMS_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBLCMS_IPK_VERSION=2
+LIBLCMS_IPK_VERSION=3
 
 #
 # LIBLCMS_CONFFILES should be a list of user-editable files
@@ -124,6 +124,7 @@ $(LIBLCMS_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBLCMS_SOURCE) $(LIBLCMS_PATCHES)
 		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
+		--program-transform-name='s/^//' \
 	)
 	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
