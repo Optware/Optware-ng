@@ -1,0 +1,53 @@
+--- a/src/Makefile
++++ b/src/Makefile
+@@ -9,10 +9,10 @@
+ # CC=gcc
+ 
+ # Comment this out, to enable statistics
+-CFLAGS += -D NOSTATS
++#CFLAGS += -D NOSTATS
+ 
+ # Comment this out if iconv is not available on the system
+-#CFLAGS += -D USE_ICONV
++CFLAGS += -D USE_ICONV
+ 
+ # Uncomment this is iconv is used and it's not included in libc:
+ #LFLAGS += -liconv
+@@ -24,34 +24,23 @@
+ #CFLAGS += -D DISABLE_INET_SOCKET
+ 
+ # Uncomment to add debug info
+-# CFLAGS += -ggdb -O0
++CFLAGS += -ggdb -O0
+ 
+ # The following option is only used by developers
+ # CFLAGS += -D DEBUGMSG
+ 
+-CFLAGS += -W -Wall
++# CFLAGS += -W -Wall
+ 
+ # The following enables logfile size more than 2GB
+ CFLAGS += -D_FILE_OFFSET_BITS=64
+ 
+ # Use the following only on GNU/Linux and only if you need ps listing like "smsd: MAINPROCESS" and "smsd: GSM1"
+-# CFLAGS += -D USE_LINUX_PS_TRICK
++CFLAGS += -D USE_LINUX_PS_TRICK
+ 
+ all: smsd 
+ 
+ smsd: smsd.c extras.o locking.o cfgfile.o logging.o alarm.o smsd_cfg.o charset.o stats.o blacklist.o whitelist.o modeminit.o pdu.o
+-
+-ifneq (,$(findstring SOLARIS,$(CFLAGS)))
+-ifeq (,$(findstring DISABLE_INET_SOCKET,$(CFLAGS)))
+-override LFLAGS += -lsocket -lnsl
+-endif
+-endif
+-
+-ifneq (,$(findstring NOSTATS,$(CFLAGS)))
+ 	$(CC) $(CFLAGS) -o $@ $^ $(LFLAGS)
+-else 
+-	$(CC) `mm-config --cflags` $(CFLAGS) -o $@ $^ `mm-config --ldflags --libs` $(LFLAGS)
+-endif
+ 
+ clean:
+ 	rm -f *.o smsd *.exe *~

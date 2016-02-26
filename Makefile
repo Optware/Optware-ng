@@ -405,7 +405,7 @@ COMMON_CROSS_PACKAGES = \
 	sed sendmail ser ser2net setserial setpwc sg3-utils shared-mime-info \
 	sharutils shellinabox shntool silc-client simh sipcalc siproxd sispmctl \
 	slang slrn slsc \
-	sm smartmontools snort snownews \
+	sm smartmontools smstools3 snort snownews \
 	socat softflowd sox spandsp spawn-fcgi speex spindown splix \
 	sqlite sqlite2 \
 	sqsh squeak squid squid3 \

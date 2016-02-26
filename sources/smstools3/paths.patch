@@ -1,0 +1,44 @@
+--- a/src/smsd_cfg.h
++++ b/src/smsd_cfg.h
+@@ -20,11 +20,7 @@
+ #include <sys/types.h>
+ #include <time.h>
+ 
+-#ifndef __FreeBSD__
+-#define DEFAULT_CONFIGFILE "/etc/smsd.conf"
+-#else
+-#define DEFAULT_CONFIGFILE "%%PREFIX%%/etc/smsd.conf"
+-#endif
++#define DEFAULT_CONFIGFILE "%OPTWARE_TARGET_PREFIX%/etc/smsd.conf"
+ 
+ #define DATETIME_DEFAULT "%y-%m-%d %H:%M:%S"
+ #define LOGTIME_DEFAULT "%Y-%m-%d %H:%M:%S"
+--- a/src/smsd_cfg.c
++++ b/src/smsd_cfg.c
+@@ -159,12 +159,12 @@
+   log_unmodified = 0;
+   alarmlevel=LOG_WARNING;
+ 
+-  strcpy(d_spool,"/var/spool/sms/outgoing");
+-  strcpy(d_incoming,"/var/spool/sms/incoming");
++  strcpy(d_spool,"%OPTWARE_TARGET_PREFIX%/var/spool/sms/outgoing");
++  strcpy(d_incoming,"%OPTWARE_TARGET_PREFIX%/var/spool/sms/incoming");
+   *d_report = 0;
+   *d_phonecalls = 0;
+   *d_saved = 0;
+-  strcpy(d_checked,"/var/spool/sms/checked");
++  strcpy(d_checked,"%OPTWARE_TARGET_PREFIX%/var/spool/sms/checked");
+   d_failed[0]=0;
+   d_sent[0]=0;
+   d_stats[0]=0;
+@@ -221,8 +221,8 @@
+   username[0] = 0;
+   groupname[0] = 0;
+ 
+-  strcpy(infofile, "/var/run/smsd.working");
+-  strcpy(pidfile, "/var/run/smsd.pid");
++  strcpy(infofile, "%OPTWARE_TARGET_PREFIX%/var/run/smsd.working");
++  strcpy(pidfile, "%OPTWARE_TARGET_PREFIX%/var/run/smsd.pid");
+ 
+   terminal = 0;
+   os_cygwin = 0;

@@ -1,0 +1,3 @@
+#!/bin/sh
+
+mkdir -p %OPTWARE_TARGET_PREFIX%/var/spool/sms/incoming %OPTWARE_TARGET_PREFIX%/var/spool/sms/outgoing %OPTWARE_TARGET_PREFIX%/var/spool/sms/checked %OPTWARE_TARGET_PREFIX%/var/run

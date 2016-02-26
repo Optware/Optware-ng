@@ -1,0 +1,32 @@
+--- a/scripts/sendsms
++++ b/scripts/sendsms
+@@ -1,4 +1,4 @@
+-#!/bin/bash
++#!%OPTWARE_TARGET_PREFIX%/bin/bash
+ # This script send a text sms at the command line by creating
+ # a sms file in the outgoing queue.
+ 
+--- a/scripts/sms2html
++++ b/scripts/sms2html
+@@ -1,4 +1,4 @@
+-#!/bin/bash
++#!%OPTWARE_TARGET_PREFIX%/bin/bash
+ 
+ # This script converts a received sms file into a html file. 
+ 
+--- a/scripts/sms2unicode
++++ b/scripts/sms2unicode
+@@ -1,4 +1,4 @@
+-#!/bin/bash
++#!%OPTWARE_TARGET_PREFIX%/bin/bash
+ 
+ # This script converts a received sms file into a pure unicode text file.
+ 
+--- a/scripts/unicode2sms
++++ b/scripts/unicode2sms
+@@ -1,4 +1,4 @@
+-#!/bin/bash
++#!%OPTWARE_TARGET_PREFIX%/bin/bash
+ 
+ # This script converts a pure unicode text file into an sms file for sending.
+ 

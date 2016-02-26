@@ -1,0 +1,145 @@
+#! /bin/sh
+# This script can be used to start/stop smsd
+# as a daemon in Linux, Solaris, Cygwin, FreeBSD
+# and MAC OS X Terminal window (Darwin).
+# This script is to be used with smsd version >= 3.0.3. 
+
+PATH=%OPTWARE_TARGET_PREFIX%/bin:%OPTWARE_TARGET_PREFIX%/sbin:$PATH
+
+### BEGIN INIT INFO
+# Provides:          smstools
+# Required-Start:    $syslog
+# Required-Stop:
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: starts smstools
+### END INIT INFO
+
+# Set USER and GROUP, if necessary:
+USER=""
+GROUP=""
+
+# If an unpriviledged user is selected, make sure that next two
+# files are writable by that user:
+PIDFILE="%OPTWARE_TARGET_PREFIX%/var/run/smsd.pid"
+INFOFILE="%OPTWARE_TARGET_PREFIX%/var/run/smsd.working"
+# Logfile can also be defined in here:
+LOGFILE="%OPTWARE_TARGET_PREFIX%/var/log/smsd.log"
+
+DAEMON=%OPTWARE_TARGET_PREFIX%/bin/smsd
+# A program which turns power off for couple of seconds:
+RESETMODEMS=%OPTWARE_TARGET_PREFIX%/bin/smsd_resetmodems
+NAME=smsd
+PS="%OPTWARE_TARGET_PREFIX%/bin/busybox ps"
+ECHO=echo
+
+# Maximum time to stop smsd, after that it gets killed hardly:
+MAXWAIT=45
+
+case "$1" in
+  start)
+	test -x $DAEMON || exit 0
+	$ECHO -n "Starting SMS Daemon: "
+	MSG="."
+	ARGS="-n MAINPROCESS -p$PIDFILE -i$INFOFILE"
+	[ "x$USER" != x ] && ARGS="$ARGS -u$USER"
+	[ "x$GROUP" != x ] && ARGS="$ARGS -g$GROUP"
+	[ "x$LOGFILE" != x ] && ARGS="$ARGS -l$LOGFILE"
+	PID=`cat $PIDFILE 2>/dev/null`
+	if [ "x$PID" != x ]; then
+	  if kill -0 $PID 2>/dev/null; then
+	    MSG=" already running ($PID)."
+	  else
+	    PID=""
+	  fi
+	fi
+	if [ "x$PID" = x ]; then
+	  if $PS | grep $NAME | grep -v grep >/dev/null; then
+	    MSG=" already running."
+	  else
+	    $DAEMON $ARGS
+	    sleep 1
+	    PIDS=`$PS | grep $NAME | grep -v grep`
+	    [ "x$PIDS" = x ] && MSG=" failed."
+	  fi
+	fi
+	echo "$NAME$MSG"
+	;;
+
+  stop)
+	if $PS | grep $NAME | grep -v grep >/dev/null; then
+	  PID=`cat $PIDFILE 2>/dev/null`
+	  if [ "x$PID" != x ]; then
+	    P=`kill -0 $PID 2>/dev/null`
+	    [ "x$P" != x ] && PID=""
+	  fi
+	  if [ "x$PID" != x ]; then
+	    kill $PID
+	  else
+	    kill `$PS | grep $NAME | grep -v grep | awk '{print $1}'` >/dev/null 2>&1
+	  fi
+	  sleep 1
+	  if $PS | grep $NAME | grep -v grep >/dev/null; then
+	    echo "Allowing $NAME to terminate gracefully within $MAXWAIT seconds"
+	    infofound=0
+	    dots=0
+	    seconds=0
+	    while $PS | grep $NAME | grep -v grep >/dev/null; do
+	      if [ $infofound -lt 1 ]; then
+	        if [ -f $INFOFILE ]; then
+	          infofound=1
+	          if [ $dots -gt 0 ]; then
+	            echo ""
+	            dots=0
+	          fi
+	          $ECHO -n "$NAME is currently "
+	          cat $INFOFILE
+	          echo "Time counting is now disabled and we will wait until this job is complete."
+	          echo "If you are very hasty, use \"$0 force-stop\" to kill $NAME hardly (not recommended)."
+	        fi
+	      fi
+	      [ $infofound -lt 1 ] && seconds=`expr $seconds + 1`
+	      $ECHO -n "."
+	      dots=`expr $dots + 1`
+	      if [ "$seconds" -ge $MAXWAIT ]; then
+	        if [ $dots -gt 0 ]; then
+	          echo ""
+	          dots=0
+	        fi
+	        echo "Timeout occured, killing $NAME hardly."
+	        kill -9 `$PS | grep $NAME | grep -v grep | awk '{print $1}'` >/dev/null 2>&1
+	        [ -f $PIDFILE ] && rm $PIDFILE
+	        seconds=0
+	      fi
+	      sleep 1
+	    done
+	    [ $dots -gt 0 ] && echo ""
+	    #echo "$NAME is stopped."
+	  fi
+	fi
+	;;
+
+  restart|reload)
+	$0 stop
+	$0 start
+	;;
+
+  force-stop)
+	if $PS | grep $NAME | grep -v grep >/dev/null; then
+	  echo "Killing $NAME."
+	  kill -9 `$PS | grep $NAME | grep -v grep | awk '{print $1}'` >/dev/null 2>&1
+	fi
+	[ -f $PIDFILE ] && rm $PIDFILE
+	;;
+
+  reset)
+	$0 stop
+	[ -f "$RESETMODEMS" ] && "$RESETMODEMS"
+	sleep 30
+	$0 start
+	;;
+
+  *)
+	echo "Usage: $0 {start|stop|restart|force-stop|reset}"
+	exit 1
+esac
