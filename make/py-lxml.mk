@@ -70,8 +70,8 @@ PY-LXML_LDFLAGS=
 PY-LXML_BUILD_DIR=$(BUILD_DIR)/py-lxml
 PY-LXML_SOURCE_DIR=$(SOURCE_DIR)/py-lxml
 
-PY25-LXML_IPK_DIR=$(BUILD_DIR)/py25-lxml-$(PY-LXML_VERSION)-ipk
-PY25-LXML_IPK=$(BUILD_DIR)/py25-lxml_$(PY-LXML_VERSION)-$(PY-LXML_IPK_VERSION)_$(TARGET_ARCH).ipk
+PY25-LXML_IPK_DIR=$(BUILD_DIR)/py25-lxml-$(PY-LXML_VERSION_OLD)-ipk
+PY25-LXML_IPK=$(BUILD_DIR)/py25-lxml_$(PY-LXML_VERSION_OLD)-$(PY-LXML_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 PY26-LXML_IPK_DIR=$(BUILD_DIR)/py26-lxml-$(PY-LXML_VERSION)-ipk
 PY26-LXML_IPK=$(BUILD_DIR)/py26-lxml_$(PY-LXML_VERSION)-$(PY-LXML_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -305,7 +305,6 @@ $(PY3-LXML_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(PY25-LXML_IPK): $(PY-LXML_BUILD_DIR)/.built
-	rm -rf $(BUILD_DIR)/py*-lxml_*_$(TARGET_ARCH).ipk
 	rm -rf $(PY25-LXML_IPK_DIR) $(BUILD_DIR)/py25-lxml_*_$(TARGET_ARCH).ipk
 	(cd $(PY-LXML_BUILD_DIR)/2.5; \
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
