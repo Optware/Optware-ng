@@ -178,6 +178,7 @@ PYTHON_PACKAGES = \
 	ipython \
 	mailman \
 	mod-python mod-wsgi \
+	offlineimap \
 	pyload \
 	pssh putmail \
 	pygments pyrex \
