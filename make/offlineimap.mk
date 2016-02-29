@@ -103,7 +103,7 @@ offlineimap-source: $(DL_DIR)/$(OFFLINEIMAP_SOURCE) $(OFFLINEIMAP_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(OFFLINEIMAP_BUILD_DIR)/.configured: $(DL_DIR)/$(OFFLINEIMAP_SOURCE) $(OFFLINEIMAP_PATCHES) make/offlineimap.mk
-	$(MAKE) py-setuptools-host-stage
+	$(MAKE) python27-host-stage py-setuptools-host-stage
 	rm -rf $(BUILD_DIR)/$(OFFLINEIMAP_DIR) $(BUILD_DIR)/$(OFFLINEIMAP_DIR) $(@D)
 	mkdir -p $(OFFLINEIMAP_BUILD_DIR)
 	$(OFFLINEIMAP_UNZIP) $(DL_DIR)/$(OFFLINEIMAP_SOURCE) | tar -C $(BUILD_DIR) -xvf -

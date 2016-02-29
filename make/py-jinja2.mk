@@ -111,7 +111,7 @@ py-jinja2-source: $(DL_DIR)/$(PY-JINJA2_SOURCE) $(PY-JINJA2_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(PY-JINJA2_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-JINJA2_SOURCE) $(PY-JINJA2_PATCHES) make/py-jinja2.mk
-	$(MAKE) py-setuptools-host-stage
+	$(MAKE) python26-host-stage python27-host-stage python3-host-stage py-setuptools-host-stage
 	rm -rf $(BUILD_DIR)/$(PY-JINJA2_DIR) $(BUILD_DIR)/$(PY-JINJA2_DIR) $(@D)
 	mkdir -p $(PY-JINJA2_BUILD_DIR)
 	$(PY-JINJA2_UNZIP) $(DL_DIR)/$(PY-JINJA2_SOURCE) | tar -C $(BUILD_DIR) -xvf -
