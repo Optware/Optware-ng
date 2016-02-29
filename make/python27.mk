@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PYTHON27_VERSION=2.7.9
+PYTHON27_VERSION=2.7.11
 PYTHON27_VERSION_MAJOR=2.7
 PYTHON27_SITE=http://python.org/ftp/python/$(PYTHON27_VERSION)
 PYTHON27_DIR=Python-$(PYTHON27_VERSION)
@@ -42,7 +42,7 @@ PYTHON27_SUGGESTS=
 #
 # PYTHON27_IPK_VERSION should be incremented when the ipk changes.
 #
-PYTHON27_IPK_VERSION=2
+PYTHON27_IPK_VERSION=1
 
 #
 # PYTHON27_CONFFILES should be a list of user-editable files
@@ -128,12 +128,12 @@ ifeq (libstdc++, $(filter libstdc++, $(PACKAGES)))
 	$(MAKE) libstdc++-stage
 endif
 	$(MAKE) bzip2-stage readline-stage openssl-stage libdb-stage sqlite-stage zlib-stage xz-utils-stage \
-		libffi-stage libffi-host-stage zlib-host-stage xz-utils-host-stage $(NCURSES_FOR_OPTWARE_TARGET)-stage
+		libffi-stage libffi-host-stage openssl-host-stage zlib-host-stage xz-utils-host-stage $(NCURSES_FOR_OPTWARE_TARGET)-stage
 	$(MAKE) autoconf-host-stage
 	rm -rf $(BUILD_DIR)/$(PYTHON27_DIR) $(@D) $(HOST_STAGING_PREFIX)/bin/python2.7
 	$(PYTHON27_UNZIP) $(DL_DIR)/$(PYTHON27_SOURCE) | tar -C $(BUILD_DIR) -xf -
 	cat $(PYTHON27_PATCHES) | $(PATCH) -bd $(BUILD_DIR)/$(PYTHON27_DIR) -p1
-	sed -i -e '/\$$absconfigcommand/s|.*|    AS="" LD="" CC="" CXX="" AR="" STRIP="" RANLIB="" LDFLAGS="-L$(HOST_STAGING_LIB_DIR)" CPPFLAGS="-I$(HOST_STAGING_INCLUDE_DIR)" \$$absconfigcommand --prefix=/opt --with-system-ffi|' $(BUILD_DIR)/$(PYTHON27_DIR)/configure.ac
+	sed -i -e '/\$$absconfigcommand/s|.*|    AS="" LD="" CC="" CXX="" AR="" STRIP="" RANLIB="" LDFLAGS="-L$(HOST_STAGING_LIB_DIR) -Wl,-rpath,$(HOST_STAGING_LIB_DIR) -Wl,-rpath-link,$(HOST_STAGING_LIB_DIR)" CPPFLAGS="-I$(HOST_STAGING_INCLUDE_DIR)" \$$absconfigcommand --prefix=/opt --with-system-ffi|' $(BUILD_DIR)/$(PYTHON27_DIR)/configure.ac
 	$(AUTORECONF1.10) -vif $(BUILD_DIR)/$(PYTHON27_DIR)
 	mkdir -p $(@D)
 	cd $(@D); (\

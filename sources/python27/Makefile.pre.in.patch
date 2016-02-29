@@ -59,15 +59,15 @@
  
  # Compile a binary with gcc profile guided optimization.
  profile-opt:
-@@ -427,7 +431,7 @@
+@@ -431,7 +435,7 @@
  
  run_profile_task:
  	: # FIXME: can't run for a cross build
--	./$(BUILDPYTHON) $(PROFILE_TASK)
+-	$(LLVM_PROF_FILE) ./$(BUILDPYTHON) $(PROFILE_TASK) || true
 +	$(PYTHON_FOR_BUILD) $(PROFILE_TASK)
  
- build_all_use_profile:
- 	$(MAKE) all CFLAGS="$(CFLAGS) -fprofile-use"
+ build_all_merge_profile:
+ 	$(LLVM_PROF_MERGER)
 @@ -439,12 +443,12 @@
  
  
