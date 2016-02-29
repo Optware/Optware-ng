@@ -24,7 +24,7 @@ perl-source: $(DL_DIR)/$(PERL_CROSS_SOURCE)
 # which they should be applied to the source code.
 #
 PERL_PATCHES=\
-$(PERL_SOURCE_DIR)/$(PERL_MAJOR_VER)/Fix-Errno.pm-generation-for-gcc-5.0.patch \
+$(PERL_SOURCE_DIR)/$(PERL_MAJOR_VER)/Fix-Errno.pm-generation-for-gcc-5.0-simple.patch \
 $(PERL_SOURCE_DIR)/$(PERL_MAJOR_VER)/h2ph-correct-handling-of-hex-constants-for-the-preamble.patch \
 $(PERL_SOURCE_DIR)/$(PERL_MAJOR_VER)/lib-h2ph.t-to-test-generated-t-_h2ph_pre.ph-instead-of-the-system-one.patch \
 

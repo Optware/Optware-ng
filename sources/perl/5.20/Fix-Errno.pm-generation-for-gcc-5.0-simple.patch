@@ -1,0 +1,14 @@
+Use gcc -P instead of gcc -E
+https://rt.perl.org/Public/Bug/Display.html?id=125223
+
+--- a/ext/Errno/Errno_pm.PL
++++ b/ext/Errno/Errno_pm.PL
+@@ -239,7 +239,7 @@
+ 		or die "Cannot exec $cpp";
+         } else {
+ 	    my $cpp = default_cpp();
+-	    open(CPPO,"$cpp < errno.c |")
++	    open(CPPO,"$cpp -P < errno.c |")
+ 		or die "Cannot exec $cpp";
+ 	}
+ 
