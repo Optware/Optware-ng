@@ -13,7 +13,7 @@ PERL-LIBWWW_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PERL-LIBWWW_DESCRIPTION=libwww-perl - The World-Wide Web library for Perl 
 PERL-LIBWWW_SECTION=util
 PERL-LIBWWW_PRIORITY=optional
-PERL-LIBWWW_DEPENDS=perl, perl-uri, perl-compress-zlib, perl-html-parser
+PERL-LIBWWW_DEPENDS=perl, perl-uri, perl-compress-zlib, perl-html-parser, perl-encode-locale
 PERL-LIBWWW_SUGGESTS=
 PERL-LIBWWW_CONFLICTS=
 

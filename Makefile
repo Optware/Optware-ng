@@ -106,6 +106,7 @@ PERL_PACKAGES = \
 	perl-dbd-mysql perl-dbd-sqlite perl-dbi \
 	perl-dbix-contextualfetch \
 	perl-devel-caller perl-devel-lexalias \
+	perl-devel-modlist \
 	perl-device-serialport \
 	perl-digest-hmac perl-digest-perl-md5 perl-digest-sha1 perl-digest-sha \
 	perl-email-address perl-email-messageid \
@@ -114,10 +115,13 @@ PERL_PACKAGES = \
 	perl-email-mime-modifier perl-email-mime \
 	perl-email-simple perl-email-send \
 	perl-encode-detect \
+	perl-encode-locale \
 	perl-extutils-cbuilder perl-extutils-parsexs \
 	perl-file-next perl-file-rename \
 	perl-gd perl-gd-barcode \
+	perl-html-form \
 	perl-html-parser perl-html-tagset perl-html-template perl-hottproxy \
+	perl-http-cookies perl-http-date perl-http-message \
 	perl-http-response-encoding \
 	perl-ima-dbi \
 	perl-io-multiplex perl-io-socket-ssl perl-io-string perl-io-stringy perl-io-zlib \
@@ -128,7 +132,7 @@ PERL_PACKAGES = \
 	perl-mail-spf-query perl-mailtools \
 	perl-mime-tools \
 	perl-module-build perl-module-pluggable perl-module-refresh perl-module-signature \
-	perl-net-cidr-lite perl-net-dns perl-net-ident perl-net-server perl-net-ssleay \
+	perl-net-cidr-lite perl-net-dns perl-net-http perl-net-ident perl-net-server perl-net-ssleay \
 	perl-padwalker \
 	perl-par-dist \
 	perl-pod-readme perl-poe-xs-queue-array \
