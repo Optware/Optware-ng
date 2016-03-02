@@ -13,7 +13,7 @@ PERL-WWW-MECHANIZE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PERL-WWW-MECHANIZE_DESCRIPTION=Handy web browsing in a Perl object.
 PERL-WWW-MECHANIZE_SECTION=www
 PERL-WWW-MECHANIZE_PRIORITY=optional
-PERL-WWW-MECHANIZE_DEPENDS=perl-http-response-encoding
+PERL-WWW-MECHANIZE_DEPENDS=perl-http-response-encoding, perl-http-message, perl-html-form
 PERL-WWW-MECHANIZE_SUGGESTS=
 PERL-WWW-MECHANIZE_CONFLICTS=
 
