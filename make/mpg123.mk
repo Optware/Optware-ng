@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MPG123_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/mpg123
-MPG123_VERSION=1.14.2
+MPG123_VERSION=1.23.2
 MPG123_SOURCE=mpg123-$(MPG123_VERSION).tar.bz2
 MPG123_DIR=mpg123-$(MPG123_VERSION)
 MPG123_UNZIP=bzcat
@@ -158,6 +158,7 @@ mpg123: $(MPG123_BUILD_DIR)/.built
 $(MPG123_BUILD_DIR)/.staged: $(MPG123_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	sed -i -e '/^prefix=/s|=.*|=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/libmpg123.pc
 	touch $@
 
 mpg123-stage: $(MPG123_BUILD_DIR)/.staged
