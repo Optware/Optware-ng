@@ -1,0 +1,11 @@
+prefix=/opt
+exec_prefix=${prefix}
+libdir=${prefix}/lib
+includedir=${prefix}/include
+version=0.1.2
+
+Name: soxr-lsr
+Description: High quality, one-dimensional sample-rate conversion library (with libsamplerate-like bindings)
+Version: ${version}
+Libs: -L${libdir} -lsoxr-lsr
+Cflags: -I${includedir}/ncurses
