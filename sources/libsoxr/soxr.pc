@@ -8,4 +8,4 @@ Name: soxr
 Description: High quality, one-dimensional sample-rate conversion library
 Version: ${version}
 Libs: -L${libdir} -lsoxr
-Cflags: -I${includedir}/ncurses
+Cflags: -I${includedir}
