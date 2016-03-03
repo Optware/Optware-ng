@@ -754,6 +754,12 @@ boost-packages-dirclean:
 boost-packages-check:
 	@$(MAKE) $(patsubst %, %-check, $(BOOST_PACKAGES))
 
+test-build:
+	rm -f builds/failed.log
+	for package in $(PACKAGES); do \
+		$(MAKE) $${package}-ipk || (echo "$${package}" >> builds/failed.log); \
+	done
+
 ifeq ($(PACKAGE_DIR),$(BASE_DIR)/packages)
     ifeq (,$(findstring -bootstrap,$(SPECIFIC_PACKAGES)))
 $(PACKAGE_DIR)/Packages $(PACKAGE_DIR)/Packages.html: $(BUILD_DIR)/*.ipk
@@ -935,6 +941,13 @@ endif
 	$(MAKE) -C $* ipkg-utils
 	$(MAKE) -C $* toolchain
 	$(MAKE) -C $* all
+
+%-feed-test-build: %/.configured
+	$(MAKE) -C $* directories
+	$(MAKE) -C $* host/.configured
+	$(MAKE) -C $* ipkg-utils
+	$(MAKE) -C $* toolchain
+	$(MAKE) -C $* test-build
 
 allfeeds: $(patsubst %,%-feed,$(OPTWARE_BUILD_TARGETS))
 
