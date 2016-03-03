@@ -1,0 +1,26 @@
+--- a/ldso/ldso/ldso.c
++++ b/ldso/ldso/ldso.c
+@@ -408,7 +408,11 @@
+ 	char image[PATH_MAX];
+ 	ssize_t s;
+ 
++#if defined __NR__dl_readlink
+ 	s = _dl_readlink(AT_FDCWD, "/proc/self/exe", image, sizeof(image));
++#else
++	s = _dl_readlink3("/proc/self/exe", image, sizeof(image));
++#endif
+ 	if (s > 0 && image[0] == '/') {
+ 		image[s] = 0;
+ 		_dl_progname = _dl_strdup(image);
+--- a/ldso/include/dl-syscall.h
++++ b/ldso/include/dl-syscall.h
+@@ -146,6 +146,9 @@
+ # define __NR__dl_readlink __NR_readlinkat
+ static __always_inline _syscall4(int, _dl_readlink, int, id, const char *, path,
+ 						char *, buf, size_t, bufsiz)
++#else
++# define __NR__dl_readlink3 __NR_readlink
++static __always_inline _syscall3(ssize_t, _dl_readlink3, const char *, path, char *, buf, size_t, bufsiz)
+ #endif
+ 
+ #ifdef __NR_pread64

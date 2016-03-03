@@ -1,0 +1,13 @@
+--- a/package/uclibc/uclibc.mk
++++ b/package/uclibc/uclibc.mk
+@@ -366,8 +366,8 @@
+ 	$(call KCONFIG_ENABLE_OPT,TARGET_$(UCLIBC_TARGET_ARCH),$(@D)/.config)
+ 	$(call KCONFIG_SET_OPT,TARGET_ARCH,"$(UCLIBC_TARGET_ARCH)",$(@D)/.config)
+ 	$(call KCONFIG_SET_OPT,KERNEL_HEADERS,"$(LINUX_HEADERS_DIR)/usr/include",$(@D)/.config)
+-	$(call KCONFIG_SET_OPT,RUNTIME_PREFIX,"/",$(@D)/.config)
+-	$(call KCONFIG_SET_OPT,DEVEL_PREFIX,"/usr",$(@D)/.config)
++	$(call KCONFIG_SET_OPT,RUNTIME_PREFIX,"%OPTWARE_TARGET_PREFIX%",$(@D)/.config)
++	$(call KCONFIG_SET_OPT,DEVEL_PREFIX,"%OPTWARE_TARGET_PREFIX%",$(@D)/.config)
+ 	$(call KCONFIG_SET_OPT,SHARED_LIB_LOADER_PREFIX,"/lib",$(@D)/.config)
+ 	$(UCLIBC_MMU_CONFIG)
+ 	$(UCLIBC_ARC_TYPE_CONFIG)

@@ -1,0 +1,16 @@
+--- a/libc/sysdeps/linux/common/euidaccess.c
++++ b/libc/sysdeps/linux/common/euidaccess.c
+@@ -1,9 +1,11 @@
++#include <sys/syscall.h>
+ #include <unistd.h>
+-#include <fcntl.h>
+ 
+-int euidaccess(const char *filename, int amode)
++#ifdef __NR_faccessatint
++euidaccess(const char *filename, int amode)
+ {
+ 	return faccessat(AT_FDCWD, filename, amode, AT_EACCESS);
+ }
+ 
+ weak_alias(euidaccess, eaccess);
++#endif

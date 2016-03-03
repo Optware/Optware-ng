@@ -1,0 +1,20 @@
+--- a/include/features.h
++++ b/include/features.h
+@@ -166,7 +166,7 @@
+ # undef  _SVID_SOURCE
+ # define _SVID_SOURCE	1
+ # undef  _ATFILE_SOURCE
+-# define _ATFILE_SOURCE	1
++/*# define _ATFILE_SOURCE	1*/
+ #endif
+ 
+ /* This macro indicates that the installed library is uClibc.  Use
+@@ -290,7 +290,7 @@
+ #if (_POSIX_C_SOURCE - 0) >= 200809L
+ # define __USE_XOPEN2K8		1
+ # undef  _ATFILE_SOURCE
+-# define _ATFILE_SOURCE	1
++/*# define _ATFILE_SOURCE	1*/
+ #endif
+ 
+ #ifdef	_XOPEN_SOURCE

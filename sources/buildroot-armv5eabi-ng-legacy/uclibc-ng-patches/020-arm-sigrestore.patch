@@ -1,0 +1,20 @@
+--- a/libc/sysdeps/linux/arm/sigrestorer.S
++++ b/libc/sysdeps/linux/arm/sigrestorer.S
+@@ -50,7 +50,7 @@
+ #endif
+ 	nop
+ __default_sa_restorer:
+-	mov	r7, $SYS_ify(sigreturn)
++	ldr	r7, =$SYS_ify(sigreturn)
+ 	swi	0x0
+ 	.fnend
+ #else
+@@ -77,7 +77,7 @@
+ #endif
+ 	nop
+ __default_rt_sa_restorer:
+-	mov	r7, $SYS_ify(rt_sigreturn)
++	ldr	r7, =$SYS_ify(rt_sigreturn)
+ 	swi	0x0
+ 	.fnend
+ #else
