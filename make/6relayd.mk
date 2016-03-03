@@ -160,6 +160,10 @@ $(6RELAYD_BUILD_DIR)/.configured: $(DL_DIR)/$(6RELAYD_SOURCE) $(6RELAYD_PATCHES)
 		-DDL_LIBRARY=$(STAGING_DIR) \
 		-DCMAKE_PREFIX_PATH=$(STAGING_DIR) \
 		-DCMAKE_SKIP_RPATH=TRUE
+ifeq ($(OPTWARE_TARGET), $(filter buildroot-ppc-603e, $(OPTWARE_TARGET)))
+	# '_unused' macro declaration conflicts with 'struct sigcontext' declaration in <asm/sigcontext.h>
+	sed -i -e 's/_unused/_&/g' $(@D)/src/*.[ch]
+endif
 	touch $@
 
 6relayd-unpack: $(6RELAYD_BUILD_DIR)/.configured
