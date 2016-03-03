@@ -50,7 +50,7 @@ GLIB_LOCALES=
 # GLIB_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#GLIB_PATCHES=$(GLIB_SOURCE_DIR)/configure.patch
+GLIB_PATCHES=$(GLIB_SOURCE_DIR)/eventfd_detection.patch
 
 #
 # If the compilation of the package requires additional
@@ -155,10 +155,10 @@ ifeq ($(GETTEXT_NLS), enable)
 endif
 	rm -rf $(BUILD_DIR)/$(GLIB_DIR) $(@D)
 	$(GLIB_UNZIP) $(DL_DIR)/$(GLIB_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	if test -n "$(GLIB_PATCHES)" ; \
-#		then cat $(GLIB_PATCHES) | \
-#		$(PATCH) -d $(BUILD_DIR)/$(GLIB_DIR) -p1 ; \
-#	fi
+	if test -n "$(GLIB_PATCHES)" ; \
+		then cat $(GLIB_PATCHES) | \
+		$(PATCH) -d $(BUILD_DIR)/$(GLIB_DIR) -p1 ; \
+	fi
 	mv $(BUILD_DIR)/$(GLIB_DIR) $(@D)
 	cp $(SOURCE_DIR)/glib/glib.cache $(@D)/arm.cache
 #	sed -i -e '/^ALL_LINGUAS=/s/"[^"]\+"$$/$(GLIB_LOCALES)/;' $(@D)/configure
@@ -166,6 +166,7 @@ endif
 #	fallback to "$(TARGET_PREFIX)/share" if XDG_DATA_DIRS env variable not given instead of "/usr/local/share:/usr/share"
 	sed -i -e 's|xdg_data_dirs = ".*|xdg_data_dirs = "$(TARGET_PREFIX)/share/";|' $(@D)/gio/xdgmime/xdgmime.c
 	sed -i -e 's|data_dirs = ".*|data_dirs = "$(TARGET_PREFIX)/share/";|' $(@D)/glib/gutils.c
+	$(AUTORECONF1.14) -vif $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GLIB_CPPFLAGS)" \

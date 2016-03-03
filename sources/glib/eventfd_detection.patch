@@ -1,0 +1,19 @@
+--- a/configure.ac
++++ b/configure.ac
+@@ -2318,8 +2318,16 @@
+ 
+ AC_CACHE_CHECK(for eventfd(2) system call,
+     glib_cv_eventfd,AC_COMPILE_IFELSE([AC_LANG_PROGRAM([
++#include <errno.h>
++#include <sys/syscall.h>
+ #include <sys/eventfd.h>
+ #include <unistd.h>
++
++#ifdef __UCLIBC__
++# if !(defined __NR_eventfd || defined __NR_eventfd2)
++#  error no eventfd
++# endif
++#endif
+ ],[
+   eventfd (0, EFD_CLOEXEC);
+ ])],glib_cv_eventfd=yes,glib_cv_eventfd=no))
