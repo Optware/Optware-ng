@@ -2,6 +2,10 @@
 
 This is an Optware fork. It targets to be firmware-independent and currently supports hard-float ARMv7, I686, PowerPC 603e and soft-float ARMv5, ARMv7 EABI and MIPSEL targets. Feeds building and hosting resources are kindly provided by [Nas-Admin.org project](http://www.nas-admin.org).
 
+# Help wanted
+
+Now that Optware-ng is official, we're looking for developers and wiki writers. If you're willing to give it a go, please see '**Contributing to project and building from source**' and '**Writing Optware-ng end-user instructions**' sections below.
+
 # Attention!
 
 Optware-ng feeds have moved to [http://ipkg.nslu2-linux.org/optware-ng](http://ipkg.nslu2-linux.org/optware-ng). Please run this command to update ipkg configuration if you installed Optware-ng prior to this announcement:
@@ -72,11 +76,22 @@ Install desired ones:
 * [PowerPC 603e](http://ipkg.nslu2-linux.org/optware-ng/buildroot-ppc-603e/Packages.html)
 * [I686](http://ipkg.nslu2-linux.org/optware-ng/buildroot-i686/Packages.html)
 
+# Contributing to project and building from source
+
+Contribution is always welcomed. These wiki pages contain useful info to get you started:
+
+* [Contributing to Optware-ng](https://github.com/Optware/Optware-ng/wiki/Contributing-to-Optware-ng)
+* [Adding a package to Optware-ng](https://github.com/Optware/Optware-ng/wiki/Adding-a-package-to-Optware-ng)
+
+# Writing Optware-ng end-user instructions
+
+Currently, the project is missing writers who would contribute by creating how-to's for end-users. We can setup a mediawiki with the help of nas-admin.org guys, but we need people to fill it. In case you are willing to contribute by writing how-to's, please contact me on #**optware** IRC channel on irc.freenode.net, nickname **alllexx**. If I'm away, you can PM me, and I'll reach you later.
+
 # News
 
 ## 2016-02-23
 
-Optawre-ng is now official. Feeds are built and hosted by [Nas-Admin.org project](http://www.nas-admin.org). See http://jenkins.nas-admin.org/view/Optware
+Optware-ng is now official. Feeds are built and hosted by [Nas-Admin.org project](http://www.nas-admin.org). See http://jenkins.nas-admin.org/view/Optware
 
 ## 2016-02-14
 
@@ -109,9 +124,3 @@ New buildroot-i686 target added. This is a gcc-4.9.2, glibc-2.20, linux-3.2.66 f
 ## 2015-04-19:
 
 Now buildroot-mipsel target added. It is similar to buildroot-armeabi, but targets mipsel softfloat (mips32r2) devices.
-
-# Building from source
-
-For instructions on how to build packages using this build system, see:
-
-* [Original Optware instructions](http://www.nslu2-linux.org/wiki/Optware/AddAPackageToOptware)
