@@ -1,0 +1,103 @@
+###########################################################
+#
+# perl-lwp-protocol-https
+#
+###########################################################
+
+PERL-LWP-PROTOCOL-HTTPS_SITE=http://$(PERL_CPAN_SITE)/CPAN/authors/id/M/MS/MSCHILLI
+PERL-LWP-PROTOCOL-HTTPS_VERSION=6.06
+PERL-LWP-PROTOCOL-HTTPS_SOURCE=LWP-Protocol-https-$(PERL-LWP-PROTOCOL-HTTPS_VERSION).tar.gz
+PERL-LWP-PROTOCOL-HTTPS_DIR=LWP-Protocol-https-$(PERL-LWP-PROTOCOL-HTTPS_VERSION)
+PERL-LWP-PROTOCOL-HTTPS_UNZIP=zcat
+PERL-LWP-PROTOCOL-HTTPS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
+PERL-LWP-PROTOCOL-HTTPS_DESCRIPTION=Provide https support for LWP::UserAgent
+PERL-LWP-PROTOCOL-HTTPS_SECTION=util
+PERL-LWP-PROTOCOL-HTTPS_PRIORITY=optional
+PERL-LWP-PROTOCOL-HTTPS_DEPENDS=perl-mozilla-ca
+PERL-LWP-PROTOCOL-HTTPS_SUGGESTS=
+PERL-LWP-PROTOCOL-HTTPS_CONFLICTS=
+
+PERL-LWP-PROTOCOL-HTTPS_IPK_VERSION=1
+
+PERL-LWP-PROTOCOL-HTTPS_CONFFILES=
+
+PERL-LWP-PROTOCOL-HTTPS_BUILD_DIR=$(BUILD_DIR)/perl-lwp-protocol-https
+PERL-LWP-PROTOCOL-HTTPS_SOURCE_DIR=$(SOURCE_DIR)/perl-lwp-protocol-https
+PERL-LWP-PROTOCOL-HTTPS_IPK_DIR=$(BUILD_DIR)/perl-lwp-protocol-https-$(PERL-LWP-PROTOCOL-HTTPS_VERSION)-ipk
+PERL-LWP-PROTOCOL-HTTPS_IPK=$(BUILD_DIR)/perl-lwp-protocol-https_$(PERL-LWP-PROTOCOL-HTTPS_VERSION)-$(PERL-LWP-PROTOCOL-HTTPS_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+$(DL_DIR)/$(PERL-LWP-PROTOCOL-HTTPS_SOURCE):
+	$(WGET) -P $(@D) $(PERL-LWP-PROTOCOL-HTTPS_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(FREEBSD_DISTFILES)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
+
+perl-lwp-protocol-https-source: $(DL_DIR)/$(PERL-LWP-PROTOCOL-HTTPS_SOURCE) $(PERL-LWP-PROTOCOL-HTTPS_PATCHES)
+
+$(PERL-LWP-PROTOCOL-HTTPS_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-LWP-PROTOCOL-HTTPS_SOURCE) $(PERL-LWP-PROTOCOL-HTTPS_PATCHES) make/perl-lwp-protocol-https.mk
+	rm -rf $(BUILD_DIR)/$(PERL-LWP-PROTOCOL-HTTPS_DIR) $(PERL-LWP-PROTOCOL-HTTPS_BUILD_DIR)
+	$(PERL-LWP-PROTOCOL-HTTPS_UNZIP) $(DL_DIR)/$(PERL-LWP-PROTOCOL-HTTPS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+#	cat $(PERL-LWP-PROTOCOL-HTTPS_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PERL-LWP-PROTOCOL-HTTPS_DIR) -p1
+	mv $(BUILD_DIR)/$(PERL-LWP-PROTOCOL-HTTPS_DIR) $(@D)
+	(cd $(@D); \
+		$(TARGET_CONFIGURE_OPTS) \
+		CPPFLAGS="$(STAGING_CPPFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS)" \
+		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
+		$(PERL_HOSTPERL) Makefile.PL \
+		PREFIX=$(TARGET_PREFIX) \
+	)
+	touch $@
+
+perl-lwp-protocol-https-unpack: $(PERL-LWP-PROTOCOL-HTTPS_BUILD_DIR)/.configured
+
+$(PERL-LWP-PROTOCOL-HTTPS_BUILD_DIR)/.built: $(PERL-LWP-PROTOCOL-HTTPS_BUILD_DIR)/.configured
+	rm -f $@
+	$(MAKE) -C $(@D) \
+	PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl"
+	touch $@
+
+perl-lwp-protocol-https: $(PERL-LWP-PROTOCOL-HTTPS_BUILD_DIR)/.built
+
+$(PERL-LWP-PROTOCOL-HTTPS_BUILD_DIR)/.staged: $(PERL-LWP-PROTOCOL-HTTPS_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	touch $@
+
+perl-lwp-protocol-https-stage: $(PERL-LWP-PROTOCOL-HTTPS_BUILD_DIR)/.staged
+
+$(PERL-LWP-PROTOCOL-HTTPS_IPK_DIR)/CONTROL/control:
+	@$(INSTALL) -d $(@D)
+	@rm -f $@
+	@echo "Package: perl-lwp-protocol-https" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(PERL-LWP-PROTOCOL-HTTPS_PRIORITY)" >>$@
+	@echo "Section: $(PERL-LWP-PROTOCOL-HTTPS_SECTION)" >>$@
+	@echo "Version: $(PERL-LWP-PROTOCOL-HTTPS_VERSION)-$(PERL-LWP-PROTOCOL-HTTPS_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(PERL-LWP-PROTOCOL-HTTPS_MAINTAINER)" >>$@
+	@echo "Source: $(PERL-LWP-PROTOCOL-HTTPS_SITE)/$(PERL-LWP-PROTOCOL-HTTPS_SOURCE)" >>$@
+	@echo "Description: $(PERL-LWP-PROTOCOL-HTTPS_DESCRIPTION)" >>$@
+	@echo "Depends: $(PERL-LWP-PROTOCOL-HTTPS_DEPENDS)" >>$@
+	@echo "Suggests: $(PERL-LWP-PROTOCOL-HTTPS_SUGGESTS)" >>$@
+	@echo "Conflicts: $(PERL-LWP-PROTOCOL-HTTPS_CONFLICTS)" >>$@
+
+$(PERL-LWP-PROTOCOL-HTTPS_IPK): $(PERL-LWP-PROTOCOL-HTTPS_BUILD_DIR)/.built
+	rm -rf $(PERL-LWP-PROTOCOL-HTTPS_IPK_DIR) $(BUILD_DIR)/perl-lwp-protocol-https_*_$(TARGET_ARCH).ipk
+	$(MAKE) -C $(PERL-LWP-PROTOCOL-HTTPS_BUILD_DIR) DESTDIR=$(PERL-LWP-PROTOCOL-HTTPS_IPK_DIR) install
+	find $(PERL-LWP-PROTOCOL-HTTPS_IPK_DIR)$(TARGET_PREFIX) -name 'perllocal.pod' -exec rm -f {} \;
+	(cd $(PERL-LWP-PROTOCOL-HTTPS_IPK_DIR)$(TARGET_PREFIX)/lib/perl5 ; \
+		find . -name '*.so' -exec chmod +w {} \; ; \
+		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
+		find . -name '*.so' -exec chmod -w {} \; ; \
+	)
+	find $(PERL-LWP-PROTOCOL-HTTPS_IPK_DIR)$(TARGET_PREFIX) -type d -exec chmod go+rx {} \;
+	$(MAKE) $(PERL-LWP-PROTOCOL-HTTPS_IPK_DIR)/CONTROL/control
+	echo $(PERL-LWP-PROTOCOL-HTTPS_CONFFILES) | sed -e 's/ /\n/g' > $(PERL-LWP-PROTOCOL-HTTPS_IPK_DIR)/CONTROL/conffiles
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(PERL-LWP-PROTOCOL-HTTPS_IPK_DIR)
+
+perl-lwp-protocol-https-ipk: $(PERL-LWP-PROTOCOL-HTTPS_IPK)
+
+perl-lwp-protocol-https-clean:
+	-$(MAKE) -C $(PERL-LWP-PROTOCOL-HTTPS_BUILD_DIR) clean
+
+perl-lwp-protocol-https-dirclean:
+	rm -rf $(BUILD_DIR)/$(PERL-LWP-PROTOCOL-HTTPS_DIR) $(PERL-LWP-PROTOCOL-HTTPS_BUILD_DIR) $(PERL-LWP-PROTOCOL-HTTPS_IPK_DIR) $(PERL-LWP-PROTOCOL-HTTPS_IPK)

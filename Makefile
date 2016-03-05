@@ -128,10 +128,10 @@ PERL_PACKAGES = \
 	perl-ip-country \
 	perl-json-xs \
 	perl-lexical-persistence \
-	perl-libnet perl-libwww perl-libxml \
+	perl-libnet perl-libwww perl-libxml perl-lwp-protocol-https \
 	perl-mail-spf-query perl-mailtools \
 	perl-mime-tools \
-	perl-module-build perl-module-pluggable perl-module-refresh perl-module-signature \
+	perl-module-build perl-module-pluggable perl-module-refresh perl-module-signature perl-mozilla-ca \
 	perl-net-cidr-lite perl-net-dns perl-net-http perl-net-ident perl-net-server perl-net-ssleay \
 	perl-padwalker \
 	perl-par-dist \
