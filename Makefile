@@ -120,7 +120,7 @@ PERL_PACKAGES = \
 	perl-file-next perl-file-rename \
 	perl-gd perl-gd-barcode \
 	perl-html-form \
-	perl-html-parser perl-html-tagset perl-html-template perl-hottproxy \
+	perl-html-parser perl-html-tagparser perl-html-tagset perl-html-template perl-hottproxy \
 	perl-http-cookies perl-http-date perl-http-message \
 	perl-http-response-encoding \
 	perl-ima-dbi \
