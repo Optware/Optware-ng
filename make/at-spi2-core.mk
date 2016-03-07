@@ -126,7 +126,6 @@ $(AT-SPI2-CORE_BUILD_DIR)/.configured: $(DL_DIR)/$(AT-SPI2-CORE_SOURCE) $(AT-SPI
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(AT-SPI2-CORE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(AT-SPI2-CORE_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
-		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -136,6 +135,7 @@ $(AT-SPI2-CORE_BUILD_DIR)/.configured: $(DL_DIR)/$(AT-SPI2-CORE_SOURCE) $(AT-SPI
 		--disable-gtk-doc-html \
 		--disable-nls \
 		--disable-static \
+		--disable-introspection \
 	)
 	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
