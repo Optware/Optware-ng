@@ -46,7 +46,7 @@ CALC_IPK_VERSION=1
 # CALC_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#CALC_PATCHES=$(CALC_SOURCE_DIR)/configure.patch
+CALC_PATCHES=$(CALC_SOURCE_DIR)/parallel_build.patch
 
 #
 # If the compilation of the package requires additional
@@ -126,7 +126,7 @@ $(CALC_BUILD_DIR)/.configured: $(DL_DIR)/$(CALC_SOURCE) $(CALC_PATCHES) make/cal
 	$(CALC_UNZIP) $(DL_DIR)/$(CALC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(CALC_PATCHES)" ; \
 		then cat $(CALC_PATCHES) | \
-		$(PATCH) -d $(BUILD_DIR)/$(CALC_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(CALC_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(CALC_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(CALC_DIR) $(@D) ; \
@@ -155,17 +155,6 @@ calc-unpack: $(CALC_BUILD_DIR)/.configured
 #
 $(CALC_BUILD_DIR)/.built: $(CALC_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(@D) endian_calc.h longbits.h fposval.h \
-		$(TARGET_CONFIGURE_OPTS) $(CALC_CONFIGURE_OPTS) \
-		CPPFLAGS="$(STAGING_CPPFLAGS) $(CALC_CPPFLAGS)" \
-		LDFLAGS="$(STAGING_LDFLAGS) $(CALC_LDFLAGS)" \
-		CALC_SHAREDIR=$(TARGET_PREFIX)/share/calc \
-		BINDIR=$(TARGET_PREFIX)/bin \
-		INCDIR=$(TARGET_INCDIR) \
-		MANDIR=$(TARGET_PREFIX)/man \
-		LIBDIR=$(TARGET_PREFIX)/lib \
-		DEFAULT_LIB_INSTALL_PATH=$(TARGET_PREFIX)/lib \
-		;
 	$(MAKE) -C $(@D) \
 		$(TARGET_CONFIGURE_OPTS) $(CALC_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(CALC_CPPFLAGS)" \
@@ -175,20 +164,7 @@ $(CALC_BUILD_DIR)/.built: $(CALC_BUILD_DIR)/.configured
 		INCDIR=$(TARGET_INCDIR) \
 		MANDIR=$(TARGET_PREFIX)/man \
 		LIBDIR=$(TARGET_PREFIX)/lib \
-		DEFAULT_LIB_INSTALL_PATH=$(TARGET_PREFIX)/lib \
-		|| \
-	($(MAKE) -C $(@D)/help -j 1 && \
-	$(MAKE) -C $(@D) \
-		$(TARGET_CONFIGURE_OPTS) $(CALC_CONFIGURE_OPTS) \
-		CPPFLAGS="$(STAGING_CPPFLAGS) $(CALC_CPPFLAGS)" \
-		LDFLAGS="$(STAGING_LDFLAGS) $(CALC_LDFLAGS)" \
-		CALC_SHAREDIR=$(TARGET_PREFIX)/share/calc \
-		BINDIR=$(TARGET_PREFIX)/bin \
-		INCDIR=$(TARGET_INCDIR) \
-		MANDIR=$(TARGET_PREFIX)/man \
-		LIBDIR=$(TARGET_PREFIX)/lib \
-		DEFAULT_LIB_INSTALL_PATH=$(TARGET_PREFIX)/lib \
-		)
+		DEFAULT_LIB_INSTALL_PATH=$(TARGET_PREFIX)/lib
 	touch $@
 
 #

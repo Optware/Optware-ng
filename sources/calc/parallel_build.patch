@@ -1,0 +1,11 @@
+--- a/Makefile
++++ b/Makefile
+@@ -2000,6 +2000,8 @@
+ 		   ${CALC_DYNAMIC_LIBS} ${SYM_DYNAMIC_LIBS} calc${EXT} \
+ 		   ${SAMPLE_TARGETS} ${LATE_TARGETS}
+ 
++.NOTPARALLEL: ${LATE_TARGETS}
++
+ .dynamic: ${MAKE_FILE}
+ 	${Q} r="calc-dynamic-only"; \
+ 	    if [ "${BLD_TYPE}" != "$$r" ]; then \
