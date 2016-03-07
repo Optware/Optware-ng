@@ -159,6 +159,7 @@ endif
 		\
 		--disable-nls \
 		--disable-static \
+		--disable-introspection \
 	)
 	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
