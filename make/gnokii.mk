@@ -148,6 +148,7 @@ $(GNOKII_BUILD_DIR)/.configured: $(DL_DIR)/$(GNOKII_SOURCE) $(GNOKII_PATCHES) ma
 		--without-x \
 		--disable-nls \
 		--disable-static \
+		--disable-libpcsclite \
 	)
 	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
