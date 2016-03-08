@@ -148,6 +148,7 @@ $(IPAC-NG_BUILD_DIR)/.built: $(IPAC-NG_BUILD_DIR)/.configured
 	$(MAKE) -C $(@D)/access/files libipacfiles.a
 	$(MAKE) -C $(@D)/agents/iptables libipaciptables.a
 	$(MAKE) -C $(@D)/storage/gdbm libstorgdbm.a
+	$(MAKE) -C $(@D)/storage/plain-file libstorplain-file.a
 	$(MAKE) -C $(@D) HOSTCC=$(HOSTCC)
 	touch $@
 
