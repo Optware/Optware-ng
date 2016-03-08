@@ -131,6 +131,7 @@ $(LIBUSB_BUILD_DIR)/.staged: $(LIBUSB_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(LIBUSB_BUILD_DIR) DESTDIR=$(STAGING_DIR) \
 		SUBDIRS=. lib_LTLIBRARIES=libusb.la install
+	rm -f $(STAGING_LIB_DIR)/libusb.la
 	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/libusb.pc
 	touch $@
 

@@ -145,6 +145,7 @@ libusb1: $(LIBUSB1_BUILD_DIR)/.built
 $(LIBUSB1_BUILD_DIR)/.staged: $(LIBUSB1_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(LIBUSB1_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	rm -f $(STAGING_LIB_DIR)/libusb-1.0.la
 	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/libusb-1.0.pc
 	touch $@
 
