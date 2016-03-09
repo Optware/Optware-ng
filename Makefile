@@ -801,6 +801,8 @@ endif
 packages: $(PACKAGES_IPKG)
 	$(MAKE) index
 
+package-only: $(PACKAGES_IPKG)
+
 .PHONY: all clean dirclean distclean directories packages source toolchain \
 	buildroot-toolchain libuclibc++-toolchain \
 	autoclean \
@@ -955,7 +957,14 @@ endif
 	$(MAKE) -C $* host/.configured
 	$(MAKE) -C $* ipkg-utils
 	$(MAKE) -C $* toolchain
-	$(MAKE) -C $* all
+	$(MAKE) -C $* packages
+
+%-feed-build: %/.configured
+	$(MAKE) -C $* directories
+	$(MAKE) -C $* host/.configured
+	$(MAKE) -C $* ipkg-utils
+	$(MAKE) -C $* toolchain
+	$(MAKE) -C $* package-only
 
 %-feed-test-build: %/.configured
 	$(MAKE) -C $* directories
