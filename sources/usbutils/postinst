@@ -1,0 +1,8 @@
+#!/bin/sh
+
+if [ ! -f "%OPTWARE_TARGET_PREFIX%/share/misc/usb.ids" ]; then
+	echo "%OPTWARE_TARGET_PREFIX%/share/misc/usb.ids is missing: trying to download it"
+	%OPTWARE_TARGET_PREFIX%/sbin/update-usbids.sh
+else
+	echo '%OPTWARE_TARGET_PREFIX%/share/misc/usb.ids present: not automatically editing it. If you want to upgrade it manually, run `%OPTWARE_TARGET_PREFIX%/sbin/update-usbids.sh`'
+fi
