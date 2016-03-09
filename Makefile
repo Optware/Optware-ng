@@ -393,7 +393,7 @@ COMMON_CROSS_PACKAGES = \
 	par2cmdline patch patchutils \
 	pcal pcapsipdump pciutils pcre pcsc-lite pen perltgd pinentry pixman \
 	phoneme-advanced \
-	php php-apache php-thttpd phpmyadmin \
+	php php-apache php-thttpd php-memcached phpmyadmin \
 	picocom picolisp pkgconfig plowshare polipo pop3proxy \
 	popt poptop portmap postgresql postfix pound powertop \
 	ppower ppp printproto privoxy procmail \
