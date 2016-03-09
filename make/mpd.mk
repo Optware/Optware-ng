@@ -24,7 +24,7 @@ MPD_SITE=http://www.musicpd.org/download/mpd/$(shell echo $(MPD_VERSION)|cut -d 
 #MPD_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/musicpd
 #MPD_SVN_REPO=https://svn.musicpd.org/mpd/trunk
 #MPD_SVN_REV=5324
-MPD_VERSION?=0.17.6
+MPD_VERSION=0.19.13
 MPD_SOURCE=mpd-$(MPD_VERSION).tar.xz
 MPD_DIR=mpd-$(MPD_VERSION)
 MPD_UNZIP=xzcat
@@ -32,7 +32,7 @@ MPD_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 MPD_DESCRIPTION=Music Player Daemon (MPD) allows remote access for playing music.
 MPD_SECTION=audio
 MPD_PRIORITY=optional
-MPD_DEPENDS=audiofile, faad2, ffmpeg, flac, glib, lame, libao, libcurl, icu
+MPD_DEPENDS=audiofile, faad2, ffmpeg, flac, glib, lame, libao, libcurl, icu, alsa-lib
 MPD_DEPENDS+=, libid3tag, libmad, libmms, libmpcdec, libshout, wavpack, audiofile
 MPD_DEPENDS+=, psmisc
 MPD_DEPENDS+=, zlib, expat
@@ -50,7 +50,7 @@ MPD_CONFLICTS=
 #
 # MPD_IPK_VERSION should be incremented when the ipk changes.
 #
-MPD_IPK_VERSION?=1
+MPD_IPK_VERSION=1
 
 #
 # MPD_CONFFILES should be a list of user-editable files
@@ -155,7 +155,7 @@ endif
 	$(MAKE) faad2-stage ffmpeg-stage flac-stage lame-stage \
 	glib-stage libcurl-stage libmms-stage icu-stage \
 	audiofile-stage libao-stage libid3tag-stage \
-	libmad-stage libmpcdec-stage libshout-stage \
+	libmad-stage libmpcdec-stage libshout-stage alsa-lib-stage \
 	wavpack-stage audiofile-stage expat-stage boost-stage
 ifneq (, $(filter i686, $(TARGET_ARCH)))
 	$(MAKE) libsamplerate-stage libvorbis-stage
@@ -192,7 +192,7 @@ endif
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=$(TARGET_PREFIX) \
 		\
-		--disable-alsa \
+		--enable-alsa \
 		--enable-aac \
 		--enable-ao \
 		--enable-audiofile \
