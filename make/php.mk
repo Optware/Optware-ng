@@ -13,7 +13,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 PHP_SITE=http://static.php.net/www.php.net/distributions/
-PHP_VERSION=5.6.18
+PHP_VERSION=5.6.19
 PHP_SOURCE=php-$(PHP_VERSION).tar.bz2
 PHP_DIR=php-$(PHP_VERSION)
 PHP_UNZIP=bzcat
@@ -530,6 +530,11 @@ endif
 			lt~obsolete.m4 >> $(@D)/aclocal.m4 \
 	)
 
+	(cd $(HOST_STAGING_PREFIX)/share/aclocal; \
+		cat libtool.m4 ltoptions.m4 ltversion.m4 ltsugar.m4 \
+			lt~obsolete.m4 >> $(@D)/build/libtool.m4 \
+	)
+
 	echo 'AC_CONFIG_MACRO_DIR([m4])' >> $(@D)/configure.in
 
 	$(AUTORECONF1.10) -vif $(@D)
@@ -659,6 +664,7 @@ $(PHP_BUILD_DIR)/.staged: $(PHP_BUILD_DIR)/.built
 	cp $(STAGING_PREFIX)/bin/php-config $(STAGING_DIR)/bin/php-config
 	cp $(STAGING_PREFIX)/bin/phpize $(STAGING_DIR)/bin/phpize
 	sed -i -e 's!prefix=.*!prefix=$(STAGING_PREFIX)!' $(STAGING_DIR)/bin/phpize
+	sed -i -e 's!^prefix=.*!prefix="$(STAGING_PREFIX)"!' $(STAGING_DIR)/bin/php-config
 	chmod a+rx $(STAGING_DIR)/bin/phpize
 	touch $@
 
