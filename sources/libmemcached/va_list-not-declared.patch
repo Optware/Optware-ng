@@ -1,0 +1,10 @@
+--- a/libtest/exception.hpp
++++ b/libtest/exception.hpp
+@@ -35,6 +35,7 @@
+  */
+ 
+ #pragma once
++#include <stdarg.h>
+ 
+ namespace libtest {
+ 

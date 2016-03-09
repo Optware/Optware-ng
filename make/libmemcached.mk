@@ -49,7 +49,9 @@ LIBMEMCACHED_IPK_VERSION=1
 # LIBMEMCACHED_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-LIBMEMCACHED_PATCHES=$(LIBMEMCACHED_SOURCE_DIR)/disable_tests.patch
+LIBMEMCACHED_PATCHES=\
+$(LIBMEMCACHED_SOURCE_DIR)/disable_tests.patch \
+$(LIBMEMCACHED_SOURCE_DIR)/va_list-not-declared.patch \
 
 #
 # If the compilation of the package requires additional
