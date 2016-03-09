@@ -19,22 +19,22 @@
 #
 # You should change all these variables to suit your package.
 #
-SQUID3_SITE=http://www.squid-cache.org/Versions/v3/3.1
-SQUID3_VERSION=3.1.8
-SQUID3_SOURCE=squid-$(SQUID3_VERSION).tar.bz2
+SQUID3_SITE=http://www.squid-cache.org/Versions/v3/3.5
+SQUID3_VERSION=3.5.15
+SQUID3_SOURCE=squid-$(SQUID3_VERSION).tar.xz
 SQUID3_DIR=squid-$(SQUID3_VERSION)
-SQUID3_UNZIP=bzcat
+SQUID3_UNZIP=xzcat
 
 SQUID3_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SQUID3_DESCRIPTION=Full-featured Web proxy cache.
 SQUID3_SECTION=web
 SQUID3_PRIORITY=optional
-SQUID3_DEPENDS=
+SQUID3_DEPENDS=openssl, expat, libxml2, gnutls, libnettle, libcap, libnetfilter-conntrack
 SQUID3_SUGGESTS=
 SQUID3_CONFLICTS=squid
 
 # override SQUID3_IPK_VERSION for target specific feeds
-SQUID3_IPK_VERSION ?= 1
+SQUID3_IPK_VERSION=1
 
 #
 ## SQUID3_CONFFILES should be a list of user-editable files
@@ -44,8 +44,7 @@ SQUID3_CONFFILES=$(TARGET_PREFIX)/etc/squid/squid.conf $(TARGET_PREFIX)/etc/init
 # SQUID3_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-SQUID3_PATCHES=$(SQUID3_SOURCE_DIR)/squidv3-build-cf_gen.patch \
-		$(SQUID3_SOURCE_DIR)/fix-runs-in-configure.patch
+SQUID3_PATCHES=$(SQUID3_SOURCE_DIR)/cross_compile.patch
 
 #
 # If the compilation of the package requires additional
@@ -53,10 +52,6 @@ SQUID3_PATCHES=$(SQUID3_SOURCE_DIR)/squidv3-build-cf_gen.patch \
 #
 SQUID3_CPPFLAGS=
 SQUID3_LDFLAGS=
-SQUID3_EPOLL ?= $(strip \
-$(if $(filter syno-e500, $(OPTWARE_TARGET)),--disable-epoll, \
-$(if $(filter module-init-tools, $(PACKAGES)),--enable-epoll, \
---disable-epoll)))
 
 #
 # SQUID3_BUILD_DIR is the directory in which the build is done.
@@ -88,34 +83,6 @@ SQUID3_INCLUDE_DIR=$(SQUID3_INST_DIR)/include
 SQUID3_INFO_DIR=$(SQUID3_INST_DIR)/info
 SQUID3_MAN_DIR=$(SQUID3_INST_DIR)/man
 
-ifneq ($(HOSTCC), $(TARGET_CC))
-SQUID3_CROSS_CONFIG_ENVS=\
-	ac_cv_sizeof_int8_t=1 \
-	ac_cv_sizeof_uint8_t=1 \
-	ac_cv_sizeof_u_int8_t=1 \
-	ac_cv_sizeof_int16_t=2 \
-	ac_cv_sizeof_uint16_t=2 \
-	ac_cv_sizeof_u_int16_t=2 \
-	ac_cv_sizeof_int32_t=4 \
-	ac_cv_sizeof_uint32_t=4 \
-	ac_cv_sizeof_u_int32_t=4 \
-	ac_cv_sizeof_int64_t=8 \
-	ac_cv_sizeof_uint64_t=8 \
-	ac_cv_sizeof_u_int64_t=8 \
-	ac_cv_sizeof___int64=0 \
-	ac_cv_af_unix_large_dgram=yes \
-	ac_cv_func_setresuid=yes \
-	ac_cv_func_va_copy=yes \
-	ac_cv_func___va_copy=yes \
-	ac_cv_c_bigendian=no
-ifeq (--enable-epoll, $(SQUID3_EPOLL))
-SQUID3_CROSS_CONFIG_OPTIONS=--enable-epoll
-SQUID3_CROSS_CONFIG_ENVS+= ac_cv_epoll_works=yes
-else
-SQUID3_CROSS_CONFIG_OPTIONS=--disable-epoll
-endif
-endif
-
 .PHONY: squid3-source squid3-unpack squid3 squid3-stage squid3-ipk squid3-clean squid3-dirclean squid3-check
 
 #
@@ -133,20 +100,6 @@ $(DL_DIR)/$(SQUID3_SOURCE):
 #
 squid3-source: $(DL_DIR)/$(SQUID3_SOURCE) $(SQUID3_PATCHES)
 
-$(SQUID3_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(SQUID3_SOURCE) make/squid3.mk
-#	$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(HOST_BUILD_DIR)/$(SQUID3_DIR) $(@D)
-	$(SQUID3_UNZIP) $(DL_DIR)/$(SQUID3_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
-	if test "$(HOST_BUILD_DIR)/$(SQUID3_DIR)" != "$(@D)" ; \
-		then mv $(HOST_BUILD_DIR)/$(SQUID3_DIR) $(@D) ; \
-	fi
-	(cd $(@D); \
-		./configure \
-		--prefix=$(TARGET_PREFIX) \
-	)
-	find $(@D) -type f -name "Makefile" -exec sed -i -e 's/ -Werror[$$ ]/ /' {} \;
-	$(MAKE) -C $(@D)
-	touch $@
 #
 # This target unpacks the source code in the build directory.
 # If the source archive is not .tar.gz or .tar.bz2, then you will need
@@ -162,17 +115,13 @@ $(SQUID3_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(SQUID3_SOURCE) mak
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-ifeq ($(HOSTCC), $(TARGET_CC))
 $(SQUID3_BUILD_DIR)/.configured: $(DL_DIR)/$(SQUID3_SOURCE) $(SQUID3_PATCHES) make/squid3.mk
-else
-$(SQUID3_BUILD_DIR)/.configured: $(SQUID3_HOST_BUILD_DIR)/.built $(SQUID3_PATCHES)
-endif
-#	$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) openssl-stage expat-stage libxml2-stage gnutls-stage libnettle-stage libcap-stage libnetfilter-conntrack-stage
 	rm -rf $(BUILD_DIR)/$(SQUID3_DIR) $(@D)
 	$(SQUID3_UNZIP) $(DL_DIR)/$(SQUID3_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SQUID3_PATCHES)" ; \
 		then cat $(SQUID3_PATCHES) | \
-		$(PATCH) -d $(BUILD_DIR)/$(SQUID3_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(SQUID3_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(SQUID3_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(SQUID3_DIR) $(@D) ; \
@@ -181,7 +130,9 @@ endif
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SQUID3_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(SQUID3_LDFLAGS)" \
-		$(SQUID3_CROSS_CONFIG_ENVS) \
+		ac_cv_header_linux_netfilter_ipv4_h=yes \
+		ac_cv_epoll_works=yes \
+		squid_cv_gnu_atomics=no \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -199,14 +150,44 @@ endif
 		--oldincludedir=$(SQUID3_INCLUDE_DIR) \
 		--infodir=$(SQUID3_INFO_DIR) \
 		--mandir=$(SQUID3_MAN_DIR) \
-		$(SQUID3_CROSS_CONFIG_OPTIONS) \
 		--enable-basic-auth-helpers="NCSA" \
 		--disable-nls \
+		--disable-static \
+		--enable-shared \
+		--enable-http-violations \
+		--enable-icmp \
+		--enable-delay-pools \
+		--enable-icap-client \
+		--enable-kill-parent-hack \
+		--disable-snmp \
+		--enable-ssl \
+		--enable-ssl-crtd \
+		--enable-cache-digests \
+		--enable-linux-netfilter \
+		--disable-unlinkd \
+		--enable-x-accelerator-vary \
+		--disable-translation \
+		--disable-auto-locale \
+		--with-dl \
+		--with-pthreads \
+		--with-expat=$(STAGING_PREFIX) \
+		--with-libxml2=$(STAGING_PREFIX) \
+		--with-gnutls=$(STAGING_PREFIX) \
+		--with-nettle=$(STAGING_PREFIX) \
+		--with-openssl=$(STAGING_PREFIX) \
+		--enable-epoll \
+		--with-maxfd=4096 \
+		--disable-external-acl-helpers \
+		--disable-auth-negotiate \
+		--disable-auth-ntlm \
+		--disable-auth-digest \
+		--disable-auth-basic \
+		--disable-arch-native \
+		--with-krb5-config=no \
+		--without-mit-krb5 \
+		--with-libcap \
+		--with-netfilter-conntrack=$(STAGING_PREFIX) \
 	)
-	find $(@D) -type f -name "Makefile" -exec sed -i -e 's/ -Werror[$$ ]/ /' {} \;
-ifneq ($(HOSTCC), $(TARGET_CC))
-	sed -i -e 's|./cf_gen |$(SQUID3_HOST_BUILD_DIR)/src/cf_gen |g' $(@D)/src/Makefile
-endif
 	touch $@
 
 squid3-unpack: $(SQUID3_BUILD_DIR)/.configured
@@ -263,17 +244,7 @@ $(SQUID3_IPK_DIR)/CONTROL/control:
 #
 $(SQUID3_IPK): $(SQUID3_BUILD_DIR)/.built
 	rm -rf $(SQUID3_IPK_DIR) $(BUILD_DIR)/squid3_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(SQUID3_BUILD_DIR) DESTDIR=$(SQUID3_IPK_DIR) install
-	cd $(SQUID3_IPK_DIR)$(TARGET_PREFIX); \
-	$(STRIP_COMMAND) bin/squidclient sbin/squid \
-		libexec/cachemgr.cgi libexec/ncsa_auth libexec/unlinkd \
-		libexec/digest_pw_auth \
-		libexec/diskd \
-		libexec/fakeauth_auth \
-		libexec/ip_user_check \
-		libexec/ntlm_smb_lm_auth \
-		libexec/squid_unix_group \
-		;
+	$(MAKE) -C $(SQUID3_BUILD_DIR) DESTDIR=$(SQUID3_IPK_DIR) install-strip
 	$(INSTALL) -d $(SQUID3_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
 	$(INSTALL) -m 755 $(SQUID3_SOURCE_DIR)/rc.squid $(SQUID3_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S80squid
 	ln -sf $(TARGET_PREFIX)/etc/init.d/S80squid $(SQUID3_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/K80squid 
