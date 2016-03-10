@@ -58,7 +58,7 @@ ifneq ($(HOSTCC), $(TARGET_CC))
 		--disable-widec		\
 		--enable-safe-sprintf	\
 	);
-	$(MAKE) -C $(@D)/ncurses make_hash make_keys
+	$(MAKE) -C $(@D)/ncurses make_hash make_keys -j1
 endif
 	# configure again, this time for real
 	(cd $(@D); \
