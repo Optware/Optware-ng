@@ -36,7 +36,7 @@ SSLH_CONFLICTS=
 #
 # SSLH_IPK_VERSION should be incremented when the ipk changes.
 #
-SSLH_IPK_VERSION=1
+SSLH_IPK_VERSION=2
 
 #
 # SSLH_CONFFILES should be a list of user-editable files
@@ -133,6 +133,7 @@ $(SSLH_BUILD_DIR)/.built: $(SSLH_BUILD_DIR)/.configured
 		CFLAGS="$(STAGING_CPPFLAGS) $(SSLH_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(SSLH_LDFLAGS)" \
 		PREFIX=$(TARGET_PREFIX) \
+		USELIBCAP=1 \
 		USELIBCONFIG=1 \
 		USELIBWRAP=
 	touch $@
