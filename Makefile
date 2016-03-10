@@ -414,7 +414,7 @@ COMMON_CROSS_PACKAGES = \
 	socat softflowd sox spandsp spawn-fcgi speex spindown splix \
 	sqlite sqlite2 \
 	sqsh squeak squid squid3 squeezelite \
-	srelay srecord srtp ssam sslwrap start-stop-daemon \
+	srelay srecord srtp ssam sslh sslwrap start-stop-daemon \
 	strace strongswan stunnel streamripper \
 	stupid-ftpd sudo surfraw swi-prolog svn \
 	swig syslog-ng sysstat syx \

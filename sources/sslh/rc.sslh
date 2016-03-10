@@ -1,0 +1,59 @@
+#!/bin/sh
+
+PATH=%OPTWARE_TARGET_PREFIX%/bin:%OPTWARE_TARGET_PREFIX%/sbin:$PATH
+DAEMON=%OPTWARE_TARGET_PREFIX%/sbin/sslh
+SSLH_ARGS="-p 0.0.0.0 443"
+force=""
+nice=0
+pidfile=%OPTWARE_TARGET_PREFIX%/var/run/sslh.pid
+config=%OPTWARE_TARGET_PREFIX%/etc/sslh/sslh.cfg
+DESC="applicative protocol multiplexer"
+NAME=sslh
+
+# Exit if the daemon does not exist (anymore)
+test -f $DAEMON || exit 0
+
+start_daemon () {
+    exec="$1"; shift
+    args="--start --nicelevel $nice --quiet --oknodo"
+    if [ "$force" ]; then
+        %OPTWARE_TARGET_PREFIX%/sbin/start-stop-daemon-start-stop-daemon $args \
+	    --chdir "$PWD" --startas $exec -- "$@" -P /dev/null
+    elif [ $pidfile ]; then
+        %OPTWARE_TARGET_PREFIX%/sbin/start-stop-daemon-start-stop-daemon $args \
+	    --chdir "$PWD" --exec $exec --oknodo "$pidfile" -- "$@" -P "$pidfile"
+    else
+        %OPTWARE_TARGET_PREFIX%/sbin/start-stop-daemon-start-stop-daemon $args --chdir "$PWD" --exec $exec -- "$@"
+    fi
+}
+
+# The real work of an init script
+case "$1" in
+  start)
+	echo "Starting $DESC" "$NAME"
+    if [ ! -d "%OPTWARE_TARGET_PREFIX%/var/run" ]
+    then
+        mkdir -p %OPTWARE_TARGET_PREFIX%/var/run
+    fi
+	start_daemon $DAEMON -F "$config" $SSLH_ARGS
+	;;
+  stop)
+        if [ -n "`pidof $NAME`" ]; then
+            echo "Stopping $DESC" "$NAME"
+            killall $NAME 2> /dev/null
+        fi
+        ;;
+  restart)
+        echo "Restarting $DESC" "$NAME"
+        "$0" stop
+        sleep 1
+        "$0" start
+        ;;
+  *)
+	echo "Usage: $0 {start|stop|restart}"
+	exit 1
+	;;
+esac
+
+# Fallthrough if work done.
+exit 0

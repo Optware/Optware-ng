@@ -1,0 +1,40 @@
+--- a/sslh-main.c
++++ b/sslh-main.c
+@@ -370,11 +370,11 @@
+                 res = config_parse(config_filename, &addr_listen, prots);
+             } else {
+                 /* No configuration file specified -- try default file locations */
+-                res = config_parse("/etc/sslh/sslh.cfg", &addr_listen, prots);
+-                if (!res && verbose) fprintf(stderr, "Using /etc/sslh/sslh.cfg\n");
++                res = config_parse("%OPTWARE_TARGET_PREFIX%/etc/sslh/sslh.cfg", &addr_listen, prots);
++                if (!res && verbose) fprintf(stderr, "Using %OPTWARE_TARGET_PREFIX%/etc/sslh/sslh.cfg\n");
+                 if (res) {
+-                    res = config_parse("/etc/sslh.cfg", &addr_listen, prots);
+-                    if (!res && verbose) fprintf(stderr, "Using /etc/sslh.cfg\n");
++                    res = config_parse("%OPTWARE_TARGET_PREFIX%/etc/sslh.cfg", &addr_listen, prots);
++                    if (!res && verbose) fprintf(stderr, "Using %OPTWARE_TARGET_PREFIX%/etc/sslh.cfg\n");
+                 }
+             }
+             if (res)
+--- a/basic.cfg
++++ b/basic.cfg
+@@ -8,7 +8,7 @@
+ transparent: false;
+ timeout: "2";
+ user: "nobody";
+-pidfile: "/var/run/sslh.pid";
++pidfile: "%OPTWARE_TARGET_PREFIX%/var/run/sslh.pid";
+ 
+ 
+ # Change hostname with your external address name.
+--- a/example.cfg
++++ b/example.cfg
+@@ -10,7 +10,7 @@
+ transparent: false;
+ timeout: "2";
+ user: "nobody";
+-pidfile: "/var/run/sslh.pid";
++pidfile: "%OPTWARE_TARGET_PREFIX%/var/run/sslh.pid";
+ 
+ 
+ # List of interfaces on which we should listen
