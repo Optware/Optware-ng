@@ -12,7 +12,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 LIBTORRENT_SITE=https://github.com/rakshasa/libtorrent/archive
-LIBTORRENT_VERSION=0.13.4
+LIBTORRENT_VERSION=0.13.6
 LIBTORRENT_SVN=svn://rakshasa.no/libtorrent/trunk/libtorrent
 #LIBTORRENT_SVN_REV=1037
 ifdef LIBTORRENT_SVN_REV
@@ -185,6 +185,7 @@ $(LIBTORRENT_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBTORRENT_SOURCE) $(LIBTORRENT
 ifneq (, $(filter gumstix1151 mbwe-bluering, $(OPTWARE_TARGET)))
 	sed -i -e '/USE_MADVISE/s|.*|/* #undef USE_MADVISE */|' $(@D)/config.h
 endif
+	find $(@D) -name Makefile -exec sed -i -e 's;-I/usr/include$$\|-I/usr/include[ \t]\|-I/usr/include/[^ \t]*;;g' {} \;
 	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
