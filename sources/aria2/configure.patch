@@ -1,0 +1,15 @@
+--- a/configure
++++ b/configure
+@@ -25146,6 +25146,12 @@
+ /* end confdefs.h.  */
+ 
+ #include <fcntl.h>
++#include <linux/unistd.h>
++
++#if (defined __UCLIBC__ && !defined __NR_fallocate)
++# error no __NR_fallocate syscall
++#endif
++
+ 
+ int
+ main ()

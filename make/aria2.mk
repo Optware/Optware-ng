@@ -52,7 +52,7 @@ ARIA2_IPK_VERSION=1
 # ARIA2_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#ARIA2_PATCHES=$(ARIA2_SOURCE_DIR)/configure.patch
+ARIA2_PATCHES=$(ARIA2_SOURCE_DIR)/configure.patch
 
 #
 # If the compilation of the package requires additional
@@ -131,7 +131,7 @@ endif
 	$(ARIA2_UNZIP) $(DL_DIR)/$(ARIA2_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ARIA2_PATCHES)" ; \
 		then cat $(ARIA2_PATCHES) | \
-		$(PATCH) -d $(BUILD_DIR)/$(ARIA2_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(ARIA2_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(ARIA2_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(ARIA2_DIR) $(@D) ; \
