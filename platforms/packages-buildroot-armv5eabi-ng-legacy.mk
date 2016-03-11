@@ -6,6 +6,7 @@ SPECIFIC_PACKAGES = \
 
 # iptraf: sys/types.h and linux/types.h conflicting
 BROKEN_PACKAGES = \
+	6relayd \
 	buildroot \
 	$(UCLIBC_BROKEN_PACKAGES) \
 	bluez-hcidump \
