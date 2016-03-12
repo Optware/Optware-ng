@@ -34,13 +34,14 @@ buildroot-ppc-603e
 MYSQL_NO_64BIT_ATOMICS:=\
 buildroot-mipsel-ng \
 buildroot-armv5eabi-ng \
+buildroot-armv5eabi-ng-legacy \
 buildroot-ppc-603e
 
 ifneq ($(OPTWARE_TARGET), $(filter $(MYSQL_OLD_TARGETS), $(OPTWARE_TARGET)))
 MYSQL_SITE=https://dev.mysql.com/get/Downloads/MySQL-5.7
-MYSQL_VERSION=5.7.9
+MYSQL_VERSION=5.7.11
 MYSQL_DIR=mysql-$(MYSQL_VERSION)
-MYSQL_IPK_VERSION=5
+MYSQL_IPK_VERSION=1
 else
 # some needed gcc atomic builtins are missing, which
 # makes compiling newer mysql impossible
