@@ -48,7 +48,7 @@ LIBUSB1_IPK_VERSION=1
 # LIBUSB1_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#LIBUSB1_PATCHES=
+LIBUSB1_PATCHES=$(LIBUSB1_SOURCE_DIR)/configure.patch
 
 #
 # If the compilation of the package requires additional
@@ -108,7 +108,7 @@ $(LIBUSB1_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBUSB1_SOURCE) $(LIBUSB1_PATCHES)
 	rm -rf $(BUILD_DIR)/$(LIBUSB1_DIR) $(@D)
 	$(LIBUSB1_UNZIP) $(DL_DIR)/$(LIBUSB1_SOURCE) | tar -C $(BUILD_DIR) -xf -
 	if test -n "$(LIBUSB1_PATCHES)"; then \
-		cat $(LIBUSB1_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(LIBUSB1_DIR) -p0; \
+		cat $(LIBUSB1_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(LIBUSB1_DIR) -p1; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBUSB1_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBUSB1_DIR) $(@D) ; \

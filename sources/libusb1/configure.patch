@@ -1,0 +1,56 @@
+--- a/configure
++++ b/configure
+@@ -12325,14 +12325,29 @@
+ fi
+ 
+ # timerfd
+-ac_fn_c_check_header_mongrel "$LINENO" "sys/timerfd.h" "ac_cv_header_sys_timerfd_h" "$ac_includes_default"
+-if test "x$ac_cv_header_sys_timerfd_h" = xyes; then :
+-  timerfd_h=1
+-else
+-  timerfd_h=0
+-fi
++cat confdefs.h - <<_ACEOF >conftest.$ac_ext
++/* end confdefs.h.  */
++
++#include <sys/timerfd.h>
++#include <linux/unistd.h>
++
++#if !(defined __NR_timerfd_create && defined __NR_timerfd_settime && defined __NR_timerfd_gettime)
++# error no timerfd_* syscalls
++#endif
+ 
+ 
++int
++main ()
++{
++  return 0;
++}
++_ACEOF
++if ac_fn_c_try_compile "$LINENO"; then :
++  have_timerfd=1
++else
++  have_timerfd=0
++fi
++rm -f core conftest.err conftest.$ac_objext conftest.$ac_ext
+ # Check whether --enable-timerfd was given.
+ if test "${enable_timerfd+set}" = set; then :
+   enableval=$enable_timerfd; use_timerfd=$enableval
+@@ -12341,7 +12365,7 @@
+ fi
+ 
+ 
+-if test "x$use_timerfd" = "xyes" -a "x$timerfd_h" = "x0"; then
++if test "x$use_timerfd" = "xyes" -a "x$have_timerfd" = "x0"; then
+ 	as_fn_error $? "timerfd header not available; glibc 2.9+ required" "$LINENO" 5
+ fi
+ 
+@@ -12363,7 +12387,7 @@
+ 	{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no (disabled by user)" >&5
+ $as_echo "no (disabled by user)" >&6; }
+ else
+-	if test "x$timerfd_h" = "x1" -a "x$tfd_hdr_ok" = "xyes"; then
++	if test "x$have_timerfd" = "x1" -a "x$tfd_hdr_ok" = "xyes"; then
+ 		{ $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+ $as_echo "yes" >&6; }
+ 
