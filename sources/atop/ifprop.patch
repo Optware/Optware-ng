@@ -1,0 +1,10 @@
+--- a/ifprop.c
++++ ifprop.c
+@@ -40,6 +40,7 @@
+ #include <sys/socket.h>
+ #include <sys/ioctl.h>
+ #include <linux/sockios.h>
++#undef _LINUX_SOCKET_H
+ #include <linux/if.h>
+ #include <linux/in.h>
+ 

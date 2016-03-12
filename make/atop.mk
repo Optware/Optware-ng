@@ -36,7 +36,9 @@ ATOP_IPK_VERSION=1
 # ATOP_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-ATOP_PATCHES=$(ATOP_SOURCE_DIR)/Makefile.patch
+ATOP_PATCHES=\
+$(ATOP_SOURCE_DIR)/Makefile.patch \
+$(ATOP_SOURCE_DIR)/ifprop.patch
 
 #
 # If the compilation of the package requires additional
