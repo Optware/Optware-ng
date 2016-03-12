@@ -45,10 +45,12 @@ LIBGUDEV_DEPENDS=glib, libudev
 UDEV_SUGGESTS=
 UDEV_CONFLICTS=
 
+UDEV_LIBONLY=buildroot-armv5eabi-ng-legacy
+
 #
 # UDEV_IPK_VERSION should be incremented when the ipk changes.
 #
-UDEV_IPK_VERSION=2
+UDEV_IPK_VERSION=3
 
 #
 # UDEV_CONFFILES should be a list of user-editable files
@@ -61,6 +63,11 @@ UDEV_CONFFILES=$(TARGET_PREFIX)/etc/udev/udev.conf
 UDEV_PATCHES=\
 $(UDEV_SOURCE_DIR)/btn_trigger_happy_define.patch \
 $(UDEV_SOURCE_DIR)/no_pipe2.patch \
+$(UDEV_SOURCE_DIR)/SO_RCVBUFFORCE_define.patch \
+
+ifeq ($(OPTWARE_TARGET), $(filter $(UDEV_LIBONLY), $(OPTWARE_TARGET)))
+UDEV_PATCHES += $(UDEV_SOURCE_DIR)/disable_udev.patch
+endif
 
 ifeq ($(OPTWARE_TARGET), $(filter buildroot-mipsel-ng, $(OPTWARE_TARGET)))
 UDEV_PATCHES += $(UDEV_SOURCE_DIR)/no_linux-bsg_h.patch
@@ -249,16 +256,20 @@ $(LIBGUDEV_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
+ifneq ($(OPTWARE_TARGET), $(filter $(UDEV_LIBONLY), $(OPTWARE_TARGET)))
 $(UDEV_IPK) $(LIBUDEV_IPK) $(LIBGUDEV_IPK): $(UDEV_BUILD_DIR)/.built
 	rm -rf $(UDEV_IPK_DIR) $(BUILD_DIR)/udev_*_$(TARGET_ARCH).ipk \
 		$(LIBUDEV_IPK_DIR) $(BUILD_DIR)/libudev_*_$(TARGET_ARCH).ipk \
 		$(LIBGUDEV_IPK_DIR) $(BUILD_DIR)/libgudev_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(UDEV_BUILD_DIR) DESTDIR=$(UDEV_IPK_DIR) install-strip
 	rm -f $(UDEV_IPK_DIR)$(TARGET_PREFIX)/lib/*.la
-	$(INSTALL) -d $(LIBUDEV_IPK_DIR)$(TARGET_PREFIX) $(LIBGUDEV_IPK_DIR)$(TARGET_PREFIX)/lib/pkgconfig
+	rm -rf $(UDEV_IPK_DIR)$(TARGET_PREFIX)/share
+	$(INSTALL) -d $(LIBUDEV_IPK_DIR)$(TARGET_PREFIX) $(LIBGUDEV_IPK_DIR)$(TARGET_PREFIX)/lib/pkgconfig $(LIBGUDEV_IPK_DIR)$(TARGET_PREFIX)/include
 	mv -f $(UDEV_IPK_DIR)$(TARGET_PREFIX)/lib $(LIBUDEV_IPK_DIR)$(TARGET_PREFIX)
+	mv -f $(UDEV_IPK_DIR)$(TARGET_PREFIX)/include $(LIBUDEV_IPK_DIR)$(TARGET_PREFIX)
 	mv -f $(LIBUDEV_IPK_DIR)$(TARGET_PREFIX)/lib/libgudev-1.0.* $(LIBGUDEV_IPK_DIR)$(TARGET_PREFIX)/lib
 	mv -f $(LIBUDEV_IPK_DIR)$(TARGET_PREFIX)/lib/pkgconfig/gudev-1.0.pc $(LIBGUDEV_IPK_DIR)$(TARGET_PREFIX)/lib/pkgconfig
+	mv -f $(LIBUDEV_IPK_DIR)$(TARGET_PREFIX)/include/gudev-1.0 $(LIBGUDEV_IPK_DIR)$(TARGET_PREFIX)/include
 #	$(INSTALL) -d $(UDEV_IPK_DIR)$(TARGET_PREFIX)/etc/
 #	$(INSTALL) -m 644 $(UDEV_SOURCE_DIR)/udev.conf $(UDEV_IPK_DIR)$(TARGET_PREFIX)/etc/udev.conf
 #	$(INSTALL) -d $(UDEV_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
@@ -282,11 +293,33 @@ $(UDEV_IPK) $(LIBUDEV_IPK) $(LIBGUDEV_IPK): $(UDEV_BUILD_DIR)/.built
 	$(MAKE) $(LIBGUDEV_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBGUDEV_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(LIBGUDEV_IPK_DIR)
+else
+$(LIBUDEV_IPK) $(LIBGUDEV_IPK): $(UDEV_BUILD_DIR)/.built
+	rm -rf $(LIBUDEV_IPK_DIR) $(BUILD_DIR)/libudev_*_$(TARGET_ARCH).ipk \
+		$(LIBGUDEV_IPK_DIR) $(BUILD_DIR)/libgudev_*_$(TARGET_ARCH).ipk
+	$(MAKE) -C $(UDEV_BUILD_DIR) DESTDIR=$(LIBUDEV_IPK_DIR) install-strip
+	rm -f $(LIBUDEV_IPK_DIR)$(TARGET_PREFIX)/lib/*.la
+	rm -rf $(LIBUDEV_IPK_DIR)$(TARGET_PREFIX)/share
+	$(INSTALL) -d $(LIBGUDEV_IPK_DIR)$(TARGET_PREFIX)/lib/pkgconfig $(LIBGUDEV_IPK_DIR)$(TARGET_PREFIX)/include
+	mv -f $(LIBUDEV_IPK_DIR)$(TARGET_PREFIX)/lib/libgudev-1.0.* $(LIBGUDEV_IPK_DIR)$(TARGET_PREFIX)/lib
+	mv -f $(LIBUDEV_IPK_DIR)$(TARGET_PREFIX)/lib/pkgconfig/gudev-1.0.pc $(LIBGUDEV_IPK_DIR)$(TARGET_PREFIX)/lib/pkgconfig
+	mv -f $(LIBUDEV_IPK_DIR)$(TARGET_PREFIX)/include/gudev-1.0 $(LIBGUDEV_IPK_DIR)$(TARGET_PREFIX)/include
+	$(MAKE) $(LIBUDEV_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBUDEV_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(LIBUDEV_IPK_DIR)
+	$(MAKE) $(LIBGUDEV_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBGUDEV_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(LIBGUDEV_IPK_DIR)
+endif
 
 #
 # This is called from the top level makefile to create the IPK file.
 #
+ifneq ($(OPTWARE_TARGET), $(filter $(UDEV_LIBONLY), $(OPTWARE_TARGET)))
 udev-ipk: $(UDEV_IPK) $(LIBUDEV_IPK) $(LIBGUDEV_IPK)
+else
+udev-ipk: $(LIBUDEV_IPK) $(LIBGUDEV_IPK)
+endif
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -299,14 +332,25 @@ udev-clean:
 # This is called from the top level makefile to clean all dynamically created
 # directories.
 #
+ifneq ($(OPTWARE_TARGET), $(filter $(UDEV_LIBONLY), $(OPTWARE_TARGET)))
 udev-dirclean:
 	rm -rf $(BUILD_DIR)/$(UDEV_DIR) $(UDEV_BUILD_DIR) \
 		$(UDEV_IPK_DIR) $(UDEV_IPK) \
 		$(LIBUDEV_IPK_DIR) $(LIBUDEV_IPK) \
 		$(LIBGUDEV_IPK_DIR) $(LIBGUDEV_IPK)
+else
+udev-dirclean:
+	rm -rf $(BUILD_DIR)/$(UDEV_DIR) $(UDEV_BUILD_DIR) \
+		$(LIBUDEV_IPK_DIR) $(LIBUDEV_IPK) \
+		$(LIBGUDEV_IPK_DIR) $(LIBGUDEV_IPK)
+endif
 #
 #
 # Some sanity check for the package.
 #
+ifneq ($(OPTWARE_TARGET), $(filter $(UDEV_LIBONLY), $(OPTWARE_TARGET)))
 udev-check: $(UDEV_IPK) $(LIBUDEV_IPK) $(LIBGUDEV_IPK)
+else
+udev-check: $(LIBUDEV_IPK) $(LIBGUDEV_IPK)
+endif
 	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^

@@ -1,0 +1,13 @@
+--- a/libudev/libudev-monitor.c
++++ b/libudev/libudev-monitor.c
+@@ -27,6 +27,10 @@
+ #include "libudev.h"
+ #include "libudev-private.h"
+ 
++#ifndef SO_RCVBUFFORCE
++# define SO_RCVBUFFORCE  33
++#endif
++
+ /**
+  * SECTION:libudev-monitor
+  * @short_description: device event source
