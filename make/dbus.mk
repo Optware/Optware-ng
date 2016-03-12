@@ -68,6 +68,10 @@ else
 DBUS_CONFIG_ARGS=--without-x
 endif
 
+ifeq ($(OPTWARE_TARGET), $(filter buildroot-armv5eabi-ng-legacy, $(OPTWARE_TARGET)))
+DBUS_CONFIG_ARGS += --disable-inotify
+endif
+
 #
 # DBUS_BUILD_DIR is the directory in which the build is done.
 # DBUS_SOURCE_DIR is the directory which holds all the
