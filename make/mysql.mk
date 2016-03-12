@@ -196,7 +196,7 @@ ifneq ($(OPTWARE_TARGET), $(filter $(MYSQL_OLD_TARGETS), $(OPTWARE_TARGET)))
 endif
 	cd $(@D)/BUILD; \
 		cmake $(@D) -DWITH_BOOST=$(@D)/boost_$(MYSQL_BOOST_VERSION) -DWITH_UNIT_TESTS=OFF
-	$(MAKE) -C $(@D)/BUILD
+	$(MAKE) -C $(@D)/BUILD -j1
 	touch $@
 
 mysql-hostbuild: $(MYSQL_HOST_BUILD_DIR)/.built
@@ -293,7 +293,7 @@ mysql-unpack: $(MYSQL_BUILD_DIR)/.configured
 $(MYSQL_BUILD_DIR)/.built: $(MYSQL_BUILD_DIR)/.configured
 	rm -f $@
 	PATH=$$PATH:$(@D)/host_binaries; \
-		$(MAKE) -C $(@D)/BUILD
+		$(MAKE) -C $(@D)/BUILD -j1
 	touch $@
 
 #
