@@ -51,6 +51,7 @@ AVAHI_IPK_VERSION=1
 #
 AVAHI_PATCHES=\
 $(AVAHI_SOURCE_DIR)/avahi-core_socket.h.patch \
+$(AVAHI_SOURCE_DIR)/configure.patch \
 
 #
 # If the compilation of the package requires additional
@@ -123,12 +124,11 @@ endif
 	$(AVAHI_UNZIP) $(DL_DIR)/$(AVAHI_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(AVAHI_PATCHES)" ; \
 		then cat $(AVAHI_PATCHES) | \
-		$(PATCH) -d $(BUILD_DIR)/$(AVAHI_DIR) -p0 ; \
+		$(PATCH) -bd $(BUILD_DIR)/$(AVAHI_DIR) -p0 ; \
 	fi
 	if test "$(BUILD_DIR)/$(AVAHI_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(AVAHI_DIR) $(@D) ; \
 	fi
-	sed -i -e "s/INTLTOOL_APPLIED_VERSION=.*/INTLTOOL_APPLIED_VERSION=0.35.0/" -e 's/^if test .*INTLTOOL_UPDATE.*INTLTOOL_MERGE.*INTLTOOL_EXTRACT"/if \[ 1 != 1 \]/' $(@D)/configure
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(AVAHI_CPPFLAGS)" \
