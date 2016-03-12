@@ -126,6 +126,10 @@ MYSQL_CPPFLAGS += \
 -DHAVE_NO_64BIT_ATOMICS
 endif
 
+ifeq ($(OPTWARE_TARGET), $(filter buildroot-armv5eabi-ng-legacy, $(OPTWARE_TARGET)))
+MYSQL_CPPFLAGS += -DNO_FALLOCATE
+endif
+
 ifneq ($(OPTWARE_TARGET), $(filter $(MYSQL_OLD_TARGETS), $(OPTWARE_TARGET)))
 MYSQL_CONFIGURE_ARGS=\
 -DWITH_BOOST=$(MYSQL_HOST_BUILD_DIR)/boost_$(MYSQL_BOOST_VERSION) \
@@ -196,7 +200,7 @@ ifneq ($(OPTWARE_TARGET), $(filter $(MYSQL_OLD_TARGETS), $(OPTWARE_TARGET)))
 endif
 	cd $(@D)/BUILD; \
 		cmake $(@D) -DWITH_BOOST=$(@D)/boost_$(MYSQL_BOOST_VERSION) -DWITH_UNIT_TESTS=OFF
-	$(MAKE) -C $(@D)/BUILD -j1
+	$(MAKE) -C $(@D)/BUILD
 	touch $@
 
 mysql-hostbuild: $(MYSQL_HOST_BUILD_DIR)/.built
@@ -283,6 +287,7 @@ endif
 		cp -f extra/comp_err scripts/comp_sql sql/gen_lex_{token,hash} $(@D)/host_binaries
 	cp -f $(MYSQL_HOST_BUILD_DIR)/BUILD/scripts/comp_sql $(@D)/scripts
 	cp -f $(MYSQL_HOST_BUILD_DIR)/BUILD/sql/gen_lex_{token,hash} $(@D)/sql
+	cp -f $(MYSQL_HOST_BUILD_DIR)/BUILD/sql/gen_lex_{token,hash} $(@D)/libmysqld
 	touch $@
 
 mysql-unpack: $(MYSQL_BUILD_DIR)/.configured
@@ -293,7 +298,7 @@ mysql-unpack: $(MYSQL_BUILD_DIR)/.configured
 $(MYSQL_BUILD_DIR)/.built: $(MYSQL_BUILD_DIR)/.configured
 	rm -f $@
 	PATH=$$PATH:$(@D)/host_binaries; \
-		$(MAKE) -C $(@D)/BUILD -j1
+		$(MAKE) -C $(@D)/BUILD
 	touch $@
 
 #
