@@ -53,7 +53,7 @@ IPTABLES_IPK_VERSION=1
 #
 # IPTABLES_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
-#IPTABLES_PATCHES=
+IPTABLES_PATCHES=$(IPTABLES_SOURCE_DIR)/include_linux_list_h.patch
 
 
 #
@@ -110,9 +110,14 @@ iptables-source: $(IPTABLES_SOURCES)
 $(IPTABLES_BUILD_DIR)/.configured: $(IPTABLES_SOURCES) make/iptables.mk
 	rm -rf $(BUILD_DIR)/$(IPTABLES_DIR) $(IPTABLES_BUILD_DIR)
 	$(IPTABLES_UNZIP) $(DL_DIR)/$(IPTABLES_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	if test -n "$(IPTABLES_PATCHES)" ; \
+		then cat $(IPTABLES_PATCHES) | \
+		$(PATCH) -d $(BUILD_DIR)/$(IPTABLES_DIR) -p1 ; \
+	fi
 	if test "$(BUILD_DIR)/$(IPTABLES_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(IPTABLES_DIR) $(@D) ; \
 	fi
+#	find $(@D) -type f -name '*.[ch]' -exec sed -i -e 's/list/_&_/g' -e 's/linux__list_.h/linux_list.h/' {} \;
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(IPTABLES_CPPFLAGS)" \

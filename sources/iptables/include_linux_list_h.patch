@@ -1,0 +1,22 @@
+--- a/libiptc/libip4tc.c
++++ b/libiptc/libip4tc.c
+@@ -26,6 +26,8 @@
+ typedef unsigned int socklen_t;
+ #endif
+ 
++#include "linux_list.h"
++
+ #include "libiptc/libiptc.h"
+ 
+ #define IP_VERSION	4
+--- a/libiptc/libip6tc.c
++++ b/libiptc/libip6tc.c
+@@ -27,6 +27,8 @@
+ typedef unsigned int socklen_t;
+ #endif
+ 
++#include "linux_list.h"
++
+ #include "libiptc/libip6tc.h"
+ 
+ #define HOOK_PRE_ROUTING	NF_IP6_PRE_ROUTING
