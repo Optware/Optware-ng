@@ -46,8 +46,7 @@ PARTED_CONFFILES=
 # PARTED_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-PARTED_PATCHES=
-#$(PARTED_SOURCE_DIR)/configure.patch
+PARTED_PATCHES=$(PARTED_SOURCE_DIR)/__user_define.patch
 
 #
 # If the compilation of the package requires additional
@@ -106,7 +105,10 @@ $(PARTED_BUILD_DIR)/.configured: $(DL_DIR)/$(PARTED_SOURCE) $(PARTED_PATCHES) ma
 	$(MAKE) e2fsprogs-stage
 	rm -rf $(BUILD_DIR)/$(PARTED_DIR) $(@D)
 	$(PARTED_UNZIP) $(DL_DIR)/$(PARTED_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(PARTED_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PARTED_DIR) -p1
+	if test -n "$(PARTED_PATCHES)" ; \
+		then cat $(PARTED_PATCHES) | \
+		$(PATCH) -d $(BUILD_DIR)/$(PARTED_DIR) -p1 ; \
+	fi
 	mv $(BUILD_DIR)/$(PARTED_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \

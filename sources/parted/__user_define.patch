@@ -1,0 +1,12 @@
+--- a/libparted/arch/linux.c
++++ b/libparted/arch/linux.c
+@@ -19,6 +19,9 @@
+ 
+ #include <config.h>
+ #include <arch/linux.h>
++#ifndef __user
++# define __user
++#endif
+ #include <linux/blkpg.h>
+ #include <parted/parted.h>
+ #include <parted/debug.h>
