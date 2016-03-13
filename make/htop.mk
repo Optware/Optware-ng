@@ -20,9 +20,13 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-HTOP_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/htop
-HTOP_VERSION ?= 1.0.2
+HTOP_VERSION ?= 2.0.1
 HTOP_IPK_VERSION ?= 1
+ifeq ($(shell echo $(HTOP_VERSION) | cut -d'.' -f1), 2)
+HTOP_URL=https://github.com/hishamhm/htop/archive/$(HTOP_VERSION).tar.gz
+else
+HTOP_URL=http://$(SOURCEFORGE_MIRROR)/sourceforge/htop/$(HTOP_SOURCE)
+endif
 HTOP_SOURCE=htop-$(HTOP_VERSION).tar.gz
 HTOP_DIR=htop-$(HTOP_VERSION)
 HTOP_UNZIP=zcat
@@ -45,6 +49,9 @@ HTOP_CONFLICTS=
 #
 ifeq (1.0.1:2.3.3, $(HTOP_VERSION):$(LIBNSL_VERSION))
 HTOP_PATCHES=$(HTOP_SOURCE_DIR)/sched_getaffinity.patch
+endif
+ifeq ($(shell echo $(HTOP_VERSION) | cut -d'.' -f1), 2)
+HTOP_PATCHES=$(HTOP_SOURCE_DIR)/ncursesw.pach
 endif
 
 #
@@ -93,7 +100,7 @@ HTOP_IPK=$(BUILD_DIR)/htop_$(HTOP_VERSION)-$(HTOP_IPK_VERSION)_$(TARGET_ARCH).ip
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(HTOP_SOURCE):
-	$(WGET) -P $(@D) $(HTOP_SITE)/$(@F) || \
+	$(WGET) -O $@ $(HTOP_URL) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
@@ -122,7 +129,7 @@ htop-source: $(DL_DIR)/$(HTOP_SOURCE) $(HTOP_PATCHES)
 # shown below to make various patches to it.
 #
 $(HTOP_BUILD_DIR)/.configured: $(DL_DIR)/$(HTOP_SOURCE) $(HTOP_PATCHES) make/htop.mk
-	$(MAKE) ncurses-stage ncursesw-stage
+	$(MAKE) ncursesw-stage
 	rm -rf $(BUILD_DIR)/$(HTOP_DIR) $(@D)
 	$(HTOP_UNZIP) $(DL_DIR)/$(HTOP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(HTOP_PATCHES)" ; \
@@ -138,6 +145,10 @@ endif
 	if test `$(TARGET_CC) -dumpversion | cut -c1` = 3 ; \
 		then sed -i -e 's/ -Wextra//' $(@D)/Makefile.in ; \
 	fi
+ifeq ($(shell echo $(HTOP_VERSION) | cut -d'.' -f1), 2)
+	mkdir -p $(@D)/m4
+	$(AUTORECONF1.14) -vif $(@D)
+endif
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(HTOP_CPPFLAGS)" \
@@ -153,6 +164,9 @@ endif
 		$(HTOP_CONFIGURE_ARGS) \
 	)
 	$(PATCH_LIBTOOL) $(HTOP_BUILD_DIR)/libtool
+ifeq ($(shell echo $(HTOP_VERSION) | cut -d'.' -f1), 2)
+	echo "#define HAVE_NCURSESW_CURSES_H" >> $(@D)/config.h
+endif
 	touch $@
 
 htop-unpack: $(HTOP_BUILD_DIR)/.configured
@@ -193,7 +207,7 @@ $(HTOP_IPK_DIR)/CONTROL/control:
 	@echo "Section: $(HTOP_SECTION)" >>$@
 	@echo "Version: $(HTOP_VERSION)-$(HTOP_IPK_VERSION)" >>$@
 	@echo "Maintainer: $(HTOP_MAINTAINER)" >>$@
-	@echo "Source: $(HTOP_SITE)/$(HTOP_SOURCE)" >>$@
+	@echo "Source: $(HTOP_URL)" >>$@
 	@echo "Description: $(HTOP_DESCRIPTION)" >>$@
 	@echo "Depends: $(HTOP_DEPENDS)" >>$@
 	@echo "Suggests: $(HTOP_SUGGESTS)" >>$@
@@ -213,7 +227,7 @@ $(HTOP_IPK_DIR)/CONTROL/control:
 #
 $(HTOP_IPK): $(HTOP_BUILD_DIR)/.built
 	rm -rf $(HTOP_IPK_DIR) $(BUILD_DIR)/htop_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(HTOP_BUILD_DIR) DESTDIR=$(HTOP_IPK_DIR) transform='' install-strip
+	$(MAKE) -C $(HTOP_BUILD_DIR) DESTDIR=$(HTOP_IPK_DIR) install_sh=$(HTOP_BUILD_DIR)/install-sh transform='' install-strip
 	$(MAKE) $(HTOP_IPK_DIR)/CONTROL/control
 #	echo $(HTOP_CONFFILES) | sed -e 's/ /\n/g' > $(HTOP_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(HTOP_IPK_DIR)
