@@ -46,7 +46,7 @@ CALCURSE_IPK_VERSION=1
 # CALCURSE_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#CALCURSE_PATCHES=$(CALCURSE_SOURCE_DIR)/configure.patch
+CALCURSE_PATCHES=$(CALCURSE_SOURCE_DIR)/include_time_h.patch
 
 #
 # If the compilation of the package requires additional
@@ -116,7 +116,7 @@ $(CALCURSE_BUILD_DIR)/.configured: $(DL_DIR)/$(CALCURSE_SOURCE) $(CALCURSE_PATCH
 	$(CALCURSE_UNZIP) $(DL_DIR)/$(CALCURSE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(CALCURSE_PATCHES)" ; \
 		then cat $(CALCURSE_PATCHES) | \
-		$(PATCH) -d $(BUILD_DIR)/$(CALCURSE_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(CALCURSE_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(CALCURSE_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(CALCURSE_DIR) $(@D) ; \
