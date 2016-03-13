@@ -38,11 +38,14 @@ LIBXFCE4UI-COMMON_DESCRIPTION=libxfce4ui common files
 LIBXFCE4UI_SECTION=lib
 LIBXFCE4UI_PRIORITY=optional
 LIBXFCE4UI-1_DEPENDS=gtk2, xfconf, libxfce4ui-common
-LIBXFCE4UI-2_DEPENDS=gtk3, xfconf, libxfce4ui-common
+LIBXFCE4UI-2_DEPENDS=gtk, xfconf, libxfce4ui-common
 LIBXFCE4UI-COMMON_DEPENDS=
 LIBXFCE4UI-1_SUGGESTS=
 LIBXFCE4UI-2_SUGGESTS=
-LIBXFCE4UI-COMMON_SUGGESTS=libxfce4ui-1, libxfce4ui-2
+LIBXFCE4UI-COMMON_SUGGESTS=libxfce4ui-1
+ifeq (gtk, $(filter gtk, $(PACKAGES)))
+LIBXFCE4UI-COMMON_SUGGESTS +=, libxfce4ui-2
+endif
 LIBXFCE4UI-1_CONFLICTS=
 LIBXFCE4UI-2_CONFLICTS=
 LIBXFCE4UI-COMMON_CONFLICTS=
@@ -50,7 +53,7 @@ LIBXFCE4UI-COMMON_CONFLICTS=
 #
 # LIBXFCE4UI_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBXFCE4UI_IPK_VERSION=1
+LIBXFCE4UI_IPK_VERSION=2
 
 #
 # LIBXFCE4UI_CONFFILES should be a list of user-editable files
@@ -68,6 +71,12 @@ LIBXFCE4UI_CONFFILES=$(TARGET_PREFIX)/etc/xdg/xfce4/xfconf/xfce-perchannel-xml/x
 #
 LIBXFCE4UI_CPPFLAGS=
 LIBXFCE4UI_LDFLAGS=
+
+ifeq (gtk, $(filter gtk, $(PACKAGES)))
+LIBXFCE4UI_CONFIGURE_ARGS=--enable-gtk3
+else
+LIBXFCE4UI_CONFIGURE_ARGS=--disable-gtk3
+endif
 
 #
 # LIBXFCE4UI_BUILD_DIR is the directory in which the build is done.
@@ -126,7 +135,10 @@ libxfce4ui-source: $(DL_DIR)/$(LIBXFCE4UI_SOURCE) $(LIBXFCE4UI_PATCHES)
 # shown below to make various patches to it.
 #
 $(LIBXFCE4UI_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBXFCE4UI_SOURCE) $(LIBXFCE4UI_PATCHES) make/libxfce4ui.mk
-	$(MAKE) gtk2-stage gtk-stage xfconf-stage
+	$(MAKE) gtk2-stage xfconf-stage
+ifeq (gtk, $(filter gtk, $(PACKAGES)))
+	$(MAKE) gtk-stage
+endif
 	rm -rf $(BUILD_DIR)/$(LIBXFCE4UI_DIR) $(@D)
 	$(LIBXFCE4UI_UNZIP) $(DL_DIR)/$(LIBXFCE4UI_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBXFCE4UI_PATCHES)" ; \
@@ -149,7 +161,7 @@ $(LIBXFCE4UI_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBXFCE4UI_SOURCE) $(LIBXFCE4UI
 		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
-		--enable-gtk3 \
+		$(LIBXFCE4UI_CONFIGURE_ARGS) \
 		--program-transform-name='s&^&&' \
 	)
 	$(PATCH_LIBTOOL) $(@D)/libtool
@@ -176,10 +188,14 @@ libxfce4ui: $(LIBXFCE4UI_BUILD_DIR)/.built
 $(LIBXFCE4UI_BUILD_DIR)/.staged: $(LIBXFCE4UI_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
-	rm -f $(addprefix $(STAGING_LIB_DIR)/, libxfce4ui-1.la \
-		libxfce4ui-2.la libxfce4kbd-private-2.la libxfce4kbd-private-3.la)
+	rm -f $(addprefix $(STAGING_LIB_DIR)/, libxfce4ui-1.la libxfce4kbd-private-2.la)
 	sed -i -e '/^prefix=/s|=.*|=$(STAGING_PREFIX)|' $(addprefix $(STAGING_LIB_DIR)/pkgconfig/, \
-		libxfce4ui-1.pc libxfce4ui-2.pc libxfce4kbd-private-2.pc libxfce4kbd-private-3.pc)
+		libxfce4ui-1.pc libxfce4kbd-private-2.pc)
+ifeq (gtk, $(filter gtk, $(PACKAGES)))
+	rm -f $(addprefix $(STAGING_LIB_DIR)/, libxfce4ui-2.la libxfce4kbd-private-3.la)
+	sed -i -e '/^prefix=/s|=.*|=$(STAGING_PREFIX)|' $(addprefix $(STAGING_LIB_DIR)/pkgconfig/, \
+		libxfce4ui-2.pc libxfce4kbd-private-3.pc)
+endif
 	touch $@
 
 libxfce4ui-stage: $(LIBXFCE4UI_BUILD_DIR)/.staged
@@ -245,10 +261,16 @@ $(LIBXFCE4UI-COMMON_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
+ifeq (gtk, $(filter gtk, $(PACKAGES)))
 $(LIBXFCE4UI-1_IPK) $(LIBXFCE4UI-2_IPK) $(LIBXFCE4UI-COMMON_IPK): $(LIBXFCE4UI_BUILD_DIR)/.built
+else
+$(LIBXFCE4UI-1_IPK) $(LIBXFCE4UI-COMMON_IPK): $(LIBXFCE4UI_BUILD_DIR)/.built
+endif
 	rm -rf $(LIBXFCE4UI-1_IPK_DIR) $(BUILD_DIR)/libxfce4ui-1_*_$(TARGET_ARCH).ipk \
-		$(LIBXFCE4UI-2_IPK_DIR) $(BUILD_DIR)/libxfce4ui-2_*_$(TARGET_ARCH).ipk \
 		$(LIBXFCE4UI-COMMON_IPK_DIR) $(BUILD_DIR)/libxfce4ui-common_*_$(TARGET_ARCH).ipk
+ifeq (gtk, $(filter gtk, $(PACKAGES)))
+	rm- rf $(LIBXFCE4UI-2_IPK_DIR) $(BUILD_DIR)/libxfce4ui-2_*_$(TARGET_ARCH).ipk
+endif
 	$(MAKE) -C $(LIBXFCE4UI_BUILD_DIR) DESTDIR=$(LIBXFCE4UI-1_IPK_DIR) install-strip
 	rm -f $(LIBXFCE4UI-1_IPK_DIR)$(TARGET_PREFIX)/lib/*.la
 	$(INSTALL) -d $(LIBXFCE4UI-COMMON_IPK_DIR)$(TARGET_PREFIX)
@@ -257,6 +279,7 @@ $(LIBXFCE4UI-1_IPK) $(LIBXFCE4UI-2_IPK) $(LIBXFCE4UI-COMMON_IPK): $(LIBXFCE4UI_B
 	echo $(LIBXFCE4UI_CONFFILES) | sed -e 's/ /\n/g' > $(LIBXFCE4UI-COMMON_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBXFCE4UI-COMMON_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(LIBXFCE4UI-COMMON_IPK_DIR)
+ifeq (gtk, $(filter gtk, $(PACKAGES)))
 	$(INSTALL) -d $(LIBXFCE4UI-2_IPK_DIR)$(TARGET_PREFIX)/lib/pkgconfig  $(LIBXFCE4UI-2_IPK_DIR)$(TARGET_PREFIX)/include/xfce4
 	mv -f $(addprefix $(LIBXFCE4UI-1_IPK_DIR)$(TARGET_PREFIX)/lib/, libxfce4ui-2.* libxfce4kbd-private-3.*) \
 											$(LIBXFCE4UI-2_IPK_DIR)$(TARGET_PREFIX)/lib
@@ -267,6 +290,7 @@ $(LIBXFCE4UI-1_IPK) $(LIBXFCE4UI-2_IPK) $(LIBXFCE4UI-COMMON_IPK): $(LIBXFCE4UI_B
 	$(MAKE) $(LIBXFCE4UI-2_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBXFCE4UI-2_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(LIBXFCE4UI-2_IPK_DIR)
+endif
 #	$(INSTALL) -d $(LIBXFCE4UI_IPK_DIR)$(TARGET_PREFIX)/etc/
 #	$(INSTALL) -m 644 $(LIBXFCE4UI_SOURCE_DIR)/libxfce4ui.conf $(LIBXFCE4UI_IPK_DIR)$(TARGET_PREFIX)/etc/libxfce4ui.conf
 #	$(INSTALL) -d $(LIBXFCE4UI_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
@@ -287,7 +311,11 @@ $(LIBXFCE4UI-1_IPK) $(LIBXFCE4UI-2_IPK) $(LIBXFCE4UI-COMMON_IPK): $(LIBXFCE4UI_B
 #
 # This is called from the top level makefile to create the IPK file.
 #
+ifeq (gtk, $(filter gtk, $(PACKAGES)))
 libxfce4ui-ipk: $(LIBXFCE4UI-1_IPK) $(LIBXFCE4UI-2_IPK) $(LIBXFCE4UI-COMMON_IPK)
+else
+libxfce4ui-ipk: $(LIBXFCE4UI-1_IPK) $(LIBXFCE4UI-COMMON_IPK)
+endif
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -303,11 +331,17 @@ libxfce4ui-clean:
 libxfce4ui-dirclean:
 	rm -rf $(BUILD_DIR)/$(LIBXFCE4UI_DIR) $(LIBXFCE4UI_BUILD_DIR) \
 		$(LIBXFCE4UI-1_IPK_DIR) $(LIBXFCE4UI-1_IPK) \
-		$(LIBXFCE4UI-2_IPK_DIR) $(LIBXFCE4UI-2_IPK) \
 		$(LIBXFCE4UI-COMMON_IPK_DIR) $(LIBXFCE4UI-COMMON_IPK)
+ifeq (gtk, $(filter gtk, $(PACKAGES)))
+	rm -rf $(LIBXFCE4UI-2_IPK_DIR) $(LIBXFCE4UI-2_IPK)
+endif
 #
 #
 # Some sanity check for the package.
 #
+ifeq (gtk, $(filter gtk, $(PACKAGES)))
 libxfce4ui-check: $(LIBXFCE4UI-1_IPK) $(LIBXFCE4UI-2_IPK) $(LIBXFCE4UI-COMMON_IPK)
+else
+libxfce4ui-check: $(LIBXFCE4UI-1_IPK) $(LIBXFCE4UI-COMMON_IPK)
+endif
 	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
