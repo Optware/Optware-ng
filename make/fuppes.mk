@@ -71,6 +71,12 @@ ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 FUPPES_LDFLAGS+=-liconv
 endif
 
+ifeq ($(OPTWARE_TARGET), $(filter buildroot-armv5eabi-ng-legacy, $(OPTWARE_TARGET)))
+FUPPES-CONFIGURE_ARGS=--disable-inotify
+else
+FUPPES-CONFIGURE_ARGS=--enable-inotify
+endif
+
 #
 # FUPPES_BUILD_DIR is the directory in which the build is done.
 # FUPPES_SOURCE_DIR is the directory which holds all the
@@ -166,6 +172,7 @@ endif
 		--disable-nls \
 		--disable-static \
 		--disable-ffmpegthumbnailer \
+		$(FUPPES-CONFIGURE_ARGS) \
 	)
 	sed -i -e 's|-I$(TARGET_PREFIX)/include | |g' $(@D)/Makefile $(@D)/src/Makefile
 	$(PATCH_LIBTOOL) $(@D)/libtool
