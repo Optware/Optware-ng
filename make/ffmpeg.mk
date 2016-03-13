@@ -71,11 +71,7 @@ FFMPEG_IPK_VERSION ?= 2
 # which they should be applied to the source code.
 #
 FFMPEG_PATCHES=
-ifeq ($(LIBC_STYLE), uclibc)
-ifneq ($(OPTWARE_TARGET), $(filter shibby-tomato-arm, $(OPTWARE_TARGET)))
-#FFMPEG_PATCHES += $(FFMPEG_SOURCE_DIR)/disable-C99-math-funcs.patch
-endif
-endif
+FFMPEG_OLD_PATCHES=$(FFMPEG_SOURCE_DIR)/include_linux_types_h.patch
 
 #
 # If the compilation of the package requires additional
@@ -275,6 +271,10 @@ ifneq ($(FFMPEG_OLD), yes)
 $(FFMPEG_BUILD_DIR_OLD)/.staged: $(DL_DIR)/$(FFMPEG_SOURCE_OLD)
 	rm -rf $(BUILD_DIR)/$(FFMPEG_DIR) $(@D) $(STAGING_PREFIX)/ffmpeg_old
 	$(FFMPEG_UNZIP) $(DL_DIR)/$(FFMPEG_SOURCE_OLD) | tar -C $(BUILD_DIR) -xvf -
+	if test -n "$(FFMPEG_OLD_PATCHES)" ; \
+		then cat $(FFMPEG_OLD_PATCHES) | \
+		$(PATCH) -d $(BUILD_DIR)/$(FFMPEG_DIR_OLD) -p1 ; \
+	fi
 	if test "$(BUILD_DIR)/$(FFMPEG_DIR_OLD)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(FFMPEG_DIR_OLD) $(@D) ; \
 	fi
