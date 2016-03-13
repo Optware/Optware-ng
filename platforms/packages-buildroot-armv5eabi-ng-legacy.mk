@@ -7,6 +7,7 @@ SPECIFIC_PACKAGES = \
 # iptraf: sys/types.h and linux/types.h conflicting
 # wayland: requires signalfd, timerfd_* and epoll_create1
 # gtk: depends on wayland
+# gtksourceview, gedit: depend on gtk
 BROKEN_PACKAGES = \
 	6relayd \
 	buildroot \
@@ -18,7 +19,7 @@ BROKEN_PACKAGES = \
 	lm-sensors \
 	libopensync msynctool obexftp \
 	modutils \
-	wayland gtk
+	wayland gtk gtksourceview gedit
 
 PERL_MAJOR_VER := 5.20
 
