@@ -5,6 +5,8 @@ SPECIFIC_PACKAGES = \
 	ipkg-static \
 
 # iptraf: sys/types.h and linux/types.h conflicting
+# wayland: requires signalfd, timerfd_* and epoll_create1
+# gtk: depends on wayland
 BROKEN_PACKAGES = \
 	6relayd \
 	buildroot \
@@ -15,7 +17,8 @@ BROKEN_PACKAGES = \
 	sandbox \
 	lm-sensors \
 	libopensync msynctool obexftp \
-	modutils
+	modutils \
+	wayland gtk
 
 PERL_MAJOR_VER := 5.20
 
