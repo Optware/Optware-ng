@@ -8,6 +8,7 @@ SPECIFIC_PACKAGES = \
 # wayland: requires signalfd, timerfd_* and epoll_create1
 # gtk: depends on wayland
 # gtksourceview, gedit: depend on gtk
+# inferno: failing with asm-arm.S:30: Error: invalid constant (900001) after fixup
 BROKEN_PACKAGES = \
 	6relayd \
 	buildroot \
@@ -19,7 +20,8 @@ BROKEN_PACKAGES = \
 	lm-sensors \
 	libopensync msynctool obexftp \
 	modutils \
-	wayland gtk gtksourceview gedit
+	wayland gtk gtksourceview gedit \
+	inferno
 
 PERL_MAJOR_VER := 5.20
 
