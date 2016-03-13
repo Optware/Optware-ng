@@ -69,10 +69,10 @@ X264_CONFFILES=
 # which they should be applied to the source code.
 #
 
+X264_PATCHES=$(X264_SOURCE_DIR)/include_time_h.patch
+
 ifeq (snapshot-20081231-2245, $(X264_UPSTREAM_VERSION))
-X264_PATCHES=$(X264_SOURCE_DIR)/common-cpu.c-2008.patch
-else
-#X264_PATCHES=$(X264_SOURCE_DIR)/common-cpu.c.patch
+X264_PATCHES += $(X264_SOURCE_DIR)/common-cpu.c-2008.patch
 endif
 
 
