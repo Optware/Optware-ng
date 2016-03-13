@@ -269,7 +269,7 @@ endif
 	rm -rf $(LIBXFCE4UI-1_IPK_DIR) $(BUILD_DIR)/libxfce4ui-1_*_$(TARGET_ARCH).ipk \
 		$(LIBXFCE4UI-COMMON_IPK_DIR) $(BUILD_DIR)/libxfce4ui-common_*_$(TARGET_ARCH).ipk
 ifeq (gtk, $(filter gtk, $(PACKAGES)))
-	rm- rf $(LIBXFCE4UI-2_IPK_DIR) $(BUILD_DIR)/libxfce4ui-2_*_$(TARGET_ARCH).ipk
+	rm -rf $(LIBXFCE4UI-2_IPK_DIR) $(BUILD_DIR)/libxfce4ui-2_*_$(TARGET_ARCH).ipk
 endif
 	$(MAKE) -C $(LIBXFCE4UI_BUILD_DIR) DESTDIR=$(LIBXFCE4UI-1_IPK_DIR) install-strip
 	rm -f $(LIBXFCE4UI-1_IPK_DIR)$(TARGET_PREFIX)/lib/*.la
