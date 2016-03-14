@@ -1,0 +1,65 @@
+--- src/tcptable.h.orig
++++ src/tcptable.h
+@@ -20,11 +20,13 @@
+ #include <arpa/inet.h>
+ #include <net/if_arp.h>
+ #include <asm/types.h>
++#include <net/if.h>
++#define _LINUX_IF_H
++#include <linux/netdevice.h>
+ #include <linux/if_packet.h>
+ #include <linux/if_ether.h>
+ #include <linux/if_fddi.h>
+ #include <linux/if_tr.h>
+-#include <net/if.h>
+ #include <netinet/ip.h>
+ #include <netinet/udp.h>
+ #include "servname.h"
+--- src/packet.c.orig
++++ src/packet.c
+@@ -33,6 +33,8 @@
+ #include <net/if_arp.h>
+ #include <net/if.h>
+ #include <sys/ioctl.h>
++#define _LINUX_IF_H
++#include <linux/netdevice.h>
+ #include <linux/if_packet.h>
+ #include <linux/if_ether.h>
+ #include <linux/if_fddi.h>
+--- src/othptab.c.orig
++++ src/othptab.c
+@@ -17,6 +17,9 @@
+ ***/
+ 
+ #include <asm/types.h>
++#include <net/if.h>
++#define _LINUX_IF_H
++#include <linux/netdevice.h>
+ #include <linux/if_ether.h>
+ #include <linux/if_tr.h>
+ #include <linux/if_fddi.h>
+--- src/hostmon.c.orig
++++ src/hostmon.c
+@@ -28,6 +28,9 @@
+ #include <sys/types.h>
+ #include <asm/types.h>
+ #include <netinet/in.h>
++#include <net/if.h>
++#define _LINUX_IF_H
++#include <linux/netdevice.h>
+ #include <linux/if_packet.h>
+ #include <linux/if_ether.h>
+ #include <linux/if_fddi.h>
+--- src/tr.c.orig
++++ src/tr.c
+@@ -6,9 +6,9 @@
+  * Copyright (c) Gerard Paul Java 2002
+  */
+ 
++#include <netinet/in.h>
+ #include <asm/types.h>
+ #include <linux/if_tr.h>
+-#include <netinet/in.h>
+ 
+ unsigned int get_tr_ip_offset(unsigned char *pkt)
+ {

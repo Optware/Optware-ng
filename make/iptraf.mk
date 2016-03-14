@@ -51,6 +51,7 @@ $(IPTRAF_SOURCE_DIR)/src-Makefile.patch \
 $(IPTRAF_SOURCE_DIR)/support-Makefile.patch \
 $(IPTRAF_SOURCE_DIR)/src-install.sh.patch \
 $(IPTRAF_SOURCE_DIR)/ixp.patch \
+$(IPTRAF_SOURCE_DIR)/includes_fix.patch \
 
 #
 # If the compilation of the package requires additional
