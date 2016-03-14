@@ -54,6 +54,10 @@ LIBNL_IPK_VERSION=1
 #
 #LIBNL_PATCHES=$(LIBNL_SOURCE_DIR)/configure.patch
 
+ifeq ($(OPTWARE_TARGET), $(filter buildroot-armv5eabi-ng-legacy, $(OPTWARE_TARGET)))
+LIBNL_PATCHES += $(LIBNL_SOURCE_DIR)/old_kernel.patch
+endif
+
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
@@ -116,11 +120,12 @@ $(LIBNL_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBNL_SOURCE) $(LIBNL_PATCHES) make/
 	$(LIBNL_UNZIP) $(DL_DIR)/$(LIBNL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBNL_PATCHES)" ; \
 		then cat $(LIBNL_PATCHES) | \
-		$(PATCH) -d $(BUILD_DIR)/$(LIBNL_DIR) -p0 ; \
+		$(PATCH) -bd $(BUILD_DIR)/$(LIBNL_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBNL_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBNL_DIR) $(@D) ; \
 	fi
+	$(AUTORECONF1.14) -vif $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBNL_CPPFLAGS)" \
@@ -157,11 +162,12 @@ libnl: $(LIBNL_BUILD_DIR)/.built
 $(LIBNL_BUILD_DIR)/.staged: $(LIBNL_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
-	rm -f $(addprefix $(STAGING_LIB_DIR)/, libnl-3.la libnl-nf-3.la \
-		libnl-cli-3.la libnl-genl-3.la libnl-idiag-3.la libnl-route-3.la)
-	sed -i -e '/^prefix=/s|=.*|=$(STAGING_PREFIX)|' \
-		$(addprefix $(STAGING_LIB_DIR)/pkgconfig/, libnl-3.0.pc \
-		libnl-cli-3.0.pc libnl-genl-3.0.pc libnl-nf-3.0.pc libnl-route-3.0.pc)
+	rm -f $(STAGING_LIB_DIR)/libnl{,-gel,}-3.la
+	sed -i -e '/^prefix=/s|=.*|=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/libnl{,-genl}-3.0.pc
+ifneq ($(OPTWARE_TARGET), $(filter buildroot-armv5eabi-ng-legacy, $(OPTWARE_TARGET)))
+	sed -i -e '/^prefix=/s|=.*|=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/libnl-{route,nf,cli}-3.0.pc
+	rm -f $(STAGING_LIB_DIR)/libnl-{route,nf,cli,idiag}-3.la
+endif
 	touch $@
 
 libnl-stage: $(LIBNL_BUILD_DIR)/.staged
