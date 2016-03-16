@@ -35,7 +35,10 @@ MESALIB_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 MESALIB_DESCRIPTION=OpenGL compatible 3D graphics library.
 MESALIB_SECTION=lib
 MESALIB_PRIORITY=optional
-MESALIB_DEPENDS=x11, xext, xcb, xdamage, xshmfence, libdrm, libudev, wayland
+MESALIB_DEPENDS=x11, xext, xcb, xdamage, xshmfence, libdrm, libudev
+ifeq (wayland, $(filter wayland, $(PACKAGES)))
+MESALIB_DEPENDS+=, wayland
+endif
 MESALIB_SUGGESTS=
 MESALIB_CONFLICTS=
 
@@ -60,6 +63,12 @@ MESALIB_IPK_VERSION=1
 #
 MESALIB_CPPFLAGS=
 MESALIB_LDFLAGS=
+
+ifeq (wayland, $(filter wayland, $(PACKAGES)))
+MESALIB_PLATFORMS=x11,wayland
+else
+MESALIB_PLATFORMS=x11
+endif
 
 #
 # MESALIB_BUILD_DIR is the directory in which the build is done.
@@ -112,8 +121,10 @@ mesalib-source: $(DL_DIR)/$(MESALIB_SOURCE) $(MESALIB_PATCHES)
 #
 $(MESALIB_BUILD_DIR)/.configured: $(DL_DIR)/$(MESALIB_SOURCE) $(MESALIB_PATCHES) make/mesalib.mk
 	$(MAKE) x11-stage xext-stage xcb-stage xdamage-stage xshmfence-stage libdrm-stage \
-		udev-stage wayland-stage wayland-host-stage \
-		glproto-stage presentproto-stage dri2proto-stage dri3proto-stage
+		udev-stage glproto-stage presentproto-stage dri2proto-stage dri3proto-stage
+ifeq (wayland, $(filter wayland, $(PACKAGES)))
+	$(MAKE) wayland-stage wayland-host-stage
+endif
 	rm -rf $(BUILD_DIR)/$(MESALIB_DIR) $(@D)
 	$(MESALIB_UNZIP) $(DL_DIR)/$(MESALIB_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MESALIB_PATCHES)" ; \
@@ -123,8 +134,10 @@ $(MESALIB_BUILD_DIR)/.configured: $(DL_DIR)/$(MESALIB_SOURCE) $(MESALIB_PATCHES)
 	if test "$(BUILD_DIR)/$(MESALIB_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(MESALIB_DIR) $(@D) ; \
 	fi
+ifeq (wayland, $(filter wayland, $(PACKAGES)))
 	sed -i -e 's/\([^=]\)wayland_scanner/\1wayland-scanner/' $(@D)/configure.ac
 	$(AUTORECONF1.14) -vif $(@D)
+endif
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="-I$(@D)/include $(STAGING_CPPFLAGS) $(MESALIB_CPPFLAGS)" \
@@ -145,7 +158,7 @@ $(MESALIB_BUILD_DIR)/.configured: $(DL_DIR)/$(MESALIB_SOURCE) $(MESALIB_PATCHES)
 		--enable-xa \
 		--disable-gbm \
 		--enable-glx-tls \
-		--with-egl-platforms="x11,wayland" \
+		--with-egl-platforms="$(MESALIB_PLATFORMS)" \
 		--enable-dri \
 		--enable-dri3 \
 		--with-gallium-drivers=no \
@@ -176,11 +189,15 @@ $(MESALIB_BUILD_DIR)/.staged: $(MESALIB_BUILD_DIR)/.built
 	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	rm -f $(addprefix $(STAGING_LIB_DIR)/, libEGL.la \
 		libglapi.la libGLESv1_CM.la libGLESv2.la \
-		libGL.la ibOSMesa.la libwayland-egl.la)
+		libGL.la ibOSMesa.la)
 	sed -i -e '/^prefix=/s|=.*|=$(STAGING_PREFIX)|' \
 		$(addprefix $(STAGING_LIB_DIR)/pkgconfig/, \
 		dri.pc egl.pc gl.pc glesv1_cm.pc glesv2.pc \
-		osmesa.pc wayland-egl.pc)
+		osmesa.pc)
+ifeq (wayland, $(filter wayland, $(PACKAGES)))
+	rm -f $(STAGING_LIB_DIR)/libwayland-egl.la
+	sed -i -e '/^prefix=/s|=.*|=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/wayland-egl.pc
+endif
 	touch $@
 
 mesalib-stage: $(MESALIB_BUILD_DIR)/.staged
