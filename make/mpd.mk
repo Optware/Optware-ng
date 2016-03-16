@@ -60,7 +60,7 @@ MPD_IPK_VERSION=1
 # MPD_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-# MPD_PATCHES=$(MPD_SOURCE_DIR)/flac-1.1.3.patch
+MPD_PATCHES=$(MPD_SOURCE_DIR)/fix_build_with_no_ioprio_set_syscall.patch
 
 #
 # If the compilation of the package requires additional
@@ -166,7 +166,7 @@ endif
 	$(MPD_UNZIP) $(DL_DIR)/$(MPD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MPD_PATCHES)" ; \
 		then cat $(MPD_PATCHES) | \
-		$(PATCH) -d $(BUILD_DIR)/$(MPD_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(MPD_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(MPD_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(MPD_DIR) $(@D) ; \
