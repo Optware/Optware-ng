@@ -95,7 +95,7 @@ PERL_PACKAGES = \
 	perl-business-isbn-data perl-business-isbn \
 	perl-carp-clan \
 	perl-cgi perl-cgi-application \
-	perl-class-accessor perl-class-data-inheritable perl-class-dbi perl-class-trigger \
+	perl-class-accessor perl-class-data-inheritable perl-class-inspector perl-class-dbi perl-class-trigger \
 	perl-clone \
 	perl-compress-zlib \
 	perl-convert-binhex perl-convert-tnef perl-convert-uulib \
@@ -137,7 +137,7 @@ PERL_PACKAGES = \
 	perl-par-dist \
 	perl-pod-readme perl-poe-xs-queue-array \
 	perl-return-value \
-	perl-scgi \
+	perl-scgi perl-soap-lite \
 	perl-storable \
 	perl-sys-hostname-long \
 	perl-sys-syscall \
@@ -152,7 +152,7 @@ PERL_PACKAGES = \
 	perl-version \
 	perl-wakeonlan \
 	perl-www-mechanize \
-	perl-xml-dom perl-xml-parser perl-xml-regexp \
+	perl-xml-dom perl-xml-parser perl-xml-parser-lite perl-xml-regexp \
 	perl-yaml-syck \
 	ack \
 	amavisd-new \
