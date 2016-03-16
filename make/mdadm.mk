@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 MDADM_SITE=https://www.kernel.org/pub/linux/utils/raid/mdadm
-ifneq ($(OPTWARE_TARGET), $(filter buildroot-mipsel-ng, $(OPTWARE_TARGET)))
+ifneq ($(OPTWARE_TARGET), $(filter buildroot-mipsel-ng buildroot-armv5eabi-ng-legacy, $(OPTWARE_TARGET)))
 MDADM_VERSION=3.4
 else
 MDADM_VERSION=3.2.6
