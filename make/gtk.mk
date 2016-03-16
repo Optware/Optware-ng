@@ -24,8 +24,11 @@ GTK_DOC_DESCRIPTION=GTK+ docs
 GTK_SECTION=lib
 GTK_PRIORITY=optional
 GTK_DEPENDS=pango, atk, atk-bridge, gdk-pixbuf, libtiff, libjpeg (>= 6b-2), libpng, libepoxy, ttf-bitstream-vera, \
-	gconv-modules, xext, xfixes, xcursor, xft, xi, libxkbcommon, gettext, pango, cairo, wayland, e2fsprogs, \
+	gconv-modules, xext, xfixes, xcursor, xft, xi, libxkbcommon, gettext, pango, cairo, e2fsprogs, \
 	hicolor-icon-theme, shared-mime-info, gsettings-desktop-schemas
+ifeq (wayland, $(filter wayland, $(PACKAGES)))
+GTK_DEPENDS+=, wayland
+endif
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 GTK_DEPENDS+=, libiconv
 endif
@@ -159,8 +162,11 @@ $(GTK_BUILD_DIR)/.configured: $(DL_DIR)/$(GTK_SOURCE) $(GTK_PATCHES) make/gtk.mk
 	$(MAKE) glib-host-stage gettext-host-stage libtiff-stage libpng-stage libjpeg-stage \
 	pango-stage cairo-stage atk-stage atk-bridge-stage gdk-pixbuf-stage cups-stage \
 	xcursor-stage xfixes-stage xext-stage xft-stage xi-stage \
-	libxkbcommon-stage wayland-stage gettext-stage pango-stage cairo-stage \
+	libxkbcommon-stage gettext-stage pango-stage cairo-stage \
 	e2fsprogs-stage gettext-host-stage libepoxy-stage
+ifeq (wayland, $(filter wayland, $(PACKAGES)))
+	$(MAKE) wayland-stage
+endif
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
 endif
