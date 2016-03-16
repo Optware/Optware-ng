@@ -119,6 +119,9 @@ $(LIBNETFILTER_ACCT_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBNETFILTER_ACCT_SOURCE
 	if test "$(BUILD_DIR)/$(LIBNETFILTER_ACCT_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBNETFILTER_ACCT_DIR) $(@D) ; \
 	fi
+ifeq ($(OPTWARE_TARGET), $(filter buildroot-armv5eabi-ng-legacy, $(OPTWARE_TARGET)))
+	sed -i -e '/#include <linux\/netfilter\/nfnetlink_compat\.h>/s|^|//|' $(@D)//include/linux/netfilter/nfnetlink.h
+endif
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBNETFILTER_ACCT_CPPFLAGS)" \
