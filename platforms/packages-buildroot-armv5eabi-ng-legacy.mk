@@ -6,8 +6,6 @@ SPECIFIC_PACKAGES = \
 
 # iptraf: sys/types.h and linux/types.h conflicting
 # wayland: requires signalfd, timerfd_* and epoll_create1
-# gtk: depends on wayland
-# gtksourceview, gedit, libpeas: depend on gtk
 # inferno: failing with asm-arm.S:30: Error: invalid constant (900001) after fixup
 # libexplain: kernel-related issues
 BROKEN_PACKAGES = \
@@ -21,7 +19,7 @@ BROKEN_PACKAGES = \
 	lm-sensors \
 	libopensync msynctool obexftp \
 	modutils \
-	wayland gtk gtksourceview gedit libpeas \
+	wayland \
 	inferno \
 	libexplain
 
