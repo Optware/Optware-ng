@@ -9,6 +9,7 @@ SPECIFIC_PACKAGES = \
 # gtk: depends on wayland
 # gtksourceview, gedit: depend on gtk
 # inferno: failing with asm-arm.S:30: Error: invalid constant (900001) after fixup
+# libexplain: kernel-related issues
 BROKEN_PACKAGES = \
 	6relayd \
 	buildroot \
@@ -21,7 +22,8 @@ BROKEN_PACKAGES = \
 	libopensync msynctool obexftp \
 	modutils \
 	wayland gtk gtksourceview gedit \
-	inferno
+	inferno \
+	libexplain
 
 PERL_MAJOR_VER := 5.20
 
