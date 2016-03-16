@@ -152,7 +152,7 @@ PERL_PACKAGES = \
 	perl-version \
 	perl-wakeonlan \
 	perl-www-mechanize \
-	perl-xml-dom perl-xml-parser perl-xml-regexp \
+	perl-xml-dom perl-xml-parser perl-xml-parser-lite perl-xml-regexp \
 	perl-yaml-syck \
 	ack \
 	amavisd-new \
