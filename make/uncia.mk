@@ -20,7 +20,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-UNCIA_SITE=http://uncia.sourceforge.net
+UNCIA_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/uncia
 UNCIA_VERSION=1.3
 UNCIA_SOURCE=uncia-$(UNCIA_VERSION).tar.gz
 UNCIA_DIR=uncia-$(UNCIA_VERSION)
@@ -30,6 +30,10 @@ UNCIA_DESCRIPTION=a big cat, ASCII text manipulation tool.
 UNCIA_SECTION=utils
 UNCIA_PRIORITY=optional
 UNCIA_DEPENDS=libstdc++, libcurl, zlib, libexplain
+ifeq (libexplain, $(filter libexplain, $(PACKAGES)))
+UNCIA_VERSION=1.2
+UNCIA_DEPENDS=libstdc++, libcurl, zlib
+endif
 UNCIA_SUGGESTS=
 UNCIA_CONFLICTS=
 
@@ -105,7 +109,10 @@ uncia-source: $(DL_DIR)/$(UNCIA_SOURCE) $(UNCIA_PATCHES)
 # shown below to make various patches to it.
 #
 $(UNCIA_BUILD_DIR)/.configured: $(DL_DIR)/$(UNCIA_SOURCE) $(UNCIA_PATCHES) make/uncia.mk
-	$(MAKE) libstdc++-stage libcurl-stage zlib-stage libexplain-stage libtool-stage
+	$(MAKE) libstdc++-stage libcurl-stage zlib-stage libtool-stage boost-stage
+ifeq (libexplain, $(filter libexplain, $(PACKAGES)))
+	$(MAKE) libexplain-stage
+endif
 	rm -rf $(BUILD_DIR)/$(UNCIA_DIR) $(@D)
 	$(UNCIA_UNZIP) $(DL_DIR)/$(UNCIA_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(UNCIA_PATCHES)" ; \
