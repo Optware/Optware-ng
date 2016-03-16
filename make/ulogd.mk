@@ -47,6 +47,9 @@ ULOGD_IPK_VERSION=1
 # which they should be applied to the source code.
 #
 #ULOGD_PATCHES=$(ULOGD_SOURCE_DIR)/configure.patch
+ifeq ($(OPTWARE_TARGET), $(filter buildroot-armv5eabi-ng-legacy, $(OPTWARE_TARGET)))
+ULOGD_PATCHES+=$(ULOGD_SOURCE_DIR)/fix_for_old_kernel.patch
+endif
 
 #
 # If the compilation of the package requires additional
@@ -111,7 +114,7 @@ $(ULOGD_BUILD_DIR)/.configured: $(DL_DIR)/$(ULOGD_SOURCE) $(ULOGD_PATCHES) make/
 	$(ULOGD_UNZIP) $(DL_DIR)/$(ULOGD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ULOGD_PATCHES)" ; \
 		then cat $(ULOGD_PATCHES) | \
-		$(PATCH) -d $(BUILD_DIR)/$(ULOGD_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(ULOGD_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(ULOGD_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(ULOGD_DIR) $(@D) ; \
