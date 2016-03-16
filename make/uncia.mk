@@ -30,7 +30,7 @@ UNCIA_DESCRIPTION=a big cat, ASCII text manipulation tool.
 UNCIA_SECTION=utils
 UNCIA_PRIORITY=optional
 UNCIA_DEPENDS=libstdc++, libcurl, zlib, libexplain
-ifeq (libexplain, $(filter libexplain, $(PACKAGES)))
+ifneq (libexplain, $(filter libexplain, $(PACKAGES)))
 UNCIA_VERSION=1.2
 UNCIA_DEPENDS=libstdc++, libcurl, zlib
 endif
