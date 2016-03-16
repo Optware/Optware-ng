@@ -47,6 +47,9 @@ LIBNETFILTER_QUEUE_IPK_VERSION=1
 # which they should be applied to the source code.
 #
 #LIBNETFILTER_QUEUE_PATCHES=$(LIBNETFILTER_QUEUE_SOURCE_DIR)/configure.patch
+ifeq ($(OPTWARE_TARGET), $(filter buildroot-armv5eabi-ng-legacy, $(OPTWARE_TARGET)))
+LIBNETFILTER_QUEUE_PATCHES+=$(LIBNETFILTER_QUEUE_SOURCE_DIR)/fix_for_old_kernel.patch
+endif
 
 #
 # If the compilation of the package requires additional
@@ -110,7 +113,7 @@ $(LIBNETFILTER_QUEUE_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBNETFILTER_QUEUE_SOUR
 	$(LIBNETFILTER_QUEUE_UNZIP) $(DL_DIR)/$(LIBNETFILTER_QUEUE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBNETFILTER_QUEUE_PATCHES)" ; \
 		then cat $(LIBNETFILTER_QUEUE_PATCHES) | \
-		$(PATCH) -d $(BUILD_DIR)/$(LIBNETFILTER_QUEUE_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBNETFILTER_QUEUE_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBNETFILTER_QUEUE_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBNETFILTER_QUEUE_DIR) $(@D) ; \
