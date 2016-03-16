@@ -13,7 +13,7 @@ PERL-SOAP-LITE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PERL-SOAP-LITE_DESCRIPTION=Perls Web Services Toolkit
 PERL-SOAP-LITE_SECTION=util
 PERL-SOAP-LITE_PRIORITY=optional
-PERL-SOAP-LITE_DEPENDS=perl-class-inspector, perl-xml-parser-lite
+PERL-SOAP-LITE_DEPENDS=perl-class-inspector, perl-xml-parser-lite, perl-mime-tools
 PERL-SOAP-LITE_SUGGESTS=
 PERL-SOAP-LITE_CONFLICTS=
 
