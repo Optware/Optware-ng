@@ -1,0 +1,10 @@
+--- a/include/drm/drm.h
++++ b/include/drm/drm.h
+@@ -38,6 +38,7 @@
+ 
+ #if defined(__linux__)
+ 
++#undef __STRICT_ANSI__
+ #include <linux/types.h>
+ #include <asm/ioctl.h>
+ typedef unsigned int drm_handle_t;

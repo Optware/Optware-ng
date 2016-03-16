@@ -52,7 +52,7 @@ LIBDRM_IPK_VERSION=1
 # LIBDRM_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#LIBDRM_PATCHES=$(LIBDRM_SOURCE_DIR)/configure.patch
+LIBDRM_PATCHES=$(LIBDRM_SOURCE_DIR)/undef__STRICT_ANSI__.patch
 
 #
 # If the compilation of the package requires additional
@@ -116,7 +116,7 @@ $(LIBDRM_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBDRM_SOURCE) $(LIBDRM_PATCHES) ma
 	$(LIBDRM_UNZIP) $(DL_DIR)/$(LIBDRM_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBDRM_PATCHES)" ; \
 		then cat $(LIBDRM_PATCHES) | \
-		$(PATCH) -d $(BUILD_DIR)/$(LIBDRM_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBDRM_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBDRM_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBDRM_DIR) $(@D) ; \
