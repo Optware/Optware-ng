@@ -1,0 +1,60 @@
+--- a/jdk/make/CompileJavaClasses.gmk
++++ b/jdk/make/CompileJavaClasses.gmk
+@@ -130,8 +130,7 @@
+       sun/nio/fs/LinuxFileSystemProvider.java \
+       sun/nio/fs/MagicFileTypeDetector.java \
+       sun/nio/fs/LinuxNativeDispatcher.java \
+-      sun/nio/fs/LinuxUserDefinedFileAttributeView.java \
+-      sun/nio/fs/LinuxWatchService.java
++      sun/nio/fs/LinuxUserDefinedFileAttributeView.java
+ endif
+ 
+ ifneq ($(OPENJDK_TARGET_OS), macosx)
+@@ -231,7 +230,7 @@
+ # Exclude another implicitly not included file.
+ EXFILES += sun/util/locale/AsciiUtil.java
+ 
+-ifeq (, $(filter $(OPENJDK_TARGET_OS), solaris macosx aix))
++ifeq (, $(filter $(OPENJDK_TARGET_OS), linux solaris macosx aix))
+   #
+   # only solaris, macosx and aix
+   #
+--- a/jdk/make/lib/NioLibraries.gmk
++++ b/jdk/make/lib/NioLibraries.gmk
+@@ -72,7 +72,6 @@
+       GnomeFileTypeDetector.c \
+       MagicFileTypeDetector.c \
+       LinuxNativeDispatcher.c \
+-      LinuxWatchService.c \
+       UnixCopyFile.c \
+       UnixNativeDispatcher.c
+ endif
+--- a/jdk/make/mapfiles/libnio/mapfile-linux
++++ b/jdk/make/mapfiles/libnio/mapfile-linux
+@@ -139,14 +139,6 @@
+ 		Java_sun_nio_fs_GnomeFileTypeDetector_probeUsingGnomeVfs;
+ 		Java_sun_nio_fs_MagicFileTypeDetector_initialize0;
+ 		Java_sun_nio_fs_MagicFileTypeDetector_probe0;
+-		Java_sun_nio_fs_LinuxWatchService_eventSize;
+-		Java_sun_nio_fs_LinuxWatchService_eventOffsets;
+-		Java_sun_nio_fs_LinuxWatchService_inotifyInit;
+-		Java_sun_nio_fs_LinuxWatchService_inotifyAddWatch;
+-		Java_sun_nio_fs_LinuxWatchService_inotifyRmWatch;
+-		Java_sun_nio_fs_LinuxWatchService_configureBlocking;
+-		Java_sun_nio_fs_LinuxWatchService_socketpair;
+-		Java_sun_nio_fs_LinuxWatchService_poll;
+ 		Java_sun_nio_fs_LinuxNativeDispatcher_init;
+ 		Java_sun_nio_fs_LinuxNativeDispatcher_fgetxattr0;
+ 		Java_sun_nio_fs_LinuxNativeDispatcher_flistxattr;
+--- a/jdk/src/solaris/classes/sun/nio/fs/LinuxFileSystem.java
++++ b/jdk/src/solaris/classes/sun/nio/fs/LinuxFileSystem.java
+@@ -43,8 +43,7 @@
+     public WatchService newWatchService()
+         throws IOException
+     {
+-        // assume 2.6.13 or newer
+-        return new LinuxWatchService(this);
++        return new PollingWatchService();
+     }
+ 
+ 
