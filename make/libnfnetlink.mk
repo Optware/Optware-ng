@@ -46,7 +46,7 @@ LIBNFNETLINK_IPK_VERSION=1
 # LIBNFNETLINK_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#LIBNFNETLINK_PATCHES=$(LIBNFNETLINK_SOURCE_DIR)/configure.patch
+LIBNFNETLINK_PATCHES=$(LIBNFNETLINK_SOURCE_DIR)/undef__STRICT_ANSI__.patch
 
 #
 # If the compilation of the package requires additional
@@ -110,7 +110,7 @@ $(LIBNFNETLINK_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBNFNETLINK_SOURCE) $(LIBNFN
 	$(LIBNFNETLINK_UNZIP) $(DL_DIR)/$(LIBNFNETLINK_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBNFNETLINK_PATCHES)" ; \
 		then cat $(LIBNFNETLINK_PATCHES) | \
-		$(PATCH) -d $(BUILD_DIR)/$(LIBNFNETLINK_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBNFNETLINK_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBNFNETLINK_DIR)" != "$(LIBNFNETLINK_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(LIBNFNETLINK_DIR) $(LIBNFNETLINK_BUILD_DIR) ; \
