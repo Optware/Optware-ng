@@ -1,0 +1,10 @@
+--- a/packages/sgml/util.c
++++ b/packages/sgml/util.c
+@@ -41,6 +41,7 @@
+ #ifdef HAVE_IO_H
+ #include <io.h>
+ #endif
++#include <time.h>
+ #include <sys/stat.h>
+ #include <fcntl.h>
+ #include <assert.h>

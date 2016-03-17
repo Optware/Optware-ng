@@ -47,8 +47,9 @@ SWI-PROLOG_IPK_VERSION=2
 # SWI-PROLOG_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
+SWI-PROLOG_PATCHES=$(SWI-PROLOG_SOURCE_DIR)/sgm_util_c_include_time_h.patch
 ifneq ($(HOSTCC), $(TARGET_CC))
-SWI-PROLOG_PATCHES=$(SWI-PROLOG_SOURCE_DIR)/src-configure.in.patch $(SWI-PROLOG_SOURCE_DIR)/packages-plld.sh.in.patch
+SWI-PROLOG_PATCHES+=$(SWI-PROLOG_SOURCE_DIR)/src-configure.in.patch $(SWI-PROLOG_SOURCE_DIR)/packages-plld.sh.in.patch
 endif
 
 #
