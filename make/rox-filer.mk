@@ -141,6 +141,9 @@ $(ROX-FILER_BUILD_DIR)/.configured: $(DL_DIR)/$(ROX-FILER_SOURCE) $(ROX-FILER_PA
 	)
 #	$(PATCH_LIBTOOL) $(@D)/libtool
 	sed -i -e 's|-I/usr/include ||' -e '/mv "\$${PROG}"/s/.*/#\\/' $(@D)/ROX-Filer/Makefile
+ifneq (, $(filter buildroot-armv5eabi-ng-legacy, $(OPTWARE_TARGET)))
+	sed -i -e '/HAVE_SYS_INOTIFY_H/s|^|//|' $(@D)/ROX-Filer/config.h
+endif
 	touch $@
 
 rox-filer-unpack: $(ROX-FILER_BUILD_DIR)/.configured
