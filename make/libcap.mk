@@ -53,7 +53,8 @@ LIBCAP_IPK_VERSION=1
 #
 LIBCAP_PATCHES=$(LIBCAP_SOURCE_DIR)/0001-fix-Makefiles.patch \
 $(LIBCAP_SOURCE_DIR)/0003-refine-setcap-error-message.patch \
-$(LIBCAP_SOURCE_DIR)/0004-include-sys-xattr.patch
+$(LIBCAP_SOURCE_DIR)/0004-include-sys-xattr.patch \
+$(LIBCAP_SOURCE_DIR)/undef__STRICT_ANSI__.patch
 
 #
 # If the compilation of the package requires additional

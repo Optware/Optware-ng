@@ -1,0 +1,10 @@
+--- a/libcap/include/sys/capability.h
++++ b/libcap/include/sys/capability.h
+@@ -21,6 +21,7 @@
+ 
+ #include <sys/types.h>
+ #include <stdint.h>
++#undef __STRICT_ANSI__
+ #include <linux/types.h>
+ 
+ #ifndef __user
