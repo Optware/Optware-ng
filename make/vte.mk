@@ -13,7 +13,13 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 VTE_SITE=http://ftp.gnome.org/pub/gnome/sources/vte/$(shell echo $(VTE_VERSION)|cut -d '.' -f 1-2)/
+ifneq ($(OPTWARE_TARGET), $(filter buildroot-armv5eabi-ng-legacy, $(OPTWARE_TARGET)))
 VTE_VERSION=0.36.3
+VTE_IPK_VERSION=1
+else
+VTE_VERSION=0.28.2
+VTE_IPK_VERSION=1
+endif
 VTE_SOURCE=vte-$(VTE_VERSION).tar.xz
 VTE_DIR=vte-$(VTE_VERSION)
 VTE_UNZIP=xzcat
@@ -21,12 +27,16 @@ VTE_MAINTAINER=Josh Parsons <jbparsons@ucdavis.edu>
 VTE_DESCRIPTION=Gtk+ terminal widget
 VTE_SECTION=lib
 VTE_PRIORITY=optional
+ifneq ($(VTE_VERSION), 0.28.2)
 VTE_DEPENDS=gtk, ncurses, termcap, sm, dev-pts, gettext
+else
+VTE_DEPENDS=gtk2, ncurses, termcap, sm, dev-pts, gettext
+endif
 
 #
 # VTE_IPK_VERSION should be incremented when the ipk changes.
-#
-VTE_IPK_VERSION=1
+# defined above
+#VTE_IPK_VERSION=1
 
 #
 # VTE_LOCALES defines which locales get installed
@@ -112,17 +122,24 @@ vte-source: $(DL_DIR)/$(VTE_SOURCE) $(VTE_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(VTE_BUILD_DIR)/.configured: $(DL_DIR)/$(VTE_SOURCE) $(VTE_PATCHES) make/vte.mk
+ifneq ($(VTE_VERSION), 0.28.2)
 	$(MAKE) gtk-stage sm-stage ncurses-stage termcap-stage \
 	gettext-stage gettext-host-stage
+else
+	$(MAKE) gtk2-stage sm-stage ncurses-stage termcap-stage \
+	gettext-stage gettext-host-stage
+endif
 	rm -rf $(BUILD_DIR)/$(VTE_DIR) $(@D)
 	$(VTE_UNZIP) $(DL_DIR)/$(VTE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(VTE_DIR) $(@D)
 	if test -n "$(VTE_PATCHES)"; \
 		then cat $(VTE_PATCHES) |$(PATCH) -p0 -d$(VTE_BUILD_DIR); \
 	fi
+ifneq ($(VTE_VERSION), 0.28.2)
 #	for kernels without FS_NOCOW_FL support
 	sed -i -e '/^#include <linux\/fs\.h>/s/$$/\n#ifndef FS_NOCOW_FL\n# define FS_NOCOW_FL 0\n#endif/' \
 		$(@D)/src/vteutils.c
+endif
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		PATH="$(HOST_STAGING_PREFIX)/bin:$$PATH" \
