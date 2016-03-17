@@ -170,7 +170,7 @@
  			continue;
  
 -		if (!(sysfs_is_partition_dirent(dir, d, wholedisk_cxt->name)))
-+		if (!(sysfs_is_partition_dirent(dir, &wholedisk_cxt->sysfs->dir_path, d, wholedisk_cxt->name)))
++		if (!(sysfs_is_partition_dirent(dir, wholedisk_cxt->sysfs.dir_path, d, wholedisk_cxt->name)))
  			continue;
  
  		DBG(CXT, ul_debugobj(wholedisk_cxt, "  checking %s", d->d_name));
@@ -179,7 +179,7 @@
  	while ((d = xreaddir(dir))) {
  		/* Is the dependency a partition? */
 -		if (sysfs_is_partition_dirent(dir, d, NULL)) {
-+		if (sysfs_is_partition_dirent(dir, &cxt->sysfs->dir_path, d, NULL)) {
++		if (sysfs_is_partition_dirent(dir, cxt->sysfs.dir_path, d, NULL)) {
  			if (!get_wholedisk_from_partition_dirent(dir, dirname, d, &dep)) {
  				DBG(CXT, ul_debugobj(cxt, "%s: %s: dependence is partition",
  								cxt->name, d->d_name));
@@ -190,7 +190,7 @@
  			continue;
  
 -		if (sysfs_is_partition_dirent(dir, d, ctl->device)) {
-+		if (sysfs_is_partition_dirent(dir, &cxt->dir_path, d, ctl->device)) {
++		if (sysfs_is_partition_dirent(dir, cxt.dir_path, d, ctl->device)) {
  			char *mnt = NULL;
  			char *dev = find_device(d->d_name);
  
