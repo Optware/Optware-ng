@@ -27,7 +27,13 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 WPA_SUPPLICANT_SITE=http://hostap.epitest.fi/releases
+ifneq ($(OPTWARE_TARGET), $(filter buildroot-armv5eabi-ng-legacy, $(OPTWARE_TARGET)))
 WPA_SUPPLICANT_VERSION=2.4
+WPA_SUPPLICANT_IPK_VERSION=1
+else
+WPA_SUPPLICANT_VERSION=0.5.8
+WPA_SUPPLICANT_IPK_VERSION=1
+endif
 WPA_SUPPLICANT_SOURCE=wpa_supplicant-$(WPA_SUPPLICANT_VERSION).tar.gz
 WPA_SUPPLICANT_DIR=wpa_supplicant-$(WPA_SUPPLICANT_VERSION)
 WPA_SUPPLICANT_UNZIP=zcat
@@ -41,8 +47,8 @@ WPA_SUPPLICANT_CONFLICTS=
 
 #
 # WPA_SUPPLICANT_IPK_VERSION should be incremented when the ipk changes.
-#
-WPA_SUPPLICANT_IPK_VERSION=1
+# defined aboce
+#WPA_SUPPLICANT_IPK_VERSION=1
 
 #
 # WPA_SUPPLICANT_CONFFILES should be a list of user-editable files
@@ -115,9 +121,16 @@ $(WPA_SUPPLICANT_BUILD_DIR)/.configured: $(DL_DIR)/$(WPA_SUPPLICANT_SOURCE) $(WP
 		then cat $(WPA_SUPPLICANT_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(WPA_SUPPLICANT_DIR) -p1 ; \
 	fi
 	mkdir -p $(BUILD_DIR)/$(WPA_SUPPLICANT_DIR)/proto
+ifneq ($(WPA_SUPPLICANT_VERSION), 0.5.8)
 	$(INSTALL) -m 644 $(WPA_SUPPLICANT_SOURCE_DIR)/defconfig $(BUILD_DIR)/$(WPA_SUPPLICANT_DIR)/wpa_supplicant/.config
 	$(INSTALL) -m 644 $(WPA_SUPPLICANT_SOURCE_DIR)/typedefs.h $(BUILD_DIR)/$(WPA_SUPPLICANT_DIR)/wpa_supplicant/typedefs.h
 	$(INSTALL) -m 644 $(WPA_SUPPLICANT_SOURCE_DIR)/wlioctl.h $(BUILD_DIR)/$(WPA_SUPPLICANT_DIR)/wpa_supplicant/wlioctl.h
+else
+	$(INSTALL) -m 644 $(WPA_SUPPLICANT_SOURCE_DIR)/defconfig $(BUILD_DIR)/$(WPA_SUPPLICANT_DIR)/.config
+	$(INSTALL) -m 644 $(WPA_SUPPLICANT_SOURCE_DIR)/typedefs.h $(BUILD_DIR)/$(WPA_SUPPLICANT_DIR)/typedefs.h
+	$(INSTALL) -m 644 $(WPA_SUPPLICANT_SOURCE_DIR)/wlioctl.h $(BUILD_DIR)/$(WPA_SUPPLICANT_DIR)/wlioctl.h
+	sed -i -e 's/restrict/_&/g' $(BUILD_DIR)/$(WPA_SUPPLICANT_DIR)/driver_broadcom.c
+endif
 	$(INSTALL) -m 644 $(WPA_SUPPLICANT_SOURCE_DIR)/proto/*.h $(BUILD_DIR)/$(WPA_SUPPLICANT_DIR)/proto
 	mv $(BUILD_DIR)/$(WPA_SUPPLICANT_DIR) $(@D)
 	touch $@
@@ -129,12 +142,21 @@ wpa-supplicant-unpack: $(WPA_SUPPLICANT_BUILD_DIR)/.configured
 #
 $(WPA_SUPPLICANT_BUILD_DIR)/.built: $(WPA_SUPPLICANT_BUILD_DIR)/.configured
 	rm -f $@
+ifneq ($(WPA_SUPPLICANT_VERSION), 0.5.8)
 	CC="$(TARGET_CC)" \
 	LDFLAGS="$(STAGING_LDFLAGS)" \
 	CPPFLAGS="$(STAGING_CPPFLAGS)"  \
 	CFLAGS="$(STAGING_CPPFLAGS)" \
 	LIBS="$(STAGING_LDFLAGS)" \
 	$(MAKE) -C $(@D)/wpa_supplicant
+else
+	CC="$(TARGET_CC)" \
+	LDFLAGS="$(STAGING_LDFLAGS)" \
+	CPPFLAGS="$(STAGING_CPPFLAGS)"  \
+	CFLAGS="$(STAGING_CPPFLAGS)" \
+	LIBS="$(STAGING_LDFLAGS)" \
+	$(MAKE) -C $(@D)
+endif
 	touch $@
 
 #
@@ -186,11 +208,17 @@ $(WPA_SUPPLICANT_IPK_DIR)/CONTROL/control:
 $(WPA_SUPPLICANT_IPK): $(WPA_SUPPLICANT_BUILD_DIR)/.built
 	rm -rf $(WPA_SUPPLICANT_IPK_DIR) $(BUILD_DIR)/wpa-supplicant_*_$(TARGET_ARCH).ipk
 	$(INSTALL) -d $(WPA_SUPPLICANT_IPK_DIR)$(TARGET_PREFIX)/sbin
+ifneq ($(WPA_SUPPLICANT_VERSION), 0.5.8)
 	$(INSTALL) -m 755 $(WPA_SUPPLICANT_BUILD_DIR)/wpa_supplicant/wpa_cli $(WPA_SUPPLICANT_IPK_DIR)$(TARGET_PREFIX)/sbin/wpa_cli
-	$(STRIP_COMMAND) $(WPA_SUPPLICANT_IPK_DIR)$(TARGET_PREFIX)/sbin/wpa_cli
 	$(INSTALL) -m 755 $(WPA_SUPPLICANT_BUILD_DIR)/wpa_supplicant/wpa_passphrase $(WPA_SUPPLICANT_IPK_DIR)$(TARGET_PREFIX)/sbin/wpa_passphrase
-	$(STRIP_COMMAND) $(WPA_SUPPLICANT_IPK_DIR)$(TARGET_PREFIX)/sbin/wpa_passphrase
 	$(INSTALL) -m 755 $(WPA_SUPPLICANT_BUILD_DIR)/wpa_supplicant/wpa_supplicant $(WPA_SUPPLICANT_IPK_DIR)$(TARGET_PREFIX)/sbin/wpa_supplicant
+else
+	$(INSTALL) -m 755 $(WPA_SUPPLICANT_BUILD_DIR)/wpa_cli $(WPA_SUPPLICANT_IPK_DIR)$(TARGET_PREFIX)/sbin/wpa_cli
+	$(INSTALL) -m 755 $(WPA_SUPPLICANT_BUILD_DIR)/wpa_passphrase $(WPA_SUPPLICANT_IPK_DIR)$(TARGET_PREFIX)/sbin/wpa_passphrase
+	$(INSTALL) -m 755 $(WPA_SUPPLICANT_BUILD_DIR)/wpa_supplicant $(WPA_SUPPLICANT_IPK_DIR)$(TARGET_PREFIX)/sbin/wpa_supplicant
+endif
+	$(STRIP_COMMAND) $(WPA_SUPPLICANT_IPK_DIR)$(TARGET_PREFIX)/sbin/wpa_cli
+	$(STRIP_COMMAND) $(WPA_SUPPLICANT_IPK_DIR)$(TARGET_PREFIX)/sbin/wpa_passphrase
 	$(STRIP_COMMAND) $(WPA_SUPPLICANT_IPK_DIR)$(TARGET_PREFIX)/sbin/wpa_supplicant
 	$(INSTALL) -d -d $(WPA_SUPPLICANT_IPK_DIR)$(TARGET_PREFIX)/etc
 	$(INSTALL) -m 644 $(WPA_SUPPLICANT_SOURCE_DIR)/wpa-supplicant.conf $(WPA_SUPPLICANT_IPK_DIR)$(TARGET_PREFIX)/etc/wpa-supplicant.conf
