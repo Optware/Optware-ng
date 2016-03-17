@@ -46,6 +46,10 @@ SQUID3_CONFFILES=$(TARGET_PREFIX)/etc/squid/squid.conf $(TARGET_PREFIX)/etc/init
 #
 SQUID3_PATCHES=$(SQUID3_SOURCE_DIR)/cross_compile.patch
 
+ifeq ($(OPTWARE_TARGET), $(filter buildroot-armv5eabi-ng-legacy, $(OPTWARE_TARGET)))
+SQUID3_PATCHES += $(SQUID3_SOURCE_DIR)/linux_h.patch
+endif
+
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.

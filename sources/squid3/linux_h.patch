@@ -1,0 +1,11 @@
+--- a/compat/os/linux.h
++++ b/compat/os/linux.h
+@@ -53,7 +53,7 @@
+ 
+ #if LIBCAP_BROKEN
+ #undef _POSIX_SOURCE
+-#define _LINUX_TYPES_H
++/*#define _LINUX_TYPES_H*/
+ #define _LINUX_FS_H
+ typedef uint32_t __u32;
+ #endif
