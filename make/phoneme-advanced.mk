@@ -174,7 +174,7 @@ ifeq ($(OPTWARE_TARGET), $(filter shibby-tomato-arm buildroot-armeabi buildroot-
 #	uclibc built without sigignore() implementation
 	sed -i -e '/CVMBool CVMinitVMTargetGlobalState()/ i int sigignore (int sig)\n{\nstruct sigaction act;\nmemset(\&act, 0, sizeof(act));\nact.sa_handler = SIG_IGN;\nreturn sigaction (sig, \&act, NULL);\n}' $(@D)/cdc/src/linux/javavm/runtime/globals_md.c
 endif
-ifeq ($(OPTWARE_TARGET), $(filter shibby-tomato-arm buildroot-armeabi buildroot-armeabi-ng buildroot-armv5eabi-ng buildroot-armeabihf, $(OPTWARE_TARGET)))
+ifeq ($(OPTWARE_TARGET), $(filter shibby-tomato-arm buildroot-armeabi buildroot-armeabi-ng buildroot-armv5eabi-ng buildroot-armv5eabi-ng-legacy buildroot-armeabihf, $(OPTWARE_TARGET)))
 #	fix for Assembler messages: Error: .size expression for atomicSwap does not evaluate to a constant
 	sed -i -e '/SET_SIZE(atomicSwap)/s/^/@/' $(@D)/cdc/src/arm/javavm/runtime/atomic_arm.S
 endif
