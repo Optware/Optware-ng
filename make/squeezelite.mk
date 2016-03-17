@@ -58,6 +58,10 @@ $(SQUEEZELITE_SOURCE_DIR)/wait_for_nonzero_mac.patch \
 SQUEEZELITE_CPPFLAGS=-DFFMPEG -DDSD -DRESAMPLE -DLINKALL
 SQUEEZELITE_LDFLAGS=-pthread -lasound -lm -lrt
 
+ifeq ($(OPTWARE_TARGET), $(filter buildroot-armv5eabi-ng-legacy, $(OPTWARE_TARGET)))
+SQUEEZELITE_CPPFLAGS += -DSELFPIPE=1
+endif
+
 #
 # SQUEEZELITE_BUILD_DIR is the directory in which the build is done.
 # SQUEEZELITE_SOURCE_DIR is the directory which holds all the
