@@ -8,6 +8,7 @@ SPECIFIC_PACKAGES = \
 # wayland: requires signalfd, timerfd_* and epoll_create1
 # inferno: failing with asm-arm.S:30: Error: invalid constant (900001) after fixup
 # libexplain: kernel-related issues
+# openjdk8: requires inotify support
 BROKEN_PACKAGES = \
 	6relayd \
 	buildroot \
@@ -21,7 +22,8 @@ BROKEN_PACKAGES = \
 	modutils \
 	wayland \
 	inferno \
-	libexplain
+	libexplain \
+	openjdk8
 
 STRACE_VERSION = 4.5.20
 STRACE_IPK_VERSION = 1
