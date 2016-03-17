@@ -1,0 +1,26 @@
+--- a/system.c
++++ b/system.c
+@@ -61,6 +61,23 @@
+ #define MS_MGC_MSK	0xffff0000	/* Magic flag mask */
+ 
+ #include <sys/socket.h>
++#ifndef __SOCKADDR_COMMON
++#include <bits/sockaddr.h>
++typedef unsigned short	sa_family_t;
++ 
++struct sockaddr {
++	sa_family_t	sa_family;
++	char		sa_data[14];
++};
++
++#define SS_MAXSIZE	128
++#define SS_ALIGNSIZE	(__alignof__ (struct sockaddr *))
++
++struct sockaddr_storage {
++	unsigned short	ss_family;
++	char		__data[SS_MAXSIZE - sizeof(unsigned short)];
++} __attribute__ ((aligned(SS_ALIGNSIZE)));
++#endif
+ #include <netinet/in.h>
+ #include <arpa/inet.h>
+ 

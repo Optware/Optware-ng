@@ -1,0 +1,71 @@
+--- a/signal.c
++++ b/signal.c
+@@ -1033,14 +1033,14 @@
+ 		sigset_t sigm;
+ 		long_to_sigset(tcp->u_arg[0], &sigm);
+ 		printsigmask(&sigm, 0);
+-#ifndef USE_PROCFS
++#if 0
+ 		if ((tcp->u_arg[0] & sigmask(SIGTRAP))) {
+ 			/* Mark attempt to block SIGTRAP */
+ 			tcp->flags |= TCB_SIGTRAPPED;
+ 			/* Send unblockable signal */
+ 			kill(tcp->pid, SIGSTOP);
+ 		}
+-#endif /* !USE_PROCFS */
++#endif
+ 	}
+ 	else if (!syserror(tcp)) {
+ 		sigset_t sigm;
+@@ -1118,21 +1118,21 @@
+ 		else if ((long)sa.SA_HANDLER == (long)SIG_DFL)
+ 			tprintf("{SIG_DFL, ");
+ 		else if ((long)sa.SA_HANDLER == (long)SIG_IGN) {
+-#ifndef USE_PROCFS
++#if 0
+ 			if (tcp->u_arg[0] == SIGTRAP) {
+ 				tcp->flags |= TCB_SIGTRAPPED;
+ 				kill(tcp->pid, SIGSTOP);
+ 			}
+-#endif /* !USE_PROCFS */
++#endif
+ 			tprintf("{SIG_IGN, ");
+ 		}
+ 		else {
+-#ifndef USE_PROCFS
++#if 0
+ 			if (tcp->u_arg[0] == SIGTRAP) {
+ 				tcp->flags |= TCB_SIGTRAPPED;
+ 				kill(tcp->pid, SIGSTOP);
+ 			}
+-#endif /* !USE_PROCFS */
++#endif
+ 			tprintf("{%#lx, ", (long) sa.SA_HANDLER);
+ #ifndef LINUX
+ 			printsigmask (&sa.sa_mask, 0);
+@@ -1173,21 +1173,21 @@
+ 			tprintf("SIG_DFL");
+ 			break;
+ 		case (long) SIG_IGN:
+-#ifndef USE_PROCFS
++#if 0
+ 			if (tcp->u_arg[0] == SIGTRAP) {
+ 				tcp->flags |= TCB_SIGTRAPPED;
+ 				kill(tcp->pid, SIGSTOP);
+ 			}
+-#endif /* !USE_PROCFS */
++#endif
+ 			tprintf("SIG_IGN");
+ 			break;
+ 		default:
+-#ifndef USE_PROCFS
++#if 0
+ 			if (tcp->u_arg[0] == SIGTRAP) {
+ 				tcp->flags |= TCB_SIGTRAPPED;
+ 				kill(tcp->pid, SIGSTOP);
+ 			}
+-#endif /* !USE_PROCFS */
++#endif
+ 			tprintf("%#lx", tcp->u_arg[1]);
+ 		}
+ 		return 0;
