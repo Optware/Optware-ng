@@ -75,9 +75,11 @@ endif
 ifeq (x264, $(filter x264, $(PACKAGES)))
 VLC_SUGGESTS+=, x264
 endif
-ifeq (mesalib, $(filter mesalib, $(PACKAGES)))
-# libwayland-egl
-VLC_SUGGESTS+=, mesalib
+ifeq (wayland, $(filter wayland, $(PACKAGES)))
+  ifeq (mesalib, $(filter mesalib, $(PACKAGES)))
+  # libwayland-egl
+  VLC_SUGGESTS+=, mesalib
+  endif
 endif
 ifeq (xcb, $(filter xcb, $(PACKAGES)))
 VLC_SUGGESTS+=, xcb
@@ -120,11 +122,15 @@ VLC_CONFIG_OPTS += --disable-dvbpsi
 else
 VLC_CONFIG_OPTS += --enable-dvbpsi
 endif
-ifeq (mesalib, $(filter mesalib, $(PACKAGES)))
-# libwayland-egl
-VLC_CONFIG_OPTS += --enable-wayland
+ifeq (wayland, $(filter wayland, $(PACKAGES)))
+  ifeq (mesalib, $(filter mesalib, $(PACKAGES)))
+  # libwayland-egl
+  VLC_CONFIG_OPTS += --enable-wayland
+  else
+  VLC_CONFIG_OPTS += --disable-wayland
+  endif
 else
-VLC_CONFIG_OPTS += --disable-wayland
+  VLC_CONFIG_OPTS += --disable-wayland
 endif
 ifeq (xcb, $(filter xcb, $(PACKAGES)))
 VLC_CONFIG_OPTS += --with-x --enable-xcb
@@ -224,9 +230,11 @@ endif
 ifeq (x264, $(filter x264, $(PACKAGES)))
 	$(MAKE) x264-stage
 endif
-ifeq (mesalib, $(filter mesalib, $(PACKAGES)))
-# libwayland-egl
+ifeq (wayland, $(filter wayland, $(PACKAGES)))
+  ifeq (mesalib, $(filter mesalib, $(PACKAGES)))
+  # libwayland-egl
 	$(MAKE) mesalib-stage
+  endif
 endif
 ifeq (xcb, $(filter xcb, $(PACKAGES)))
 	$(MAKE) xcb-stage
