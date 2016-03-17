@@ -1,0 +1,10 @@
+--- a/src/transcode.h
++++ b/src/transcode.h
+@@ -28,6 +28,7 @@
+ # include "config.h"
+ #endif
+ 
++#include <time.h>
+ #include <sys/stat.h>
+ #include <sys/time.h>
+ #include <errno.h>

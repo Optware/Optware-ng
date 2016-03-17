@@ -71,7 +71,8 @@ $(TRANSCODE_SOURCE_DIR)/10_freetype.patch \
 $(TRANSCODE_SOURCE_DIR)/11_libav10.patch \
 $(TRANSCODE_SOURCE_DIR)/12_underlinkage.patch \
 $(TRANSCODE_SOURCE_DIR)/13-fix-cross-configure.in.patch \
-$(TRANSCODE_SOURCE_DIR)/14-libavresample-conditional.patch
+$(TRANSCODE_SOURCE_DIR)/14-libavresample-conditional.patch \
+$(TRANSCODE_SOURCE_DIR)/transcode_h_include_time_h.patch
 endif
 endif
 
