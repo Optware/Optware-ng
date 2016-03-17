@@ -40,9 +40,13 @@ ARMv7 EABI softfloat:
 ```
 wget -O - http://ipkg.nslu2-linux.org/optware-ng/bootstrap/buildroot-armeabi-ng-bootstrap.sh | sh
 ```
-ARMv5 EABI:
+ARMv5 EABI (use this if running a more recent linux, 2.6.36.4 or newer):
 ```
 wget -O - http://ipkg.nslu2-linux.org/optware-ng/bootstrap/buildroot-armv5eabi-ng-bootstrap.sh | sh
+```
+ARMv5 EABI legacy (built with 2.6.12 kernel headers, use for devices that run old kernels):
+```
+wget -O - http://ipkg.nslu2-linux.org/optware-ng/bootstrap/buildroot-armv5eabi-ng-legacy-bootstrap.sh | sh
 ```
 MIPSEL:
 ```
@@ -72,6 +76,7 @@ Install desired ones:
 * [ARMv7 EABI hardfloat](http://ipkg.nslu2-linux.org/optware-ng/buildroot-armeabihf/Packages.html)
 * [ARMv7 EABI softfloat](http://ipkg.nslu2-linux.org/optware-ng/buildroot-armeabi-ng/Packages.html)
 * [ARMv5 EABI](http://ipkg.nslu2-linux.org/optware-ng/buildroot-armv5eabi-ng/Packages.html)
+* [ARMv5 EABI legacy](http://ipkg.nslu2-linux.org/optware-ng/buildroot-armv5eabi-ng-legacy/Packages.html)
 * [MIPSEL](http://ipkg.nslu2-linux.org/optware-ng/buildroot-mipsel-ng/Packages.html)
 * [PowerPC 603e](http://ipkg.nslu2-linux.org/optware-ng/buildroot-ppc-603e/Packages.html)
 * [I686](http://ipkg.nslu2-linux.org/optware-ng/buildroot-i686/Packages.html)
@@ -88,6 +93,10 @@ Contribution is always welcomed. These wiki pages contain useful info to get you
 Currently, the project is missing writers who would contribute by creating how-to's for end-users. We can setup a mediawiki with the help of nas-admin.org guys, but we need people to fill it. In case you are willing to contribute by writing how-to's, please contact me on #**optware** IRC channel on irc.freenode.net, nickname **alllexx**. If I'm away, you can PM me, and I'll reach you later.
 
 # News
+
+## 2016-03-17
+
+buildroot-armve5eabi-ng-legacy feed added. This is ARMv5 gcc-5.3.0, uClibc-ng-1.0.12, linux-2.6.12 feed. It targets older ARMv5 devices, like QNAP TS-109Pro.
 
 ## 2016-02-23
 
