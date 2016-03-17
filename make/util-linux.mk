@@ -36,7 +36,7 @@ UTIL_LINUX_CONFLICTS=
 #
 # UTIL_LINUX_IPK_VERSION should be incremented when the ipk changes.
 #
-UTIL_LINUX_IPK_VERSION=3
+UTIL_LINUX_IPK_VERSION=4
 
 #
 # UTIL_LINUX_CONFFILES should be a list of user-editable files
@@ -46,11 +46,12 @@ UTIL_LINUX_IPK_VERSION=3
 # UTIL_LINUX_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#UTIL_LINUX_PATCHES=\
-	$(UTIL_LINUX_SOURCE_DIR)/llseek.patch \
-	$(UTIL_LINUX_SOURCE_DIR)/umount2.patch \
-	$(UTIL_LINUX_SOURCE_DIR)/loop-aes-util-linux-2.12r.patch \
-	$(UTIL_LINUX_SOURCE_DIR)/no-sigsetmask-conditional.patch
+UTIL_LINUX_PATCHES=\
+$(UTIL_LINUX_SOURCE_DIR)/no_fstatat.patch
+
+ifeq ($(OPTWARE_TARGET), $(filter buildroot-armv5eabi-ng-legacy, $(OPTWARE_TARGET)))
+UTIL_LINUX_PATCHES += $(UTIL_LINUX_SOURCE_DIR)/no_signalfd.patch
+endif
 
 #
 # If the compilation of the package requires additional
@@ -58,6 +59,10 @@ UTIL_LINUX_IPK_VERSION=3
 #
 UTIL_LINUX_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/python2.7
 UTIL_LINUX_LDFLAGS=
+
+ifeq ($(OPTWARE_TARGET), $(filter buildroot-armv5eabi-ng-legacy, $(OPTWARE_TARGET)))
+UTIL_LINUX_CPPFLAGS += -D__user=''
+endif
 
 #
 # UTIL_LINUX_BUILD_DIR is the directory in which the build is done.
@@ -115,7 +120,7 @@ $(UTIL_LINUX_BUILD_DIR)/.configured: $(DL_DIR)/$(UTIL_LINUX_SOURCE) $(UTIL_LINUX
 	$(UTIL_LINUX_UNZIP) $(DL_DIR)/$(UTIL_LINUX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(UTIL_LINUX_PATCHES)" ; \
 		then cat $(UTIL_LINUX_PATCHES) | \
-		$(PATCH) -d $(BUILD_DIR)/$(UTIL_LINUX_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(UTIL_LINUX_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(UTIL_LINUX_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(UTIL_LINUX_DIR) $(@D) ; \
@@ -240,9 +245,9 @@ $(UTIL_LINUX_IPK): $(UTIL_LINUX_BUILD_DIR)/.built
 		USRSHAREMISC_DIR=$(TARGET_PREFIX)/share/misc \
 		LOCALEDIR=$(TARGET_PREFIX)/share/locale \
 		;
-	rm -rf $(UTIL_LINUX_IPK_DIR)$(TARGET_PREFIX)/share/info
+	rm -rf $(UTIL_LINUX_IPK_DIR)$(TARGET_PREFIX)/share/info $(UTIL_LINUX_IPK_DIR)$(TARGET_PREFIX)/lib/util-linux/*.la
 	$(STRIP_COMMAND) `ls $(UTIL_LINUX_IPK_DIR)$(TARGET_PREFIX)/bin/* | grep -v chkdupexe`
-	$(STRIP_COMMAND) $(UTIL_LINUX_IPK_DIR)$(TARGET_PREFIX)/sbin/*
+	$(STRIP_COMMAND) $(UTIL_LINUX_IPK_DIR)$(TARGET_PREFIX)/sbin/* $(UTIL_LINUX_IPK_DIR)$(TARGET_PREFIX)/lib/util-linux/*.so
 	$(MAKE) $(UTIL_LINUX_IPK_DIR)/CONTROL/control
 	echo "#!/bin/sh" > $(UTIL_LINUX_IPK_DIR)/CONTROL/postinst
 	echo "#!/bin/sh" > $(UTIL_LINUX_IPK_DIR)/CONTROL/prerm

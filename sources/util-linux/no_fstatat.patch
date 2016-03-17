@@ -1,0 +1,196 @@
+--- a/include/at.h
++++ b/include/at.h
+@@ -22,6 +22,9 @@
+ extern int open_at(int dir, const char *dirname,
+ 			const char *filename, int flags);
+ 
++extern int faccess_at(int dir, const char *dirname,
++			const char *filename, int mode);
++
+ extern FILE *fopen_at(int dir, const char *dirname, const char *filename,
+ 			int flags, const char *mode);
+ 
+--- a/include/sysfs.h
++++ b/include/sysfs.h
+@@ -74,7 +74,7 @@
+ extern int sysfs_next_subsystem(struct sysfs_cxt *cxt, char *devchain, char **subsys);
+ extern int sysfs_is_hotpluggable(struct sysfs_cxt *cxt);
+ 
+-extern int sysfs_is_partition_dirent(DIR *dir, struct dirent *d,
++extern int sysfs_is_partition_dirent(DIR *dir, const char *dirname, struct dirent *d,
+ 			const char *parent_name);
+ 
+ extern int sysfs_devno_to_wholedisk(dev_t dev, char *diskname,
+--- a/lib/at.c
++++ b/lib/at.c
+@@ -64,6 +64,28 @@
+ }
+ #endif
+ 
++#ifdef HAVE_FSTATAT
++int faccess_at(int dir, const char *dirname __attribute__ ((__unused__)), const char *filename, int mode)
++{
++	return faccessat(dir, filename, mode, 0);
++}
++#else
++int faccess_at(int dir, const char *dirname, const char *filename, int mode)
++{
++	if (*filename != '/') {
++		char path[PATH_MAX];
++		int len;
++
++		len = snprintf(path, sizeof(path), "%s/%s", dirname, filename);
++		if (len < 0 || len + 1 > sizeof(path))
++			return -1;
++
++		return access(path, mode);
++	}
++	return access(filename, mode);
++}
++#endif
++
+ FILE *fopen_at(int dir, const char *dirname, const char *filename, int flags,
+ 			const char *mode)
+ {
+--- a/lib/sysfs.c
++++ b/lib/sysfs.c
+@@ -303,7 +303,7 @@
+ 	return d;
+ }
+ 
+-int sysfs_is_partition_dirent(DIR *dir, struct dirent *d, const char *parent_name)
++int sysfs_is_partition_dirent(DIR *dir, const char *dirname, struct dirent *d, const char *parent_name)
+ {
+ 	char path[256];
+ 
+@@ -340,7 +340,7 @@
+ 	/* Cannot use /partition file, not supported on old sysfs */
+ 	snprintf(path, sizeof(path), "%s/start", d->d_name);
+ 
+-	return faccessat(dirfd(dir), path, R_OK, 0) == 0;
++	return faccess_at(dirfd(dir), dirname, path, R_OK) == 0;
+ }
+ 
+ /*
+@@ -364,7 +364,7 @@
+ 	while ((d = xreaddir(dir))) {
+ 		int n, maj, min;
+ 
+-		if (!sysfs_is_partition_dirent(dir, d, NULL))
++		if (!sysfs_is_partition_dirent(dir, cxt->dir_path, d, NULL))
+ 			continue;
+ 
+ 		snprintf(path, sizeof(path), "%s/partition", d->d_name);
+@@ -505,7 +505,7 @@
+ 		return 0;
+ 
+ 	while ((d = xreaddir(dir))) {
+-		if (sysfs_is_partition_dirent(dir, d, devname))
++		if (sysfs_is_partition_dirent(dir, cxt->dir_path, d, devname))
+ 			r++;
+ 	}
+ 
+--- a/login-utils/sulogin-consoles.c
++++ b/login-utils/sulogin-consoles.c
+@@ -49,6 +49,7 @@
+ # endif
+ #endif
+ 
++#include "at.h"
+ #include "c.h"
+ #include "canonicalize.h"
+ #include "sulogin-consoles.h"
+@@ -231,7 +232,7 @@
+ #ifdef __GNUC__
+ __attribute__((__nonnull__,__malloc__,__hot__))
+ #endif
+-char* scandev(DIR *dir, dev_t comparedev)
++char* scandev(DIR *dir, const char *dirname, dev_t comparedev)
+ {
+ 	char *name = NULL;
+ 	struct dirent *dent;
+@@ -249,7 +250,7 @@
+ 		if (dent->d_type != DT_UNKNOWN && dent->d_type != DT_CHR)
+ 			continue;
+ #endif
+-		if (fstatat(fd, dent->d_name, &st, 0) < 0)
++		if (fstat_at(fd, dirname, dent->d_name, &st, 0) < 0)
+ 			continue;
+ 		if (!S_ISCHR(st.st_mode))
+ 			continue;
+@@ -348,7 +349,7 @@
+ 		if (!strchr(fbuf, 'E'))
+ 			continue;
+ 		comparedev = makedev(maj, min);
+-		name = scandev(dir, comparedev);
++		name = scandev(dir, "/dev", comparedev);
+ 		if (!name)
+ 			continue;
+ 		rc = append_console(consoles, name);
+@@ -410,7 +411,7 @@
+ 			free(tmp);
+ 		}
+ 
+-		name = scandev(dir, comparedev);
++		name = scandev(dir, "/dev", comparedev);
+ 		if (!name)
+ 			continue;
+ 		rc = append_console(consoles, name);
+@@ -498,7 +499,7 @@
+ #endif
+ 		close(fd);
+ 
+-		name = scandev(dir, comparedev);
++		name = scandev(dir, "/dev", comparedev);
+ 		if (!name)
+ 			continue;
+ 		rc = append_console(consoles, name);
+@@ -545,7 +546,7 @@
+ 	if (!dir)
+ 		goto done;
+ 
+-	name = scandev(dir, comparedev);
++	name = scandev(dir, "/dev", comparedev);
+ 	closedir(dir);
+ 
+ 	if (!name) {
+@@ -661,7 +662,7 @@
+ 		dir = opendir("/dev");
+ 		if (!dir)
+ 			goto fallback;
+-		name = scandev(dir, comparedev);
++		name = scandev(dir, "/dev", comparedev);
+ 		closedir(dir);
+ 
+ 		if (name) {
+--- a/misc-utils/lsblk.c
++++ b/misc-utils/lsblk.c
+@@ -1272,7 +1272,7 @@
+ 		if (part_name && strcmp(part_name, d->d_name))
+ 			continue;
+ 
+-		if (!(sysfs_is_partition_dirent(dir, d, wholedisk_cxt->name)))
++		if (!(sysfs_is_partition_dirent(dir, &wholedisk_cxt->sysfs->dir_path, d, wholedisk_cxt->name)))
+ 			continue;
+ 
+ 		DBG(CXT, ul_debugobj(wholedisk_cxt, "  checking %s", d->d_name));
+@@ -1378,7 +1378,7 @@
+ 
+ 	while ((d = xreaddir(dir))) {
+ 		/* Is the dependency a partition? */
+-		if (sysfs_is_partition_dirent(dir, d, NULL)) {
++		if (sysfs_is_partition_dirent(dir, &cxt->sysfs->dir_path, d, NULL)) {
+ 			if (!get_wholedisk_from_partition_dirent(dir, dirname, d, &dep)) {
+ 				DBG(CXT, ul_debugobj(cxt, "%s: %s: dependence is partition",
+ 								cxt->name, d->d_name));
+--- a/sys-utils/eject.c
++++ b/sys-utils/eject.c
+@@ -783,7 +783,7 @@
+ 		if (!strcmp(d->d_name, ".") || !strcmp(d->d_name, ".."))
+ 			continue;
+ 
+-		if (sysfs_is_partition_dirent(dir, d, ctl->device)) {
++		if (sysfs_is_partition_dirent(dir, &cxt->dir_path, d, ctl->device)) {
+ 			char *mnt = NULL;
+ 			char *dev = find_device(d->d_name);
+ 

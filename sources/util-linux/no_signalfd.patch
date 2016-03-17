@@ -1,0 +1,25 @@
+--- a/term-utils/Makemodule.am
++++ b/term-utils/Makemodule.am
+@@ -1,22 +1,3 @@
+-if BUILD_SCRIPT
+-usrbin_exec_PROGRAMS += script
+-dist_man_MANS += term-utils/script.1
+-script_SOURCES = term-utils/script.c lib/monotonic.c
+-script_CFLAGS = $(AM_CFLAGS) -Wno-format-y2k
+-script_LDADD = $(LDADD) libcommon.la $(REALTIME_LIBS)
+-if HAVE_UTIL
+-script_LDADD += -lutil
+-endif
+-if HAVE_UTEMPTER
+-script_LDADD += -lutempter
+-endif
+-
+-check_PROGRAMS += test_script
+-test_script_SOURCES = $(script_SOURCES)
+-test_script_LDADD = $(script_LDADD)
+-test_script_CFLAGS = -DTEST_SCRIPT $(logger_CFLAGS)
+-endif # BUILD_SCRIPT
+-
+ if BUILD_SCRIPTREPLAY
+ usrbin_exec_PROGRAMS += scriptreplay
+ dist_man_MANS += term-utils/scriptreplay.1
