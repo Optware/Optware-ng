@@ -197,6 +197,7 @@ else
 		-Dcpp=$(TARGET_CPP) \
 		-Dranlib=$(TARGET_RANLIB) \
 		-Duseshrplib \
+		-Dusethreads \
 	)
 endif
 	touch $@
