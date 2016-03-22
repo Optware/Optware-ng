@@ -36,7 +36,7 @@ PERL_CROSS_PATCHES=$(PERL_SOURCE_DIR)/$(PERL_MAJOR_VER)/dynamic_ext.fix.patch
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-PERL_CPPFLAGS=
+PERL_CPPFLAGS=-pthread
 PERL_ARCH = $(strip \
     $(if $(filter openwrt-ixp4xx slugos5be, $(OPTWARE_TARGET)), armv5teb-linux, \
     $(if $(filter buildroot-armeabi buildroot-armeabi-ng buildroot-armeabihf shibby-tomato-arm, $(OPTWARE_TARGET)), armv7l-linux, \
@@ -45,12 +45,12 @@ PERL_ARCH = $(strip \
     $(if $(filter powerpc, $(TARGET_ARCH)), ppc-linux, \
     $(TARGET_ARCH)-linux))))))
 PERL_LIB_CORE_DIR=perl5/$(PERL_VERSION)/$(PERL_ARCH)/CORE
-PERL_LDFLAGS=-Wl,-rpath,$(TARGET_PREFIX)/lib/$(PERL_LIB_CORE_DIR)
+PERL_LDFLAGS=-pthread -Wl,-rpath,$(TARGET_PREFIX)/lib/$(PERL_LIB_CORE_DIR)
 ifeq (vt4, $(OPTWARE_TARGET))
 PERL_LDFLAGS_EXTRA+= -L$(TARGET_CROSS_TOP)/920t_le/lib/gcc/arm-linux/3.4.4
 endif
 
-PERL_LIBS=-lpthread -ldb-$(LIBDB_LIB_VERSION) -lgdbm -lgdbm_compat
+PERL_LIBS=-ldb-$(LIBDB_LIB_VERSION) -lgdbm -lgdbm_compat
 
 #
 # PERL_BUILD_DIR is the directory in which the build is done.
