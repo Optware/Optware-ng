@@ -16,7 +16,7 @@ PERL-SPAMASSASSIN_SECTION=util
 PERL-SPAMASSASSIN_PRIORITY=optional
 PERL-SPAMASSASSIN_DEPENDS=perl, perl-digest-sha1, perl-html-parser, perl-net-dns, perl-db-file, psmisc
 
-PERL-SPAMASSASSIN_IPK_VERSION=2
+PERL-SPAMASSASSIN_IPK_VERSION=3
 
 #PERL-SPAMASSASSIN_CONFFILES=$(TARGET_PREFIX)/etc/perl-spamassassin.conf $(TARGET_PREFIX)/etc/init.d/SXXperl-spamassassin
 PERL-SPAMASSASSIN_CONFFILES=$(TARGET_PREFIX)/etc/spamassassin/init.pre $(TARGET_PREFIX)/etc/spamassassin/local.cf $(TARGET_PREFIX)/etc/init.d/S62spamd
@@ -39,7 +39,7 @@ $(DL_DIR)/$(PERL-SPAMASSASSIN_SOURCE):
 
 perl-spamassassin-source: $(DL_DIR)/$(PERL-SPAMASSASSIN_SOURCE) $(PERL-SPAMASSASSIN_PATCHES)
 
-$(PERL-SPAMASSASSIN_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-SPAMASSASSIN_SOURCE) $(PERL-SPAMASSASSIN_PATCHES)
+$(PERL-SPAMASSASSIN_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-SPAMASSASSIN_SOURCE) $(PERL-SPAMASSASSIN_PATCHES) make/perl-spamassassin.mk
 	$(MAKE) perl-digest-sha1-stage perl-html-parser-stage perl-net-dns-stage
 	rm -rf $(BUILD_DIR)/$(PERL-SPAMASSASSIN_DIR) $(PERL-SPAMASSASSIN_BUILD_DIR)
 	$(PERL-SPAMASSASSIN_UNZIP) $(DL_DIR)/$(PERL-SPAMASSASSIN_SOURCE) | tar -C $(BUILD_DIR) -xvf -

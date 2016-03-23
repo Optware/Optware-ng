@@ -21,7 +21,7 @@ BROKEN_PACKAGES = \
 	libopensync msynctool obexftp \
 	modutils
 
-PERL_MAJOR_VER := 5.20
+PERL_MAJOR_VER := 5.22
 
 TSHARK_VERSION := 1.2.12
 TSHARK_IPK_VERSION := 1

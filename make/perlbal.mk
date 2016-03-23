@@ -17,7 +17,7 @@ PERLBAL_DEPENDS=perl-bsd-resource, perl-danga-socket, perl-libwww, perl-sys-sysc
 PERLBAL_SUGGESTS=
 PERLBAL_CONFLICTS=
 
-PERLBAL_IPK_VERSION=1
+PERLBAL_IPK_VERSION=2
 
 PERLBAL_CONFFILES=
 
@@ -33,7 +33,7 @@ $(DL_DIR)/$(PERLBAL_SOURCE):
 
 perlbal-source: $(DL_DIR)/$(PERLBAL_SOURCE) $(PERLBAL_PATCHES)
 
-$(PERLBAL_BUILD_DIR)/.configured: $(DL_DIR)/$(PERLBAL_SOURCE) $(PERLBAL_PATCHES)
+$(PERLBAL_BUILD_DIR)/.configured: $(DL_DIR)/$(PERLBAL_SOURCE) $(PERLBAL_PATCHES) make/perlbal.mk
 	make perl-stage
 	rm -rf $(BUILD_DIR)/$(PERLBAL_DIR) $(@D)
 	$(PERLBAL_UNZIP) $(DL_DIR)/$(PERLBAL_SOURCE) | tar -C $(BUILD_DIR) -xvf -

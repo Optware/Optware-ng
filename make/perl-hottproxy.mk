@@ -36,7 +36,7 @@ PERL_HOTTPROXY_CONFLICTS=
 #
 # PERL_HOTTPROXY_IPK_VERSION should be incremented when the ipk changes.
 #
-PERL_HOTTPROXY_IPK_VERSION=1
+PERL_HOTTPROXY_IPK_VERSION=2
 
 #
 # PERL_HOTTPROXY_CONFFILES should be a list of user-editable files

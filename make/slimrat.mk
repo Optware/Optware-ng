@@ -17,7 +17,7 @@ SLIMRAT_DEPENDS=perl-libwww, perl-www-mechanize, wget-ssl
 SLIMRAT_SUGGESTS=tesseract-ocr, imagemagick
 SLIMRAT_CONFLICTS=
 
-SLIMRAT_IPK_VERSION=1
+SLIMRAT_IPK_VERSION=3
 
 SLIMRAT_CONFFILES=
 

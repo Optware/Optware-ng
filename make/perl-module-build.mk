@@ -17,7 +17,7 @@ PERL-MODULE-BUILD_DEPENDS=perl, perl-archive-tar, perl-extutils-cbuilder, perl-e
 PERL-MODULE-BUILD_SUGGESTS=
 PERL-MODULE-BUILD_CONFLICTS=
 
-PERL-MODULE-BUILD_IPK_VERSION=1
+PERL-MODULE-BUILD_IPK_VERSION=2
 
 PERL-MODULE-BUILD_CONFFILES=
 
@@ -33,7 +33,7 @@ $(DL_DIR)/$(PERL-MODULE-BUILD_SOURCE):
 
 perl-module-build-source: $(DL_DIR)/$(PERL-MODULE-BUILD_SOURCE) $(PERL-MODULE-BUILD_PATCHES)
 
-$(PERL-MODULE-BUILD_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-MODULE-BUILD_SOURCE) $(PERL-MODULE-BUILD_PATCHES)
+$(PERL-MODULE-BUILD_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-MODULE-BUILD_SOURCE) $(PERL-MODULE-BUILD_PATCHES) make/perl-module-build.mk
 	$(MAKE) perl-archive-tar-stage perl-extutils-cbuilder-stage perl-extutils-parsexs-stage \
 		perl-pod-readme-stage perl-module-signature-stage
 	rm -rf $(BUILD_DIR)/$(PERL-MODULE-BUILD_DIR) $(PERL-MODULE-BUILD_BUILD_DIR)

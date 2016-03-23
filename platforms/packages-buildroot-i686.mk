@@ -13,7 +13,7 @@ BROKEN_PACKAGES = \
 	syx \
 	ldconfig modutils samba2
 
-PERL_MAJOR_VER := 5.20
+PERL_MAJOR_VER := 5.22
 
 OPENSSL_VERSION := 1.0.2
 

@@ -49,7 +49,7 @@ endif
 #
 # ICES0_IPK_VERSION should be incremented when the ipk changes.
 #
-ICES0_IPK_VERSION=2
+ICES0_IPK_VERSION=3
 
 #
 # ICES0_CONFFILES should be a list of user-editable files

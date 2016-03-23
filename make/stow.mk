@@ -16,7 +16,7 @@ STOW_PRIORITY=optional
 STOW_DEPENDS=perl
 STOW_CONFLICTS=
 
-STOW_IPK_VERSION=2
+STOW_IPK_VERSION=3
 
 STOW_BUILD_DIR=$(BUILD_DIR)/stow
 STOW_SOURCE_DIR=$(SOURCE_DIR)/stow
@@ -30,7 +30,7 @@ $(DL_DIR)/$(STOW_SOURCE):
 
 stow-source: $(DL_DIR)/$(STOW_SOURCE) $(STOW_PATCHES)
 
-$(STOW_BUILD_DIR)/.configured: $(DL_DIR)/$(STOW_SOURCE) $(STOW_PATCHES)
+$(STOW_BUILD_DIR)/.configured: $(DL_DIR)/$(STOW_SOURCE) $(STOW_PATCHES) make/stow.mk
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(STOW_DIR) $(STOW_BUILD_DIR)
 	$(STOW_UNZIP) $(DL_DIR)/$(STOW_SOURCE) | tar -C $(BUILD_DIR) -xvf -

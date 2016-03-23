@@ -17,7 +17,7 @@ PERL-IMA-DBI_DEPENDS=perl, perl-dbi, perl-class-data-inheritable, perl-dbix-cont
 PERL-IMA-DBI_SUGGESTS=
 PERL-IMA-DBI_CONFLICTS=
 
-PERL-IMA-DBI_IPK_VERSION=2
+PERL-IMA-DBI_IPK_VERSION=3
 
 PERL-IMA-DBI_CONFFILES=
 
@@ -33,7 +33,7 @@ $(DL_DIR)/$(PERL-IMA-DBI_SOURCE):
 
 perl-ima-dbi-source: $(DL_DIR)/$(PERL-IMA-DBI_SOURCE) $(PERL-IMA-DBI_PATCHES)
 
-$(PERL-IMA-DBI_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-IMA-DBI_SOURCE) $(PERL-IMA-DBI_PATCHES)
+$(PERL-IMA-DBI_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-IMA-DBI_SOURCE) $(PERL-IMA-DBI_PATCHES) make/perl-ima-dbi.mk
 	$(MAKE) perl-dbi-stage perl-class-data-inheritable-stage perl-dbix-contextualfetch-stage
 	rm -rf $(BUILD_DIR)/$(PERL-IMA-DBI_DIR) $(PERL-IMA-DBI_BUILD_DIR)
 	$(PERL-IMA-DBI_UNZIP) $(DL_DIR)/$(PERL-IMA-DBI_SOURCE) | tar -C $(BUILD_DIR) -xvf -

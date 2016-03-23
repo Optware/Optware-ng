@@ -17,7 +17,7 @@ PERL-CLASS-DBI_DEPENDS=perl, perl-class-accessor, perl-class-data-inheritable, p
 PERL-CLASS-DBI_SUGGESTS=
 PERL-CLASS-DBI_CONFLICTS=
 
-PERL-CLASS-DBI_IPK_VERSION=1
+PERL-CLASS-DBI_IPK_VERSION=2
 
 PERL-CLASS-DBI_CONFFILES=
 
@@ -35,7 +35,7 @@ $(DL_DIR)/$(PERL-CLASS-DBI_SOURCE):
 
 perl-class-dbi-source: $(DL_DIR)/$(PERL-CLASS-DBI_SOURCE) $(PERL-CLASS-DBI_PATCHES)
 
-$(PERL-CLASS-DBI_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-CLASS-DBI_SOURCE) $(PERL-CLASS-DBI_PATCHES)
+$(PERL-CLASS-DBI_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-CLASS-DBI_SOURCE) $(PERL-CLASS-DBI_PATCHES) make/perl-class-dbi.mk
 	$(MAKE) perl-class-accessor-stage perl-class-data-inheritable-stage perl-class-trigger-stage perl-ima-dbi-stage perl-clone-stage perl-universal-moniker-stage perl-version-stage
 	rm -rf $(BUILD_DIR)/$(PERL-CLASS-DBI_DIR) $(PERL-CLASS-DBI_BUILD_DIR)
 	$(PERL-CLASS-DBI_UNZIP) $(DL_DIR)/$(PERL-CLASS-DBI_SOURCE) | tar -C $(BUILD_DIR) -xvf -
