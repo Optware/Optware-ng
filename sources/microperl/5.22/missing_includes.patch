@@ -1,0 +1,31 @@
+--- a/doio.c
++++ b/doio.c
+@@ -59,6 +59,7 @@
+ #define PERL_FLAGS_MAX 10
+ 
+ #include <signal.h>
++#include <limits.h>
+ 
+ static IO *
+ S_openn_setup(pTHX_ GV *gv, char *mode, PerlIO **saveifp, PerlIO **saveofp,
+--- a/pp_pack.c
++++ b/pp_pack.c
+@@ -32,6 +32,8 @@
+ #define PERL_IN_PP_PACK_C
+ #include "perl.h"
+ 
++#include <float.h>
++
+ /* Types used by pack/unpack */ 
+ typedef enum {
+   e_no_len,     /* no length  */
+--- a/toke.c
++++ b/toke.c
+@@ -37,6 +37,7 @@
+ 
+ #include "EXTERN.h"
+ #define PERL_IN_TOKE_C
++#include <float.h>
+ #include "perl.h"
+ #include "dquote_static.c"
+ 

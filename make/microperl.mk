@@ -11,6 +11,12 @@ MICROPERL_PATCHES=$(MICROPERL_SOURCE_DIR)/5.20/0001-Fix-build-failure-for-microp
 	$(MICROPERL_SOURCE_DIR)/5.20/0002-Makefile.micro-clean-ugenerate_uudmap.o.patch \
 	$(MICROPERL_SOURCE_DIR)/5.20/0003-Include-float.h-for-microperl.patch \
 	$(MICROPERL_SOURCE_DIR)/5.20/0004-Avoid-double-definition-for-DBL_DIG.patch
+else ifeq (5.22, $(PERL_MAJOR_VER))
+MICROPERL_VERSION=5.22.1
+MICROPERL_IPK_VERSION=1
+MICROPERL_PATCHES=$(MICROPERL_SOURCE_DIR)/5.22/0001-Fix-build-failure-for-microperl.patch \
+	$(MICROPERL_SOURCE_DIR)/5.22/0002-Makefile.micro-clean-ugenerate_uudmap.o.patch \
+	$(MICROPERL_SOURCE_DIR)/5.22/missing_includes.patch
 else ifeq (5.10, $(PERL_MAJOR_VER))
 MICROPERL_VERSION=5.10.0
 MICROPERL_IPK_VERSION=1
@@ -50,6 +56,10 @@ ifeq ($(PERL_MAJOR_VER), 5.10)
 		CC=$(HOSTCC) \
 		;
 else ifeq ($(PERL_MAJOR_VER),$(filter $(PERL_MAJOR_VER), 5.20))
+	$(MAKE) -C $(@D) -f Makefile.micro generate_uudmap ugenerate_uudmap \
+		CC=$(HOSTCC) \
+		;
+else ifeq ($(PERL_MAJOR_VER),$(filter $(PERL_MAJOR_VER), 5.22))
 	$(MAKE) -C $(@D) -f Makefile.micro generate_uudmap ugenerate_uudmap \
 		CC=$(HOSTCC) \
 		;
