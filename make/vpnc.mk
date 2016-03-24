@@ -29,14 +29,14 @@ VPNC_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 VPNC_DESCRIPTION=Client for Cisco VPN concentrator
 VPNC_SECTION=net
 VPNC_PRIORITY=optional
-VPNC_DEPENDS=libgcrypt, openssl, kernel-module-tun
+VPNC_DEPENDS=libgcrypt, openssl
 VPNC_SUGGESTS=
 VPNC_CONFLICTS=
 
 #
 # VPNC_IPK_VERSION should be incremented when the ipk changes.
 #
-VPNC_IPK_VERSION=1
+VPNC_IPK_VERSION=2
 
 #
 # VPNC_CONFFILES should be a list of user-editable files
