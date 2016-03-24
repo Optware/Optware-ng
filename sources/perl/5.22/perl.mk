@@ -134,12 +134,6 @@ ifneq ($(HOSTCC), $(TARGET_CC))
 endif
 	mv $(BUILD_DIR)/$(PERL_DIR) $(@D)
 	sed -i -e '/LIBS/s|-L/usr/local/lib|-L$(STAGING_LIB_DIR)|' $(@D)/ext/*/Makefile.PL
-	# Errno.PL is stupidly hardwired to only look for errno.h in /usr/include
-	sed -i.orig \
-		-e 's:/usr/include/errno.h:$(PERL_ERRNO_H_DIR)/errno.h:g' \
-		-e '/^# *warn/s:^#::' \
-		-e 's:= $$Config{cppstdin}:= $(TARGET_CPP):' \
-		$(@D)/ext/Errno/Errno_pm.PL
 ifeq ($(HOSTCC), $(TARGET_CC))
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
