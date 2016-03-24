@@ -128,7 +128,9 @@ PERL_PACKAGES = \
 	perl-ip-country \
 	perl-json-xs \
 	perl-lexical-persistence \
-	perl-libnet perl-libwww perl-libxml perl-lwp-protocol-https \
+	perl-libnet perl-libwww \
+	perl-libxml perl-libxml-namespacesupport perl-libxml-sax-base perl-libxml-sax perl-libxml-simple \
+	perl-lwp-protocol-https \
 	perl-mail-spf-query perl-mailtools \
 	perl-mime-tools \
 	perl-module-build perl-module-pluggable perl-module-refresh perl-module-signature perl-mozilla-ca \
