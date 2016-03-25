@@ -1,22 +1,17 @@
---- a/package/uclibc/Config.in
-+++ b/package/uclibc/Config.in
-@@ -57,7 +57,7 @@
- config BR2_UCLIBC_VERSION_STRING
- 	string
- 	default "0.9.33.2"	if BR2_UCLIBC_VERSION_0_9_33
--	default "1.0.9"		if BR2_UCLIBC_VERSION_NG
-+	default "1.0.12"		if BR2_UCLIBC_VERSION_NG
- 	default BR2_USE_UCLIBC_SNAPSHOT	if BR2_UCLIBC_VERSION_SNAPSHOT
- 
- config BR2_UCLIBC_CONFIG
 --- a/package/uclibc/uclibc.hash
 +++ b/package/uclibc/uclibc.hash
-@@ -2,7 +2,7 @@
- sha256	62333167b79afb0b25a843513288c67b59547acf653e8fbe62ee64e71ebd1587	uClibc-0.9.33.2.tar.xz
- 
+@@ -1,2 +1,2 @@
  # From http://www.uclibc-ng.org/
--sha256  08be8dd22ac0c3806add88b813129fb3014437eddc9d78fc73eba7f33c4b4a9d        uClibc-ng-1.0.9.tar.xz
-+sha256  c238b300356b2638432e023076293f29935094108a2714ad1762b76015fae729        uClibc-ng-1.0.12.tar.xz
+-sha256  c238b300356b2638432e023076293f29935094108a2714ad1762b76015fae729        uClibc-ng-1.0.12.tar.xz
++sha256  7baae61e243da3ab85e219fead68406995be5eabf889001c0d41676546b19317        uClibc-ng-1.0.13.tar.xz
+--- a/package/uclibc/uclibc.mk
++++ b/package/uclibc/uclibc.mk
+@@ -4,7 +4,7 @@
+ #
+ ################################################################################
  
- # No hash for this git snapshot
- none  xxx  uClibc-7bf35c8b7d4a1f97174eb49f47f33946b282114c.tar.gz
+-UCLIBC_VERSION = 1.0.12
++UCLIBC_VERSION = 1.0.13
+ UCLIBC_SOURCE = uClibc-ng-$(UCLIBC_VERSION).tar.xz
+ UCLIBC_SITE = http://downloads.uclibc-ng.org/releases/$(UCLIBC_VERSION)
+ UCLIBC_LICENSE = LGPLv2.1+

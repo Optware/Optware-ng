@@ -6,7 +6,7 @@
  
 +localedir = %OPTWARE_TARGET_PREFIX%/lib/locale
 +i18ndir = %OPTWARE_TARGET_PREFIX%/share/i18n
-+rtld-LDFLAGS = -Wl,--dynamic-linker=%OPTWARE_TARGET_PREFIX%/lib/ld-linux.so.2
++rtld-LDFLAGS = -Wl,--dynamic-linker=%OPTWARE_TARGET_PREFIX%/lib/ld-linux-armhf.so.3
 +LDFLAGS-locale = -Wl,-rpath,%OPTWARE_TARGET_PREFIX%/lib
 +LDFLAGS-localedef = -Wl,-rpath,%OPTWARE_TARGET_PREFIX%/lib
 +
