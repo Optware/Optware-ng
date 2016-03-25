@@ -129,7 +129,7 @@ PERL_PACKAGES = \
 	perl-json-xs \
 	perl-lexical-persistence \
 	perl-libnet perl-libwww \
-	perl-libxml perl-libxml-namespacesupport perl-libxml-sax-base perl-libxml-sax perl-libxml-simple \
+	perl-libxml perl-libxml-libxml perl-libxml-namespacesupport perl-libxml-sax-base perl-libxml-sax perl-libxml-simple \
 	perl-lwp-protocol-https \
 	perl-mail-spf-query perl-mailtools \
 	perl-mime-tools \
