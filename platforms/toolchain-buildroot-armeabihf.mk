@@ -1,7 +1,7 @@
 # This toolchain is gcc 5.3.0 on glibc 2.21
 
 GNU_TARGET_NAME = arm-linux
-EXACT_TARGET_NAME = arm-buildroot-linux-gnueabi
+EXACT_TARGET_NAME = arm-buildroot-linux-gnueabihf
 
 DEFAULT_TARGET_PREFIX=/opt
 TARGET_PREFIX ?= /opt
@@ -43,9 +43,9 @@ CROSS_CONFIGURATION_GLIBC=glibc-$(CROSS_CONFIGURATION_GLIBC_VERSION)
 CROSS_CONFIGURATION=$(CROSS_CONFIGURATION_GCC)-$(CROSS_CONFIGURATION_GLIBC)
 TARGET_CROSS_BUILD_DIR = $(BASE_DIR)/toolchain/buildroot-2016.02
 TARGET_CROSS_TOP = $(BASE_DIR)/toolchain/buildroot-armhf-linux-3.2.66-glibc-5.3.0
-TARGET_CROSS = $(TARGET_CROSS_TOP)/bin/arm-buildroot-linux-gnueabi-
-TARGET_LIBDIR = $(TARGET_CROSS_TOP)/arm-buildroot-linux-gnueabi/sysroot/usr/lib
-TARGET_INCDIR = $(TARGET_CROSS_TOP)/arm-buildroot-linux-gnueabi/sysroot/usr/include
+TARGET_CROSS = $(TARGET_CROSS_TOP)/bin/arm-buildroot-linux-gnueabihf-
+TARGET_LIBDIR = $(TARGET_CROSS_TOP)/arm-buildroot-linux-gnueabihf/sysroot/usr/lib
+TARGET_INCDIR = $(TARGET_CROSS_TOP)/arm-buildroot-linux-gnueabihf/sysroot/usr/include
 
 #	to make feed firmware-independent, we make
 #	all packages dependent on glibc-opt by hacking ipkg-build from ipkg-utils,
@@ -60,12 +60,12 @@ TOOLCHAIN_SITE=http://buildroot.uclibc.org/downloads
 TOOLCHAIN_SOURCE=buildroot-2016.02.tar.bz2
 
 GLIBC-OPT_VERSION = 2.21
-GLIBC-OPT_IPK_VERSION = 3
-GLIBC-OPT_LIBS_SOURCE_DIR = $(TARGET_CROSS_TOP)/arm-buildroot-linux-gnueabi/sysroot/lib
-LIBNSL_SO_DIR = $(TARGET_CROSS_TOP)/arm-buildroot-linux-gnueabi/sysroot/lib
+GLIBC-OPT_IPK_VERSION = 4
+GLIBC-OPT_LIBS_SOURCE_DIR = $(TARGET_CROSS_TOP)/arm-buildroot-linux-gnueabihf/sysroot/lib
+LIBNSL_SO_DIR = $(TARGET_CROSS_TOP)/arm-buildroot-linux-gnueabihf/sysroot/lib
 
 LIBNSL_VERSION = 2.21
-LIBNSL_IPK_VERSION = 2
+LIBNSL_IPK_VERSION = 3
 
 BUILDROOT-ARMEABIHF_SOURCE_DIR=$(SOURCE_DIR)/buildroot-armeabihf
 
@@ -83,7 +83,7 @@ $(TARGET_CROSS_TOP)/.configured: $(DL_DIR)/$(TOOLCHAIN_SOURCE) \
 				$(BUILDROOT-ARMEABIHF_PATCHES) \
 				#$(OPTWARE_TOP)/platforms/toolchain-$(OPTWARE_TARGET).mk
 	rm -rf $(TARGET_CROSS_TOP) $(TARGET_CROSS_BUILD_DIR)
-	mkdir -p $(TARGET_CROSS_TOP)/arm-buildroot-linux-gnueabi/sysroot
+	mkdir -p $(TARGET_CROSS_TOP)/arm-buildroot-linux-gnueabihf/sysroot
 	tar -xjvf $(DL_DIR)/$(TOOLCHAIN_SOURCE) -C $(BASE_DIR)/toolchain
 	if test -n "$(BUILDROOT-ARMEABIHF_PATCHES)" ; \
 		then cat $(BUILDROOT-ARMEABIHF_PATCHES) | \
@@ -96,13 +96,13 @@ $(TARGET_CROSS_TOP)/.configured: $(DL_DIR)/$(TOOLCHAIN_SOURCE) \
 
 $(TARGET_CROSS_TOP)/.built: $(TARGET_CROSS_TOP)/.configured
 	rm -f $@
-	$(MAKE) STAGING_DIR=$(TARGET_CROSS_TOP)/arm-buildroot-linux-gnueabi/sysroot -C $(TARGET_CROSS_BUILD_DIR)
+	$(MAKE) STAGING_DIR=$(TARGET_CROSS_TOP)/arm-buildroot-linux-gnueabihf/sysroot -C $(TARGET_CROSS_BUILD_DIR)
 	cp -af $(TARGET_CROSS_BUILD_DIR)/output/host/usr/* $(TARGET_CROSS_TOP)/
-	install -m 644 $(BUILDROOT-ARMEABIHF_SOURCE_DIR)/videodev.h $(TARGET_CROSS_TOP)/arm-buildroot-linux-gnueabi/sysroot/usr/include/linux
-	cp -f $(TARGET_CROSS_TOP)/lib/gcc/arm-buildroot-linux-gnueabi/5.3.0/*.a $(GLIBC-OPT_LIBS_SOURCE_DIR)/
+	install -m 644 $(BUILDROOT-ARMEABIHF_SOURCE_DIR)/videodev.h $(TARGET_CROSS_TOP)/arm-buildroot-linux-gnueabihf/sysroot/usr/include/linux
+	cp -f $(TARGET_CROSS_TOP)/lib/gcc/arm-buildroot-linux-gnueabihf/5.3.0/*.a $(GLIBC-OPT_LIBS_SOURCE_DIR)/
 	touch $@
 
-GCC_TARGET_NAME := arm-buildroot-linux-gnueabi
+GCC_TARGET_NAME := arm-buildroot-linux-gnueabihf
 
 GCC_CPPFLAGS := -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
 
