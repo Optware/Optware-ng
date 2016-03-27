@@ -77,6 +77,7 @@ ifeq ($(OPTWARE_TARGET), $(filter buildroot-mipsel-ng, $(OPTWARE_TARGET)))
 NODE_CONFIGURE_ARCH_OPTS += \
 --with-mips-arch=r2 \
 --with-mips-float-abi=soft
+NODE_PATCHES += $(NODE_SOURCE_DIR)/mips-no-fpu.patch
 endif
 
 #
@@ -138,7 +139,7 @@ $(NODE_BUILD_DIR)/.configured: $(DL_DIR)/$(NODE_SOURCE) $(NODE_PATCHES) make/nod
 	$(NODE_UNZIP) $(DL_DIR)/$(NODE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NODE_PATCHES)" ; \
 		then cat $(NODE_PATCHES) | \
-		$(PATCH) -d $(BUILD_DIR)/$(NODE_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(NODE_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(NODE_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(NODE_DIR) $(@D) ; \
