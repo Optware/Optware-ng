@@ -383,7 +383,7 @@ COMMON_CROSS_PACKAGES = \
 	newsbeuter newt \
 	nfs-server nfs-utils \
 	nget nginx ngrep nickle ninvaders nload \
-	nmap nmon noip nostromo nrpe \
+	nmap nmon node noip nostromo nrpe \
 	ntfs-3g ntfsprogs \
 	ntop ntp ntpclient nttcp nut nvi nylon nzbget nzbget-testing \
 	ocaml oleo open2300 openjdk8 \
