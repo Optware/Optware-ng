@@ -65,19 +65,19 @@
  
 --- a/deps/v8/src/base/cpu.cc
 +++ b/deps/v8/src/base/cpu.cc
-@@ -138,6 +138,7 @@
+@@ -137,6 +137,7 @@
+ 
  #if V8_HOST_ARCH_MIPS
  int __detect_fp64_mode(void) {
-   double result = 0;
 +#ifndef __mips_soft_float
+   double result = 0;
    // Bit representation of (double)1 is 0x3FF0000000000000.
    __asm__ volatile(
-       ".set push\n\t"
-@@ -151,6 +152,7 @@
-       : "+m"(result)
-       :
+@@ -153,6 +154,9 @@
        : "t0", "$f0", "$f1", "memory");
-+#endif
  
    return !(result == 1);
++#else
++  return 0;
++#endif
  }
