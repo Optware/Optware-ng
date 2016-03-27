@@ -1,19 +1,33 @@
 --- a/deps/v8/build/toolchain.gypi
 +++ b/deps/v8/build/toolchain.gypi
-@@ -56,10 +56,10 @@
+@@ -56,10 +56,24 @@
      'arm_test_noprobe%': 'off',
  
      # Similar to vfp but on MIPS.
 -    'v8_can_use_fpu_instructions%': 'true',
-+    'v8_can_use_fpu_instructions%': 'false',
++    'conditions': [
++      ['mips_fpu_mode!="soft"', {
++        'v8_can_use_fpu_instructions%': 'true',
++      }],
++      ['mips_fpu_mode=="soft"', {
++        'v8_can_use_fpu_instructions%': 'false',
++      }],
++    ],
  
      # Similar to the ARM hard float ABI but on MIPS.
 -    'v8_use_mips_abi_hardfloat%': 'true',
-+    'v8_use_mips_abi_hardfloat%': 'false',
++    'conditions': [
++      ['mips_fpu_mode!="soft"', {
++        'v8_use_mips_abi_hardfloat%': 'true',
++      }],
++      ['mips_fpu_mode=="soft"', {
++        'v8_use_mips_abi_hardfloat%': 'false',
++      }],
++    ],
  
      # Force disable libstdc++ debug mode.
      'disable_glibcxx_debug%': 0,
-@@ -481,6 +481,11 @@
+@@ -481,6 +495,11 @@
                            'FPU_MODE_FP32',
                          ],
                        }],
@@ -25,7 +39,7 @@
                      ],
                    }],
                    ['mips_arch_variant=="r1"', {
-@@ -612,6 +617,12 @@
+@@ -612,6 +631,12 @@
                          ],
                          'cflags': ['-mfp32'],
                        }],
@@ -55,7 +69,7 @@
  #if V8_HOST_ARCH_MIPS
  int __detect_fp64_mode(void) {
    double result = 0;
-+#if FPU_MODE_FP64
++#ifndef __mips_soft_float
    // Bit representation of (double)1 is 0x3FF0000000000000.
    __asm__ volatile(
        ".set push\n\t"

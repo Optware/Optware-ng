@@ -46,7 +46,7 @@ NODE_IPK_VERSION=1
 # NODE_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#NODE_PATCHES=$(NODE_SOURCE_DIR)/configure.patch
+NODE_PATCHES=$(NODE_SOURCE_DIR)/mips-no-fpu.patch
 
 #
 # If the compilation of the package requires additional
@@ -78,7 +78,6 @@ NODE_CONFIGURE_ARCH_OPTS += \
 --with-mips-arch=r2 \
 --with-mips-float-abi=soft \
 --with-mips-fpu=soft
-NODE_PATCHES += $(NODE_SOURCE_DIR)/mips-no-fpu.patch
 endif
 
 #
