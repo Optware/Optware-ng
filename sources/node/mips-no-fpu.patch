@@ -13,3 +13,57 @@
  
      # Force disable libstdc++ debug mode.
      'disable_glibcxx_debug%': 0,
+@@ -481,6 +481,11 @@
+                           'FPU_MODE_FP32',
+                         ],
+                       }],
++                      ['mips_fpu_mode=="soft"', {
++                        'defines': [
++                          '_MIPS_ARCH_MIPS32R2',
++                        ],
++                      }],
+                     ],
+                   }],
+                   ['mips_arch_variant=="r1"', {
+@@ -612,6 +617,12 @@
+                         ],
+                         'cflags': ['-mfp32'],
+                       }],
++                      ['mips_fpu_mode=="soft"', {
++                        'defines': [
++                          '_MIPS_ARCH_MIPS32R2',
++                        ],
++                        'cflags': ['-msoft-float'],
++                      }],
+                     ],
+                     'cflags': ['-mips32r2', '-Wa,-mips32r2'],
+                     'ldflags': ['-mips32r2'],
+--- a/configure
++++ b/configure
+@@ -32,7 +32,7 @@
+ valid_arm_float_abi = ('soft', 'softfp', 'hard')
+ valid_arm_fpu = ('vfp', 'vfpv3', 'vfpv3-d16', 'neon')
+ valid_mips_arch = ('loongson', 'r1', 'r2', 'r6', 'rx')
+-valid_mips_fpu = ('fp32', 'fp64', 'fpxx')
++valid_mips_fpu = ('fp32', 'fp64', 'fpxx', 'soft')
+ valid_mips_float_abi = ('soft', 'hard')
+ valid_intl_modes = ('none', 'small-icu', 'full-icu', 'system-icu')
+ 
+--- a/deps/v8/src/base/cpu.cc
++++ b/deps/v8/src/base/cpu.cc
+@@ -138,6 +138,7 @@
+ #if V8_HOST_ARCH_MIPS
+ int __detect_fp64_mode(void) {
+   double result = 0;
++#if FPU_MODE_FP64
+   // Bit representation of (double)1 is 0x3FF0000000000000.
+   __asm__ volatile(
+       ".set push\n\t"
+@@ -151,6 +152,7 @@
+       : "+m"(result)
+       :
+       : "t0", "$f0", "$f1", "memory");
++#endif
+ 
+   return !(result == 1);
+ }

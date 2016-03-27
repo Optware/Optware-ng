@@ -76,7 +76,8 @@ endif
 ifeq ($(OPTWARE_TARGET), $(filter buildroot-mipsel-ng, $(OPTWARE_TARGET)))
 NODE_CONFIGURE_ARCH_OPTS += \
 --with-mips-arch=r2 \
---with-mips-float-abi=soft
+--with-mips-float-abi=soft \
+--with-mips-fpu=soft
 NODE_PATCHES += $(NODE_SOURCE_DIR)/mips-no-fpu.patch
 endif
 
