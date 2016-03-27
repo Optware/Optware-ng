@@ -1,0 +1,3 @@
+#!/bin/sh
+
+mkdir -p %OPTWARE_TARGET_PREFIX%/var/lock

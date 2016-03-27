@@ -1,0 +1,8 @@
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -1,5 +1,3 @@
+-ACLOCAL_AMFLAGS = -I shave -I m4
+-
+ SUBDIRS = libbb libopkg src tests utils man
+ 
+ 

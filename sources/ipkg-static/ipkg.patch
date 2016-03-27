@@ -1,0 +1,120 @@
+diff --git a/libopkg/Makefile.am b/libopkg/Makefile.am
+index 11772f1..c333680 100644
+--- a/libopkg/Makefile.am
++++ b/libopkg/Makefile.am
+@@ -1,11 +1,11 @@
+ 
+ AM_CFLAGS=-Wall -DHOST_CPU_STR=\"@host_cpu@\" -DBUILD_CPU=@build_cpu@ -DLIBDIR=\"@libdir@\" -DOPKGLIBDIR=\"@opkglibdir@\" -DOPKGETCDIR=\"@opkgetcdir@\" -DOPKGLOCKFILE=\"@opkglockfile@\" -DDATADIR=\"@datadir@\" -I$(top_srcdir) $(BIGENDIAN_CFLAGS) $(CURL_CFLAGS) $(GPGME_CFLAGS) $(PATHFINDER_CFLAGS)
+ 
+-libopkg_includedir=$(includedir)/libopkg
++libipkg_includedir=$(includedir)/libopkg
+ 
+ # Headers to be installed: everything except opkg_pathfinder.h as that header
+ # requires symbols from config.h
+-libopkg_include_HEADERS = $(srcdir)/active_list.h \
++libipkg_include_HEADERS = $(srcdir)/active_list.h \
+ 	$(srcdir)/cksum_list.h \
+ 	$(srcdir)/conffile.h \
+ 	$(srcdir)/conffile_list.h \
+@@ -79,15 +79,15 @@ if HAVE_SHA256
+ opkg_util_sources += sha256.c sha256.h
+ endif
+ 
+-lib_LTLIBRARIES = libopkg.la
+-libopkg_la_SOURCES = \
++lib_LTLIBRARIES = libipkg.la
++libipkg_la_SOURCES = \
+ 	$(opkg_libcore_sources) \
+ 	$(opkg_cmd_sources) $(opkg_db_sources) \
+ 	$(opkg_util_sources) $(opkg_list_sources)
+ 
+-libopkg_la_LIBADD = $(top_builddir)/libbb/libbb.la $(CURL_LIBS) $(GPGME_LIBS) $(OPENSSL_LIBS) $(PATHFINDER_LIBS)
++libipkg_la_LIBADD = $(top_builddir)/libbb/libbb.la $(CURL_LIBS) $(GPGME_LIBS) $(OPENSSL_LIBS) $(PATHFINDER_LIBS)
+ 
+-libopkg_la_LDFLAGS = -version-info 1:0:0
++libipkg_la_LDFLAGS = -version-info 1:0:0
+ 
+ # make sure we only export symbols that are for public use
+ #libopkg_la_LDFLAGS = -export-symbols-regex "^opkg_.*"
+diff --git a/libopkg/opkg_conf.c b/libopkg/opkg_conf.c
+index 4eee37b..0dca842 100644
+--- a/libopkg/opkg_conf.c
++++ b/libopkg/opkg_conf.c
+@@ -480,9 +480,9 @@ opkg_conf_load(void)
+ 	}
+ 	else {
+ 		if (conf->offline_root)
+-			sprintf_alloc(&etc_opkg_conf_pattern, "%s/etc/opkg/*.conf", conf->offline_root);
++			sprintf_alloc(&etc_opkg_conf_pattern, "%s/etc/ipkg/*.conf", conf->offline_root);
+ 		else {
+-			const char *conf_file_dir = getenv("OPKG_CONF_DIR");
++			const char *conf_file_dir = getenv("IPKG_CONF_DIR");
+ 			if (conf_file_dir == NULL)
+ 				conf_file_dir = OPKG_CONF_DEFAULT_CONF_FILE_DIR;
+ 				sprintf_alloc(&etc_opkg_conf_pattern, "%s/*.conf", conf_file_dir);
+diff --git a/libopkg/opkg_conf.h b/libopkg/opkg_conf.h
+index e0e045a..33c8cb4 100644
+--- a/libopkg/opkg_conf.h
++++ b/libopkg/opkg_conf.h
+@@ -33,10 +33,10 @@ extern "C" {
+ #include "nv_pair_list.h"
+ 
+ #define OPKG_CONF_DEFAULT_TMP_DIR_BASE "/tmp"
+-#define OPKG_CONF_TMP_DIR_SUFFIX "opkg-XXXXXX"
++#define OPKG_CONF_TMP_DIR_SUFFIX "ipkg-XXXXXX"
+ #define OPKG_CONF_LISTS_DIR  OPKG_STATE_DIR_PREFIX "/lists"
+ 
+-#define OPKG_CONF_DEFAULT_CONF_FILE_DIR OPKGETCDIR"/opkg"
++#define OPKG_CONF_DEFAULT_CONF_FILE_DIR OPKGETCDIR"/ipkg"
+ 
+ /* In case the config file defines no dest */
+ #define OPKG_CONF_DEFAULT_DEST_NAME "root"
+diff --git a/libopkg/opkg_defines.h b/libopkg/opkg_defines.h
+index 090d7d4..a1e0c05 100644
+--- a/libopkg/opkg_defines.h
++++ b/libopkg/opkg_defines.h
+@@ -23,7 +23,7 @@
+ #define OPKG_LEGAL_PKG_NAME_CHARS "abcdefghijklmnopqrstuvwxyz0123456789.+-"
+ #define OPKG_PKG_VERSION_SEP_CHAR '_'
+ 
+-#define OPKG_STATE_DIR_PREFIX OPKGLIBDIR"/opkg"
++#define OPKG_STATE_DIR_PREFIX OPKGLIBDIR"/ipkg"
+ #define OPKG_LISTS_DIR_SUFFIX "lists"
+ #define OPKG_INFO_DIR_SUFFIX "info"
+ #define OPKG_STATUS_FILE_SUFFIX "status"
+diff --git a/src/Makefile.am b/src/Makefile.am
+index efdc19d..df1d6a6 100644
+--- a/src/Makefile.am
++++ b/src/Makefile.am
+@@ -1,6 +1,6 @@
+ AM_CFLAGS = -I${top_srcdir}/libopkg ${ALL_CFLAGS}
+-bin_PROGRAMS = opkg-cl
++bin_PROGRAMS = ipkg
+ 
+-opkg_cl_SOURCES = opkg-cl.c
+-opkg_cl_LDADD = $(top_builddir)/libopkg/libopkg.la \
++ipkg_SOURCES = opkg-cl.c
++ipkg_LDADD = $(top_builddir)/libopkg/libipkg.la \
+                 $(top_builddir)/libbb/libbb.la 
+diff --git a/tests/Makefile.am b/tests/Makefile.am
+index 1a6f565..c608a4a 100644
+--- a/tests/Makefile.am
++++ b/tests/Makefile.am
+@@ -16,7 +16,7 @@ noinst_PROGRAMS = libopkg_test
+ #opkg_active_list_test_SOURCES = opkg_active_list_test.c
+ #opkg_active_list_test_CFLAGS = $(ALL_CFLAGS) -I$(top_srcdir)
+ 
+-libopkg_test_LDADD = $(top_builddir)/libopkg/libopkg.la
++libopkg_test_LDADD = $(top_builddir)/libopkg/libipkg.la
+ libopkg_test_SOURCE = libopkg_test.c
+ libopkg_test_LDFLAGS = -static
+ 
+diff --git a/utils/Makefile.am b/utils/Makefile.am
+index c57f58e..ca59e75 100644
+--- a/utils/Makefile.am
++++ b/utils/Makefile.am
+@@ -1,3 +1,3 @@
+-bin_SCRIPTS = update-alternatives opkg-key opkg-check-config
++bin_SCRIPTS = update-alternatives
+ 
+ EXTRA_DIST = $(bin_SCRIPTS)

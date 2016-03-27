@@ -9,12 +9,12 @@
 # for the package.  IPKG-STATIC_DIR is the directory which is created when
 # this cvs module is checked out.
 #
-IPKG-STATIC_SITE=$(SOURCES_NLO_SITE)
-IPKG-STATIC_SOURCE=ipkg-opt-$(IPKG-STATIC_VERSION).tar.gz
-IPKG-STATIC_REPOSITORY=:pserver:anoncvs@anoncvs.handhelds.org
-IPKG-STATIC_DIR=ipkg-opt
+IPKG-STATIC_SITE=http://downloads.yoctoproject.org/releases/opkg
+IPKG-STATIC_VERSION=0.2.4
+IPKG-STATIC_SOURCE=opkg-$(IPKG-STATIC_VERSION).tar.gz
+IPKG-STATIC_DIR=opkg-$(IPKG-STATIC_VERSION)
 IPKG-STATIC_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
-IPKG-STATIC_DESCRIPTION=Static Itsy Package Manager for bootstraping
+IPKG-STATIC_DESCRIPTION=Static ipkg for bootstraping. This is opkg, patched to use ipkg paths
 IPKG-STATIC_SECTION=base
 IPKG-STATIC_PRIORITY=optional
 IPKG-STATIC_DEPENDS=
@@ -22,15 +22,9 @@ IPKG-STATIC_SUGGESTS=
 IPKG-STATIC_CONFLICTS=ipkg-opt
 
 #
-# Software downloaded from CVS repositories must either use a tag or a
-# date to ensure that the same sources can be downloaded later.
-#
-IPKG-STATIC_VERSION:=$(shell sed -n -e 's/^IPKG-OPT_VERSION *=//p' make/ipkg-opt.mk)
-
-#
 # IPKG-STATIC_IPK_VERSION should be incremented when the ipk changes.
 #
-IPKG-STATIC_IPK_VERSION=3
+IPKG-STATIC_IPK_VERSION=1
 
 #
 # IPKG-STATIC_CONFFILES should be a list of user-editable files
@@ -53,7 +47,7 @@ IPKG-STATIC_LDFLAGS=
 # You should not change any of these variables.
 #
 IPKG-STATIC_BUILD_DIR=$(BUILD_DIR)/ipkg-static
-IPKG-STATIC_SOURCE_DIR=$(SOURCE_DIR)/ipkg-opt
+IPKG-STATIC_SOURCE_DIR=$(SOURCE_DIR)/ipkg-static
 IPKG-STATIC_IPK_DIR=$(BUILD_DIR)/ipkg-static-$(IPKG-STATIC_VERSION)-ipk
 IPKG-STATIC_IPK=$(BUILD_DIR)/ipkg-static_$(IPKG-STATIC_VERSION)-$(IPKG-STATIC_IPK_VERSION)_$(TARGET_ARCH).ipk
 IPKG-STATIC_FEEDS=http://ipkg.nslu2-linux.org/feeds/optware
@@ -64,41 +58,19 @@ IPKG-STATIC_FEEDS=http://ipkg.nslu2-linux.org/feeds/optware
 # IPKG-STATIC_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-IPKG-STATIC_PATCHES=$(IPKG-STATIC_SOURCE_DIR)/args.h.patch \
-	$(IPKG-STATIC_SOURCE_DIR)/ipkg_conf.h.patch \
-	$(IPKG-STATIC_SOURCE_DIR)/ipkg_conf.c.patch \
-	$(IPKG-STATIC_SOURCE_DIR)/update-alternatives.patch \
-	$(IPKG-STATIC_SOURCE_DIR)/update-alternatives.android.patch \
-	$(IPKG-STATIC_SOURCE_DIR)/ipkg-va_start_segfault.diff \
-	$(IPKG-STATIC_SOURCE_DIR)/list_installed.patch \
-	$(IPKG-STATIC_SOURCE_DIR)/ipkg_install.c.patch \
-	$(IPKG-STATIC_SOURCE_DIR)/ipkg_download.c.patch
-
-ifeq ($(TARGET_OS), darwin)
-IPKG-STATIC_PATCHES += $(IPKG-STATIC_SOURCE_DIR)/darwin.patch
-endif
-ifeq ($(OPTWARE_TARGET), tsx09)
-IPKG-STATIC_PATCHES += $(IPKG-STATIC_SOURCE_DIR)/use-optware-wget.patch
-endif
+IPKG-STATIC_PATCHES=\
+$(IPKG-STATIC_SOURCE_DIR)/remove-ACLOCAL_AMFLAGS-I-shave-I-m4.patch \
+$(IPKG-STATIC_SOURCE_DIR)/ipkg.patch \
 
 #
 # In this case there is no tarball, instead we fetch the sources
 # directly to the builddir with CVS
 #
-#$(DL_DIR)/ipkg-static-$(IPKG-STATIC_VERSION).tar.gz:
-#	( cd $(BUILD_DIR) ; \
-#		rm -rf $(IPKG-STATIC_DIR) && \
-#		echo  "/1 $(IPKG-STATIC_REPOSITORY):2401/cvs Ay=0=h<Z" \
-#			> ipkg.cvspass && \
-#		CVS_PASSFILE=ipkg.cvspass \
-#		cvs -d $(IPKG-STATIC_REPOSITORY):/cvs -z3 co $(IPKG-STATIC_CVS_OPTS) \
-#			-d $(IPKG-STATIC_DIR) familiar/dist/ipkg/C && \
-#		tar -czf $@ $(IPKG-STATIC_DIR) && \
-#		rm -rf $(IPKG-STATIC_DIR) \
-#	)
+$(DL_DIR)/$(IPKG-STATIC_SOURCE):
+	$(WGET) -P $(@D) $(IPKG-STATIC_SITE)/$(@F) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
-ipkg-static-source: $(IPKG-STATIC_PATCHES)
-	$(MAKE) ipkg-opt-source
+ipkg-static-source: $(DL_DIR)/$(IPKG-STATIC_SOURCE) $(IPKG-STATIC_PATCHES)
 
 #
 # This target also configures the build within the build directory.
@@ -110,8 +82,7 @@ ipkg-static-source: $(IPKG-STATIC_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) ipkg-static-stage <baz>-stage").
 #
-$(IPKG-STATIC_BUILD_DIR)/.configured: $(IPKG-STATIC_PATCHES) make/ipkg-static.mk
-	$(MAKE) ipkg-opt-source
+$(IPKG-STATIC_BUILD_DIR)/.configured: $(DL_DIR)/$(IPKG-STATIC_SOURCE) $(IPKG-STATIC_PATCHES) make/ipkg-static.mk
 	rm -rf $(BUILD_DIR)/$(IPKG-STATIC_DIR) $(@D)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/$(IPKG-STATIC_SOURCE)
 	if test -n "$(IPKG-STATIC_PATCHES)" ; \
@@ -121,8 +92,7 @@ $(IPKG-STATIC_BUILD_DIR)/.configured: $(IPKG-STATIC_PATCHES) make/ipkg-static.mk
 	if test "$(BUILD_DIR)/$(IPKG-STATIC_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(IPKG-STATIC_DIR) $(@D) ; \
 	fi
-	rm -f $(@D)/etc/Makefile aclocal.m4
-	$(AUTORECONF1.10) -vif $(@D)
+	$(AUTORECONF1.10) -I m4 -I shave -vif $(@D)
 	(cd $(@D); \
 		CPPFLAGS="$(TARGET_CFLAGS) $(IPKG-STATIC_CPPFLAGS)" \
 		LDFLAGS="-Wl,--gc-sections --static $(IPKG-STATIC_LDFLAGS)" \
@@ -131,8 +101,14 @@ $(IPKG-STATIC_BUILD_DIR)/.configured: $(IPKG-STATIC_PATCHES) make/ipkg-static.mk
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
-		--with-ipkglibdir=$(TARGET_PREFIX)/lib \
+		--with-opkgetcdir=$(TARGET_PREFIX)/etc \
+		--with-opkglibdir=$(TARGET_PREFIX)/lib \
+		--with-opkglockfile=$(TARGET_PREFIX)/var/lock/ipkg.lock \
 		--prefix=$(TARGET_PREFIX) \
+		--disable-curl \
+		--disable-gpg \
+		--disable-openssl \
+		--enable-sha256 \
 		--disable-nls \
 		--disable-shared \
 	)
@@ -193,25 +169,16 @@ $(IPKG-STATIC_IPK): $(IPKG-STATIC_BUILD_DIR)/.built
 	rm -rf $(IPKG-STATIC_IPK_DIR) $(BUILD_DIR)/ipkg-static_*_$(TARGET_ARCH).ipk
 	PATH="$(PATH):$(TOOL_BUILD_DIR)/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)/bin/" \
 		$(MAKE) -C $(IPKG-STATIC_BUILD_DIR) DESTDIR=$(IPKG-STATIC_IPK_DIR) install-strip
-	$(INSTALL) -d $(IPKG-STATIC_IPK_DIR)$(TARGET_PREFIX)/etc/
-ifneq (, $(filter ddwrt ds101 ds101g fsg3 gumstix1151 mss nas100d nslu2 oleg slugosbe slugosle ts72xx wl500g, $(OPTWARE_TARGET)))
-	echo "#Uncomment the following line for native packages feed (if any)" \
-		> $(IPKG-STATIC_IPK_DIR)$(TARGET_PREFIX)/etc/ipkg.conf
-	echo "#src/gz native $(IPKG-STATIC_FEEDS)/$(OPTWARE_TARGET)/native/stable"\
-			>> $(IPKG-STATIC_IPK_DIR)$(TARGET_PREFIX)/etc/ipkg.conf
-	echo "src/gz optware $(IPKG-STATIC_FEEDS)/$(OPTWARE_TARGET)/cross/stable" \
-			>> $(IPKG-STATIC_IPK_DIR)$(TARGET_PREFIX)/etc/ipkg.conf
-	echo "dest $(TARGET_PREFIX)/ /" >> $(IPKG-STATIC_IPK_DIR)$(TARGET_PREFIX)/etc/ipkg.conf
-	echo "#option verbose-wget" >> $(IPKG-STATIC_IPK_DIR)$(TARGET_PREFIX)/etc/ipkg.conf
-else
+	rm -f $(IPKG-STATIC_IPK_DIR)$(TARGET_PREFIX)/share/man/man1/opkg-key.1
+	$(INSTALL) -d $(IPKG-STATIC_IPK_DIR)$(TARGET_PREFIX)/etc/ipkg
 	$(INSTALL) -m 644 $(IPKG-STATIC_SOURCE_DIR)/ipkg.conf \
 		$(IPKG-STATIC_IPK_DIR)$(TARGET_PREFIX)/etc/ipkg.conf
-endif
-	rm -f $(IPKG-STATIC_IPK_DIR)$(TARGET_PREFIX)/lib/*.a $(IPKG-STATIC_IPK_DIR)$(TARGET_PREFIX)/lib/*.la
+	ln -s ../ipkg.conf $(IPKG-STATIC_IPK_DIR)$(TARGET_PREFIX)/etc/ipkg/ipkg.conf
+	rm -rf $(IPKG-STATIC_IPK_DIR)$(TARGET_PREFIX)/lib
 	rm -rf $(IPKG-STATIC_IPK_DIR)$(TARGET_PREFIX)/include
-	mv $(IPKG-STATIC_IPK_DIR)$(TARGET_PREFIX)/bin/ipkg-cl $(IPKG-STATIC_IPK_DIR)$(TARGET_PREFIX)/bin/ipkg
 	ln -s ipkg $(IPKG-STATIC_IPK_DIR)$(TARGET_PREFIX)/bin/ipkg-static
 	$(MAKE) $(IPKG-STATIC_IPK_DIR)/CONTROL/control
+	$(INSTALL) -m 755 $(IPKG-STATIC_SOURCE_DIR)/postinst $(IPKG-STATIC_IPK_DIR)/CONTROL/postinst
 	echo $(IPKG-STATIC_CONFFILES) | sed -e 's/ /\n/g' > $(IPKG-STATIC_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(IPKG-STATIC_IPK_DIR)
 
