@@ -23,7 +23,7 @@ index e0e045a..ae3e870 100644
       int check_signature;
       int nodeps; /* do not follow dependencies */
 diff --git a/libopkg/opkg_install.c b/libopkg/opkg_install.c
-index 162e574..3b42061 100644
+index 162e574..22d05ca 100644
 --- a/libopkg/opkg_install.c
 +++ b/libopkg/opkg_install.c
 @@ -68,7 +68,7 @@ satisfy_dependencies_for(pkg_t *pkg)
@@ -79,18 +79,36 @@ index 162e574..3b42061 100644
           }
  	 if (file_md5)
                free(file_md5);
-@@ -1443,8 +1450,8 @@ opkg_install_pkg(pkg_t *pkg, int from_upgrade)
+@@ -1442,12 +1449,22 @@ opkg_install_pkg(pkg_t *pkg, int from_upgrade)
+          file_sha256 = file_sha256sum_alloc(pkg->local_filename);
           if (file_sha256 && strcmp(file_sha256, pkg->sha256sum))
           {
-               opkg_msg(ERROR, "Package %s sha256sum mismatch. "
+-              opkg_msg(ERROR, "Package %s sha256sum mismatch. "
 -			"Either the opkg or the package index are corrupt. "
 -			"Try 'opkg update'.\n",
-+			"Either the ipkg or the package index are corrupt. "
-+			"Try 'ipkg update'.\n",
- 			pkg->name);
+-			pkg->name);
+-              free(file_sha256);
+-              return -1;
++              if (!conf->force_checksum)
++              {
++                  opkg_msg(ERROR,
++                           "Package %s sha256sum mismatch. "
++                           "Either the ipkg or the package index are corrupt. "
++                           "Try 'ipkg update'.\n",
++                           pkg->name);
++                  free(file_sha256);
++                  return -1;
++              }
++              else
++              {
++                  opkg_msg(NOTICE,
++                           "Ignored %s sha256sum mismatch.\n",
++                           pkg->name);
++              }
+          }
+ 	 if (file_sha256)
                free(file_sha256);
-               return -1;
-@@ -1632,9 +1639,9 @@ pkg_is_hosed:
+@@ -1632,9 +1649,9 @@ pkg_is_hosed:
  	  pkg->state_status = SS_HALF_INSTALLED;
  
  	  /* Print some advice for the user. */
