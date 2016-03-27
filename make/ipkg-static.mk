@@ -50,7 +50,6 @@ IPKG-STATIC_BUILD_DIR=$(BUILD_DIR)/ipkg-static
 IPKG-STATIC_SOURCE_DIR=$(SOURCE_DIR)/ipkg-static
 IPKG-STATIC_IPK_DIR=$(BUILD_DIR)/ipkg-static-$(IPKG-STATIC_VERSION)-ipk
 IPKG-STATIC_IPK=$(BUILD_DIR)/ipkg-static_$(IPKG-STATIC_VERSION)-$(IPKG-STATIC_IPK_VERSION)_$(TARGET_ARCH).ipk
-IPKG-STATIC_FEEDS=http://ipkg.nslu2-linux.org/feeds/optware
 
 .PHONY: ipkg-static-source ipkg-static-unpack ipkg-static ipkg-static-stage ipkg-static-ipk ipkg-static-clean ipkg-static-dirclean ipkg-static-check
 
@@ -61,6 +60,7 @@ IPKG-STATIC_FEEDS=http://ipkg.nslu2-linux.org/feeds/optware
 IPKG-STATIC_PATCHES=\
 $(IPKG-STATIC_SOURCE_DIR)/remove-ACLOCAL_AMFLAGS-I-shave-I-m4.patch \
 $(IPKG-STATIC_SOURCE_DIR)/ipkg.patch \
+$(IPKG-STATIC_SOURCE_DIR)/ipkg-add-force-checksum.patch \
 
 #
 # In this case there is no tarball, instead we fetch the sources

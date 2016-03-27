@@ -118,3 +118,16 @@ index c57f58e..ca59e75 100644
 +bin_SCRIPTS = update-alternatives
  
  EXTRA_DIST = $(bin_SCRIPTS)
+diff --git a/utils/update-alternatives.in b/utils/update-alternatives.in
+index 2a6f6cc..d1f4978 100644
+--- a/utils/update-alternatives.in
++++ b/utils/update-alternatives.in
+@@ -21,7 +21,7 @@
+ set -e
+ 
+ # admin dir
+-ad="$OPKG_OFFLINE_ROOT@opkglibdir@/opkg/alternatives"
++ad="$OPKG_OFFLINE_ROOT@opkglibdir@/ipkg/alternatives"
+ 
+ usage() {
+ 	echo "update-alternatives: $*
