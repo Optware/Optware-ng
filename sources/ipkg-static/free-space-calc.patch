@@ -1,0 +1,14 @@
+diff --git a/libopkg/opkg_install.c b/libopkg/opkg_install.c
+index 162e574..a723f36 100644
+--- a/libopkg/opkg_install.c
++++ b/libopkg/opkg_install.c
+@@ -237,8 +237,7 @@ verify_pkg_installable(pkg_t *pkg)
+ 			root_dir = pkg->dest->root_dir;
+ 	}
+ 
+-	if (!root_dir)
+-		root_dir = conf->default_dest->root_dir;
++	root_dir = "%OPTWARE_TARGET_PREFIX%";
+ 
+ 	kbs_available = get_available_kbytes(root_dir);
+ 

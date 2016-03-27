@@ -60,6 +60,7 @@ IPKG-STATIC_IPK=$(BUILD_DIR)/ipkg-static_$(IPKG-STATIC_VERSION)-$(IPKG-STATIC_IP
 IPKG-STATIC_PATCHES=\
 $(IPKG-STATIC_SOURCE_DIR)/remove-ACLOCAL_AMFLAGS-I-shave-I-m4.patch \
 $(IPKG-STATIC_SOURCE_DIR)/ipkg.patch \
+$(IPKG-STATIC_SOURCE_DIR)/free-space-calc.patch \
 $(IPKG-STATIC_SOURCE_DIR)/ipkg-add-force-checksum.patch \
 
 #
