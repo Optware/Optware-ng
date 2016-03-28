@@ -130,7 +130,7 @@ bitchx-unpack: $(BITCHX_BUILD_DIR)/.configured
 #
 $(BITCHX_BUILD_DIR)/.built: $(BITCHX_BUILD_DIR)/.configured
 	rm -f $(BITCHX_BUILD_DIR)/.built
-	$(MAKE) -C $(BITCHX_BUILD_DIR)
+	$(MAKE) -C $(BITCHX_BUILD_DIR) -j1
 	touch $(BITCHX_BUILD_DIR)/.built
 
 #
