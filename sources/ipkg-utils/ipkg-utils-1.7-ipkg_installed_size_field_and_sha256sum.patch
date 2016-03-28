@@ -1,0 +1,89 @@
+--- a/ipkg.py
++++ b/ipkg.py
+@@ -36,7 +36,7 @@ import tempfile
+ import os
+ import sys
+ import glob
+-import md5
++import hashlib
+ import re
+ import string
+ import commands
+@@ -62,6 +62,7 @@ class Package:
+         self.filename_header = None
+ 	self.file_list = []
+         self.md5 = None
++        self.sha256 = None
+         self.size = None
+         self.installed_size = None
+         self.filename = None
+@@ -77,17 +78,21 @@ class Package:
+ 
+             # compute the MD5.
+             f = open(fn, "r")
+-            sum = md5.new()
++            md5sum = hashlib.new('md5')
++            sha256sum = hashlib.new('sha256')
+             while 1:
+                 data = f.read(1024)
+                 if not data: break
+-                sum.update(data)
++                md5sum.update(data)
++                sha256sum.update(data)
+             f.close()
+             if sys.version[:1] > '2':
+                 # when using Python 2.0 or newer
+-                self.md5 = sum.hexdigest() 
++                self.md5 = md5sum.hexdigest() 
++                self.sha256 = sha256sum.hexdigest() 
+             else:
+-                self.md5 = string.join(map((lambda x:"%02x" % ord(x)),sum.digest()),'')
++                self.md5 = string.join(map((lambda x:"%02x" % ord(x)),md5sum.digest()),'')
++                self.sha256 = string.join(map((lambda x:"%02x" % ord(x)),sha256sum.digest()),'')
+             stat = os.stat(fn)
+             self.size = stat[ST_SIZE]
+             self.filename = os.path.basename(fn)
+@@ -102,7 +107,7 @@ class Package:
+                 line = string.rstrip(line)
+                 lineparts = re.match(r'([\w-]*?):\s*(.*)', line)
+ 		if lineparts:
+-                    name = string.lower(lineparts.group(1))
++                    name = string.lower(lineparts.group(1)).replace('-', '_')
+ 		    value = lineparts.group(2)
+ 		    while 1:
+ 			line = control.readline()
+@@ -194,6 +199,12 @@ class Package:
+     def get_maintainer(self):
+ 	return self.maintainer
+ 
++    def set_installed_size(self, installed_size):
++	self.installed_size = installed_size
++
++    def get_installed_size(self):
++	return self.installed_size
++
+     def set_source(self, source):
+ 	self.source = source
+ 
+@@ -313,8 +324,9 @@ class Package:
+         if self.architecture: out = out + "Architecture: %s\n" % (self.architecture)
+         if self.maintainer: out = out + "Maintainer: %s\n" % (self.maintainer)
+         if self.md5: out = out + "MD5Sum: %s\n" % (self.md5)
++        if self.sha256: out = out + "SHA256sum: %s\n" % (self.sha256)
+         if self.size: out = out + "Size: %d\n" % int(self.size)
+-        if self.installed_size: out = out + "InstalledSize: %d\n" % int(self.installed_size)
++        if self.installed_size: out = out + "Installed-Size: %d\n" % int(self.installed_size)
+         if self.filename: out = out + "Filename: %s\n" % (self.filename)
+         if self.source: out = out + "Source: %s\n" % (self.source)
+         if self.description: out = out + "Description: %s\n" % (self.description)
+--- a/ipkg-build
++++ b/ipkg-build
+@@ -244,6 +244,8 @@ mkdir $tmp_dir
+ 
+ echo $CONTROL > $tmp_dir/tarX
+ ( cd $pkg_dir && tar $ogargs -X $tmp_dir/tarX -czf $tmp_dir/data.tar.gz . ) || exit 1
++size=$(cd $pkg_dir && ( du -B1 -s `ls -d ./* | egrep -v "^./${CONTROL}\$"` | cut -f1 | sed '2,$s/^/+ /' | paste -sd' ' | bc ) )
++echo "Installed-Size: $size" >> $pkg_dir/$CONTROL/control
+ ( cd $pkg_dir/$CONTROL && tar $ogargs -czf $tmp_dir/control.tar.gz . ) || exit 1
+ rm $tmp_dir/tarX
+ 

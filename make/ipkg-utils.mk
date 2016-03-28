@@ -39,7 +39,8 @@ IPKG-UTILS_DIR:=$(TOOL_BUILD_DIR)/ipkg-utils-$(IPKG-UTILS_VERSION)
 #
 IPKG-UTILS_PATCHES=$(IPKG-UTILS_SOURCE_DIR)/ipkg-utils-1.7-ipkg_buildpackage.patch \
 		$(IPKG-UTILS_SOURCE_DIR)/ipkg-utils-1.7-ipkg_build_clean.patch \
-		$(IPKG-UTILS_SOURCE_DIR)/ipkg-utils-1.7-ipkg_tar_invocation.patch
+		$(IPKG-UTILS_SOURCE_DIR)/ipkg-utils-1.7-ipkg_tar_invocation.patch \
+		$(IPKG-UTILS_SOURCE_DIR)/ipkg-utils-1.7-ipkg_installed_size_field_and_sha256sum.patch
 ifeq ($(HOSTCC), $(TARGET_CC))
 IPKG-UTILS_PATCHES += $(IPKG-UTILS_SOURCE_DIR)/ipkg-utils-1.7-ipkg_native_shell.patch
 endif
