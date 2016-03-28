@@ -107,6 +107,7 @@ $(GROFF_BUILD_DIR)/.built: $(GROFF_BUILD_DIR)/.configured
 	rm -f $@
 	$(MAKE) -C $(@D) src/include
 	$(MAKE) -C $(@D) src/libs/libgroff
+	$(MAKE) -C $(@D) arch/misc
 	$(MAKE) -C $(@D)
 	touch $@
 
