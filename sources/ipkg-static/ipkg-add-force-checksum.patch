@@ -155,7 +155,7 @@ index a1d121f..bcd1e58 100644
  	printf("\t--force-space                   Disable free space checks\n");
  	printf("\t--force-postinstall             Run postinstall scripts even in offline mode\n");
  	printf("\t--force-remove                  Remove package even if prerm script fails\n");
-+	printf("\t--force-checksum	Don't fail on checksum mismatches\n");
++	printf("\t--force-checksum                Don't fail on checksum mismatches\n");
  	printf("\t--noaction                      No action -- test only\n");
  	printf("\t--download-only                 No action -- download only\n");
  	printf("\t--nodeps                        Do not follow dependencies\n");

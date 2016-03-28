@@ -1,0 +1,166 @@
+--- a/libopkg/opkg_cmd.c
++++ b/libopkg/opkg_cmd.c
+@@ -442,7 +442,7 @@ opkg_configure_packages(char *pkg_name)
+      for(i = 0; i < ordered->len; i++) {
+ 	  pkg = ordered->pkgs[i];
+ 
+-	  if (pkg_name && fnmatch(pkg_name, pkg->name, 0))
++	  if (pkg_name && fnmatch(pkg_name, pkg->name, conf->nocase))
+ 	       continue;
+ 
+ 	  if (pkg->state_status == SS_UNPACKED) {
+@@ -666,7 +666,7 @@ opkg_list_cmd(int argc, char **argv)
+      for (i=0; i < available->len; i++) {
+ 	  pkg = available->pkgs[i];
+ 	  /* if we have package name or pattern and pkg does not match, then skip it */
+-	  if (pkg_name && fnmatch(pkg_name, pkg->name, 0))
++	  if (pkg_name && fnmatch(pkg_name, pkg->name, conf->nocase))
+ 	       continue;
+           print_pkg(pkg);
+      }
+@@ -693,7 +693,7 @@ opkg_list_installed_cmd(int argc, char *
+      for (i=0; i < available->len; i++) {
+ 	  pkg = available->pkgs[i];
+ 	  /* if we have package name or pattern and pkg does not match, then skip it */
+-	  if (pkg_name && fnmatch(pkg_name, pkg->name, 0))
++	  if (pkg_name && fnmatch(pkg_name, pkg->name, conf->nocase))
+ 	       continue;
+           print_pkg(pkg);
+      }
+@@ -722,7 +722,7 @@ opkg_list_changed_conffiles_cmd(int argc
+      for (i=0; i < available->len; i++) {
+ 	  pkg = available->pkgs[i];
+ 	  /* if we have package name or pattern and pkg does not match, then skip it */
+-	  if (pkg_name && fnmatch(pkg_name, pkg->name, 0))
++	  if (pkg_name && fnmatch(pkg_name, pkg->name, conf->nocase))
+ 	    continue;
+ 	  if (nv_pair_list_empty(&pkg->conffiles))
+ 	    continue;
+@@ -778,7 +778,7 @@ opkg_info_status_cmd(int argc, char **ar
+ 
+      for (i=0; i < available->len; i++) {
+ 	  pkg = available->pkgs[i];
+-	  if (pkg_name && fnmatch(pkg_name, pkg->name, 0)) {
++	  if (pkg_name && fnmatch(pkg_name, pkg->name, conf->nocase)) {
+ 	       continue;
+ 	  }
+ 
+@@ -848,7 +848,7 @@ opkg_remove_cmd(int argc, char **argv)
+      for (i=0; i<argc; i++) {
+         for (a=0; a<available->len; a++) {
+             pkg = available->pkgs[a];
+-	    if (fnmatch(argv[i], pkg->name, 0)) {
++	    if (fnmatch(argv[i], pkg->name, conf->nocase)) {
+                continue;
+             }
+             if (conf->restrict_to_default_dest) {
+@@ -982,7 +982,7 @@ opkg_depends_cmd(int argc, char **argv)
+ 		for (j=0; j<available_pkgs->len; j++) {
+ 			pkg = available_pkgs->pkgs[j];
+ 
+-			if (fnmatch(argv[i], pkg->name, 0) != 0)
++			if (fnmatch(argv[i], pkg->name, conf->nocase) != 0)
+ 				continue;
+ 
+ 			depends_count = pkg->depends_count +
+@@ -1203,7 +1203,7 @@ opkg_what_provides_replaces_cmd(enum wha
+ 			      ((what_field_type == WHATPROVIDES)
+ 			       ? pkg->provides[k]
+ 			       : pkg->replaces[k]);
+-			 if (fnmatch(target, apkg->name, 0) == 0) {
++			 if (fnmatch(target, apkg->name, conf->nocase) == 0) {
+ 			      opkg_msg(NOTICE, "    %s", pkg->name);
+ 			      if (strcmp(target, apkg->name) != 0)
+ 				   opkg_msg(NOTICE, "\t%s %s\n",
+@@ -1256,7 +1256,7 @@ opkg_search_cmd(int argc, char **argv)
+ 
+ 	  for (iter = str_list_first(installed_files); iter; iter = str_list_next(installed_files, iter)) {
+ 	       installed_file = (char *)iter->data;
+-	       if (fnmatch(argv[0], installed_file, 0)==0)
++	       if (fnmatch(argv[0], installed_file, conf->nocase)==0)
+ 	            print_pkg(pkg);
+ 	  }
+ 
+--- a/libopkg/opkg_conf.c
++++ b/libopkg/opkg_conf.c
+@@ -64,6 +64,7 @@ opkg_option_t options[] = {
+ 	  { "noaction", OPKG_OPT_TYPE_BOOL, &_conf.noaction },
+ 	  { "download_only", OPKG_OPT_TYPE_BOOL, &_conf.download_only },
+ 	  { "nodeps", OPKG_OPT_TYPE_BOOL, &_conf.nodeps },
++	  { "nocase", OPKG_OPT_TYPE_BOOL, &_conf.nocase },
+ 	  { "offline_root", OPKG_OPT_TYPE_STRING, &_conf.offline_root },
+ 	  { "overlay_root", OPKG_OPT_TYPE_STRING, &_conf.overlay_root },
+ 	  { "proxy_passwd", OPKG_OPT_TYPE_STRING, &_conf.proxy_passwd },
+--- a/libopkg/opkg_conf.h
++++ b/libopkg/opkg_conf.h
+@@ -22,6 +22,7 @@ typedef struct opkg_conf opkg_conf_t;
+ extern opkg_conf_t *conf;
+ 
+ #include <stdarg.h>
++#include <fnmatch.h> /* FNM_CASEFOLD */
+ 
+ #ifdef __cplusplus
+ extern "C" {
+@@ -83,6 +84,7 @@ struct opkg_conf
+      int prefer_arch_to_version;
+      int check_signature;
+      int nodeps; /* do not follow dependencies */
++     int nocase; /* perform case insensitive matching */
+      char *offline_root;
+      char *overlay_root;
+      int query_all;
+--- a/src/opkg-cl.c
++++ b/src/opkg-cl.c
+@@ -49,6 +49,7 @@ enum {
+ 	ARGS_OPT_NOACTION,
+ 	ARGS_OPT_DOWNLOAD_ONLY,
+ 	ARGS_OPT_NODEPS,
++	ARGS_OPT_NOCASE,
+ 	ARGS_OPT_AUTOREMOVE,
+ 	ARGS_OPT_CACHE,
+         ARGS_OPT_COMBINE,
+@@ -94,6 +95,7 @@ static struct option long_options[] = {
+ 	{"noaction", 0, 0, ARGS_OPT_NOACTION},
+ 	{"download-only", 0, 0, ARGS_OPT_DOWNLOAD_ONLY},
+ 	{"nodeps", 0, 0, ARGS_OPT_NODEPS},
++	{"nocase", 0, 0, ARGS_OPT_NOCASE},
+ 	{"offline", 1, 0, 'o'},
+ 	{"offline-root", 1, 0, 'o'},
+ 	{"add-arch", 1, 0, ARGS_OPT_ADD_ARCH},
+@@ -115,7 +117,7 @@ args_parse(int argc, char *argv[])
+ 	char *tuple, *targ;
+ 
+ 	while (1) {
+-		c = getopt_long_only(argc, argv, "Ad:f:no:p:t:vV::",
++		c = getopt_long_only(argc, argv, "Ad:f:ino:p:t:vV::",
+ 				long_options, &option_index);
+ 		if (c == -1)
+ 			break;
+@@ -130,6 +132,9 @@ args_parse(int argc, char *argv[])
+ 		case 'f':
+ 			conf->conf_file = xstrdup(optarg);
+ 			break;
++		case 'i':
++			conf->nocase = FNM_CASEFOLD;
++			break;
+ 		case 'o':
+ 			conf->offline_root = xstrdup(optarg);
+ 			break;
+@@ -190,6 +195,9 @@ args_parse(int argc, char *argv[])
+ 		case ARGS_OPT_NODEPS:
+ 			conf->nodeps = 1;
+ 			break;
++		case ARGS_OPT_NOCASE:
++			conf->nocase = FNM_CASEFOLD;
++			break;
+ 		case ARGS_OPT_ADD_ARCH:
+ 		case ARGS_OPT_ADD_DEST:
+ 			tuple = xstrdup(optarg);
+@@ -307,6 +315,7 @@ usage()
+ 	printf("\t--noaction                      No action -- test only\n");
+ 	printf("\t--download-only                 No action -- download only\n");
+ 	printf("\t--nodeps                        Do not follow dependencies\n");
++	printf("\t--nocase                        Perform case insensitive pattern matching\n");
+ 	printf("\t--force-removal-of-dependent-packages\n");
+ 	printf("\t                                Remove package and all dependencies\n");
+ 	printf("\t--autoremove                    Remove packages that were installed\n");

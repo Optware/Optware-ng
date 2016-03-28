@@ -62,6 +62,9 @@ $(IPKG-STATIC_SOURCE_DIR)/remove-ACLOCAL_AMFLAGS-I-shave-I-m4.patch \
 $(IPKG-STATIC_SOURCE_DIR)/ipkg.patch \
 $(IPKG-STATIC_SOURCE_DIR)/free-space-calc.patch \
 $(IPKG-STATIC_SOURCE_DIR)/ipkg-add-force-checksum.patch \
+$(IPKG-STATIC_SOURCE_DIR)/add-case-insensitive-flag.patch \
+$(IPKG-STATIC_SOURCE_DIR)/add-find-command.patch \
+$(IPKG-STATIC_SOURCE_DIR)/add-print-package-size.patch \
 
 #
 # In this case there is no tarball, instead we fetch the sources
@@ -170,6 +173,7 @@ $(IPKG-STATIC_IPK): $(IPKG-STATIC_BUILD_DIR)/.built
 	rm -rf $(IPKG-STATIC_IPK_DIR) $(BUILD_DIR)/ipkg-static_*_$(TARGET_ARCH).ipk
 	PATH="$(PATH):$(TOOL_BUILD_DIR)/$(GNU_TARGET_NAME)/$(CROSS_CONFIGURATION)/bin/" \
 		$(MAKE) -C $(IPKG-STATIC_BUILD_DIR) DESTDIR=$(IPKG-STATIC_IPK_DIR) install-strip
+	$(INSTALL) -d $(IPKG-STATIC_IPK_DIR)$(TARGET_PREFIX)/var/lock
 	rm -f $(IPKG-STATIC_IPK_DIR)$(TARGET_PREFIX)/share/man/man1/opkg-key.1
 	$(INSTALL) -d $(IPKG-STATIC_IPK_DIR)$(TARGET_PREFIX)/etc/ipkg
 	$(INSTALL) -m 644 $(IPKG-STATIC_SOURCE_DIR)/ipkg.conf \
