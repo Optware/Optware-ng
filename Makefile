@@ -971,13 +971,13 @@ ifneq ($(MAKE_JOBS), )
 	$(MAKE) -C $* host/.configured -j$(MAKE_JOBS)
 	$(MAKE) -C $* ipkg-utils -j$(MAKE_JOBS)
 	$(MAKE) -C $* toolchain -j$(MAKE_JOBS)
-	$(MAKE) -C $* package -j$(MAKE_JOBS)
+	$(MAKE) -C $* packages -j$(MAKE_JOBS)
 else
 	$(MAKE) -C $* directories
 	$(MAKE) -C $* host/.configured
 	$(MAKE) -C $* ipkg-utils
 	$(MAKE) -C $* toolchain
-	$(MAKE) -C $* package
+	$(MAKE) -C $* packages
 endif
 
 %-feed-build: %/.configured
