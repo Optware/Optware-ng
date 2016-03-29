@@ -764,23 +764,25 @@ $(PACKAGES_IPKG) : directories toolchain ipkg-utils
 .PHONY: index
 index: $(HOST_STAGING_DIR)/bin/ipk_indexer_html_sorted.sh $(PACKAGE_DIR)/Packages $(PACKAGE_DIR)/Packages.html
 
-boost-packages:
-	@$(MAKE) $(BOOST_PACKAGES)
+boost-packages: $(BOOST_PACKAGES)
 
-boost-packages-ipk:
-	@$(MAKE) $(patsubst %, %-ipk, $(BOOST_PACKAGES))
+boost-packages-ipk: $(patsubst %, %-ipk, $(BOOST_PACKAGES))
 
-boost-packages-dirclean:
-	@$(MAKE) $(patsubst %, %-dirclean, $(BOOST_PACKAGES))
+boost-packages-dirclean: $(patsubst %, %-dirclean, $(BOOST_PACKAGES))
 
-boost-packages-check:
-	@$(MAKE) $(patsubst %, %-check, $(BOOST_PACKAGES))
+boost-packages-check: $(patsubst %, %-check, $(BOOST_PACKAGES))
 
 test-build:
 	rm -f builds/failed.log
+ifneq ($(MAKE_JOBS), )
+	for package in $(PACKAGES); do \
+		$(MAKE) $${package}-ipk -j$(MAKE_JOBS) || (echo "$${package}" >> builds/failed.log); \
+	done
+else
 	for package in $(PACKAGES); do \
 		$(MAKE) $${package}-ipk || (echo "$${package}" >> builds/failed.log); \
 	done
+endif
 
 ifeq ($(PACKAGE_DIR),$(BASE_DIR)/packages)
     ifeq (,$(findstring -bootstrap,$(SPECIFIC_PACKAGES)))
@@ -806,7 +808,11 @@ endif
 	@echo "ALL DONE."
 
 packages: $(PACKAGES_IPKG)
-	$(MAKE) index
+ifneq ($(MAKE_JOBS), )
+	$(MAKE) -C $* index -j$(MAKE_JOBS)
+else
+	$(MAKE) -C $* index
+endif
 
 package-only: $(PACKAGES_IPKG)
 
@@ -960,25 +966,49 @@ ifneq ($(DEFAULT_TARGET_PREFIX), $(TARGET_PREFIX))
 endif
 
 %-feed: %/.configured
+ifneq ($(MAKE_JOBS), )
+	$(MAKE) -C $* directories -j$(MAKE_JOBS)
+	$(MAKE) -C $* host/.configured -j$(MAKE_JOBS)
+	$(MAKE) -C $* ipkg-utils -j$(MAKE_JOBS)
+	$(MAKE) -C $* toolchain -j$(MAKE_JOBS)
+	$(MAKE) -C $* package -j$(MAKE_JOBS)
+else
 	$(MAKE) -C $* directories
 	$(MAKE) -C $* host/.configured
 	$(MAKE) -C $* ipkg-utils
 	$(MAKE) -C $* toolchain
-	$(MAKE) -C $* packages
+	$(MAKE) -C $* package
+endif
 
 %-feed-build: %/.configured
+ifneq ($(MAKE_JOBS), )
+	$(MAKE) -C $* directories -j$(MAKE_JOBS)
+	$(MAKE) -C $* host/.configured -j$(MAKE_JOBS)
+	$(MAKE) -C $* ipkg-utils -j$(MAKE_JOBS)
+	$(MAKE) -C $* toolchain -j$(MAKE_JOBS)
+	$(MAKE) -C $* package-only -j$(MAKE_JOBS)
+else
 	$(MAKE) -C $* directories
 	$(MAKE) -C $* host/.configured
 	$(MAKE) -C $* ipkg-utils
 	$(MAKE) -C $* toolchain
 	$(MAKE) -C $* package-only
+endif
 
 %-feed-test-build: %/.configured
+ifneq ($(MAKE_JOBS), )
+	$(MAKE) -C $* directories -j$(MAKE_JOBS)
+	$(MAKE) -C $* host/.configured -j$(MAKE_JOBS)
+	$(MAKE) -C $* ipkg-utils -j$(MAKE_JOBS)
+	$(MAKE) -C $* toolchain -j$(MAKE_JOBS)
+	$(MAKE) -C $* test-build -j$(MAKE_JOBS)
+else
 	$(MAKE) -C $* directories
 	$(MAKE) -C $* host/.configured
 	$(MAKE) -C $* ipkg-utils
 	$(MAKE) -C $* toolchain
 	$(MAKE) -C $* test-build
+endif
 
 allfeeds: $(patsubst %,%-feed,$(OPTWARE_BUILD_TARGETS))
 
