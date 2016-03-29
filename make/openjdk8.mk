@@ -401,7 +401,11 @@ openjdk8-unpack: $(OPENJDK8_BUILD_DIR)/.configured
 #
 $(OPENJDK8_BUILD_DIR)/.built: $(OPENJDK8_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(@D)/openjdk $(OPENJDK8_MAKE_ARGS) images -j1 JOBS=`nproc`
+ifneq ($(MAKE_JOBS), )
+	$(MAKE) -C $(@D)/openjdk $(OPENJDK8_MAKE_ARGS) images -j1 JOBS=$(MAKE_JOBS)
+else
+	$(MAKE) -C $(@D)/openjdk $(OPENJDK8_MAKE_ARGS) images -j1
+endif
 #	printf -- '-jamvm ALIASED_TO -server\n' >> $(OPENJDK8_JDK_IMAGE_DIR)/jre/lib/$(OPENJDK8_LIBARCH)/jvm.cfg
 	touch $@
 

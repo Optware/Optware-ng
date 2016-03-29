@@ -170,7 +170,11 @@ mkvtoolnix-unpack: $(MKVTOOLNIX_BUILD_DIR)/.configured
 $(MKVTOOLNIX_BUILD_DIR)/.built: $(MKVTOOLNIX_BUILD_DIR)/.configured
 	rm -f $@
 ifeq ($(shell test $(shell echo $(MKVTOOLNIX_VERSION) | sed 's/\..*//') -gt 4; echo $$?),0)
-	cd $(@D); ./drake -j`nproc` V=1
+ ifneq ($(MAKE_JOBS), )
+	cd $(@D); ./drake -j$(MAKE_JOBS) V=1
+ else
+	cd $(@D); ./drake V=1
+ endif
 else
 	$(MAKE) -C $(@D) V=1
 endif

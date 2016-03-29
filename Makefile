@@ -472,6 +472,11 @@ if test x86_64 = `uname -m` -a 32-bit = `file /sbin/init | awk '{print $$3}'`; t
 | sed -e 's/i[3-9]86/i386/' )
 HOST_OS:=$(shell uname)
 
+# extract number of jobs passed through the command line
+MAKE_JOBS:=$(shell \
+ps T | grep "^\s*$(shell echo $$PPID).*$(MAKE)" | \
+sed -e 's/--jobs=/--jobs /g' -e 's/--jobs/-j/g' -e 's/[ \t][\t ]*/ /g' -e 's/-j /-j/g' -n -e 's/.* -j\([^ ]*\).*/\1/p')
+
 # Directory location definitions
 
 OPTWARE_TOP=$(shell if ! grep -q ^OPTWARE_TOP= ./Makefile; then cd ..; fi; pwd)
