@@ -141,7 +141,7 @@ $(OCAML_BUILD_DIR)/.built: $(OCAML_BUILD_DIR)/.configured
 	rm -f $@
 	$(MAKE) -C $(@D) coldstart
 	$(MAKE) -C $(@D) ocamlc ocamltools
-	$(MAKE) -C $(@D)/otherlibs/str LIBNAME=str
+	$(MAKE) -C $(@D)/otherlibs/str LIBNAME=str -j1
 	$(MAKE) -C $(@D) world # opt
 	for f in byterun/ocamlrun yacc/ocamlyacc otherlibs/unix/dllunix.so otherlibs/str/dllcamlstr.so; \
 	    do cp -p $(@D)/$${f}.target $(@D)/$$f; done
