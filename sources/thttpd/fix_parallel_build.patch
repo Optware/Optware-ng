@@ -1,0 +1,12 @@
+--- a/Makefile.in
++++ b/Makefile.in
+@@ -77,7 +77,8 @@
+ all:		this subdirs
+ this:		$(ALL)
+ 
+-thttpd: $(OBJ)
++thttpd:
++	$(MAKE) $(OBJ)
+ 	@rm -f $@
+ 	$(CC) $(CFLAGS) $(LDFLAGS) -o $@ $(OBJ) $(LIBS) $(NETLIBS)
+ 

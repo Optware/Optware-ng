@@ -54,7 +54,8 @@ THTTPD_CONFFILES=$(TARGET_PREFIX)/etc/init.d/S80thttpd $(TARGET_PREFIX)/etc/thtt
 THTTPD_PATCHES=$(THTTPD_SOURCE_DIR)/Makefile.in.patch \
 		$(THTTPD_SOURCE_DIR)/configure.patch \
 		$(THTTPD_SOURCE_DIR)/config.h.patch \
-		$(THTTPD_SOURCE_DIR)/mime_types.patch 
+		$(THTTPD_SOURCE_DIR)/mime_types.patch \
+		$(THTTPD_SOURCE_DIR)/fix_parallel_build.patch 
 
 #
 # If the compilation of the package requires additional
