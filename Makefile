@@ -809,9 +809,9 @@ endif
 
 packages: $(PACKAGES_IPKG)
 ifneq ($(MAKE_JOBS), )
-	$(MAKE) -C $* index -j$(MAKE_JOBS)
+	$(MAKE) -C index -j$(MAKE_JOBS)
 else
-	$(MAKE) -C $* index
+	$(MAKE) -C index
 endif
 
 package-only: $(PACKAGES_IPKG)
