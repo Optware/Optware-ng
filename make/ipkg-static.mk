@@ -65,6 +65,7 @@ $(IPKG-STATIC_SOURCE_DIR)/ipkg-add-force-checksum.patch \
 $(IPKG-STATIC_SOURCE_DIR)/add-case-insensitive-flag.patch \
 $(IPKG-STATIC_SOURCE_DIR)/add-find-command.patch \
 $(IPKG-STATIC_SOURCE_DIR)/add-print-package-size.patch \
+$(IPKG-STATIC_SOURCE_DIR)/add-print-package-installed-size.patch \
 
 #
 # In this case there is no tarball, instead we fetch the sources

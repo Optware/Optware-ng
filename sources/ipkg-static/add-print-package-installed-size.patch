@@ -1,0 +1,68 @@
+--- a/libopkg/opkg_cmd.c
++++ b/libopkg/opkg_cmd.c
+@@ -51,6 +51,8 @@ print_pkg(pkg_t *pkg)
+ 	printf("%s - %s", pkg->name, version);
+ 	if (conf->size)
+ 		printf(" - %lu", pkg->size);
++	if (conf->installed_size)
++		printf(" - %lu", pkg->installed_size);
+ 	if (pkg->description)
+ 		printf(" - %s", pkg->description);
+ 	printf("\n");
+--- a/libopkg/opkg_conf.c
++++ b/libopkg/opkg_conf.c
+@@ -71,6 +71,7 @@ opkg_option_t options[] = {
+ 	  { "proxy_user", OPKG_OPT_TYPE_STRING, &_conf.proxy_user },
+ 	  { "query-all", OPKG_OPT_TYPE_BOOL, &_conf.query_all },
+ 	  { "size", OPKG_OPT_TYPE_BOOL, &_conf.size },
++	  { "installed-size", OPKG_OPT_TYPE_BOOL, &_conf.installed_size },
+ 	  { "tmp_dir", OPKG_OPT_TYPE_STRING, &_conf.tmp_dir },
+ 	  { "verbosity", OPKG_OPT_TYPE_INT, &_conf.verbosity },
+           { "combine", OPKG_OPT_TYPE_BOOL, &_conf.combine },
+--- a/libopkg/opkg_conf.h
++++ b/libopkg/opkg_conf.h
+@@ -91,6 +91,7 @@ struct opkg_conf
+      int verbosity;
+      int noaction;
+      int size;
++     int installed_size;
+      int download_only;
+      char *cache;
+      int combine;
+--- a/src/opkg-cl.c
++++ b/src/opkg-cl.c
+@@ -54,6 +54,7 @@ enum {
+ 	ARGS_OPT_CACHE,
+         ARGS_OPT_COMBINE,
+ 	ARGS_OPT_SIZE,
++	ARGS_OPT_INSTALLED_SIZE,
+ };
+ 
+ static struct option long_options[] = {
+@@ -102,6 +103,7 @@ static struct option long_options[] = {
+ 	{"add-arch", 1, 0, ARGS_OPT_ADD_ARCH},
+ 	{"add-dest", 1, 0, ARGS_OPT_ADD_DEST},
+ 	{"size", 0, 0, ARGS_OPT_SIZE},
++	{"installed-size", 0, 0, ARGS_OPT_INSTALLED_SIZE},
+ 	{"test", 0, 0, ARGS_OPT_NOACTION},
+ 	{"tmp-dir", 1, 0, 't'},
+ 	{"tmp_dir", 1, 0, 't'},
+@@ -217,6 +219,9 @@ args_parse(int argc, char *argv[])
+ 		case ARGS_OPT_SIZE:
+ 			conf->size = 1;
+ 			break;
++		case ARGS_OPT_INSTALLED_SIZE:
++			conf->installed_size = 1;
++			break;
+ 		case ARGS_OPT_NOACTION:
+ 			conf->noaction = 1;
+ 			break;
+@@ -323,6 +328,8 @@ usage()
+ 	printf("\t--nodeps                        Do not follow dependencies\n");
+ 	printf("\t--nocase                        Perform case insensitive pattern matching\n");
+ 	printf("\t--size                          Print package size when listing available packages\n");
++	printf("\t--installed-size                Print package size after unpacking when listing available\n");
++	printf("\t                                packages. Size after configuring can be different\n");
+ 	printf("\t--force-removal-of-dependent-packages\n");
+ 	printf("\t                                Remove package and all dependencies\n");
+ 	printf("\t--autoremove                    Remove packages that were installed\n");
