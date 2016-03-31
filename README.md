@@ -8,16 +8,23 @@ Now that Optware-ng is official, we're looking for developers and wiki writers. 
 
 # Attention!
 
+If you are having issues with installing packages, similar to https://github.com/Optware/Optware-ng/issues/106, you need to upgrade your `ipkg` package manager.
+
+Some changes have been recently made to the packaging system:
+* sha256 checksum added
+* Installed-Size field added to the ipk files and to the index
+* opkg is now used as the package manager. To provide backward compatibility, it's patched to use ipkg pathes
+
+To upgrade the packager, simply run the bootstrap script proper for your target (see the '**Getting started**' section) -- this will not affect your installed packages. After that, just use `ipkg` (or `ipkg-static`) command as you used it before the upgrade.
+
+# Attention!
+
 Optware-ng feeds have moved to [http://ipkg.nslu2-linux.org/optware-ng](http://ipkg.nslu2-linux.org/optware-ng). Please run this command to update ipkg configuration if you installed Optware-ng prior to this announcement:
 
 ```
 sed -i -e 's|optware-ng\.zyxmon\.org/|ipkg.nslu2-linux.org/optware-ng/|' /opt/etc/ipkg.conf
 ipkg update
 ```
-
-# Attention!
-
-buildroot-mipsel-ng feed is now rebuilt with 2.6.22.19 kernel headers. Please reinstall all currently installed packages if you installed this feed earlier:
 
 ```
 ipkg update
