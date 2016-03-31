@@ -8,7 +8,7 @@ Now that Optware-ng is official, we're looking for developers and wiki writers. 
 
 # Attention!
 
-If you are having issues with installing packages, similar to https://github.com/Optware/Optware-ng/issues/106, you need to upgrade your `ipkg` package manager.
+If you are having issues with installing packages, similar to [#106](https://github.com/Optware/Optware-ng/issues/106), you need to upgrade your `ipkg` package manager.
 
 Some changes have been recently made to the packaging system:
 * sha256 checksum added
