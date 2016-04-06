@@ -1,0 +1,28 @@
+--- a/libc/inet/if_index.c
++++ b/libc/inet/if_index.c
+@@ -19,6 +19,12 @@
+    Reworked Dec 2002 by Erik Andersen <andersen@codepoet.org>
+  */
+ 
++#include "netlinkaccess.h"
++
++#define _BITS_UIO_H	1
++#define __BITS_SOCKET_H
++#include <bits/sockaddr.h>
++
+ #include <string.h>
+ #include <alloca.h>
+ #include <errno.h>
+@@ -26,12 +32,9 @@
+ #include <stdlib.h>
+ #include <unistd.h>
+ #include <net/if.h>
+-#include <sys/socket.h>
+ #include <sys/ioctl.h>
+ #include <not-cancel.h>
+ 
+-#include "netlinkaccess.h"
+-
+ extern int __opensock(void) attribute_hidden;
+ 
+ unsigned int

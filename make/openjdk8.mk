@@ -137,10 +137,6 @@ $(OPENJDK8_SOURCE_DIR)/openjdk/zero-fpu-control-is-noop.diff \
 $(OPENJDK8_SOURCE_DIR)/openjdk/zero-missing-headers.diff \
 $(OPENJDK8_SOURCE_DIR)/openjdk/fix-ipv6-init.patch \
 
-ifeq ($(OPTWARE_TARGET), $(filter buildroot-armv5eabi-ng-legacy, $(OPTWARE_TARGET)))
-OPENJDK8_OPENJDK_PATCHES += $(OPENJDK8_SOURCE_DIR)/openjdk/build_without_inotify.patch
-endif
-
 OPENJDK8_JAMVM_PATCHES=\
 $(OPENJDK8_SOURCE_DIR)/jamvm/jamvm-fix.diff \
 $(OPENJDK8_SOURCE_DIR)/jamvm/URLClassPath.stub.diff \

@@ -1,0 +1,31 @@
+--- a/libc/inet/ifaddrs.c
++++ b/libc/inet/ifaddrs.c
+@@ -16,6 +16,15 @@
+    License along with the GNU C Library; if not, see
+    <http://www.gnu.org/licenses/>.  */
+ 
++#include "netlinkaccess.h"
++
++#define _BITS_UIO_H	1
++#define __BITS_SOCKET_H
++
++#include <sys/socket.h>
++#include <bits/sockaddr.h>
++#include <bits/socket_type.h>
++
+ #include <alloca.h>
+ #include <assert.h>
+ #include <errno.h>
+@@ -29,12 +38,9 @@
+ #include <stdio.h>
+ #include <string.h>
+ #include <sys/ioctl.h>
+-#include <sys/socket.h>
+ #include <time.h>
+ #include <unistd.h>
+ 
+-#include "netlinkaccess.h"
+-
+ 
+ #ifndef __libc_use_alloca
+ # define __libc_use_alloca(x) (x < __MAX_ALLOCA_CUTOFF)

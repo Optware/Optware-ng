@@ -1,9 +1,9 @@
-# This toolchain is gcc 5.3.0 on uClibc-ng 1.0.12
+# This toolchain is gcc 5.3.0 on uClibc-ng 1.0.13
 
 GNU_TARGET_NAME = arm-linux
 EXACT_TARGET_NAME = arm-buildroot-linux-uclibcgnueabi
 
-UCLIBC_VERSION=1.0.12
+UCLIBC_VERSION=1.0.13
 
 DEFAULT_TARGET_PREFIX=/opt
 TARGET_PREFIX ?= /opt
@@ -44,7 +44,7 @@ CROSS_CONFIGURATION_GCC=gcc-$(CROSS_CONFIGURATION_GCC_VERSION)
 CROSS_CONFIGURATION_UCLIBC=uclibc-$(CROSS_CONFIGURATION_UCLIBC_VERSION)
 CROSS_CONFIGURATION=$(CROSS_CONFIGURATION_GCC)-$(CROSS_CONFIGURATION_UCLIBC)
 TARGET_CROSS_BUILD_DIR = $(BASE_DIR)/toolchain/buildroot-2016.02
-TARGET_CROSS_TOP = $(BASE_DIR)/toolchain/buildroot-armv5-linux-2.6.12-uclibc-ng-5.3.0
+TARGET_CROSS_TOP = $(BASE_DIR)/toolchain/buildroot-armv5-linux-2.6.22-uclibc-ng-5.3.0
 TARGET_CROSS = $(TARGET_CROSS_TOP)/bin/arm-buildroot-linux-uclibcgnueabi-
 TARGET_LIBDIR = $(TARGET_CROSS_TOP)/arm-buildroot-linux-uclibcgnueabi/sysroot/usr/lib
 TARGET_INCDIR = $(TARGET_CROSS_TOP)/arm-buildroot-linux-uclibcgnueabi/sysroot/usr/include
@@ -71,7 +71,7 @@ BUILDROOT-ARMv5EABI-NG-LEGACY_SOURCE_DIR=$(SOURCE_DIR)/buildroot-armv5eabi-ng-le
 BUILDROOT-ARMv5EABI-NG-LEGACY_PATCHES=\
 $(BUILDROOT-ARMv5EABI-NG-LEGACY_SOURCE_DIR)/uclibc-ng-config.patch \
 $(BUILDROOT-ARMv5EABI-NG-LEGACY_SOURCE_DIR)/toolchain-wrapper.patch \
-#$(BUILDROOT-ARMv5EABI-NG-LEGACY_SOURCE_DIR)/uclibc-ng-bump.patch \
+$(BUILDROOT-ARMv5EABI-NG-LEGACY_SOURCE_DIR)/uclibc-ng-bump.patch \
 
 BUILDROOT-ARMv5EABI-NG-LEGACY_UCLIBC-NG_PATCHES=$(wildcard $(BUILDROOT-ARMv5EABI-NG-LEGACY_SOURCE_DIR)/uclibc-ng-patches/*.patch)
 
@@ -97,15 +97,15 @@ $(TARGET_CROSS_TOP)/.configured: $(DL_DIR)/$(TOOLCHAIN_SOURCE) \
 		$(PATCH) -bd $(TARGET_CROSS_BUILD_DIR) -p1 ; \
 	fi
 ifneq ($(BUILDROOT-ARMv5EABI-NG-LEGACY_UCLIBC-NG_PATCHES), )
-	mkdir -p $(TARGET_CROSS_BUILD_DIR)/package/uclibc/$(UCLIBC_VERSION)
-	$(INSTALL) -m 644 $(BUILDROOT-ARMv5EABI-NG-LEGACY_UCLIBC-NG_PATCHES) $(TARGET_CROSS_BUILD_DIR)/package/uclibc/$(UCLIBC_VERSION)
+	$(INSTALL) -m 644 $(BUILDROOT-ARMv5EABI-NG-LEGACY_UCLIBC-NG_PATCHES) $(TARGET_CROSS_BUILD_DIR)/package/uclibc
 endif
 ifneq ($(BUILDROOT-ARMv5EABI-NG-LEGACY_LINUX_HEADERS_PATCHES), )
-	mkdir -p $(TARGET_CROSS_BUILD_DIR)/package/linux-headers/2.6.12
-	$(INSTALL) -m 644 $(BUILDROOT-ARMv5EABI-NG-LEGACY_LINUX_HEADERS_PATCHES) $(TARGET_CROSS_BUILD_DIR)/package/linux-headers/2.6.12
+	mkdir -p $(TARGET_CROSS_BUILD_DIR)/package/linux-headers/2.6.22
+	$(INSTALL) -m 644 $(BUILDROOT-ARMv5EABI-NG-LEGACY_LINUX_HEADERS_PATCHES) $(TARGET_CROSS_BUILD_DIR)/package/linux-headers/2.6.22
 endif
+	cd $(TARGET_CROSS_BUILD_DIR)/package/uclibc; \
+		rm -f 0001-include-netdb.h-Do-not-define-IDN-related-flags.patch 0002-mips-fix-build-if-threads-are-disabled.patch
 	sed 's|^BR2_DL_DIR=.*|BR2_DL_DIR="$(DL_DIR)"|' $(BUILDROOT-ARMv5EABI-NG-LEGACY_SOURCE_DIR)/config > $(TARGET_CROSS_BUILD_DIR)/.config
-	$(MAKE) -C $(TARGET_CROSS_BUILD_DIR) oldconfig
 	touch $@
 
 $(TARGET_CROSS_TOP)/.built: $(TARGET_CROSS_TOP)/.configured
