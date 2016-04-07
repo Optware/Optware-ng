@@ -74,9 +74,6 @@ $(PUPPY_BUILD_DIR)/.configured: $(DL_DIR)/$(PUPPY_SOURCE) $(PUPPY_PATCHES) make/
 	rm -rf $(BUILD_DIR)/$(PUPPY_DIR) $(@D)
 	$(PUPPY_UNZIP) $(DL_DIR)/$(PUPPY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(PUPPY_DIR) $(@D)
-ifneq (, $(filter buildroot-armv5eabi-ng-legacy, $(OPTWARE_TARGET)))
-	sed -i -e 's|usb/ch9\.h|usb_ch9.h|' $(@D)/usb_io.h
-endif
 	touch $@
 
 puppy-unpack: $(PUPPY_BUILD_DIR)/.configured
