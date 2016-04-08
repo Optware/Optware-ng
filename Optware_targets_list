@@ -1,6 +1,7 @@
 buildroot-armeabihf
 buildroot-armeabi-ng
 buildroot-armv5eabi-ng
+buildroot-armv5eabi-ng-legacy
 buildroot-i686
 buildroot-mipsel-ng
 buildroot-ppc-603e
