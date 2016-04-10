@@ -53,7 +53,7 @@ MODULE_INIT_TOOLS_IPK_VERSION=1
 # compilation or linking flags, then list them here.
 #
 MODULE_INIT_TOOLS_CPPFLAGS=
-ifneq (, $(filter syno-x07, $(OPTWARE_TARGET)))
+ifneq (, $(filter ct-ng-ppc-e500v2, $(OPTWARE_TARGET)))
 MODULE_INIT_TOOLS_CPPFLAGS += -DCONFIG_NO_BACKWARDS_COMPAT
 endif
 MODULE_INIT_TOOLS_LDFLAGS=
