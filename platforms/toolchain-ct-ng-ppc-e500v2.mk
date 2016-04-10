@@ -95,6 +95,7 @@ $(TARGET_CROSS_BUILD_DIR)/.configured: $(DL_DIR)/$(TOOLCHAIN_SOURCE) \
 				$(CT-NG-PPC_E500v2_SOURCE_DIR)/glibc-patches/*.patch \
 				$(CT-NG-PPC_E500v2_PATCHES) \
 				#$(OPTWARE_TOP)/platforms/toolchain-$(OPTWARE_TARGET).mk
+	$(MAKE) libtool-host
 	rm -rf $(@D) $(TARGET_CROSS_TOP)
 	tar -xjvf $(DL_DIR)/$(TOOLCHAIN_SOURCE) -C $(BASE_DIR)/toolchain
 	if test -n "$(CT-NG-PPC_E500v2_PATCHES)" ; \
@@ -103,7 +104,10 @@ $(TARGET_CROSS_BUILD_DIR)/.configured: $(DL_DIR)/$(TOOLCHAIN_SOURCE) \
 	fi
 	mkdir -p $(@D)/patches/glibc/2.23
 	$(INSTALL) -m 644 $(CT-NG-PPC_E500v2_SOURCE_DIR)/glibc-patches/* $(@D)/patches/glibc/2.23
-	cd $(@D); ./configure --enable-local
+	cd $(@D); \
+		LIBTOOL=$(HOST_STAGING_PREFIX)/bin/libtool \
+		LIBTOOLIZE=$(HOST_STAGING_PREFIX)/bin/libtoolize \
+		./configure --enable-local
 	$(MAKE) -C $(@D) MAKELEVEL=0
 	sed -e 's|^CT_PREFIX_DIR=.*|CT_PREFIX_DIR="$(TARGET_CROSS_TOP)"|' $(CT-NG-PPC_E500v2_SOURCE_DIR)/config > $(TARGET_CROSS_BUILD_DIR)/.config
 	mkdir -p $(@D)/.build
