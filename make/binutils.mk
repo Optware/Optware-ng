@@ -137,6 +137,7 @@ $(BINUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(BINUTILS_SOURCE) $(BINUTILS_PATCH
 		--disable-nls \
 		--disable-static \
 		--disable-werror \
+		$(NATIVE_BINUTILS_CONFIG_ARGS) \
 	)
 #	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@

@@ -1,0 +1,5 @@
+/* GNU ld script
+   Use the shared library, but some functions are only in
+   the static library, so try that secondarily.  */
+OUTPUT_FORMAT(elf32-powerpc)
+GROUP ( %OPTWARE_TARGET_PREFIX%/lib/libc.so.6 %OPTWARE_TARGET_PREFIX%/lib/libc_nonshared.a  AS_NEEDED ( %OPTWARE_TARGET_PREFIX%/lib/ld.so.1 ) )

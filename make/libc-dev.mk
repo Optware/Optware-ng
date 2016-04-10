@@ -79,7 +79,7 @@ libresolv_pic.a librt.a librt_pic.a libstdc++.a libthread_db.a libthread_db_pic.
 libutil_pic.a uclibc_nonshared.a
 
 LIBC-DEV_GLIBC_STATIC_LIBS ?= libc.a libg.a libm.a libdl.a librt.a libanl.a libnsl.a \
-libieee.a libutil.a libcrypt.a libmcheck.a libresolv.a librpcsvc.a libstdc++.a libpthread.a \
+libieee.a libutil.a libcrypt.a libmcheck.a libresolv.a librpcsvc.a libstdc++*.a libpthread.a \
 libc_nonshared.a libBrokenLocale.a libpthread_nonshared.a
 
 LIBC-DEV_GLIBC-SYMLINK ?= ln -s libanl.so.1 libanl.so; \

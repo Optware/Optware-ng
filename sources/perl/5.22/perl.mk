@@ -43,7 +43,7 @@ PERL_ARCH = $(strip \
 PERL_LIB_CORE_DIR=perl5/$(PERL_VERSION)/$(PERL_ARCH)/CORE
 PERL_LDFLAGS=-pthread -Wl,-rpath,$(TARGET_PREFIX)/lib/$(PERL_LIB_CORE_DIR)
 
-PERL_LIBS=-ldb-$(LIBDB_LIB_VERSION) -lgdbm -lgdbm_compat
+PERL_LIBS=-ldl -lcrypt -lm -ldb-$(LIBDB_LIB_VERSION) -lgdbm -lgdbm_compat
 
 #
 # PERL_BUILD_DIR is the directory in which the build is done.
@@ -147,6 +147,7 @@ ifeq ($(HOSTCC), $(TARGET_CC))
 		-de \
 	)
 else
+ifeq ($(shell [ -e $(PERL_SOURCE_DIR)/$(PERL_MAJOR_VER)/config.sh-$(OPTWARE_TARGET) ] || [ -e $(PERL_SOURCE_DIR)/$(PERL_MAJOR_VER)/config.sh-$(PERL_TARGET_NAME) ]; echo $?), 0)
 	(cd $(@D); \
 		( [ -e $(PERL_SOURCE_DIR)/$(PERL_MAJOR_VER)/config.sh-$(OPTWARE_TARGET) ] && \
 		$(INSTALL) -m 644 $(PERL_SOURCE_DIR)/$(PERL_MAJOR_VER)/config.sh-$(OPTWARE_TARGET) config.sh-$(PERL_TARGET_NAME) ) || \
@@ -186,6 +187,34 @@ else
 		-Duseshrplib \
 		-Dusethreads \
 	)
+else
+	(cd $(@D); \
+		PATH="`dirname $(TARGET_CC)`:$$PATH" \
+		LC_ALL=C \
+		./configure \
+		--host=$(GNU_TARGET_NAME) \
+		--target=$(GNU_TARGET_NAME) \
+		--mode=cross \
+		--target-tools-prefix=`basename $(TARGET_CROSS)` \
+		--prefix=$(TARGET_PREFIX) \
+		-O \
+		-f $(PERL_SOURCE_DIR)/$(PERL_MAJOR_VER)/defines.$(LIBC_STYLE) \
+		-Darchname=$(PERL_ARCH) \
+		--with-ranlib=$(TARGET_RANLIB) \
+		--with-objdump=$(TARGET_CROSS)objdump \
+		-Accflags="$(STAGING_CPPFLAGS) $(PERL_CPPFLAGS)" \
+		-Aldlags="$(STAGING_LDFLAGS) $(PERL_LDFLAGS) $(PERL_LDFLAGS_EXTRA)" \
+		-Alibs="$(PERL_LIBS)" \
+		-Dcc=$(TARGET_CC) \
+		-Dld=$(TARGET_LD) \
+		-Dnm=$(TARGET_NM) \
+		-Dar=$(TARGET_AR) \
+		-Dcpp=$(TARGET_CPP) \
+		-Dranlib=$(TARGET_RANLIB) \
+		-Duseshrplib \
+		-Dusethreads \
+	)
+endif
 endif
 	touch $@
 
