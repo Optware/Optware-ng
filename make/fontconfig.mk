@@ -98,7 +98,7 @@ fontconfig-source: $(DL_DIR)/fontconfig-$(FONTCONFIG_VERSION).tar.gz $(FONTCONFI
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(FONTCONFIG_BUILD_DIR)/.configured: $(DL_DIR)/fontconfig-$(FONTCONFIG_VERSION).tar.gz \
-		$(FONTCONFIG_PATCHES)
+		$(FONTCONFIG_PATCHES) make/fontconfig.mk
 	$(MAKE) freetype-stage
 	$(MAKE) expat-stage
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
@@ -113,7 +113,7 @@ endif
 	if test "$(BUILD_DIR)/$(FONTCONFIG_DIR)" != "$(FONTCONFIG_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(FONTCONFIG_DIR) $(FONTCONFIG_BUILD_DIR) ; \
 	fi
-	sed -i -e '/^LDFLAGS/s|=.*$$|=|' \
+	sed -i -e '/^\(LDFLAGS\|CFLAGS\|CPPFLAGS\) =/s|=.*$$|=|' \
 		$(@D)/fc-arch/Makefile.in \
 		$(@D)/fc-case/Makefile.in \
 		$(@D)/fc-glyphname/Makefile.in \
