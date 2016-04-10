@@ -62,6 +62,8 @@ TOOLCHAIN_VERSION=git$(TOOLCHAIN_GIT_DATE)
 TOOLCHAIN_TREEISH=`git rev-list --max-count=1 --until=2016-03-26 HEAD`
 TOOLCHAIN_SOURCE=crosstool-ng-$(TOOLCHAIN_VERSION).tar.bz2
 
+LIBSTDC++_TARGET_LIBDIR = $(TARGET_CROSS_TOP)/powerpc-e500v2-linux-gnuspe/sysroot/lib
+
 GLIBC-OPT_VERSION = 2.23
 GLIBC-OPT_IPK_VERSION = 1
 GLIBC-OPT_LIBS_SOURCE_DIR = $(TARGET_CROSS_TOP)/powerpc-e500v2-linux-gnuspe/sysroot/lib
