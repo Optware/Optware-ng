@@ -119,9 +119,15 @@ $(LIBGPG-ERROR_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBGPG-ERROR_SOURCE) $(LIBGPG
 	$(LIBGPG-ERROR_UNZIP) $(DL_DIR)/$(LIBGPG-ERROR_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	#cat $(LIBGPG-ERROR_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(LIBGPG-ERROR_DIR) -p1
 	mv $(BUILD_DIR)/$(LIBGPG-ERROR_DIR) $(@D)
+ifeq (, $(filter ct-ng-ppc-e500v2, $(OPTWARE_TARGET)))
 	if [ -f $(@D)/src/syscfg/lock-obj-pub.$(LIBGPG-ERROR_ARCH).h ]; then \
 		ln -s lock-obj-pub.$(LIBGPG-ERROR_ARCH).h $(@D)/src/syscfg/lock-obj-pub.linux-gnu.h; \
 	fi
+else
+	if [ -f $(@D)/src/syscfg/lock-obj-pub.$(LIBGPG-ERROR_ARCH).h ]; then \
+		ln -s lock-obj-pub.$(LIBGPG-ERROR_ARCH).h $(@D)/src/syscfg/lock-obj-pub.linux-gnuspe.h; \
+	fi
+endif
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBGPG-ERROR_CPPFLAGS)" \
