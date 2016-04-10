@@ -103,7 +103,6 @@ $(XRENDER_BUILD_DIR)/.configured: $(DL_DIR)/$(XRENDER_SOURCE) $(XRENDER_PATCHES)
 	if test "$(BUILD_DIR)/$(XRENDER_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(XRENDER_DIR) $(@D) ; \
 	fi
-	find $(@D) -name '*.[ch]' -exec sed -i -e 's/_XEatDataWords/&_static/g' {} \;
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(XRENDER_CPPFLAGS)" \
