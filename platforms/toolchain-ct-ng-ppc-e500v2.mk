@@ -121,7 +121,7 @@ $(TARGET_CROSS_BUILD_DIR)/.built: $(TARGET_CROSS_BUILD_DIR)/.configured
 	chmod -R +w $(TARGET_CROSS_TOP)
 	install -m 644 $(CT-NG-PPC_E500v2_SOURCE_DIR)/videodev.h $(TARGET_CROSS_TOP)/powerpc-e500v2-linux-gnuspe/sysroot/usr/include/linux
 	cp -af $(TARGET_CROSS_TOP)/lib/gcc/powerpc-e500v2-linux-gnuspe/5.3.0/*.a $(GLIBC-OPT_LIBS_SOURCE_DIR)/
-	cp -af $(TARGET_CROSS_TOP)/powerpc-e500v2-linux-gnuspe/sysroot/lib/libstdc++*.a (TARGET_CROSS_TOP)/powerpc-e500v2-linux-gnuspe/sysroot/usr/lib/
+	cp -af $(TARGET_CROSS_TOP)/powerpc-e500v2-linux-gnuspe/sysroot/lib/libstdc++*.a $(TARGET_CROSS_TOP)/powerpc-e500v2-linux-gnuspe/sysroot/usr/lib/
 	touch $@
 
 GLIBC-OPT_LIBS := ld libc libm libdl librt libanl libutil libcrypt libnss_db libresolv libnss_dns libnss_nis libpthread libnss_files libnss_compat libnss_hesiod libnss_nisplus libBrokenLocale
