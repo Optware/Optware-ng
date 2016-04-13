@@ -386,7 +386,7 @@ $(ASTERISK18_BUILD_DIR)/.built: $(ASTERISK18_BUILD_DIR)/.configured
 	./menuselect/menuselect --disable format_mp3 menuselect.makeopts )
 	ASTCFLAGS="$(ASTERISK18_CPPFLAGS)" \
 	ASTLDFLAGS="$(STAGING_LDFLAGS) $(ASTERISK18_LDFLAGS)" \
-	$(MAKE) -C $(@D)
+	$(MAKE) -C $(@D) $(strip $(if $(filter ct-ng-ppc-e500v2, $(OPTWARE_TARGET)), OPTIMIZE=-O2))
 	touch $@
 
 #
@@ -399,7 +399,7 @@ asterisk18: $(ASTERISK18_BUILD_DIR)/.built
 #
 $(ASTERISK18_BUILD_DIR)/.staged: $(ASTERISK18_BUILD_DIR)/.built
 	rm -f $(ASTERISK18_BUILD_DIR)/.staged
-	ASTCFLAGS="$(ASTERISK18_CPPFLAGS)" \
+	ASTCFLAGS="$(TARGET_CUSTOM_FLAGS) $(ASTERISK18_CPPFLAGS)" \
 	ASTLDFLAGS="$(STAGING_LDFLAGS) $(ASTERISK18_LDFLAGS)" \
 	$(MAKE) -C $(ASTERISK18_BUILD_DIR) DESTDIR=$(STAGING_DIR) ASTSBINDIR=$(TARGET_PREFIX)/sbin install
 	touch $(ASTERISK18_BUILD_DIR)/.staged

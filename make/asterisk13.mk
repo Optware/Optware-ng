@@ -390,7 +390,7 @@ $(ASTERISK13_BUILD_DIR)/.built: $(ASTERISK13_BUILD_DIR)/.configured
 	ASTCFLAGS="$(ASTERISK13_CPPFLAGS)" \
 	ASTLDFLAGS="$(STAGING_LDFLAGS) $(ASTERISK13_LDFLAGS)" \
 	$(MAKE) NOISY_BUILD=$(NOISY_BUILD) -C $(@D) menuselect.makeopts || \
-	ASTCFLAGS="$(ASTERISK13_CPPFLAGS)" \
+	ASTCFLAGS="$(TARGET_CUSTOM_FLAGS) $(ASTERISK13_CPPFLAGS)" \
 	ASTLDFLAGS="$(STAGING_LDFLAGS) $(ASTERISK13_LDFLAGS)" \
 	$(MAKE) NOISY_BUILD=$(NOISY_BUILD) -C $(@D) menuselect.makeopts
 	# enable addons, disable mp3
@@ -405,7 +405,7 @@ $(ASTERISK13_BUILD_DIR)/.built: $(ASTERISK13_BUILD_DIR)/.configured
 	#sed -i -e "s|clean::|res_srtp.so: _ASTLDFLAGS+=libsrtp.a\n\nclean::|" res/Makefile )
 	ASTCFLAGS="$(ASTERISK13_CPPFLAGS)" \
 	ASTLDFLAGS="$(STAGING_LDFLAGS) $(ASTERISK13_LDFLAGS)" \
-	$(MAKE) NOISY_BUILD=$(NOISY_BUILD) -C $(@D)
+	$(MAKE) NOISY_BUILD=$(NOISY_BUILD) -C $(@D) $(strip $(if $(filter ct-ng-ppc-e500v2, $(OPTWARE_TARGET)), OPTIMIZE=-O2))
 	touch $@
 
 #

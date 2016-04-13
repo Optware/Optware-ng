@@ -393,9 +393,9 @@ $(ASTERISK10_BUILD_DIR)/.built: $(ASTERISK10_BUILD_DIR)/.configured
 	( cd $(ASTERISK10_BUILD_DIR);\
 	./menuselect/menuselect --enable-category MENUSELECT_ADDONS menuselect.makeopts;\
 	./menuselect/menuselect --disable format_mp3 menuselect.makeopts )
-	ASTCFLAGS="$(ASTERISK10_CPPFLAGS)" \
+	ASTCFLAGS="$(TARGET_CUSTOM_FLAGS) $(ASTERISK10_CPPFLAGS)" \
 	ASTLDFLAGS="$(STAGING_LDFLAGS) $(ASTERISK10_LDFLAGS)" \
-	$(MAKE) -C $(@D)
+	$(MAKE) -C $(@D) $(strip $(if $(filter ct-ng-ppc-e500v2, $(OPTWARE_TARGET)), OPTIMIZE=-O2))
 	touch $@
 
 #
