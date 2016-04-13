@@ -35,13 +35,13 @@ LIBTOOL_CONFLICTS=
 #
 # LIBTOOL_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBTOOL_IPK_VERSION=1
+LIBTOOL_IPK_VERSION=2
 
 #
 # LIBTOOL_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-LIBTOOL_PATCHES=
+LIBTOOL_PATCHES=$(LIBTOOL_SOURCE_DIR)/xassembler.patch
 
 #
 # If the compilation of the package requires additional
@@ -85,10 +85,16 @@ $(DL_DIR)/$(LIBTOOL_SOURCE):
 libtool-source: $(DL_DIR)/$(LIBTOOL_SOURCE) $(LIBTOOL_PATCHES)
 
 
-$(LIBTOOL_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(LIBTOOL_SOURCE) make/libtool.mk
+$(LIBTOOL_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(LIBTOOL_SOURCE) $(LIBTOOL_PATCHES) make/libtool.mk
 	rm -rf $(HOST_BUILD_DIR)/$(LIBTOOL_DIR) $(@D)
 	$(LIBTOOL_UNZIP) $(DL_DIR)/$(LIBTOOL_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
+	if test -n "$(LIBTOOL_PATCHES)" ; \
+		then cat $(LIBTOOL_PATCHES) | \
+		$(PATCH) -d $(HOST_BUILD_DIR)/$(LIBTOOL_DIR) -bp1 ; \
+	fi
 	mv $(HOST_BUILD_DIR)/$(LIBTOOL_DIR) $(@D)
+	touch $(@D)/build-aux/ltmain.in -r $(@D)/build-aux/ltmain.in.orig
+	touch $(@D)/build-aux/ltmain.sh -r $(@D)/build-aux/ltmain.sh.orig
 	(cd $(@D); \
 		./configure \
 		--prefix=$(HOST_STAGING_PREFIX)	\
@@ -125,7 +131,13 @@ libtool-host-stage: $(LIBTOOL_HOST_BUILD_DIR)/.staged
 $(LIBTOOL_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBTOOL_SOURCE) $(LIBTOOL_PATCHES) make/libtool.mk
 	rm -rf $(BUILD_DIR)/$(LIBTOOL_DIR) $(LIBTOOL_BUILD_DIR)
 	$(LIBTOOL_UNZIP) $(DL_DIR)/$(LIBTOOL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	if test -n "$(LIBTOOL_PATCHES)" ; \
+		then cat $(LIBTOOL_PATCHES) | \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBTOOL_DIR) -bp1 ; \
+	fi
 	mv $(BUILD_DIR)/$(LIBTOOL_DIR) $(@D)
+	touch $(@D)/build-aux/ltmain.in -r $(@D)/build-aux/ltmain.in.orig
+	touch $(@D)/build-aux/ltmain.sh -r $(@D)/build-aux/ltmain.sh.orig
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBTOOL_CPPFLAGS)" \
