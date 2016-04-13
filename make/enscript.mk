@@ -194,7 +194,7 @@ $(ENSCRIPT_IPK_DIR)/CONTROL/control:
 #
 $(ENSCRIPT_IPK): $(ENSCRIPT_BUILD_DIR)/.built
 	rm -rf $(ENSCRIPT_IPK_DIR) $(BUILD_DIR)/enscript_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(ENSCRIPT_BUILD_DIR) DESTDIR=$(ENSCRIPT_IPK_DIR) install-strip
+	$(MAKE) -C $(ENSCRIPT_BUILD_DIR) DESTDIR=$(ENSCRIPT_IPK_DIR)  OBJEXT='o' install-strip
 	rm -rf $(ENSCRIPT_IPK_DIR)$(TARGET_PREFIX)/info/dir*
 	$(MAKE) $(ENSCRIPT_IPK_DIR)/CONTROL/control
 	echo $(ENSCRIPT_CONFFILES) | sed -e 's/ /\n/g' > $(ENSCRIPT_IPK_DIR)/CONTROL/conffiles
