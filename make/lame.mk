@@ -117,6 +117,10 @@ $(LAME_BUILD_DIR)/.configured: $(DL_DIR)/$(LAME_SOURCE) $(LAME_PATCHES) make/lam
 ifeq ($(LAME_VERSION), 3.99.5)
 	$(AUTORECONF1.14) -vif $(@D)
 endif
+ifeq ($(OPTWARE_TARGET), $(filter ct-ng-ppc-e500v2, $(OPTWARE_TARGET)))
+	# doesn't build with -O3
+	sed -i -e 's/-O3/-O2/g' $(@D)/configure
+endif
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LAME_CPPFLAGS)" \
