@@ -53,7 +53,7 @@ TARGET_INCDIR = $(TARGET_CROSS_TOP)/powerpc-e500v2-linux-gnuspe/sysroot/usr/incl
 #	into executables
 TARGET_LDFLAGS = -Wl,--dynamic-linker=$(TARGET_PREFIX)/lib/ld.so.1
 
-TARGET_CUSTOM_FLAGS= -pipe -mfloat-gprs=double -Wa,-me500x2 -fno-var-tracking-assignments
+TARGET_CUSTOM_FLAGS= -pipe -mfloat-gprs=double -Xassembler -me500x2 -fno-var-tracking-assignments
 # for -fno-var-tracking-assignments see:
 # https://gcc.gnu.org/bugzilla/show_bug.cgi?id=65779
 TARGET_CFLAGS=$(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
