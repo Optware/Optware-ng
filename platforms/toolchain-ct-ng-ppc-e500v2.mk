@@ -129,7 +129,7 @@ endif
 $(TARGET_CROSS_BUILD_DIR)/.built: $(TARGET_CROSS_BUILD_DIR)/.configured
 	rm -f $@
 	cd $(@D); ./ct-ng build
-	chmod -R +w $(TARGET_CROSS_TOP)
+	chmod -R u+w $(TARGET_CROSS_TOP)
 	install -m 644 $(CT-NG-PPC_E500v2_SOURCE_DIR)/videodev.h $(TARGET_CROSS_TOP)/powerpc-e500v2-linux-gnuspe/sysroot/usr/include/linux
 	cp -af $(TARGET_CROSS_TOP)/lib/gcc/powerpc-e500v2-linux-gnuspe/5.3.0/*.a $(GLIBC-OPT_LIBS_SOURCE_DIR)/
 	cp -af $(TARGET_CROSS_TOP)/powerpc-e500v2-linux-gnuspe/sysroot/lib/libstdc++*.a $(TARGET_CROSS_TOP)/powerpc-e500v2-linux-gnuspe/sysroot/usr/lib/
