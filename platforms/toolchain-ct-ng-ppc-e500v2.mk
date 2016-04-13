@@ -79,6 +79,8 @@ CT-NG-PPC_E500v2_SOURCE_DIR=$(SOURCE_DIR)/ct-ng-ppc-e500v2
 CT-NG-PPC_E500v2_PATCHES=\
 $(CT-NG-PPC_E500v2_SOURCE_DIR)/linux-3.2.patch \
 
+CT-NG-PPC_E500v2_GCC_PATCHES=$(wildcard $(CT-NG-PPC_E500v2_SOURCE_DIR)/gcc-patches/*.patch)
+
 toolchain: $(TARGET_CROSS_BUILD_DIR)/.built
 
 $(DL_DIR)/$(TOOLCHAIN_SOURCE):
@@ -97,6 +99,7 @@ $(DL_DIR)/$(TOOLCHAIN_SOURCE):
 
 $(TARGET_CROSS_BUILD_DIR)/.configured: $(DL_DIR)/$(TOOLCHAIN_SOURCE) \
 				$(CT-NG-PPC_E500v2_SOURCE_DIR)/glibc-patches/*.patch \
+				$(CT-NG-PPC_E500v2_GCC_PATCHES) \
 				$(CT-NG-PPC_E500v2_PATCHES) \
 				#$(OPTWARE_TOP)/platforms/toolchain-$(OPTWARE_TARGET).mk
 	$(MAKE) libtool-host
@@ -108,6 +111,10 @@ $(TARGET_CROSS_BUILD_DIR)/.configured: $(DL_DIR)/$(TOOLCHAIN_SOURCE) \
 	fi
 	mkdir -p $(@D)/patches/glibc/2.23
 	$(INSTALL) -m 644 $(CT-NG-PPC_E500v2_SOURCE_DIR)/glibc-patches/* $(@D)/patches/glibc/2.23
+ifneq ($(CT-NG-PPC_E500v2_GCC_PATCHES), )
+	mkdir -p $(@D)/patches/gcc/5.3.0
+	$(INSTALL) -m 644 $(CT-NG-PPC_E500v2_GCC_PATCHES) $(@D)/patches/gcc/5.3.0
+endif
 	cd $(@D); \
 		LIBTOOL=$(HOST_STAGING_PREFIX)/bin/libtool \
 		LIBTOOLIZE=$(HOST_STAGING_PREFIX)/bin/libtoolize \
