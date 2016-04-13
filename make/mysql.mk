@@ -35,7 +35,8 @@ MYSQL_NO_64BIT_ATOMICS:=\
 buildroot-mipsel-ng \
 buildroot-armv5eabi-ng \
 buildroot-armv5eabi-ng-legacy \
-buildroot-ppc-603e
+buildroot-ppc-603e \
+ct-ng-ppc-e500v2
 
 ifneq ($(OPTWARE_TARGET), $(filter $(MYSQL_OLD_TARGETS), $(OPTWARE_TARGET)))
 MYSQL_SITE=https://dev.mysql.com/get/Downloads/MySQL-5.7
