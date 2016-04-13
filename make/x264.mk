@@ -94,7 +94,7 @@ endif
 X264_CPPFLAGS=-fPIC
 X264_LDFLAGS=
 
-ifeq ($(OPTWARE_TARGET), $(filter buildroot-armv5eabi-ng buildroot-armv5eabi-ng-legacy, $(OPTWARE_TARGET)))
+ifeq ($(OPTWARE_TARGET), $(filter buildroot-armv5eabi-ng buildroot-armv5eabi-ng-legacy ct-ng-ppc-e500v2, $(OPTWARE_TARGET)))
 X264_CONFIGURE_OPTIONS=--disable-asm
 else
 X264_CONFIGURE_OPTIONS=
