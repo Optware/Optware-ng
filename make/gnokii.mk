@@ -120,8 +120,7 @@ gnokii-source: $(DL_DIR)/$(GNOKII_SOURCE) $(GNOKII_PATCHES)
 # shown below to make various patches to it.
 #
 $(GNOKII_BUILD_DIR)/.configured: $(DL_DIR)/$(GNOKII_SOURCE) $(GNOKII_PATCHES) make/gnokii.mk
-	$(MAKE) libusb-stage bluez-libs-stage
-	$(MAKE) glib-stage mysql-stage ncurses-stage readline-stage
+	$(MAKE) intltool-stage libusb-stage bluez-libs-stage glib-stage mysql-stage ncurses-stage readline-stage
 	rm -rf $(BUILD_DIR)/$(GNOKII_DIR) $(@D)
 	$(GNOKII_UNZIP) $(DL_DIR)/$(GNOKII_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(GNOKII_PATCHES)" ; \
@@ -131,7 +130,7 @@ $(GNOKII_BUILD_DIR)/.configured: $(DL_DIR)/$(GNOKII_SOURCE) $(GNOKII_PATCHES) ma
 	if test "$(BUILD_DIR)/$(GNOKII_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(GNOKII_DIR) $(@D) ; \
 	fi
-#	$(AUTORECONF1.10) -vif $(@D)
+	$(AUTORECONF1.10) -vif $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(GNOKII_CPPFLAGS)" \
