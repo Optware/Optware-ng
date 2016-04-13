@@ -212,8 +212,8 @@ endif
 endif
 
 ASTERISK10_LDFLAGS=
-ifeq ($(OPTWARE_TARGET), $(filter angstrombe angstromle cs05q3armel cs08q1armel syno-e500, $(OPTWARE_TARGET)))
-ASTERISK10_LDFLAGS+=-lpthread -ldl -lresolv
+ifeq ($(OPTWARE_TARGET), $(filter ct-ng-ppc-e500v2, $(OPTWARE_TARGET)))
+ASTERISK10_LDFLAGS+=-pthread -ldl -lresolv
 endif
 ifeq (uclibc, $(LIBC_STYLE))
 ASTERISK10_LDFLAGS+=-lpthread -lm
