@@ -114,7 +114,7 @@ VLC_LDFLAGS=
 
 VLC_CONFIG_OPTS = $(if $(filter avahi, $(PACKAGES)),--enable-bonjour,--disable-bonjour)
 VLC_CONFIG_OPTS += $(if $(filter x264, $(PACKAGES)),--enable-x264,--disable-x264)
-ifeq ($(OPTWARE_TARGET), $(filter syno-e500, $(OPTWARE_TARGET)))
+ifeq ($(OPTWARE_TARGET), $(filter ct-ng-ppc-e500v2, $(OPTWARE_TARGET)))
 VLC_CONFIG_OPTS += --disable-altivec
 endif
 ifeq ($(OPTWARE_TARGET), $(filter dns323 ts101, $(OPTWARE_TARGET)))
