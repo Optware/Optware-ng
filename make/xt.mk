@@ -140,7 +140,7 @@ xt-unpack: $(XT_BUILD_DIR)/.configured
 #
 $(XT_BUILD_DIR)/.built: $(XT_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(@D)/util CC=$(HOSTCC) CFLAGS="-pipe -O1" LDFLAGS=""
+	$(MAKE) -C $(@D)/util CC=$(HOSTCC) CFLAGS="-pipe -O2" CPPFLAGS="" LDFLAGS=""
 	$(MAKE) -C $(@D)
 	touch $@
 
