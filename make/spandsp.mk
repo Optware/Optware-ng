@@ -49,7 +49,10 @@ SPANDSP_IPK_VERSION=2
 # SPANDSP_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
+#SPANDSP_PATCHES=$(SPANDSP_SOURCE_DIR)/configure.patch
+ifeq ($(OPTWARE_TARGET), $(filter ct-ng-ppc-e500v2, $(OPTWARE_TARGET)))
 SPANDSP_PATCHES=$(SPANDSP_SOURCE_DIR)/powerpc_spe_fix.patch
+endif
 
 #
 # If the compilation of the package requires additional
