@@ -20,24 +20,16 @@
 # You should change all these variables to suit your package.
 #
 GDB_SITE=http://ftp.gnu.org/gnu/gdb
-GDB_DEPENDS=termcap,ncurses,expat
-ifeq ($(OPTWARE_TARGET), $(filter wl500g mss, $(OPTWARE_TARGET)))
-GDB_VERSION=6.3
-GDB_IPK_VERSION=4
-GDB_SOURCE=gdb-$(GDB_VERSION).tar.bz2
-GDB_UNZIP=bzcat
-else
 GDB_VERSION=7.10.1
 GDB_IPK_VERSION=2
 GDB_SOURCE=gdb-$(GDB_VERSION).tar.xz
-GDB_DEPENDS+=, liblzma0
 GDB_UNZIP=xzcat
-endif
 GDB_DIR=gdb-$(GDB_VERSION)
 GDB_MAINTAINER=Steve Henson <snhenson@gmail.com>
 GDB_DESCRIPTION=gdb is the standard GNU debugger
 GDB_SECTION=utility
 GDB_PRIORITY=optional
+GDB_DEPENDS=termcap, ncurses, expat, liblzma0
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 GDB_DEPENDS+=, libiconv
 endif
@@ -113,19 +105,19 @@ gdb-source: $(DL_DIR)/$(GDB_SOURCE) $(GDB_PATCHES)
 # doesn't find the ncurses.h header file. Workaround is to disable TUI.
 # 
 
-$(GDB_BUILD_DIR)/.configured: $(DL_DIR)/$(GDB_SOURCE) $(GDB_PATCHES)
+$(GDB_BUILD_DIR)/.configured: $(DL_DIR)/$(GDB_SOURCE) $(GDB_PATCHES) make/gdb.mk
 	$(MAKE) termcap-stage expat-stage ncurses-stage xz-utils-stage
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
 endif
-	rm -rf $(BUILD_DIR)/$(GDB_DIR) $(GDB_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(GDB_DIR) $(@D)
 	$(GDB_UNZIP) $(DL_DIR)/$(GDB_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(GDB_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(GDB_DIR) -p1
-	mv $(BUILD_DIR)/$(GDB_DIR) $(GDB_BUILD_DIR)
-	for f in `find $(GDB_BUILD_DIR) -name config.rpath`; do \
+	mv $(BUILD_DIR)/$(GDB_DIR) $(@D)
+	for f in `find $(@D) -name config.rpath`; do \
 		sed -i.orig -e 's|^hardcode_libdir_flag_spec=.*"$$|hardcode_libdir_flag_spec=""|' $$f; \
 	done
-	(cd $(GDB_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="`echo '$(STAGING_CPPFLAGS) $(GDB_CPPFLAGS)' | sed 's/  */ /g'`" \
 		CFLAGS="-std=gnu89" \
@@ -138,6 +130,15 @@ endif
 		--disable-nls \
 		--disable-tui \
 	)
+ifeq ($(OPTWARE_TARGET), $(filter ct-ng-ppc-e500v2, $(OPTWARE_TARGET)))
+	# some strange bug: this is done automatically for other targets
+	mkdir -p $(@D)/sim/ppc/build
+	(cd $(@D)/sim/ppc/build; \
+		../configure \
+	)
+	mv -f $(@D)/sim/ppc/build/config.h $(@D)/sim/ppc/build-config.h
+	rm -rf $(@D)/sim/ppc/build
+endif
 	touch $@
 
 gdb-unpack: $(GDB_BUILD_DIR)/.configured
@@ -156,7 +157,7 @@ gdb-unpack: $(GDB_BUILD_DIR)/.configured
 
 $(GDB_BUILD_DIR)/.built: $(GDB_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(GDB_BUILD_DIR) \
+	$(MAKE) -C $(@D) \
 	ac_cv_func_fork_works=yes \
 	bash_cv_func_sigsetjmp=present \
 	bash_cv_must_reinstall_sighandlers=no \
