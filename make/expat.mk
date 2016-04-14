@@ -100,6 +100,8 @@ $(EXPAT_BUILD_DIR)/.configured: $(DL_DIR)/$(EXPAT_SOURCE) $(EXPAT_PATCHES) make/
 	$(EXPAT_UNZIP) $(DL_DIR)/$(EXPAT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(EXPAT_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(EXPAT_DIR) -p1
 	mv $(BUILD_DIR)/$(EXPAT_DIR) $(@D)
+	rm -f $(@D)/conftools/libtool.m4
+	$(AUTORECONF1.10) -vif $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(EXPAT_CPPFLAGS)" \
