@@ -25,9 +25,9 @@ GETTEXT_PRIORITY=optional
 GETTEXT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 GETTEXT_DESCRIPTION=Set of tools for producing multi-lingual messages
 ifneq (libiconv, $(filter libiconv, $(PACKAGES)))
-GETTEXT_DEPENDS=
+GETTEXT_DEPENDS=libunistring
 else
-GETTEXT_DEPENDS=libiconv
+GETTEXT_DEPENDS=libunistring, libiconv
 endif
 GETTEXT_SUGGESTS=
 GETTEXT_CONFLICTS=
@@ -35,7 +35,7 @@ GETTEXT_CONFLICTS=
 #
 # GETTEXT_IPK_VERSION should be incremented when the ipk changes.
 #
-GETTEXT_IPK_VERSION=1
+GETTEXT_IPK_VERSION=2
 
 #
 # GETTEXT_CONFFILES should be a list of user-editable files
@@ -142,6 +142,7 @@ $(GETTEXT_BUILD_DIR)/.configured: $(DL_DIR)/$(GETTEXT_SOURCE) $(GETTEXT_PATCHES)
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
 endif
+	$(MAKE) libunistring-stage
 	rm -rf $(BUILD_DIR)/$(GETTEXT_DIR) $(@D)
 	$(GETTEXT_UNZIP) $(DL_DIR)/$(GETTEXT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(GETTEXT_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(GETTEXT_DIR) -p1
