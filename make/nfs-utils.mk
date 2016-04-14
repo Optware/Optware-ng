@@ -122,6 +122,7 @@ nfs-utils-unpack: $(NFS-UTILS_BUILD_DIR)/.configured
 #
 $(NFS-UTILS_BUILD_DIR)/.built: $(NFS-UTILS_BUILD_DIR)/.configured
 	rm -f $@
+	$(MAKE) -C $(@D)/tools AM_MAKEFLAGS='CPPFLAGS="-D_GNU_SOURCE"'
 	$(MAKE) -C $(@D)
 	touch $@
 
