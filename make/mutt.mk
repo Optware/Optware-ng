@@ -134,7 +134,7 @@ mutt-unpack: $(MUTT_BUILD_DIR)/.configured
 #
 $(MUTT_BUILD_DIR)/.built: $(MUTT_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(@D) makedoc CC=$(HOSTCC) LDFLAGS="" LIBS=""
+	$(MAKE) -C $(@D) makedoc CC=$(HOSTCC) LDFLAGS="" LIBS="" CPPFLAGS="-pipe -O2"
 	$(MAKE) -C $(@D)
 	touch $@
 
