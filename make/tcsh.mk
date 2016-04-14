@@ -149,7 +149,8 @@ tcsh-unpack: $(TCSH_BUILD_DIR)/.configured
 $(TCSH_BUILD_DIR)/.built: $(TCSH_BUILD_DIR)/.configured
 	rm -f $@
 	$(MAKE) -C $(@D) gethost \
-		CC=$(HOSTCC) LDFLAGS="" EXTRALIBS=""
+		CC=$(HOSTCC) LDFLAGS="" EXTRALIBS="" \
+		DFLAGS='-pipe -O2 -D_PATH_TCSHELL="\"$(TARGET_PREFIX)/bin/tcsh\""'
 	$(MAKE) -C $(@D)
 	touch $@
 
