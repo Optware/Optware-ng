@@ -5,7 +5,7 @@
  
  subst: subst.c
 -	$(CC) $(CFLAGS) -o subst subst.c
-+	$(HOSTCC) $(CFLAGS) -o subst subst.c
++	$(HOSTCC) -o subst subst.c
  
  fetchipac: fetchipac.o storagetable.o billtable.o agenttable.o batch.tab.o libipac.a batch.yy.o\
  		     conffile.tab.o conffile.yy.o\
