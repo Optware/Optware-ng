@@ -1,0 +1,20 @@
+--- a/src/spandsp/fast_convert.h
++++ b/src/spandsp/fast_convert.h
+@@ -26,6 +26,8 @@
+ #if !defined(_SPANDSP_FAST_CONVERT_H_)
+ #define _SPANDSP_FAST_CONVERT_H_
+ 
++#include <asm/cputable.h>
++
+ #if defined(__cplusplus)
+ extern "C"
+ {
+@@ -195,7 +197,7 @@ extern "C"
+     {
+         return (long int) (x);
+     }
+-#elif defined(__ppc__)  ||   defined(__powerpc__)
++#elif (defined(__ppc__)  ||   defined(__powerpc__)) && (! defined (PPC_FEATURE_HAS_SPE))
+     static __inline__ long int lfastrint(register double x)
+     {
+         int res[2];

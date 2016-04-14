@@ -49,7 +49,7 @@ SPANDSP_IPK_VERSION=2
 # SPANDSP_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#SPANDSP_PATCHES=$(SPANDSP_SOURCE_DIR)/configure.patch
+SPANDSP_PATCHES=$(SPANDSP_SOURCE_DIR)/powerpc_spe_fix.patch
 
 #
 # If the compilation of the package requires additional
@@ -113,7 +113,7 @@ $(SPANDSP_BUILD_DIR)/.configured: $(DL_DIR)/$(SPANDSP_SOURCE) $(SPANDSP_PATCHES)
 	$(SPANDSP_UNZIP) $(DL_DIR)/$(SPANDSP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SPANDSP_PATCHES)" ; \
 		then cat $(SPANDSP_PATCHES) | \
-		$(PATCH) -d $(BUILD_DIR)/$(SPANDSP_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(SPANDSP_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(SPANDSP_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(SPANDSP_DIR) $(@D) ; \
