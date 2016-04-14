@@ -1,6 +1,6 @@
 # Description
 
-This is an Optware fork. It targets to be firmware-independent and currently supports hard-float ARMv7, I686, PowerPC 603e and soft-float ARMv5, ARMv7 EABI and MIPSEL targets. Feeds building and hosting resources are kindly provided by [Nas-Admin.org project](http://www.nas-admin.org).
+This is an Optware fork. It targets to be firmware-independent and currently supports hard-float ARMv7, I686, PowerPC 603e and soft-float ARMv5, ARMv7 EABI, MIPSEL and PowerPC e500v2 targets. Feeds building and hosting resources are kindly provided by [Nas-Admin.org project](http://www.nas-admin.org).
 
 # Help wanted
 
@@ -63,6 +63,10 @@ PowerPC 603e:
 ```
 wget -O - http://ipkg.nslu2-linux.org/optware-ng/bootstrap/buildroot-ppc-603e-bootstrap.sh | sh
 ```
+PowerPC e500v2:
+```
+wget -O - http://ipkg.nslu2-linux.org/optware-ng/bootstrap/ct-ng-ppc-e500v2-bootstrap.sh | sh
+```
 I686:
 ```
 wget -O - http://ipkg.nslu2-linux.org/optware-ng/bootstrap/buildroot-i686-bootstrap.sh | sh
@@ -86,6 +90,7 @@ Install desired ones:
 * [ARMv5 EABI legacy](http://ipkg.nslu2-linux.org/optware-ng/buildroot-armv5eabi-ng-legacy/Packages.html)
 * [MIPSEL](http://ipkg.nslu2-linux.org/optware-ng/buildroot-mipsel-ng/Packages.html)
 * [PowerPC 603e](http://ipkg.nslu2-linux.org/optware-ng/buildroot-ppc-603e/Packages.html)
+* [PowerPC e500v2](http://ipkg.nslu2-linux.org/optware-ng/ct-ng-ppc-e500v2/Packages.html)
 * [I686](http://ipkg.nslu2-linux.org/optware-ng/buildroot-i686/Packages.html)
 
 # Contributing to project and building from source
@@ -100,6 +105,10 @@ Contribution is always welcomed. These wiki pages contain useful info to get you
 Currently, the project is missing writers who would contribute by creating how-to's for end-users. We can setup a mediawiki with the help of nas-admin.org guys, but we need people to fill it. In case you are willing to contribute by writing how-to's, please contact me on #**optware** IRC channel on irc.freenode.net, nickname **alllexx**. If I'm away, you can PM me, and I'll reach you later.
 
 # News
+
+## 2016-04-14
+
+New ct-ng-ppc-e500v2 feed is now online. This is a softfloat PowerPC e500v2 gcc-5.3.0, glibc-2.23, linux-3.2.66 feed.
 
 ## 2016-04-07
 
