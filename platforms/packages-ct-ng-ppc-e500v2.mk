@@ -6,6 +6,7 @@ SPECIFIC_PACKAGES = \
 	ipkg-static \
 
 # lm-sensors: No rule to make target `sys/io.h'
+# inferno: inferno/Linux/power/include/fpuctl.h:31:2: error: impossible constraint in 'asm'
 BROKEN_PACKAGES = \
 	ecl \
 	gnu-smalltalk \
@@ -14,6 +15,7 @@ BROKEN_PACKAGES = \
 	qemu \
 	qemu-libc-i386 \
 	syx \
+	inferno \
 	lm-sensors \
 	ldconfig modutils samba2
 
