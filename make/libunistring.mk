@@ -36,7 +36,7 @@ LIBUNISTRING_CONFLICTS=
 #
 # LIBUNISTRING_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBUNISTRING_IPK_VERSION=1
+LIBUNISTRING_IPK_VERSION=2
 
 #
 # LIBUNISTRING_CONFFILES should be a list of user-editable files
@@ -151,6 +151,7 @@ libunistring: $(LIBUNISTRING_BUILD_DIR)/.built
 $(LIBUNISTRING_BUILD_DIR)/.staged: $(LIBUNISTRING_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	rm -f $(STAGING_LIB_DIR)/libunistring.la
 	touch $@
 
 libunistring-stage: $(LIBUNISTRING_BUILD_DIR)/.staged
@@ -189,7 +190,7 @@ $(LIBUNISTRING_IPK_DIR)/CONTROL/control:
 $(LIBUNISTRING_IPK): $(LIBUNISTRING_BUILD_DIR)/.built
 	rm -rf $(LIBUNISTRING_IPK_DIR) $(BUILD_DIR)/libunistring_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBUNISTRING_BUILD_DIR) DESTDIR=$(LIBUNISTRING_IPK_DIR) install-strip
-	rm -f $(LIBUNISTRING_IPK_DIR)$(TARGET_PREFIX)/share/info/dir
+	rm -f $(LIBUNISTRING_IPK_DIR)$(TARGET_PREFIX)/{share/info/dir,lib/*.la}
 #	$(INSTALL) -d $(LIBUNISTRING_IPK_DIR)$(TARGET_PREFIX)/etc/
 #	$(INSTALL) -m 644 $(LIBUNISTRING_SOURCE_DIR)/libunistring.conf $(LIBUNISTRING_IPK_DIR)$(TARGET_PREFIX)/etc/libunistring.conf
 #	$(INSTALL) -d $(LIBUNISTRING_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
