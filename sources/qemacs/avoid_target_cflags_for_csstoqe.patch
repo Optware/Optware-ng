@@ -1,0 +1,10 @@
+--- libqhtml/Makefile.orig
++++ libqhtml/Makefile
+@@ -1,6 +1,6 @@
+ include ../config.mak
+ 
+-CFLAGS:=-Wall -g $(CFLAGS)
++CFLAGS:=-Wall -g
+ ifdef TARGET_GPROF
+ CFLAGS+= -p
+ LDFLAGS+= -p
