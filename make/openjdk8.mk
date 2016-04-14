@@ -339,6 +339,10 @@ ifeq (0,1)
 	ln -sf libjvm.so $(@D)/jamvm/install/hotspot/jre/lib/$(OPENJDK8_LIBARCH)/client/libjsig.so
 endif
 # finally configure OpenJDK
+ifeq ($(OPTWARE_TARGET), $(filter ct-ng-ppc-e500v2, $(OPTWARE_TARGET)))
+	# doesn't build with -O3
+	sed -i -e 's/-O3/-O2/g' $(@D)/openjdk/common/autoconf/toolchain.m4
+endif
 	cat $(@D)/openjdk/common/autoconf/configure.ac  | sed -e "s|@DATE_WHEN_GENERATED@|`LC_ALL=C date +%s`|" | $(HOST_STAGING_PREFIX)/bin/autoconf \
 		-W all -I$(@D)/openjdk/common/autoconf - > $(@D)/openjdk/common/autoconf/generated-configure.sh
 	(cd $(@D)/openjdk; \
