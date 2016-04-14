@@ -1,0 +1,10 @@
+--- a/src/memcache.c
++++ b/src/memcache.c
+@@ -49,6 +49,7 @@
+ #include <sys/time.h>
+ #include <sys/socket.h>
+ #include <sys/uio.h>
++#define __USE_XOPEN2K
+ #include <netdb.h>
+ #include <netinet/in.h>
+ #include <netinet/tcp.h>

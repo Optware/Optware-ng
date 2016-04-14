@@ -48,6 +48,9 @@ LIBMEMCACHE_IPK_VERSION=4
 # which they should be applied to the source code.
 #
 LIBMEMCACHE_PATCHES=$(LIBMEMCACHE_SOURCE_DIR)/configure.ac.patch
+ifeq ($(OPTWARE_TARGET), $(filter ct-ng-ppc-e500v2, $(OPTWARE_TARGET)))
+LIBMEMCACHE_PATCHES+=$(LIBMEMCACHE_SOURCE_DIR)/define__USE_XOPEN2K.patch
+endif
 
 #
 # If the compilation of the package requires additional
