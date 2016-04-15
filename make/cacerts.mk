@@ -86,7 +86,7 @@ endif
 # This target will be called by the top level Makefile to download the
 # source code's archive (.tar.gz, .bz2, etc.)
 #
-psmisc-source: $(DL_DIR)/$(PSMISC_SOURCE) $(PSMISC_PATCHES)
+cacerts-source: $(DL_DIR)/$(CACERTS_SOURCE) $(CACERTS_PATCHES)
 
 #
 # This target unpacks the source code in the build directory.
