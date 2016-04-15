@@ -64,7 +64,7 @@ CACERTS_LDFLAGS=
 #
 # You should not change any of these variables.
 #
-CACERTS_BUILD_DIR=$(BUILD_DIR)/cacerts
+CACERTS_BUILD_DIR=$(HOST_BUILD_DIR)/cacerts
 CACERTS_SOURCE_DIR=$(SOURCE_DIR)/cacerts
 CACERTS_IPK_DIR=$(BUILD_DIR)/cacerts-$(CACERTS_VERSION)-ipk
 CACERTS_IPK=$(BUILD_DIR)/cacerts_$(CACERTS_VERSION)-$(CACERTS_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -106,7 +106,7 @@ cacerts-source: $(DL_DIR)/$(CACERTS_SOURCE) $(CACERTS_PATCHES)
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(CACERTS_BUILD_DIR)/.configured: $(DL_DIR)/$(CACERTS_SOURCE) $(CACERTS_PATCHES) make/cacerts.mk
+$(CACERTS_BUILD_DIR)/.configured: host/.configured $(DL_DIR)/$(CACERTS_SOURCE) $(CACERTS_PATCHES) make/cacerts.mk
 	$(MAKE) openssl-host-stage perl-hostperl
 	rm -rf $(BUILD_DIR)/$(CACERTS_DIR) $(@D)
 	$(INSTALL) -d $(@D)
