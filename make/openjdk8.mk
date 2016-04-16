@@ -23,7 +23,7 @@
 OPENJDK8_HG=http://hg.openjdk.java.net/jdk8u/jdk8u
 OPENJDK8_ICEDTEA_HG=http://icedtea.classpath.org/hg
 OPENJDK8_SITE=http://icedtea.wildebeest.org/download
-OPENJDK8_UPDATE_VERSION=76
+OPENJDK8_UPDATE_VERSION=102
 OPENJDK8_BUILD_NUMBER=b02
 OPENJDK8_VERSION=8u$(OPENJDK8_UPDATE_VERSION)-$(OPENJDK8_BUILD_NUMBER)
 OPENJDK8_SOURCE=jdk$(OPENJDK8_VERSION).tar.bz2
@@ -270,7 +270,8 @@ openjdk8-source: $(OPENJDK8_SOURCES) $(OPENJDK8_PATCHES)
 #
 $(OPENJDK8_BUILD_DIR)/.configured: $(OPENJDK8_SOURCES) $(OPENJDK8_PATCHES) \
 		$(OPENJDK8_JAMVM_PATCHES) $(OPENJDK8_OPENJDK_PATCHES) make/openjdk8.mk
-	$(MAKE) libstdc++-stage freetype-stage x11-stage autoconf-host-stage libffi-stage
+	$(MAKE) libstdc++-stage freetype-stage x11-stage autoconf-host-stage libffi-stage \
+		jre-cacerts
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
 endif
@@ -291,6 +292,7 @@ endif
 	$(OPENJDK8_UNZIP) $(DL_DIR)/$(OPENJDK8_JAXP_SOURCE) | tar -C $(@D)/openjdk/jaxp -xf - --strip-components=1
 	$(OPENJDK8_UNZIP) $(DL_DIR)/$(OPENJDK8_JAXWS_SOURCE) | tar -C $(@D)/openjdk/jaxws -xf - --strip-components=1
 	$(OPENJDK8_UNZIP) $(DL_DIR)/$(OPENJDK8_JDK_SOURCE) | tar -C $(@D)/openjdk/jdk -xf - --strip-components=1
+	cp -af $(JRE_CACERTS_BUILD_DIR)/jre-cacerts $(@D)/openjdk/jdk/src/share/lib/security/cacerts
 	$(OPENJDK8_UNZIP) $(DL_DIR)/$(OPENJDK8_LANGTOOLS_SOURCE) | tar -C $(@D)/openjdk/langtools -xf - --strip-components=1
 	rm -rf $(@D)/openjdk/jdk/make/tools/src/build/tools/javazic
 	$(OPENJDK8_UNZIP) $(DL_DIR)/$(OPENJDK8_HOTSPOT_SOURCE) | tar -C $(@D)/openjdk/hotspot -xf - --strip-components=1
