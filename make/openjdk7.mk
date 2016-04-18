@@ -48,7 +48,7 @@ OPENJDK7_JRE_HEADLESS_DEPENDS=libstdc++, freetype, fontconfig, libffi, libjpeg, 
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 OPENJDK7_JRE_HEADLESS_DEPENDS+=, libiconv
 endif
-OPENJDK7_JRE_DEPENDS=openjdk7-jre-headless, x11, xinerama, xrender, libxcomposite, gtk2
+OPENJDK7_JRE_DEPENDS=openjdk7-jre-headless, x11, xinerama, xrender, libxcomposite, gtk2, alsa-lib
 OPENJDK7_JDK_DEPENDS=openjdk7-jre
 
 OPENJDK7_JRE_HEADLESS_SUGGESTS=
@@ -233,6 +233,7 @@ OPENJDK7_MAKE_ARGS=\
 		OTHER_CXXFLAGS='$(OPENJDK7_CPPFLAGS) $(OPENJDK7_LDFLAGS)' \
 		OTHER_LDFLAGS='$(OPENJDK7_LDFLAGS)' \
 		LFLAGS_LAUNCHER='-L`pwd` $(OPENJDK7_LDFLAGS)' \
+		ALSA_VERSION=$(ALSA-LIB_VERSION) \
 		GCC_HONOUR_COPTS=s CROSS_COMPILE_ARCH=$(OPENJDK7_ARCH) \
 		WARNINGS_ARE_ERRORS='' \
 		LANG_ALL=C \
@@ -328,7 +329,7 @@ openjdk7-source: $(OPENJDK7_SOURCES) $(OPENJDK7_PATCHES)
 $(OPENJDK7_BUILD_DIR)/.configured: $(OPENJDK7_SOURCES) $(OPENJDK7_PATCHES) \
 		$(OPENJDK7_OPENJDK_PATCHES) make/openjdk7.mk
 	$(MAKE) libstdc++-stage freetype-stage x11-stage xinerama-stage xrender-stage libxcomposite-stage libffi-stage cups-stage \
-		gtk2-stage liblcms2-stage libpng-stage libjpeg-stage glib-stage fontconfig-stage jre-cacerts
+		gtk2-stage liblcms2-stage libpng-stage libjpeg-stage glib-stage fontconfig-stage alsa-lib-stage jre-cacerts
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
 endif
