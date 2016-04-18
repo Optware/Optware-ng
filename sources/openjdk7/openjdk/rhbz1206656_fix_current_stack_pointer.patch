@@ -1,0 +1,21 @@
+A Zero JVM product build on non-x86 platforms fails with java.lang.StackOverflowError on java -version: 
+$ ./jdk8.build/images/j2sdk-image/bin/java -version 
+Error occurred during initialization of VM 
+java.lang.StackOverflowError 
+at java.lang.Object.<clinit>(Object.java:41) 
+
+https://bugs.openjdk.java.net/browse/JDK-8087120
+diff --git a/src/os_cpu/linux_zero/vm/os_linux_zero.cpp b/src/os_cpu/linux_zero/vm/os_linux_zero.cpp
+--- jdk8/hotspot/src/os_cpu/linux_zero/vm/os_linux_zero.cpp
++++ jdk8/hotspot/src/os_cpu/linux_zero/vm/os_linux_zero.cpp
+@@ -55,8 +55,8 @@
+ #include "utilities/vmError.hpp"
+ 
+ address os::current_stack_pointer() {
+-  address dummy = (address) &dummy;
+-  return dummy;
++  // return the address of the current function
++  return (address)__builtin_frame_address(0);
+ }
+ 
+ frame os::get_sender_for_C_frame(frame* fr) {

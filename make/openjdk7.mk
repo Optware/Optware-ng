@@ -63,7 +63,7 @@ OPENJDK7_JDK_CONFLICTS=
 #
 # OPENJDK7_IPK_VERSION should be incremented when the ipk changes.
 #
-OPENJDK7_IPK_VERSION=1
+OPENJDK7_IPK_VERSION=2
 
 #
 # OPENJDK7_JRE_HEADLESS_CONFFILES should be a list of user-editable files
@@ -182,6 +182,9 @@ $(OPENJDK7_SOURCE_DIR)/openjdk/gcc_definitions.uclibc.patch \
 $(OPENJDK7_SOURCE_DIR)/openjdk/os_linux.uclibc.patch \
 $(OPENJDK7_SOURCE_DIR)/openjdk/xtoolkit.uclibc.patch \
 $(OPENJDK7_SOURCE_DIR)/openjdk/fix-ipv6-init.patch \
+$(OPENJDK7_SOURCE_DIR)/openjdk/rhbz1206656_fix_current_stack_pointer.patch \
+$(OPENJDK7_SOURCE_DIR)/openjdk/os_linux.fix-i386-zero-build.patch \
+$(OPENJDK7_SOURCE_DIR)/openjdk/hotspot-powerpcspe.diff \
 $(OPENJDK7_SOURCE_DIR)/openjdk/splashscreen.patch \
 $(OPENJDK7_SOURCE_DIR)/openjdk/system_jpeg_fix.patch \
 $(OPENJDK7_SOURCE_DIR)/openjdk/system_lcms_fix.patch \
@@ -357,10 +360,6 @@ endif
 		$(PATCH) -d $(@D)/openjdk -p1 ; \
 	fi
 # configure OpenJDK
-ifeq ($(OPTWARE_TARGET), $(filter ct-ng-ppc-e500v2, $(OPTWARE_TARGET)))
-	# doesn't build with -O3
-#	sed -i -e 's/-O3/-O2/g' $(@D)/openjdk/common/autoconf/toolchain.m4
-endif
 	$(AUTORECONF1.14) -vif $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
