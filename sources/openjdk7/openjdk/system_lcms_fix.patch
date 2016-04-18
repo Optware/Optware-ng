@@ -1,0 +1,11 @@
+--- a/jdk/make/sun/cmm/Makefile
++++ a/jdk/make/sun/cmm/Makefile
+@@ -28,7 +28,7 @@
+ include $(BUILDDIR)/common/Defs.gmk
+ 
+ ifdef OPENJDK
+-    SUBDIRS += lcms
++#    SUBDIRS += lcms
+     ICCPROFILE_SRC_DIR = $(SHARE_SRC)/lib/cmm/lcms
+ else # !OPENJDK
+     SUBDIRS += kcms

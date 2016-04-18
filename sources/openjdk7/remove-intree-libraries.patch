@@ -1,0 +1,11 @@
+--- a/remove-intree-libraries.sh.in
++++ b/remove-intree-libraries.sh.in
+@@ -2,7 +2,7 @@
+ 
+ ZLIB_VERSION=1.2.8
+ ZIP_SRC=openjdk/jdk/src/share/native/java/util/zip/zlib-${ZLIB_VERSION}
+-JPEG_SRC=openjdk/jdk/src/share/native/sun/awt/image/jpeg/jpeg-6b
++JPEG_SRC=openjdk/jdk/src/share/native/sun/awt/image/jpeg
+ GIF_SRC=openjdk/jdk/src/share/native/sun/awt/giflib
+ PNG_SRC=openjdk/jdk/src/share/native/sun/awt/libpng
+ LCMS_SRC=openjdk/jdk/src/share/native/sun/java2d/cmm/lcms

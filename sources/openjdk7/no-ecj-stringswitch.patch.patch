@@ -1,0 +1,10 @@
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -437,7 +437,6 @@
+ 	patches/boot/break-processbuilder-dependency.patch \
+ 	patches/boot/revert-6973616.patch \
+ 	patches/boot/revert-6941137.patch \
+-	patches/boot/ecj-stringswitch.patch \
+ 	patches/boot/langtools-force-old-jdk.patch \
+ 	patches/boot/dependencies.patch \
+ 	patches/boot/corba-dependencies.patch \

@@ -1,0 +1,12 @@
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -1656,9 +1656,6 @@
+ 	rm -f stamps/add-tzdata-support.stamp
+ 
+ stamps/check-crypto.stamp: stamps/cryptocheck.stamp stamps/icedtea.stamp
+-	if [ -e $(BUILD_SDK_DIR)/bin/java ] ; then \
+-	  $(BUILD_SDK_DIR)/bin/java -cp $(CRYPTO_CHECK_BUILD_DIR) TestCryptoLevel ; \
+-	fi
+ 	mkdir -p stamps
+ 	touch $@
+ 

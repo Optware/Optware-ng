@@ -1,0 +1,27 @@
+--- a/hotspot/src/share/vm/utilities/globalDefinitions_gcc.hpp
++++ b/hotspot/src/share/vm/utilities/globalDefinitions_gcc.hpp
+@@ -223,6 +223,10 @@
+ #define BREAKPOINT ::breakpoint()
+ #endif
+ 
++#ifdef __UCLIBC__
++#define isnanf __isnanf
++#endif
++
+ // checking for nanness
+ #ifdef SOLARIS
+ #ifdef SPARC
+@@ -249,8 +253,13 @@
+ 
+ // Checking for finiteness
+ 
++#ifdef __UCLIBC__
++inline int g_isfinite(jfloat  f)                 { return isfinite(f); }
++inline int g_isfinite(jdouble f)                 { return isfinite(f); }
++#else
+ inline int g_isfinite(jfloat  f)                 { return finite(f); }
+ inline int g_isfinite(jdouble f)                 { return finite(f); }
++#endif
+ 
+ 
+ // Wide characters

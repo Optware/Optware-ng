@@ -1,0 +1,11 @@
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -582,7 +582,7 @@
+         BUILD_NUMBER="$(BUILD_VERSION)" \
+ 	JDK_UPDATE_VERSION="$(JDK_UPDATE_VERSION)" \
+         JRE_RELEASE_VERSION="@JAVA_VER@_$(COMBINED_VERSION)" \
+-	MILESTONE="fcs" \
++	MILESTONE="Optware-ng" \
+ 	LANG="C" \
+ 	PATH="$(BOOT_DIR)/bin:$(OS_PATH):$$PATH" \
+ 	ALT_BOOTDIR="$(BOOT_DIR)" \

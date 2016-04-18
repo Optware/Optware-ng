@@ -1,0 +1,17 @@
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -1204,14 +1204,10 @@
+ 	rm -f stamps/generated.stamp
+ 
+ stamps/fonts.stamp: stamps/extract.stamp
+-	cp $(FONTCONFIG_PATH)/linux.fontconfig.Gentoo.properties{,.old}
+-	cp linux.fontconfig.Gentoo.properties $(FONTCONFIG_PATH)
+ 	mkdir -p stamps
+ 	touch $@
+ 
+ clean-fonts:
+-	rm -f $(FONTCONFIG_PATH)/linux.fontconfig.Gentoo.properties
+-	mv $(FONTCONFIG_PATH)/linux.fontconfig.Gentoo.properties{.old,}
+ 	rm -f stamps/fonts.stamp
+ 
+ stamps/patch-fsg.stamp: stamps/extract.stamp stamps/fonts.stamp

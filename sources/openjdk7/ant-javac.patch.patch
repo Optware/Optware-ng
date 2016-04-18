@@ -1,0 +1,32 @@
+--- a/patches/boot/ant-javac.patch
++++ b/patches/boot/ant-javac.patch
+@@ -1,6 +1,6 @@
+ diff -Nru openjdk-boot.orig/jaxp/build.xml openjdk-boot/jaxp/build.xml
+---- openjdk-boot.orig/jaxp/build.xml	2014-01-30 19:01:54.000000000 +0000
+-+++ openjdk-boot/jaxp/build.xml	2014-01-31 19:55:52.521904128 +0000
++--- openjdk-boot.orig/jaxp/build.xml	2016-01-18 02:07:40.000000000 +0200
+++++ openjdk-boot/jaxp/build.xml	2016-04-18 09:57:23.920014502 +0300
+ @@ -123,7 +123,8 @@
+               memoryMaximumSize="${javac.memoryMaximumSize}"
+               source="${javac.source}"
+@@ -12,15 +12,15 @@
+              <compilerarg line="${javac.version.opt} ${javac.lint.opts} ${javac.no.jdk.warnings}"/>
+          </javac>
+ diff -Nru openjdk-boot.orig/jaxws/build.xml openjdk-boot/jaxws/build.xml
+---- openjdk-boot.orig/jaxws/build.xml	2014-01-30 19:01:55.000000000 +0000
+-+++ openjdk-boot/jaxws/build.xml	2014-01-31 19:56:46.394702156 +0000
+-@@ -150,7 +150,8 @@
++--- openjdk-boot.orig/jaxws/build.xml	2016-01-18 02:07:41.000000000 +0200
+++++ openjdk-boot/jaxws/build.xml	2016-04-18 09:59:08.423738198 +0300
++@@ -144,7 +144,8 @@
+               memoryMaximumSize="${javac.memoryMaximumSize}"
+               source="${javac.source}"
+  	     debug="${javac.debug}"
+ -             target="${javac.target}">
+ +             target="${javac.target}"
+-+             executable="${jdk.home}/bin/javac">
+-             <compilerarg value="-J-Xbootclasspath/p:${javac.jar}:${jaxp.classes.dir}:${build.classes.dir}"/>
+++	     executable="${jdk.home}/bin/javac">
++             <compilerarg value="-J-Xbootclasspath/p:${javac.jar}"/>
+              <compilerarg line="${javac.version.opt} ${javac.lint.opts} ${javac.no.jdk.warnings}"/>
+              <src refid="src.dir.id"/>

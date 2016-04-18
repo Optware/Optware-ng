@@ -1,0 +1,17 @@
+Don't remove toolchain symbolic links
+--- a/common/autoconf/toolchain.m4
++++ b/common/autoconf/toolchain.m4
+@@ -147,13 +147,6 @@
+   fi
+   BASIC_FIXUP_EXECUTABLE($1)
+   TEST_COMPILER="[$]$1"
+-  # Don't remove symbolic links on AIX because 'xlc_r' and 'xlC_r' may all be links
+-  # to 'xlc' but it is crucial that we invoke the compiler with the right name!
+-  if test "x$OPENJDK_BUILD_OS" != xaix; then
+-    AC_MSG_CHECKING([resolved symbolic links for $1])
+-    BASIC_REMOVE_SYMBOLIC_LINKS(TEST_COMPILER)
+-    AC_MSG_RESULT([$TEST_COMPILER])
+-  fi
+   AC_MSG_CHECKING([if $1 is disguised ccache])
+ 
+   COMPILER_BASENAME=`$BASENAME "$TEST_COMPILER"`

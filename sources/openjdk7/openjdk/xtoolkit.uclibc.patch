@@ -1,0 +1,20 @@
+--- a/jdk/src/solaris/native/sun/xawt/XToolkit.c
++++ b/jdk/src/solaris/native/sun/xawt/XToolkit.c
+@@ -27,7 +27,7 @@
+ #include <X11/Xutil.h>
+ #include <X11/Xos.h>
+ #include <X11/Xatom.h>
+-#ifdef __linux__
++#if defined(__GLIBC__) && !defined(__UCLIBC__)
+ #include <execinfo.h>
+ #endif
+ 
+@@ -779,7 +779,7 @@
+     return ret;
+ }
+ 
+-#ifdef __linux__
++#if defined(__GLIBC__) && !defined(__UCLIBC__)
+ void print_stack(void)
+ {
+   void *array[10];

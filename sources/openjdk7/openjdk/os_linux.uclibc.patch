@@ -1,0 +1,90 @@
+--- a/hotspot/src/os/linux/vm/os_linux.cpp
++++ b/hotspot/src/os/linux/vm/os_linux.cpp
+@@ -93,7 +93,9 @@
+ # include <string.h>
+ # include <syscall.h>
+ # include <sys/sysinfo.h>
+-# include <gnu/libc-version.h>
++# ifndef __UCLIBC__
++#  include <gnu/libc-version.h>
++# endif
+ # include <sys/ipc.h>
+ # include <sys/shm.h>
+ # include <link.h>
+@@ -611,6 +613,7 @@
+ # define _CS_GNU_LIBPTHREAD_VERSION 3
+ # endif
+ 
++# ifndef __UCLIBC__
+   size_t n = confstr(_CS_GNU_LIBC_VERSION, NULL, 0);
+   if (n > 0) {
+      char *str = (char *)malloc(n, mtInternal);
+@@ -623,6 +626,10 @@
+               "glibc %s %s", gnu_get_libc_version(), gnu_get_libc_release());
+      os::Linux::set_glibc_version(_gnu_libc_version);
+   }
++# else
++  size_t n = 1;
++  os::Linux::set_glibc_version("2");
++# endif
+ 
+   n = confstr(_CS_GNU_LIBPTHREAD_VERSION, NULL, 0);
+   if (n > 0) {
+@@ -2880,10 +2887,14 @@
+ // If we are running with earlier version, which did not have symbol versions,
+ // we should use the base version.
+ void* os::Linux::libnuma_dlsym(void* handle, const char *name) {
++#ifndef __UCLIBC__
+   void *f = dlvsym(handle, name, "libnuma_1.1");
+   if (f == NULL) {
+     f = dlsym(handle, name);
+   }
++#else
++  void *f = dlsym(handle, name);
++#endif 
+   return f;
+ }
+ 
+@@ -5490,6 +5501,42 @@
+ // System loadavg support.  Returns -1 if load average cannot be obtained.
+ // Linux doesn't yet have a (official) notion of processor sets,
+ // so just return the system wide load average.
++#ifdef __UCLIBC__
++static int getloadavg (double loadavg[], int nelem)
++{
++  int fd;
++
++  fd = open ("/proc/loadavg", O_RDONLY);
++  if (fd < 0)
++    return -1;
++  else
++    {
++      char buf[65], *p;
++      ssize_t nread;
++      int i;
++
++      nread = read (fd, buf, sizeof buf - 1);
++      close (fd);
++      if (nread <= 0)
++	return -1;
++      buf[nread - 1] = '\0';
++
++      if (nelem > 3)
++	nelem = 3;
++      p = buf;
++      for (i = 0; i < nelem; ++i)
++	{
++	  char *endp;
++	  loadavg[i] = strtod (p, &endp);
++	  if (endp == p)
++	    return -1;
++	  p = endp;
++	}
++
++      return i;
++    }
++}
++#endif
+ int os::loadavg(double loadavg[], int nelem) {
+   return ::getloadavg(loadavg, nelem);
+ }

@@ -386,7 +386,7 @@ COMMON_CROSS_PACKAGES = \
 	nmap nmon node noip nostromo nrpe \
 	ntfs-3g ntfsprogs \
 	ntop ntp ntpclient nttcp nut nvi nylon nzbget nzbget-testing \
-	ocaml oleo open2300 openjdk8 \
+	ocaml oleo open2300 openjdk7 openjdk8 \
 	openobex obexftp \
 	opendchub openjpeg openldap opensips \
 	openssl openssh openvpn oscam \
