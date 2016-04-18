@@ -29,14 +29,14 @@ LIBXCOMPOSITE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 LIBXCOMPOSITE_DESCRIPTION=X11 Composite extension library.
 LIBXCOMPOSITE_SECTION=
 LIBXCOMPOSITE_PRIORITY=optional
-LIBXCOMPOSITE_DEPENDS=x11
+LIBXCOMPOSITE_DEPENDS=x11, xfixes
 LIBXCOMPOSITE_SUGGESTS=
 LIBXCOMPOSITE_CONFLICTS=
 
 #
 # LIBXCOMPOSITE_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBXCOMPOSITE_IPK_VERSION=1
+LIBXCOMPOSITE_IPK_VERSION=2
 
 #
 # LIBXCOMPOSITE_CONFFILES should be a list of user-editable files
@@ -109,7 +109,7 @@ libxcomposite-source: $(DL_DIR)/$(LIBXCOMPOSITE_SOURCE) $(LIBXCOMPOSITE_PATCHES)
 # shown below to make various patches to it.
 #
 $(LIBXCOMPOSITE_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBXCOMPOSITE_SOURCE) $(LIBXCOMPOSITE_PATCHES) make/libxcomposite.mk
-	$(MAKE) compositeproto-stage xorg-macros-stage x11-stage
+	$(MAKE) compositeproto-stage xorg-macros-stage x11-stage xfixes-stage
 	rm -rf $(BUILD_DIR)/$(LIBXCOMPOSITE_DIR) $(@D)
 	$(LIBXCOMPOSITE_UNZIP) $(DL_DIR)/$(LIBXCOMPOSITE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBXCOMPOSITE_PATCHES)" ; \
