@@ -266,6 +266,10 @@ BOOST_PACKAGES = \
 	mkvtoolnix \
 	player \
 
+OPENJDK_PACKAGES = \
+	openjdk7 openjdk8 \
+	bubbleupnpserver-installer
+
 # libao - has runtime trouble?
 COMMON_CROSS_PACKAGES = \
 	$(PACKAGES_REQUIRE_LINUX26) \
@@ -386,7 +390,7 @@ COMMON_CROSS_PACKAGES = \
 	nmap nmon node noip nostromo nrpe \
 	ntfs-3g ntfsprogs \
 	ntop ntp ntpclient nttcp nut nvi nylon nzbget nzbget-testing \
-	ocaml oleo open2300 openjdk7 openjdk8 \
+	ocaml oleo open2300 $(OPENJDK_PACKAGES) \
 	openobex obexftp \
 	opendchub openjpeg openldap opensips \
 	openssl openssh openvpn oscam \

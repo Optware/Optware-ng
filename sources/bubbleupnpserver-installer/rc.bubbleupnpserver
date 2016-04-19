@@ -1,0 +1,107 @@
+#!/bin/sh
+
+PATH=%OPTWARE_TARGET_PREFIX%/bin:%OPTWARE_TARGET_PREFIX%/sbin:${PATH}
+NAME="BubbleUPnP Server"
+JAVA=%OPTWARE_TARGET_PREFIX%/lib/jvm/openjdk7/jre/bin/java
+BUBBLEUPNP_DIR=%OPTWARE_TARGET_PREFIX%/share/bubbleupnpserver
+BUBBLEUPNP_URL=http://www.bubblesoftapps.com/bubbleupnpserver/BubbleUPnPServer-distrib.zip
+BUBBLEUPNP_DIST=${BUBBLEUPNP_DIR}/BubbleUPnPServer-distrib.zip
+pidfile=%OPTWARE_TARGET_PREFIX%/var/run/bubbleupnp.pid
+START_STOP_DAEMON=%OPTWARE_TARGET_PREFIX%/sbin/start-stop-daemon-start-stop-daemon
+
+case "$1" in
+  start)
+	if ${START_STOP_DAEMON} --status --pidfile ${pidfile}
+	  then
+	    echo "Error: $NAME already running" >&2
+	    exit 1
+	  fi
+	echo "Starting $NAME"
+	if [ ! -d "%OPTWARE_TARGET_PREFIX%/var/run" ]
+	  then
+	    mkdir -p %OPTWARE_TARGET_PREFIX%/var/run
+	  fi
+	rm -f ${pidfile}
+	${START_STOP_DAEMON} --background --make-pidfile \
+		-d ${BUBBLEUPNP_DIR} --pidfile ${pidfile} \
+		--start --exec ${JAVA} -- -Djava.awt.headless=true \
+		-Djava.net.preferIPv4Stack=true -Dfile.encoding="UTF-8" \
+		-jar BubbleUPnPServerLauncher.jar
+	;;
+  stop)
+	case `${START_STOP_DAEMON} --status --pidfile ${pidfile}; echo $?` in
+	0)
+	  echo "Stopping $NAME"
+	  ${START_STOP_DAEMON} --remove-pidfile --pidfile ${pidfile} --stop --retry=TERM/30/KILL/5
+	  ;;
+	1)
+	  echo "$NAME is not running and the pid file ${pidfile} exists: removing the pid file"
+	  rm -f ${pidfile}
+	  ;;
+	3)
+	  echo "$NAME is not running"
+	  ;;
+	4)
+	  echo "Unable to determine $NAME status"
+	  ;;
+	*)
+	  echo "Unknown exit start-stop-daemon code"
+	  ;;
+	esac
+        ;;
+  restart)
+	case `${START_STOP_DAEMON} --status --pidfile ${pidfile}; echo $?` in
+	0)
+	  echo "Restarting $NAME"
+	  ${START_STOP_DAEMON} --remove-pidfile --pidfile ${pidfile} --stop --retry=TERM/30/KILL/5
+	  "$0" start
+	  ;;
+	1)
+	  echo "$NAME is not running and the pid file ${pidfile} exists: removing the pid file"
+	  rm -f ${pidfile}
+	  "$0" start
+	  ;;
+	3)
+	  echo "$NAME is not running"
+	  "$0" start
+	  ;;
+	4)
+	  echo "Unable to determine $NAME status" >&2
+	  exit 1
+	  ;;
+	*)
+	  echo "Unknown start-stop-daemon exit code" >&2
+	  exit 1
+	  ;;
+	esac
+        ;;
+  status)
+	case `${START_STOP_DAEMON} --status --pidfile ${pidfile}; echo $?` in
+	0)
+	  echo "$NAME running"
+	  ;;
+	1)
+	  echo "$NAME is not running and the pid file ${pidfile} exists"
+	  ;;
+	3)
+	  echo "$NAME is not running"
+	  ;;
+	4)
+	  echo "Unable to determine $NAME status" >&2
+	  ;;
+	*)
+	  echo "Unknown exit start-stop-daemon code" >&2
+	  ;;
+	esac
+        ;;
+  download)
+	mkdir -p ${BUBBLEUPNP_DIR} && \
+	wget ${BUBBLEUPNP_URL} -O ${BUBBLEUPNP_DIST} && \
+	%OPTWARE_TARGET_PREFIX%/bin/unzip-unzip ${BUBBLEUPNP_DIST} -d ${BUBBLEUPNP_DIR}
+  *)
+	echo "Usage: $0 {start|stop|restart|status|download}"
+	exit 1
+	;;
+esac
+
+exit 0

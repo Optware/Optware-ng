@@ -1,0 +1,4 @@
+#!/bin/sh
+
+%OPTWARE_TARGET_PREFIX%/bin/bubbleupnpserver download && \
+%OPTWARE_TARGET_PREFIX%/bin/bubbleupnpserver start
