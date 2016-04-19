@@ -44,7 +44,7 @@ OPENJDK7_JRE_DESCRIPTION=Full OpenJDK Java runtime, using Zero VM. The packages 
 OPENJDK7_JRE_HEADLESS_DESCRIPTION=Minimal Java runtime - needed for executing non GUI Java programs, using Zero VM. The packages are built using patches from the IcedTea project.
 OPENJDK7_SECTION=language
 OPENJDK7_PRIORITY=optional
-OPENJDK7_JRE_HEADLESS_DEPENDS=libstdc++, freetype, fontconfig, libffi, libjpeg, liblcms2, glib, cups
+OPENJDK7_JRE_HEADLESS_DEPENDS=libstdc++, freetype, fontconfig, libffi, libjpeg, liblcms2, glib, libcups
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 OPENJDK7_JRE_HEADLESS_DEPENDS+=, libiconv
 endif
@@ -63,7 +63,7 @@ OPENJDK7_JDK_CONFLICTS=
 #
 # OPENJDK7_IPK_VERSION should be incremented when the ipk changes.
 #
-OPENJDK7_IPK_VERSION=2
+OPENJDK7_IPK_VERSION=3
 
 #
 # OPENJDK7_JRE_HEADLESS_CONFFILES should be a list of user-editable files
@@ -185,6 +185,7 @@ $(OPENJDK7_SOURCE_DIR)/openjdk/fix-ipv6-init.patch \
 $(OPENJDK7_SOURCE_DIR)/openjdk/rhbz1206656_fix_current_stack_pointer.patch \
 $(OPENJDK7_SOURCE_DIR)/openjdk/os_linux.fix-i386-zero-build.patch \
 $(OPENJDK7_SOURCE_DIR)/openjdk/hotspot-powerpcspe.diff \
+$(OPENJDK7_SOURCE_DIR)/openjdk/hotspot-no-march-i586.diff \
 $(OPENJDK7_SOURCE_DIR)/openjdk/splashscreen.patch \
 $(OPENJDK7_SOURCE_DIR)/openjdk/system_jpeg_fix.patch \
 $(OPENJDK7_SOURCE_DIR)/openjdk/system_lcms_fix.patch \
