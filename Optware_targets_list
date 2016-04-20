@@ -5,3 +5,4 @@ buildroot-armv5eabi-ng-legacy
 buildroot-i686
 buildroot-mipsel-ng
 buildroot-ppc-603e
+ct-ng-ppc-e500v2
