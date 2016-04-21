@@ -97,7 +97,8 @@ case "$1" in
   download)
 	mkdir -p ${BUBBLEUPNP_DIR} && \
 	wget ${BUBBLEUPNP_URL} -O ${BUBBLEUPNP_DIST} && \
-	%OPTWARE_TARGET_PREFIX%/bin/unzip-unzip -o ${BUBBLEUPNP_DIST} -d ${BUBBLEUPNP_DIR}
+	%OPTWARE_TARGET_PREFIX%/bin/unzip-unzip -o ${BUBBLEUPNP_DIST} -d ${BUBBLEUPNP_DIR} && \
+	rm -f ${BUBBLEUPNP_DIST} ${BUBBLEUPNP_DIR}/launch.bat
 	;;
   *)
 	echo "Usage: $0 {start|stop|restart|status|download}"
