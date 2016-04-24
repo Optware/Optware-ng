@@ -1,5 +1,5 @@
 #!/bin/sh
-PATH=%OPTWARE_TARGET_PREFIX%/sbin:%OPTWARE_TARGET_PREFIX%/bin:%OPTWARE_TARGET_PREFIX%/usr/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+PATH=%OPTWARE_TARGET_PREFIX%/bin:%OPTWARE_TARGET_PREFIX%/sbin:${PATH}
 #######################################################################
 # (1) run process from superuser root (less security)
 # (0) run process from unprivileged user "nobody" (more security)
@@ -11,7 +11,12 @@ SVC_PRIORITY=10
 # access control list for transmission RPC. Please add actual address mask.
 RPC_ACL="*.*.*.*"
 
-# relative path for downloads, searching on any partitions
+# if not empty, use as the root download dir
+DIR_DL=""
+
+# relative path for downloads, searching on all writable ext*/fat/ntfs mounts,
+# starting from those that were mounted first
+# use if DIR_DL is empty
 REL_DLPATH="Transmission"
 #######################################################################
 
@@ -29,29 +34,28 @@ func_start()
 	
 	echo -n "Starting $SVC_NAME:."
 	logger -t "$SVC_NAME" "Starting $SVC_NAME..."
-	
-	# first, try to find download directory on both drives
-	DIR_DL=""
-	DIR_OK=""
-	for i in "a1" "a2" "a3" "a4" "b1" "b2" "b3" "b4" "c1" "c2" "c3" "c4" "d1" "d2" "d3" "d4" ; do
-		disk_path=`grep /dev/sd${i} /proc/mounts | awk '{print $2}'`
-        if [ -d "${disk_path}" ] && [ ! -z "${disk_path}" ] ; then
+
+	if [ -z "${DIR_DL}" ]; then
+		# first, try to find download directory on all writable ext*/fat/ntfs mounts
+		DIR_OK=""
+		for disk_path in `mount | egrep -v "\sro[\s,]"|egrep 'type ext|type vfat|type fuse|type msdos|type umsdos' | cut -d ' ' -f3`; do
 			[ -z "${DIR_OK}" ] && DIR_OK="${disk_path}"
-                if [ -d "${disk_path}/${REL_DLPATH}" ] ; then
-				DIR_DL="${disk_path}/${REL_DLPATH}"
-				break
+		        if [ -d "${disk_path}/${REL_DLPATH}" ] ; then
+					DIR_DL="${disk_path}/${REL_DLPATH}"
+					break
 			fi
+		done
+
+		if [ -z "${DIR_OK}" ] ; then
+			echo "[FAILED]"
+			logger -t "$SVC_NAME" "Cannot start $SVC_NAME by reason - unable to find target drive!"
+			return 1
 		fi
-	done
 	
-	# if not found, use first mounted drive
-	[ -z "${DIR_DL}" ] && DIR_DL="${DIR_OK}/${REL_DLPATH}"
-	
-	if [ -z "${DIR_DL}" ] ; then
-		echo "[FAILED]"
-		logger -t "$SVC_NAME" "Cannot start $SVC_NAME by reason - unable to find target drive!"
-		return 1
+		# if not found, use first mounted drive
+		[ -z "${DIR_DL}" ] && DIR_DL="${DIR_OK}/${REL_DLPATH}"
 	fi
+
 	
 	DIR_DL1="${DIR_DL}/Complete"
 	DIR_DL2="${DIR_DL}/Incomplete"
