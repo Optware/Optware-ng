@@ -42,7 +42,7 @@ CROSS_CONFIGURATION_GCC=gcc-$(CROSS_CONFIGURATION_GCC_VERSION)
 CROSS_CONFIGURATION_GLIBC=glibc-$(CROSS_CONFIGURATION_GLIBC_VERSION)
 CROSS_CONFIGURATION=$(CROSS_CONFIGURATION_GCC)-$(CROSS_CONFIGURATION_GLIBC)
 TARGET_CROSS_BUILD_DIR = $(BASE_DIR)/toolchain/crosstool-ng-$(TOOLCHAIN_VERSION)
-TARGET_CROSS_TOP = $(BASE_DIR)/toolchain/ct-ng-powerpc-linux-3.2.66-glibc-5.3.0
+TARGET_CROSS_TOP = $(BASE_DIR)/toolchain/ct-ng-powerpc-linux-2.6.32-glibc-5.3.0
 TARGET_CROSS = $(TARGET_CROSS_TOP)/bin/powerpc-e500v2-linux-gnuspe-
 TARGET_LIBDIR = $(TARGET_CROSS_TOP)/powerpc-e500v2-linux-gnuspe/sysroot/usr/lib
 TARGET_INCDIR = $(TARGET_CROSS_TOP)/powerpc-e500v2-linux-gnuspe/sysroot/usr/include
@@ -77,7 +77,7 @@ LIBNSL_IPK_VERSION = 1
 CT-NG-PPC_E500v2_SOURCE_DIR=$(SOURCE_DIR)/ct-ng-ppc-e500v2
 
 CT-NG-PPC_E500v2_PATCHES=\
-$(CT-NG-PPC_E500v2_SOURCE_DIR)/linux-3.2.patch \
+$(CT-NG-PPC_E500v2_SOURCE_DIR)/linux-2.6.32.patch \
 
 CT-NG-PPC_E500v2_GCC_PATCHES=$(wildcard $(CT-NG-PPC_E500v2_SOURCE_DIR)/gcc-patches/*.patch)
 
@@ -128,7 +128,11 @@ endif
 
 $(TARGET_CROSS_BUILD_DIR)/.built: $(TARGET_CROSS_BUILD_DIR)/.configured
 	rm -f $@
+ifneq ($(MAKE_JOBS), )
+	cd $(@D); ./ct-ng build.$(MAKE_JOBS)
+else
 	cd $(@D); ./ct-ng build
+endif
 	chmod -R u+w $(TARGET_CROSS_TOP)
 	install -m 644 $(CT-NG-PPC_E500v2_SOURCE_DIR)/videodev.h $(TARGET_CROSS_TOP)/powerpc-e500v2-linux-gnuspe/sysroot/usr/include/linux
 	cp -af $(TARGET_CROSS_TOP)/lib/gcc/powerpc-e500v2-linux-gnuspe/5.3.0/*.a $(GLIBC-OPT_LIBS_SOURCE_DIR)/
