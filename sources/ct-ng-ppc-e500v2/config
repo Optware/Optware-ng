@@ -225,8 +225,8 @@ CT_KERNEL_linux_AVAILABLE=y
 # CT_KERNEL_V_3_12 is not set
 # CT_KERNEL_V_3_10 is not set
 # CT_KERNEL_V_3_4 is not set
-CT_KERNEL_V_3_2=y
-# CT_KERNEL_V_2_6_32 is not set
+# CT_KERNEL_V_3_2 is not set
+CT_KERNEL_V_2_6_32=y
 CT_KERNEL_windows_AVAILABLE=y
 
 #
