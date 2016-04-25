@@ -18,7 +18,7 @@ BIND_DEPENDS=openssl, psmisc
 
 BIND_IPK_VERSION=4
 
-# BIND_PATCHES=$(BIND_SOURCE_DIR)/bind_configure_patch
+BIND_PATCHES=$(BIND_SOURCE_DIR)/libtool.patch
 
 ifeq ($(OPTWARE_TARGET), $(filter vt4, $(OPTWARE_TARGET)))
 BIND_LDFLAGS=-ldl
