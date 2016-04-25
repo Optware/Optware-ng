@@ -45,7 +45,7 @@ LIBVORBIS_IPK_VERSION=1
 # LIBVORBIS_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#LIBVORBIS_PATCHES=$(LIBVORBIS_SOURCE_DIR)/configure.patch
+LIBVORBIS_PATCHES=$(LIBVORBIS_SOURCE_DIR)/libtool.patch
 
 #
 # If the compilation of the package requires additional
@@ -111,7 +111,7 @@ $(LIBVORBIS_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBVORBIS_SOURCE) $(LIBVORBIS_PA
 	$(LIBVORBIS_UNZIP) $(DL_DIR)/$(LIBVORBIS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBVORBIS_PATCHES)" ; \
 		then cat $(LIBVORBIS_PATCHES) | \
-		$(PATCH) -d $(BUILD_DIR)/$(LIBVORBIS_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBVORBIS_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBVORBIS_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBVORBIS_DIR) $(@D) ; \
