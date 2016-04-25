@@ -122,6 +122,7 @@ $(WAYLAND_BUILD_DIR)/.configured: $(DL_DIR)/$(WAYLAND_SOURCE) $(WAYLAND_PATCHES)
 	if test "$(BUILD_DIR)/$(WAYLAND_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(WAYLAND_DIR) $(@D) ; \
 	fi
+	$(AUTORECONF1.14) -vif $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(WAYLAND_CPPFLAGS)" \
