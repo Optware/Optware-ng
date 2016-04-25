@@ -42,7 +42,7 @@ TRANSMISSION_DESCRIPTION=Lightweight BitTorrent client and daemon, with web inte
 TRANSMISSION_GTK_DESCRIPTION=Transmission GTK+ torrent client
 TRANSMISSION_SECTION=net
 TRANSMISSION_PRIORITY=optional
-TRANSMISSION_DEPENDS=openssl, libcurl, libevent, zlib
+TRANSMISSION_DEPENDS=openssl, libcurl, libevent, zlib, start-stop-daemon
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 TRANSMISSION_DEPENDS+=, libiconv
 endif
@@ -53,7 +53,7 @@ TRANSMISSION_CONFLICTS=
 #
 # TRANSMISSION_IPK_VERSION should be incremented when the ipk changes.
 #
-TRANSMISSION_IPK_VERSION=3
+TRANSMISSION_IPK_VERSION=4
 
 #
 # TRANSMISSION_CONFFILES should be a list of user-editable files

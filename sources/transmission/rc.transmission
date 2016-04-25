@@ -23,6 +23,7 @@ REL_DLPATH="Transmission"
 SVC_NAME="transmission-daemon"
 SVC_PATH="%OPTWARE_TARGET_PREFIX%/bin/transmission-daemon"
 DIR_CONF="%OPTWARE_TARGET_PREFIX%/etc/transmission-daemon"
+START_STOP_DAEMON=%OPTWARE_TARGET_PREFIX%/sbin/start-stop-daemon-start-stop-daemon
 
 func_start()
 {
@@ -73,25 +74,22 @@ func_start()
 	# full acces for watch dir
 	chmod 777 "$DIR_DL3"
 	
-	# check start-stop-daemon stuff
-	if [ -x /sbin/start-stop-daemon ] ; then
-		if [ $SVC_ROOT -eq 0 ] ; then
-			chown -R nobody "$DIR_CONF"
-			chown -R nobody "$DIR_DL2"
-			chmod -R 777 "$DIR_DL1"
-			start-stop-daemon -S -N $SVC_PRIORITY -c nobody \
-				-x $SVC_PATH -- -a "$RPC_ACL" \
-				-g "$DIR_CONF" -w "$DIR_DL1" \
-				-e ${DIR_LOG}/${SVC_NAME} \
-				-x /var/run/${SVC_NAME}.pid $AUTH_INFO
-		else
-			start-stop-daemon -S -N $SVC_PRIORITY -x $SVC_PATH -- -a "$RPC_ACL" \
-				-g "$DIR_CONF" -w "$DIR_DL1" \
-				-e ${DIR_LOG}${SVC_NAME} \
-				-x /var/run/${SVC_NAME}.pid ${AUTH_INFO}
-		fi
+	if [ $SVC_ROOT -eq 0 ] ; then
+		chown -R nobody "$DIR_CONF"
+		chown -R nobody "$DIR_DL2"
+		chmod -R 777 "$DIR_DL1"
+		touch ${DIR_LOG}/${SVC_NAME}
+		chown nobody ${DIR_LOG}/${SVC_NAME}
+		${START_STOP_DAEMON} -S -N $SVC_PRIORITY -c nobody \
+			-x $SVC_PATH -- -a "$RPC_ACL" \
+			-g "$DIR_CONF" -w "$DIR_DL1" \
+			-e ${DIR_LOG}/${SVC_NAME} \
+			-x /var/run/${SVC_NAME}.pid $AUTH_INFO
 	else
-		$SVC_PATH -a "$RPC_ACL" -g "$DIR_CONF"  
+		${START_STOP_DAEMON} -S -N $SVC_PRIORITY -x $SVC_PATH -- -a "$RPC_ACL" \
+			-g "$DIR_CONF" -w "$DIR_DL1" \
+			-e ${DIR_LOG}${SVC_NAME} \
+			-x /var/run/${SVC_NAME}.pid ${AUTH_INFO}
 	fi
 	
 	if [ $? -eq 0 ] ; then
