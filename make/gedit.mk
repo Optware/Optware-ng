@@ -52,7 +52,7 @@ GEDIT_IPK_VERSION=1
 # GEDIT_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#GEDIT_PATCHES=$(GEDIT_SOURCE_DIR)/configure.patch
+GEDIT_PATCHES=$(GEDIT_SOURCE_DIR)/libtool.patch
 
 #
 # If the compilation of the package requires additional
@@ -116,7 +116,7 @@ $(GEDIT_BUILD_DIR)/.configured: $(DL_DIR)/$(GEDIT_SOURCE) $(GEDIT_PATCHES) make/
 	$(GEDIT_UNZIP) $(DL_DIR)/$(GEDIT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(GEDIT_PATCHES)" ; \
 		then cat $(GEDIT_PATCHES) | \
-		$(PATCH) -d $(BUILD_DIR)/$(GEDIT_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(GEDIT_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(GEDIT_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(GEDIT_DIR) $(@D) ; \
