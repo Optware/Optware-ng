@@ -106,6 +106,10 @@ Currently, the project is missing writers who would contribute by creating how-t
 
 # News
 
+## 2016-04-25
+
+ct-ng-ppc-e500v2 feed rebuilt with 2.6.32 kernel headers to support Synology PowerPC e500v2 NASes
+
 ## 2016-04-14
 
 New ct-ng-ppc-e500v2 feed is now online. This is a softfloat PowerPC e500v2 gcc-5.3.0, glibc-2.23, linux-3.2.66 feed.
