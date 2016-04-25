@@ -51,7 +51,7 @@ LIBACL_IPK_VERSION=1
 # LIBACL_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-LIBACL_PATCHES=
+LIBACL_PATCHES=$(LIBACL_SOURCE_DIR)/libtool.patch
 
 #
 # If the compilation of the package requires additional
