@@ -1,0 +1,28 @@
+--- a/libltdl/config/ltmain.sh
++++ libltdl/config/ltmain.sh
+@@ -6872,6 +6872,13 @@
+ 	  func_append finalize_command " $wl$qarg"
+ 	  continue
+ 	  ;;
++	xassembler)
++	  func_append compiler_flags " -Xassembler $qarg"
++	  prev=
++	  func_append compile_command " -Xassembler $qarg"
++	  func_append finalize_command " -Xassembler $qarg"
++	  continue
++	  ;;
+ 	*)
+ 	  eval "$prev=\"\$arg\""
+ 	  prev=
+@@ -7237,6 +7244,11 @@
+ 	arg=$func_stripname_result
+ 	;;
+ 
++      -Xassembler)
++        prev=xassembler
++        continue
++        ;;
++
+       -Xcompiler)
+ 	prev=xcompiler
+ 	continue

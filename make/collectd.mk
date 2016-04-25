@@ -49,8 +49,9 @@ COLLECTD_CONFFILES=$(TARGET_PREFIX)/etc/collectd.conf $(TARGET_PREFIX)/etc/init.
 # COLLECTD_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-COLLECTD_PATCHES=$(COLLECTD_SOURCE_DIR)/tcpconns.c.patch
-#COLLECTD_PATCHES+=$(COLLECTD_SOURCE_DIR)/configure.in.patch
+COLLECTD_PATCHES=\
+$(COLLECTD_SOURCE_DIR)/tcpconns.c.patch \
+$(COLLECTD_SOURCE_DIR)/libtool.patch
 
 #
 # If the compilation of the package requires additional
