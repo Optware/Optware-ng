@@ -52,7 +52,7 @@ ATTR_IPK_VERSION=1
 # ATTR_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-ATTR_PATCHES=
+ATTR_PATCHES=$(ATTR_SOURCE_DIR)/libtool.patch
 
 #
 # If the compilation of the package requires additional
