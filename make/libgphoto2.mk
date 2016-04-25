@@ -36,7 +36,7 @@ LIBGPHOTO2_IPK_VERSION=1
 # LIBGPHOTO2_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-LIBGPHOTO2_PATCHES=
+LIBGPHOTO2_PATCHES=$(LIBGPHOTO2_SOURCE_DIR)/libtool.patch
 #
 # Version 2.3.1
 #
