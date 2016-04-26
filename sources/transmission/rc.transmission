@@ -16,7 +16,10 @@ DIR_DL=""
 
 # relative path for downloads, searching on all writable ext*/fat/ntfs mounts,
 # starting from those that were mounted first
-# use if DIR_DL is empty
+# use if DIR_DL is empty.
+# Note: if both DIR_DL and REL_DLPATH are empty,
+# the script doesn't set download dirs when starting transmission-daemon,
+# not overriding values in settings.json
 REL_DLPATH="Transmission"
 #######################################################################
 
@@ -36,60 +39,78 @@ func_start()
 	echo -n "Starting $SVC_NAME:."
 	logger -t "$SVC_NAME" "Starting $SVC_NAME..."
 
-	if [ -z "${DIR_DL}" ]; then
-		# first, try to find download directory on all writable ext*/fat/ntfs mounts
-		DIR_OK=""
-		for disk_path in `mount | egrep -v "\sro[\s,]"|egrep 'type ext|type vfat|type fuse|type msdos|type umsdos' | cut -d ' ' -f3`; do
-			[ -z "${DIR_OK}" ] && DIR_OK="${disk_path}"
-		        if [ -d "${disk_path}/${REL_DLPATH}" ] ; then
-					DIR_DL="${disk_path}/${REL_DLPATH}"
-					break
-			fi
-		done
+	if [ -n "${DIR_DL}" ] || [ -n "${REL_DLPATH}" ]; then
+		if [ -z "${DIR_DL}" ]; then
+			# first, try to find download directory on all writable ext*/fat/ntfs mounts
+			DIR_OK=""
+			for disk_path in `mount | egrep -v "\sro[\s,]"|egrep 'type ext|type vfat|type fuse|type msdos|type umsdos' | cut -d ' ' -f3`; do
+				[ -z "${DIR_OK}" ] && DIR_OK="${disk_path}"
+				if [ -d "${disk_path}/${REL_DLPATH}" ] ; then
+						DIR_DL="${disk_path}/${REL_DLPATH}"
+						break
+				fi
+			done
 
-		if [ -z "${DIR_OK}" ] ; then
-			echo "[FAILED]"
-			logger -t "$SVC_NAME" "Cannot start $SVC_NAME by reason - unable to find target drive!"
-			return 1
-		fi
+			if [ -z "${DIR_OK}" ] ; then
+				echo "[FAILED]" >&2
+				logger -t "$SVC_NAME" "Cannot start $SVC_NAME by reason - unable to find target drive!"
+				return 1
+			fi
 	
-		# if not found, use first mounted drive
-		[ -z "${DIR_DL}" ] && DIR_DL="${DIR_OK}/${REL_DLPATH}"
+			# if not found, use first mounted drive
+			[ -z "${DIR_DL}" ] && DIR_DL="${DIR_OK}/${REL_DLPATH}"
+		fi
+
+	
+		DIR_DL1="${DIR_DL}/Complete"
+		DIR_DL2="${DIR_DL}/Incomplete"
+		DIR_DL3="${DIR_DL}/Watch"
+		[ ! -d "$DIR_DL1" ] && mkdir -p "$DIR_DL1"
+		[ ! -d "$DIR_DL2" ] && mkdir -p "$DIR_DL2"
+		[ ! -d "$DIR_DL3" ] && mkdir -p "$DIR_DL3"
 	fi
 
-	
-	DIR_DL1="${DIR_DL}/Complete"
-	DIR_DL2="${DIR_DL}/Incomplete"
-	DIR_DL3="${DIR_DL}/Watch"
 	DIR_LOG="%OPTWARE_TARGET_PREFIX%/var/log"
 	
 	[ ! -d "$DIR_CONF" ] && mkdir -p "$DIR_CONF"
-	[ ! -d "$DIR_DL1" ] && mkdir -p "$DIR_DL1"
-	[ ! -d "$DIR_DL2" ] && mkdir -p "$DIR_DL2"
-	[ ! -d "$DIR_DL3" ] && mkdir -p "$DIR_DL3"
 	[ ! -d "$DIR_LOG" ] && mkdir -p "$DIR_LOG"
 	
 	export TRANSMISSION_WEB_HOME="%OPTWARE_TARGET_PREFIX%/share/transmission/web"
 	
 	# full acces for watch dir
-	chmod 777 "$DIR_DL3"
+	[ -n "${DIR_DL}" ] && chmod 777 "$DIR_DL3"
 	
 	if [ $SVC_ROOT -eq 0 ] ; then
 		chown -R nobody "$DIR_CONF"
-		chown -R nobody "$DIR_DL2"
-		chmod -R 777 "$DIR_DL1"
+		[ -n "${DIR_DL}" ] && chown -R nobody "$DIR_DL2"
+		[ -n "${DIR_DL}" ] && chmod -R 777 "$DIR_DL1"
 		touch ${DIR_LOG}/${SVC_NAME}
 		chown nobody ${DIR_LOG}/${SVC_NAME}
-		${START_STOP_DAEMON} -S -N $SVC_PRIORITY -c nobody \
-			-x $SVC_PATH -- -a "$RPC_ACL" \
-			-g "$DIR_CONF" -w "$DIR_DL1" \
-			-e ${DIR_LOG}/${SVC_NAME} \
-			-x /var/run/${SVC_NAME}.pid $AUTH_INFO
+		if [ -n "${DIR_DL}" ]; then
+			${START_STOP_DAEMON} -S -N $SVC_PRIORITY -c nobody \
+				-x $SVC_PATH -- -a "$RPC_ACL" \
+				-g "$DIR_CONF" -w "$DIR_DL1" \
+				-e ${DIR_LOG}/${SVC_NAME} \
+				-x /var/run/${SVC_NAME}.pid $AUTH_INFO
+		else
+			${START_STOP_DAEMON} -S -N $SVC_PRIORITY -c nobody \
+				-x $SVC_PATH -- -a "$RPC_ACL" \
+				-g "$DIR_CONF" \
+				-e ${DIR_LOG}/${SVC_NAME} \
+				-x /var/run/${SVC_NAME}.pid $AUTH_INFO
+		fi
 	else
-		${START_STOP_DAEMON} -S -N $SVC_PRIORITY -x $SVC_PATH -- -a "$RPC_ACL" \
-			-g "$DIR_CONF" -w "$DIR_DL1" \
-			-e ${DIR_LOG}${SVC_NAME} \
-			-x /var/run/${SVC_NAME}.pid ${AUTH_INFO}
+		if [ -n "${DIR_DL}" ]; then
+			${START_STOP_DAEMON} -S -N $SVC_PRIORITY -x $SVC_PATH -- -a "$RPC_ACL" \
+				-g "$DIR_CONF" -w "$DIR_DL1" \
+				-e ${DIR_LOG}${SVC_NAME} \
+				-x /var/run/${SVC_NAME}.pid ${AUTH_INFO}
+		else
+			${START_STOP_DAEMON} -S -N $SVC_PRIORITY -x $SVC_PATH -- -a "$RPC_ACL" \
+				-g "$DIR_CONF" \
+				-e ${DIR_LOG}${SVC_NAME} \
+				-x /var/run/${SVC_NAME}.pid ${AUTH_INFO}
+		fi
 	fi
 	
 	if [ $? -eq 0 ] ; then
