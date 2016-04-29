@@ -110,7 +110,7 @@ case "$1" in
     echo `daemon_status`
     ;;
   *)
-    echo "Usage: $0 {start|stop|restart}"
+    echo "Usage: $0 {start|stop|restart|status}"
     exit 1
     ;;
 esac
