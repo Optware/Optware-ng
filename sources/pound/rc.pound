@@ -1,58 +1,118 @@
-#! /bin/sh
+#!/bin/sh
 
-PATH=%OPTWARE_TARGET_PREFIX%/bin:%OPTWARE_TARGET_PREFIX%/sbin:/sbin:/bin:/usr/sbin:/usr/bin
+PATH=%OPTWARE_TARGET_PREFIX%/bin:%OPTWARE_TARGET_PREFIX%/sbin:${PATH}
 DAEMON=%OPTWARE_TARGET_PREFIX%/sbin/pound
+START_STOP_DAEMON=%OPTWARE_TARGET_PREFIX%/sbin/start-stop-daemon-start-stop-daemon
 POUND_ARGS=
-force=""
 nice=0
-pidfile=/dev/null
+pidfile=%OPTWARE_TARGET_PREFIX%/var/run/pound.pid
 DESC="reverse proxy and load balancer"
 NAME=pound
 
 # Exit if the daemon does not exist (anymore)
 test -f $DAEMON || exit 0
 
+daemon_status () {
+    case `${START_STOP_DAEMON} --status --pidfile ${pidfile} --name ${NAME}; echo $?` in
+    0)
+      echo "$NAME is running"
+      ;;
+    1)
+      echo "$NAME is not running and the pid file ${pidfile} exists"
+      ;;
+    3)
+      echo "$NAME is not running"
+      ;;
+    4)
+      echo "Unable to determine $NAME status" >&2
+      ;;
+    *)
+      echo "Unknown start-stop-daemon exit code" >&2
+      ;;
+    esac
+}
+
 start_daemon () {
-    exec="$1"; shift
-    args="--start --nicelevel $nice --quiet --oknodo"
-    if [ "$force" ]; then
-        %OPTWARE_TARGET_PREFIX%/sbin/start-stop-daemon-start-stop-daemon $args \
-	    --chdir "$PWD" --startas $exec --pidfile /dev/null -- "$@"
-    elif [ $pidfile ]; then
-        %OPTWARE_TARGET_PREFIX%/sbin/start-stop-daemon-start-stop-daemon $args \
-	    --chdir "$PWD" --exec $exec --oknodo --pidfile "$pidfile" -- "$@"
-    else
-        %OPTWARE_TARGET_PREFIX%/sbin/start-stop-daemon-start-stop-daemon $args --chdir "$PWD" --exec $exec -- "$@"
-    fi
+    ${START_STOP_DAEMON} --start --nicelevel $nice \
+        --exec ${DAEMON} --pidfile "$pidfile" -- "$@"
+}
+
+stop_daemon () {
+    ${START_STOP_DAEMON} --pidfile ${pidfile} --name ${NAME} --stop --retry=TERM/30/KILL/5
 }
 
 # The real work of an init script
 case "$1" in
   start)
-	echo "Starting $DESC" "$NAME"
+    if ${START_STOP_DAEMON} --status --pidfile ${pidfile} --name ${NAME}
+      then
+        echo "Error: $NAME already running" >&2
+        exit 1
+      fi
+    echo "Starting $NAME: $DESC"
     if [ ! -d "%OPTWARE_TARGET_PREFIX%/var/run" ]
-    then
+      then
         mkdir -p %OPTWARE_TARGET_PREFIX%/var/run
-    fi
-	start_daemon $DAEMON $POUND_ARGS
-	;;
+      fi
+    rm -f ${pidfile}
+    start_daemon $POUND_ARGS
+    ;;
   stop)
-        if [ -n "`pidof $NAME`" ]; then
-            echo "Stopping $DESC" "$NAME"
-            killall $NAME 2> /dev/null
-        fi
-        ;;
+    case `${START_STOP_DAEMON} --status --pidfile ${pidfile} --name ${NAME}; echo $?` in
+    0)
+      echo "Stopping $NAME: $DESC"
+      stop_daemon
+      ;;
+    1)
+      echo "$NAME is not running and the pid file ${pidfile} exists: removing the pid file"
+      rm -f ${pidfile}
+      ;;
+    3)
+      echo "$NAME is not running"
+      ;;
+    4)
+      echo "Unable to determine $NAME status"
+      ;;
+    *)
+      echo "Unknown start-stop-daemon exit code"
+      ;;
+    esac
+    ;;
   restart)
-        echo "Restarting $DESC" "$NAME"
-        "$0" stop
-        sleep 1
-        "$0" start
+    case `${START_STOP_DAEMON} --status --pidfile ${pidfile} --name ${NAME}; echo $?` in
+    0)
+      echo "Restarting $NAME: $DESC"
+      stop_daemon
+      start_daemon
+      ;;
+    1)
+      echo "$NAME is not running and the pid file ${pidfile} exists: removing the pid file"
+      rm -f ${pidfile}
+      echo "Starting $NAME"
+      start_daemon
+      ;;
+    3)
+      echo "$NAME is not running"
+      echo "Starting $NAME: $DESC"
+      start_daemon
+      ;;
+    4)
+      echo "Unable to determine $NAME status" >&2
+      exit 1
+      ;;
+    *)
+      echo "Unknown start-stop-daemon exit code" >&2
+      exit 1
+      ;;
+    esac
         ;;
+  status)
+    echo `daemon_status`
+    ;;
   *)
-	echo "Usage: $0 {start|stop|restart}"
-	exit 1
-	;;
+    echo "Usage: $0 {start|stop|restart}"
+    exit 1
+    ;;
 esac
 
-# Fallthrough if work done.
 exit 0

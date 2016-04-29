@@ -36,11 +36,11 @@ POUND_CONFLICTS=
 #
 # POUND_IPK_VERSION should be incremented when the ipk changes.
 #
-POUND_IPK_VERSION=4
+POUND_IPK_VERSION=5
 
 #
 # POUND_CONFFILES should be a list of user-editable files
-POUND_CONFFILES=$(TARGET_PREFIX)/etc/pound.cfg $(TARGET_PREFIX)/etc/init.d/pound
+POUND_CONFFILES=$(TARGET_PREFIX)/etc/pound.cfg $(TARGET_PREFIX)/etc/init.d/S65pound
 
 #
 # POUND_PATCHES should list any patches, in the the order in
@@ -105,7 +105,8 @@ pound-source: $(DL_DIR)/$(POUND_SOURCE) $(POUND_PATCHES)
 # shown below to make various patches to it.
 #
 $(POUND_BUILD_DIR)/.configured: $(DL_DIR)/$(POUND_SOURCE) $(POUND_PATCHES) make/pound.mk
-	$(MAKE) openssl-stage pcre-stage
+	$(MAKE) openssl-stage pcre-stage \
+		openssl-host-stage
 	rm -rf $(BUILD_DIR)/$(POUND_DIR) $(POUND_BUILD_DIR)
 	$(POUND_UNZIP) $(DL_DIR)/$(POUND_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(POUND_PATCHES)" ; \
@@ -145,6 +146,14 @@ pound-unpack: $(POUND_BUILD_DIR)/.configured
 $(POUND_BUILD_DIR)/.built: $(POUND_BUILD_DIR)/.configured
 	rm -f $@
 	$(MAKE) -C $(@D)
+	cd $(@D); \
+		$(HOST_STAGING_PREFIX)/bin/openssl req -nodes -newkey rsa:2048 \
+			-keyout privkey.pem -out certreq.csr \
+			-subj "/C=US/ST=World/O=Optware-ng/CN=pound.optware-ng" && \
+		$(HOST_STAGING_PREFIX)/bin/openssl x509 -req -days 3650 -in certreq.csr \
+			-signkey privkey.pem -out newcert.pem && \
+		$(HOST_STAGING_PREFIX)/bin/openssl x509 -in newcert.pem|cat - privkey.pem \
+			> server.pem
 	touch $@
 
 #
@@ -199,10 +208,11 @@ $(POUND_IPK): $(POUND_BUILD_DIR)/.built
 	$(MAKE) -C $(POUND_BUILD_DIR) DESTDIR=$(POUND_IPK_DIR) install
 	$(STRIP_COMMAND) $(POUND_IPK_DIR)$(TARGET_PREFIX)/sbin/pound*
 	chmod 555 $(POUND_IPK_DIR)$(TARGET_PREFIX)/sbin/pound
-#	$(INSTALL) -d $(POUND_IPK_DIR)$(TARGET_PREFIX)/etc/
+	$(INSTALL) -d $(POUND_IPK_DIR)$(TARGET_PREFIX)/etc/pound/ssl
+	$(INSTALL) -m 644 $(POUND_BUILD_DIR)/server.pem $(POUND_IPK_DIR)$(TARGET_PREFIX)/etc/pound/ssl
 	$(INSTALL) -m 644 $(POUND_SOURCE_DIR)/pound.cfg $(POUND_IPK_DIR)$(TARGET_PREFIX)/etc/pound.cfg
 #	$(INSTALL) -d $(POUND_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
-	$(INSTALL) -m 755 $(POUND_SOURCE_DIR)/rc.pound $(POUND_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/pound
+	$(INSTALL) -m 755 $(POUND_SOURCE_DIR)/rc.pound $(POUND_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S65pound
 	$(MAKE) $(POUND_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(POUND_SOURCE_DIR)/postinst $(POUND_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 755 $(POUND_SOURCE_DIR)/prerm $(POUND_IPK_DIR)/CONTROL/prerm
