@@ -1,0 +1,13 @@
+#!/bin/sh
+
+if [ ! -f %OPTWARE_TARGET_PREFIX%/etc/pound/ssl/.generated ]; then
+	echo -n "Generating certificate ... "
+	mkdir -p %OPTWARE_TARGET_PREFIX%/etc/pound/ssl
+	(cd %OPTWARE_TARGET_PREFIX%/etc/pound/ssl && \
+		%OPTWARE_TARGET_PREFIX%/bin/openssl req -nodes -newkey rsa:2048 -keyout privkey.pem -out certreq.csr -subj "/C=US/ST=World/O=Optware-ng/CN=pound.optware-ng" && \
+		%OPTWARE_TARGET_PREFIX%/bin/openssl x509 -req -days 3650 -in certreq.csr -signkey privkey.pem -out newcert.pem && \
+		%OPTWARE_TARGET_PREFIX%/bin/openssl x509 -in newcert.pem|cat - privkey.pem > server.pem && \
+		rm -f privkey.pem certreq.csr newcert.pem && \
+		touch .generated \
+	)
+fi
