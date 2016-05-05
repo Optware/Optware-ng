@@ -31,14 +31,14 @@ ZSH_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 ZSH_DESCRIPTION=Zsh is a shell designed for interactive use.
 ZSH_SECTION=shell
 ZSH_PRIORITY=optional
-ZSH_DEPENDS=gdbm, ncursesw, termcap
+ZSH_DEPENDS=gdbm, ncursesw, termcap, pcre
 ZSH_SUGGESTS=
 ZSH_CONFLICTS=
 
 #
 # ZSH_IPK_VERSION should be incremented when the ipk changes.
 #
-ZSH_IPK_VERSION=1
+ZSH_IPK_VERSION=2
 
 #
 # ZSH_CONFFILES should be a list of user-editable files
@@ -109,7 +109,7 @@ zsh-source: $(DL_DIR)/$(ZSH_SOURCE) $(ZSH_PATCHES)
 # shown below to make various patches to it.
 #
 $(ZSH_BUILD_DIR)/.configured: $(DL_DIR)/$(ZSH_SOURCE) $(ZSH_PATCHES) make/zsh.mk
-	$(MAKE) gdbm-stage ncursesw-stage termcap-stage
+	$(MAKE) gdbm-stage ncursesw-stage termcap-stage pcre-stage
 	rm -rf $(BUILD_DIR)/$(ZSH_DIR) $(@D)
 	$(ZSH_UNZIP) $(DL_DIR)/$(ZSH_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ZSH_PATCHES)" ; \
@@ -132,6 +132,7 @@ $(ZSH_BUILD_DIR)/.configured: $(DL_DIR)/$(ZSH_SOURCE) $(ZSH_PATCHES) make/zsh.mk
 		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
+		--enable-pcre \
 	)
 ifneq ($(HOSTCC), $(TARGET_CC))
 	$(INSTALL) -m 644 $(ZSH_SOURCE_DIR)/native-config.h $(@D)
