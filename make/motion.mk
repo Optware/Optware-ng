@@ -19,18 +19,14 @@ MOTION_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 MOTION_DESCRIPTION=a software motion detector
 MOTION_SECTION=misc
 MOTION_PRIORITY=optional
-ifeq ($(OPTWARE_TARGET),ds101g)
-MOTION_DEPENDS=ffmpeg, libjpeg
-else
-MOTION_DEPENDS=ffmpeg, libjpeg, mysql
-endif
+MOTION_DEPENDS=ffmpeg, libjpeg, sqlite, mysql
 MOTION_SUGGESTS=
 MOTION_CONFLICTS=
 
 #
 # MOTION_IPK_VERSION should be incremented when the ipk changes.
 #
-MOTION_IPK_VERSION=1
+MOTION_IPK_VERSION=2
 
 #
 # MOTION_CONFFILES should be a list of user-editable files
@@ -92,7 +88,7 @@ endif
 motion-source: $(DL_DIR)/$(MOTION_SOURCE) $(MOTION_PATCHES)
 
 $(MOTION_BUILD_DIR)/.configured: $(DL_DIR)/$(MOTION_SOURCE) $(MOTION_PATCHES) make/motion.mk
-	$(MAKE) libjpeg-stage ffmpeg-stage mysql-stage libjpeg-stage
+	$(MAKE) libjpeg-stage ffmpeg-stage mysql-stage libjpeg-stage sqlite-stage
 	rm -rf $(BUILD_DIR)/$(MOTION_DIR) $(@D)
 	$(MOTION_UNZIP) $(DL_DIR)/$(MOTION_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MOTION_PATCHES)" ; \
@@ -115,6 +111,7 @@ $(MOTION_BUILD_DIR)/.configured: $(DL_DIR)/$(MOTION_SOURCE) $(MOTION_PATCHES) ma
 		--disable-static \
 		--with-mysql-include=$(STAGING_INCLUDE_DIR)/mysql \
 		--with-mysql-lib=$(STAGING_LIB_DIR)/mysql \
+		--with-sqlite \
 		--without-pgsql \
 		--with-ffmpeg=$(STAGING_PREFIX) \
 	)
