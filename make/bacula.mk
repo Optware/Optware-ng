@@ -29,14 +29,14 @@ BACULA_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 BACULA_DESCRIPTION=A set of Open Source, enterprise ready, computer programs to manage backup, recovery, and verification of computer data across a network of computers of different kinds.
 BACULA_SECTION=sysadmin
 BACULA_PRIORITY=optional
-BACULA_DEPENDS=libstdc++, openssl, readline, sqlite, tcpwrappers, zlib
+BACULA_DEPENDS=libstdc++, openssl, readline, sqlite, tcpwrappers, zlib, lzo
 BACULA_SUGGESTS=python27
 BACULA_CONFLICTS=
 
 #
 # BACULA_IPK_VERSION should be incremented when the ipk changes.
 #
-BACULA_IPK_VERSION=1
+BACULA_IPK_VERSION=2
 
 #
 # BACULA_CONFFILES should be a list of user-editable files
@@ -110,9 +110,8 @@ bacula-source: $(DL_DIR)/$(BACULA_SOURCE) $(BACULA_PATCHES)
 # shown below to make various patches to it.
 #
 $(BACULA_BUILD_DIR)/.configured: $(DL_DIR)/$(BACULA_SOURCE) $(BACULA_PATCHES) make/bacula.mk
-	$(MAKE) libstdc++-stage
-	$(MAKE) openssl-stage readline-stage sqlite-stage tcpwrappers-stage zlib-stage
-	$(MAKE) python27-stage
+	$(MAKE) libstdc++-stage openssl-stage readline-stage sqlite-stage tcpwrappers-stage \
+		zlib-stage lzo-stage python27-stage
 	rm -rf $(BUILD_DIR)/$(BACULA_DIR) $(@D)
 	$(BACULA_UNZIP) $(DL_DIR)/$(BACULA_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(BACULA_PATCHES)" ; \
@@ -122,7 +121,7 @@ $(BACULA_BUILD_DIR)/.configured: $(DL_DIR)/$(BACULA_SOURCE) $(BACULA_PATCHES) ma
 	if test "$(BUILD_DIR)/$(BACULA_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(BACULA_DIR) $(@D) ; \
 	fi
-	sed -i -e '/PYTHON_LIBS=.* -lpython/s|=.*|="-lpython2.7"|' $(@D)/configure
+	sed -i -e '/PYTHON_LIBS=.* -lpython/s|=.*|="-lpython2.7"|' -e 's/-lzo2/-llzo2/' $(@D)/configure
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(BACULA_CPPFLAGS)" \
@@ -144,6 +143,7 @@ $(BACULA_BUILD_DIR)/.configured: $(DL_DIR)/$(BACULA_SOURCE) $(BACULA_PATCHES) ma
 		--with-python=$(STAGING_INCLUDE_DIR)/python2.5 \
 		--with-sqlite3=$(STAGING_PREFIX) \
 		--with-tcp-wrappers=$(STAGING_PREFIX) \
+		--with-lzo=$(STAGING_PREFIX) \
 		--without-x \
 		--disable-nls \
 		--disable-static \
