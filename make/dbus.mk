@@ -22,7 +22,7 @@
 #
 DBUS_SITE=http://dbus.freedesktop.org/releases/dbus
 DBUS_VERSION ?= 1.9.14
-DBUS_IPK_VERSION ?= 3
+DBUS_IPK_VERSION ?= 4
 DBUS_SOURCE=dbus-$(DBUS_VERSION).tar.gz
 DBUS_DIR=dbus-$(DBUS_VERSION)
 DBUS_UNZIP=zcat
@@ -66,10 +66,6 @@ ifeq (x11, $(filter x11, $(PACKAGES)))
 DBUS_CONFIG_ARGS=--with-x
 else
 DBUS_CONFIG_ARGS=--without-x
-endif
-
-ifeq ($(OPTWARE_TARGET), $(filter buildroot-armv5eabi-ng-legacy, $(OPTWARE_TARGET)))
-DBUS_CONFIG_ARGS += --disable-inotify
 endif
 
 #
@@ -158,6 +154,8 @@ endif
 		--disable-xml-docs \
 		--disable-nls \
 		--disable-static \
+		--with-dbus-user=nobody \
+		--with-test-user=messagebus \
 	)
 ifdef DBUS_NO_DAEMON_LDFLAGS
 	sed -i -e '/^dbus_daemon_LDFLAGS/s|^|#|' $(@D)/bus/Makefile
