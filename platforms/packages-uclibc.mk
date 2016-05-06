@@ -10,7 +10,6 @@ UCLIBC_BROKEN_PACKAGES = \
 	fish \
 	gnu-smalltalk \
 	launchtool ldconfig \
-	module-init-tools \
 	moe mtr \
 	newsbeuter \
 	nfs-server nfs-utils \
