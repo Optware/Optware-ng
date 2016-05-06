@@ -23,7 +23,7 @@
 ZSH_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/zsh
 ZSH_SITE2=http://www.zsh.org/pub
 ZSH_SITE3=http://www.zsh.org/pub/old
-ZSH_VERSION=5.1.1
+ZSH_VERSION=5.2
 ZSH_SOURCE=zsh-$(ZSH_VERSION).tar.gz
 ZSH_DIR=zsh-$(ZSH_VERSION)
 ZSH_UNZIP=zcat
@@ -31,14 +31,14 @@ ZSH_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 ZSH_DESCRIPTION=Zsh is a shell designed for interactive use.
 ZSH_SECTION=shell
 ZSH_PRIORITY=optional
-ZSH_DEPENDS=gdbm, ncursesw, termcap, pcre
+ZSH_DEPENDS=gdbm, ncursesw, termcap, pcre, libcap
 ZSH_SUGGESTS=
 ZSH_CONFLICTS=
 
 #
 # ZSH_IPK_VERSION should be incremented when the ipk changes.
 #
-ZSH_IPK_VERSION=2
+ZSH_IPK_VERSION=1
 
 #
 # ZSH_CONFFILES should be a list of user-editable files
@@ -109,7 +109,7 @@ zsh-source: $(DL_DIR)/$(ZSH_SOURCE) $(ZSH_PATCHES)
 # shown below to make various patches to it.
 #
 $(ZSH_BUILD_DIR)/.configured: $(DL_DIR)/$(ZSH_SOURCE) $(ZSH_PATCHES) make/zsh.mk
-	$(MAKE) gdbm-stage ncursesw-stage termcap-stage pcre-stage
+	$(MAKE) gdbm-stage ncursesw-stage termcap-stage pcre-stage libcap-stage
 	rm -rf $(BUILD_DIR)/$(ZSH_DIR) $(@D)
 	$(ZSH_UNZIP) $(DL_DIR)/$(ZSH_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ZSH_PATCHES)" ; \
@@ -132,11 +132,12 @@ $(ZSH_BUILD_DIR)/.configured: $(DL_DIR)/$(ZSH_SOURCE) $(ZSH_PATCHES) make/zsh.mk
 		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
+		--disable-dynamic \
 		--enable-pcre \
+		--enable-cap \
 	)
-ifneq ($(HOSTCC), $(TARGET_CC))
-	$(INSTALL) -m 644 $(ZSH_SOURCE_DIR)/native-config.h $(@D)
-endif
+	# build all modules
+	sed -i -e 's/link=no/link=static/' $(@D)/config.modules
 #	$(PATCH_LIBTOOL) $(ZSH_BUILD_DIR)/libtool
 	touch $@
 
