@@ -101,7 +101,7 @@ ocaml-hostbuild: $(OCAML_HOST_BUILD_DIR)/.built
 ifeq ($(HOSTCC), $(TARGET_CC))
 $(OCAML_BUILD_DIR)/.configured: $(DL_DIR)/$(OCAML_SOURCE) $(OCAML_PATCHES)
 else
-$(OCAML_BUILD_DIR)/.configured: $(OCAML_HOST_BUILD_DIR)/.built $(DL_DIR)/$(OCAML_SOURCE) $(OCAML_PATCHES) make/ocalm.mk
+$(OCAML_BUILD_DIR)/.configured: $(OCAML_HOST_BUILD_DIR)/.built $(DL_DIR)/$(OCAML_SOURCE) $(OCAML_PATCHES) make/ocaml.mk
 endif
 	rm -rf $(BUILD_DIR)/$(OCAML_DIR) $(@D)
 	$(OCAML_UNZIP) $(DL_DIR)/$(OCAML_SOURCE) | tar -C $(BUILD_DIR) -xvf -
