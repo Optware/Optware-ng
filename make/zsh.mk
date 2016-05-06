@@ -32,6 +32,9 @@ ZSH_DESCRIPTION=Zsh is a shell designed for interactive use.
 ZSH_SECTION=shell
 ZSH_PRIORITY=optional
 ZSH_DEPENDS=gdbm, ncursesw, termcap, pcre, libcap
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+ZSH_DEPENDS+=, libiconv
+endif
 ZSH_SUGGESTS=
 ZSH_CONFLICTS=
 
@@ -110,6 +113,9 @@ zsh-source: $(DL_DIR)/$(ZSH_SOURCE) $(ZSH_PATCHES)
 #
 $(ZSH_BUILD_DIR)/.configured: $(DL_DIR)/$(ZSH_SOURCE) $(ZSH_PATCHES) make/zsh.mk
 	$(MAKE) gdbm-stage ncursesw-stage termcap-stage pcre-stage libcap-stage
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+	$(MAKE) libiconv-stage
+endif
 	rm -rf $(BUILD_DIR)/$(ZSH_DIR) $(@D)
 	$(ZSH_UNZIP) $(DL_DIR)/$(ZSH_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ZSH_PATCHES)" ; \
