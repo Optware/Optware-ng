@@ -67,7 +67,7 @@ TOOLCHAIN_SOURCE=crosstool-ng-$(TOOLCHAIN_VERSION).tar.bz2
 LIBSTDC++_TARGET_LIBDIR = $(TARGET_CROSS_TOP)/powerpc-e500v2-linux-gnuspe/sysroot/lib
 
 GLIBC-OPT_VERSION = 2.23
-GLIBC-OPT_IPK_VERSION = 1
+GLIBC-OPT_IPK_VERSION = 2
 GLIBC-OPT_LIBS_SOURCE_DIR = $(TARGET_CROSS_TOP)/powerpc-e500v2-linux-gnuspe/sysroot/lib
 LIBNSL_SO_DIR = $(TARGET_CROSS_TOP)/powerpc-e500v2-linux-gnuspe/sysroot/lib
 
@@ -139,7 +139,9 @@ endif
 	cp -af $(TARGET_CROSS_TOP)/powerpc-e500v2-linux-gnuspe/sysroot/lib/libstdc++*.a $(TARGET_CROSS_TOP)/powerpc-e500v2-linux-gnuspe/sysroot/usr/lib/
 	touch $@
 
-GLIBC-OPT_LIBS := ld libc libm libdl librt libanl libutil libcrypt libnss_db libresolv libnss_dns libnss_nis libpthread libnss_files libnss_compat libnss_hesiod libnss_nisplus libBrokenLocale
+GLIBC-OPT_LIBS := 	ld libc libm libdl libgcc librt libanl libutil libcrypt libnss_db \
+			libresolv libnss_dns libnss_nis libpthread libnss_files libnss_compat \
+			libnss_hesiod libnss_nisplus libBrokenLocale
 
 GCC_TARGET_NAME := powerpc-e500v2-linux-gnuspe
 
