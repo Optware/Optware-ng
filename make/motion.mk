@@ -19,14 +19,14 @@ MOTION_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 MOTION_DESCRIPTION=a software motion detector
 MOTION_SECTION=misc
 MOTION_PRIORITY=optional
-MOTION_DEPENDS=ffmpeg, libjpeg, sqlite, mysql
-MOTION_SUGGESTS=
+MOTION_DEPENDS=ffmpeg, libjpeg, sqlite
+MOTION_SUGGESTS=mysql
 MOTION_CONFLICTS=
 
 #
 # MOTION_IPK_VERSION should be incremented when the ipk changes.
 #
-MOTION_IPK_VERSION=2
+MOTION_IPK_VERSION=3
 
 #
 # MOTION_CONFFILES should be a list of user-editable files
