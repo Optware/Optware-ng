@@ -108,7 +108,7 @@ cacerts-source: $(DL_DIR)/$(CACERTS_SOURCE) $(CACERTS_PATCHES)
 #
 $(CACERTS_BUILD_DIR)/.configured: host/.configured $(DL_DIR)/$(CACERTS_SOURCE) $(CACERTS_PATCHES) make/cacerts.mk
 	$(MAKE) openssl-host-stage perl-hostperl
-	rm -rf $(BUILD_DIR)/$(CACERTS_DIR) $(@D)
+	rm -rf $(@D) $(JRE_CACERTS_BUILD_DIR)/.configured
 	$(INSTALL) -d $(@D)
 	$(INSTALL) -m 644 $(DL_DIR)/$(CACERTS_SOURCE) $(@D)
 	touch $@
