@@ -29,14 +29,14 @@ BACULA_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 BACULA_DESCRIPTION=A set of Open Source, enterprise ready, computer programs to manage backup, recovery, and verification of computer data across a network of computers of different kinds.
 BACULA_SECTION=sysadmin
 BACULA_PRIORITY=optional
-BACULA_DEPENDS=libstdc++, openssl, readline, sqlite, tcpwrappers, zlib, lzo
+BACULA_DEPENDS=libstdc++, openssl, readline, sqlite, tcpwrappers, zlib, lzo, libacl
 BACULA_SUGGESTS=python27
 BACULA_CONFLICTS=
 
 #
 # BACULA_IPK_VERSION should be incremented when the ipk changes.
 #
-BACULA_IPK_VERSION=2
+BACULA_IPK_VERSION=3
 
 #
 # BACULA_CONFFILES should be a list of user-editable files
@@ -111,7 +111,7 @@ bacula-source: $(DL_DIR)/$(BACULA_SOURCE) $(BACULA_PATCHES)
 #
 $(BACULA_BUILD_DIR)/.configured: $(DL_DIR)/$(BACULA_SOURCE) $(BACULA_PATCHES) make/bacula.mk
 	$(MAKE) libstdc++-stage openssl-stage readline-stage sqlite-stage tcpwrappers-stage \
-		zlib-stage lzo-stage python27-stage
+		zlib-stage libacl-stage lzo-stage python27-stage
 	rm -rf $(BUILD_DIR)/$(BACULA_DIR) $(@D)
 	$(BACULA_UNZIP) $(DL_DIR)/$(BACULA_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(BACULA_PATCHES)" ; \
@@ -137,7 +137,9 @@ $(BACULA_BUILD_DIR)/.configured: $(DL_DIR)/$(BACULA_SOURCE) $(BACULA_PATCHES) ma
 		--sysconfdir=$(TARGET_PREFIX)/etc/bacula \
 		--with-scriptdir=$(TARGET_PREFIX)/etc/bacula/scripts \
 		--enable-smartalloc \
-		--disable-conio --enable-readline \
+		--disable-conio \
+		--enable-readline \
+		--enable-acl \
 		--with-readline=$(STAGING_PREFIX) \
 		--with-openssl=$(STAGING_PREFIX) \
 		--with-python=$(STAGING_INCLUDE_DIR)/python2.5 \
