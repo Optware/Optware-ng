@@ -1,7 +1,7 @@
 #!/bin/sh
 
-if [ -n "`%OPTWARE_TARGET_PREFIX%/bin/pidof ntpd`" ]; then 
-    %OPTWARE_TARGET_PREFIX%/bin/killall ntpd 2>/dev/null
+if [ -n "`%OPTWARE_TARGET_PREFIX%/bin/busybox pidof ntpd`" ]; then
+    %OPTWARE_TARGET_PREFIX%/bin/busybox killall ntpd 2>/dev/null
 fi
 
 if [ ! -d /var/spool/ntp ] ;  then
