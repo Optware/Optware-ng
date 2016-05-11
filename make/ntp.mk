@@ -181,7 +181,7 @@ $(NTP_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(NTP_IPK): $(NTP_BUILD_DIR)/.built
-	rm -rf $(NTP_IPK_DIR) $(NTP_IPK)
+	rm -rf $(NTP_IPK_DIR) $(BUILD_DIR)/ntp_*_$(TARGET_ARCH).ipk
 	$(INSTALL) -d $(NTP_IPK_DIR)$(TARGET_PREFIX)/bin
 	$(INSTALL) -d $(NTP_IPK_DIR)$(TARGET_PREFIX)/etc/ntp/keys
 	$(INSTALL) -d $(NTP_IPK_DIR)/var/spool/ntp
