@@ -20,7 +20,7 @@ DIR_DL=""
 # Note: if both DIR_DL and REL_DLPATH are empty,
 # the script doesn't set download dirs when starting transmission-daemon,
 # not overriding values in settings.json
-REL_DLPATH="Transmission"
+REL_DLPATH=""
 #######################################################################
 
 SVC_NAME="transmission-daemon"
