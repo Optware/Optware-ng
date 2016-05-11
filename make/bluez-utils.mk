@@ -71,7 +71,7 @@ ifneq ($(OPTWARE_TARGET), slugosbe)
 BLUEZ-UTILS_CPPFLAGS=-DENOKEY=126
 endif
 endif
-BLUEZ-UTILS_LDFLAGS=
+BLUEZ-UTILS_LDFLAGS=-lm
 
 #
 # BLUEZ-UTILS_BUILD_DIR is the directory in which the build is done.
