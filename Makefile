@@ -79,7 +79,7 @@ PACKAGES_THAT_NEED_TO_BE_FIXED = lumikki \
 	iozone \
 	bpalogin \
 	nemesis \
-	appweb bluez-utils bluez-hcidump libextractor sandbox \
+	appweb libextractor sandbox \
 	btg \
  
 PERL_PACKAGES = \
