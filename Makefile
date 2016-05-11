@@ -287,7 +287,7 @@ COMMON_CROSS_PACKAGES = \
 	bogofilter boost $(BOOST_PACKAGES) bridge-utils \
 	bsdgames bsdmainutils \
 	btpd busybox byrequest bzflag bzip2 \
-	bluez-libs \
+	bluez-libs bluez-utils \
 	bluez2-libs bluez2-utils \
 	c-ares cabextract cacerts jre-cacerts cadaver cairo calc calcurse castget \
 	catdoc ccollect ccrypt ccxstream cdargs \

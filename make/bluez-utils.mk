@@ -30,14 +30,14 @@ BLUEZ-UTILS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 BLUEZ-UTILS_DESCRIPTION=Bluetooth utilities.
 BLUEZ-UTILS_SECTION=misc
 BLUEZ-UTILS_PRIORITY=optional
-BLUEZ-UTILS_DEPENDS=bluez-libs, dbus, expat
+BLUEZ-UTILS_DEPENDS=bluez-libs, dbus, expat, alsa-lib
 BLUEZ-UTILS_SUGGESTS=
 BLUEZ-UTILS_CONFLICTS=
 
 #
 # BLUEZ-UTILS_IPK_VERSION should be incremented when the ipk changes.
 #
-BLUEZ-UTILS_IPK_VERSION=3
+BLUEZ-UTILS_IPK_VERSION=4
 
 #
 # BLUEZ-UTILS_CONFFILES should be a list of user-editable files
@@ -72,10 +72,6 @@ BLUEZ-UTILS_CPPFLAGS=-DENOKEY=126
 endif
 endif
 BLUEZ-UTILS_LDFLAGS=
-
-ifeq ($(OPTWARE_TARGET), $(filter syno-x07 vt4, $(OPTWARE_TARGET)))
-BLUEZ-UTILS_CONFIG_ARGS= --disable-alsa --disable-pie
-endif
 
 #
 # BLUEZ-UTILS_BUILD_DIR is the directory in which the build is done.
@@ -124,11 +120,7 @@ bluez-utils-source: $(DL_DIR)/$(BLUEZ-UTILS_SOURCE) $(BLUEZ-UTILS_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(BLUEZ-UTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(BLUEZ-UTILS_SOURCE) $(BLUEZ-UTILS_PATCHES) make/bluez-utils.mk
-	$(MAKE) bluez-libs-stage
-	$(MAKE) dbus-stage
-	$(MAKE) expat-stage
-	$(MAKE) libusb-stage
-	$(MAKE) openobex-stage
+	$(MAKE) bluez-libs-stage dbus-stage expat-stage libusb-stage openobex-stage alsa-lib-stage
 	rm -rf $(BUILD_DIR)/$(BLUEZ-UTILS_DIR) $(@D)
 	$(BLUEZ-UTILS_UNZIP) $(DL_DIR)/$(BLUEZ-UTILS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(BLUEZ-UTILS_PATCHES)"; then \
