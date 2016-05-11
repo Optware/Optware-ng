@@ -13,7 +13,6 @@ BROKEN_PACKAGES = \
 	6relayd \
 	buildroot \
 	$(UCLIBC_BROKEN_PACKAGES) \
-	bluez-hcidump \
 	clamav \
 	rssh \
 	sandbox \

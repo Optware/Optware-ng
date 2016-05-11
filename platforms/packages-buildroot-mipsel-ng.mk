@@ -10,7 +10,6 @@ SPECIFIC_PACKAGES = \
 BROKEN_PACKAGES = \
 	buildroot \
 	$(UCLIBC_BROKEN_PACKAGES) \
-	bluez-hcidump \
 	clamav \
 	golang \
 	inferno \
