@@ -21,11 +21,11 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-BLUEZ-HCIDUMP_SITE=http://bluez.sf.net/download
-BLUEZ-HCIDUMP_VERSION=1.42
-BLUEZ-HCIDUMP_SOURCE=bluez-hcidump-$(BLUEZ-HCIDUMP_VERSION).tar.gz
+BLUEZ-HCIDUMP_SITE=http://www.kernel.org/pub/linux/bluetooth
+BLUEZ-HCIDUMP_VERSION=2.5
+BLUEZ-HCIDUMP_SOURCE=bluez-hcidump-$(BLUEZ-HCIDUMP_VERSION).tar.xz
 BLUEZ-HCIDUMP_DIR=bluez-hcidump-$(BLUEZ-HCIDUMP_VERSION)
-BLUEZ-HCIDUMP_UNZIP=zcat
+BLUEZ-HCIDUMP_UNZIP=xzcat
 BLUEZ-HCIDUMP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 BLUEZ-HCIDUMP_DESCRIPTION=Bluetooth packet analyzer.
 BLUEZ-HCIDUMP_SECTION=misc
@@ -55,10 +55,6 @@ BLUEZ-HCIDUMP_PATCHES=$(BLUEZ-HCIDUMP_SOURCE_DIR)/AI_ADDRCONFIG.patch
 #
 BLUEZ-HCIDUMP_CPPFLAGS=
 BLUEZ-HCIDUMP_LDFLAGS=
-
-ifeq ($(OPTWARE_TARGET), $(filter syno-x07 vt4, $(OPTWARE_TARGET)))
-BLUEZ-HCIDUMP_CONFIG_ARGS = --disable-pie
-endif
 
 #
 # BLUEZ-HCIDUMP_BUILD_DIR is the directory in which the build is done.
