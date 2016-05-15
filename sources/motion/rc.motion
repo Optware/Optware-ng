@@ -1,7 +1,42 @@
 #!/bin/sh
 
-if [ -n "`pidof motion`" ]; then 
-    killall motion 2>/dev/null
+prefix="%OPTWARE_TARGET_PREFIX%"
+PATH=${prefix}/bin:${prefix}/sbin:/sbin:/bin:/usr/sbin:/usr/bin
+NAME=motion
+DAEMON=${prefix}/bin/${NAME}
+DAEMON_OPTS=""
+
+test -x $DAEMON || exit 0
+
+if [ -z "$1" ] ; then
+    case `echo "$0" | sed 's|^.*/||'` in
+        S??*) rc="start" ;;
+        K??*) rc="stop" ;;
+        *) rc="usage" ;;
+    esac
+else
+    rc="$1"
 fi
 
-%OPTWARE_TARGET_PREFIX%/bin/motion
+case "$rc" in
+    start)
+	echo "Starting motion detector: $NAME"
+	$DAEMON $DAEMON_OPTS
+        ;;
+    stop)
+        if [ -n "`pidof $NAME`" ]; then
+            echo "Stopping motion detector: $NAME"
+            killall $NAME 2> /dev/null
+        fi
+        ;;
+    restart)
+        "$0" stop
+        sleep 1
+        "$0" start
+        ;;
+    *)  
+        echo "Usage: $0 (start|stop|restart|usage)"
+        ;;
+esac
+
+exit 0
