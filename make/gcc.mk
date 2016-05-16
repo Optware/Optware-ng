@@ -40,6 +40,9 @@ GCC_DESCRIPTION=The GNU Compiler Collection.
 GCC_SECTION=base
 GCC_PRIORITY=optional
 GCC_DEPENDS=binutils, libc-dev
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+GCC_DEPENDS+=, libiconv
+endif
 GCC_SUGGESTS=
 GCC_CONFLICTS=
 
@@ -60,7 +63,7 @@ endif
 #
 # GCC_IPK_VERSION should be incremented when the ipk changes.
 #
-GCC_IPK_VERSION ?= 7
+GCC_IPK_VERSION ?= 8
 
 #
 # GCC_CONFFILES should be a list of user-editable files
@@ -176,6 +179,9 @@ ifeq ($(shell test $(shell echo $(GCC_VERSION) | cut -d '.' -f 2) -gt 2 || \
 	$(MAKE) libgmp-stage libmpfr-stage libmpc-stage
 endif
 endif
+endif
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+	$(MAKE) libiconv-stage
 endif
 ifdef NATIVE_GCC_ADDITIONAL_STAGE
 	$(MAKE) $(NATIVE_GCC_ADDITIONAL_STAGE)
