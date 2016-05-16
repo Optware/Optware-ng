@@ -23,7 +23,7 @@
 #
 BINUTILS_SITE=http://ftp.gnu.org/gnu/binutils
 BINUTILS_VERSION ?= 2.25.1
-BINUTILS_IPK_VERSION ?= 1
+BINUTILS_IPK_VERSION ?= 2
 BINUTILS_SOURCE=binutils-$(BINUTILS_VERSION).tar.bz2
 BINUTILS_DIR?=binutils-$(BINUTILS_VERSION)
 BINUTILS_UNZIP=bzcat
@@ -57,6 +57,8 @@ BINUTILS_PATCHES=
 ifeq ($(OPTWARE_TARGET), $(filter syno-x07, $(OPTWARE_TARGET)))
 BINUTILS_PATCHES += $(BINUTILS_SOURCE_DIR)/gas-vfp.patch
 endif
+
+BINUTILS_LINKER = $(shell echo $(GCC_LINKER) | sed 's/-Wl,//g')
 
 #
 # If the compilation of the package requires additional
@@ -203,6 +205,9 @@ $(BINUTILS_IPK): $(BINUTILS_BUILD_DIR)/.built
 	$(MAKE) -C $(BINUTILS_BUILD_DIR) DESTDIR=$(BINUTILS_IPK_DIR) install
 	rm -f $(BINUTILS_IPK_DIR)$(TARGET_PREFIX)/share/info/dir
 	-$(STRIP_COMMAND) $(BINUTILS_IPK_DIR)$(TARGET_PREFIX)/bin/*
+	mv -f $(BINUTILS_IPK_DIR)$(TARGET_PREFIX)/bin/ld{,.real}
+	$(INSTALL) -m 755 $(BINUTILS_SOURCE_DIR)/ld $(BINUTILS_IPK_DIR)$(TARGET_PREFIX)/bin/
+	sed -i -e 's~%LD_LINKER%~$(BINUTILS_LINKER)~' $(BINUTILS_IPK_DIR)$(TARGET_PREFIX)/bin/ld
 	mv $(BINUTILS_IPK_DIR)$(TARGET_PREFIX)/bin/strings $(BINUTILS_IPK_DIR)$(TARGET_PREFIX)/bin/binutils-strings
 	$(MAKE) $(BINUTILS_IPK_DIR)/CONTROL/control
 	(echo "#!/bin/sh" ; \
