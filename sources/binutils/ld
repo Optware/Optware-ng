@@ -1,0 +1,3 @@
+#!/bin/sh
+
+%OPTWARE_TARGET_PREFIX%/bin/ld.real %LD_LINKER% "$@" -L%OPTWARE_TARGET_PREFIX%/lib -rpath %OPTWARE_TARGET_PREFIX%/lib -rpath-link %OPTWARE_TARGET_PREFIX%/lib
