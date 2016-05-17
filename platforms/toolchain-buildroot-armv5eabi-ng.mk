@@ -62,7 +62,7 @@ TOOLCHAIN_SITE=http://buildroot.uclibc.org/downloads
 TOOLCHAIN_SOURCE=buildroot-2016.02.tar.bz2
 
 UCLIBC-OPT_VERSION = $(UCLIBC_VERSION)
-UCLIBC-OPT_IPK_VERSION = 2
+UCLIBC-OPT_IPK_VERSION = 3
 LIBNSL_IPK_VERSION = 1
 UCLIBC-OPT_LIBS_SOURCE_DIR = $(TARGET_CROSS_TOP)/arm-buildroot-linux-uclibcgnueabi/sysroot/lib
 
@@ -92,7 +92,7 @@ $(TARGET_CROSS_TOP)/.configured: $(DL_DIR)/$(TOOLCHAIN_SOURCE) \
 	fi
 	cd $(TARGET_CROSS_BUILD_DIR)/package/uclibc; \
 		rm -f 0001-include-netdb.h-Do-not-define-IDN-related-flags.patch 0002-mips-fix-build-if-threads-are-disabled.patch
-	echo "DO_XSI_MATH=y" >> $(TARGET_CROSS_BUILD_DIR)/package/uclibc/uClibc-ng.config
+	(echo "DO_XSI_MATH=y"; echo "COMPAT_ATEXIT=y") >> $(TARGET_CROSS_BUILD_DIR)/package/uclibc/uClibc-ng.config
 	sed 's|^BR2_DL_DIR=.*|BR2_DL_DIR="$(DL_DIR)"|' $(BUILDROOT-ARMv5EABI-NG_SOURCE_DIR)/config > $(TARGET_CROSS_BUILD_DIR)/.config
 	touch $@
 
