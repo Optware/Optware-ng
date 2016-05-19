@@ -44,17 +44,18 @@ TOOLCHAIN_SITE=http://buildroot.uclibc.org/downloads
 TOOLCHAIN_SOURCE=buildroot-2016.02.tar.bz2
 
 GLIBC-OPT_VERSION = 2.21
-GLIBC-OPT_IPK_VERSION = 1
+GLIBC-OPT_IPK_VERSION = 2
 GLIBC-OPT_LIBS_SOURCE_DIR = $(TARGET_CROSS_TOP)/i686-buildroot-linux-gnu/sysroot/lib
 LIBNSL_SO_DIR = $(TARGET_CROSS_TOP)/i686-buildroot-linux-gnu/sysroot/lib
 
 LIBNSL_VERSION = 2.21
-LIBNSL_IPK_VERSION = 1
+LIBNSL_IPK_VERSION = 2
 
 BUILDROOT-I686_SOURCE_DIR=$(SOURCE_DIR)/buildroot-i686
 
 BUILDROOT-I686_PATCHES=\
 $(BUILDROOT-I686_SOURCE_DIR)/toolchain-wrapper.patch \
+$(BUILDROOT-I686_SOURCE_DIR)/glibc-prefix.patch \
 
 toolchain: $(TARGET_CROSS_TOP)/.built
 

@@ -60,17 +60,18 @@ TOOLCHAIN_SITE=http://buildroot.uclibc.org/downloads
 TOOLCHAIN_SOURCE=buildroot-2016.02.tar.bz2
 
 GLIBC-OPT_VERSION = 2.21
-GLIBC-OPT_IPK_VERSION = 4
+GLIBC-OPT_IPK_VERSION = 5
 GLIBC-OPT_LIBS_SOURCE_DIR = $(TARGET_CROSS_TOP)/arm-buildroot-linux-gnueabihf/sysroot/lib
 LIBNSL_SO_DIR = $(TARGET_CROSS_TOP)/arm-buildroot-linux-gnueabihf/sysroot/lib
 
 LIBNSL_VERSION = 2.21
-LIBNSL_IPK_VERSION = 3
+LIBNSL_IPK_VERSION = 4
 
 BUILDROOT-ARMEABIHF_SOURCE_DIR=$(SOURCE_DIR)/buildroot-armeabihf
 
 BUILDROOT-ARMEABIHF_PATCHES=\
 $(BUILDROOT-ARMEABIHF_SOURCE_DIR)/toolchain-wrapper.patch \
+$(BUILDROOT-ARMEABIHF_SOURCE_DIR)/glibc-prefix.patch \
 
 toolchain: $(TARGET_CROSS_TOP)/.built
 

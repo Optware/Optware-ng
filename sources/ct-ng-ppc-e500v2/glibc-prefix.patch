@@ -1,0 +1,44 @@
+--- a/scripts/build/libc/glibc.sh
++++ b/scripts/build/libc/glibc.sh
+@@ -339,7 +339,7 @@
+     RANLIB=${CT_TARGET}-ranlib                                      \
+     "${CONFIG_SHELL}"                                               \
+     "${src_dir}/configure"                                          \
+-        --prefix=/usr                                               \
++        --prefix=%OPTWARE_TARGET_PREFIX%                                               \
+         --build=${CT_BUILD}                                         \
+         --host=${CT_TARGET}                                         \
+         --cache-file="$(pwd)/config.cache"                          \
+@@ -383,6 +383,7 @@
+         # use the 'install-headers' makefile target to install the
+         # headers
+         CT_DoExecLog ALL ${make} ${JOBSFLAGS}                       \
++                         prefix=/usr                                \
+                          install_root=${CT_SYSROOT_DIR}${extra_dir} \
+                          install-bootstrap-headers=yes              \
+                          "${extra_make_args[@]}"                    \
+@@ -460,6 +461,7 @@
+         CT_DoLog EXTRA "Installing C library"
+         CT_DoExecLog ALL ${make} ${JOBSFLAGS}                               \
+                               "${extra_make_args[@]}"                       \
++                              prefix=/usr                                   \
+                               install_root="${CT_SYSROOT_DIR}${extra_dir}"  \
+                               install
+ 
+@@ -578,7 +580,7 @@
+     CT_DoExecLog CFG                       \
+     CFLAGS="${glibc_cflags}"               \
+     "${src_dir}/configure"                 \
+-        --prefix=/usr                      \
++        --prefix=%OPTWARE_TARGET_PREFIX%                      \
+         --cache-file="$(pwd)/config.cache" \
+         --without-cvs                      \
+         --disable-profile                  \
+@@ -597,6 +599,7 @@
+ 
+     CT_DoLog EXTRA "Installing C library locales"
+     CT_DoExecLog ALL ${make} ${JOBSFLAGS}                  \
++                          prefix=/usr                      \
+                           install_root="${CT_SYSROOT_DIR}" \
+                           localedata/install-locales
+ }
