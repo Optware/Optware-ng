@@ -61,8 +61,8 @@ TOOLCHAIN_SOURCE=buildroot-2016.02.tar.bz2
 
 GLIBC-OPT_VERSION = 2.21
 GLIBC-OPT_IPK_VERSION = 5
-GLIBC-OPT_LIBS_SOURCE_DIR = $(TARGET_CROSS_TOP)/arm-buildroot-linux-gnueabihf/sysroot/lib
-LIBNSL_SO_DIR = $(TARGET_CROSS_TOP)/arm-buildroot-linux-gnueabihf/sysroot/lib
+GLIBC-OPT_LIBS_SOURCE_DIR = $(TARGET_CROSS_TOP)/arm-buildroot-linux-gnueabihf/sysroot/usr/lib
+LIBNSL_SO_DIR = $(TARGET_CROSS_TOP)/arm-buildroot-linux-gnueabihf/sysroot/usr/lib
 
 LIBNSL_VERSION = 2.21
 LIBNSL_IPK_VERSION = 4
@@ -100,7 +100,8 @@ $(TARGET_CROSS_TOP)/.built: $(TARGET_CROSS_TOP)/.configured
 	$(MAKE) STAGING_DIR=$(TARGET_CROSS_TOP)/arm-buildroot-linux-gnueabihf/sysroot -C $(TARGET_CROSS_BUILD_DIR)
 	cp -af $(TARGET_CROSS_BUILD_DIR)/output/host/usr/* $(TARGET_CROSS_TOP)/
 	install -m 644 $(BUILDROOT-ARMEABIHF_SOURCE_DIR)/videodev.h $(TARGET_CROSS_TOP)/arm-buildroot-linux-gnueabihf/sysroot/usr/include/linux
-	cp -f $(TARGET_CROSS_TOP)/lib/gcc/arm-buildroot-linux-gnueabihf/5.3.0/*.a $(GLIBC-OPT_LIBS_SOURCE_DIR)/
+	cp -af  $(TARGET_CROSS_TOP)/arm-buildroot-linux-gnueabihf/sysroot/lib/* \
+		$(TARGET_CROSS_TOP)/lib/gcc/arm-buildroot-linux-gnueabihf/5.3.0/*.a $(GLIBC-OPT_LIBS_SOURCE_DIR)/
 	touch $@
 
 GCC_TARGET_NAME := arm-buildroot-linux-gnueabihf

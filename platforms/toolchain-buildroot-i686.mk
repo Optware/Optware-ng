@@ -45,8 +45,8 @@ TOOLCHAIN_SOURCE=buildroot-2016.02.tar.bz2
 
 GLIBC-OPT_VERSION = 2.21
 GLIBC-OPT_IPK_VERSION = 2
-GLIBC-OPT_LIBS_SOURCE_DIR = $(TARGET_CROSS_TOP)/i686-buildroot-linux-gnu/sysroot/lib
-LIBNSL_SO_DIR = $(TARGET_CROSS_TOP)/i686-buildroot-linux-gnu/sysroot/lib
+GLIBC-OPT_LIBS_SOURCE_DIR = $(TARGET_CROSS_TOP)/i686-buildroot-linux-gnu/sysroot/usr/lib
+LIBNSL_SO_DIR = $(TARGET_CROSS_TOP)/i686-buildroot-linux-gnu/sysroot/usr/lib
 
 LIBNSL_VERSION = 2.21
 LIBNSL_IPK_VERSION = 2
@@ -84,7 +84,8 @@ $(TARGET_CROSS_TOP)/.built: $(TARGET_CROSS_TOP)/.configured
 	$(MAKE) STAGING_DIR=$(TARGET_CROSS_TOP)/i686-buildroot-linux-gnu/sysroot -C $(TARGET_CROSS_BUILD_DIR)
 	cp -af $(TARGET_CROSS_BUILD_DIR)/output/host/usr/* $(TARGET_CROSS_TOP)/
 	install -m 644 $(BUILDROOT-I686_SOURCE_DIR)/videodev.h $(TARGET_CROSS_TOP)/i686-buildroot-linux-gnu/sysroot/usr/include/linux
-	cp -f $(TARGET_CROSS_TOP)/lib/gcc/i686-buildroot-linux-gnu/5.3.0/*.a $(GLIBC-OPT_LIBS_SOURCE_DIR)/
+	cp -af  $(TARGET_CROSS_TOP)/i686-buildroot-linux-gnu/sysroot/lib/* \
+		$(TARGET_CROSS_TOP)/lib/gcc/i686-buildroot-linux-gnu/5.3.0/*.a $(GLIBC-OPT_LIBS_SOURCE_DIR)/
 	touch $@
 
 GCC_CPPFLAGS := -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64

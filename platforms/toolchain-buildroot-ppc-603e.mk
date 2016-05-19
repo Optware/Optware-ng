@@ -63,8 +63,8 @@ TOOLCHAIN_SOURCE=buildroot-2016.02.tar.bz2
 
 GLIBC-OPT_VERSION = 2.21
 GLIBC-OPT_IPK_VERSION = 3
-GLIBC-OPT_LIBS_SOURCE_DIR = $(TARGET_CROSS_TOP)/powerpc-buildroot-linux-gnu/sysroot/lib
-LIBNSL_SO_DIR = $(TARGET_CROSS_TOP)/powerpc-buildroot-linux-gnu/sysroot/lib
+GLIBC-OPT_LIBS_SOURCE_DIR = $(TARGET_CROSS_TOP)/powerpc-buildroot-linux-gnu/sysroot/usr/lib
+LIBNSL_SO_DIR = $(TARGET_CROSS_TOP)/powerpc-buildroot-linux-gnu/sysroot/usr/lib
 
 LIBNSL_VERSION = 2.21
 LIBNSL_IPK_VERSION = 3
@@ -102,7 +102,8 @@ $(TARGET_CROSS_TOP)/.built: $(TARGET_CROSS_TOP)/.configured
 	$(MAKE) STAGING_DIR=$(TARGET_CROSS_TOP)/powerpc-buildroot-linux-gnu/sysroot -C $(TARGET_CROSS_BUILD_DIR)
 	cp -af $(TARGET_CROSS_BUILD_DIR)/output/host/usr/* $(TARGET_CROSS_TOP)/
 	install -m 644 $(BUILDROOT-PPC_603E_SOURCE_DIR)/videodev.h $(TARGET_CROSS_TOP)/powerpc-buildroot-linux-gnu/sysroot/usr/include/linux
-	cp -f $(TARGET_CROSS_TOP)/lib/gcc/powerpc-buildroot-linux-gnu/5.3.0/*.a $(GLIBC-OPT_LIBS_SOURCE_DIR)/
+	cp -af  $(TARGET_CROSS_TOP)/powerpc-buildroot-linux-gnu/sysroot/lib/* \
+		$(TARGET_CROSS_TOP)/lib/gcc/powerpc-buildroot-linux-gnu/5.3.0/*.a $(GLIBC-OPT_LIBS_SOURCE_DIR)/
 	touch $@
 
 GCC_TARGET_NAME := powerpc-buildroot-linux-gnu

@@ -68,8 +68,8 @@ LIBSTDC++_TARGET_LIBDIR = $(TARGET_CROSS_TOP)/powerpc-e500v2-linux-gnuspe/sysroo
 
 GLIBC-OPT_VERSION = 2.23
 GLIBC-OPT_IPK_VERSION = 3
-GLIBC-OPT_LIBS_SOURCE_DIR = $(TARGET_CROSS_TOP)/powerpc-e500v2-linux-gnuspe/sysroot/lib
-LIBNSL_SO_DIR = $(TARGET_CROSS_TOP)/powerpc-e500v2-linux-gnuspe/sysroot/lib
+GLIBC-OPT_LIBS_SOURCE_DIR = $(TARGET_CROSS_TOP)/powerpc-e500v2-linux-gnuspe/sysroot/usr/lib
+LIBNSL_SO_DIR = $(TARGET_CROSS_TOP)/powerpc-e500v2-linux-gnuspe/sysroot/usr/lib
 
 LIBNSL_VERSION = 2.23
 LIBNSL_IPK_VERSION = 2
@@ -136,8 +136,8 @@ else
 endif
 	chmod -R u+w $(TARGET_CROSS_TOP)
 	install -m 644 $(CT-NG-PPC_E500v2_SOURCE_DIR)/videodev.h $(TARGET_CROSS_TOP)/powerpc-e500v2-linux-gnuspe/sysroot/usr/include/linux
-	cp -af $(TARGET_CROSS_TOP)/lib/gcc/powerpc-e500v2-linux-gnuspe/5.3.0/*.a $(GLIBC-OPT_LIBS_SOURCE_DIR)/
-	cp -af $(TARGET_CROSS_TOP)/powerpc-e500v2-linux-gnuspe/sysroot/lib/libstdc++*.a $(TARGET_CROSS_TOP)/powerpc-e500v2-linux-gnuspe/sysroot/usr/lib/
+	cp -af  $(TARGET_CROSS_TOP)/powerpc-e500v2-linux-gnuspe/sysroot/usr/lib/* \
+		$(TARGET_CROSS_TOP)/lib/gcc/powerpc-e500v2-linux-gnuspe/5.3.0/*.a $(GLIBC-OPT_LIBS_SOURCE_DIR)/
 	touch $@
 
 GLIBC-OPT_LIBS := 	ld libc libm libdl libgcc librt libanl libutil libcrypt libnss_db \
