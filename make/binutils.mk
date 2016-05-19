@@ -23,7 +23,7 @@
 #
 BINUTILS_SITE=http://ftp.gnu.org/gnu/binutils
 BINUTILS_VERSION ?= 2.25.1
-BINUTILS_IPK_VERSION ?= 2
+BINUTILS_IPK_VERSION ?= 3
 BINUTILS_SOURCE=binutils-$(BINUTILS_VERSION).tar.bz2
 BINUTILS_DIR?=binutils-$(BINUTILS_VERSION)
 BINUTILS_UNZIP=bzcat
@@ -136,6 +136,7 @@ $(BINUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(BINUTILS_SOURCE) $(BINUTILS_PATCH
 		--host=$(BINUTILS_TARGET_NAME) \
 		--target=$(BINUTILS_TARGET_NAME) \
 		--prefix=$(TARGET_PREFIX) \
+		--with-sysroot=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
 		--disable-werror \
