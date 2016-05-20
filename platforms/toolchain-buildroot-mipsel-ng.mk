@@ -1,9 +1,9 @@
-# This toolchain is gcc 5.3.0 on uClibc-ng 1.0.13
+# This toolchain is gcc 5.3.0 on uClibc-ng 1.0.14
 
 GNU_TARGET_NAME = mipsel-linux
 EXACT_TARGET_NAME = mipsel-buildroot-linux-uclibc
 
-UCLIBC_VERSION=1.0.13
+UCLIBC_VERSION=1.0.14
 
 DEFAULT_TARGET_PREFIX=/opt
 TARGET_PREFIX ?= /opt
@@ -67,7 +67,7 @@ TOOLCHAIN_KERNEL_HASH=4424ebabf6ea50f5b2296f95d4471a51a1ce5430
 TOOLCHAIN_KERNEL_SOURCE=linux-$(TOOLCHAIN_KERNEL_VERSION).tar.xz
 
 UCLIBC-OPT_VERSION = $(UCLIBC_VERSION)
-UCLIBC-OPT_IPK_VERSION = 3
+UCLIBC-OPT_IPK_VERSION = 1
 LIBNSL_IPK_VERSION = 1
 UCLIBC-OPT_LIBS_SOURCE_DIR = $(TARGET_CROSS_TOP)/mipsel-buildroot-linux-uclibc/sysroot/lib
 
