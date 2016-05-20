@@ -20,8 +20,8 @@
 # You should change all these variables to suit your package.
 #
 GDB_SITE=http://ftp.gnu.org/gnu/gdb
-GDB_VERSION=7.10.1
-GDB_IPK_VERSION=2
+GDB_VERSION=7.11
+GDB_IPK_VERSION=1
 GDB_SOURCE=gdb-$(GDB_VERSION).tar.xz
 GDB_UNZIP=xzcat
 GDB_DIR=gdb-$(GDB_VERSION)
@@ -234,6 +234,7 @@ $(GDB_IPK): $(GDB_BUILD_DIR)/.built
 		$(TARGET_PREFIX)/include/bfd.h \
 		$(TARGET_PREFIX)/include/bfdlink.h \
 		$(TARGET_PREFIX)/include/dis-asm.h \
+		$(TARGET_PREFIX)/plugin-api.h \
 		$(TARGET_PREFIX)/include/symcat.h \
 		$(TARGET_PREFIX)/info/bfd.info \
 		$(TARGET_PREFIX)/share/info/bfd.info \
