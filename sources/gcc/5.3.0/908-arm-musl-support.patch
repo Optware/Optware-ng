@@ -38,7 +38,7 @@ Index: b/gcc/config/arm/linux-eabi.h
 +#define MUSL_DYNAMIC_LINKER_E "%{mbig-endian:eb}"
 +#endif
 +#define MUSL_DYNAMIC_LINKER \
-+  "/lib/ld-musl-arm" MUSL_DYNAMIC_LINKER_E "%{mfloat-abi=hard:hf}.so.1"
++  "%OPTWARE_TARGET_PREFIX%/lib/ld-musl-arm" MUSL_DYNAMIC_LINKER_E "%{mfloat-abi=hard:hf}.so.1"
 +
  /* At this point, bpabi.h will have clobbered LINK_SPEC.  We want to
     use the GNU/Linux version, not the generic BPABI version.  */
