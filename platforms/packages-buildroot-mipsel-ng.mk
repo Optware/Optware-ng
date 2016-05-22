@@ -3,10 +3,12 @@ SPECIFIC_PACKAGES = \
 	$(PERL_PACKAGES) \
 	binutils libc-dev gcc \
 	ipkg-static \
+	libopenzwave \
 
 # iptraf: sys/types.h and linux/types.h conflicting
 # clamav: missing fanotify_init and fanotify_mark system calls in 2.6.22.19 kernel
 # lm-sensors: No rule to make target `sys/io.h'
+# libopenzwave: linux/hidraw.h: No such file or directory
 BROKEN_PACKAGES = \
 	buildroot \
 	$(UCLIBC_BROKEN_PACKAGES) \

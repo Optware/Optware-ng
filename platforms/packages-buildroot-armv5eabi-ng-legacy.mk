@@ -3,12 +3,14 @@ SPECIFIC_PACKAGES = \
 	$(PERL_PACKAGES) \
 	binutils libc-dev gcc \
 	ipkg-static \
+	libopenzwave \
 
 # iptraf: sys/types.h and linux/types.h conflicting
 # wayland: requires signalfd, timerfd_* and epoll_create1
 # inferno: failing with asm-arm.S:30: Error: invalid constant (900001) after fixup
 # libexplain: kernel-related issues
 # node: linux/auxvec.h: No such file or directory
+# libopenzwave: linux/hidraw.h: No such file or directory
 BROKEN_PACKAGES = \
 	6relayd \
 	buildroot \
