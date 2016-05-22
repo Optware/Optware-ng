@@ -3,7 +3,6 @@ SPECIFIC_PACKAGES = \
 	$(PERL_PACKAGES) \
 	binutils libc-dev gcc \
 	ipkg-static \
-	libopenzwave \
 
 # iptraf: sys/types.h and linux/types.h conflicting
 # wayland: requires signalfd, timerfd_* and epoll_create1
@@ -24,7 +23,8 @@ BROKEN_PACKAGES = \
 	wayland \
 	inferno \
 	libexplain \
-	node
+	node \
+	libopenzwave
 
 STRACE_VERSION = 4.5.20
 STRACE_IPK_VERSION = 1

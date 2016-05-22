@@ -3,7 +3,6 @@ SPECIFIC_PACKAGES = \
 	$(PERL_PACKAGES) \
 	binutils libc-dev gcc \
 	ipkg-static \
-	libopenzwave \
 
 # iptraf: sys/types.h and linux/types.h conflicting
 # clamav: missing fanotify_init and fanotify_mark system calls in 2.6.22.19 kernel
@@ -20,7 +19,8 @@ BROKEN_PACKAGES = \
 	sandbox \
 	lm-sensors \
 	libopensync msynctool obexftp \
-	modutils
+	modutils \
+	libopenzwave
 
 PERL_MAJOR_VER := 5.22
 
