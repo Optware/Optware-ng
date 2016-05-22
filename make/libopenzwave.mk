@@ -168,6 +168,7 @@ $(LIBOPENZWAVE_BUILD_DIR)/.staged: $(LIBOPENZWAVE_BUILD_DIR)/.built
 		pkgconfigdir=$(STAGING_PREFIX)/lib/pkgconfig \
 		install
 	sed -i -e 's|=$(TARGET_PREFIX)|=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/libopenzwave.pc
+	sed -i -e '/^pcfile=/s|=.*|=$(STAGING_LIB_DIR)/pkgconfig/libopenzwave.pc|' $(STAGING_PREFIX)/bin/ozw_config
 	touch $@
 
 libopenzwave-stage: $(LIBOPENZWAVE_BUILD_DIR)/.staged
