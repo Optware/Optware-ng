@@ -357,7 +357,7 @@ COMMON_CROSS_PACKAGES = \
 	libmcrypt libmm \
 	libmms libmnl libmpc libmpcdec libmpdclient libmpeg2 libmpfr libmrss libmtp \
 	libnetfilter-acct libnetfilter-conntrack libnetfilter-log libnetfilter-queue libnfnetlink libnettle libnl libnsl libnxml \
-	libol libogg libosip2 libopensync libotr libpam \
+	libol libogg libosip2 libopensync libopenzwave libotr libpam \
 	libpar2 libpcap libpeas libpng libpth librsync librsvg \
 	libsamplerate libserf libshout libsigc++ libsoup libsndfile libsodium libsoxr libstdc++ \
 	libtasn1 libtheora libtiff libtool libtorrent \

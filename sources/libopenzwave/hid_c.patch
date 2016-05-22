@@ -1,0 +1,11 @@
+--- a/cpp/hidapi/linux/hid.c
++++ b/cpp/hidapi/linux/hid.c
+@@ -27,6 +27,8 @@
+ #include <stdlib.h>
+ #include <locale.h>
+ #include <errno.h>
++#define __USE_GNU
++#include <wchar.h>
+ 
+ /* Unix */
+ #include <unistd.h>
