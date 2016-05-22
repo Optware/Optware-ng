@@ -60,7 +60,7 @@ TOOLCHAIN_SITE=http://buildroot.uclibc.org/downloads
 TOOLCHAIN_SOURCE=buildroot-2016.02.tar.bz2
 
 GLIBC-OPT_VERSION = 2.21
-GLIBC-OPT_IPK_VERSION = 6
+GLIBC-OPT_IPK_VERSION = 7
 GLIBC-OPT_LIBS_SOURCE_DIR = $(TARGET_CROSS_TOP)/arm-buildroot-linux-gnueabihf/sysroot/usr/lib
 LIBNSL_SO_DIR = $(TARGET_CROSS_TOP)/arm-buildroot-linux-gnueabihf/sysroot/usr/lib
 

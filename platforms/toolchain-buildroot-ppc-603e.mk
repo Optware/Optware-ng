@@ -62,7 +62,7 @@ TOOLCHAIN_SITE=http://buildroot.uclibc.org/downloads
 TOOLCHAIN_SOURCE=buildroot-2016.02.tar.bz2
 
 GLIBC-OPT_VERSION = 2.21
-GLIBC-OPT_IPK_VERSION = 4
+GLIBC-OPT_IPK_VERSION = 5
 GLIBC-OPT_LIBS_SOURCE_DIR = $(TARGET_CROSS_TOP)/powerpc-buildroot-linux-gnu/sysroot/usr/lib
 LIBNSL_SO_DIR = $(TARGET_CROSS_TOP)/powerpc-buildroot-linux-gnu/sysroot/usr/lib
 

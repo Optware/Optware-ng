@@ -67,7 +67,7 @@ TOOLCHAIN_SOURCE=crosstool-ng-$(TOOLCHAIN_VERSION).tar.bz2
 LIBSTDC++_TARGET_LIBDIR = $(TARGET_CROSS_TOP)/powerpc-e500v2-linux-gnuspe/sysroot/lib
 
 GLIBC-OPT_VERSION = 2.23
-GLIBC-OPT_IPK_VERSION = 4
+GLIBC-OPT_IPK_VERSION = 5
 GLIBC-OPT_LIBS_SOURCE_DIR = $(TARGET_CROSS_TOP)/powerpc-e500v2-linux-gnuspe/sysroot/usr/lib
 LIBNSL_SO_DIR = $(TARGET_CROSS_TOP)/powerpc-e500v2-linux-gnuspe/sysroot/usr/lib
 

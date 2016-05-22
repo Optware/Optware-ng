@@ -91,7 +91,7 @@ $(GLIBC-OPT_IPK): make/glibc-opt.mk
 	cp -f $(GLIBC-OPT_LIBS_SOURCE_DIR)/libpthread* $(GLIBC-OPT_LIBS_SOURCE_DIR)/libthread_db* \
 							$(GLIBC-OPT_IPK_DIR)$(TARGET_PREFIX)/lib
 	# these are provided by libc-dev
-	rm -f $(GLIBC-OPT_IPK_DIR)$(TARGET_PREFIX)/lib/*{.so,.a}
+	rm -f `ls $(GLIBC-OPT_IPK_DIR)$(TARGET_PREFIX)/lib/*{.so,.a} | egrep -v -- '-[0-9\.]*\.so$$'`
 	$(MAKE) $(GLIBC-OPT_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(BUILDROOT_SOURCE_DIR)/prerm $(GLIBC-OPT_IPK_DIR)/CONTROL/prerm
 #	echo $(GLIBC-OPT_CONFFILES) | sed -e 's/ /\n/g' > $(GLIBC-OPT_IPK_DIR)/CONTROL/conffiles
