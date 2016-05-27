@@ -1,5 +1,14 @@
 --- a/sshfs.c
 +++ b/sshfs.c
+@@ -3405,7 +3405,7 @@
+ "    -o nomap=TYPE          with idmap=file, how to handle missing mappings\n"
+ "             ignore           don't do any re-mapping\n"
+ "             error            return an error (default)\n"
+-"    -o ssh_command=CMD     execute CMD instead of 'ssh'\n"
++"    -o ssh_command=CMD     execute CMD instead of '%OPTWARE_TARGET_PREFIX%/bin/ssh'\n"
+ "    -o ssh_protocol=N      ssh protocol to use (default: 2)\n"
+ "    -o sftp_server=SERV    path to sftp server or subsystem (default: sftp)\n"
+ "    -o directport=PORT     directly connect to PORT bypassing ssh\n"
 @@ -3961,7 +3961,7 @@
  		sshfs.idmap = IDMAP_NONE;
  	}
