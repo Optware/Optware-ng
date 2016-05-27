@@ -185,6 +185,9 @@ $(FUSE_BUILD_DIR)/.staged: $(FUSE_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(@D)/lib DESTDIR=$(STAGING_DIR) install
 	$(MAKE) -C $(@D)/include DESTDIR=$(STAGING_DIR) install
+	mkdir -p $(STAGING_LIB_DIR)/pkgconfig
+	cp -f $(@D)/fuse.pc $(STAGING_LIB_DIR)/pkgconfig
+	sed -i -e '/^prefix=/s|=.*|=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/fuse.pc
 	touch $@
 
 fuse-stage: $(FUSE_BUILD_DIR)/.staged

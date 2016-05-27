@@ -1,0 +1,10 @@
+--- a/configure
++++ b/configure
+@@ -3810,7 +3810,6 @@
+ fi
+ 
+ 
+-export PKG_CONFIG_PATH=/usr/local/lib/pkgconfig:$PKG_CONFIG_PATH
+ 
+ 
+ 
