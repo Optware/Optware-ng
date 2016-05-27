@@ -30,7 +30,7 @@ SSHFS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SSHFS_DESCRIPTION=A network filesystem client to connect to SSH servers.
 SSHFS_SECTION=misc
 SSHFS_PRIORITY=optional
-SSHFS_DEPENDS=glibc, libfuse, openssh
+SSHFS_DEPENDS=glib, libfuse, openssh
 SSHFS_SUGGESTS=
 SSHFS_CONFLICTS=
 
