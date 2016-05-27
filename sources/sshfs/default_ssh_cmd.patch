@@ -1,0 +1,11 @@
+--- a/sshfs.c
++++ b/sshfs.c
+@@ -3961,7 +3961,7 @@
+ 		sshfs.idmap = IDMAP_NONE;
+ 	}
+ 	sshfs.nomap = NOMAP_ERROR;
+-	ssh_add_arg("ssh");
++	ssh_add_arg("%OPTWARE_TARGET_PREFIX%/bin/ssh");
+ 	ssh_add_arg("-x");
+ 	ssh_add_arg("-a");
+ 	ssh_add_arg("-oClearAllForwardings=yes");

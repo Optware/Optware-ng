@@ -47,7 +47,9 @@ SSHFS_IPK_VERSION=1
 # SSHFS_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-SSHFS_PATCHES=$(SSHFS_SOURCE_DIR)/configure.patch
+SSHFS_PATCHES=\
+$(SSHFS_SOURCE_DIR)/configure.patch \
+$(SSHFS_SOURCE_DIR)/default_ssh_cmd.patch \
 
 #
 # If the compilation of the package requires additional
