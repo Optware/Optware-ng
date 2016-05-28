@@ -69,11 +69,12 @@ READLINE_LDFLAGS=-lncurses
 # You should not change any of these variables.
 #
 READLINE_BUILD_DIR=$(BUILD_DIR)/readline
+READLINE_HOST_BUILD_DIR=$(HOST_BUILD_DIR)/readline
 READLINE_SOURCE_DIR=$(SOURCE_DIR)/readline
 READLINE_IPK_DIR=$(BUILD_DIR)/readline-$(READLINE_VERSION)-ipk
 READLINE_IPK=$(BUILD_DIR)/readline_$(READLINE_VERSION)-$(READLINE_IPK_VERSION)_$(TARGET_ARCH).ipk
 
-.PHONY: readline-source readline-unpack readline readline-stage readline-ipk readline-clean readline-dirclean readline-check
+.PHONY: readline-source readline-unpack readline-host-stage readline readline-stage readline-ipk readline-clean readline-dirclean readline-check
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -89,6 +90,27 @@ $(DL_DIR)/$(READLINE_SOURCE):
 # source code's archive (.tar.gz, .bz2, etc.)
 #
 readline-source: $(DL_DIR)/$(READLINE_SOURCE) $(READLINE_PATCHES)
+
+$(READLINE_HOST_BUILD_DIR)/.staged: $(DL_DIR)/$(READLINE_SOURCE)
+	$(MAKE) ncurses-host-stage
+	rm -rf $(HOST_BUILD_DIR)/$(READLINE_DIR) $(@D)
+	$(READLINE_UNZIP) $(DL_DIR)/$(READLINE_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
+	if test "$(HOST_BUILD_DIR)/$(READLINE_DIR)" != "$(@D)" ; \
+	        then mv $(HOST_BUILD_DIR)/$(READLINE_DIR) $(@D) ; \
+	fi
+	(cd $(@D); \
+	        CPPFLAGS="-I$(HOST_STAGING_INCLUDE_DIR)" \
+	        LDFLAGS="-L$(HOST_STAGING_LIB_DIR)" \
+	        ./configure \
+	        --prefix=$(HOST_STAGING_PREFIX) \
+	        --disable-nls \
+	        --disable-shared \
+	        --with-curses \
+	)
+	$(MAKE) -C $(@D) install
+	touch $@
+
+readline-host-stage: $(READLINE_HOST_BUILD_DIR)/.staged
 
 #
 # This target unpacks the source code in the build directory.
