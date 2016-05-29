@@ -1,9 +1,9 @@
-# This toolchain is gcc 5.3.0 on uClibc-ng 1.0.14
+# This toolchain is gcc 5.3.0 on uClibc-ng 1.0.15
 
 GNU_TARGET_NAME = arm-linux
 EXACT_TARGET_NAME = arm-buildroot-linux-uclibcgnueabi
 
-UCLIBC_VERSION=1.0.14
+UCLIBC_VERSION=1.0.15
 
 DEFAULT_TARGET_PREFIX=/opt
 TARGET_PREFIX ?= /opt

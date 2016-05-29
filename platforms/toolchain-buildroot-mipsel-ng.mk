@@ -1,9 +1,9 @@
-# This toolchain is gcc 5.3.0 on uClibc-ng 1.0.14
+# This toolchain is gcc 5.3.0 on uClibc-ng 1.0.15
 
 GNU_TARGET_NAME = mipsel-linux
 EXACT_TARGET_NAME = mipsel-buildroot-linux-uclibc
 
-UCLIBC_VERSION=1.0.14
+UCLIBC_VERSION=1.0.15
 
 DEFAULT_TARGET_PREFIX=/opt
 TARGET_PREFIX ?= /opt
@@ -67,7 +67,7 @@ TOOLCHAIN_KERNEL_HASH=4424ebabf6ea50f5b2296f95d4471a51a1ce5430
 TOOLCHAIN_KERNEL_SOURCE=linux-$(TOOLCHAIN_KERNEL_VERSION).tar.xz
 
 UCLIBC-OPT_VERSION = $(UCLIBC_VERSION)
-UCLIBC-OPT_IPK_VERSION = 2
+UCLIBC-OPT_IPK_VERSION = 1
 LIBNSL_IPK_VERSION = 1
 UCLIBC-OPT_LIBS_SOURCE_DIR = $(TARGET_CROSS_TOP)/mipsel-buildroot-linux-uclibc/sysroot/lib
 
@@ -119,7 +119,7 @@ $(TARGET_CROSS_TOP)/.configured: $(DL_DIR)/$(TOOLCHAIN_SOURCE) \
 ifneq ($(BUILDROOT-MIPSEL-NG_UCLIBC-NG_PATCHES), )
 	$(INSTALL) -m 644 $(BUILDROOT-MIPSEL-NG_UCLIBC-NG_PATCHES) $(TARGET_CROSS_BUILD_DIR)/package/uclibc
 endif
-	(echo "DO_XSI_MATH=y"; echo "COMPAT_ATEXIT=y") >> $(TARGET_CROSS_BUILD_DIR)/package/uclibc/uClibc-ng.config
+	(echo "DO_XSI_MATH=y"; echo "COMPAT_ATEXIT=y"; echo "# UCLIBC_USE_MIPS_PREFETCH is not set") >> $(TARGET_CROSS_BUILD_DIR)/package/uclibc/uClibc-ng.config
 	sed -e 's|^BR2_DL_DIR=.*|BR2_DL_DIR="$(DL_DIR)"|' -e 's|@KERNEL_VERSION@|$(TOOLCHAIN_KERNEL_VERSION)|' \
 		$(BUILDROOT-MIPSEL-NG_SOURCE_DIR)/config > $(TARGET_CROSS_BUILD_DIR)/.config
 	touch $@
