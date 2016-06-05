@@ -39,7 +39,7 @@ LIBOPENZWAVE_CONFLICTS=
 #
 # LIBOPENZWAVE_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBOPENZWAVE_IPK_VERSION=1
+LIBOPENZWAVE_IPK_VERSION=2
 
 #
 # LIBOPENZWAVE_CONFFILES should be a list of user-editable files
@@ -62,7 +62,7 @@ LIBOPENZWAVE_CPPFLAGS += -O3
 else
 LIBOPENZWAVE_CPPFLAGS += -O2
 endif
-LIBOPENZWAVE_LDFLAGS=
+LIBOPENZWAVE_LDFLAGS=-ludev
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 LIBOPENZWAVE_LDFLAGS += -liconv
 endif
