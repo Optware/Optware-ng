@@ -229,7 +229,7 @@ $(PY-CYTHON_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(PY-CYTHON_SOUR
 	)
 	$(PY-CYTHON_UNZIP) $(DL_DIR)/$(PY-CYTHON_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
 	mv $(HOST_BUILD_DIR)/$(PY-CYTHON_DIR) $(@D)/3
-	(cd $(@D)/2.7; \
+	(cd $(@D)/3; \
 	    ( \
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(HOST_STAGING_INCLUDE_DIR):$(HOST_STAGING_INCLUDE_DIR)/python$(PYTHON3_VERSION_MAJOR)m"; \
