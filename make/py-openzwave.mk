@@ -29,15 +29,15 @@ PY-OPENZWAVE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-OPENZWAVE_DESCRIPTION=Python wrapper for openzwave: lib and console manager parts
 PY-OPENZWAVE_SECTION=misc
 PY-OPENZWAVE_PRIORITY=optional
-PY27_OPENZWAVE_DEPENDS=python27, libopenzwave, py27-six, py27-urwid
-PY3_OPENZWAVE_DEPENDS=python3, libopenzwave, py3-six, py3-urwid
+PY27-OPENZWAVE_DEPENDS=python27, libopenzwave, py27-six, py27-urwid
+PY3-OPENZWAVE_DEPENDS=python3, libopenzwave, py3-six, py3-urwid
 PY-OPENZWAVE_SUGGESTS=
 PY-OPENZWAVE_CONFLICTS=
 
 #
 # PY-OPENZWAVE_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-OPENZWAVE_IPK_VERSION=1
+PY-OPENZWAVE_IPK_VERSION=2
 
 #
 # PY-OPENZWAVE_CONFFILES should be a list of user-editable files
@@ -216,7 +216,7 @@ $(PY27-OPENZWAVE_IPK_DIR)/CONTROL/control:
 	@echo "Section: $(PY-OPENZWAVE_SECTION)" >>$@
 	@echo "Version: $(PY-OPENZWAVE_VERSION)-$(PY-OPENZWAVE_IPK_VERSION)" >>$@
 	@echo "Maintainer: $(PY-OPENZWAVE_MAINTAINER)" >>$@
-	@echo "Source: $(PY-OPENZWAVE_SITE)/$(PY-OPENZWAVE_SOURCE)" >>$@
+	@echo "Source: $(PY-OPENZWAVE_URL)" >>$@
 	@echo "Description: $(PY-OPENZWAVE_DESCRIPTION)" >>$@
 	@echo "Depends: $(PY27-OPENZWAVE_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-OPENZWAVE_CONFLICTS)" >>$@
@@ -230,7 +230,7 @@ $(PY3-OPENZWAVE_IPK_DIR)/CONTROL/control:
 	@echo "Section: $(PY-OPENZWAVE_SECTION)" >>$@
 	@echo "Version: $(PY-OPENZWAVE_VERSION)-$(PY-OPENZWAVE_IPK_VERSION)" >>$@
 	@echo "Maintainer: $(PY-OPENZWAVE_MAINTAINER)" >>$@
-	@echo "Source: $(PY-OPENZWAVE_SITE)/$(PY-OPENZWAVE_SOURCE)" >>$@
+	@echo "Source: $(PY-OPENZWAVE_URL)" >>$@
 	@echo "Description: $(PY-OPENZWAVE_DESCRIPTION)" >>$@
 	@echo "Depends: $(PY3-OPENZWAVE_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-OPENZWAVE_CONFLICTS)" >>$@
