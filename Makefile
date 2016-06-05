@@ -207,7 +207,7 @@ PYTHON_PACKAGES = \
 	py-moin py-mssql py-mx-base py-mysql \
 	py-myghty \
 	py-nose \
-	py-openssl py-paramiko \
+	py-openssl py-openzwave py-paramiko \
 	py-paste py-pastedeploy py-pastescript py-pastewebkit \
 	py-pexpect py-pil py-ply py-protocols \
 	py-pgsql py-psycopg py-psycopg2 py-pygresql \

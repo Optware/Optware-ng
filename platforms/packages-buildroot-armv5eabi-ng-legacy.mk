@@ -24,7 +24,7 @@ BROKEN_PACKAGES = \
 	inferno \
 	libexplain \
 	node \
-	libopenzwave
+	libopenzwave py-openzwave
 
 STRACE_VERSION = 4.5.20
 STRACE_IPK_VERSION = 1

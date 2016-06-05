@@ -1,0 +1,17 @@
+--- a/setup-lib.py
++++ b/setup-lib.py
+@@ -112,12 +112,12 @@
+     #For linux static
+     ext_modules = [Extension("libopenzwave",
+                              sources=["src-lib/libopenzwave/libopenzwave.pyx"],
++                             libraries=['udev', 'stdc++', 'openzwave'],
+-                             libraries=['udev', 'stdc++'],
+                              language="c++",
+                              define_macros=[
+                                  ('PY_SSIZE_T_CLEAN',1),
+                              ],
++                             #extra_objects=['openzwave/libopenzwave.a'],
+-                             extra_objects=['openzwave/libopenzwave.a'],
+                              include_dirs=['openzwave/cpp/src/', 'openzwave/cpp/src/value_classes/', 'openzwave/cpp/src/platform/', 'openzwave/cpp/build/linux/']
+     )]
+ 

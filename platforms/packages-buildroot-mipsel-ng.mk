@@ -20,7 +20,7 @@ BROKEN_PACKAGES = \
 	lm-sensors \
 	libopensync msynctool obexftp \
 	modutils \
-	libopenzwave
+	libopenzwave py-openzwave
 
 PERL_MAJOR_VER := 5.22
 
