@@ -26,18 +26,18 @@ PY-OPENZWAVE_SOURCE=python-openzwave-$(PY-OPENZWAVE_VERSION).tar.gz
 PY-OPENZWAVE_DIR=python-openzwave-$(PY-OPENZWAVE_VERSION)
 PY-OPENZWAVE_UNZIP=zcat
 PY-OPENZWAVE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
-PY-OPENZWAVE_DESCRIPTION=Python wrapper for openzwave: lib and console manager parts
+PY-OPENZWAVE_DESCRIPTION=Python wrapper for openzwave: lib, api and console manager parts
 PY-OPENZWAVE_SECTION=misc
 PY-OPENZWAVE_PRIORITY=optional
-PY27-OPENZWAVE_DEPENDS=python27, libopenzwave, py27-six, py27-urwid
-PY3-OPENZWAVE_DEPENDS=python3, libopenzwave, py3-six, py3-urwid
+PY27-OPENZWAVE_DEPENDS=python27, libopenzwave, py27-six, py27-urwid, py27-dispatcher
+PY3-OPENZWAVE_DEPENDS=python3, libopenzwave, py3-six, py3-urwid, py3-dispatcher
 PY-OPENZWAVE_SUGGESTS=
 PY-OPENZWAVE_CONFLICTS=
 
 #
 # PY-OPENZWAVE_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-OPENZWAVE_IPK_VERSION=2
+PY-OPENZWAVE_IPK_VERSION=3
 
 #
 # PY-OPENZWAVE_CONFFILES should be a list of user-editable files
@@ -178,11 +178,17 @@ $(PY-OPENZWAVE_BUILD_DIR)/.built: $(PY-OPENZWAVE_BUILD_DIR)/.configured
         $(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared -pthread' \
 	$(HOST_STAGING_PREFIX)/bin/python2.7 setup-lib.py build)
 	(cd $(@D)/2.7; \
+	$(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared -pthread' \
+	$(HOST_STAGING_PREFIX)/bin/python2.7 setup-api.py build)
+	(cd $(@D)/2.7; \
         $(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared -pthread' \
 	$(HOST_STAGING_PREFIX)/bin/python2.7 setup-manager.py build)
 	(cd $(@D)/3; \
         $(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared -pthread' \
 	$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup-lib.py build)
+	(cd $(@D)/3; \
+	$(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared -pthread' \
+	$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup-api.py build)
 	(cd $(@D)/3; \
         $(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared -pthread' \
 	$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup-manager.py build)
@@ -250,6 +256,7 @@ $(PY27-OPENZWAVE_IPK): $(PY-OPENZWAVE_BUILD_DIR)/.built
 	rm -rf $(PY27-OPENZWAVE_IPK_DIR) $(BUILD_DIR)/py27-openzwave_*_$(TARGET_ARCH).ipk
 	(cd $(PY-OPENZWAVE_BUILD_DIR)/2.7; \
 	  $(HOST_STAGING_PREFIX)/bin/python2.7 setup-lib.py install --root=$(PY27-OPENZWAVE_IPK_DIR) --prefix=$(TARGET_PREFIX) && \
+	  $(HOST_STAGING_PREFIX)/bin/python2.7 setup-api.py install --root=$(PY27-OPENZWAVE_IPK_DIR) --prefix=$(TARGET_PREFIX) && \
 	  $(HOST_STAGING_PREFIX)/bin/python2.7 setup-manager.py install --root=$(PY27-OPENZWAVE_IPK_DIR) --prefix=$(TARGET_PREFIX) \
 	)
 	find $(PY27-OPENZWAVE_IPK_DIR)$(TARGET_PREFIX)/lib/python2.7 -type f -name '*.so' -exec $(STRIP_COMMAND) {} \;
@@ -262,6 +269,7 @@ $(PY3-OPENZWAVE_IPK): $(PY-OPENZWAVE_BUILD_DIR)/.built
 	rm -rf $(PY3-OPENZWAVE_IPK_DIR) $(BUILD_DIR)/py3-openzwave_*_$(TARGET_ARCH).ipk
 	(cd $(PY-OPENZWAVE_BUILD_DIR)/3; \
 	  $(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup-lib.py install --root=$(PY3-OPENZWAVE_IPK_DIR) --prefix=$(TARGET_PREFIX) && \
+	  $(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup-api.py install --root=$(PY3-OPENZWAVE_IPK_DIR) --prefix=$(TARGET_PREFIX) && \
 	  $(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup-manager.py install --root=$(PY3-OPENZWAVE_IPK_DIR) --prefix=$(TARGET_PREFIX) \
 	)
 	find $(PY3-OPENZWAVE_IPK_DIR)$(TARGET_PREFIX)/lib/python$(PYTHON3_VERSION_MAJOR) -type f -name '*.so' -exec $(STRIP_COMMAND) {} \;
