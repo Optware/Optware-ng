@@ -198,7 +198,7 @@ PYTHON_PACKAGES = \
 	py-beaker py-bittorrent py-bluez py-boto py-buildutils \
 	py-celementtree py-chardet py-cheetah py-cherrypy py-cherrytemplate py-cjson \
 	py-clips py-configobj py-constraint py-crypto py-curl \
-	py-decorator py-decoratortools py-django py-docutils py-duplicity \
+	py-decorator py-decoratortools py-dispatcher py-django py-docutils py-duplicity \
 	py-elementtree py-feedparser py-flup py-formencode \
 	py-gdchart2 py-gd py-genshi py-gnosis-utils py-gobject2 py-gtk \
 	py-idna py-imaplib2 py-ipaddress py-jinja2 \
