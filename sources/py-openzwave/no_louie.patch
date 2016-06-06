@@ -1,0 +1,52 @@
+--- a/setup-api.py
++++ b/setup-api.py
+@@ -27,11 +27,6 @@
+ import sys
+ from pyozw_version import pyozw_version
+ 
+-if sys.hexversion >= 0x3000000:
+-    dispatch_package = 'pydispatcher >= 2.0.5'
+-else:
+-    dispatch_package = 'Louie >= 1.1'
+-
+ DEBIAN_PACKAGE = False
+ filtered_args = []
+ 
+@@ -81,7 +76,7 @@
+   #The following line install documentation in share/python-openzwave
+   #data_files = data_files,
+   #recommend : "pysqlite >= 2.6",
+-  install_requires=[ dispatch_package,
++  install_requires=[ 'pydispatcher >= 2.0.5',
+                      'libopenzwave == %s' % pyozw_version,
+                     ]
+ )
+--- a/src-api/openzwave/controller.py
++++ b/src-api/openzwave/controller.py
+@@ -26,10 +26,7 @@
+ """
+ import sys
+ import six
+-if six.PY3:
+-    from pydispatch import dispatcher
+-else:
+-    from louie import dispatcher
++from pydispatch import dispatcher
+ from openzwave.object import ZWaveObject, deprecated
+ from libopenzwave import PyStatDriver, PyControllerState
+ import threading
+--- a/src-api/openzwave/network.py
++++ b/src-api/openzwave/network.py
+@@ -28,11 +28,10 @@
+ import time
+ import sys
+ import six
++from pydispatch import dispatcher
+ if six.PY3:
+-    from pydispatch import dispatcher
+     import _thread as thread
+ else:
+-    from louie import dispatcher
+     import thread
+ import threading
+ import libopenzwave

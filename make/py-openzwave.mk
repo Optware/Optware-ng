@@ -37,7 +37,7 @@ PY-OPENZWAVE_CONFLICTS=
 #
 # PY-OPENZWAVE_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-OPENZWAVE_IPK_VERSION=4
+PY-OPENZWAVE_IPK_VERSION=5
 
 #
 # PY-OPENZWAVE_CONFFILES should be a list of user-editable files
@@ -50,6 +50,7 @@ PY-OPENZWAVE_IPK_VERSION=4
 PY-OPENZWAVE_PATCHES=\
 $(PY-OPENZWAVE_SOURCE_DIR)/setup-lib.py.patch \
 $(PY-OPENZWAVE_SOURCE_DIR)/dispatch.patch \
+$(PY-OPENZWAVE_SOURCE_DIR)/no_louie.patch \
 
 #
 # If the compilation of the package requires additional
