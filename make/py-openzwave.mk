@@ -29,15 +29,15 @@ PY-OPENZWAVE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-OPENZWAVE_DESCRIPTION=Python wrapper for openzwave: lib, api and console manager parts
 PY-OPENZWAVE_SECTION=misc
 PY-OPENZWAVE_PRIORITY=optional
-PY27-OPENZWAVE_DEPENDS=python27, libopenzwave, py27-six, py27-urwid, py27-dispatcher
-PY3-OPENZWAVE_DEPENDS=python3, libopenzwave, py3-six, py3-urwid, py3-dispatcher
+PY27-OPENZWAVE_DEPENDS=python27, libopenzwave, py27-setuptools, py27-six, py27-urwid, py27-dispatcher
+PY3-OPENZWAVE_DEPENDS=python3, libopenzwave, py3-setuptools, py3-six, py3-urwid, py3-dispatcher
 PY-OPENZWAVE_SUGGESTS=
 PY-OPENZWAVE_CONFLICTS=
 
 #
 # PY-OPENZWAVE_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-OPENZWAVE_IPK_VERSION=3
+PY-OPENZWAVE_IPK_VERSION=4
 
 #
 # PY-OPENZWAVE_CONFFILES should be a list of user-editable files
@@ -49,6 +49,7 @@ PY-OPENZWAVE_IPK_VERSION=3
 #
 PY-OPENZWAVE_PATCHES=\
 $(PY-OPENZWAVE_SOURCE_DIR)/setup-lib.py.patch \
+$(PY-OPENZWAVE_SOURCE_DIR)/dispatch.patch \
 
 #
 # If the compilation of the package requires additional

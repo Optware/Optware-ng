@@ -1,0 +1,22 @@
+--- a/src-manager/pyozwman/ozwsh_main.py
++++ b/src-manager/pyozwman/ozwsh_main.py
+@@ -59,7 +59,7 @@
+ from pyozwman.ozwsh_widgets import ScenesTree, ScenesBox, ScenesItem
+ from pyozwman.ozwsh_widgets import StatTree, StatBox
+ 
+-from louie import dispatcher, All
++from pydispatch import dispatcher
+ import logging
+ 
+ MAIN_TITLE = "openzwave Shell"
+--- a/src-manager/pyozwman/ozwsh_widgets.py
++++ b/src-manager/pyozwman/ozwsh_widgets.py
+@@ -39,7 +39,7 @@
+ from openzwave.controller import ZWaveController
+ from openzwave.network import ZWaveNetwork
+ from openzwave.option import ZWaveOption
+-from louie import dispatcher, All
++from pydispatch import dispatcher
+ import logging
+ 
+ class OldestTree(urwid.ListWalker):
