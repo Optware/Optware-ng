@@ -1,0 +1,21 @@
+--- a/src-lib/libopenzwave/libopenzwave.pyx
++++ b/src-lib/libopenzwave/libopenzwave.pyx
+@@ -581,16 +581,8 @@
+     :rtype: str
+ 
+     '''
+-    if os.path.isdir(os.path.join("/usr",PY_OZWAVE_CONFIG_DIRECTORY)):
+-        return os.path.join("/usr",PY_OZWAVE_CONFIG_DIRECTORY)
+-    elif os.path.isdir(os.path.join("/etc","openzwave")):
+-        return os.path.join("/etc","openzwave")
+-    elif os.path.isdir(os.path.join("/usr/local",PY_OZWAVE_CONFIG_DIRECTORY)):
+-        return os.path.join("/usr/local",PY_OZWAVE_CONFIG_DIRECTORY)
+-    elif os.path.isdir(os.path.join("/usr",OZWAVE_CONFIG_DIRECTORY)):
+-        return os.path.join("/usr",OZWAVE_CONFIG_DIRECTORY)
+-    elif os.path.isdir(os.path.join("/usr/local",OZWAVE_CONFIG_DIRECTORY)):
+-        return os.path.join("/usr/local",OZWAVE_CONFIG_DIRECTORY)
++    if os.path.isdir(os.path.join("%OPTWARE_TARGET_PREFIX%/etc","openzwave")):
++        return os.path.join("%OPTWARE_TARGET_PREFIX%/etc","openzwave")
+     else:
+         if os.path.isdir(os.path.join(os.path.dirname(libopenzwave_file),PY_OZWAVE_CONFIG_DIRECTORY)):
+             return os.path.join(os.path.dirname(libopenzwave_file), PY_OZWAVE_CONFIG_DIRECTORY)
