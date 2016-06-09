@@ -1,0 +1,17 @@
+--- /dev/null
++++ b/Makefile.PL
+@@ -0,0 +1,14 @@
++require 5.005;
++use ExtUtils::MakeMaker;
++WriteMakefile
++(
++  'PL_FILES' => {},
++  'VERSION_FROM' => 'lib/IO/Interface.pm',
++  'EXE_FILES' => [],
++  'INSTALLDIRS' => 'site',
++  'NAME' => 'IO::Interface',
++  'PREREQ_PM' => {
++                   'ExtUtils::CBuilder' => 0
++                 }
++)
++;

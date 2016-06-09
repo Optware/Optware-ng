@@ -124,6 +124,7 @@ PERL_PACKAGES = \
 	perl-http-cookies perl-http-date perl-http-message \
 	perl-http-response-encoding \
 	perl-ima-dbi \
+	perl-io-interface perl-io-socket-multicast \
 	perl-io-multiplex perl-io-socket-ssl perl-io-string perl-io-stringy perl-io-zlib \
 	perl-ip-country \
 	perl-json-xs \
