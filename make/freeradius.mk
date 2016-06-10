@@ -29,14 +29,14 @@ FREERADIUS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 FREERADIUS_DESCRIPTION=An open source RADIUS server.
 FREERADIUS_SECTION=net
 FREERADIUS_PRIORITY=optional
-FREERADIUS_DEPENDS=libtool, openssl, psmisc, talloc
+FREERADIUS_DEPENDS=libtool, openssl, psmisc, talloc, libpcap, busybox-base
 FREERADIUS_SUGGESTS=freeradius-doc
 FREERADIUS_CONFLICTS=
 
 #
 # FREERADIUS_IPK_VERSION should be incremented when the ipk changes.
 #
-FREERADIUS_IPK_VERSION=2
+FREERADIUS_IPK_VERSION=3
 
 #
 # FREERADIUS_PATCHES should list any patches, in the the order in
@@ -45,7 +45,8 @@ FREERADIUS_IPK_VERSION=2
 FREERADIUS_PATCHES=\
 $(FREERADIUS_SOURCE_DIR)/configure.ac.patch \
 $(FREERADIUS_SOURCE_DIR)/headers.patch \
-$(FREERADIUS_SOURCE_DIR)/acinclude.m4.patch
+$(FREERADIUS_SOURCE_DIR)/acinclude.m4.patch \
+$(FREERADIUS_SOURCE_DIR)/hostname.patch \
 
 #
 # If the compilation of the package requires additional
@@ -113,7 +114,7 @@ freeradius-source: $(DL_DIR)/$(FREERADIUS_SOURCE) $(FREERADIUS_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(FREERADIUS_BUILD_DIR)/.configured: $(DL_DIR)/$(FREERADIUS_SOURCE) $(FREERADIUS_PATCHES) make/freeradius.mk
-	$(MAKE) openssl-stage libtool-stage talloc-stage postgresql-stage unixodbc-stage
+	$(MAKE) openssl-stage libtool-stage talloc-stage postgresql-stage unixodbc-stage libpcap-stage
 ifeq (, $(filter --without-rlm-sql-mysql, $(FREERADIUS_CONFIG_ARGS)))
 	$(MAKE) mysql-stage
 endif
@@ -247,7 +248,6 @@ $(FREERADIUS_IPK): $(FREERADIUS_BUILD_DIR)/.built
 	rm -rf $(FREERADIUS_IPK_DIR)$(TARGET_PREFIX)/man/*
 	rm -rf $(FREERADIUS_IPK_DIR)$(TARGET_PREFIX)/share/man/*
 	mv $(FREERADIUS_IPK_DIR)$(TARGET_PREFIX)/etc/* $(FREERADIUS_IPK_DIR)$(TARGET_PREFIX)/doc/.radius/
-	$(INSTALL) -m 644 $(FREERADIUS_SOURCE_DIR)/radiusd.conf $(FREERADIUS_IPK_DIR)$(TARGET_PREFIX)/doc/.radius/raddb/radiusd.conf
 	$(INSTALL) -d $(FREERADIUS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
 	-$(STRIP_COMMAND) $(FREERADIUS_IPK_DIR)$(TARGET_PREFIX)/{{bin,sbin}/*,lib/*.so}
 	$(INSTALL) -m 755 $(FREERADIUS_SOURCE_DIR)/rc.freeradius $(FREERADIUS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S55freeradius
