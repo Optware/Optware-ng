@@ -44,7 +44,7 @@ OPENJDK7_JRE_DESCRIPTION=Full OpenJDK Java runtime, using Zero VM. The packages 
 OPENJDK7_JRE_HEADLESS_DESCRIPTION=Minimal Java runtime - needed for executing non GUI Java programs, using Zero VM. The packages are built using patches from the IcedTea project.
 OPENJDK7_SECTION=language
 OPENJDK7_PRIORITY=optional
-OPENJDK7_JRE_HEADLESS_DEPENDS=libstdc++, freetype, fontconfig, libffi, libjpeg, liblcms2, glib, libcups
+OPENJDK7_JRE_HEADLESS_DEPENDS=libstdc++, freetype, fontconfig, libffi, glib, libcups
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 OPENJDK7_JRE_HEADLESS_DEPENDS+=, libiconv
 endif
@@ -63,7 +63,7 @@ OPENJDK7_JDK_CONFLICTS=
 #
 # OPENJDK7_IPK_VERSION should be incremented when the ipk changes.
 #
-OPENJDK7_IPK_VERSION=3
+OPENJDK7_IPK_VERSION=4
 
 #
 # OPENJDK7_JRE_HEADLESS_CONFFILES should be a list of user-editable files
@@ -88,16 +88,17 @@ jre/lib/$(OPENJDK7_LIBARCH)/libhprof.so \
 jre/lib/$(OPENJDK7_LIBARCH)/libinstrument.so \
 jre/lib/$(OPENJDK7_LIBARCH)/libj2gss.so \
 jre/lib/$(OPENJDK7_LIBARCH)/libj2pcsc.so \
-jre/lib/$(OPENJDK7_LIBARCH)/libj2pcsc.so \
 jre/lib/$(OPENJDK7_LIBARCH)/libj2pkcs11.so \
 jre/lib/$(OPENJDK7_LIBARCH)/libjaas_unix.so \
 jre/lib/$(OPENJDK7_LIBARCH)/libjava.so \
 jre/lib/$(OPENJDK7_LIBARCH)/libjava_crw_demo.so \
 jre/lib/$(OPENJDK7_LIBARCH)/libjawt.so \
 jre/lib/$(OPENJDK7_LIBARCH)/libjdwp.so \
+jre/lib/$(OPENJDK7_LIBARCH)/libjpeg.so \
 jre/lib/$(OPENJDK7_LIBARCH)/libjsdt.so \
 jre/lib/$(OPENJDK7_LIBARCH)/libjsig.so \
 jre/lib/$(OPENJDK7_LIBARCH)/libjsound.so \
+jre/lib/$(OPENJDK7_LIBARCH)/liblcms.so \
 jre/lib/$(OPENJDK7_LIBARCH)/libmanagement.so \
 jre/lib/$(OPENJDK7_LIBARCH)/libmlib_image.so \
 jre/lib/$(OPENJDK7_LIBARCH)/libnet.so \
@@ -186,9 +187,6 @@ $(OPENJDK7_SOURCE_DIR)/openjdk/rhbz1206656_fix_current_stack_pointer.patch \
 $(OPENJDK7_SOURCE_DIR)/openjdk/os_linux.fix-i386-zero-build.patch \
 $(OPENJDK7_SOURCE_DIR)/openjdk/hotspot-powerpcspe.diff \
 $(OPENJDK7_SOURCE_DIR)/openjdk/hotspot-no-march-i586.diff \
-$(OPENJDK7_SOURCE_DIR)/openjdk/splashscreen.patch \
-$(OPENJDK7_SOURCE_DIR)/openjdk/system_jpeg_fix.patch \
-$(OPENJDK7_SOURCE_DIR)/openjdk/system_lcms_fix.patch \
 
 #
 # OpenJDK used for bootstrap. Will check OpenJDK7 Ubuntu standart location
@@ -207,6 +205,9 @@ OPENJDK7_CPPFLAGS=-DJDK_MAJOR_VERSION=\"1\" -DJDK_MINOR_VERSION=\"7\" -DJDK_MICR
 -DJDK_UPDATE_VERSION=\"$(OPENJDK7_UPDATE_VERSION)\" -DJDK_BUILD_NUMBER=\"$(OPENJDK7_BUILD_NUMBER)\" \
 -D__sun_jdk -DMLIB_NO_LIBSUNMATH \
 -g3 -I$(OPENJDK7_BUILD_DIR)/openjdk/jdk/src/share/npt \
+-I$(OPENJDK7_BUILD_DIR)/openjdk/jdk/src/share/native/sun/awt/image/jpeg \
+-I$(OPENJDK7_BUILD_DIR)/openjdk/jdk/src/share/native/sun/awt/libpng \
+-I$(OPENJDK7_BUILD_DIR)/openjdk/jdk/src/share/native/sun/java2d/cmm/lcms \
 $(STAGING_CPPFLAGS)
 # commas in LDFLAGS cause make functions parse errors
 OPENJDK7_LDFLAGS=-L$(OPENJDK7_BUILD_DIR)/openjdk.build/lib/$(OPENJDK7_LIBARCH) \
@@ -216,7 +217,7 @@ OPENJDK7_LDFLAGS=-L$(OPENJDK7_BUILD_DIR)/openjdk.build/lib/$(OPENJDK7_LIBARCH) \
 -Xlinker -rpath -Xlinker $(TARGET_PREFIX)/lib/openjdk7/$(OPENJDK7_LIBARCH) \
 $(TARGET_LDFLAGS) -L$(STAGING_LIB_DIR) -Xlinker -rpath -Xlinker $(TARGET_PREFIX)/lib \
 -Xlinker -rpath-link -Xlinker $(STAGING_LIB_DIR) \
--lm -ldl -lz -ljpeg -lpng12
+-lm -ldl -lz
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 OPENJDK7_LDFLAGS += -liconv
 endif
@@ -333,7 +334,7 @@ openjdk7-source: $(OPENJDK7_SOURCES) $(OPENJDK7_PATCHES)
 $(OPENJDK7_BUILD_DIR)/.configured: $(OPENJDK7_SOURCES) $(OPENJDK7_PATCHES) \
 		$(OPENJDK7_OPENJDK_PATCHES) make/openjdk7.mk
 	$(MAKE) libstdc++-stage freetype-stage x11-stage xinerama-stage xrender-stage libxcomposite-stage libffi-stage cups-stage \
-		gtk2-stage liblcms2-stage libpng-stage libjpeg-stage glib-stage fontconfig-stage alsa-lib-stage jre-cacerts
+		gtk2-stage glib-stage fontconfig-stage alsa-lib-stage jre-cacerts
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
 endif
@@ -387,8 +388,8 @@ endif
 		--without-hotspot-build \
 		--disable-nss \
 		--enable-system-zlib \
-		--enable-system-jpeg \
-		--enable-system-png \
+		--disable-system-jpeg \
+		--disable-system-png \
 		--disable-system-gif \
 		--enable-system-gtk \
 		--enable-system-gio \
@@ -396,7 +397,7 @@ endif
 		--disable-system-gconf \
 		--disable-system-sctp \
 		--disable-system-pcsc \
-		--enable-system-lcms \
+		--disable-system-lcms \
 		--disable-system-kerberos \
 		--disable-compile-against-syscalls \
 		--without-rhino \
