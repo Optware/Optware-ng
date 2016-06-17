@@ -42,7 +42,7 @@ ICU_CONFLICTS=
 #
 # ICU_IPK_VERSION should be incremented when the ipk changes.
 #
-ICU_IPK_VERSION=1
+ICU_IPK_VERSION=2
 
 #
 # ICU_CONFFILES should be a list of user-editable files
@@ -217,6 +217,9 @@ $(ICU_IPK): $(ICU_BUILD_DIR)/.built
 		`ls $(ICU_IPK_DIR)$(TARGET_PREFIX)/bin/* | grep -v icu-config` \
 		$(ICU_IPK_DIR)$(TARGET_PREFIX)/sbin/* \
 		$(ICU_IPK_DIR)$(TARGET_PREFIX)/lib/lib*.so.*.*
+	sed -i -e 's|$(TARGET_AR)|$(TARGET_PREFIX)/bin/ar|g' -e 's|$(TARGET_CC)|$(TARGET_PREFIX)/bin/gcc|g' \
+		-e 's|$(TARGET_CXX)|$(TARGET_PREFIX)/bin/g++|g' -e 's|$(TARGET_RANLIB)|$(TARGET_PREFIX)/bin/ranlib|g' \
+			$(ICU_IPK_DIR)$(TARGET_PREFIX)/bin/icu-config
 #	$(INSTALL) -d $(ICU_IPK_DIR)$(TARGET_PREFIX)/etc/
 #	$(INSTALL) -m 644 $(ICU_SOURCE_DIR)/icu.conf $(ICU_IPK_DIR)$(TARGET_PREFIX)/etc/icu.conf
 #	$(INSTALL) -d $(ICU_IPK_DIR)$(TARGET_PREFIX)/etc/init.d

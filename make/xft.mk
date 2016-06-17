@@ -25,7 +25,7 @@ XFT_DEPENDS=x11, xrender, freetype, fontconfig
 #
 # XFT_IPK_VERSION should be incremented when the ipk changes.
 #
-XFT_IPK_VERSION=4
+XFT_IPK_VERSION=5
 
 #
 # XFT_CONFFILES should be a list of user-editable files
@@ -176,6 +176,7 @@ xft-stage: $(XFT_BUILD_DIR)/.staged
 $(XFT_IPK): $(XFT_BUILD_DIR)/.built
 	rm -rf $(XFT_IPK_DIR) $(BUILD_DIR)/xft_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(XFT_BUILD_DIR) DESTDIR=$(XFT_IPK_DIR) install-strip
+	sed -i -e 's|$(STAGING_PREFIX)|$(TARGET_PREFIX)|g' $(XFT_IPK_DIR)$(TARGET_PREFIX)/bin/xft-config
 	$(MAKE) $(XFT_IPK_DIR)/CONTROL/control
 	rm -f $(XFT_IPK_DIR)$(TARGET_PREFIX)/lib/*.la
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XFT_IPK_DIR)
@@ -197,3 +198,9 @@ xft-clean:
 #
 xft-dirclean:
 	rm -rf $(BUILD_DIR)/$(XFT_DIR) $(XFT_BUILD_DIR) $(XFT_IPK_DIR) $(XFT_IPK)
+
+#
+# Some sanity check for the package.
+#
+xft-check: $(XFT_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^

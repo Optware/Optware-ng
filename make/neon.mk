@@ -42,7 +42,7 @@ NEON_CONFLICTS=
 #
 # NEON_IPK_VERSION should be incremented when the ipk changes.
 #
-NEON_IPK_VERSION=1
+NEON_IPK_VERSION=2
 
 #
 # NEON_CONFFILES should be a list of user-editable files
@@ -196,6 +196,7 @@ $(NEON_IPK): $(NEON_BUILD_DIR)/.built
 	$(MAKE) -C $(NEON_BUILD_DIR) DESTDIR=$(NEON_IPK_DIR) install
 	rm -f $(NEON_IPK_DIR)$(TARGET_PREFIX)/lib/libneon.la
 	$(TARGET_STRIP) $(NEON_IPK_DIR)$(TARGET_PREFIX)/lib/libneon.so
+	sed -i -e 's|$(STAGING_LIB_DIR)|$(TARGET_PREFIX)/lib|g' $(NEON_IPK_DIR)$(TARGET_PREFIX)/bin/neon-config
 	$(MAKE) $(NEON_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NEON_IPK_DIR)
 

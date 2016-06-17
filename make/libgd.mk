@@ -22,11 +22,14 @@ LIBGD_DESCRIPTION=An ANSI C library for the dynamic creation of images
 LIBGD_SECTION=lib
 LIBGD_PRIORITY=optional
 LIBGD_DEPENDS=libpng, libjpeg, freetype, fontconfig
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+LIBGD_DEPENDS+=, libiconv
+endif
 
 #
 # LIBGD_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBGD_IPK_VERSION=2
+LIBGD_IPK_VERSION=3
 
 #
 # LIBGD_LOCALES defines which locales get installed
@@ -108,6 +111,9 @@ libgd-source: $(DL_DIR)/$(LIBGD_SOURCE) $(LIBGD_PATCHES)
 #
 $(LIBGD_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBGD_SOURCE) $(LIBGD_PATCHES) make/libgd.mk
 	$(MAKE) libpng-stage libjpeg-stage freetype-stage fontconfig-stage
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+	$(MAKE) libiconv-stage
+endif
 	rm -rf $(BUILD_DIR)/$(LIBGD_DIR) $(LIBGD_BUILD_DIR)
 	$(LIBGD_UNZIP) $(DL_DIR)/$(LIBGD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(LIBGD_DIR) $(LIBGD_BUILD_DIR)
@@ -149,7 +155,11 @@ libgd-unpack: $(LIBGD_BUILD_DIR)/.configured
 #
 $(LIBGD_BUILD_DIR)/.built: $(LIBGD_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(@D)
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+	$(MAKE) -C $(@D) LIBICONV=-liconv
+else
+	$(MAKE) -C $(@D) LIBICONV=""
+endif
 	touch $@
 
 #
@@ -188,6 +198,7 @@ $(LIBGD_IPK): $(LIBGD_BUILD_DIR)/.built
 	rm -rf $(LIBGD_IPK_DIR) $(BUILD_DIR)/libgd_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBGD_BUILD_DIR) DESTDIR=$(LIBGD_IPK_DIR) install-strip transform=''
 	rm -f $(LIBGD_IPK_DIR)$(TARGET_PREFIX)/lib/*.la
+	sed -i -e 's|$(STAGING_LIB_DIR)|$(TARGET_PREFIX)/lib|g' $(LIBGD_IPK_DIR)$(TARGET_PREFIX)/bin/gdlib-config
 	$(MAKE) $(LIBGD_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBGD_IPK_DIR)
 

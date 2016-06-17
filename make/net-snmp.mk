@@ -22,7 +22,7 @@ NET_SNMP_CONFLICTS=
 #
 # NET_SNMP_IPK_VERSION should be incremented when the ipk changes.
 #
-NET_SNMP_IPK_VERSION=1
+NET_SNMP_IPK_VERSION=2
 
 #
 # NET_SNMP_CONFFILES should be a list of user-editable files
@@ -194,6 +194,8 @@ $(NET_SNMP_IPK): $(NET_SNMP_BUILD_DIR)/.built
 	for F in $(NET_SNMP_IPK_DIR)$(TARGET_PREFIX)/bin/* ; do (file $$F |fgrep -vq ELF) || $(STRIP_COMMAND) $$F ; done
 	$(STRIP_COMMAND) $(NET_SNMP_IPK_DIR)$(TARGET_PREFIX)/sbin/*
 	$(STRIP_COMMAND) $(NET_SNMP_IPK_DIR)$(TARGET_PREFIX)/lib/*.so
+	sed -i -e 's|$(TARGET_CC)|$(TARGET_PREFIX)/bin/gcc|g' -e 's|$(STAGING_PREFIX)|$(TARGET_PREFIX)|g' \
+		$(NET_SNMP_IPK_DIR)$(TARGET_PREFIX)/bin/{net-snmp-config,net-snmp-create-v3-user}
 	$(INSTALL) -d $(NET_SNMP_IPK_DIR)$(TARGET_PREFIX)/etc/
 	$(INSTALL) -m 644 $(NET_SNMP_SOURCE_DIR)/snmpd.conf $(NET_SNMP_IPK_DIR)$(TARGET_PREFIX)/etc/snmpd.conf
 	$(INSTALL) -d $(NET_SNMP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d

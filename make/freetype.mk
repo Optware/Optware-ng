@@ -33,7 +33,7 @@ FREETYPE_DEPENDS=zlib, bzip2, libpng
 #
 # FREETYPE_IPK_VERSION should be incremented when the ipk changes.
 #
-FREETYPE_IPK_VERSION=1
+FREETYPE_IPK_VERSION=2
 
 #
 # FREETYPE_CONFFILES should be a list of user-editable files
@@ -202,6 +202,7 @@ $(FREETYPE_IPK): $(FREETYPE_BUILD_DIR)/.built
 	$(MAKE) -C $(FREETYPE_BUILD_DIR) DESTDIR=$(FREETYPE_IPK_DIR) install
 	$(STRIP_COMMAND) $(FREETYPE_IPK_DIR)$(TARGET_PREFIX)/lib/*.so
 	rm -f $(FREETYPE_IPK_DIR)$(TARGET_PREFIX)/lib/*.la
+	sed -i -e 's|$(STAGING_LIB_DIR)|$(TARGET_PREFIX)/lib|g' $(FREETYPE_IPK_DIR)$(TARGET_PREFIX)/bin/freetype-config
 	$(MAKE) $(FREETYPE_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(FREETYPE_IPK_DIR)
 
