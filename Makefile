@@ -365,7 +365,7 @@ COMMON_CROSS_PACKAGES = \
 	libunistring libupnp libusb libusb1 libuv libvncserver \
 	libvorbis libvorbisidec libxfce4ui libxfce4util libxkbcommon libxml2 libxslt libzip \
 	lighttpd lirc links2 linksys-tftp linphone littlesmalltalk llink \
-	logrotate lookat loudmouth lrzsz lsof ltrace \
+	locale-archive logrotate lookat loudmouth lrzsz lsof ltrace \
 	lua luarocks lxappearance lxde-icon-theme \
 	lynx lzo \
 	m4 madplay make man man-pages mc mcabber md5deep mdadm \
