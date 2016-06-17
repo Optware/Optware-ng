@@ -1,24 +1,24 @@
---- git-1.7.12/Makefile.orig	2012-08-20 01:22:48.000000000 +0000
-+++ git-1.7.12/Makefile	2012-08-20 16:25:59.350921993 +0000
-@@ -2067,7 +2067,7 @@
+--- a/Makefile
++++ b/Makefile
+@@ -1748,7 +1748,7 @@
      -e 's/@@USE_GETTEXT_SCHEME@@/$(USE_GETTEXT_SCHEME)/g' \
      -e $(BROKEN_PATH_FIX) \
      -e 's|@@GITWEBDIR@@|$(gitwebdir_SQ)|g' \
 -    -e 's|@@PERL@@|$(PERL_PATH_SQ)|g' \
 +    -e 's|@@PERL@@|%OPTWARE_TARGET_PREFIX%/bin/perl|g' \
+     -e 's|@@SANE_TEXT_GREP@@|$(SANE_TEXT_GREP)|g' \
      $@.sh >$@+
  endef
- 
-@@ -2105,7 +2105,7 @@
- 	$(QUIET_GEN)$(RM) $@ $@+ && \
- 	INSTLIBDIR=`MAKEFLAGS= $(MAKE) -C perl -s --no-print-directory instlibdir` && \
+@@ -1798,7 +1798,7 @@
+ 	INSTLIBDIR_EXTRA='$(PERLLIB_EXTRA_SQ)' && \
+ 	INSTLIBDIR="$$INSTLIBDIR$${INSTLIBDIR_EXTRA:+:$$INSTLIBDIR_EXTRA}" && \
  	sed -e '1{' \
 -	    -e '	s|#!.*perl|#!$(PERL_PATH_SQ)|' \
 +	    -e '	s|#!.*perl|#!%OPTWARE_TARGET_PREFIX%/bin/perl|' \
  	    -e '	h' \
  	    -e '	s=.*=use lib (split(/$(pathsep)/, $$ENV{GITPERLLIB} || "'"$$INSTLIBDIR"'"));=' \
  	    -e '	H' \
-@@ -2667,9 +2667,7 @@
+@@ -2343,9 +2343,7 @@
  	for p in $(BUILT_INS); do \
  		$(RM) "$$execdir/$$p" && \
  		test -z "$(NO_INSTALL_HARDLINKS)" && \

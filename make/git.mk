@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 GIT_SITE=http://ftp.be.debian.org/pub/software/scm/git-core
-GIT_VERSION=2.6.5
+GIT_VERSION=2.9.0
 GIT_IPK_VERSION=1
 GIT_SOURCE=git-$(GIT_VERSION).tar.gz
 GIT_DIR=git-$(GIT_VERSION)
