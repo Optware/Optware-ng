@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SVN_SITE=http://archive.apache.org/dist/subversion/
-SVN_VERSION=1.8.14
+SVN_VERSION=1.9.4
 SVN_SOURCE=subversion-$(SVN_VERSION).tar.bz2
 SVN_DIR=subversion-$(SVN_VERSION)
 SVN_UNZIP=bzcat
@@ -179,6 +179,7 @@ endif
 		PYTHON=$(HOST_STAGING_PREFIX)/bin/python2.7 \
 		RUBY=$(HOST_STAGING_PREFIX)/bin/ruby \
 		$(SVN_CONFIG_ENV) \
+		PKG_CONFIG_PATH=$(STAGING_LIB_DIR)/pkgconfig \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
