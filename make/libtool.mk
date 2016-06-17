@@ -35,7 +35,7 @@ LIBTOOL_CONFLICTS=
 #
 # LIBTOOL_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBTOOL_IPK_VERSION=3
+LIBTOOL_IPK_VERSION=4
 
 #
 # LIBTOOL_PATCHES should list any patches, in the the order in
@@ -219,7 +219,7 @@ $(LIBTOOL_IPK): $(LIBTOOL_BUILD_DIR)/.built
 		-e 's|$(TARGET_AS)|$(TARGET_PREFIX)/bin/as|g' 		-e 's|$(TARGET_NM)|$(TARGET_PREFIX)/bin/nm|g' \
 		-e 's|$(TARGET_OBJDUMP)|$(TARGET_PREFIX)/bin/objdump|g' -e 's|$(TARGET_RANLIB)|$(TARGET_PREFIX)/bin/ranlib|g' \
 		-e 's|$(TARGET_STRIP)|$(TARGET_PREFIX)/bin/strip|g' \
-		-e 's|$(TARGET_CROSS_TOP)/bin/\.\./|$(TARGET_PREFIX)|g' \
+		-e 's|$(TARGET_CROSS_TOP)/bin/\.\./|$(TARGET_PREFIX)/|g' \
 		-e 's~[^" \t]*/sysroot/lib\|[^" \t]*/sysroot/usr/lib~$(TARGET_PREFIX)/lib~g' \
 		-e '/^sys_lib_search_path_spec=/s|=.*|="$(TARGET_PREFIX)/lib"|' \
 		-e '/^sys_lib_dlsearch_path_spec=/s|=.*|="$(TARGET_PREFIX)/lib"|' \
