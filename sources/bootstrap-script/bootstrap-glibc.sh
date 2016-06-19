@@ -10,8 +10,15 @@ echo "dest %OPTWARE_TARGET_PREFIX%/ /" >> %OPTWARE_TARGET_PREFIX%/etc/ipkg.conf
 
 PATH=$PATH:%OPTWARE_TARGET_PREFIX%/bin:%OPTWARE_TARGET_PREFIX%/sbin
 
-%OPTWARE_TARGET_PREFIX%/bin/ipkg update
-
-%OPTWARE_TARGET_PREFIX%/bin/ipkg install locale-archive
-
 echo "Bootstraping done"
+
+echo "Installing glibc-locale package to generate needed %OPTWARE_TARGET_PREFIX%/lib/locale/locale-archive"
+echo "================================================================================="
+
+%OPTWARE_TARGET_PREFIX%/bin/ipkg update
+%OPTWARE_TARGET_PREFIX%/bin/ipkg install glibc-locale
+
+echo "================================================================================="
+echo "Removing glibc-locale package to save space: this doesn't remove generated %OPTWARE_TARGET_PREFIX%/lib/locale/locale-archive"
+
+%OPTWARE_TARGET_PREFIX%/bin/ipkg remove glibc-locale
