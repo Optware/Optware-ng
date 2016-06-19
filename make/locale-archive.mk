@@ -21,13 +21,13 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LOCALE_ARCHIVE_URL=https://github.com/Optware/Optware-ng/tree/master/make/locale-archive.mk
-LOCALE_ARCHIVE_VERSION=20160617
+LOCALE_ARCHIVE_VERSION=20160619
 LOCALE_ARCHIVE_DIR=locale-archive
 LOCALE_ARCHIVE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 LOCALE_ARCHIVE_DESCRIPTION=Pre-built locale-archive with default locales
 LOCALE_ARCHIVE_SECTION=misc
 LOCALE_ARCHIVE_PRIORITY=optional
-LOCALE_ARCHIVE_DEPENDS=
+LOCALE_ARCHIVE_DEPENDS=gconv-modules
 LOCALE_ARCHIVE_SUGGESTS=
 LOCALE_ARCHIVE_CONFLICTS=
 
