@@ -11,7 +11,7 @@
 # archive is unpacked.
 #
 FONTCONFIG_SITE=http://fontconfig.org/release
-FONTCONFIG_VERSION=2.8.0
+FONTCONFIG_VERSION=2.12.0
 FONTCONFIG_SOURCE=fontconfig-$(FONTCONFIG_VERSION).tar.gz
 FONTCONFIG_DIR=fontconfig-$(FONTCONFIG_VERSION)
 FONTCONFIG_MAINTAINER=Josh Parsons <jbparsons@ucdavis.edu>
@@ -26,7 +26,7 @@ endif
 #
 # FONTCONFIG_IPK_VERSION should be incremented when the ipk changes.
 #
-FONTCONFIG_IPK_VERSION=0
+FONTCONFIG_IPK_VERSION=1
 
 #
 # FONTCONFIG_CONFFILES should be a list of user-editable files
@@ -114,7 +114,6 @@ endif
 		then mv $(BUILD_DIR)/$(FONTCONFIG_DIR) $(FONTCONFIG_BUILD_DIR) ; \
 	fi
 	sed -i -e '/^\(LDFLAGS\|CFLAGS\|CPPFLAGS\) =/s|=.*$$|=|' \
-		$(@D)/fc-arch/Makefile.in \
 		$(@D)/fc-case/Makefile.in \
 		$(@D)/fc-glyphname/Makefile.in \
 		$(@D)/fc-lang/Makefile.in \
