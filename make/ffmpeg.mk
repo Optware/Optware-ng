@@ -50,7 +50,7 @@ FFMPEG_MAINTAINER=Keith Garry Boyce <nslu2-linux@yahoogroups.com>
 FFMPEG_DESCRIPTION=FFmpeg is an audio/video conversion tool.
 FFMPEG_SECTION=tool
 FFMPEG_PRIORITY=optional
-FFMPEG_DEPENDS=liblzma0, bzip2, zlib, openssl, alsa-lib, lame, libvorbis, x264, libfdk-aac, libsoxr
+FFMPEG_DEPENDS=liblzma0, bzip2, zlib, openssl, alsa-lib, lame, libvorbis, x264, libfdk-aac, libsoxr, libass
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 FFMPEG_DEPENDS+=, libiconv
 endif
@@ -60,7 +60,7 @@ FFMPEG_CONFLICTS=
 #
 # FFMPEG_IPK_VERSION should be incremented when the ipk changes.
 #
-FFMPEG_IPK_VERSION ?= 4
+FFMPEG_IPK_VERSION ?= 5
 
 #
 # FFMPEG_CONFFILES should be a list of user-editable files
@@ -82,7 +82,7 @@ ifdef NO_BUILTIN_MATH
 FFMPEG_CPPFLAGS += -fno-builtin-cos -fno-builtin-sin -fno-builtin-lrint -fno-builtin-rint
 #FFMPEG_PATCHES += $(FFMPEG_SOURCE_DIR)/powf-to-pow.patch
 endif
-FFMPEG_LDFLAGS=
+FFMPEG_LDFLAGS=-lass
 
 FFMPEG_CONFIG_OPTS ?=
 
@@ -158,7 +158,7 @@ FFMPEG_ARCH=$(strip \
 # Snow is know to create build problems on ds101 
 
 $(FFMPEG_BUILD_DIR)/.configured: $(DL_DIR)/$(FFMPEG_SOURCE) $(FFMPEG_PATCHES) make/ffmpeg.mk
-	$(MAKE) xz-utils-stage bzip2-stage zlib-stage openssl-stage libsoxr-stage \
+	$(MAKE) xz-utils-stage bzip2-stage zlib-stage openssl-stage libsoxr-stage libass-stage \
 		alsa-lib-stage lame-stage libvorbis-stage x264-stage libfdk-aac-stage
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
@@ -179,6 +179,7 @@ endif
 ifdef NO_BUILTIN_MATH
 	find $(@D) -type f -name '*.[hc]' -exec sed -i -e 's/powf/pow/g' {} \;
 endif
+	sed -i -e '/require_pkg_config libass/s/^/#/' $(@D)/configure
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(FFMPEG_CPPFLAGS)" \
@@ -198,6 +199,7 @@ endif
 		--enable-libfdk-aac \
 		--enable-nonfree \
 		--enable-libsoxr \
+		--enable-libass \
 		--enable-shared \
 		--disable-static \
 		--enable-gpl \
