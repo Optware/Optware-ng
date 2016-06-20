@@ -343,7 +343,7 @@ COMMON_CROSS_PACKAGES = \
 	jabberd jamvm jed jfsutils jikes jove joe \
 	kamailio kbproto keychain kismet kissdx knock \
 	lame launchtool lcd4linux ldconfig leafnode less lftp lha \
-	liba52 libacl libao libart libassuan libatomic-ops libbt libcap \
+	liba52 libacl libao libart libass libassuan libatomic-ops libbt libcap \
 	libcapi20 libcdio libconfig libcroco libcurl \
 	libdaemon libdb libdb52 libdlna \
 	libdvb libdvbpsi libdvdnav libdvdread libdrm \
