@@ -252,7 +252,7 @@ $(PYTHON3_IPK): $(PYTHON3_BUILD_DIR)/.built
 	    do mv $(PYTHON3_IPK_DIR)$(TARGET_PREFIX)/$$f $(PYTHON3_IPK_DIR)$(TARGET_PREFIX)/`echo $$f | sed -e 's/\(\.\|$$\)/-3.1\1/'`; done
 	$(INSTALL) -d $(PYTHON3_IPK_DIR)$(TARGET_PREFIX)/local/bin
 	$(INSTALL) -d $(PYTHON3_IPK_DIR)$(TARGET_PREFIX)/local/lib/python$(PYTHON3_VERSION_MAJOR)/site-packages
-	sed -i -e 's|$(TARGET_CROSS)|$(TARGET_PREFIX)/bin/|g' $(PYTHON3_IPK_DIR)$(TARGET_PREFIX)/lib/python3.5/config-3.5m/Makefile
+	sed -i -e 's|$(TARGET_CROSS)|$(TARGET_PREFIX)/bin/|g' $(PYTHON3_IPK_DIR)$(TARGET_PREFIX)/lib/python$(PYTHON3_VERSION_MAJOR)/config-$(PYTHON3_VERSION_MAJOR)m/Makefile
 	$(MAKE) $(PYTHON3_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(PYTHON3_SOURCE_DIR)/postinst $(PYTHON3_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 755 $(PYTHON3_SOURCE_DIR)/prerm $(PYTHON3_IPK_DIR)/CONTROL/prerm
