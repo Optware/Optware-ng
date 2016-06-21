@@ -53,7 +53,7 @@ PY2-CAIRO_DEV_CONFLICTS=
 #
 # PY-CAIRO_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-CAIRO_IPK_VERSION=1
+PY-CAIRO_IPK_VERSION=2
 
 #
 # PY-CAIRO_CONFFILES should be a list of user-editable files
@@ -64,7 +64,11 @@ PY-CAIRO_IPK_VERSION=1
 # which they should be applied to the source code.
 #
 #PY-CAIRO_PATCHES2=$(PY-CAIRO_SOURCE_DIR)/configure2.patch
-#PY-CAIRO_PATCHES3=$(PY-CAIRO_SOURCE_DIR)/configure3.patch
+PY-CAIRO_PATCHES3=\
+$(PY-CAIRO_SOURCE_DIR)/pycairo-1.10.0-waf_unpack-1.patch
+PY-CAIRO_WAF_PATCHES=\
+$(PY-CAIRO_SOURCE_DIR)/pycairo-1.10.0-waf_python_3_4-1.patch \
+$(PY-CAIRO_SOURCE_DIR)/pycairo-1.10.0-waf_python_3_5.patch
 
 #
 # If the compilation of the package requires additional
@@ -116,7 +120,7 @@ $(DL_DIR)/$(PY-CAIRO_SOURCE3):
 # This target will be called by the top level Makefile to download the
 # source code's archive (.tar.gz, .bz2, etc.)
 #
-py-cairo-source: $(DL_DIR)/$(PY-CAIRO_SOURCE) $(PY-CAIRO_PATCHES)
+py-cairo-source: $(DL_DIR)/$(PY-CAIRO_SOURCE) $(PY-CAIRO_PATCHES2) $(PY-CAIRO_PATCHES3) $(PY-CAIRO_WAF_PATCHES)
 
 #
 # This target unpacks the source code in the build directory.
@@ -137,7 +141,7 @@ py-cairo-source: $(DL_DIR)/$(PY-CAIRO_SOURCE) $(PY-CAIRO_PATCHES)
 # shown below to make various patches to it.
 #
 $(PY-CAIRO_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CAIRO_SOURCE2) $(DL_DIR)/$(PY-CAIRO_SOURCE3) \
-				$(PY-CAIRO_PATCHES2) $(PY-CAIRO_PATCHES3) make/py-cairo.mk
+		$(PY-CAIRO_WAF_PATCHES)	$(PY-CAIRO_PATCHES2) $(PY-CAIRO_PATCHES3) make/py-cairo.mk
 	$(MAKE) cairo-stage python26-stage python27-stage python3-stage \
 		python26-host-stage python27-host-stage python3-host-stage
 	rm -rf $(BUILD_DIR)/$(PY-CAIRO_DIR2) $(BUILD_DIR)/$(PY-CAIRO_DIR3) $(@D)
@@ -145,19 +149,19 @@ $(PY-CAIRO_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CAIRO_SOURCE2) $(DL_DIR)/$(PY-
 	$(PY-CAIRO_UNZIP) $(DL_DIR)/$(PY-CAIRO_SOURCE2) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-CAIRO_PATCHES2)" ; \
 		then cat $(PY-CAIRO2_PATCHES) | \
-		$(PATCH) -d $(BUILD_DIR)/$(PY-CAIRO_DIR2) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(PY-CAIRO_DIR2) -p1 ; \
 	fi
 	mv $(BUILD_DIR)/$(PY-CAIRO_DIR2) $(@D)/2.6
 	$(PY-CAIRO_UNZIP) $(DL_DIR)/$(PY-CAIRO_SOURCE2) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-CAIRO_PATCHES2)" ; \
 		then cat $(PY-CAIRO2_PATCHES) | \
-		$(PATCH) -d $(BUILD_DIR)/$(PY-CAIRO_DIR2) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(PY-CAIRO_DIR2) -p1 ; \
 	fi
 	mv $(BUILD_DIR)/$(PY-CAIRO_DIR2) $(@D)/2.7
 	$(PY-CAIRO_UNZIP) $(DL_DIR)/$(PY-CAIRO_SOURCE3) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PY-CAIRO_PATCHES3)" ; \
 		then cat $(PY-CAIRO_PATCHES3) | \
-		$(PATCH) -d $(BUILD_DIR)/$(PY-CAIRO_DIR3) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(PY-CAIRO_DIR3) -p1 ; \
 	fi
 	mv $(BUILD_DIR)/$(PY-CAIRO_DIR3) $(@D)/3
 	touch $(@D)/2.6/ChangeLog
@@ -201,6 +205,11 @@ $(PY-CAIRO_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CAIRO_SOURCE2) $(DL_DIR)/$(PY-
 	)
 	$(PATCH_LIBTOOL) $(@D)/2.7/libtool
 	(cd $(@D)/3; \
+	    wafdir=$$($(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) waf unpack) && \
+	    pushd $$wafdir && \
+	    cat $(PY-CAIRO_WAF_PATCHES) | $(PATCH) -p1 && \
+	    popd && \
+            unset wafdir && \
 	    ( \
 		echo "[build_ext]"; \
 	        echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/python$(PYTHON3_VERSION_MAJOR)m"; \
@@ -210,7 +219,7 @@ $(PY-CAIRO_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-CAIRO_SOURCE2) $(DL_DIR)/$(PY-
 		echo "executable=$(TARGET_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR)"; \
 		echo "[install]"; \
 		echo "install_scripts=$(TARGET_PREFIX)/bin"; \
-	    ) >> setup.cfg; \
+	    ) >> setup.cfg && \
 		$(TARGET_CONFIGURE_OPTS) CC="$(TARGET_CC) -L$(STAGING_LIB_DIR)" \
 		LDSHARED='$(TARGET_CC) -pthread -shared' \
 		CPPFLAGS="$(STAGING_CPPFLAGS) -I$(STAGING_INCLUDE_DIR)/python$(PYTHON3_VERSION_MAJOR)m $(PY-CAIRO_CPPFLAGS)" \

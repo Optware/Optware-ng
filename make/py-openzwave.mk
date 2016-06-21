@@ -37,7 +37,7 @@ PY-OPENZWAVE_CONFLICTS=
 #
 # PY-OPENZWAVE_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-OPENZWAVE_IPK_VERSION=6
+PY-OPENZWAVE_IPK_VERSION=7
 
 #
 # PY-OPENZWAVE_CONFFILES should be a list of user-editable files

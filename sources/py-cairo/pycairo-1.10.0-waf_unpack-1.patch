@@ -1,0 +1,20 @@
+Submitted by:            Wayne Blaszczyk (wblaszcz at bigpond dot net dot au)
+Date:                    2014-03-27
+Initial Package Version: 1.10.0
+Upstream Status:         unknown
+Origin:                  Gentoo
+URL:                     https://bugs.gentoo.org/show_bug.cgi?id=504342
+Description:             Fix build with Python-3.4
+
+--- a/waf
++++ b/waf
+@@ -153,6 +153,9 @@
+ 	return dir
+ 
+ wafdir = find_lib()
++if sys.argv[1:] == ['unpack']:
++    print(wafdir)
++    exit()
+ sys.path.insert(0, wafdir)
+ from waflib.Tools.c_config import MACRO_TO_DESTOS 
+ MACRO_TO_DESTOS['__POWERPC__'] = 'darwin'

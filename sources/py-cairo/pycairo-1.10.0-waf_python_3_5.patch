@@ -1,0 +1,13 @@
+Taken from https://bugs.freedesktop.org/show_bug.cgi?id=76759
+
+--- a/waflib/Build.py
++++ b/waflib/Build.py
+@@ -162,6 +162,8 @@
+ 			try:
+ 				f=open(db+'.tmp','wb')
+ 				cPickle.dump(data,f)
++			except AttributeError as err:
++				print(format(err))
+ 			finally:
+ 				if f:
+ 					f.close()

@@ -38,7 +38,7 @@ PY-SERVICE-IDENTITY_CONFLICTS=
 #
 # PY-SERVICE-IDENTITY_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-SERVICE-IDENTITY_IPK_VERSION=1
+PY-SERVICE-IDENTITY_IPK_VERSION=2
 
 #
 # PY-SERVICE-IDENTITY_CONFFILES should be a list of user-editable files

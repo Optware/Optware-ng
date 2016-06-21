@@ -39,7 +39,7 @@ PY-PLY_CONFLICTS=
 #
 # PY-PLY_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-PLY_IPK_VERSION=1
+PY-PLY_IPK_VERSION=2
 
 #
 # PY-PLY_CONFFILES should be a list of user-editable files

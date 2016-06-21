@@ -44,7 +44,7 @@ PY-URWID_CONFLICTS=
 #
 # PY-URWID_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-URWID_IPK_VERSION=1
+PY-URWID_IPK_VERSION=2
 PY-URWID_IPK_VERSION_OLD=1
 
 #

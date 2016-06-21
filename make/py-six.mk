@@ -42,7 +42,7 @@ PY-SIX_CONFLICTS=
 #
 # PY-SIX_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-SIX_IPK_VERSION=1
+PY-SIX_IPK_VERSION=2
 
 #
 # PY-SIX_CONFFILES should be a list of user-editable files

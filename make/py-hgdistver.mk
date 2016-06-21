@@ -43,7 +43,7 @@ PY-HGDISTVER_CONFLICTS=
 #
 # PY-HGDISTVER_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-HGDISTVER_IPK_VERSION=1
+PY-HGDISTVER_IPK_VERSION=2
 
 #
 # PY-HGDISTVER_CONFFILES should be a list of user-editable files

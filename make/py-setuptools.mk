@@ -43,7 +43,7 @@ PY-SETUPTOOLS_CONFLICTS=
 #
 # PY-SETUPTOOLS_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-SETUPTOOLS_IPK_VERSION=1
+PY-SETUPTOOLS_IPK_VERSION=2
 
 #
 # PY-SETUPTOOLS_CONFFILES should be a list of user-editable files

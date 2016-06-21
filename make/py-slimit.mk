@@ -37,7 +37,7 @@ PY-SLIMIT_CONFLICTS=
 #
 # PY-SLIMIT_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-SLIMIT_IPK_VERSION=1
+PY-SLIMIT_IPK_VERSION=2
 
 #
 # PY-SLIMIT_CONFFILES should be a list of user-editable files

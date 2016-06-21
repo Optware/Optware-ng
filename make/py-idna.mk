@@ -38,7 +38,7 @@ PY-IDNA_CONFLICTS=
 #
 # PY-IDNA_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-IDNA_IPK_VERSION=1
+PY-IDNA_IPK_VERSION=2
 
 #
 # PY-IDNA_CONFFILES should be a list of user-editable files

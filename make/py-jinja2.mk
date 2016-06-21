@@ -38,7 +38,7 @@ PY-JINJA2_CONFLICTS=
 #
 # PY-JINJA2_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-JINJA2_IPK_VERSION=1
+PY-JINJA2_IPK_VERSION=2
 
 #
 # PY-JINJA2_CONFFILES should be a list of user-editable files
