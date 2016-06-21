@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 BOOST_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/boost
-BOOST_VERSION ?= 1_45_0
+BOOST_VERSION ?= 1_61_0
 BOOST_VERSION_DOTTED=$(shell echo $(BOOST_VERSION)|sed s/_/\./g)
 BOOST_SOURCE=boost_$(BOOST_VERSION).tar.gz
 BOOST_DIR=boost_$(BOOST_VERSION)
@@ -44,7 +44,7 @@ endif
 BOOST_SUGGESTS=
 BOOST_CONFLICTS=
 
-BOOST_EXTERNAL_JAM ?= yes
+BOOST_EXTERNAL_JAM ?= no
 
 BOOST_JAM=EXPAT_INCLUDE=$(STAGING_INCLUDE_DIR) \
 	EXPAT_LIBPATH=$(STAGING_LIB_DIR)\
@@ -67,9 +67,9 @@ else
 BOOST_SOURCES=	$(DL_DIR)/$(BOOST_SOURCE)
 endif
 
-BOOST_GCC_CONF ?= tools/build/v2/tools/gcc
+BOOST_GCC_CONF ?= tools/build/src/tools/gcc
 
-BOOST_JAM_ROOT ?= tools/build/v2
+BOOST_JAM_ROOT ?= tools/build
 
 # boost libs that are expected to build always
 BOOST_LIBS = dev date-time filesystem graph iostreams \
@@ -106,7 +106,7 @@ BOOST_ADDITIONAL_LIBS ?= serialization test wave
 #
 # BOOST_IPK_VERSION should be incremented when the ipk changes.
 #
-BOOST_IPK_VERSION ?= 2
+BOOST_IPK_VERSION ?= 1
 
 #
 # BOOST_CONFFILES should be a list of user-editable files

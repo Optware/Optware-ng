@@ -26,10 +26,10 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-LIBTORRENT-RASTERBAR_SITE=https://github.com/arvidn/libtorrent/releases/download/libtorrent-1_0_8
+LIBTORRENT-RASTERBAR_SITE=https://github.com/arvidn/libtorrent/releases/download/libtorrent-1_1
 #LIBTORRENT-RASTERBAR_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/libtorrent
 #LIBTORRENT-RASTERBAR_SITE=http://libtorrent.googlecode.com/files
-LIBTORRENT-RASTERBAR_VERSION=1.0.8
+LIBTORRENT-RASTERBAR_VERSION=1.1.0
 LIBTORRENT-RASTERBAR_SOURCE=libtorrent-rasterbar-$(LIBTORRENT-RASTERBAR_VERSION).tar.gz
 LIBTORRENT-RASTERBAR_DIR=libtorrent-rasterbar-$(LIBTORRENT-RASTERBAR_VERSION)
 LIBTORRENT-RASTERBAR_UNZIP=zcat
@@ -39,9 +39,15 @@ LIBTORRENT-RASTERBAR_PYTHON_BINDING_DESCRIPTION=libtorrent rasterbar python bind
 LIBTORRENT-RASTERBAR_SECTION=net
 LIBTORRENT-RASTERBAR_PRIORITY=optional
 LIBTORRENT-RASTERBAR_DEPENDS= openssl, boost-system (= $(BOOST_VERSION)-$(BOOST_IPK_VERSION))
-LIBTORRENT-RASTERBAR_PYTHON_BINDING26_DEPENDS= libtorrent-rasterbar, python26, boost-python26 (= $(BOOST_VERSION)-$(BOOST_IPK_VERSION))
-LIBTORRENT-RASTERBAR_PYTHON_BINDING27_DEPENDS= libtorrent-rasterbar, python27, boost-python27 (= $(BOOST_VERSION)-$(BOOST_IPK_VERSION))
-LIBTORRENT-RASTERBAR_PYTHON_BINDING3_DEPENDS= libtorrent-rasterbar, python3, boost-python3 (= $(BOOST_VERSION)-$(BOOST_IPK_VERSION))
+LIBTORRENT-RASTERBAR_PYTHON_BINDING26_DEPENDS= libtorrent-rasterbar, python26, \
+boost-python26 (= $(BOOST_VERSION)-$(BOOST_IPK_VERSION)), boost-chrono (= $(BOOST_VERSION)-$(BOOST_IPK_VERSION)), \
+boost-random (= $(BOOST_VERSION)-$(BOOST_IPK_VERSION))
+LIBTORRENT-RASTERBAR_PYTHON_BINDING27_DEPENDS= libtorrent-rasterbar, python27, \
+boost-python27 (= $(BOOST_VERSION)-$(BOOST_IPK_VERSION)), boost-chrono (= $(BOOST_VERSION)-$(BOOST_IPK_VERSION)), \
+boost-random (= $(BOOST_VERSION)-$(BOOST_IPK_VERSION))
+LIBTORRENT-RASTERBAR_PYTHON_BINDING3_DEPENDS= libtorrent-rasterbar, python3, \
+boost-python3 (= $(BOOST_VERSION)-$(BOOST_IPK_VERSION)), boost-chrono (= $(BOOST_VERSION)-$(BOOST_IPK_VERSION)), \
+boost-random (= $(BOOST_VERSION)-$(BOOST_IPK_VERSION))
 LIBTORRENT-RASTERBAR_SUGGESTS=
 LIBTORRENT-RASTERBAR_CONFLICTS=
 
@@ -62,7 +68,7 @@ LIBTORRENT-RASTERBAR_IPK_VERSION?=1
 # LIBTORRENT-RASTERBAR_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#LIBTORRENT-RASTERBAR_PATCHES=$(LIBTORRENT-RASTERBAR_SOURCE_DIR)/configure.patch
+LIBTORRENT-RASTERBAR_PATCHES=$(LIBTORRENT-RASTERBAR_SOURCE_DIR)/config.hpp.patch
 
 #
 # If the compilation of the package requires additional
@@ -70,10 +76,6 @@ LIBTORRENT-RASTERBAR_IPK_VERSION?=1
 #
 LIBTORRENT-RASTERBAR_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/python2.6
 LIBTORRENT-RASTERBAR_LDFLAGS=
-ifeq ($(OPTWARE_TARGET), $(filter mbwe-bluering, $(OPTWARE_TARGET)))
-	###bad instruction `dmb' issue
-	LIBTORRENT-RASTERBAR_CPPFLAGS+= -mcpu=arm9
-endif
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 LIBTORRENT-RASTERBAR_LDFLAG+= -liconv
 endif
@@ -146,20 +148,20 @@ endif
 	$(LIBTORRENT-RASTERBAR_UNZIP) $(DL_DIR)/$(LIBTORRENT-RASTERBAR_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBTORRENT-RASTERBAR_PATCHES)" ; \
 		then cat $(LIBTORRENT-RASTERBAR_PATCHES) | \
-		$(PATCH) -d $(BUILD_DIR)/$(LIBTORRENT-RASTERBAR_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBTORRENT-RASTERBAR_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBTORRENT-RASTERBAR_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBTORRENT-RASTERBAR_DIR) $(@D) ; \
 	fi
 	sed -i -e "s|/usr/local/ssl /usr/lib/ssl /usr/ssl /usr/pkg /usr/local /usr|$(STAGING_PREFIX)|" $(@D)/m4/ax_check_openssl.m4
-	sed -i -e "s|/usr /usr/local $(TARGET_PREFIX) $(TARGET_PREFIX)/local|$(STAGING_PREFIX)|" $(@D)/m4/ax_boost_base.m4 $(@D)/m4/ax_check_geoip.m4
+	sed -i -e "s|/usr /usr/local /opt /opt/local|$(STAGING_PREFIX)|" $(@D)/m4/ax_boost_base.m4
 	sed -i -e "s|namespace libtorrent|#ifndef IPV6_V6ONLY\n#  define IPV6_V6ONLY 26\n#endif\n\nnamespace libtorrent|" $(@D)/include/libtorrent/socket.hpp
 	sed -i -e "s|namespace libtorrent { namespace|#ifndef IPV6_V6ONLY\n#  define IPV6_V6ONLY 26\n#endif\n\nnamespace libtorrent { namespace|" $(@D)/src/enum_net.cpp
 #	sed -i -e "s/#include <vector>/#include <vector>\n#include <list>/" $(@D)/include/libtorrent/udp_socket.hpp
 	$(AUTORECONF1.14) -vif $(@D)
 	sed -i -e "s|/usr/include|$(STAGING_INCLUDE_DIR)|" $(@D)/configure
 #	sed -i -e 's|#include <boost/multi_index/ordered_index\.hpp>|#include <boost/multi_index/ordered_index.hpp>\n#include <boost/noncopyable.hpp>|' $(@D)/src/storage.cpp
-	sed -i -e "s/-ftemplate-depth=120//" $(@D)/configure
+	sed -i -e "s/-ftemplate-depth=120//" -e 's/-msse4\.2//' $(@D)/configure
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBTORRENT-RASTERBAR_CPPFLAGS)" \
@@ -182,6 +184,8 @@ endif
 		--disable-debug \
 		--enable-python-binding \
 		--with-boost-system=boost_system  \
+		--with-boost-chrono=boost_chrono \
+		--with-boost-random=boost_random \
 		--with-boost-python=boost_python-py26 \
 		--with-asio=shipped \
 		--with-dht=on \

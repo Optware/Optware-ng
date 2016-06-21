@@ -1,0 +1,24 @@
+--- a/include/libtorrent/config.hpp
++++ b/include/libtorrent/config.hpp
+@@ -201,12 +201,17 @@
+ #elif defined __linux__
+ #define TORRENT_LINUX
+ 
+-#if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,30)
+-# define TORRENT_USE_PREADV 1
+-# define TORRENT_USE_PREAD 0
+-#else
++#ifdef __UCLIBC__
+ # define TORRENT_USE_PREADV 0
+ # define TORRENT_USE_PREAD 1
++#else
++# if LINUX_VERSION_CODE >= KERNEL_VERSION(2,6,30)
++#  define TORRENT_USE_PREADV 1
++#  define TORRENT_USE_PREAD 0
++# else
++#  define TORRENT_USE_PREADV 0
++#  define TORRENT_USE_PREAD 1
++# endif
+ #endif
+ 
+ #define TORRENT_HAVE_MMAP 1

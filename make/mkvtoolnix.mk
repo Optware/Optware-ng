@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MKVTOOLNIX_SITE=http://bunkus.org/videotools/mkvtoolnix/sources
-MKVTOOLNIX_VERSION ?= 4.2.0
+MKVTOOLNIX_VERSION ?= 8.8.0
 ifeq ($(shell test $(shell echo $(MKVTOOLNIX_VERSION) | sed 's/\..*//') -gt 5; echo $$?),0)
 MKVTOOLNIX_SOURCE=mkvtoolnix-$(MKVTOOLNIX_VERSION).tar.xz
 MKVTOOLNIX_UNZIP=xzcat
@@ -37,15 +37,12 @@ MKVTOOLNIX_PRIORITY=optional
 MKVTOOLNIX_DEPENDS=boost-system (= $(BOOST_VERSION)-$(BOOST_IPK_VERSION)), \
 		boost-filesystem (= $(BOOST_VERSION)-$(BOOST_IPK_VERSION)), \
 		boost-regex (= $(BOOST_VERSION)-$(BOOST_IPK_VERSION)), expat, \
-		file, flac, libebml, libmatroska, libogg, libvorbis, lzo, icu
+		file, flac, libebml, libmatroska, libogg, libvorbis, lzo, icu, libcurl
 ifeq (enable, $(GETTEXT_NLS))
 MKVTOOLNIX_DEPENDS +=, gettext
 endif
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 MKVTOOLNIX_DEPENDS +=, libiconv
-endif
-ifeq ($(OPTWARE_TARGET), $(filter buildroot-armeabi buildroot-armeabi-ng buildroot-armeabihf buildroot-i686 buildroot-mipsel-ng buildroot-ppc-603e, $(OPTWARE_TARGET)))
-MKVTOOLNIX_DEPENDS +=, libcurl
 endif
 MKVTOOLNIX_SUGGESTS=
 MKVTOOLNIX_CONFLICTS=
@@ -53,7 +50,7 @@ MKVTOOLNIX_CONFLICTS=
 #
 # MKVTOOLNIX_IPK_VERSION should be incremented when the ipk changes.
 #
-MKVTOOLNIX_IPK_VERSION?=1
+MKVTOOLNIX_IPK_VERSION?=2
 
 #
 # MKVTOOLNIX_CONFFILES should be a list of user-editable files
@@ -63,7 +60,10 @@ MKVTOOLNIX_IPK_VERSION?=1
 # MKVTOOLNIX_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-MKVTOOLNIX_PATCHES=$(MKVTOOLNIX_SOURCE_DIR)/va_list.patch $(MKVTOOLNIX_ADDITIONAL_PATCHES)
+MKVTOOLNIX_PATCHES=$(MKVTOOLNIX_SOURCE_DIR)/va_list.patch
+ifeq ($(LIBC_STYLE),uclibc)
+MKVTOOLNIX_PATCHES += $(MKVTOOLNIX_SOURCE_DIR)/$(MKVTOOLNIX_VERSION)/llround-lround.patch
+endif
 
 #
 # If the compilation of the package requires additional
