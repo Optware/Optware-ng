@@ -71,7 +71,7 @@ MYSQL_CONFLICTS=
 # recent mysql needs boost headers only,
 # and requires a specific version at that
 MYSQL_BOOST_VERSION=1_59_0
-MYSQL_BOOST_SOURCE=boost_$(BOOST_VERSION).tar.gz
+MYSQL_BOOST_SOURCE=boost_$(MYSQL_BOOST_VERSION).tar.gz
 
 
 #
