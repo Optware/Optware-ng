@@ -1,8 +1,8 @@
---- Python-3.4.2/configure.ac.orig	2014-10-08 11:18:16.000000000 +0300
-+++ Python-3.4.2/configure.ac		2015-01-22 15:45:15.794511376 +0200
+--- a/configure.ac
++++ b/configure.ac
 @@ -5,7 +5,6 @@
  # Set VERSION so we only need to edit in one place (i.e., here)
- m4_define(PYTHON_VERSION, 3.4)
+ m4_define(PYTHON_VERSION, 3.5)
  
 -AC_PREREQ(2.65)
  
@@ -50,7 +50,7 @@
  dnl This is for stuff that absolutely must end up in pyconfig.h.
  dnl Please use pyport.h instead, if possible.
  AH_TOP([
-@@ -1104,7 +1085,7 @@
+@@ -1285,7 +1266,7 @@
  	    STRICT_PROTO="-Wstrict-prototypes"
  	fi
          # For gcc 4.x we need to use -fwrapv so lets check if its supported
@@ -59,7 +59,7 @@
             WRAP="-fwrapv"
          fi
  
-@@ -3393,13 +3374,13 @@
+@@ -3649,13 +3630,13 @@
  [
  if test "${enable_ipv6+set}" = set; then
    ac_cv_buggy_getaddrinfo="no -- configured with --(en|dis)able-ipv6"
@@ -76,9 +76,18 @@
  if test $have_getaddrinfo = no || test "$ac_cv_buggy_getaddrinfo" = yes
  then
  	if test $ipv6 = yes
-@@ -4812,6 +4793,25 @@
- AC_MSG_RESULT($ENSUREPIP)
- AC_SUBST(ENSUREPIP)
+@@ -4357,7 +4338,7 @@
+ AC_MSG_CHECKING(ABIFLAGS)
+ AC_MSG_RESULT($ABIFLAGS)
+ AC_MSG_CHECKING(SOABI)
+-SOABI='cpython-'`echo $VERSION | tr -d .`${ABIFLAGS}${PLATFORM_TRIPLET:+-$PLATFORM_TRIPLET}
++SOABI='cpython-'`echo $VERSION | tr -d .`${ABIFLAGS}
+ AC_MSG_RESULT($SOABI)
+ 
+ AC_SUBST(EXT_SUFFIX)
+@@ -5195,6 +5176,25 @@
+               [Define to 1 if the getrandom() function is available])
+ fi
  
 +AC_SUBST(BUILDPYTHON)
 +AC_SUBST(BUILDPGEN)
@@ -88,7 +97,7 @@
 +    absconfigcommand=$(pwd)/$0
 +    mkdir -p buildpython3
 +    cd buildpython3
-+    AS="" LD="" CC="" CPP="" CXX="" AR="" STRIP="" RANLIB="" READELF="" LDFLAGS="" CPPFLAGS="" $absconfigcommand --prefix=$prefix
++    AS="" LD="" CC="" CPP="" CXX="" AR="" STRIP="" RANLIB="" READELF="" LDFLAGS="" CPPFLAGS="" $absconfigcommand --prefix=/opt --with-system-ffi
 +    cd ..
 +    BUILDPYTHON='buildpython3/python$(BUILDEXE)'
 +    BUILDPGEN='buildpython3/Parser/pgen$(BUILDEXE)'
