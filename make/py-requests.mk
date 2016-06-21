@@ -38,7 +38,7 @@ PY-REQUESTS_CONFLICTS=
 #
 # PY-REQUESTS_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-REQUESTS_IPK_VERSION=2
+PY-REQUESTS_IPK_VERSION=3
 
 #
 # PY-REQUESTS_CONFFILES should be a list of user-editable files

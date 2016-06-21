@@ -43,7 +43,7 @@ PY-XDG_CONFLICTS=
 #
 # PY-XDG_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-XDG_IPK_VERSION=2
+PY-XDG_IPK_VERSION=3
 
 #
 # PY-XDG_CONFFILES should be a list of user-editable files

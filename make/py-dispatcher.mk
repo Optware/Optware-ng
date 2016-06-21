@@ -38,7 +38,7 @@ PY-DISPATCHER_CONFLICTS=
 #
 # PY-DISPATCHER_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-DISPATCHER_IPK_VERSION=2
+PY-DISPATCHER_IPK_VERSION=3
 
 #
 # PY-DISPATCHER_CONFFILES should be a list of user-editable files

@@ -48,7 +48,7 @@ IPYTHON_CONFLICTS=
 #
 # IPYTHON_IPK_VERSION should be incremented when the ipk changes.
 #
-IPYTHON_IPK_VERSION=2
+IPYTHON_IPK_VERSION=3
 
 #
 # IPYTHON_CONFFILES should be a list of user-editable files

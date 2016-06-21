@@ -38,7 +38,7 @@ PY-CRYPTOGRAPHY_CONFLICTS=
 #
 # PY-CRYPTOGRAPHY_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-CRYPTOGRAPHY_IPK_VERSION=2
+PY-CRYPTOGRAPHY_IPK_VERSION=3
 
 #
 # PY-CRYPTOGRAPHY_CONFFILES should be a list of user-editable files

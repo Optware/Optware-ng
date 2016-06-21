@@ -38,7 +38,7 @@ PY-URLLIB3_CONFLICTS=
 #
 # PY-URLLIB3_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-URLLIB3_IPK_VERSION=2
+PY-URLLIB3_IPK_VERSION=3
 
 #
 # PY-URLLIB3_CONFFILES should be a list of user-editable files

@@ -38,7 +38,7 @@ PY-CHARACTERISTIC_CONFLICTS=
 #
 # PY-CHARACTERISTIC_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-CHARACTERISTIC_IPK_VERSION=2
+PY-CHARACTERISTIC_IPK_VERSION=3
 
 #
 # PY-CHARACTERISTIC_CONFFILES should be a list of user-editable files

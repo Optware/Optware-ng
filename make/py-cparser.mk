@@ -38,7 +38,7 @@ PY-CPARSER_CONFLICTS=
 #
 # PY-CPARSER_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-CPARSER_IPK_VERSION=2
+PY-CPARSER_IPK_VERSION=3
 
 #
 # PY-CPARSER_CONFFILES should be a list of user-editable files

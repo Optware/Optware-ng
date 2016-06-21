@@ -38,7 +38,7 @@ PY-CHARDET_CONFLICTS=
 #
 # PY-CHARDET_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-CHARDET_IPK_VERSION=2
+PY-CHARDET_IPK_VERSION=3
 
 #
 # PY-CHARDET_CONFFILES should be a list of user-editable files

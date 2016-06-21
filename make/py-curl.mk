@@ -42,7 +42,7 @@ PY-CURL_CONFLICTS=
 #
 # PY-CURL_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-CURL_IPK_VERSION=2
+PY-CURL_IPK_VERSION=3
 
 #
 # PY-CURL_CONFFILES should be a list of user-editable files
