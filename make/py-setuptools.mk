@@ -44,6 +44,7 @@ PY-SETUPTOOLS_CONFLICTS=
 # PY-SETUPTOOLS_IPK_VERSION should be incremented when the ipk changes.
 #
 PY-SETUPTOOLS_IPK_VERSION=2
+PY-SETUPTOOLS_IPK_VERSION_OLD=1
 
 #
 # PY-SETUPTOOLS_CONFFILES should be a list of user-editable files
@@ -402,7 +403,7 @@ $(PY27-SETUPTOOLS_IPK): $(PY-SETUPTOOLS_BUILD_DIR)/.built
 
 $(PY3-SETUPTOOLS_IPK): $(PY-SETUPTOOLS_BUILD_DIR)/.built
 	$(MAKE) py-setuptools-stage
-	rm -rf $(PY27-SETUPTOOLS_IPK_DIR) $(BUILD_DIR)/py3-setuptools_*_$(TARGET_ARCH).ipk
+	rm -rf $(PY3-SETUPTOOLS_IPK_DIR) $(BUILD_DIR)/py3-setuptools_*_$(TARGET_ARCH).ipk
 	(cd $(PY-SETUPTOOLS_BUILD_DIR)/3; \
 	PYTHONPATH=$(STAGING_LIB_DIR)/python$(PYTHON3_VERSION_MAJOR)/site-packages \
 	$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(PY3-SETUPTOOLS_IPK_DIR) --prefix=$(TARGET_PREFIX))
