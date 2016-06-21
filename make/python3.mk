@@ -42,7 +42,7 @@ PYTHON3_SUGGESTS=
 #
 # PYTHON3_IPK_VERSION should be incremented when the ipk changes.
 #
-PYTHON3_IPK_VERSION=1
+PYTHON3_IPK_VERSION=2
 
 #
 # PYTHON3_CONFFILES should be a list of user-editable files
@@ -246,6 +246,11 @@ $(PYTHON3_IPK): $(PYTHON3_BUILD_DIR)/.built
 	$(MAKE) -C $(PYTHON3_BUILD_DIR) DESTDIR=$(PYTHON3_IPK_DIR) install
 	$(STRIP_COMMAND) $(PYTHON3_IPK_DIR)$(TARGET_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR)
 	$(STRIP_COMMAND) $(PYTHON3_IPK_DIR)$(TARGET_PREFIX)/lib/python$(PYTHON3_VERSION_MAJOR)/lib-dynload/*.so
+	ext=`cat $(PYTHON3_IPK_DIR)$(TARGET_PREFIX)/lib/libpython$(PYTHON3_VERSION_MAJOR)m.so | sed -n 's/.*\(\.cpython-[0-9a-z\-]*\.so\).*/\1/p' | head -1`; \
+		cd $(PYTHON3_IPK_DIR)$(TARGET_PREFIX)/lib/python$(PYTHON3_VERSION_MAJOR)/lib-dynload; \
+		for f in `ls *.so`; do \
+			mv -f $$f `echo $$f | cut -d '.' -f1`$$ext; \
+		done
 	for f in $(PYTHON3_IPK_DIR)$(TARGET_PREFIX)/lib/libpython$(PYTHON3_VERSION_MAJOR)*.so.1.0 $(PYTHON3_IPK_DIR)$(TARGET_PREFIX)/lib/libpython3.so; \
 		do chmod 755 $$f; $(STRIP_COMMAND) $$f; chmod 555 $$f; done
 	for f in bin/2to3 ; \
