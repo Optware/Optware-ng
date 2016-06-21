@@ -1,6 +1,6 @@
---- Python-3.4.2/Makefile.pre.in.orig	2014-10-08 11:18:14.000000000 +0300
-+++ Python-3.4.2/Makefile.pre.in	2015-01-22 18:46:29.270100231 +0200
-@@ -46,6 +46,8 @@
+--- a/Makefile.pre.in
++++ b/Makefile.pre.in
+@@ -51,6 +51,8 @@
  
  GNULD=		@GNULD@
  
@@ -9,7 +9,7 @@
  # Shell used by make (some versions default to the login shell, which is bad)
  SHELL=		/bin/sh
  
-@@ -132,7 +134,7 @@
+@@ -137,7 +139,7 @@
  # Symbols used for using shared libraries
  SHLIB_SUFFIX=	@SHLIB_SUFFIX@
  EXT_SUFFIX=	@EXT_SUFFIX@
@@ -18,7 +18,7 @@
  BLDSHARED=	@BLDSHARED@ $(PY_LDFLAGS)
  LDCXXSHARED=	@LDCXXSHARED@
  DESTSHARED=	$(BINLIBDEST)/lib-dynload
-@@ -163,7 +165,7 @@
+@@ -168,7 +170,7 @@
  OTHER_LIBTOOL_OPT=@OTHER_LIBTOOL_OPT@
  
  # Environment to run shared python without installed libraries
@@ -27,7 +27,7 @@
  
  # ensurepip options
  ENSUREPIP=      @ENSUREPIP@
-@@ -214,9 +216,10 @@
+@@ -219,9 +221,10 @@
  LIBOBJS=	@LIBOBJS@
  
  PYTHON=		python$(EXE)
@@ -40,7 +40,7 @@
  _PYTHON_HOST_PLATFORM=@_PYTHON_HOST_PLATFORM@
  BUILD_GNU_TYPE=	@build@
  HOST_GNU_TYPE=	@host@
-@@ -271,7 +274,8 @@
+@@ -275,7 +278,8 @@
  
  ##########################################################################
  # Parser
@@ -50,16 +50,16 @@
  
  PSRCS=		\
  		Parser/acceler.c \
-@@ -464,7 +468,7 @@
+@@ -479,7 +483,7 @@
  
  # Default target
  all:		build_all
--build_all:	$(BUILDPYTHON) oldsharedmods sharedmods gdbhooks Modules/_testembed python-config
-+build_all:	$(HOSTPYTHON) oldsharedmods sharedmods gdbhooks Modules/_testembed python-config
+-build_all:	$(BUILDPYTHON) oldsharedmods sharedmods gdbhooks Programs/_testembed python-config
++build_all:	$(HOSTPYTHON) oldsharedmods sharedmods gdbhooks Programs/_testembed python-config
  
- # Compile a binary with gcc profile guided optimization.
+ # Compile a binary with profile guided optimization.
  profile-opt:
-@@ -533,14 +537,14 @@
+@@ -560,14 +564,14 @@
  # Run "Argument Clinic" over all source files
  # (depends on python having already been built)
  .PHONY=clinic
@@ -68,16 +68,16 @@
  	$(RUNSHARED) $(PYTHON_FOR_BUILD) ./Tools/clinic/clinic.py --make
  
  # Build the interpreter
--$(BUILDPYTHON):	Modules/python.o $(LIBRARY) $(LDLIBRARY) $(PY3LIBRARY)
-+$(HOSTPYTHON):	Modules/python.o $(LIBRARY) $(LDLIBRARY) $(PY3LIBRARY)
- 	$(LINKCC) $(PY_LDFLAGS) $(LINKFORSHARED) -o $@ Modules/python.o $(BLDLIBRARY) $(LIBS) $(MODLIBS) $(SYSLIBS) $(LDLAST)
+-$(BUILDPYTHON):	Programs/python.o $(LIBRARY) $(LDLIBRARY) $(PY3LIBRARY)
++$(HOSTPYTHON):	Programs/python.o $(LIBRARY) $(LDLIBRARY) $(PY3LIBRARY)
+ 	$(LINKCC) $(PY_LDFLAGS) $(LINKFORSHARED) -o $@ Programs/python.o $(BLDLIBRARY) $(LIBS) $(MODLIBS) $(SYSLIBS) $(LDLAST)
  
 -platform: $(BUILDPYTHON) pybuilddir.txt
 +platform: $(HOSTPYTHON) $(PYTHON_FOR_BUILD) pybuilddir.txt
  	$(RUNSHARED) $(PYTHON_FOR_BUILD) -c 'import sys ; from sysconfig import get_platform ; print(get_platform()+"-"+sys.version[0:3])' >platform
  
  # Create build directory and generate the sysconfig build-time data there.
-@@ -550,7 +554,7 @@
+@@ -577,7 +581,7 @@
  # problems by creating a dummy pybuilddir.txt just to allow interpreter
  # initialization to succeed.  It will be overwritten by generate-posix-vars
  # or removed in case of failure.
@@ -86,7 +86,7 @@
  	@echo "none" > ./pybuilddir.txt
  	$(RUNSHARED) $(PYTHON_FOR_BUILD) -S -m sysconfig --generate-posix-vars ;\
  	if test $$? -ne 0 ; then \
-@@ -563,7 +567,7 @@
+@@ -590,7 +594,7 @@
  # Under GNU make, MAKEFLAGS are sorted and normalized; the 's' for
  # -s, --silent or --quiet is always the first char.
  # Under BSD make, MAKEFLAGS might be " -s -v x=y".
@@ -95,7 +95,7 @@
  	@case "$$MAKEFLAGS" in \
  	    *\ -s*|s*) quiet="-q";; \
  	    *) quiet="";; \
-@@ -607,11 +611,11 @@
+@@ -634,11 +638,11 @@
  #
  # Distributors are likely to want to install this somewhere else e.g. relative
  # to the stripped DWARF data for the shared library.
@@ -110,26 +110,26 @@
  
  # This rule is here for OPENSTEP/Rhapsody/MacOSX. It builds a temporary
  # minimal framework (not including the Lib directory and such) in the current
-@@ -747,14 +751,14 @@
+@@ -777,14 +781,14 @@
  
- $(GRAMMAR_H): $(GRAMMAR_INPUT) $(PGENSRCS)
+ $(IO_OBJS): $(IO_H)
+ 
+-$(GRAMMAR_H): $(GRAMMAR_INPUT) $(PGEN)
++$(GRAMMAR_H): $(GRAMMAR_INPUT) $(BUILDPGEN)
  		@$(MKDIR_P) Include
--		$(MAKE) $(PGEN)
 -		$(PGEN) $(GRAMMAR_INPUT) $(GRAMMAR_H) $(GRAMMAR_C)
-+		$(MAKE) $(BUILDPGEN)
 +		$(BUILDPGEN) $(GRAMMAR_INPUT) $(GRAMMAR_H) $(GRAMMAR_C)
- $(GRAMMAR_C): $(GRAMMAR_H) $(GRAMMAR_INPUT) $(PGENSRCS)
- 		$(MAKE) $(GRAMMAR_H)
+ $(GRAMMAR_C): $(GRAMMAR_H)
  		touch $(GRAMMAR_C)
  
--$(PGEN):	$(PGENOBJS)
+-$(PGEN): $(PGENOBJS)
 -		$(CC) $(OPT) $(PY_LDFLAGS) $(PGENOBJS) $(LIBS) -o $(PGEN)
-+$(HOSTPGEN):	$(PGENOBJS)
++$(HOSTPGEN): $(PGENOBJS)
 +		$(CC) $(OPT) $(PY_LDFLAGS) $(PGENOBJS) $(LIBS) -o $@
  
  Parser/grammar.o:	$(srcdir)/Parser/grammar.c \
  				$(srcdir)/Include/token.h \
-@@ -835,6 +839,16 @@
+@@ -868,6 +872,16 @@
  Objects/typeslots.inc: $(srcdir)/Include/typeslots.h $(srcdir)/Objects/typeslots.py
  	$(PYTHON) $(srcdir)/Objects/typeslots.py < $(srcdir)/Include/typeslots.h > Objects/typeslots.inc
  
@@ -146,7 +146,7 @@
  ############################################################################
  # Header files
  
-@@ -1033,7 +1047,7 @@
+@@ -1068,7 +1082,7 @@
  
  # Install the interpreter with $(VERSION) affixed
  # This goes into $(exec_prefix)
@@ -155,7 +155,7 @@
  	@for i in $(BINDIR) $(LIBDIR); \
  	do \
  		if test ! -d $(DESTDIR)$$i; then \
-@@ -1043,7 +1057,7 @@
+@@ -1078,7 +1092,7 @@
  		fi; \
  	done
  	if test "$(PYTHONFRAMEWORKDIR)" = "no-framework" ; then \
@@ -164,7 +164,7 @@
  	else \
  		$(INSTALL_PROGRAM) $(STRIPFLAG) Mac/pythonw $(DESTDIR)$(BINDIR)/python$(LDVERSION)$(EXE); \
  	fi
-@@ -1367,6 +1381,7 @@
+@@ -1415,6 +1429,7 @@
  # Install the dynamically loadable modules
  # This goes into $(exec_prefix)
  sharedinstall: sharedmods
@@ -172,7 +172,7 @@
  	$(RUNSHARED) $(PYTHON_FOR_BUILD) $(srcdir)/setup.py install \
  	   	--prefix=$(prefix) \
  		--install-scripts=$(BINDIR) \
-@@ -1465,7 +1480,7 @@
+@@ -1513,7 +1528,7 @@
  config.status:	$(srcdir)/configure
  	$(SHELL) $(srcdir)/configure $(CONFIG_ARGS)
  
@@ -181,7 +181,7 @@
  
  # Some make's put the object file in the current directory
  .c.o:
-@@ -1539,12 +1554,13 @@
+@@ -1592,12 +1607,13 @@
  	rm -rf $(COVERAGE_REPORT)
  
  clobber: clean profile-removal

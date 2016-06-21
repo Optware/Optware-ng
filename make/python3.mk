@@ -21,8 +21,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PYTHON3_VERSION=3.4.2
-PYTHON3_VERSION_MAJOR=3.4
+PYTHON3_VERSION=3.5.1
+PYTHON3_VERSION_MAJOR=3.5
 PYTHON3_SITE=http://www.python.org/ftp/python/$(PYTHON3_VERSION)
 PYTHON3_DIR=Python-$(PYTHON3_VERSION)
 PYTHON3_SOURCE=$(PYTHON3_DIR).tgz
@@ -42,7 +42,7 @@ PYTHON3_SUGGESTS=
 #
 # PYTHON3_IPK_VERSION should be incremented when the ipk changes.
 #
-PYTHON3_IPK_VERSION=2
+PYTHON3_IPK_VERSION=1
 
 #
 # PYTHON3_CONFFILES should be a list of user-editable files
@@ -144,7 +144,7 @@ endif
 	$(PYTHON3_UNZIP) $(DL_DIR)/$(PYTHON3_SOURCE) | tar -C $(BUILD_DIR) -xf -
 	cat $(PYTHON3_PATCHES) | $(PATCH) -bd $(BUILD_DIR)/$(PYTHON3_DIR) -p1
 	sed -i -e 's/MIPS_LINUX/MIPS/' $(BUILD_DIR)/$(PYTHON3_DIR)/Modules/_ctypes/libffi/configure.ac
-	sed -i -e '/\$$absconfigcommand/s|.*|    AS="" LD="" CC="" CXX="" AR="" STRIP="" RANLIB="" LDFLAGS="-L$(HOST_STAGING_LIB_DIR)" CPPFLAGS="-I$(HOST_STAGING_INCLUDE_DIR)" \$$absconfigcommand --prefix=/opt --with-system-ffi|' $(BUILD_DIR)/$(PYTHON3_DIR)/configure.ac
+	sed -i -e '/\$$absconfigcommand/s|.*|    AS="" LD="" CC="" CPP="" CXX="" AR="" STRIP="" RANLIB="" READELF="" LDFLAGS="-L$(HOST_STAGING_LIB_DIR)" CPPFLAGS="-I$(HOST_STAGING_INCLUDE_DIR)" \$$absconfigcommand --prefix=/opt --with-system-ffi|' $(BUILD_DIR)/$(PYTHON3_DIR)/configure.ac
 	$(AUTORECONF1.10) -vif $(BUILD_DIR)/$(PYTHON3_DIR)
 	sed -i -e 's|@STAGING_INCLUDE@|$(STAGING_INCLUDE_DIR)|g' -e 's|@TOOLCHAIN_TARGET_INCLUDE@|$(TARGET_INCDIR)|g' $(BUILD_DIR)/$(PYTHON3_DIR)/setup.py
 	mkdir -p $(@D)
@@ -176,6 +176,7 @@ endif
 		--enable-shared \
 		--with-system-ffi \
 	)
+	sed -i -e 's|^\t\.\(/Programs/\)|\t./buildpython3\1|' $(@D)/Makefile
 	touch $@
 
 python3-unpack: $(PYTHON3_BUILD_DIR)/.configured
@@ -185,6 +186,7 @@ python3-unpack: $(PYTHON3_BUILD_DIR)/.configured
 #
 $(PYTHON3_BUILD_DIR)/.built: $(PYTHON3_BUILD_DIR)/.configured
 	rm -f $@
+	$(MAKE) -C $(@D)/buildpython3
 	GNU_TARGET_NAME=$(GNU_TARGET_NAME) $(MAKE) -C $(@D)
 	touch $@
 
@@ -250,6 +252,7 @@ $(PYTHON3_IPK): $(PYTHON3_BUILD_DIR)/.built
 	    do mv $(PYTHON3_IPK_DIR)$(TARGET_PREFIX)/$$f $(PYTHON3_IPK_DIR)$(TARGET_PREFIX)/`echo $$f | sed -e 's/\(\.\|$$\)/-3.1\1/'`; done
 	$(INSTALL) -d $(PYTHON3_IPK_DIR)$(TARGET_PREFIX)/local/bin
 	$(INSTALL) -d $(PYTHON3_IPK_DIR)$(TARGET_PREFIX)/local/lib/python$(PYTHON3_VERSION_MAJOR)/site-packages
+	sed -i -e 's|$(TARGET_CROSS)|$(TARGET_PREFIX)/bin/|g' $(PYTHON3_IPK_DIR)$(TARGET_PREFIX)/lib/python3.5/config-3.5m/Makefile
 	$(MAKE) $(PYTHON3_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(PYTHON3_SOURCE_DIR)/postinst $(PYTHON3_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 755 $(PYTHON3_SOURCE_DIR)/prerm $(PYTHON3_IPK_DIR)/CONTROL/prerm
