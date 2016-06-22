@@ -1,6 +1,6 @@
 #!/bin/sh
 
-%OPTWARE_TARGET_PREFIX%/bin/killall saslauthd > /dev/null 2>&1
+%OPTWARE_TARGET_PREFIX%/etc/init.d/S52saslauthd stop
 
 /bin/rm -rf %OPTWARE_TARGET_PREFIX%/etc/sasl2
 /bin/rm -rf %OPTWARE_TARGET_PREFIX%/lib/sasl2

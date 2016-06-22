@@ -23,7 +23,7 @@
 #
 RUBYGEMS_SITE=http://production.cf.rubygems.org/rubygems
 ifneq (wl500g, $(OPTWARE_TARGET))
-RUBYGEMS_VERSION=2.4.5
+RUBYGEMS_VERSION=2.6.5
 else
 RUBYGEMS_VERSION=1.1.1
 endif

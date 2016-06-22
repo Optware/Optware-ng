@@ -1,9 +1,44 @@
 #!/bin/sh
 
-echo "(re)starting service saslauthd"
+DESC="SASL authentication server"
+NAME=saslauthd
+SASLAUTHD=%OPTWARE_TARGET_PREFIX%/sbin/$NAME
+ARGS="-a getpwent -n 1"
 
-if [ -n "`%OPTWARE_TARGET_PREFIX%/bin/pidof saslauthd`" ]; then 
-    %OPTWARE_TARGET_PREFIX%/bin/killall saslauthd 2>/dev/null
-fi
+case "$1" in
+  start)
+        if [ -n "`%OPTWARE_TARGET_PREFIX%/bin/busybox pidof $NAME`" ]; then
+            echo "$DESC is already running"
+            exit 1
+        fi
+        echo -n "Starting $DESC:"
+        $SASLAUTHD $ARGS > /dev/null 2>&1
+        echo "$NAME"
+        ;;
+  stop)
+        if [ -n "`%OPTWARE_TARGET_PREFIX%/bin/busybox pidof $NAME`" ]; then
+           echo "Stopping $DESC"
+           %OPTWARE_TARGET_PREFIX%/bin/busybox killall $NAME 2>/dev/null
+        else
+           echo "$DESC is not running"
+           exit 1
+        fi
+        ;;
+  restart)
+        $0 stop
+        %OPTWARE_TARGET_PREFIX%/bin/busybox sleep 3
+        $0 start
+        ;;
+  check)
+        if [ -n "`%OPTWARE_TARGET_PREFIX%/bin/busybox pidof $NAME`" ]; then
+           echo "$DESC is running"
+        else
+           echo "$DESC is not running"
+        fi
+        ;;
+  *)
+        echo "Usage: $0 {start|stop|restart|check}"
+        exit 1
+esac
 
-%OPTWARE_TARGET_PREFIX%/sbin/saslauthd -a getpwent -n 1 > /dev/null 2>&1
+exit 0

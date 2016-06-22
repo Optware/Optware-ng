@@ -12,4 +12,4 @@ echo "If you dislike the link /usr/lib/sasl2 -> %OPTWARE_TARGET_PREFIX%/lib/sasl
 echo then you may want to set SASL_PATH instead
 echo
 
-%OPTWARE_TARGET_PREFIX%/etc/init.d/S52saslauthd
+%OPTWARE_TARGET_PREFIX%/etc/init.d/S52saslauthd start

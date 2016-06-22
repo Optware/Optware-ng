@@ -21,8 +21,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-CYRUS-SASL_SITE=ftp://ftp.andrew.cmu.edu/pub/cyrus-mail
-CYRUS-SASL_VERSION=2.1.25
+CYRUS-SASL_SITE=ftp://ftp.cyrusimap.org/cyrus-sasl
+CYRUS-SASL_VERSION=2.1.26
 CYRUS-SASL_SOURCE=cyrus-sasl-$(CYRUS-SASL_VERSION).tar.gz
 CYRUS-SASL_DIR=cyrus-sasl-$(CYRUS-SASL_VERSION)
 CYRUS-SASL_UNZIP=zcat
@@ -30,7 +30,7 @@ CYRUS-SASL_MAINTAINER=Matthias Appel <private_tweety@gmx.net>
 CYRUS-SASL_DESCRIPTION=Provides client or server side authentication (see RFC 2222).
 CYRUS-SASL_SECTION=util
 CYRUS-SASL_PRIORITY=optional
-CYRUS-SASL_DEPENDS=psmisc
+CYRUS-SASL_DEPENDS=busybox-base
 CYRUS-SASL_CONFLICTS=
 
 CYRUS-SASL_IPK_VERSION=1
@@ -45,7 +45,7 @@ CYRUS-SASL_CONFFILES=$(TARGET_PREFIX)/etc/init.d/S52saslauthd
 #
 CYRUS-SASL_PATCHES=  $(CYRUS-SASL_SOURCE_DIR)/configure-powerpc.patch \
   $(CYRUS-SASL_SOURCE_DIR)/include-Makefile.in.patch \
-  $(CYRUS-SASL_SOURCE_DIR)/db_berkeley.patch \
+#$(CYRUS-SASL_SOURCE_DIR)/db_berkeley.patch \
 #$(CYRUS-SASL_SOURCE_DIR)/Makefile.in.patch
 
 CYRUS-SASL_BUILD_DIR=$(BUILD_DIR)/cyrus-sasl
