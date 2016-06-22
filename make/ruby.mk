@@ -143,6 +143,7 @@ endif
 		LDFLAGS="$(STAGING_LDFLAGS) $(RUBY_LDFLAGS)" \
 		DLDFLAGS="$(STAGING_LDFLAGS) $(RUBY_LDFLAGS)" \
 		ac_cv_func_setpgrp_void=yes \
+		ac_cv_path_BASERUBY=$(RUBY_HOST_RUBY) \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -177,7 +178,7 @@ $(RUBY_BUILD_DIR)/.built: $(RUBY_BUILD_DIR)/.configured
 #
 ruby: $(RUBY_BUILD_DIR)/.built
 
-$(RUBY_HOST_BUILD_DIR)/.staged: host/.configured make/ruby.mk
+$(RUBY_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(RUBY_SOURCE) #make/ruby.mk
 	rm -rf $(HOST_BUILD_DIR)/$(RUBY_DIR) $(@D)
 	$(RUBY_UNZIP) $(DL_DIR)/$(RUBY_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
 #	cat $(RUBY_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(RUBY_DIR) -p1
@@ -191,6 +192,7 @@ $(RUBY_HOST_BUILD_DIR)/.staged: host/.configured make/ruby.mk
 		--disable-install-doc \
 	)
 	$(MAKE) -C $(@D)
+	rm -f $(HOST_STAGING_PREFIX)/bin/rake
 	$(MAKE) -C $(@D) install
 	rm -f $(HOST_STAGING_LIB_DIR)/ruby/ruby.h
 	cd $(HOST_STAGING_LIB_DIR)/ruby && ln -sf $(RUBY_VERSION)/*-linux/ruby.h .
@@ -207,6 +209,7 @@ endif
 #
 $(RUBY_BUILD_DIR)/.staged: $(RUBY_BUILD_DIR)/.built
 	rm -f $@
+	rm -f $(STAGING_PREFIX)/bin/rake
 	PATH=`dirname $(RUBY_HOST_RUBY)`:$$PATH \
 	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	-cp -f $(STAGING_INCLUDE_DIR)/ruby-$(RUBY_VERSION)/*/ruby/config.h $(STAGING_INCLUDE_DIR)/ruby-$(RUBY_VERSION)/ruby
