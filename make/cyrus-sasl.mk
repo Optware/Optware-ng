@@ -30,7 +30,7 @@ CYRUS-SASL_MAINTAINER=Matthias Appel <private_tweety@gmx.net>
 CYRUS-SASL_DESCRIPTION=Provides client or server side authentication (see RFC 2222).
 CYRUS-SASL_SECTION=util
 CYRUS-SASL_PRIORITY=optional
-CYRUS-SASL_DEPENDS=psmisc
+CYRUS-SASL_DEPENDS=busybox-base
 CYRUS-SASL_CONFLICTS=
 
 CYRUS-SASL_IPK_VERSION=1
