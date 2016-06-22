@@ -63,7 +63,7 @@ SVN-RB_CONFLICTS=
 #
 # SVN_IPK_VERSION should be incremented when the ipk changes.
 #
-SVN_IPK_VERSION=3
+SVN_IPK_VERSION=4
 
 #
 # SVN_CONFFILES should be a list of user-editable files
