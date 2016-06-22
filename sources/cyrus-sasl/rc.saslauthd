@@ -2,8 +2,8 @@
 
 echo "(re)starting service saslauthd"
 
-if [ -n "`%OPTWARE_TARGET_PREFIX%/bin/pidof saslauthd`" ]; then 
-    %OPTWARE_TARGET_PREFIX%/bin/killall saslauthd 2>/dev/null
+if [ -n "`pidof saslauthd`" ]; then 
+    killall saslauthd 2>/dev/null
 fi
 
-%OPTWARE_TARGET_PREFIX%/sbin/saslauthd -a getpwent -n 1 > /dev/null 2>&1
+saslauthd -a getpwent -n 1 > /dev/null 2>&1
