@@ -187,7 +187,7 @@ endif
 		--prefix=$(TARGET_PREFIX) \
 		--with-serf=$(STAGING_PREFIX) \
 		--with-apr=$(STAGING_PREFIX) \
-		--with-ruby-sitedir=$(TARGET_PREFIX)/local/lib/ruby/site_ruby/$(RUBY_VERSION) \
+		--with-ruby-sitedir=$(TARGET_PREFIX)/local/lib/ruby/site_ruby/$(RUBY_LIB_VERSION) \
 		--with-apr-util=$(STAGING_PREFIX) \
 		--with-apxs=$(STAGING_PREFIX)/bin/apxs \
 		--without-swig \
@@ -202,9 +202,9 @@ endif
 	    -e '/^SWIG_PY_LIBS/s|.*|SWIG_PY_LIBS = $(STAGING_LDFLAGS) $(SVN_LDFLAGS)|' \
 	    -e '/^SWIG_PY_LINK/s|.*|SWIG_PY_LINK = $(TARGET_CC) -pthread -shared|' \
 	    -e '/^SWIG_RB/s|= *gcc|= $(TARGET_CC)|' \
-	    -e '/^SWIG_RB_INCLUDES/s|.*|SWIG_RB_INCLUDES =  \$$(SWIG_INCLUDES) -I. -I$(STAGING_INCLUDE_DIR)/ruby-$(RUBY_VERSION) -I$(STAGING_INCLUDE_DIR)/ruby-$(RUBY_VERSION)/ruby -I$(STAGING_INCLUDE_DIR)/ruby-$(RUBY_VERSION)/ruby/backward -I$(shell ls -d $(STAGING_INCLUDE_DIR)/ruby-$(RUBY_VERSION)/*|grep "\-linux"|head -n 1) -I\$$(SWIG_SRC_DIR)/ruby/libsvn_swig_ruby|' \
+	    -e '/^SWIG_RB_INCLUDES/s|.*|SWIG_RB_INCLUDES =  \$$(SWIG_INCLUDES) -I. -I$(STAGING_INCLUDE_DIR)/ruby-$(RUBY_LIB_VERSION) -I$(STAGING_INCLUDE_DIR)/ruby-$(RUBY_LIB_VERSION)/ruby -I$(STAGING_INCLUDE_DIR)/ruby-$(RUBY_LIB_VERSION)/ruby/backward -I$(shell ls -d $(STAGING_INCLUDE_DIR)/ruby-$(RUBY_LIB_VERSION)/*|grep "\-linux"|head -n 1) -I\$$(SWIG_SRC_DIR)/ruby/libsvn_swig_ruby|' \
 	    -e '/^SWIG_RB_LIBS/s|.*|SWIG_RB_LIBS = -Wl,-R$(TARGET_PREFIX)/lib -L$(STAGING_LIB_DIR) -lruby -lpthread -ldl -lcrypt -lm|' \
-	    -e '/^SWIG_RB_SITE_ARCH_DIR/s|.*|SWIG_RB_SITE_ARCH_DIR = $(TARGET_PREFIX)/local/lib/ruby/site_ruby/$(RUBY_VERSION)/$(RUBY_ARCH)|' \
+	    -e '/^SWIG_RB_SITE_ARCH_DIR/s|.*|SWIG_RB_SITE_ARCH_DIR = $(TARGET_PREFIX)/local/lib/ruby/site_ruby/$(RUBY_LIB_VERSION)/$(RUBY_ARCH)|' \
 	    -e 's|-L$(TARGET_PREFIX)/lib||g' \
 	    -e '/^SVN_APRUTIL_LIBS/s/=/= -lpthread /' \
 	    $(@D)/Makefile

@@ -27,18 +27,10 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 RUBY_SITE=ftp://ftp.ruby-lang.org/pub/ruby
-ifneq (wl500g, $(OPTWARE_TARGET))
 RUBY_UPSTREAM_VERSION=2.3.1
-RUBY_VERSION=2.3.0
+RUBY_VERSION=2.3.1
+RUBY_LIB_VERSION=2.3.0
 RUBY_IPK_VERSION=1
-#RUBY_UPSTREAM_VERSION=1.9.1-p243
-#RUBY_VERSION=1.9.1.243
-#RUBY_IPK_VERSION=2
-else
-RUBY_UPSTREAM_VERSION=1.8.6-p36
-RUBY_VERSION=1.8.6.36
-RUBY_IPK_VERSION=2
-endif
 RUBY_SOURCE=ruby-$(RUBY_UPSTREAM_VERSION).tar.gz
 RUBY_DIR=ruby-$(RUBY_UPSTREAM_VERSION)
 RUBY_UNZIP=zcat
@@ -195,7 +187,7 @@ $(RUBY_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(RUBY_SOURCE) #make/
 	rm -f $(HOST_STAGING_PREFIX)/bin/rake
 	$(MAKE) -C $(@D) install
 	rm -f $(HOST_STAGING_LIB_DIR)/ruby/ruby.h
-	cd $(HOST_STAGING_LIB_DIR)/ruby && ln -sf $(RUBY_VERSION)/*-linux/ruby.h .
+	cd $(HOST_STAGING_LIB_DIR)/ruby && ln -sf $(RUBY_LIB_VERSION)/*-linux/ruby.h .
 	touch $@
 
 ifneq ($(HOSTCC), $(TARGET_CC))
@@ -212,7 +204,7 @@ $(RUBY_BUILD_DIR)/.staged: $(RUBY_BUILD_DIR)/.built
 	rm -f $(STAGING_PREFIX)/bin/rake
 	PATH=`dirname $(RUBY_HOST_RUBY)`:$$PATH \
 	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
-	-cp -f $(STAGING_INCLUDE_DIR)/ruby-$(RUBY_VERSION)/*/ruby/config.h $(STAGING_INCLUDE_DIR)/ruby-$(RUBY_VERSION)/ruby
+	-cp -f $(STAGING_INCLUDE_DIR)/ruby-$(RUBY_LIB_VERSION)/*/ruby/config.h $(STAGING_INCLUDE_DIR)/ruby-$(RUBY_LIB_VERSION)/ruby
 	touch $@
 
 ruby-stage: $(RUBY_BUILD_DIR)/.staged
@@ -252,10 +244,12 @@ $(RUBY_IPK): $(RUBY_BUILD_DIR)/.built
 	$(MAKE) -C $(RUBY_BUILD_DIR) DESTDIR=$(RUBY_IPK_DIR) install
 	for so in $(RUBY_IPK_DIR)$(TARGET_PREFIX)/bin/ruby \
 	    $(RUBY_IPK_DIR)$(TARGET_PREFIX)/lib/libruby.so.[0-9]*.[0-9]*.[0-9]* \
-	    `find $(RUBY_IPK_DIR)$(TARGET_PREFIX)/lib/ruby/$(RUBY_VERSION)/ -name '*.so'`; \
+	    `find $(RUBY_IPK_DIR)$(TARGET_PREFIX)/lib/ruby/$(RUBY_LIB_VERSION)/ -name '*.so'`; \
 	do $(STRIP_COMMAND) $$so; \
 	done
-	$(INSTALL) -d $(RUBY_IPK_DIR)$(TARGET_PREFIX)/etc/
+	sed -i -e 's|$(TARGET_CROSS)|$(TARGET_PREFIX)/opt/bin/|g' -e 's|$(STAGING_PREFIX)|$(TARGET_PREFIX)|g' \
+		$(RUBY_IPK_DIR)$(TARGET_PREFIX)/lib/ruby/$(RUBY_LIB_VERSION)/$(RUBY_ARCH)/rbconfig.rb
+	$(INSTALL) -d $(RUBY_IPK_DIR)$(TARGET_PREFIX)/etc
 	$(MAKE) $(RUBY_IPK_DIR)/CONTROL/control
 	if [ -f $(RUBY_IPK_DIR)$(TARGET_PREFIX)/bin/gem ] ; then \
 		mv -f $(RUBY_IPK_DIR)$(TARGET_PREFIX)/bin/gem $(RUBY_IPK_DIR)$(TARGET_PREFIX)/bin/ruby-gem; \
