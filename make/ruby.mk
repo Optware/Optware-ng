@@ -30,7 +30,7 @@ RUBY_SITE=ftp://ftp.ruby-lang.org/pub/ruby
 RUBY_UPSTREAM_VERSION=2.3.1
 RUBY_VERSION=2.3.1
 RUBY_LIB_VERSION=2.3.0
-RUBY_IPK_VERSION=1
+RUBY_IPK_VERSION=2
 RUBY_SOURCE=ruby-$(RUBY_UPSTREAM_VERSION).tar.gz
 RUBY_DIR=ruby-$(RUBY_UPSTREAM_VERSION)
 RUBY_UNZIP=zcat
@@ -247,7 +247,7 @@ $(RUBY_IPK): $(RUBY_BUILD_DIR)/.built
 	    `find $(RUBY_IPK_DIR)$(TARGET_PREFIX)/lib/ruby/$(RUBY_LIB_VERSION)/ -name '*.so'`; \
 	do $(STRIP_COMMAND) $$so; \
 	done
-	sed -i -e 's|$(TARGET_CROSS)|$(TARGET_PREFIX)/opt/bin/|g' -e 's|$(STAGING_PREFIX)|$(TARGET_PREFIX)|g' \
+	sed -i -e 's|$(TARGET_CROSS)|$(TARGET_PREFIX)/bin/|g' -e 's|$(STAGING_PREFIX)|$(TARGET_PREFIX)|g' \
 		$(RUBY_IPK_DIR)$(TARGET_PREFIX)/lib/ruby/$(RUBY_LIB_VERSION)/$(RUBY_ARCH)/rbconfig.rb
 	$(INSTALL) -d $(RUBY_IPK_DIR)$(TARGET_PREFIX)/etc
 	$(MAKE) $(RUBY_IPK_DIR)/CONTROL/control
