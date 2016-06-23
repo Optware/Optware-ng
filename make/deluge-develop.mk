@@ -22,8 +22,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 DELUGE_DEVELOP_REPOSITORY=https://github.com/deluge-torrent/deluge.git
-DELUGE_DEVELOP_VERSION=20160203
-DELUGE_DEVELOP_TREEISH=`git rev-list -b develop --max-count=1 --until=2016-02-03 HEAD`
+DELUGE_DEVELOP_VERSION=20160610
+DELUGE_DEVELOP_TREEISH=`git rev-list -b develop --max-count=1 --until=2016-06-10 HEAD`
 DELUGE_DEVELOP_SOURCE=deluge-develop-$(DELUGE_DEVELOP_VERSION).tar.bz2
 #DELUGE_DEVELOP_DIR=deluge-develop-$(DELUGE_DEVELOP_VERSION)
 DELUGE_DEVELOP_UNZIP=bzcat
@@ -39,7 +39,7 @@ DELUGE_DEVELOP_CONFLICTS=deluge
 #
 # DELUGE_DEVELOP_IPK_VERSION should be incremented when the ipk changes.
 #
-DELUGE_DEVELOP_IPK_VERSION=2
+DELUGE_DEVELOP_IPK_VERSION=1
 
 #
 # DELUGE_DEVELOP_CONFFILES should be a list of user-editable files
@@ -49,7 +49,8 @@ DELUGE_DEVELOP_CONFFILES=$(TARGET_PREFIX)/etc/init.d/S80deluged $(TARGET_PREFIX)
 # DELUGE_DEVELOP_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#DELUGE_DEVELOP_PATCHES=$(DELUGE_DEVELOP_SOURCE_DIR)/version.py.patch
+DELUGE_DEVELOP_PATCHES=\
+$(DELUGE_DEVELOP_SOURCE_DIR)/skip_forced_minify.patch \
 
 #
 # If the compilation of the package requires additional
