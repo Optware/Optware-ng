@@ -38,3 +38,5 @@ BOOST_ADDITIONAL_LIBS:= atomic \
 			exception \
 			serialization \
 			wave
+
+RUBY_ARCH := powerpc-linux-gnuspe
