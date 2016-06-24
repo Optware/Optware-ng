@@ -62,7 +62,7 @@ LIBTORRENT-RASTERBAR_IPK_VERSION?=1
 # LIBTORRENT-RASTERBAR_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-LIBTORRENT-RASTERBAR_PATCHES=$(LIBTORRENT-RASTERBAR_SOURCE_DIR)/config.hpp.patch
+#LIBTORRENT-RASTERBAR_PATCHES=$(LIBTORRENT-RASTERBAR_SOURCE_DIR)/config.hpp.patch
 
 #
 # If the compilation of the package requires additional
