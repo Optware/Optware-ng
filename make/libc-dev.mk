@@ -37,14 +37,6 @@ ifeq (libstdc++, $(filter libstdc++, $(PACKAGES)))
 	LIBC-DEV_DEPENDS+=, libstdc++
 endif
 
-ifeq (uclibc-opt, $(filter uclibc-opt, $(PACKAGES)))
-	LIBC-DEV_DEPENDS+=, uclibc-opt
-endif
-
-ifeq (glibc-opt, $(filter glibc-opt, $(PACKAGES)))
-	LIBC-DEV_DEPENDS+=, glibc-opt
-endif
-
 LIBC-DEV_IPK_VERSION?=8
 
 ifdef LIBNSL_VERSION
@@ -56,6 +48,8 @@ LIBC-DEV_VERSION = $(CROSS_CONFIGURATION_UCLIBC_VERSION)
 LIBC-DEV_VERSION = 0.9.28
   endif
 endif
+
+LIBC-DEV_SOURCE_DIR=$(SOURCE_DIR)/libc-dev
 
 ifdef TARGET_USRLIBDIR
 LIBC-DEV_USRLIBDIR=$(TARGET_USRLIBDIR)
@@ -185,6 +179,7 @@ ifeq ($(OPTWARE_TARGET), $(filter buildroot-armeabihf buildroot-i686, $(OPTWARE_
 endif
 	$(INSTALL) -d $(LIBC-DEV_IPK_DIR)/$(LIBC-DEV_CRT_DIR)
 	rsync -l $(LIBC-DEV_USRLIBDIR)/*crt*.o $(LIBC-DEV_IPK_DIR)/$(LIBC-DEV_CRT_DIR)
+	cp -af $(LIBC-DEV_SOURCE_DIR)/libgcc_s.so $(LIBC-DEV_IPK_DIR)$(TARGET_PREFIX)/lib/
 	$(INSTALL) -d $(LIBC-DEV_IPK_DIR)$(TARGET_PREFIX)/lib/
 ifeq (wdtv, $(OPTWARE_TARGET))
 	rm -f $(LIBC-DEV_IPK_DIR)$(TARGET_PREFIX)/include/z*.h

@@ -18,19 +18,8 @@ endif
 UCLIBC-OPT_DESCRIPTION=micro C library for embedded Linux systems
 UCLIBC-OPT_SECTION=base
 UCLIBC-OPT_PRIORITY=required
-ifneq ($(OPTWARE_TARGET), $(filter buildroot-armeabi buildroot-armeabi-ng buildroot-mipsel buildroot-mipsel-ng shibby-tomato-arm, $(OPTWARE_TARGET)))
-UCLIBC-OPT_DEPENDS=
-else
-#	to make feed firmware-independent, we make
-#	all packages dependent on uclibc-opt by hacking ipkg-build from ipkg-utils,
-#	so make uclibc-opt dependent on libnsl, which is a part of uClibc
 UCLIBC-OPT_DEPENDS=libnsl
-endif
-ifeq (ipkg-opt, $(filter ipkg-opt, $(PACKAGES)))
-UCLIBC-OPT_SUGGESTS=ipkg-opt
-else
 UCLIBC-OPT_SUGGESTS=
-endif
 UCLIBC-OPT_CONFLICTS=
 
 # UCLIBC-OPT_IPK_DIR is the directory in which the ipk is built.
@@ -115,7 +104,9 @@ endif
 	$(INSTALL) -d $(UCLIBC-OPT_IPK_DIR)$(TARGET_PREFIX)/etc
 	$(INSTALL) -d $(UCLIBC-OPT_IPK_DIR)$(TARGET_PREFIX)/lib
 	cp -af $(UCLIBC-OPT_LIBS_PATTERN) $(UCLIBC-OPT_IPK_DIR)$(TARGET_PREFIX)/lib
-	-$(STRIP_COMMAND) $(patsubst %, $(UCLIBC-OPT_IPK_DIR)$(TARGET_PREFIX)/lib/%*so*, $(UCLIBC-OPT_LIBS))
+	# this is provided by libc-dev
+	rm -f $(UCLIBC-OPT_IPK_DIR)$(TARGET_PREFIX)/lib/libgcc_s.so
+	$(STRIP_COMMAND) $(patsubst %, $(UCLIBC-OPT_IPK_DIR)$(TARGET_PREFIX)/lib/%*so*, $(UCLIBC-OPT_LIBS))
 	### package non-stripped libpthread and libthread_db
 	cp -f $(UCLIBC-OPT_LIBS_SOURCE_DIR)/libpthread* $(UCLIBC-OPT_LIBS_SOURCE_DIR)/libthread_db* \
 							$(UCLIBC-OPT_IPK_DIR)$(TARGET_PREFIX)/lib
