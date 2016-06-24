@@ -58,7 +58,7 @@ endif
 #
 # LIBTORRENT-RASTERBAR_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBTORRENT-RASTERBAR_IPK_VERSION?=2
+LIBTORRENT-RASTERBAR_IPK_VERSION?=3
 
 #
 # LIBTORRENT-RASTERBAR_CONFFILES should be a list of user-editable files
@@ -216,14 +216,14 @@ libtorrent-rasterbar-unpack: $(LIBTORRENT-RASTERBAR_BUILD_DIR)/.configured
 $(LIBTORRENT-RASTERBAR_BUILD_DIR)/.built: $(LIBTORRENT-RASTERBAR_BUILD_DIR)/.configured
 	rm -f $@
 	sed -i -e 's|include/python[^ \t]*|include/python2.6|g' -e 's|-lpython[^ \t]*|-lpython2.6|g' -e \
-		's|-lboost_python-py[^ \t]*|-lboost_python-py26|' $(@D)/bindings/python/compile_flags
+		's|-lboost_python-py[^ \t]*|-lboost_python-py26|' $(@D)/bindings/python/{compile,link}_flags
 	$(MAKE) -C $(@D)
 	sed -i -e 's|include/python[^ \t]*|include/python2.7|g' -e 's|-lpython[^ \t]*|-lpython2.7|g' -e \
-		's|-lboost_python-py[^ \t]*|-lboost_python-py27|' $(@D)/bindings/python/compile_flags
+		's|-lboost_python-py[^ \t]*|-lboost_python-py27|' $(@D)/bindings/python/{compile,link}_flags
 	(cd $(@D)/bindings/python; $(HOST_STAGING_PREFIX)/bin/python2.7 setup.py build)
 	sed -i -e 's|include/python[^ \t]*|include/python$(PYTHON3_VERSION_MAJOR)m|g' -e \
 		"s|-lboost_python-py[^ \t]*|-lboost_python-py$(shell echo $(PYTHON3_VERSION_MAJOR)|sed 's/\.//g')|" -e \
-		's|-lpython[^ \t]*|-lpython$(PYTHON3_VERSION_MAJOR)m|g' $(@D)/bindings/python/compile_flags
+		's|-lpython[^ \t]*|-lpython$(PYTHON3_VERSION_MAJOR)m|g' $(@D)/bindings/python/{compile,link}_flags
 	(cd $(@D)/bindings/python; $(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py build)
 	touch $@
 
