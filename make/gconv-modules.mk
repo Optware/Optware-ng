@@ -4,17 +4,12 @@
 #
 ###########################################################
 
-ifeq ($(OPTWARE_TARGET), nslu2)
+ifeq ($(LIBC_STYLE), uclibc)
 GCONV_MODULES_VERSION=2.2.5
 GCONV_MODULES_IPK_VERSION=7
 else
-  ifeq ($(LIBC_STYLE), uclibc)
-GCONV_MODULES_VERSION=2.2.5
-GCONV_MODULES_IPK_VERSION=7
-  else
 GCONV_MODULES_VERSION=$(LIBNSL_VERSION)
-GCONV_MODULES_IPK_VERSION=3
-  endif
+GCONV_MODULES_IPK_VERSION=4
 endif
 
 GCONV_MODULES_SOURCE=toolchain
