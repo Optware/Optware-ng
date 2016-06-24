@@ -30,7 +30,7 @@ RUBY_SITE=ftp://ftp.ruby-lang.org/pub/ruby
 RUBY_UPSTREAM_VERSION=2.3.1
 RUBY_VERSION=2.3.1
 RUBY_LIB_VERSION=2.3.0
-RUBY_IPK_VERSION=2
+RUBY_IPK_VERSION=3
 RUBY_SOURCE=ruby-$(RUBY_UPSTREAM_VERSION).tar.gz
 RUBY_DIR=ruby-$(RUBY_UPSTREAM_VERSION)
 RUBY_UNZIP=zcat
@@ -38,7 +38,7 @@ RUBY_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 RUBY_DESCRIPTION=An interpreted scripting language for quick and easy object-oriented programming.
 RUBY_SECTION=misc
 RUBY_PRIORITY=optional
-RUBY_DEPENDS=zlib, readline, openssl, ncurses
+RUBY_DEPENDS=zlib, readline, openssl, ncurses, libgmp
 
 RUBY_ARCH?=$(TARGET_ARCH)-linux-gnu
 
@@ -115,7 +115,7 @@ ruby-source: $(DL_DIR)/$(RUBY_SOURCE) $(RUBY_PATCHES)
 #
 # http://www.ruby-talk.org/cgi-bin/scat.rb/ruby/ruby-talk/159766
 $(RUBY_BUILD_DIR)/.configured: $(DL_DIR)/$(RUBY_SOURCE) $(RUBY_PATCHES) make/ruby.mk
-	$(MAKE) zlib-stage readline-stage openssl-stage ncurses-stage
+	$(MAKE) zlib-stage readline-stage openssl-stage ncurses-stage libgmp-stage
 	rm -rf $(BUILD_DIR)/$(RUBY_DIR) $(@D)
 	$(RUBY_UNZIP) $(DL_DIR)/$(RUBY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(RUBY_PATCHES)" ; \
