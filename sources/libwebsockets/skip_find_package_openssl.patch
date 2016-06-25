@@ -1,0 +1,15 @@
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -788,12 +788,6 @@
+ 	endif()
+ 
+ 	if (NOT chose_ssl)
+-		if (NOT OPENSSL_FOUND)
+-			# TODO: Add support for STATIC also.
+-			find_package(OpenSSL REQUIRED)
+-			set(OPENSSL_INCLUDE_DIRS "${OPENSSL_INCLUDE_DIR}")
+-		endif()
+-
+ 		message("OpenSSL include dir: ${OPENSSL_INCLUDE_DIRS}")
+ 		message("OpenSSL libraries: ${OPENSSL_LIBRARIES}")
+ 
