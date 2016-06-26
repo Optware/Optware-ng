@@ -29,14 +29,14 @@ LIBWEBSOCKETS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 LIBWEBSOCKETS_DESCRIPTION=Libwebsockets is a lightweight pure C library built to use minimal CPU and memory resources, and provide fast throughput in both directions as client or server.
 LIBWEBSOCKETS_SECTION=lib
 LIBWEBSOCKETS_PRIORITY=optional
-LIBWEBSOCKETS_DEPENDS=openssl
+LIBWEBSOCKETS_DEPENDS=zlib, openssl
 LIBWEBSOCKETS_SUGGESTS=
 LIBWEBSOCKETS_CONFLICTS=
 
 #
 # LIBWEBSOCKETS_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBWEBSOCKETS_IPK_VERSION=1
+LIBWEBSOCKETS_IPK_VERSION=2
 
 #
 # LIBWEBSOCKETS_CONFFILES should be a list of user-editable files
@@ -110,7 +110,7 @@ libwebsockets-source: $(DL_DIR)/$(LIBWEBSOCKETS_SOURCE) $(LIBWEBSOCKETS_PATCHES)
 # shown below to make various patches to it.
 #
 $(LIBWEBSOCKETS_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBWEBSOCKETS_SOURCE) $(LIBWEBSOCKETS_PATCHES) make/libwebsockets.mk
-	$(MAKE) openssl-stage
+	$(MAKE) zlib-stage openssl-stage
 	rm -rf $(BUILD_DIR)/$(LIBWEBSOCKETS_DIR) $(@D)
 	$(LIBWEBSOCKETS_UNZIP) $(DL_DIR)/$(LIBWEBSOCKETS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBWEBSOCKETS_PATCHES)" ; \
