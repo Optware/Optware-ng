@@ -126,6 +126,7 @@ $(6RELAYD_BUILD_DIR)/.configured: $(DL_DIR)/$(6RELAYD_SOURCE) $(6RELAYD_PATCHES)
 	if test "$(BUILD_DIR)/$(6RELAYD_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(6RELAYD_DIR) $(@D) ; \
 	fi
+	sed -i -e 's/-Werror//' $(@D)/CMakeLists.txt
 	cd $(@D); \
 		CFLAGS="$(STAGING_CPPFLAGS) $(6RELAYD_CPPFLAGS)" \
 		CXXFLAGS="$(STAGING_CPPFLAGS) $(6RELAYD_CPPFLAGS)" \
