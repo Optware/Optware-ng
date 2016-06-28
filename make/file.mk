@@ -20,8 +20,8 @@
 # You should change all these variables to suit your package.
 #
 FILE_SITE=ftp://ftp.astron.com/pub/file
-FILE_BASE_VERSION=5.25
-FILE_GIT_VERSION=20160111
+FILE_BASE_VERSION=5.28
+#FILE_GIT_VERSION=20160111
 ifneq ($(FILE_GIT_VERSION),)
 FILE_VERSION=$(FILE_BASE_VERSION)+git$(FILE_GIT_VERSION)
 else
