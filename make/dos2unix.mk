@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 DOS2UNIX_SITE=http://waterlan.home.xs4all.nl/dos2unix
-DOS2UNIX_VERSION=6.0.3
+DOS2UNIX_VERSION=7.3.4
 DOS2UNIX_SOURCE=dos2unix-$(DOS2UNIX_VERSION).tar.gz
 DOS2UNIX_DIR=dos2unix-$(DOS2UNIX_VERSION)
 DOS2UNIX_UNZIP=zcat
