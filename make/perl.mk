@@ -1,19 +1,6 @@
-# override in platforms/packages-$(OPTWARE_TARGET).mk
-PERL_MAJOR_VER ?= 5.8
-
-ifeq (5.8, $(PERL_MAJOR_VER))
-PERL_VERSION=5.8.8
-PERL_IPK_VERSION=24
-else ifeq (5.20, $(PERL_MAJOR_VER))
-PERL_VERSION=5.20.1
-PERL_IPK_VERSION=5
-else ifeq (5.22, $(PERL_MAJOR_VER))
 PERL_VERSION=5.22.1
+PERL_MAJOR_VER := $(shell echo $(PERL_VERSION) | cut -d'.' -f1-2)
 PERL_IPK_VERSION=2
-else
-PERL_VERSION=5.10.0
-PERL_IPK_VERSION=6
-endif
 
 PERL_SITE=http://ftp.funet.fi/pub/CPAN/src
 PERL_SOURCE=perl-$(PERL_VERSION).tar.gz

@@ -41,7 +41,7 @@ M4_IPK_VERSION=1
 # which they should be applied to the source code.
 #
 M4_PATCHES=
-ifeq ($(UCLIBC_NG), yes)
+ifeq ($(LIBC_STYLE), uclibc)
 M4_PATCHES+=$(M4_SOURCE_DIR)/$(M4_VERSION)/gnulib_fix_posixspawn.patch
 endif
 

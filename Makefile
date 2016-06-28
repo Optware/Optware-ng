@@ -26,51 +26,20 @@ SHELL=/bin/bash
 # one of `ls platforms/toolchain-*.mk | sed 's|^platforms/toolchain-\(.*\)\.mk$$|\1|'`
 OPTWARE_TARGET ?= buildroot-armeabi-ng
 
-#PACKAGES_BROKEN_ON_64BIT_HOST = \
-apcupsd appweb atop 9base alsa-oss appweb \
-bitlbee boost bridge-utils bsdgames bzflag \
-centerim cyrus-imapd dansguardian delegate dialog \
-eaccelerator libol elinks gift-opennap netatalk \
-taglib libopensync newsbeuter newt ettercap-ng lighttpd \
-nfs-server transcode esound ices0 nfs-utils \
-littlesmalltalk nget fcgi nload ffmpeg uemacs fish \
-loudmouth nrpe uncia freeze madplay iptraf ntop \
-ffmpeg ushare fuppes mc irssi mdadm vlc \
-ivorbis-tools jabberd rrdcollect gambit-c obexftp \
-vorbis-tools rrdtool jove git launchtool gnu-smalltalk \
-ldconfig libao gloox libcdio libdlna libdvb gift-ares \
-opendchub wakelan \
-ossp-js mediatomb memcached minidlna mkvtoolnix \
-phoneme-advanced motion picoLisp motor pkgconfig moe \
-player mpd mrtg msynctool mt-daapd mt-daapd-svn mtr \
-rssh rtorrent qemu rxtx sablevm qemu-libc-i386 quickie \
-samba2 sandbox scrobby sm sox srecord swi-prolog \
-ack avn colordiff ipcalc perlbal perlconsole \
-subvertpy slimserver squeezecenter SpamAssassin py-pyro \
-
-# Add new packages here - make sure you have tested cross compilation.
+# Add new packages here
 # When they have been tested, they will be promoted and uploaded.
 #
-CROSS_PACKAGES_READY_FOR_TESTING = qt-embedded \
+PACKAGES_READY_FOR_TESTING = qt-embedded \
 	py-btpd-webui \
 	cryptsetup \
 	unbound \
 	ldns \
 	dnssec-trigger \
 
-# Add new native-only packages here
-# When they have been tested, they will be promoted and uploaded.
-#
-NATIVE_PACKAGES_READY_FOR_TESTING = cmake \
-
 # iozone - fileop_linux-arm.o: No such file or directory
-# parted - does not work on the slug, even when compiled natively
 # lumikki - does not install to $(TARGET_PREFIX)
 # doxygen - host binary, not stripped
 # bpalogin - for some reason it can't find 'sed' on the build machine
-# clinkcc - ../../src/cybergarage/xml/XML.cpp:151: error: invalid conversion from 'const char**' to 'char**'
-# clinkcc - fixed: http://wiki.embeddedacademy.org/index.php/Instaling_and_configurating_the_tools#Cyber_Lynk_for_C.2B.2B
-# clinkcc - depends on broken xerces-c package
 # btg - needs old boost and libtorrent-rasterbar
 #
 PACKAGES_THAT_NEED_TO_BE_FIXED = lumikki \
@@ -272,7 +241,7 @@ OPENJDK_PACKAGES = \
 	bubbleupnpserver-installer
 
 # libao - has runtime trouble?
-COMMON_CROSS_PACKAGES = \
+COMMON_PACKAGES = \
 	$(PACKAGES_REQUIRE_LINUX26) \
 	6relayd 9base \
 	abook adduser adns aget aiccu alac-decoder \
@@ -398,7 +367,7 @@ COMMON_CROSS_PACKAGES = \
 	optware-devel ossp-js oww owwlog \
 	p7zip p910nd pal palantir pango parted \
 	par2cmdline patch patchutils \
-	pcal pcapsipdump pciutils pcre pcsc-lite pen perltgd pinentry pixman \
+	pcal pcapsipdump pciutils pcre pcsc-lite pen perltgd $(PERL_PACKAGES) pinentry pixman \
 	phoneme-advanced \
 	php php-apache php-thttpd php-memcached phpmyadmin \
 	picocom picolisp pkgconfig plowshare polipo pop3proxy \
@@ -449,21 +418,9 @@ COMMON_CROSS_PACKAGES = \
 	x264 xmail xupnpd xvid xz-utils \
 	yafc yasm yawk yougrabber \
 	zile zip zlib znc zoo zsh \
+	glibc-opt glibc-locale binutils libc-dev gcc ipkg-static \
 
 # php-fcgi ipk is now built from php.mk
-
-# emacs and xemacs needs to run themselves to dump an image, so they probably will never cross-compile.
-# ocaml does not use gnu configure, cross build may work by some more tweaking, build native first
-# pure-ftpd too many AC_RUN_IF_ELSE
-COMMON_NATIVE_PACKAGES = \
-	emacs \
-	xemacs \
-	hugs \
-	mldonkey \
-	mzscheme \
-	ocaml \
-	pure-ftpd \
-	unison \
 
 # libiconv - has been made obsolete by gconv-modules
 # Metalog - has been made obsolete by syslog-ng
@@ -546,25 +503,17 @@ SO=.so
 DYLIB=
 endif
 
+include $(OPTWARE_TOP)/platforms/packages-$(OPTWARE_TARGET).mk
+
 ifeq ($(LIBC_STYLE), uclibc)
 include $(OPTWARE_TOP)/platforms/packages-uclibc.mk
 else
 LIBC_STYLE=glibc
 endif
 
-include $(OPTWARE_TOP)/platforms/packages-$(OPTWARE_TARGET).mk
-
-ifeq ($(HOSTCC), $(TARGET_CC))
-PACKAGES ?= $(COMMON_NATIVE_PACKAGES)
-PACKAGES_READY_FOR_TESTING = $(NATIVE_PACKAGES_READY_FOR_TESTING)
-else
-PACKAGES ?= $(filter-out \
-	$(NATIVE_PACKAGES) \
+PACKAGES = $(filter-out \
 	$(BROKEN_PACKAGES) \
-	$(if $(filter x86_64, $(HOST_MACHINE)), $(PACKAGES_BROKEN_ON_64BIT_HOST), ) \
-	, $(COMMON_CROSS_PACKAGES) $(SPECIFIC_PACKAGES))
-PACKAGES_READY_FOR_TESTING = $(CROSS_PACKAGES_READY_FOR_TESTING)
-endif
+	, $(COMMON_PACKAGES) $(SPECIFIC_PACKAGES))
 
 ifneq (, $(filter ipkg-static ipkg-opt $(OPTWARE_TARGET)-bootstrap $(OPTWARE_TARGET)-optware-bootstrap, $(PACKAGES)))
 UPD-ALT_PREFIX ?= $(TARGET_PREFIX)
@@ -707,20 +656,6 @@ TARGET_NM=$(TARGET_CROSS)nm
 TARGET_OBJDUMP=$(TARGET_CROSS)objdump
 TARGET_RANLIB=$(TARGET_CROSS)ranlib
 TARGET_STRIP?=$(TARGET_CROSS)strip
-ifeq ($(HOSTCC), $(TARGET_CC))
-TARGET_CONFIGURE_OPTS= \
-	AR=$(TARGET_AR) \
-	AS=$(TARGET_AS) \
-	LD=$(TARGET_LD) \
-	NM=$(TARGET_NM) \
-	OBJDUMP=$(TARGET_OBJDUMP) \
-	CC=$(TARGET_CC) \
-	CPP=$(TARGET_CPP) \
-	GCC=$(TARGET_CC) \
-	CXX=$(TARGET_CXX) \
-	RANLIB=$(TARGET_RANLIB) \
-	STRIP=$(TARGET_STRIP)
-else
 TARGET_CONFIGURE_OPTS= \
 	AR=$(TARGET_AR) \
 	AS=$(TARGET_AS) \
@@ -734,7 +669,6 @@ TARGET_CONFIGURE_OPTS= \
 	RANLIB=$(TARGET_RANLIB) \
 	STRIP=$(TARGET_STRIP) \
 	PKG_CONFIG=$(OPTWARE_TOP)/scripts/pkg-config.sh
-endif
 TARGET_PATH=$(STAGING_PREFIX)/bin:$(STAGING_DIR)/bin:$(TARGET_PREFIX)/bin:$(TARGET_PREFIX)/sbin:/bin:/sbin:/usr/bin:/usr/sbin
 
 STRIP_COMMAND ?= $(TARGET_STRIP) --remove-section=.comment --remove-section=.note --strip-unneeded

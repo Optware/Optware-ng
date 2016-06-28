@@ -49,11 +49,6 @@ SLANG_IPK_VERSION ?= 1
 # SLANG_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-ifeq (uclibc, $(LIBC_STYLE))
-ifneq ($(UCLIBC_NG), yes)
-SLANG_PATCHES=$(SLANG_SOURCE_DIR)/uclibc.patch
-endif
-endif
 SLANG_PATCHES?=$(SLANG_SOURCE_DIR)/WCONTINUED.patch
 
 #

@@ -98,11 +98,7 @@ VLC_PATCHES=\
 $(VLC_SOURCE_DIR)/vlc_filter.h.patch \
 $(VLC_SOURCE_DIR)/libvlc_media.h.patch
 ifeq ($(LIBC_STYLE), uclibc)
-ifneq ($(UCLIBC_NG), yes)
-VLC_PATCHES += $(VLC_SOURCE_DIR)/uclibc.patch
-else
 VLC_PATCHES += $(VLC_SOURCE_DIR)/uclibc-ng.patch
-endif
 endif
 
 #
