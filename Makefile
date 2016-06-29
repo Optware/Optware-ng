@@ -636,7 +636,8 @@ host-automake-tools: directories automake1.4-host-stage automake1.9-host-stage a
 # The hostname or IP number of our local dl.sf.net mirror
 SOURCEFORGE_MIRROR=downloads.sourceforge.net
 #SOURCES_NLO_SITE=http://sources.nslu2-linux.org/sources
-SOURCES_NLO_SITE=http://ftp.osuosl.org/pub/nslu2/sources
+#SOURCES_NLO_SITE=http://ftp.osuosl.org/pub/nslu2/sources
+SOURCES_NLO_SITE=http://ipkg.nslu2-linux.org/sources
 
 # FreeBSD distfiles site
 FREEBSD_DISTFILES=ftp://ftp.fi.freebsd.org/pub/FreeBSD/ports/distfiles
