@@ -36,7 +36,7 @@ ENCFS_CONFLICTS=
 #
 # ENCFS_IPK_VERSION should be incremented when the ipk changes.
 #
-ENCFS_IPK_VERSION=1
+ENCFS_IPK_VERSION=2
 
 #
 # ENCFS_CONFFILES should be a list of user-editable files
@@ -201,6 +201,8 @@ $(ENCFS_IPK): $(ENCFS_BUILD_DIR)/.built
 	$(STRIP_COMMAND) $(ENCFS_IPK_DIR)$(TARGET_PREFIX)/bin/{encfs,encfsctl}
 	# only static libs there
 	rm -rf $(ENCFS_IPK_DIR)$(TARGET_PREFIX)/lib
+	# since we removed libs...
+	rm -rf $(ENCFS_IPK_DIR)$(TARGET_PREFIX)/include
 #	$(INSTALL) -d $(ENCFS_IPK_DIR)$(TARGET_PREFIX)/etc/
 #	$(INSTALL) -m 644 $(ENCFS_SOURCE_DIR)/encfs.conf $(ENCFS_IPK_DIR)$(TARGET_PREFIX)/etc/encfs.conf
 #	$(INSTALL) -d $(ENCFS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
