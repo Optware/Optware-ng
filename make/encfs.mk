@@ -36,7 +36,7 @@ ENCFS_CONFLICTS=
 #
 # ENCFS_IPK_VERSION should be incremented when the ipk changes.
 #
-ENCFS_IPK_VERSION=2
+ENCFS_IPK_VERSION=3
 
 #
 # ENCFS_CONFFILES should be a list of user-editable files
@@ -199,6 +199,7 @@ $(ENCFS_IPK): $(ENCFS_BUILD_DIR)/.built
 	rm -rf $(ENCFS_IPK_DIR) $(BUILD_DIR)/encfs_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(ENCFS_BUILD_DIR)/build DESTDIR=$(ENCFS_IPK_DIR) install
 	$(STRIP_COMMAND) $(ENCFS_IPK_DIR)$(TARGET_PREFIX)/bin/{encfs,encfsctl}
+	chmod 755 $(ENCFS_IPK_DIR)$(TARGET_PREFIX)/bin/encfssh
 	# only static libs there
 	rm -rf $(ENCFS_IPK_DIR)$(TARGET_PREFIX)/lib
 	# since we removed libs...
