@@ -277,7 +277,7 @@ COMMON_PACKAGES = \
 	dropbear dropbear-android drraw dspam dtach dump \
 	e2fsprogs e2tools eaccelerator easy-rsa ed ecl electric-fence elinks \
 	elementary-xfce-icon-theme \
-	emacs22 endian enhanced-ctorrent enscript esmtp esniper \
+	emacs22 encfs endian enhanced-ctorrent enscript esmtp esniper \
 	ettercap ettercap-ng \
 	$(ERLANG_PACKAGES) \
 	esound eggdrop eventlog exif exo expat extract-xiso ez-ipupdate \
