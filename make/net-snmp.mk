@@ -15,14 +15,14 @@ NET_SNMP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 NET_SNMP_DESCRIPTION=net-SNMP is a suite of applications used to implement SNMP v1, SNMP v2c and SNMP v3 using both IPv4 and IPv6
 NET_SNMP_SECTION=net
 NET_SNMP_PRIORITY=optional
-NET_SNMP_DEPENDS=openssl
+NET_SNMP_DEPENDS=openssl, libnl
 NET_SNMP_SUGGESTS=
 NET_SNMP_CONFLICTS=
 
 #
 # NET_SNMP_IPK_VERSION should be incremented when the ipk changes.
 #
-NET_SNMP_IPK_VERSION=2
+NET_SNMP_IPK_VERSION=3
 
 #
 # NET_SNMP_CONFFILES should be a list of user-editable files
@@ -93,7 +93,7 @@ net-snmp-source: $(DL_DIR)/$(NET_SNMP_SOURCE) $(NET_SNMP_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(NET_SNMP_BUILD_DIR)/.configured: $(DL_DIR)/$(NET_SNMP_SOURCE) $(NET_SNMP_PATCHES) make/net-snmp.mk
-	$(MAKE) openssl-stage
+	$(MAKE) openssl-stage libnl-stage
 	rm -rf $(BUILD_DIR)/$(NET_SNMP_DIR) $(@D)
 	$(NET_SNMP_UNZIP) $(DL_DIR)/$(NET_SNMP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NET_SNMP_PATCHES)"; then \
