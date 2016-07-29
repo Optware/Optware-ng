@@ -53,8 +53,8 @@ POCO_IPK_VERSION=1
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-POCO_CPPFLAGS=
-POCO_LDFLAGS=
+POCO_CPPFLAGS=-fPIC
+POCO_LDFLAGS=-Wl,-rpath,$(TARGET_PREFIX)/lib
 
 #
 # POCO_BUILD_DIR is the directory in which the build is done.
@@ -149,8 +149,8 @@ $(POCO_BUILD_DIR)/.configured: $(DL_DIR)/$(POCO_SOURCE) $(POCO_PATCHES) make/poc
 		echo 'STATICOPT_CXX   ='; \
 		echo 'STATICOPT_LINK  = -static'; \
 		echo 'SHAREDOPT_CC    = -fPIC'; \
-		echo 'SHAREDOPT_CXX   = -fPIC'; \
-		echo 'SHAREDOPT_LINK  = -Wl,-rpath,$$(LIBPATH)/ss'; \
+		echo "SHAREDOPT_CXX   = $(STAGING_CPPFLAGS) $(POCO_CPPFLAGS)"; \
+		echo "SHAREDOPT_LINK  = $(STAGING_LDFLAGS) $(POCO_LDFLAGS)"; \
 		echo 'DEBUGOPT_CC     = -g -D_DEBUG'; \
 		echo 'DEBUGOPT_CXX    = -g -D_DEBUG'; \
 		echo 'DEBUGOPT_LINK   = -g'; \
@@ -192,7 +192,7 @@ poco: $(POCO_BUILD_DIR)/.built
 #
 $(POCO_BUILD_DIR)/.staged: $(POCO_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_PREFIX) install
 	touch $@
 
 poco-stage: $(POCO_BUILD_DIR)/.staged
