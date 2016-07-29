@@ -36,7 +36,7 @@ POCO_CONFLICTS=
 #
 # POCO_IPK_VERSION should be incremented when the ipk changes.
 #
-POCO_IPK_VERSION=1
+POCO_IPK_VERSION=2
 
 #
 # POCO_CONFFILES should be a list of user-editable files
@@ -65,7 +65,7 @@ POCO_LDFLAGS=-Wl,-rpath,$(TARGET_PREFIX)/lib
 #
 # You should not change any of these variables.
 #
-POCO_BUILD_DIR=$(BUILD_DIR)/poco-$(POCO_VERSION)
+POCO_BUILD_DIR=$(BUILD_DIR)/poco
 POCO_SOURCE_DIR=$(SOURCE_DIR)/poco
 POCO_IPK_DIR=$(BUILD_DIR)/poco-$(POCO_VERSION)-ipk
 POCO_IPK=$(BUILD_DIR)/poco_$(POCO_VERSION)-$(POCO_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -125,8 +125,12 @@ $(POCO_BUILD_DIR)/.configured: $(DL_DIR)/$(POCO_SOURCE) $(POCO_PATCHES) make/poc
 		echo 'LINKMODE = SHARED'; \
 		echo 'POCO_TARGET_OSNAME = Linux'; \
 		echo "POCO_TARGET_OSARCH = $(TARGET_ARCH)"; \
+		echo 'CC      = $(TARGET_CC)'; \
+		echo 'CXX     = $(TARGET_CXX)'; \
 		echo 'LINK    = $$(CXX)'; \
-		echo 'LIB     = $$(AR)'; \
+		echo 'LIB     = $(TARGET_AR) -cr'; \
+		echo 'RANLIB  = $(TARGET_RANLIB)'; \
+		echo 'STRIP   = $(TARGET_STRIP)'; \
 		echo 'SHLIB   = $$(CXX) -shared -Wl,-soname,$$(notdir $$@) -o $$@'; \
 		echo 'SHLIBLN = $$(POCO_BASE)/build/script/shlibln'; \
 		echo 'DEP     = $$(POCO_BASE)/build/script/makedepend.gcc'; \
@@ -136,10 +140,10 @@ $(POCO_BUILD_DIR)/.configured: $(DL_DIR)/$(POCO_SOURCE) $(POCO_PATCHES) make/poc
 		echo 'MKDIR   = mkdir -p'; \
 		echo 'SHAREDLIBEXT     = .so.$$(target_version)'; \
 		echo 'SHAREDLIBLINKEXT = .so'; \
-		echo 'CFLAGS          = -Isrc'; \
+		echo 'CFLAGS          = -Isrc $(STAGING_CPPFLAGS) $(POCO_CPPFLAGS)'; \
 		echo 'CFLAGS32        ='; \
 		echo 'CFLAGS64        ='; \
-		echo 'CXXFLAGS        ='; \
+		echo 'CXXFLAGS        = $(STAGING_CPPFLAGS) $(POCO_CPPFLAGS)'; \
 		echo 'CXXFLAGS32      ='; \
 		echo 'CXXFLAGS64      ='; \
 		echo 'LINKFLAGS       ='; \
@@ -157,6 +161,7 @@ $(POCO_BUILD_DIR)/.configured: $(DL_DIR)/$(POCO_SOURCE) $(POCO_PATCHES) make/poc
 		echo 'RELEASEOPT_CC   = -O2 -DNDEBUG'; \
 		echo 'RELEASEOPT_CXX  = -O2 -DNDEBUG'; \
 		echo 'RELEASEOPT_LINK = -O2'; \
+		echo 'SHLIBFLAGS      = $(STAGING_LDFLAGS) $(POCO_LDFLAGS)'; \
 		echo 'SYSFLAGS = -D_XOPEN_SOURCE=500 -D_BSD_SOURCE -D_REENTRANT -D_THREAD_SAFE -DPOCO_NO_FPENVIRONMENT'; \
 		echo 'SYSLIBS  = -lpthread -ldl -lrt'; \
 	    ) >> Optware-ng; \
@@ -231,6 +236,7 @@ $(POCO_IPK_DIR)/CONTROL/control:
 $(POCO_IPK): $(POCO_BUILD_DIR)/.built
 	rm -rf $(POCO_IPK_DIR) $(BUILD_DIR)/poco_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(POCO_BUILD_DIR) DESTDIR=$(POCO_IPK_DIR)$(TARGET_PREFIX) install
+	$(STRIP_COMMAND) $(POCO_IPK_DIR)$(TARGET_PREFIX)/lib/*.so
 	$(MAKE) $(POCO_IPK_DIR)/CONTROL/control
 	echo $(POCO_CONFFILES) | sed -e 's/ /\n/g' > $(POCO_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(POCO_IPK_DIR)
