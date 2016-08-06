@@ -417,7 +417,7 @@ COMMON_PACKAGES = \
 	damageproto dri2proto dri3proto glproto presentproto \
 	x264 xmail xupnpd xvid xz-utils \
 	yafc yasm yawk yougrabber \
-	zile zip zlib znc zoo zsh \
+	zile zip zlib znc zoo zsh zsync \
 	glibc-opt glibc-locale binutils libc-dev gcc ipkg-static \
 
 # php-fcgi ipk is now built from php.mk
