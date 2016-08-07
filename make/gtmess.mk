@@ -29,7 +29,7 @@ GTMESS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 GTMESS_DESCRIPTION=Console MSN Messenger client for Linux and other unix systems.
 GTMESS_SECTION=net
 GTMESS_PRIORITY=optional
-GTMESS_DEPENDS=ncureses, openssl
+GTMESS_DEPENDS=ncurses, openssl
 ifneq (, $(filter libiconv, $(PACKAGES)))
 GTMESS_DEPENDS+=, libiconv
 endif
@@ -39,7 +39,7 @@ GTMESS_CONFLICTS=
 #
 # GTMESS_IPK_VERSION should be incremented when the ipk changes.
 #
-GTMESS_IPK_VERSION=1
+GTMESS_IPK_VERSION=2
 
 #
 # GTMESS_CONFFILES should be a list of user-editable files
