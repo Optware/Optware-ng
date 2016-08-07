@@ -117,6 +117,7 @@ PERL_PACKAGES = \
 	perl-term-readkey perl-term-readline-gnu \
 	perl-text-diff \
 	perl-timedate \
+	perl-time-hires \
 	perl-unicode-map perl-unicode-string \
 	perl-universal-moniker \
 	perl-unix-syslog \
