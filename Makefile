@@ -657,6 +657,7 @@ TARGET_AS=$(TARGET_CROSS)as
 TARGET_NM=$(TARGET_CROSS)nm
 TARGET_OBJDUMP=$(TARGET_CROSS)objdump
 TARGET_RANLIB=$(TARGET_CROSS)ranlib
+TARGET_READELF=$(TARGET_CROSS)readelf
 TARGET_STRIP?=$(TARGET_CROSS)strip
 
 TARGET_CONFIGURE_OPTS= \
@@ -795,6 +796,7 @@ package-only: $(PACKAGES_IPKG)
 .PHONY: all clean dirclean distclean directories packages source toolchain \
 	buildroot-toolchain libuclibc++-toolchain \
 	autoclean \
+	check-dependencies \
 	$(PACKAGES) $(PACKAGES_SOURCE) $(PACKAGES_DIRCLEAN) \
 	$(PACKAGES_STAGE) $(PACKAGES_IPKG) \
 	query-%
@@ -843,6 +845,11 @@ source: $(PACKAGES_SOURCE)
 
 check-packages:
 	@$(PERL) -w scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) --objdump-path=$(TARGET_CROSS)objdump --base-dir=$(BASE_DIR) $(filter-out $(BUILD_DIR)/crosstool-native-%,$(wildcard $(BUILD_DIR)/*.ipk))
+
+check-dependencies:
+	@rm -rf test
+	@mkdir test
+	@READELF=$(TARGET_READELF) PACKAGESDIR=packages TEST=test scripts/dependencies_check.sh
 
 autoclean:
 	$(PERL) -w scripts/optware-autoclean.pl -v -C $(BASE_DIR)
