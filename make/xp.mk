@@ -19,12 +19,12 @@ XP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 XP_DESCRIPTION=libXp - X Print Client Library
 XP_SECTION=lib
 XP_PRIORITY=optional
-XP_DEPENDS=x11
+XP_DEPENDS=x11, xext
 
 #
 # XP_IPK_VERSION should be incremented when the ipk changes.
 #
-XP_IPK_VERSION=1
+XP_IPK_VERSION=2
 
 #
 # XP_CONFFILES should be a list of user-editable files
