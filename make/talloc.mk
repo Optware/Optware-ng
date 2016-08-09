@@ -30,9 +30,9 @@ TALLOC_DESCRIPTION=Talloc provides a hierarchical, reference counted memory pool
 TALLOC_SECTION=library
 TALLOC_PRIORITY=optional
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
-TALLOC_DEPENDS=libiconv
+TALLOC_DEPENDS=attr, libiconv
 else
-TALLOC_DEPENDS=
+TALLOC_DEPENDS=attr
 endif
 TALLOC_SUGGESTS=
 TALLOC_CONFLICTS=
@@ -40,7 +40,7 @@ TALLOC_CONFLICTS=
 #
 # TALLOC_IPK_VERSION should be incremented when the ipk changes.
 #
-TALLOC_IPK_VERSION=2
+TALLOC_IPK_VERSION=3
 
 #
 # TALLOC_CONFFILES should be a list of user-editable files
@@ -116,6 +116,7 @@ talloc-source: $(DL_DIR)/$(TALLOC_SOURCE) $(TALLOC_PATCHES)
 # shown below to make various patches to it.
 #
 $(TALLOC_BUILD_DIR)/.configured: $(DL_DIR)/$(TALLOC_SOURCE) $(TALLOC_PATCHES) make/talloc.mk
+	$(MAKE) attr-stage
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
 endif
