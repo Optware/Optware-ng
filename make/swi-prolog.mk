@@ -30,14 +30,14 @@ SWI-PROLOG_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SWI-PROLOG_DESCRIPTION=An LGPL comprehensive portable Prolog implementation.
 SWI-PROLOG_SECTION=lang
 SWI-PROLOG_PRIORITY=optional
-SWI-PROLOG_DEPENDS=libgmp, ncursesw, readline, zlib
+SWI-PROLOG_DEPENDS=libgmp, ncursesw, readline, zlib, openssl
 SWI-PROLOG_SUGGESTS=
 SWI-PROLOG_CONFLICTS=
 
 #
 # SWI-PROLOG_IPK_VERSION should be incremented when the ipk changes.
 #
-SWI-PROLOG_IPK_VERSION=2
+SWI-PROLOG_IPK_VERSION=3
 
 #
 # SWI-PROLOG_CONFFILES should be a list of user-editable files
@@ -170,7 +170,7 @@ endif
 #
 $(SWI-PROLOG_BUILD_DIR)/.configured: $(DL_DIR)/$(SWI-PROLOG_SOURCE) $(SWI-PROLOG_PATCHES) $(SWI-PROLOG_BUILD_DIR)/.hostbuilt
 	@echo "=============== target swi-prolog configure ============"
-	$(MAKE) libgmp-stage ncurses-stage ncursesw-stage openssl-stage readline-stage zlib-stage
+	$(MAKE) libgmp-stage ncurses-stage ncursesw-stage openssl-stage readline-stage zlib-stage openssl-stage
 ifneq ($(HOSTCC), $(TARGET_CC))
 ifeq ($(LIBC_STYLE), uclibc)
 	sed -i -e '/ac_pthread_cpuclocks=/s/yes/no/g' $(@D)/src/configure.in
