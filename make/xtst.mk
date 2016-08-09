@@ -19,12 +19,12 @@ XTST_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 XTST_DESCRIPTION=X test library
 XTST_SECTION=lib
 XTST_PRIORITY=optional
-XTST_DEPENDS=x11
+XTST_DEPENDS=x11, xext, xi
 
 #
 # XTST_IPK_VERSION should be incremented when the ipk changes.
 #
-XTST_IPK_VERSION=1
+XTST_IPK_VERSION=2
 
 #
 # XTST_CONFFILES should be a list of user-editable files
