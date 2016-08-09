@@ -35,14 +35,14 @@ WEBALIZER_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 WEBALIZER_DESCRIPTION=Webalizer is a webserver stats program. 
 WEBALIZER_SECTION=web
 WEBALIZER_PRIORITY=optional
-WEBALIZER_DEPENDS=bzip2, geoip, libgd, libpng, zlib
+WEBALIZER_DEPENDS=bzip2, geoip, libgd, libpng, zlib, libdb
 WEBALIZER_SUGGESTS=
 WEBALIZER_CONFLICTS=
 
 #
 # WEBALIZER_IPK_VERSION should be incremented when the ipk changes.
 #
-WEBALIZER_IPK_VERSION=2
+WEBALIZER_IPK_VERSION=3
 
 #
 # WEBALIZER_CONFFILES should be a list of user-editable files
@@ -106,7 +106,7 @@ webalizer-source: $(DL_DIR)/$(WEBALIZER_SOURCE) $(WEBALIZER_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(WEBALIZER_BUILD_DIR)/.configured: $(DL_DIR)/$(WEBALIZER_SOURCE) $(WEBALIZER_PATCHES) make/webalizer.mk
-	$(MAKE) bzip2-stage geoip-stage libgd-stage libpng-stage zlib-stage
+	$(MAKE) bzip2-stage geoip-stage libgd-stage libpng-stage zlib-stage libdb-stage
 	rm -rf $(BUILD_DIR)/$(WEBALIZER_DIR) $(@D)
 	$(WEBALIZER_UNZIP) $(DL_DIR)/$(WEBALIZER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(WEBALIZER_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(WEBALIZER_DIR) -p1
