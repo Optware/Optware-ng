@@ -13,14 +13,14 @@ TNEF_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 TNEF_DESCRIPTION=TNEF is a program for unpacking ms-tnef type MIME attachments
 TNEF_SECTION=apps
 TNEF_PRIORITY=optional
-TNEF_DEPENDS=
+TNEF_DEPENDS=gettext
 TNEF_SUGGESTS=
 TNEF_CONFLICTS=
 
 #
 # TNEF_IPK_VERSION should be incremented when the ipk changes.
 #
-TNEF_IPK_VERSION=2
+TNEF_IPK_VERSION=3
 
 #
 # TNEF_PATCHES should list any patches, in the the order in
@@ -70,6 +70,7 @@ $(DL_DIR)/$(TNEF_SOURCE):
 tnef-source: $(DL_DIR)/$(TNEF_SOURCE) $(TNEF_PATCHES)
 
 $(TNEF_BUILD_DIR)/.configured: $(DL_DIR)/$(TNEF_SOURCE) $(TNEF_PATCHES) make/tnef.mk
+	$(MAKE) gettext-stage
 	rm -rf $(BUILD_DIR)/$(TNEF_DIR) $(TNEF_BUILD_DIR)
 	$(TNEF_UNZIP) $(DL_DIR)/$(TNEF_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(TNEF_PATCHES)" ; \
