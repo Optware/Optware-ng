@@ -35,13 +35,13 @@ W3M_MAINTAINER=Brian Zhou <bzhou@users.sf.net>
 W3M_DESCRIPTION=Pager/text-based WWW browser with tables/frames support
 W3M_SECTION=web
 W3M_PRIORITY=optional
-W3M_DEPENDS=libgc, openssl
+W3M_DEPENDS=libgc, openssl, zlib
 W3M_CONFLICTS=
 
 #
 # W3M_IPK_VERSION should be incremented when the ipk changes.
 #
-W3M_IPK_VERSION=2
+W3M_IPK_VERSION=3
 
 #
 # W3M_CONFFILES should be a list of user-editable files
@@ -113,7 +113,7 @@ w3m-source: $(DL_DIR)/$(W3M_SOURCE) $(W3M_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(W3M_BUILD_DIR)/.configured: $(DL_DIR)/$(W3M_SOURCE) $(W3M_PATCHES) make/w3m.mk
-	$(MAKE) libgc-stage openssl-stage ncurses-stage
+	$(MAKE) libgc-stage openssl-stage ncurses-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(W3M_DIR) $(@D)
 	$(W3M_UNZIP) $(DL_DIR)/$(W3M_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(W3M_PATCHES) | $(PATCH) -b -d $(BUILD_DIR)/$(W3M_DIR) -p1
