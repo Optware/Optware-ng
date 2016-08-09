@@ -22,14 +22,14 @@ SMARTMONTOOLS_DESCRIPTION=Utility programs to control and monitor \
  (SMART) built into most modern ATA and SCSI hard disks.
 SMARTMONTOOLS_SECTION=misc
 SMARTMONTOOLS_PRIORITY=optional
-SMARTMONTOOLS_DEPENDS=psmisc
+SMARTMONTOOLS_DEPENDS=libstdc++, psmisc
 SMARTMONTOOLS_SUGGESTS=
 SMARTMONTOOLS_CONFLICTS=
 
 #
 # SMARTMONTOOLS_IPK_VERSION should be incremented when the ipk changes.
 #
-SMARTMONTOOLS_IPK_VERSION=3
+SMARTMONTOOLS_IPK_VERSION=4
 
 #
 # SMARTMONTOOLS_CONFFILES should be a list of user-editable files
