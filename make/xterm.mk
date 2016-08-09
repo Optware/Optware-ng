@@ -35,12 +35,12 @@ XTERM_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 XTERM_DESCRIPTION=Terminal emulator for X.
 XTERM_SECTION=x11
 XTERM_PRIORITY=optional
-XTERM_DEPENDS=xaw, fontconfig, xft
+XTERM_DEPENDS=xaw, fontconfig, xft, xinerama
 
 #
 # XTERM_IPK_VERSION should be incremented when the ipk changes.
 #
-XTERM_IPK_VERSION=1
+XTERM_IPK_VERSION=2
 
 #
 # XTERM_CONFFILES should be a list of user-editable files
@@ -105,7 +105,7 @@ xterm-source: $(DL_DIR)/$(XTERM_SOURCE) $(XTERM_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(XTERM_BUILD_DIR)/.configured: $(DL_DIR)/$(XTERM_SOURCE) $(XTERM_PATCHES) make/xterm.mk
-	$(MAKE) x11-stage xaw-stage xt-stage fontconfig-stage xft-stage
+	$(MAKE) x11-stage xaw-stage xt-stage fontconfig-stage xft-stage xinerama-stage
 	rm -rf $(BUILD_DIR)/$(XTERM_DIR) $(@D)
 	$(XTERM_UNZIP) $(DL_DIR)/$(XTERM_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	#cat $(XTERM_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(XTERM_DIR) -p1
@@ -119,6 +119,7 @@ $(XTERM_BUILD_DIR)/.configured: $(DL_DIR)/$(XTERM_SOURCE) $(XTERM_PATCHES) make/
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=$(TARGET_PREFIX) \
+		--disable-rpath-hack \
 		--x-includes=$(STAGING_INCLUDE_DIR) \
 		--x-libraries=$(STAGING_LIB_DIR) \
 		--disable-nls \
