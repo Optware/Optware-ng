@@ -28,7 +28,7 @@
 #
 
 SANE_BACKENDS_RELEASE=1.0.24
-SANE_BACKENDS_IPK_VERSION=2
+SANE_BACKENDS_IPK_VERSION=3
 
 # You should change the next two git variables TOGETHER
 
@@ -57,7 +57,7 @@ SANE_BACKENDS_MAINTAINER=carterb <carterbueford@gmx.net>
 SANE_BACKENDS_DESCRIPTION=SANE is a universal scanner interface
 SANE_BACKENDS_SECTION=util
 SANE_BACKENDS_PRIORITY=optional
-SANE_BACKENDS_DEPENDS=libjpeg, libtiff, libusb
+SANE_BACKENDS_DEPENDS=libjpeg, libtiff, libusb, libieee1284
 SANE_BACKENDS_SUGGESTS=xinetd, inetutils
 SANE_BACKENDS_CONFLICTS=
 
@@ -136,7 +136,7 @@ sane-backends-source: $(DL_DIR)/$(SANE_BACKENDS_SOURCE) $(SANE_BACKENDS_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(SANE_BACKENDS_BUILD_DIR)/.configured: $(DL_DIR)/$(SANE_BACKENDS_SOURCE) $(SANE_BACKENDS_PATCHES) make/sane-backends.mk
-	$(MAKE) libusb-stage libjpeg-stage libtiff-stage zlib-stage
+	$(MAKE) libusb-stage libjpeg-stage libtiff-stage zlib-stage libieee1284-stage
 	rm -rf $(BUILD_DIR)/$(SANE_BACKENDS_DIR) $(@D)
 	$(SANE_BACKENDS_UNZIP) $(DL_DIR)/$(SANE_BACKENDS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SANE_BACKENDS_PATCHES)" ; \
