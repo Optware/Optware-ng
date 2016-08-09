@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 TAR_SITE=http://ftp.gnu.org/gnu/tar
-TAR_VERSION ?= 1.28
+TAR_VERSION ?= 1.29
 TAR_IPK_VERSION ?= 1
 TAR_SOURCE=tar-$(TAR_VERSION).tar.bz2
 TAR_DIR=tar-$(TAR_VERSION)
@@ -30,7 +30,7 @@ TAR_DESCRIPTION=heavyweight version of the Tape ARchiver
 TAR_SECTION=util
 TAR_PRIORITY=optional
 TAR_DEPENDS=
-TAR_SUGGESTS=bzip2, gzip, xz-utils
+TAR_SUGGESTS=bzip2, gzip, xz-utils, libacl
 TAR_CONFLICTS=
 
 
@@ -91,6 +91,7 @@ tar-source: $(DL_DIR)/$(TAR_SOURCE) $(TAR_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(TAR_BUILD_DIR)/.configured: $(DL_DIR)/$(TAR_SOURCE) $(TAR_PATCHES) make/tar.mk
+	$(MAKE) libacl-stage
 	rm -rf $(BUILD_DIR)/$(TAR_DIR) $(@D)
 	$(TAR_UNZIP) $(DL_DIR)/$(TAR_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(TAR_DIR) $(@D)
