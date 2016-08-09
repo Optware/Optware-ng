@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 XTERM_SITE=ftp://invisible-island.net/xterm
-XTERM_VERSION=314
+XTERM_VERSION=325
 XTERM_SOURCE=xterm-$(XTERM_VERSION).tgz
 XTERM_DIR=xterm-$(XTERM_VERSION)
 XTERM_UNZIP=zcat
@@ -35,7 +35,7 @@ XTERM_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 XTERM_DESCRIPTION=Terminal emulator for X.
 XTERM_SECTION=x11
 XTERM_PRIORITY=optional
-XTERM_DEPENDS=xaw, freetype
+XTERM_DEPENDS=xaw, fontconfig, xft
 
 #
 # XTERM_IPK_VERSION should be incremented when the ipk changes.
@@ -105,7 +105,7 @@ xterm-source: $(DL_DIR)/$(XTERM_SOURCE) $(XTERM_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(XTERM_BUILD_DIR)/.configured: $(DL_DIR)/$(XTERM_SOURCE) $(XTERM_PATCHES) make/xterm.mk
-	$(MAKE) x11-stage xaw-stage xt-stage freetype-stage
+	$(MAKE) x11-stage xaw-stage xt-stage fontconfig-stage xft-stage
 	rm -rf $(BUILD_DIR)/$(XTERM_DIR) $(@D)
 	$(XTERM_UNZIP) $(DL_DIR)/$(XTERM_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	#cat $(XTERM_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(XTERM_DIR) -p1
