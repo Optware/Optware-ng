@@ -28,7 +28,7 @@
 #
 ZNC_SITE=http://znc.in/releases
 ZNC_SITE2=http://znc.in/releases/archive
-ZNC_VERSION=1.6.2
+ZNC_VERSION=1.6.3
 ZNC_SOURCE=znc-$(ZNC_VERSION).tar.gz
 ZNC_DIR=znc-$(ZNC_VERSION)
 ZNC_UNZIP=zcat
@@ -36,7 +36,7 @@ ZNC_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 ZNC_DESCRIPTION=an advanced IRC bouncer
 ZNC_SECTION=net
 ZNC_PRIORITY=optional
-ZNC_DEPENDS=adduser, c-ares, libgmp, openssl, icu
+ZNC_DEPENDS=adduser, c-ares, libstdc++, libgmp, openssl, icu, zlib
 ZNC_SUGGESTS=
 ZNC_CONFLICTS=
 
@@ -114,7 +114,7 @@ znc-source: $(DL_DIR)/$(ZNC_SOURCE) $(ZNC_PATCHES)
 # shown below to make various patches to it.
 #
 $(ZNC_BUILD_DIR)/.configured: $(DL_DIR)/$(ZNC_SOURCE) $(ZNC_PATCHES) make/znc.mk
-	$(MAKE) c-ares-stage libgmp-stage openssl-stage icu-stage
+	$(MAKE) c-ares-stage libgmp-stage openssl-stage icu-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(ZNC_DIR) $(@D)
 	$(ZNC_UNZIP) $(DL_DIR)/$(ZNC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ZNC_PATCHES)" ; \
