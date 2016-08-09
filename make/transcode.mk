@@ -37,14 +37,14 @@ TRANSCODE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 TRANSCODE_DESCRIPTION=Transcode is a suite of tools, all of which are command line utilities, for transcoding various video, audio, and container formats, running on a platform that supports shared libraries and threads.
 TRANSCODE_SECTION=tool
 TRANSCODE_PRIORITY=optional
-TRANSCODE_DEPENDS=freetype, lame, liba52, libdvdread, libmpeg2, libogg, libvorbis, lzo, ffmpeg
+TRANSCODE_DEPENDS=freetype, lame, liba52, libdvdread, libmpeg2, libogg, libvorbis, lzo, ffmpeg, libjpeg, libxml2
 TRANSCODE_SUGGESTS=
 TRANSCODE_CONFLICTS=
 
 #
 # TRANSCODE_IPK_VERSION should be incremented when the ipk changes.
 #
-TRANSCODE_IPK_VERSION=1
+TRANSCODE_IPK_VERSION=2
 
 #
 # TRANSCODE_CONFFILES should be a list of user-editable files
