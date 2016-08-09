@@ -29,7 +29,7 @@ SILC_CLIENT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SILC_CLIENT_DESCRIPTION=Secure Internet Live Conferencing client.
 SILC_CLIENT_SECTION=net
 SILC_CLIENT_PRIORITY=optional
-SILC_CLIENT_DEPENDS=glib, ncurses
+SILC_CLIENT_DEPENDS=glib, ncurses, openssl
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 SILC_DEPENDS+=, libiconv
 endif
@@ -39,7 +39,7 @@ SILC_CLIENT_CONFLICTS=
 #
 # SILC_CLIENT_IPK_VERSION should be incremented when the ipk changes.
 #
-SILC_CLIENT_IPK_VERSION=1
+SILC_CLIENT_IPK_VERSION=2
 
 #
 # SILC_CLIENT_CONFFILES should be a list of user-editable files
@@ -111,7 +111,7 @@ silc-client-source: $(DL_DIR)/$(SILC_CLIENT_SOURCE) $(SILC_CLIENT_PATCHES)
 # shown below to make various patches to it.
 #
 $(SILC_CLIENT_BUILD_DIR)/.configured: $(DL_DIR)/$(SILC_CLIENT_SOURCE) $(SILC_CLIENT_PATCHES) make/silc-client.mk
-	$(MAKE) glib-stage ncurses-stage
+	$(MAKE) glib-stage ncurses-stage openssl-stage
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
 endif
