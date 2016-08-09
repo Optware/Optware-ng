@@ -13,11 +13,11 @@ SUDO_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SUDO_DESCRIPTION=System utility to execute commands as the superuser
 SUDO_SECTION=sysutil
 SUDO_PRIORITY=optional
-SUDO_DEPENDS=
+SUDO_DEPENDS=zlib
 SUDO_SUGGESTS=
 SUDO_CONFLICTS=
 
-SUDO_IPK_VERSION?=1
+SUDO_IPK_VERSION?=2
 
 SUDO_CONFFILES=$(TARGET_PREFIX)/etc/sudoers
 
@@ -50,6 +50,7 @@ sudo-source: $(DL_DIR)/$(SUDO_SOURCE) $(SUDO_PATCHES)
 
 
 $(SUDO_BUILD_DIR)/.configured: $(DL_DIR)/$(SUDO_SOURCE) $(SUDO_PATCHES) make/sudo.mk
+	$(MAKE) zlib-stage
 	rm -rf $(BUILD_DIR)/$(SUDO_DIR) $(@D)
 	$(SUDO_UNZIP) $(DL_DIR)/$(SUDO_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SUDO_PATCHES)"; then \
