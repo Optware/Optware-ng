@@ -19,12 +19,13 @@ XDMCP_CVS_OPTS=-D20050130
 XDMCP_MAINTAINER=Josh Parsons <jbparsons@ucdavis.edu>
 XDMCP_DESCRIPTION=XDMCP protocol library
 XDMCP_SECTION=lib
+XDMCP_DEPENDS=
 XDMCP_PRIORITY=optional
 
 #
 # XDMCP_IPK_VERSION should be incremented when the ipk changes.
 #
-XDMCP_IPK_VERSION=2
+XDMCP_IPK_VERSION=3
 
 #
 # XDMCP_CONFFILES should be a list of user-editable files
@@ -68,6 +69,7 @@ $(XDMCP_IPK_DIR)/CONTROL/control:
 	@echo "Priority: $(XDMCP_PRIORITY)" >>$@
 	@echo "Section: $(XDMCP_SECTION)" >>$@
 	@echo "Version: $(XDMCP_VERSION)-$(XDMCP_IPK_VERSION)" >>$@
+	@echo "Depends: $(XDMCP_DEPENDS)" >>$@
 	@echo "Maintainer: $(XDMCP_MAINTAINER)" >>$@
 	@echo "Source: $(XDMCP_SITE)/$(XDMCP_SOURCE)" >>$@
 	@echo "Description: $(XDMCP_DESCRIPTION)" >>$@
