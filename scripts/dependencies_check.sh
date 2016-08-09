@@ -4,7 +4,7 @@ set -e
 
 recursive_provides()
 {
-	for package in `cat $TEST/$1/depends`; do
+	for package in `cat $TEST/$1/depends 2>/dev/null`; do
 		recursive_provides $package $1
 	done
 	if [ -f $TEST/$1/provides.own ]; then
@@ -95,8 +95,8 @@ echo
 
 if [ -f $TEST/missing_packages.log ] || [ -f $TEST/missing_libraries_dependencies.log ]; then
 echo "FINAL REPORT. Problems found:" >&2
-	[ -f $TEST/missing_libraries_dependencies.log ] && cat $TEST/missing_libraries_dependencies.log >&2
-	[ -f $TEST/missing_packages.log ] && cat $TEST/missing_packages.log >&2
+	[ ! -f $TEST/missing_libraries_dependencies.log ] || cat $TEST/missing_libraries_dependencies.log >&2
+	[ ! -f $TEST/missing_packages.log ] || cat $TEST/missing_packages.log >&2
 else
 	echo "FINAL REPORT: no problems found" >&2
 fi
