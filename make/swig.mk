@@ -29,14 +29,14 @@ SWIG_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SWIG_DESCRIPTION=Simplified Wrapper and Interface Generator
 SWIG_SECTION=devel
 SWIG_PRIORITY=optional
-SWIG_DEPENDS=libstdc++
+SWIG_DEPENDS=libstdc++, zlib
 SWIG_SUGGESTS=
 SWIG_CONFLICTS=
 
 #
 # SWIG_IPK_VERSION should be incremented when the ipk changes.
 #
-SWIG_IPK_VERSION=1
+SWIG_IPK_VERSION=2
 
 #
 # SWIG_CONFFILES should be a list of user-editable files
@@ -88,7 +88,7 @@ $(DL_DIR)/$(SWIG_SOURCE):
 swig-source: $(DL_DIR)/$(SWIG_SOURCE) $(SWIG_PATCHES)
 
 $(SWIG_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(SWIG_SOURCE) $(SWIG_PATCHES) make/swig.mk
-#	$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) zlib-stage
 	rm -rf $(HOST_BUILD_DIR)/$(SWIG_DIR) $(@D)
 	$(SWIG_UNZIP) $(DL_DIR)/$(SWIG_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
 	if test -n "$(SWIG_PATCHES)" ; \
