@@ -13,9 +13,12 @@
 X264_REPOSITORY=svn://svn.videolan.org/x264/trunk
 X264_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 X264_DESCRIPTION=A free library for encoding H264/AVC video streams.
-X264_SECTION=video
+X264_BIN_DESCRIPTION=x264 binary: Video encoder for the H.264/MPEG-4 AVC standard
+X264_SECTION=lib
+X264_BIN_SECTION=video
 X264_PRIORITY=optional
 X264_DEPENDS=
+X264_BIN_DEPENDS=x264, ffmpeg, bzip2, zlib
 X264_SUGGESTS=
 X264_CONFLICTS=
 
@@ -58,7 +61,7 @@ endif
 #
 # X264_IPK_VERSION should be incremented when the ipk changes.
 #
-X264_IPK_VERSION=1
+X264_IPK_VERSION=2
 
 #
 # X264_CONFFILES should be a list of user-editable files
@@ -111,8 +114,12 @@ endif
 #
 X264_BUILD_DIR=$(BUILD_DIR)/x264
 X264_SOURCE_DIR=$(SOURCE_DIR)/x264
+
 X264_IPK_DIR=$(BUILD_DIR)/x264-$(X264_VERSION)-ipk
 X264_IPK=$(BUILD_DIR)/x264_$(X264_VERSION)-$(X264_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+X264_BIN_IPK_DIR=$(BUILD_DIR)/x264-bin-$(X264_VERSION)-ipk
+X264_BIN_IPK=$(BUILD_DIR)/x264-bin_$(X264_VERSION)-$(X264_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 .PHONY: x264-source x264-unpack x264 x264-stage x264-ipk x264-clean x264-dirclean x264-check
 
@@ -146,6 +153,7 @@ x264-source: $(DL_DIR)/$(X264_SOURCE)
 # first, then do that first (e.g. "$(MAKE) <foo>-stage <baz>-stage").
 #
 $(X264_BUILD_DIR)/.configured: $(DL_DIR)/$(X264_SOURCE) make/x264.mk
+	$(MAKE) ffmpeg-stage bzip2-stage zlib-stage
 ifeq ($(TARGET_ARCH), $(filter i686 x86_64, $(TARGET_ARCH)))
 	$(MAKE) yasm-host-stage
 endif
@@ -222,6 +230,21 @@ $(X264_IPK_DIR)/CONTROL/control:
 	@echo "Suggests: $(X264_SUGGESTS)" >>$@
 	@echo "Conflicts: $(X264_CONFLICTS)" >>$@
 
+$(X264_BIN_IPK_DIR)/CONTROL/control:
+	@$(INSTALL) -d $(@D)
+	@rm -f $@
+	@echo "Package: x264-bin" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(X264_PRIORITY)" >>$@
+	@echo "Section: $(X264_BIN_SECTION)" >>$@
+	@echo "Version: $(X264_VERSION)-$(X264_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(X264_MAINTAINER)" >>$@
+	@echo "Source: $(X264_REPOSITORY)" >>$@
+	@echo "Description: $(X264_BIN_DESCRIPTION)" >>$@
+	@echo "Depends: $(X264_BIN_DEPENDS)" >>$@
+	@echo "Suggests: $(X264_BIN_SUGGESTS)" >>$@
+	@echo "Conflicts: $(X264_BIN_CONFLICTS)" >>$@
+
 #
 # This builds the IPK file.
 #
@@ -234,24 +257,32 @@ $(X264_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(X264_IPK): $(X264_BUILD_DIR)/.built
+$(X264_IPK) $(X264_BIN_IPK): $(X264_BUILD_DIR)/.built
 	rm -rf $(X264_IPK_DIR) $(BUILD_DIR)/x264_*_$(TARGET_ARCH).ipk
+	rm -rf $(X264_BIN_IPK_DIR) $(BUILD_DIR)/x264-bin_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(X264_BUILD_DIR) DESTDIR=$(X264_IPK_DIR) install
 	rm -f $(X264_IPK_DIR)$(TARGET_PREFIX)/lib/libx264.a
+	$(STRIP_COMMAND) $(X264_IPK_DIR)$(TARGET_PREFIX)/lib/libx264.so \
+			 $(X264_IPK_DIR)$(TARGET_PREFIX)/bin/x264
+	$(INSTALL) -d $(X264_BIN_IPK_DIR)$(TARGET_PREFIX)/bin
+	mv -f $(X264_IPK_DIR)$(TARGET_PREFIX)/bin/x264 $(X264_BIN_IPK_DIR)$(TARGET_PREFIX)/bin/
 #	$(INSTALL) -d $(X264_IPK_DIR)$(TARGET_PREFIX)/etc/
 #	$(INSTALL) -m 644 $(X264_SOURCE_DIR)/x264.conf $(X264_IPK_DIR)$(TARGET_PREFIX)/etc/x264.conf
 #	$(INSTALL) -d $(X264_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
 #	$(INSTALL) -m 755 $(X264_SOURCE_DIR)/rc.x264 $(X264_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXx264
 	$(MAKE) $(X264_IPK_DIR)/CONTROL/control
+	$(MAKE) $(X264_BIN_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(X264_SOURCE_DIR)/postinst $(X264_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 755 $(X264_SOURCE_DIR)/prerm $(X264_IPK_DIR)/CONTROL/prerm
 	echo $(X264_CONFFILES) | sed -e 's/ /\n/g' > $(X264_IPK_DIR)/CONTROL/conffiles
+	echo $(X264_BIN_CONFFILES) | sed -e 's/ /\n/g' > $(X264_BIN_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(X264_IPK_DIR)
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(X264_BIN_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
 #
-x264-ipk: $(X264_IPK)
+x264-ipk: $(X264_IPK) $(X264_BIN_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -265,10 +296,12 @@ x264-clean:
 # directories.
 #
 x264-dirclean:
-	rm -rf $(BUILD_DIR)/$(X264_DIR) $(X264_BUILD_DIR) $(X264_IPK_DIR) $(X264_IPK)
+	rm -rf $(BUILD_DIR)/$(X264_DIR) $(X264_BUILD_DIR) \
+		$(X264_IPK_DIR) $(X264_IPK) \
+		$(X264_BIN_IPK_DIR) $(X264_BIN_IPK)
 
 #
 # Some sanity check for the package.
 #
-x264-check: $(X264_IPK)
+x264-check: $(X264_IPK) $(X264_BIN_IPK)
 	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
