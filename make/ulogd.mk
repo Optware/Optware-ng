@@ -29,14 +29,14 @@ ULOGD_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 ULOGD_DESCRIPTION=A userspace logging daemon for netfilter/iptables
 ULOGD_SECTION=utils
 ULOGD_PRIORITY=optional
-ULOGD_DEPENDS=libnfnetlink, libnetfilter-log, libnetfilter-conntrack, libmnl, libnetfilter-acct
+ULOGD_DEPENDS=libnfnetlink, libnetfilter-log, libnetfilter-conntrack, libmnl, libnetfilter-acct, libjansson, libpcap, sqlite
 ULOGD_SUGGESTS=
 ULOGD_CONFLICTS=
 
 #
 # ULOGD_IPK_VERSION should be incremented when the ipk changes.
 #
-ULOGD_IPK_VERSION=1
+ULOGD_IPK_VERSION=2
 
 #
 # ULOGD_CONFFILES should be a list of user-editable files
@@ -109,7 +109,8 @@ ulogd-source: $(DL_DIR)/$(ULOGD_SOURCE) $(ULOGD_PATCHES)
 #
 $(ULOGD_BUILD_DIR)/.configured: $(DL_DIR)/$(ULOGD_SOURCE) $(ULOGD_PATCHES) make/ulogd.mk
 	$(MAKE) libpcap-stage sqlite-stage libnfnetlink-stage libnetfilter-log-stage \
-		libnetfilter-conntrack-stage libmnl-stage libnetfilter-acct-stage
+		libnetfilter-conntrack-stage libmnl-stage libnetfilter-acct-stage \
+		libjansson-stage
 	rm -rf $(BUILD_DIR)/$(ULOGD_DIR) $(@D)
 	$(ULOGD_UNZIP) $(DL_DIR)/$(ULOGD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ULOGD_PATCHES)" ; \
