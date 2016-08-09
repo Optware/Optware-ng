@@ -29,14 +29,14 @@ VARNISH_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 VARNISH_DESCRIPTION=A high-performace HTTP accelerator designed for content-heavy dynamic web sites.
 VARNISH_SECTION=web
 VARNISH_PRIORITY=optional
-VARNISH_DEPENDS=
+VARNISH_DEPENDS=ncurses
 VARNISH_SUGGESTS=
 VARNISH_CONFLICTS=
 
 #
 # VARNISH_IPK_VERSION should be incremented when the ipk changes.
 #
-VARNISH_IPK_VERSION=1
+VARNISH_IPK_VERSION=2
 
 #
 # VARNISH_CONFFILES should be a list of user-editable files
