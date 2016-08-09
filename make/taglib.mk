@@ -29,14 +29,14 @@ TAGLIB_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 TAGLIB_DESCRIPTION=A library for reading and editing the meta-data of several popular audio formats.
 TAGLIB_SECTION=lib
 TAGLIB_PRIORITY=optional
-TAGLIB_DEPENDS=
+TAGLIB_DEPENDS=libstdc++, zlib
 TAGLIB_SUGGESTS=
 TAGLIB_CONFLICTS=
 
 #
 # TAGLIB_IPK_VERSION should be incremented when the ipk changes.
 #
-TAGLIB_IPK_VERSION=1
+TAGLIB_IPK_VERSION=2
 
 #
 # TAGLIB_CONFFILES should be a list of user-editable files
@@ -53,7 +53,7 @@ TAGLIB_IPK_VERSION=1
 # compilation or linking flags, then list them here.
 #
 TAGLIB_CPPFLAGS=
-TAGLIB_LDFLAGS=-lgcc
+TAGLIB_LDFLAGS=
 
 #
 # TAGLIB_BUILD_DIR is the directory in which the build is done.
@@ -105,7 +105,7 @@ taglib-source: $(DL_DIR)/$(TAGLIB_SOURCE) $(TAGLIB_PATCHES)
 # shown below to make various patches to it.
 #
 $(TAGLIB_BUILD_DIR)/.configured: $(DL_DIR)/$(TAGLIB_SOURCE) $(TAGLIB_PATCHES) make/taglib.mk
-#	$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) zlib-stage
 	rm -rf $(BUILD_DIR)/$(TAGLIB_DIR) $(@D)
 	$(TAGLIB_UNZIP) $(DL_DIR)/$(TAGLIB_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(TAGLIB_PATCHES)" ; \
