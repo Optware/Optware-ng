@@ -30,12 +30,12 @@ SQUID_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SQUID_DESCRIPTION=Full-featured Web proxy cache, with smaller footprint than 3.x
 SQUID_SECTION=web
 SQUID_PRIORITY=optional
-SQUID_DEPENDS=
+SQUID_DEPENDS=libcap
 SQUID_SUGGESTS=
 SQUID_CONFLICTS=squid3
 
 # override SQUID_IPK_VERSION for target specific feeds
-SQUID_IPK_VERSION ?= 1
+SQUID_IPK_VERSION ?= 2
 
 #
 ## SQUID_CONFFILES should be a list of user-editable files
@@ -133,7 +133,7 @@ $(DL_DIR)/$(SQUID_SOURCE):
 squid-source: $(DL_DIR)/$(SQUID_SOURCE) $(SQUID_PATCHES)
 
 $(SQUID_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(SQUID_SOURCE) make/squid.mk
-#	$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) libcap-stage
 	rm -rf $(HOST_BUILD_DIR)/$(SQUID_DIR) $(@D)
 	$(SQUID_UNZIP) $(DL_DIR)/$(SQUID_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
 	if test "$(HOST_BUILD_DIR)/$(SQUID_DIR)" != "$(@D)" ; \
