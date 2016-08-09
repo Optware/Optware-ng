@@ -30,12 +30,12 @@ W3CAM_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 W3CAM_DESCRIPTION=w3cam is a simple CGI to retrieve images from a so called video4linux device
 W3CAM_SECTION=misc
 W3CAM_PRIORITY=optional
-W3CAM_DEPENDS=libjpeg
+W3CAM_DEPENDS=libjpeg, libpng, zlib
 
 #
 # W3CAM_IPK_VERSION should be incremented when the ipk changes.
 #
-W3CAM_IPK_VERSION=4
+W3CAM_IPK_VERSION=5
 
 #
 # W3CAM_CONFFILES should be a list of user-editable files
@@ -100,7 +100,7 @@ w3cam-source: $(DL_DIR)/$(W3CAM_SOURCE) $(W3CAM_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(W3CAM_BUILD_DIR)/.configured: $(DL_DIR)/$(W3CAM_SOURCE) $(W3CAM_PATCHES)
-	$(MAKE) libjpeg-stage libpng-stage
+	$(MAKE) libjpeg-stage libpng-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(W3CAM_DIR) $(W3CAM_BUILD_DIR)
 	$(W3CAM_UNZIP) $(DL_DIR)/$(W3CAM_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(W3CAM_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(W3CAM_DIR) -p1
