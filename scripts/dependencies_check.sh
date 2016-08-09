@@ -94,9 +94,9 @@ echo
 echo
 
 if [ -f $TEST/missing_packages.log ] || [ -f $TEST/missing_libraries_dependencies.log ]; then
-echo "FINAL REPORT. Problems found:" >&2
-	[ ! -f $TEST/missing_libraries_dependencies.log ] || cat $TEST/missing_libraries_dependencies.log >&2
-	[ ! -f $TEST/missing_packages.log ] || cat $TEST/missing_packages.log >&2
+echo "FINAL REPORT. Problems found:"
+	[ ! -f $TEST/missing_libraries_dependencies.log ] || cat $TEST/missing_libraries_dependencies.log
+	[ ! -f $TEST/missing_packages.log ] || cat $TEST/missing_packages.log
 else
-	echo "FINAL REPORT: no problems found" >&2
+	echo "FINAL REPORT: no problems found"
 fi
