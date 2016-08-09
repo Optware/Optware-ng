@@ -30,14 +30,14 @@ UNIXODBC_DESCRIPTION=ODBC is an open specification for providing \
 application developers with a predictable API with which to access Data Sources.
 UNIXODBC_SECTION=util
 UNIXODBC_PRIORITY=optional
-UNIXODBC_DEPENDS=libtool
+UNIXODBC_DEPENDS=libtool, readline
 UNIXODBC_SUGGESTS=
 UNIXODBC_CONFLICTS=
 
 #
 # UNIXODBC_IPK_VERSION should be incremented when the ipk changes.
 #
-UNIXODBC_IPK_VERSION=1
+UNIXODBC_IPK_VERSION=2
 
 #
 # UNIXODBC_CONFFILES should be a list of user-editable files
@@ -108,7 +108,7 @@ unixodbc-source: $(DL_DIR)/$(UNIXODBC_SOURCE) $(UNIXODBC_PATCHES)
 # shown below to make various patches to it.
 #
 $(UNIXODBC_BUILD_DIR)/.configured: $(DL_DIR)/$(UNIXODBC_SOURCE) $(UNIXODBC_PATCHES) make/unixodbc.mk
-	$(MAKE) libtool-stage
+	$(MAKE) libtool-stage readline-stage
 	rm -rf $(BUILD_DIR)/$(UNIXODBC_DIR) $(@D)
 	$(UNIXODBC_UNZIP) $(DL_DIR)/$(UNIXODBC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(UNIXODBC_PATCHES)" ; \
