@@ -30,14 +30,14 @@ SABLEVM_DESCRIPTION=A robust, extremely portable, efficient, and specifications-
 SABLEVM_SECTION=lang
 SABLEVM_PRIORITY=optional
 # it really depends on libltdl
-SABLEVM_DEPENDS=libtool, popt
+SABLEVM_DEPENDS=libtool, popt, alsa-lib, libffi, zlib
 SABLEVM_SUGGESTS=
 SABLEVM_CONFLICTS=classpath
 
 #
 # SABLEVM_IPK_VERSION should be incremented when the ipk changes.
 #
-SABLEVM_IPK_VERSION=3
+SABLEVM_IPK_VERSION=4
 
 #
 # SABLEVM_CONFFILES should be a list of user-editable files
@@ -107,7 +107,7 @@ sablevm-source: $(DL_DIR)/$(SABLEVM_SOURCE) $(SABLEVM_PATCHES)
 # shown below to make various patches to it.
 #
 $(SABLEVM_BUILD_DIR)/.configured: $(DL_DIR)/$(SABLEVM_SOURCE) $(SABLEVM_PATCHES) make/sablevm.mk
-	$(MAKE) libtool-stage popt-stage
+	$(MAKE) libtool-stage popt-stage alsa-lib-stage libffi-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(SABLEVM_DIR) $(@D)
 	$(SABLEVM_UNZIP) $(DL_DIR)/$(SABLEVM_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SABLEVM_PATCHES)" ; \
