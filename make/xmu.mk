@@ -20,12 +20,12 @@ XMU_MAINTAINER=Josh Parsons <jbparsons@ucdavis.edu>
 XMU_DESCRIPTION=X miscellaneous utilities libraries
 XMU_SECTION=lib
 XMU_PRIORITY=optional
-XMU_DEPENDS=xext
+XMU_DEPENDS=xext, sm, xt
 
 #
 # XMU_IPK_VERSION should be incremented when the ipk changes.
 #
-XMU_IPK_VERSION=2
+XMU_IPK_VERSION=3
 
 #
 # XMU_CONFFILES should be a list of user-editable files
@@ -106,7 +106,7 @@ xmu-source: $(DL_DIR)/$(XMU_SOURCE) $(XMU_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(XMU_BUILD_DIR)/.configured: $(DL_DIR)/$(XMU_SOURCE) $(XMU_PATCHES) make/xmu.mk
-	$(MAKE) xext-stage xt-stage
+	$(MAKE) xext-stage sm-stage xt-stage
 	rm -rf $(BUILD_DIR)/$(XMU_DIR) $(@D)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/$(XMU_SOURCE)
 	if test -n "$(XMU_PATCHES)" ; \
