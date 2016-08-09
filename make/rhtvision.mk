@@ -30,14 +30,14 @@ RHTVISION_DESCRIPTION=Turbo Vision (TVision for short) is a TUI (Text User Inter
 TVision was originally developed by Borland. This port is a port of the C++ version for the DOS, FreeBSD, Linux, QNX, Solaris and Win32 platforms.
 RHTVISION_SECTION=lib
 RHTVISION_PRIORITY=optional
-RHTVISION_DEPENDS=ncurses
+RHTVISION_DEPENDS=libstdc++, ncurses
 RHTVISION_SUGGESTS=
 RHTVISION_CONFLICTS=
 
 #
 # RHTVISION_IPK_VERSION should be incremented when the ipk changes.
 #
-RHTVISION_IPK_VERSION=1
+RHTVISION_IPK_VERSION=2
 
 #
 # RHTVISION_CONFFILES should be a list of user-editable files
