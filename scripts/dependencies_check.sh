@@ -74,7 +74,7 @@ for package in $PACKAGES; do
 	echo "Looking if any required lib is missing from provided ones for $package"
 	MISSINGLIBS=""
 	for lib in `cat $TEST/$package/requires`; do
-		if [ -z "`cat $TEST/$package/provides.recursive | egrep \"^$lib\$\"`" ]; then
+		if ! cat $TEST/$package/provides.recursive | grep -xq "$lib"; then
 			MISSINGLIBS="$MISSINGLIBS $lib"
 		fi
 	done
