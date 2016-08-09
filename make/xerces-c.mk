@@ -35,14 +35,14 @@ XERCES-C_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 XERCES-C_DESCRIPTION=Xerces-C++ is a validating XML parser written in a portable subset of C++.
 XERCES-C_SECTION=net
 XERCES-C_PRIORITY=optional
-XERCES-C_DEPENDS=libcurl, icu
+XERCES-C_DEPENDS=libcurl, icu, libstdc++
 XERCES-C_SUGGESTS=
 XERCES-C_CONFLICTS=
 
 #
 # XERCES-C_IPK_VERSION should be incremented when the ipk changes.
 #
-XERCES-C_IPK_VERSION=2
+XERCES-C_IPK_VERSION=3
 
 #
 # XERCES-C_CONFFILES should be a list of user-editable files
