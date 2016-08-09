@@ -29,12 +29,12 @@ SQUID3_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SQUID3_DESCRIPTION=Full-featured Web proxy cache.
 SQUID3_SECTION=web
 SQUID3_PRIORITY=optional
-SQUID3_DEPENDS=openssl, expat, libxml2, gnutls, libnettle, libcap, libnetfilter-conntrack
+SQUID3_DEPENDS=libstdc++, openssl, expat, libxml2, gnutls, libnettle, libcap, libnetfilter-conntrack, libtool
 SQUID3_SUGGESTS=
 SQUID3_CONFLICTS=squid
 
 # override SQUID3_IPK_VERSION for target specific feeds
-SQUID3_IPK_VERSION=1
+SQUID3_IPK_VERSION=2
 
 #
 ## SQUID3_CONFFILES should be a list of user-editable files
@@ -120,7 +120,8 @@ squid3-source: $(DL_DIR)/$(SQUID3_SOURCE) $(SQUID3_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(SQUID3_BUILD_DIR)/.configured: $(DL_DIR)/$(SQUID3_SOURCE) $(SQUID3_PATCHES) make/squid3.mk
-	$(MAKE) openssl-stage expat-stage libxml2-stage gnutls-stage libnettle-stage libcap-stage libnetfilter-conntrack-stage
+	$(MAKE) openssl-stage expat-stage libxml2-stage gnutls-stage libnettle-stage \
+		libcap-stage libnetfilter-conntrack-stage libtool-stage
 	rm -rf $(BUILD_DIR)/$(SQUID3_DIR) $(@D)
 	$(SQUID3_UNZIP) $(DL_DIR)/$(SQUID3_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SQUID3_PATCHES)" ; \
