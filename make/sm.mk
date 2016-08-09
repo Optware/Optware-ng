@@ -19,12 +19,12 @@ SM_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SM_DESCRIPTION=X session management library
 SM_SECTION=lib
 SM_PRIORITY=optional
-SM_DEPENDS=ice
+SM_DEPENDS=ice, e2fslibs
 
 #
 # SM_IPK_VERSION should be incremented when the ipk changes.
 #
-SM_IPK_VERSION=1
+SM_IPK_VERSION=2
 
 #
 # SM_CONFFILES should be a list of user-editable files
@@ -95,7 +95,7 @@ sm-source: $(DL_DIR)/$(SM_SOURCE) $(SM_PATCHES)
 #
 $(SM_BUILD_DIR)/.configured: $(DL_DIR)/$(SM_SOURCE) \
 		$(SM_PATCHES) make/sm.mk
-	$(MAKE) ice-stage
+	$(MAKE) ice-stage e2fslibs-stage
 	rm -rf $(BUILD_DIR)/$(SM_DIR) $(@D)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/$(SM_SOURCE)
 	if test -n "$(SM_PATCHES)" ; \
@@ -177,3 +177,10 @@ sm-clean:
 #
 sm-dirclean:
 	rm -rf $(BUILD_DIR)/$(SM_DIR) $(SM_BUILD_DIR) $(SM_IPK_DIR) $(SM_IPK)
+
+#
+#
+# Some sanity check for the package.
+#
+sm-check: $(SM_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
