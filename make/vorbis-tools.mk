@@ -35,13 +35,13 @@ VORBIS-TOOLS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 VORBIS-TOOLS_DESCRIPTION=A set of tools to manipulate ogg-vorbis files.
 VORBIS-TOOLS_SECTION=misc
 VORBIS-TOOLS_PRIORITY=optional
-VORBIS-TOOLS_DEPENDS=
+VORBIS-TOOLS_DEPENDS=libao, libcurl, libogg, libvorbis
 VORBIS-TOOLS_CONFLICTS=
 
 #
 # VORBIS-TOOLS_IPK_VERSION should be incremented when the ipk changes.
 #
-VORBIS-TOOLS_IPK_VERSION=5
+VORBIS-TOOLS_IPK_VERSION=6
 
 #
 # VORBIS-TOOLS_CONFFILES should be a list of user-editable files
