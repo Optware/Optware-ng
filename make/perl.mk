@@ -1,6 +1,6 @@
 PERL_VERSION=5.22.1
 PERL_MAJOR_VER := $(shell echo $(PERL_VERSION) | cut -d'.' -f1-2)
-PERL_IPK_VERSION=2
+PERL_IPK_VERSION=3
 
 PERL_SITE=http://ftp.funet.fi/pub/CPAN/src
 PERL_SOURCE=perl-$(PERL_VERSION).tar.gz
