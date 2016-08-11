@@ -29,14 +29,14 @@ QUICKIE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 QUICKIE_DESCRIPTION=A small footprint, fast C++ Wiki engine.
 QUICKIE_SECTION=web
 QUICKIE_PRIORITY=optional
-QUICKIE_DEPENDS=libstdc++, openssl, zlib
+QUICKIE_DEPENDS=libstdc++, openssl, zlib, file
 QUICKIE_SUGGESTS=
 QUICKIE_CONFLICTS=
 
 #
 # QUICKIE_IPK_VERSION should be incremented when the ipk changes.
 #
-QUICKIE_IPK_VERSION=3
+QUICKIE_IPK_VERSION=4
 
 #
 # QUICKIE_CONFFILES should be a list of user-editable files
@@ -129,7 +129,7 @@ $(QUICKIE_BUILD_DIR)/.configured: $(DL_DIR)/$(QUICKIE_SOURCE) $(QUICKIE_PATCHES)
 else
 $(QUICKIE_BUILD_DIR)/.configured: $(QUICKIE_PATCHES) $(QUICKIE_HOST_BUILD_DIR)/.built
 endif
-	$(MAKE) openssl-stage zlib-stage
+	$(MAKE) openssl-stage zlib-stage file-stage
 	rm -rf $(BUILD_DIR)/$(QUICKIE_DIR) $(QUICKIE_BUILD_DIR)
 	$(QUICKIE_UNZIP) $(DL_DIR)/$(QUICKIE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(QUICKIE_PATCHES)" ; \
