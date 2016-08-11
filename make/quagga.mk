@@ -35,14 +35,14 @@ QUAGGA_MAINTAINER=Louis Lagendijk <louis.lagendijk@gmail.com>
 QUAGGA_DESCRIPTION=The quagga routing suite, including ospf, rip, and bgp (ospf6d and ripngd are included if library has IPv6 support).
 QUAGGA_SECTION=net
 QUAGGA_PRIORITY=optional
-QUAGGA_DEPENDS=adduser, readline, termcap
+QUAGGA_DEPENDS=adduser, readline, termcap, libcap
 QUAGGA_SUGGESTS=
 QUAGGA_CONFLICTS=
 
 #
 # QUAGGA_IPK_VERSION should be incremented when the ipk changes.
 #
-QUAGGA_IPK_VERSION=1
+QUAGGA_IPK_VERSION=2
 
 #
 # QUAGGA_CONFFILES should be a list of user-editable files
@@ -108,7 +108,7 @@ quagga-source: $(DL_DIR)/$(QUAGGA_SOURCE) $(QUAGGA_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(QUAGGA_BUILD_DIR)/.configured: $(DL_DIR)/$(QUAGGA_SOURCE) $(QUAGGA_PATCHES) make/quagga.mk
-	$(MAKE) readline-stage termcap-stage 
+	$(MAKE) readline-stage termcap-stage libcap-stage
 	rm -rf $(BUILD_DIR)/$(QUAGGA_DIR) $(@D)
 	$(QUAGGA_UNZIP) $(DL_DIR)/$(QUAGGA_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(QUAGGA_PATCHES)"; then \
