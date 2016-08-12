@@ -32,7 +32,7 @@ PYTHON24_MAINTAINER=Brian Zhou<bzhou@users.sf.net>
 PYTHON24_DESCRIPTION=Python is an interpreted, interactive, object-oriented programming language.
 PYTHON24_SECTION=misc
 PYTHON24_PRIORITY=optional
-PYTHON24_DEPENDS=readline, bzip2, openssl, libdb, zlib, libffi
+PYTHON24_DEPENDS=readline, bzip2, openssl, libdb, zlib, libffi, gdbm, gettext
 ifeq (libstdc++, $(filter libstdc++, $(PACKAGES)))
 PYTHON24_DEPENDS+=, libstdc++
 endif
@@ -42,7 +42,7 @@ PYTHON24_SUGGESTS=
 #
 # PYTHON24_IPK_VERSION should be incremented when the ipk changes.
 #
-PYTHON24_IPK_VERSION=4
+PYTHON24_IPK_VERSION=5
 
 #
 # PYTHON24_CONFFILES should be a list of user-editable files
@@ -131,7 +131,7 @@ ifeq (libstdc++, $(filter libstdc++, $(PACKAGES)))
 	$(MAKE) libstdc++-stage
 endif
 	$(MAKE) bzip2-stage readline-stage openssl-stage libdb-stage zlib-stage libffi-host-stage \
-		zlib-host-stage $(NCURSES_FOR_OPTWARE_TARGET)-stage libffi-stage
+		zlib-host-stage $(NCURSES_FOR_OPTWARE_TARGET)-stage libffi-stage gdbm-stage gettext-stage
 	rm -rf $(BUILD_DIR)/$(PYTHON24_DIR) $(@D) $(HOST_STAGING_PREFIX)/bin/python2.4
 	$(PYTHON24_UNZIP) $(DL_DIR)/$(PYTHON24_SOURCE) | tar -C $(BUILD_DIR) -xf -
 	cat $(PYTHON24_PATCHES) | $(PATCH) -bd $(BUILD_DIR)/$(PYTHON24_DIR) -p1

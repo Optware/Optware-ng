@@ -32,7 +32,7 @@ PYTHON26_MAINTAINER=Brian Zhou<bzhou@users.sf.net>
 PYTHON26_DESCRIPTION=Python is an interpreted, interactive, object-oriented programming language.
 PYTHON26_SECTION=misc
 PYTHON26_PRIORITY=optional
-PYTHON26_DEPENDS=readline, bzip2, openssl, libdb, zlib, libffi, sqlite
+PYTHON26_DEPENDS=readline, bzip2, openssl, libdb, zlib, libffi, sqlite, gdbm, gettext
 ifeq (libstdc++, $(filter libstdc++, $(PACKAGES)))
 PYTHON26_DEPENDS+=, libstdc++
 endif
@@ -42,7 +42,7 @@ PYTHON26_SUGGESTS=
 #
 # PYTHON26_IPK_VERSION should be incremented when the ipk changes.
 #
-PYTHON26_IPK_VERSION=2
+PYTHON26_IPK_VERSION=3
 
 #
 # PYTHON26_CONFFILES should be a list of user-editable files
@@ -131,7 +131,8 @@ ifeq (libstdc++, $(filter libstdc++, $(PACKAGES)))
 	$(MAKE) libstdc++-stage
 endif
 	$(MAKE) bzip2-stage readline-stage openssl-stage libdb-stage sqlite-stage zlib-stage \
-		libffi-stage libffi-host-stage zlib-host-stage $(NCURSES_FOR_OPTWARE_TARGET)-stage
+		libffi-stage libffi-host-stage zlib-host-stage $(NCURSES_FOR_OPTWARE_TARGET)-stage \
+		gdbm-stage gettext-stage
 	rm -rf $(BUILD_DIR)/$(PYTHON26_DIR) $(@D) $(HOST_STAGING_PREFIX)/bin/python2.6
 
 	$(PYTHON26_UNZIP) $(DL_DIR)/$(PYTHON26_SOURCE) | tar -C $(BUILD_DIR) -xf -

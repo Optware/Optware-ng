@@ -32,7 +32,7 @@ PYTHON25_MAINTAINER=Brian Zhou<bzhou@users.sf.net>
 PYTHON25_DESCRIPTION=Python is an interpreted, interactive, object-oriented programming language.
 PYTHON25_SECTION=misc
 PYTHON25_PRIORITY=optional
-PYTHON25_DEPENDS=readline, bzip2, openssl, libdb, zlib, libffi, sqlite
+PYTHON25_DEPENDS=readline, bzip2, openssl, libdb, zlib, libffi, sqlite, gdbm, gettext
 ifeq (libstdc++, $(filter libstdc++, $(PACKAGES)))
 PYTHON25_DEPENDS+=, libstdc++
 endif
@@ -42,7 +42,7 @@ PYTHON25_SUGGESTS=
 #
 # PYTHON25_IPK_VERSION should be incremented when the ipk changes.
 #
-PYTHON25_IPK_VERSION=5
+PYTHON25_IPK_VERSION=6
 
 #
 # PYTHON25_CONFFILES should be a list of user-editable files
@@ -131,7 +131,8 @@ ifeq (libstdc++, $(filter libstdc++, $(PACKAGES)))
 	$(MAKE) libstdc++-stage
 endif
 	$(MAKE) bzip2-stage readline-stage openssl-stage libdb-stage sqlite-stage zlib-stage \
-		libffi-stage libffi-host-stage zlib-host-stage $(NCURSES_FOR_OPTWARE_TARGET)-stage
+		libffi-stage libffi-host-stage zlib-host-stage $(NCURSES_FOR_OPTWARE_TARGET)-stage \
+		gdbm-stage gettext-stage
 	rm -rf $(BUILD_DIR)/$(PYTHON25_DIR) $(@D) $(HOST_STAGING_PREFIX)/bin/python2.5
 	$(PYTHON25_UNZIP) $(DL_DIR)/$(PYTHON25_SOURCE) | tar -C $(BUILD_DIR) -xf -
 	cd $(BUILD_DIR)/$(PYTHON25_DIR); \
