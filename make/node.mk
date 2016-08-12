@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 NODE_URL=http://nodejs.org/dist/v$(NODE_VERSION)/node-v$(NODE_VERSION).tar.gz
-NODE_VERSION=4.4.1
+NODE_VERSION=6.3.1
 NODE_SOURCE=node-v$(NODE_VERSION).tar.gz
 NODE_DIR=node-v$(NODE_VERSION)
 NODE_UNZIP=zcat
