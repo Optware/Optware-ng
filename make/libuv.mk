@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBUV_URL=http://dist.libuv.org/dist/v$(LIBUV_VERSION)/libuv-v$(LIBUV_VERSION).tar.gz
-LIBUV_VERSION=1.8.0
+LIBUV_VERSION=1.9.1
 LIBUV_SOURCE=libuv-v$(LIBUV_VERSION).tar.gz
 LIBUV_DIR=libuv-v$(LIBUV_VERSION)
 LIBUV_UNZIP=zcat
