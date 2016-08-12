@@ -90,7 +90,7 @@ PYTHON3_PATCHES=\
 	$(PYTHON3_SOURCE_DIR)/Lib-site.py.patch \
 	$(PYTHON3_SOURCE_DIR)/Lib-distutils-distutils.cfg.patch \
 	$(PYTHON3_SOURCE_DIR)/with-libintl.patch \
-	$(PYTHON3_SOURCE_DIR)/Setup.dist.patch
+	$(PYTHON3_SOURCE_DIR)/Setup.dist.$(LIBC_STYLE).patch
 #	$(PYTHON3_SOURCE_DIR)/O_CLOEXEC.patch
 
 ifeq ($(NCURSES_FOR_OPTWARE_TARGET), ncurses)
@@ -179,6 +179,9 @@ endif
 		--with-system-ffi \
 	)
 	sed -i -e 's|^\t\.\(/Programs/\)|\t./buildpython3\1|' $(@D)/Makefile
+ifeq ($(LIBC_STYLE),uclibc)
+	echo "nis nismodule.c -lnsl" >> $(PYTHON3_BUILD_DIR)/buildpython3/Modules/Setup.local
+endif
 	touch $@
 
 python3-unpack: $(PYTHON3_BUILD_DIR)/.configured

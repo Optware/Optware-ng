@@ -86,7 +86,7 @@ PYTHON27_PATCHES=\
 	$(PYTHON27_SOURCE_DIR)/setup.py.patch \
 	$(PYTHON27_SOURCE_DIR)/Lib-site.py.patch \
 	$(PYTHON27_SOURCE_DIR)/Lib-distutils-distutils.cfg.patch \
-	$(PYTHON27_SOURCE_DIR)/Setup.dist.patch \
+	$(PYTHON27_SOURCE_DIR)/Setup.dist.$(LIBC_STYLE).patch \
 
 ifeq ($(NCURSES_FOR_OPTWARE_TARGET), ncurses)
 PYTHON27_PATCHES+= $(PYTHON27_SOURCE_DIR)/disable-ncursesw.patch
@@ -163,6 +163,9 @@ endif
 		--enable-unicode=ucs4 \
 		--with-system-ffi \
 	)
+ifeq ($(LIBC_STYLE),uclibc)
+	echo "nis nismodule.c -lnsl" >> $(PYTHON27_BUILD_DIR)/buildpython27/Modules/Setup.local
+endif
 	touch $@
 
 python27-unpack: $(PYTHON27_BUILD_DIR)/.configured
