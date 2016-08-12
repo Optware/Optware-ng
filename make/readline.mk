@@ -99,7 +99,7 @@ $(READLINE_HOST_BUILD_DIR)/.staged: $(DL_DIR)/$(READLINE_SOURCE)
 	        then mv $(HOST_BUILD_DIR)/$(READLINE_DIR) $(@D) ; \
 	fi
 	(cd $(@D); \
-	        CPPFLAGS="-I$(HOST_STAGING_INCLUDE_DIR)" \
+	        CPPFLAGS="-I$(HOST_STAGING_INCLUDE_DIR) -fPIC" \
 	        LDFLAGS="-L$(HOST_STAGING_LIB_DIR)" \
 	        ./configure \
 	        --prefix=$(HOST_STAGING_PREFIX) \

@@ -51,6 +51,7 @@ $(NCURSES_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(NCURSES_SOURCE) m
 	$(NCURSES_UNZIP) $(DL_DIR)/$(NCURSES_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
 	mv $(HOST_BUILD_DIR)/$(NCURSES) $(@D)
 	(cd $(@D); \
+		CPPFLAGS="-fPIC" \
 		./configure \
 		--prefix=$(HOST_STAGING_PREFIX)	\
 		--without-shared	\
