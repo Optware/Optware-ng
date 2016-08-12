@@ -46,7 +46,9 @@ NODE_IPK_VERSION=1
 # NODE_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-NODE_PATCHES=$(NODE_SOURCE_DIR)/mips-no-fpu.patch
+NODE_PATCHES=\
+$(NODE_SOURCE_DIR)/backtrace_posix.cc.patch \
+$(NODE_SOURCE_DIR)/mips-no-fpu.patch \
 
 #
 # If the compilation of the package requires additional
