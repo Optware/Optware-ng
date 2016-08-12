@@ -27,7 +27,7 @@
  
  # ensurepip options
  ENSUREPIP=      @ENSUREPIP@
-@@ -219,9 +221,10 @@
+@@ -219,10 +221,11 @@
  LIBOBJS=	@LIBOBJS@
  
  PYTHON=		python$(EXE)
@@ -35,12 +35,13 @@
 +HOSTPYTHON=	python$(BUILDEXE)
 +BUILDPYTHON=	@BUILDPYTHON@
  
+ cross_compiling=@cross_compiling@
 -PYTHON_FOR_BUILD=@PYTHON_FOR_BUILD@
 +PYTHON_FOR_BUILD=./@BUILDPYTHON@
  _PYTHON_HOST_PLATFORM=@_PYTHON_HOST_PLATFORM@
  BUILD_GNU_TYPE=	@build@
  HOST_GNU_TYPE=	@host@
-@@ -275,7 +278,8 @@
+@@ -278,7 +281,8 @@
  
  ##########################################################################
  # Parser
@@ -50,7 +51,7 @@
  
  PSRCS=		\
  		Parser/acceler.c \
-@@ -479,7 +483,7 @@
+@@ -482,7 +486,7 @@
  
  # Default target
  all:		build_all
@@ -59,7 +60,7 @@
  
  # Compile a binary with profile guided optimization.
  profile-opt:
-@@ -560,14 +564,14 @@
+@@ -563,14 +567,14 @@
  # Run "Argument Clinic" over all source files
  # (depends on python having already been built)
  .PHONY=clinic
@@ -77,7 +78,7 @@
  	$(RUNSHARED) $(PYTHON_FOR_BUILD) -c 'import sys ; from sysconfig import get_platform ; print(get_platform()+"-"+sys.version[0:3])' >platform
  
  # Create build directory and generate the sysconfig build-time data there.
-@@ -577,7 +581,7 @@
+@@ -580,7 +584,7 @@
  # problems by creating a dummy pybuilddir.txt just to allow interpreter
  # initialization to succeed.  It will be overwritten by generate-posix-vars
  # or removed in case of failure.
@@ -86,16 +87,16 @@
  	@echo "none" > ./pybuilddir.txt
  	$(RUNSHARED) $(PYTHON_FOR_BUILD) -S -m sysconfig --generate-posix-vars ;\
  	if test $$? -ne 0 ; then \
-@@ -590,7 +594,7 @@
+@@ -597,7 +601,7 @@
  # Under GNU make, MAKEFLAGS are sorted and normalized; the 's' for
  # -s, --silent or --quiet is always the first char.
  # Under BSD make, MAKEFLAGS might be " -s -v x=y".
--sharedmods: $(BUILDPYTHON) pybuilddir.txt
-+sharedmods: $(HOSTPYTHON) $(PYTHON_FOR_BUILD) pybuilddir.txt
+-sharedmods: $(BUILDPYTHON) pybuilddir.txt Modules/_math.o
++sharedmods: $(HOSTPYTHON) $(PYTHON_FOR_BUILD) pybuilddir.txt Modules/_math.o
  	@case "$$MAKEFLAGS" in \
  	    *\ -s*|s*) quiet="-q";; \
  	    *) quiet="";; \
-@@ -634,11 +638,11 @@
+@@ -641,11 +645,11 @@
  #
  # Distributors are likely to want to install this somewhere else e.g. relative
  # to the stripped DWARF data for the shared library.
@@ -110,26 +111,38 @@
  
  # This rule is here for OPENSTEP/Rhapsody/MacOSX. It builds a temporary
  # minimal framework (not including the Lib directory and such) in the current
-@@ -777,14 +781,14 @@
+@@ -788,25 +792,14 @@
  
  $(IO_OBJS): $(IO_H)
  
 -$(GRAMMAR_H): $(GRAMMAR_INPUT) $(PGEN)
 +$(GRAMMAR_H): $(GRAMMAR_INPUT) $(BUILDPGEN)
- 		@$(MKDIR_P) Include
--		$(PGEN) $(GRAMMAR_INPUT) $(GRAMMAR_H) $(GRAMMAR_C)
-+		$(BUILDPGEN) $(GRAMMAR_INPUT) $(GRAMMAR_H) $(GRAMMAR_C)
+ 	@$(MKDIR_P) Include
+-	# Avoid copying the file onto itself for an in-tree build
+-	if test "$(cross_compiling)" != "yes"; then \
+-		$(PGEN) $(GRAMMAR_INPUT) $(GRAMMAR_H) $(GRAMMAR_C); \
+-	else \
+-		cp $(srcdir)/Include/graminit.h $(GRAMMAR_H).tmp; \
+-		mv $(GRAMMAR_H).tmp $(GRAMMAR_H); \
+-	fi
++	$(BUILDPGEN) $(GRAMMAR_INPUT) $(GRAMMAR_H) $(GRAMMAR_C)
  $(GRAMMAR_C): $(GRAMMAR_H)
- 		touch $(GRAMMAR_C)
+-	if test "$(cross_compiling)" != "yes"; then \
+-		touch $(GRAMMAR_C); \
+-	else \
+-		cp $(srcdir)/Python/graminit.c $(GRAMMAR_C).tmp; \
+-		mv $(GRAMMAR_C).tmp $(GRAMMAR_C); \
+-	fi
++	touch $(GRAMMAR_C)
  
 -$(PGEN): $(PGENOBJS)
 -		$(CC) $(OPT) $(PY_LDFLAGS) $(PGENOBJS) $(LIBS) -o $(PGEN)
 +$(HOSTPGEN): $(PGENOBJS)
-+		$(CC) $(OPT) $(PY_LDFLAGS) $(PGENOBJS) $(LIBS) -o $@
++	$(CC) $(OPT) $(PY_LDFLAGS) $(PGENOBJS) $(LIBS) -o $@
  
  Parser/grammar.o:	$(srcdir)/Parser/grammar.c \
  				$(srcdir)/Include/token.h \
-@@ -868,6 +872,16 @@
+@@ -890,6 +883,16 @@
  Objects/typeslots.inc: $(srcdir)/Include/typeslots.h $(srcdir)/Objects/typeslots.py
  	$(PYTHON) $(srcdir)/Objects/typeslots.py < $(srcdir)/Include/typeslots.h > Objects/typeslots.inc
  
@@ -146,7 +159,7 @@
  ############################################################################
  # Header files
  
-@@ -1068,7 +1082,7 @@
+@@ -1090,7 +1093,7 @@
  
  # Install the interpreter with $(VERSION) affixed
  # This goes into $(exec_prefix)
@@ -155,7 +168,7 @@
  	@for i in $(BINDIR) $(LIBDIR); \
  	do \
  		if test ! -d $(DESTDIR)$$i; then \
-@@ -1078,7 +1092,7 @@
+@@ -1100,7 +1103,7 @@
  		fi; \
  	done
  	if test "$(PYTHONFRAMEWORKDIR)" = "no-framework" ; then \
@@ -164,7 +177,7 @@
  	else \
  		$(INSTALL_PROGRAM) $(STRIPFLAG) Mac/pythonw $(DESTDIR)$(BINDIR)/python$(LDVERSION)$(EXE); \
  	fi
-@@ -1415,6 +1429,7 @@
+@@ -1441,6 +1444,7 @@
  # Install the dynamically loadable modules
  # This goes into $(exec_prefix)
  sharedinstall: sharedmods
@@ -172,7 +185,7 @@
  	$(RUNSHARED) $(PYTHON_FOR_BUILD) $(srcdir)/setup.py install \
  	   	--prefix=$(prefix) \
  		--install-scripts=$(BINDIR) \
-@@ -1513,7 +1528,7 @@
+@@ -1539,7 +1543,7 @@
  config.status:	$(srcdir)/configure
  	$(SHELL) $(srcdir)/configure $(CONFIG_ARGS)
  
@@ -181,7 +194,7 @@
  
  # Some make's put the object file in the current directory
  .c.o:
-@@ -1592,12 +1607,13 @@
+@@ -1619,12 +1623,13 @@
  	rm -rf $(COVERAGE_REPORT)
  
  clobber: clean profile-removal

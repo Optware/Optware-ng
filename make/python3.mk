@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PYTHON3_VERSION=3.5.1
+PYTHON3_VERSION=3.5.2
 PYTHON3_VERSION_MAJOR:=$(shell echo $(PYTHON3_VERSION) | cut -d'.' -f1-2)
 PYTHON3_SITE=http://www.python.org/ftp/python/$(PYTHON3_VERSION)
 PYTHON3_DIR=Python-$(PYTHON3_VERSION)
@@ -32,7 +32,7 @@ PYTHON3_MAINTAINER=Brian Zhou<bzhou@users.sf.net>
 PYTHON3_DESCRIPTION=Python is an interpreted, interactive, object-oriented programming language.
 PYTHON3_SECTION=misc
 PYTHON3_PRIORITY=optional
-PYTHON3_DEPENDS=readline, bzip2, openssl, libdb, zlib, libffi, sqlite, xz-utils
+PYTHON3_DEPENDS=readline, bzip2, openssl, libdb, zlib, libffi, sqlite, xz-utils, gdbm, gettext
 ifeq (libstdc++, $(filter libstdc++, $(PACKAGES)))
 PYTHON3_DEPENDS+=, libstdc++
 endif
@@ -42,7 +42,7 @@ PYTHON3_SUGGESTS=
 #
 # PYTHON3_IPK_VERSION should be incremented when the ipk changes.
 #
-PYTHON3_IPK_VERSION=3
+PYTHON3_IPK_VERSION=1
 
 #
 # PYTHON3_CONFFILES should be a list of user-editable files
@@ -89,7 +89,8 @@ PYTHON3_PATCHES=\
 	$(PYTHON3_SOURCE_DIR)/setup.py.patch \
 	$(PYTHON3_SOURCE_DIR)/Lib-site.py.patch \
 	$(PYTHON3_SOURCE_DIR)/Lib-distutils-distutils.cfg.patch \
-	$(PYTHON3_SOURCE_DIR)/with-libintl.patch
+	$(PYTHON3_SOURCE_DIR)/with-libintl.patch \
+	$(PYTHON3_SOURCE_DIR)/Setup.dist.patch
 #	$(PYTHON3_SOURCE_DIR)/O_CLOEXEC.patch
 
 ifeq ($(NCURSES_FOR_OPTWARE_TARGET), ncurses)
@@ -139,7 +140,8 @@ ifeq (enable, $(GETTEXT_NLS))
 endif
 	$(MAKE) bzip2-stage readline-stage openssl-stage libdb-stage sqlite-stage zlib-stage \
 		xz-utils-stage libffi-host-stage zlib-host-stage xz-utils-host-stage libffi-stage \
-		$(NCURSES_FOR_OPTWARE_TARGET)-stage autoconf-host-stage
+		$(NCURSES_FOR_OPTWARE_TARGET)-stage autoconf-host-stage gdbm-stage gettext-stage \
+		ncurses-host-stage readline-host-stage
 	rm -rf $(BUILD_DIR)/$(PYTHON3_DIR) $(@D) $(HOST_STAGING_PREFIX)/bin/python3
 	$(PYTHON3_UNZIP) $(DL_DIR)/$(PYTHON3_SOURCE) | tar -C $(BUILD_DIR) -xf -
 	cat $(PYTHON3_PATCHES) | $(PATCH) -bd $(BUILD_DIR)/$(PYTHON3_DIR) -p1
