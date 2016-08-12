@@ -180,7 +180,7 @@ PYTHON_PACKAGES = \
 	py-nose \
 	py-openssl py-openzwave py-paramiko \
 	py-paste py-pastedeploy py-pastescript py-pastewebkit \
-	py-pexpect py-pil py-ply py-protocols \
+	py-pexpect py-pil py-pip py-ply py-protocols \
 	py-pgsql py-psycopg py-psycopg2 py-pygresql \
 	py-pudge py-pylons py-pyro py-quixote \
 	py-rdiff-backup py-redis py-requests py-tornado \
