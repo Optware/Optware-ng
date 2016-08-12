@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PYTHON27_VERSION=2.7.11
+PYTHON27_VERSION=2.7.12
 PYTHON27_VERSION_MAJOR=2.7
 PYTHON27_SITE=http://python.org/ftp/python/$(PYTHON27_VERSION)
 PYTHON27_DIR=Python-$(PYTHON27_VERSION)
@@ -32,7 +32,7 @@ PYTHON27_MAINTAINER=Brian Zhou<bzhou@users.sf.net>
 PYTHON27_DESCRIPTION=Python is an interpreted, interactive, object-oriented programming language.
 PYTHON27_SECTION=misc
 PYTHON27_PRIORITY=optional
-PYTHON27_DEPENDS=readline, bzip2, openssl, libdb, zlib, libffi, sqlite, xz-utils
+PYTHON27_DEPENDS=readline, bzip2, openssl, libdb, zlib, libffi, sqlite, xz-utils, gdbm, gettext
 ifeq (libstdc++, $(filter libstdc++, $(PACKAGES)))
 PYTHON27_DEPENDS+=, libstdc++
 endif
@@ -86,6 +86,7 @@ PYTHON27_PATCHES=\
 	$(PYTHON27_SOURCE_DIR)/setup.py.patch \
 	$(PYTHON27_SOURCE_DIR)/Lib-site.py.patch \
 	$(PYTHON27_SOURCE_DIR)/Lib-distutils-distutils.cfg.patch \
+	$(PYTHON27_SOURCE_DIR)/Setup.dist.patch \
 
 ifeq ($(NCURSES_FOR_OPTWARE_TARGET), ncurses)
 PYTHON27_PATCHES+= $(PYTHON27_SOURCE_DIR)/disable-ncursesw.patch
@@ -128,7 +129,8 @@ ifeq (libstdc++, $(filter libstdc++, $(PACKAGES)))
 	$(MAKE) libstdc++-stage
 endif
 	$(MAKE) bzip2-stage readline-stage openssl-stage libdb-stage sqlite-stage zlib-stage xz-utils-stage \
-		libffi-stage libffi-host-stage openssl-host-stage zlib-host-stage xz-utils-host-stage $(NCURSES_FOR_OPTWARE_TARGET)-stage
+		libffi-stage libffi-host-stage openssl-host-stage zlib-host-stage xz-utils-host-stage $(NCURSES_FOR_OPTWARE_TARGET)-stage \
+		gdbm-stage gettext-stage ncurses-host-stage readline-host-stage
 	$(MAKE) autoconf-host-stage
 	rm -rf $(BUILD_DIR)/$(PYTHON27_DIR) $(@D) $(HOST_STAGING_PREFIX)/bin/python2.7
 	$(PYTHON27_UNZIP) $(DL_DIR)/$(PYTHON27_SOURCE) | tar -C $(BUILD_DIR) -xf -
