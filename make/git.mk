@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 GIT_SITE=http://ftp.be.debian.org/pub/software/scm/git-core
-GIT_VERSION=2.9.0
+GIT_VERSION=2.9.3
 GIT_IPK_VERSION=1
 GIT_SOURCE=git-$(GIT_VERSION).tar.gz
 GIT_DIR=git-$(GIT_VERSION)
@@ -53,7 +53,7 @@ GIT-MANPAGES_SOURCE=git-manpages-$(GIT_VERSION).tar.gz
 
 #
 # GIT_CONFFILES should be a list of user-editable files
-#GIT_CONFFILES=$(TARGET_PREFIX)/etc/git.conf $(TARGET_PREFIX)/etc/init.d/SXXgit
+GIT_CONFFILES=$(TARGET_PREFIX)/etc/gitconfig #$(TARGET_PREFIX)/etc/init.d/SXXgit
 
 #
 # GIT_PATCHES should list any patches, in the the order in
@@ -366,7 +366,9 @@ endif
 	$(INSTALL) $(<D)/contrib/completion/*.bash \
 		$(<D)/contrib/completion/*.sh \
 		$(GIT_IPK_DIR)$(TARGET_PREFIX)/etc/bash_completion.d
+	$(INSTALL) -m 644 $(GIT_SOURCE_DIR)/gitconfig $(GIT_IPK_DIR)$(TARGET_PREFIX)/etc/gitconfig
 	$(MAKE) $(GIT_IPK_DIR)/CONTROL/control
+	echo $(GIT_CONFFILES) | sed -e 's/ /\n/g' > $(GIT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GIT_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(GIT_IPK_DIR)
 
@@ -394,7 +396,10 @@ $(GIT-LITE_IPK): $(GIT-LITE_BUILD_DIR)/.built
 	ln -s ../libexec/git-core/git $(GIT-LITE_IPK_DIR)$(TARGET_PREFIX)/bin/git
 	rm -rf $(GIT-LITE_IPK_DIR)$(TARGET_PREFIX)/lib
 	rm -rf $(GIT-LITE_IPK_DIR)$(TARGET_PREFIX)/share/man
+	$(INSTALL) -d $(GIT-LITE_IPK_DIR)$(TARGET_PREFIX)/etc
+	$(INSTALL) -m 644 $(GIT_SOURCE_DIR)/gitconfig $(GIT-LITE_IPK_DIR)$(TARGET_PREFIX)/etc/gitconfig
 	$(MAKE) $(GIT-LITE_IPK_DIR)/CONTROL/control
+	echo $(GIT_CONFFILES) | sed -e 's/ /\n/g' > $(GIT-LITE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GIT-LITE_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(GIT-LITE_IPK_DIR)
 

@@ -1,0 +1,3 @@
+[http]
+	sslCAPath = %OPTWARE_TARGET_PREFIX%/etc/ssl/certs
+	sslCAInfo = %OPTWARE_TARGET_PREFIX%/etc/ssl/ca-bundle.crt
