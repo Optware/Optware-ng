@@ -49,7 +49,7 @@ endif
 #
 # ERLANG_IPK_VERSION should be incremented when the ipk changes.
 #
-ERLANG_IPK_VERSION=1
+ERLANG_IPK_VERSION=2
 
 ERLANG_TARGET=$(shell $(SOURCE_DIR)/common/config.sub $(GNU_TARGET_NAME))
 

@@ -37,7 +37,7 @@ LIBESMTP_CONFLICTS=
 #
 # LIBESMTP_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBESMTP_IPK_VERSION=1
+LIBESMTP_IPK_VERSION=2
 
 #
 # LIBESMTP_CONFFILES should be a list of user-editable files

@@ -36,7 +36,7 @@ VPNC_CONFLICTS=
 #
 # VPNC_IPK_VERSION should be incremented when the ipk changes.
 #
-VPNC_IPK_VERSION=2
+VPNC_IPK_VERSION=3
 
 #
 # VPNC_CONFFILES should be a list of user-editable files

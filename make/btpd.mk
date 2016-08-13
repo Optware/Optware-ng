@@ -22,7 +22,7 @@
 #
 BTPD_SITE=https://github.com/downloads/btpd/btpd
 BTPD_VERSION?=0.16
-BTPD_IPK_VERSION?=1
+BTPD_IPK_VERSION?=2
 BTPD_SOURCE=btpd-$(BTPD_VERSION).tar.gz
 BTPD_DIR=btpd-$(BTPD_VERSION)
 BTPD_UNZIP=zcat

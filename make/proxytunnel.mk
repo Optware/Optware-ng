@@ -36,7 +36,7 @@ PROXYTUNNEL_CONFLICTS=
 #
 # PROXYTUNNEL_IPK_VERSION should be incremented when the ipk changes.
 #
-PROXYTUNNEL_IPK_VERSION=1
+PROXYTUNNEL_IPK_VERSION=2
 
 #
 # PROXYTUNNEL_CONFFILES should be a list of user-editable files

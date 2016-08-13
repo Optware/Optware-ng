@@ -36,7 +36,7 @@ POUND_CONFLICTS=
 #
 # POUND_IPK_VERSION should be incremented when the ipk changes.
 #
-POUND_IPK_VERSION=6
+POUND_IPK_VERSION=7
 
 #
 # POUND_CONFFILES should be a list of user-editable files

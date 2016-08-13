@@ -36,7 +36,7 @@ SLRN_CONFLICTS=
 #
 # SLRN_IPK_VERSION should be incremented when the ipk changes.
 #
-SLRN_IPK_VERSION=1
+SLRN_IPK_VERSION=2
 
 #
 # SLRN_CONFFILES should be a list of user-editable files

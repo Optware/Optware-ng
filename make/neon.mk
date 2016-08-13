@@ -42,7 +42,7 @@ NEON_CONFLICTS=
 #
 # NEON_IPK_VERSION should be incremented when the ipk changes.
 #
-NEON_IPK_VERSION=2
+NEON_IPK_VERSION=3
 
 #
 # NEON_CONFFILES should be a list of user-editable files

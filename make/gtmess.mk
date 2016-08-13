@@ -39,7 +39,7 @@ GTMESS_CONFLICTS=
 #
 # GTMESS_IPK_VERSION should be incremented when the ipk changes.
 #
-GTMESS_IPK_VERSION=2
+GTMESS_IPK_VERSION=3
 
 #
 # GTMESS_CONFFILES should be a list of user-editable files

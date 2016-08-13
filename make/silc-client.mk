@@ -39,7 +39,7 @@ SILC_CLIENT_CONFLICTS=
 #
 # SILC_CLIENT_IPK_VERSION should be incremented when the ipk changes.
 #
-SILC_CLIENT_IPK_VERSION=2
+SILC_CLIENT_IPK_VERSION=3
 
 #
 # SILC_CLIENT_CONFFILES should be a list of user-editable files

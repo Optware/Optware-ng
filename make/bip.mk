@@ -42,7 +42,7 @@ BIP_CONFLICTS=
 #
 # BIP_IPK_VERSION should be incremented when the ipk changes.
 #
-BIP_IPK_VERSION=1
+BIP_IPK_VERSION=2
 
 #
 # BIP_CONFFILES should be a list of user-editable files

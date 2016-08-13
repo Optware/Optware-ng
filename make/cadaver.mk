@@ -36,7 +36,7 @@ CADAVER_CONFLICTS=
 #
 # CADAVER_IPK_VERSION should be incremented when the ipk changes.
 #
-CADAVER_IPK_VERSION=1
+CADAVER_IPK_VERSION=2
 
 #
 # CADAVER_CONFFILES should be a list of user-editable files

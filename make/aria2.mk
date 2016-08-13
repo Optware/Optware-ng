@@ -42,7 +42,7 @@ ARIA2_CONFLICTS=
 #
 # ARIA2_IPK_VERSION should be incremented when the ipk changes.
 #
-ARIA2_IPK_VERSION=1
+ARIA2_IPK_VERSION=2
 
 #
 # ARIA2_CONFFILES should be a list of user-editable files

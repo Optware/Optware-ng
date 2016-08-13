@@ -41,7 +41,7 @@ JABBERD_CONFLICTS=
 #
 # JABBERD_IPK_VERSION should be incremented when the ipk changes.
 #
-JABBERD_IPK_VERSION=1
+JABBERD_IPK_VERSION=2
 
 #
 # JABBERD_CONFFILES should be a list of user-editable files

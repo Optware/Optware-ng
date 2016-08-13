@@ -42,7 +42,7 @@ UP-IMAPPROXY_CONFLICTS=
 #
 # UP-IMAPPROXY_IPK_VERSION should be incremented when the ipk changes.
 #
-UP-IMAPPROXY_IPK_VERSION=1
+UP-IMAPPROXY_IPK_VERSION=2
 
 #
 # UP-IMAPPROXY_CONFFILES should be a list of user-editable files

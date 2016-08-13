@@ -37,7 +37,7 @@ PY-PSYCOPG_CONFLICTS=
 #
 # PY-PSYCOPG_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-PSYCOPG_IPK_VERSION=6
+PY-PSYCOPG_IPK_VERSION=7
 
 #
 # PY-PSYCOPG_CONFFILES should be a list of user-editable files

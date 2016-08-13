@@ -42,7 +42,7 @@ XMAIL_CONFLICTS=
 #
 # XMAIL_IPK_VERSION should be incremented when the ipk changes.
 #
-XMAIL_IPK_VERSION=1
+XMAIL_IPK_VERSION=2
 
 #
 # XMAIL_CONFFILES should be a list of user-editable files

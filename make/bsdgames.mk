@@ -36,7 +36,7 @@ BSDGAMES_CONFLICTS=
 #
 # BSDGAMES_IPK_VERSION should be incremented when the ipk changes.
 #
-BSDGAMES_IPK_VERSION=4
+BSDGAMES_IPK_VERSION=5
 
 #
 # BSDGAMES_CONFFILES should be a list of user-editable files

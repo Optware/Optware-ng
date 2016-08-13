@@ -42,14 +42,14 @@ ifneq ($(OPTWARE_TARGET), $(filter $(MYSQL_OLD_TARGETS), $(OPTWARE_TARGET)))
 MYSQL_SITE=https://dev.mysql.com/get/Downloads/MySQL-5.7
 MYSQL_VERSION=5.7.9
 MYSQL_DIR=mysql-$(MYSQL_VERSION)
-MYSQL_IPK_VERSION=5
+MYSQL_IPK_VERSION=7
 else
 # some needed gcc atomic builtins are missing, which
 # makes compiling newer mysql impossible
 MYSQL_SITE=https://github.com/mysql/mysql-server/archive
 MYSQL_VERSION=5.7.4
 MYSQL_DIR=mysql-server-mysql-$(MYSQL_VERSION)
-MYSQL_IPK_VERSION=6
+MYSQL_IPK_VERSION=7
 endif
 MYSQL_SOURCE=mysql-$(MYSQL_VERSION).tar.gz
 MYSQL_UNZIP=zcat

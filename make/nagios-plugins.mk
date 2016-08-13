@@ -78,7 +78,7 @@ PLUGINS_REMOVE=			\
 #
 # NAGIOS_PLUGINS_IPK_VERSION should be incremented when the ipk changes.
 #
-NAGIOS_PLUGINS_IPK_VERSION=1
+NAGIOS_PLUGINS_IPK_VERSION=2
 
 #
 # NAGIOS_PLUGINS_CONFFILES should be a list of user-editable files

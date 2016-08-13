@@ -40,7 +40,7 @@ NAIL_CONFLICTS=
 #
 # NAIL_IPK_VERSION should be incremented when the ipk changes.
 #
-NAIL_IPK_VERSION=1
+NAIL_IPK_VERSION=2
 
 #
 # NAIL_CONFFILES should be a list of user-editable files

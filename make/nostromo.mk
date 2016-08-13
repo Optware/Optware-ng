@@ -36,7 +36,7 @@ NOSTROMO_CONFLICTS=
 #
 # NOSTROMO_IPK_VERSION should be incremented when the ipk changes.
 #
-NOSTROMO_IPK_VERSION=1
+NOSTROMO_IPK_VERSION=2
 
 #
 # NOSTROMO_CONFFILES should be a list of user-editable files

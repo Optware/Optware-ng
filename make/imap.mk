@@ -43,7 +43,7 @@ IMAP_CONFLICTS=
 #
 # IMAP_IPK_VERSION should be incremented when the ipk changes.
 #
-IMAP_IPK_VERSION=1
+IMAP_IPK_VERSION=2
 
 #
 # IMAP_CONFFILES should be a list of user-editable files

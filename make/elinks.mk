@@ -35,7 +35,7 @@ ELINKS_CONFLICTS=
 #
 # ELINKS_IPK_VERSION should be incremented when the ipk changes.
 #
-ELINKS_IPK_VERSION=1
+ELINKS_IPK_VERSION=2
 
 #
 # ELINKS_PATCHES should list any patches, in the the order in

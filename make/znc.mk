@@ -43,7 +43,7 @@ ZNC_CONFLICTS=
 #
 # ZNC_IPK_VERSION should be incremented when the ipk changes.
 #
-ZNC_IPK_VERSION=1
+ZNC_IPK_VERSION=2
 
 #
 # ZNC_CONFFILES should be a list of user-editable files

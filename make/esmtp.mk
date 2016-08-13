@@ -42,7 +42,7 @@ ESMTP_CONFLICTS=postfix
 #
 # ESMTP_IPK_VERSION should be incremented when the ipk changes.
 #
-ESMTP_IPK_VERSION=1
+ESMTP_IPK_VERSION=2
 
 #
 # ESMTP_CONFFILES should be a list of user-editable files

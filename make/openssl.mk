@@ -4,7 +4,7 @@
 
 OPENSSL_SITE=http://www.openssl.org/source
 
-OPENSSL_VERSION := 1.0.2f
+OPENSSL_VERSION := 1.0.2h
 OPENSSL_LIB_VERSION := 1.0.0
 OPENSSL_IPK_VERSION := 1
 
@@ -15,8 +15,10 @@ OPENSSL_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 OPENSSL_DESCRIPTION=Openssl provides the ssl implementation in libraries libcrypto and libssl, and is needed by many other applications and libraries.
 OPENSSL_SECTION=libs
 OPENSSL_PRIORITY=recommended
-OPENSSL_DEPENDS=
+OPENSSL_DEPENDS=cacerts
 OPENSSL_CONFLICTS=
+
+OPENSSL_CONFFILES=$(TARGET_PREFIX)/etc/ssl/openssl.cnf
 
 OPENSSL_SOURCE_DIR=$(SOURCE_DIR)/openssl
 OPENSSL_BUILD_DIR=$(BUILD_DIR)/openssl
@@ -45,6 +47,8 @@ endif
 ifeq ($(OPTWARE_TARGET), dns323)
 OPENSSL_PATCHES+=$(OPENSSL_SOURCE_DIR)/Configure-O3-to-O2.patch
 endif
+
+OPENSSL_PATCHES+=$(OPENSSL_SOURCE_DIR)/openssl.cnf.patch
 
 .PHONY: openssl-source openssl-unpack openssl openssl-stage openssl-ipk openssl-clean openssl-dirclean openssl-check
 
@@ -118,7 +122,7 @@ $(OPENSSL_BUILD_DIR)/.configured: $(DL_DIR)/$(OPENSSL_SOURCE) $(OPENSSL_PATCHES)
 			shared zlib-dynamic \
 			enable-md2 \
 			$(STAGING_CPPFLAGS) \
-			--openssldir=$(TARGET_PREFIX)/share/openssl \
+			--openssldir=$(TARGET_PREFIX)/etc/ssl \
 			--prefix=$(TARGET_PREFIX) \
 			$(OPENSSL_ARCH) \
 	)
@@ -209,8 +213,8 @@ $(OPENSSL_IPK) $(OPENSSL_DEV_IPK): $(OPENSSL_BUILD_DIR)/.built
 	$(INSTALL) -d $(OPENSSL_IPK_DIR)$(TARGET_PREFIX)/bin
 	$(INSTALL) -m 755 $(OPENSSL_BUILD_DIR)/apps/openssl $(OPENSSL_IPK_DIR)$(TARGET_PREFIX)/bin/openssl
 	$(STRIP_COMMAND) $(OPENSSL_IPK_DIR)$(TARGET_PREFIX)/bin/openssl
-	$(INSTALL) -d $(OPENSSL_IPK_DIR)$(TARGET_PREFIX)/share/openssl
-	$(INSTALL) -m 755 $(OPENSSL_BUILD_DIR)/apps/openssl.cnf $(OPENSSL_IPK_DIR)$(TARGET_PREFIX)/share/openssl/openssl.cnf
+	$(INSTALL) -d $(OPENSSL_IPK_DIR)$(TARGET_PREFIX)/etc/ssl
+	$(INSTALL) -m 755 $(OPENSSL_BUILD_DIR)/apps/openssl.cnf $(OPENSSL_IPK_DIR)$(TARGET_PREFIX)/etc/ssl/openssl.cnf
 	$(INSTALL) -d $(OPENSSL_IPK_DIR)$(TARGET_PREFIX)/lib
 	$(INSTALL) -m 644 $(OPENSSL_BUILD_DIR)/libcrypto.so.$(OPENSSL_LIB_VERSION) $(OPENSSL_IPK_DIR)$(TARGET_PREFIX)/lib
 	$(INSTALL) -m 644 $(OPENSSL_BUILD_DIR)/libssl.so.$(OPENSSL_LIB_VERSION) $(OPENSSL_IPK_DIR)$(TARGET_PREFIX)/lib

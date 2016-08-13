@@ -34,7 +34,7 @@ STUNNEL_CONFLICTS=
 #
 # STUNNEL_IPK_VERSION should be incremented when the ipk changes.
 #
-STUNNEL_IPK_VERSION=2
+STUNNEL_IPK_VERSION=3
 
 #
 # STUNNEL_CONFFILES should be a list of user-editable files

@@ -36,7 +36,7 @@ MOC_CONFLICTS=
 #
 # MOC_IPK_VERSION should be incremented when the ipk changes.
 #
-MOC_IPK_VERSION=1
+MOC_IPK_VERSION=2
 
 #
 # MOC_CONFFILES should be a list of user-editable files

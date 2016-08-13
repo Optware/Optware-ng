@@ -39,7 +39,7 @@ ERL_EJABBERD_CONFLICTS=
 #
 # ERL_EJABBERD_IPK_VERSION should be incremented when the ipk changes.
 #
-ERL_EJABBERD_IPK_VERSION=1
+ERL_EJABBERD_IPK_VERSION=2
 
 #
 # ERL_EJABBERD_CONFFILES should be a list of user-editable files

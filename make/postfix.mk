@@ -21,7 +21,7 @@ POSTFIX_DEPENDS=libdb, libnsl, pcre, cyrus-sasl, findutils, openssl
 POSTFIX_SUGGESTS=cyrus-imapd
 POSTFIX_CONFLICTS=xmail
 
-POSTFIX_IPK_VERSION=4
+POSTFIX_IPK_VERSION=5
 
 POSTFIX_CONFFILES=$(TARGET_PREFIX)/etc/aliases \
 		  $(TARGET_PREFIX)/etc/postfix/main.cf \

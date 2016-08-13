@@ -36,7 +36,7 @@ ICECAST_CONFLICTS=
 #
 # ICECAST_IPK_VERSION should be incremented when the ipk changes.
 #
-ICECAST_IPK_VERSION=1
+ICECAST_IPK_VERSION=2
 
 #
 # ICECAST_CONFFILES should be a list of user-editable files

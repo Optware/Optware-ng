@@ -36,7 +36,7 @@ SSLWRAP_CONFLICTS=
 #
 # SSLWRAP_IPK_VERSION should be incremented when the ipk changes.
 #
-SSLWRAP_IPK_VERSION=1
+SSLWRAP_IPK_VERSION=2
 
 #
 # SSLWRAP_CONFFILES should be a list of user-editable files

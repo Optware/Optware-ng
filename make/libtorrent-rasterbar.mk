@@ -52,7 +52,7 @@ endif
 #
 # LIBTORRENT-RASTERBAR_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBTORRENT-RASTERBAR_IPK_VERSION?=1
+LIBTORRENT-RASTERBAR_IPK_VERSION?=2
 
 #
 # LIBTORRENT-RASTERBAR_CONFFILES should be a list of user-editable files

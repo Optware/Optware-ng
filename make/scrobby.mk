@@ -42,7 +42,7 @@ SCROBBY_DEPENDS=openssl, libcurl, libstdc++
 #
 # SCROBBY_IPK_VERSION should be incremented when the ipk changes.
 #
-SCROBBY_IPK_VERSION=1
+SCROBBY_IPK_VERSION=2
 
 #
 # SCROBBY_CONFFILES should be a list of user-editable files

@@ -41,7 +41,7 @@ PLAYER_CONFLICTS=
 #
 # PLAYER_IPK_VERSION should be incremented when the ipk changes.
 #
-PLAYER_IPK_VERSION?=12
+PLAYER_IPK_VERSION?=13
 
 #
 # PLAYER_CONFFILES should be a list of user-editable files

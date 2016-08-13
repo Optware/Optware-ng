@@ -36,7 +36,7 @@ LIBEXOSIP2_CONFLICTS=
 #
 # LIBEXOSIP2_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBEXOSIP2_IPK_VERSION=1
+LIBEXOSIP2_IPK_VERSION=2
 
 #
 # LIBEXOSIP2_CONFFILES should be a list of user-editable files

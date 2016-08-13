@@ -34,7 +34,7 @@ SQUID3_SUGGESTS=
 SQUID3_CONFLICTS=squid
 
 # override SQUID3_IPK_VERSION for target specific feeds
-SQUID3_IPK_VERSION=2
+SQUID3_IPK_VERSION=3
 
 #
 ## SQUID3_CONFFILES should be a list of user-editable files

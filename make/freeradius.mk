@@ -36,7 +36,7 @@ FREERADIUS_CONFLICTS=
 #
 # FREERADIUS_IPK_VERSION should be incremented when the ipk changes.
 #
-FREERADIUS_IPK_VERSION=3
+FREERADIUS_IPK_VERSION=4
 
 #
 # FREERADIUS_PATCHES should list any patches, in the the order in

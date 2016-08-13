@@ -36,7 +36,7 @@ GNOKII_SMSD_MYSQL_CONFLICTS=
 #
 # GNOKII_IPK_VERSION should be incremented when the ipk changes.
 #
-GNOKII_IPK_VERSION=1
+GNOKII_IPK_VERSION=2
 
 #
 # GNOKII_CONFFILES should be a list of user-editable files

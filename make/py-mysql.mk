@@ -37,7 +37,7 @@ PY-MYSQL_CONFLICTS=
 #
 # PY-MYSQL_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-MYSQL_IPK_VERSION=2
+PY-MYSQL_IPK_VERSION=3
 
 #
 # PY-MYSQL_CONFFILES should be a list of user-editable files

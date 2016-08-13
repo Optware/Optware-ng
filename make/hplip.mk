@@ -39,7 +39,7 @@ HPLIP_CONFLICTS=
 #
 # HPLIP_IPK_VERSION should be incremented when the ipk changes.
 #
-HPLIP_IPK_VERSION=1
+HPLIP_IPK_VERSION=2
 
 #
 # HPLIP_CONFFILES should be a list of user-editable files
