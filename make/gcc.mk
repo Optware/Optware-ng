@@ -63,7 +63,7 @@ endif
 #
 # GCC_IPK_VERSION should be incremented when the ipk changes.
 #
-GCC_IPK_VERSION ?= 9
+GCC_IPK_VERSION ?= 10
 
 #
 # GCC_CONFFILES should be a list of user-editable files
@@ -283,12 +283,6 @@ $(GCC_IPK): $(GCC_BUILD_DIR)/.built
 	PATH=`dirname $(TARGET_CC)`:$(STAGING_DIR)/bin:$(PATH) \
 	$(GCC_BUILD_EXTRA_ENV) \
 		$(MAKE) -C $(GCC_BUILD_DIR) DESTDIR=$(GCC_IPK_DIR) install
-#	mv -f $(GCC_IPK_DIR)$(TARGET_PREFIX)/bin/cpp{,.real}
-#	mv -f $(GCC_IPK_DIR)$(TARGET_PREFIX)/bin/c++{,.real}
-#	mv -f $(GCC_IPK_DIR)$(TARGET_PREFIX)/bin/gcc{,.real}
-#	mv -f $(GCC_IPK_DIR)$(TARGET_PREFIX)/bin/g++{,.real}
-#	$(INSTALL) -m 755 $(GCC_SOURCE_DIR)/{cpp,c++,gcc,g++} $(GCC_IPK_DIR)$(TARGET_PREFIX)/bin/
-#	sed -i -e 's~%GCC_LINKER%~$(GCC_LINKER)~' -e 's~%GCC_NATIVE_CFLAGS%~$(GCC_NATIVE_CFLAGS)~' $(GCC_IPK_DIR)$(TARGET_PREFIX)/bin/{cpp,c++,gcc,g++}
 	rm -f $(GCC_IPK_DIR)$(TARGET_PREFIX)/lib/libiberty.a $(GCC_IPK_DIR)$(TARGET_PREFIX)/info/dir $(GCC_IPK_DIR)$(TARGET_PREFIX)/info/dir.old
 	rm -f $(GCC_IPK_DIR)$(TARGET_PREFIX)/lib/libstdc++.so*
 ifeq (wdtv, $(OPTWARE_TARGET))
@@ -299,8 +293,8 @@ ifneq (, $(filter glibc-opt uclibc-opt, $(PACKAGES)))
 endif
 	-cd $(GCC_IPK_DIR)$(TARGET_PREFIX)/libexec/gcc/`$(TARGET_CC) -dumpmachine`/$(GCC_VERSION); \
 		$(STRIP_COMMAND) c* install-tools/fixincl
-#	-cd $(GCC_IPK_DIR)$(TARGET_PREFIX)/bin; $(STRIP_COMMAND) cpp.real c++.real gcc.real g++.real gcov
 	-cd $(GCC_IPK_DIR)$(TARGET_PREFIX)/bin; $(STRIP_COMMAND) cpp c++ gcc g++ gcov
+	-ln -s gcc $(GCC_IPK_DIR)$(TARGET_PREFIX)/bin/cc
 	rm -f $(GCC_IPK_DIR)$(TARGET_PREFIX)/share/info/dir
 	$(MAKE) $(GCC_IPK_DIR)/CONTROL/control
 	echo $(GCC_CONFFILES) | sed -e 's/ /\n/g' > $(GCC_IPK_DIR)/CONTROL/conffiles
