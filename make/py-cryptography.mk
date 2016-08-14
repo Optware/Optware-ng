@@ -21,8 +21,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-CRYPTOGRAPHY_VERSION=0.9.3
-PY-CRYPTOGRAPHY_SITE=https://pypi.python.org/packages/source/c/cryptography
+PY-CRYPTOGRAPHY_VERSION=1.4
+PY-CRYPTOGRAPHY_SITE=https://pypi.python.org/packages/a9/5b/a383b3a778609fe8177bd51307b5ebeee369b353550675353f46cb99c6f0
 PY-CRYPTOGRAPHY_SOURCE=cryptography-$(PY-CRYPTOGRAPHY_VERSION).tar.gz
 PY-CRYPTOGRAPHY_DIR=cryptography-$(PY-CRYPTOGRAPHY_VERSION)
 PY-CRYPTOGRAPHY_UNZIP=zcat
@@ -38,7 +38,7 @@ PY-CRYPTOGRAPHY_CONFLICTS=
 #
 # PY-CRYPTOGRAPHY_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-CRYPTOGRAPHY_IPK_VERSION=4
+PY-CRYPTOGRAPHY_IPK_VERSION=1
 
 #
 # PY-CRYPTOGRAPHY_CONFFILES should be a list of user-editable files
@@ -322,7 +322,7 @@ $(PY26-CRYPTOGRAPHY_IPK) $(PY27-CRYPTOGRAPHY_IPK) $(PY3-CRYPTOGRAPHY_IPK): $(PY-
 	$(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(PY26-CRYPTOGRAPHY_IPK_DIR) --prefix=$(TARGET_PREFIX); \
 	)
-	$(STRIP_COMMAND) $(PY26-CRYPTOGRAPHY_IPK_DIR)$(TARGET_PREFIX)/lib/python2.6/site-packages/*/*.so
+	$(STRIP_COMMAND) $(PY26-CRYPTOGRAPHY_IPK_DIR)$(TARGET_PREFIX)/lib/python2.6/site-packages/cryptography/hazmat/bindings/*.so
 	$(MAKE) $(PY26-CRYPTOGRAPHY_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY26-CRYPTOGRAPHY_IPK_DIR)
 	# 2.7
@@ -331,7 +331,7 @@ $(PY26-CRYPTOGRAPHY_IPK) $(PY27-CRYPTOGRAPHY_IPK) $(PY3-CRYPTOGRAPHY_IPK): $(PY-
 	$(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(PY27-CRYPTOGRAPHY_IPK_DIR) --prefix=$(TARGET_PREFIX); \
 	)
-	$(STRIP_COMMAND) $(PY27-CRYPTOGRAPHY_IPK_DIR)$(TARGET_PREFIX)/lib/python2.7/site-packages/*/*.so
+	$(STRIP_COMMAND) $(PY27-CRYPTOGRAPHY_IPK_DIR)$(TARGET_PREFIX)/lib/python2.7/site-packages/cryptography/hazmat/bindings/*.so
 	$(MAKE) $(PY27-CRYPTOGRAPHY_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY27-CRYPTOGRAPHY_IPK_DIR)
 	# 3
@@ -340,7 +340,7 @@ $(PY26-CRYPTOGRAPHY_IPK) $(PY27-CRYPTOGRAPHY_IPK) $(PY3-CRYPTOGRAPHY_IPK): $(PY-
 	$(TARGET_CONFIGURE_OPTS) LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(PY3-CRYPTOGRAPHY_IPK_DIR) --prefix=$(TARGET_PREFIX); \
 	)
-	$(STRIP_COMMAND) $(PY3-CRYPTOGRAPHY_IPK_DIR)$(TARGET_PREFIX)/lib/python$(PYTHON3_VERSION_MAJOR)/site-packages/*/*.so
+	$(STRIP_COMMAND) $(PY3-CRYPTOGRAPHY_IPK_DIR)$(TARGET_PREFIX)/lib/python$(PYTHON3_VERSION_MAJOR)/site-packages/cryptography/hazmat/bindings/*.so
 	$(MAKE) $(PY3-CRYPTOGRAPHY_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PY3-CRYPTOGRAPHY_IPK_DIR)
 
