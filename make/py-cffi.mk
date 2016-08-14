@@ -21,8 +21,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-CFFI_SITE=https://pypi.python.org/packages/source/c/cffi
-PY-CFFI_VERSION=1.1.2
+PY-CFFI_SITE=https://pypi.python.org/packages/83/3c/00b553fd05ae32f27b3637f705c413c4ce71290aa9b4c4764df694e906d9
+PY-CFFI_VERSION=1.7.0
 PY-CFFI_SOURCE=cffi-$(PY-CFFI_VERSION).tar.gz
 PY-CFFI_DIR=cffi-$(PY-CFFI_VERSION)
 PY-CFFI_UNZIP=zcat
@@ -38,7 +38,7 @@ PY-CFFI_CONFLICTS=
 #
 # PY-CFFI_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-CFFI_IPK_VERSION=3
+PY-CFFI_IPK_VERSION=1
 
 #
 # PY-CFFI_CONFFILES should be a list of user-editable files
