@@ -13,7 +13,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 PKGCONFIG_SITE=http://www.freedesktop.org/software/pkgconfig/releases
-PKGCONFIG_VERSION=0.28
+PKGCONFIG_VERSION=0.29.1
 PKGCONFIG_SOURCE=pkg-config-$(PKGCONFIG_VERSION).tar.gz
 PKGCONFIG_DIR=pkg-config-$(PKGCONFIG_VERSION)
 PKGCONFIG_UNZIP=zcat
@@ -21,7 +21,7 @@ PKGCONFIG_MAINTAINER=Josh Parsons <jbparsons@ucdavis.edu>
 PKGCONFIG_DESCRIPTION=Package configuration tool
 PKGCONFIG_SECTION=util
 PKGCONFIG_PRIORITY=optional
-PKGCONFIG_DEPENDS=
+PKGCONFIG_DEPENDS=glib
 
 #
 # PKGCONFIG_IPK_VERSION should be incremented when the ipk changes.
@@ -101,6 +101,7 @@ pkgconfig-source: $(DL_DIR)/$(PKGCONFIG_SOURCE) $(PKGCONFIG_PATCHES)
 
 
 $(PKGCONFIG_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(PKGCONFIG_SOURCE) make/pkgconfig.mk
+	$(MAKE) glib-host-stage
 	rm -rf $(HOST_BUILD_DIR)/$(PKGCONFIG_DIR) $(@D)
 	$(PKGCONFIG_UNZIP) $(DL_DIR)/$(PKGCONFIG_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
 	if test -n "$(PKGCONFIG_PATCHES)"; then \
@@ -139,6 +140,7 @@ pkgconfig-host-stage: $(PKGCONFIG_HOST_BUILD_DIR)/.staged
 # to Make causes it to override the default search paths of the compiler.
 #
 $(PKGCONFIG_BUILD_DIR)/.configured: $(DL_DIR)/$(PKGCONFIG_SOURCE) $(PKGCONFIG_PATCHES) make/pkgconfig.mk
+	$(MAKE) glib-stage
 	rm -rf $(BUILD_DIR)/$(PKGCONFIG_DIR) $(@D)
 	$(PKGCONFIG_UNZIP) $(DL_DIR)/$(PKGCONFIG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PKGCONFIG_PATCHES)"; then \
@@ -147,7 +149,7 @@ $(PKGCONFIG_BUILD_DIR)/.configured: $(DL_DIR)/$(PKGCONFIG_SOURCE) $(PKGCONFIG_PA
 	mv $(BUILD_DIR)/$(PKGCONFIG_DIR) $(@D)
 	sed -i -e '/AM_SILENT_RULES/s/^/dnl /' -e '/AM_INIT_AUTOMAKE/s/.*/AM_INIT_AUTOMAKE/' $(@D)/configure.ac $(@D)/glib/configure.ac
 	rm -f $(@D)/glib/aclocal.m4 $(@D)/aclocal.m4
-	touch $(@D)/glib/ChangeLog
+	touch $(@D)/glib/{ChangeLog,NEWS}
 	$(AUTORECONF1.10) -I. -vif $(@D)/glib
 	$(AUTORECONF1.10) -I. -vif $(@D)
 ifneq ($(HOSTCC), $(TARGET_CC))
