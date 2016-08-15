@@ -30,18 +30,13 @@ PLAYER_DESCRIPTION=Player provides a network interface to a variety of robot and
 Player''s client/server model allows robot control programs to be written in any programming language and to run on any computer with a network connection to the robot. Player supports multiple concurrent client connections to devices, creating new possibilities for distributed and collaborative sensing and control.
 PLAYER_SECTION=misc
 PLAYER_PRIORITY=optional
-PLAYER_DEPENDS=boost-thread, boost-system, libjpeg, openssl
-ifeq (gtk2, $(filter gtk2, $(PACKAGES)))
-PLAYER_SUGGESTS=gtk2
-else
-PLAYER_SUGGESTS=
-endif
+PLAYER_DEPENDS=boost-thread, boost-system, libjpeg, openssl, libtool, zlib
 PLAYER_CONFLICTS=
 
 #
 # PLAYER_IPK_VERSION should be incremented when the ipk changes.
 #
-PLAYER_IPK_VERSION?=13
+PLAYER_IPK_VERSION?=14
 
 #
 # PLAYER_CONFFILES should be a list of user-editable files
@@ -54,7 +49,9 @@ PLAYER_IPK_VERSION?=13
 PLAYER_PATCHES=\
 $(PLAYER_SOURCE_DIR)/server-Makefile.in.patch \
 $(PLAYER_SOURCE_DIR)/uint.patch \
-$(PLAYER_SOURCE_DIR)/garminnmea.cc.patch
+$(PLAYER_SOURCE_DIR)/garminnmea.cc.patch \
+$(PLAYER_SOURCE_DIR)/disable_gtk.patch \
+$(PLAYER_SOURCE_DIR)/disable_mesalib.patch
 
 #
 # If the compilation of the package requires additional
@@ -118,10 +115,7 @@ player-source: $(DL_DIR)/$(PLAYER_SOURCE) $(PLAYER_PATCHES)
 #
 $(PLAYER_BUILD_DIR)/.configured: $(DL_DIR)/$(PLAYER_SOURCE) $(PLAYER_PATCHES) make/player.mk
 	$(MAKE) libstdc++-stage \
-		boost-stage libjpeg-stage openssl-stage
-ifeq (gtk2, $(filter gtk2, $(PACKAGES)))
-	$(MAKE) gtk2-stage
-endif
+		boost-stage libjpeg-stage openssl-stage libtool-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(PLAYER_DIR) $(@D)
 	$(PLAYER_UNZIP) $(DL_DIR)/$(PLAYER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PLAYER_PATCHES)" ; \

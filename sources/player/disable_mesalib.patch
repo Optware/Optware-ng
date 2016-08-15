@@ -1,0 +1,32 @@
+--- configure.ac.orig
++++ configure.ac
+@@ -373,17 +373,19 @@
+              LIBS="$LIBS -ljpeg",
+              have_libjpeg=no)
+ AM_CONDITIONAL(INCLUDE_JPEG, test "x$have_libjpeg" = "xyes")
+-AC_CHECK_LIB(GL,glBegin,
+-             have_libGL=yes
+-             AC_DEFINE(HAVE_LIBGL, 1, [Define to 1 if you have the GL library (-lGL). ])
+-             LIBS="$LIBS -lGL",
+-             have_libGL=no)
++#AC_CHECK_LIB(GL,glBegin,
++#             have_libGL=yes
++#             AC_DEFINE(HAVE_LIBGL, 1, [Define to 1 if you have the GL library (-lGL). ])
++#             LIBS="$LIBS -lGL",
++#             have_libGL=no)
++have_libGL=no
+ AM_CONDITIONAL(INCLUDE_GL, test "x$have_libGL" = "xyes")
+-AC_CHECK_LIB(GLU,main,
+-             have_libGLU=yes
+-             AC_DEFINE(HAVE_LIBGLU, 1, [Define to 1 if you have the GLU library (-lGLU). ])
+-             LIBS="$LIBS -lGLU",
+-             have_libGLU=no)
++#AC_CHECK_LIB(GLU,main,
++#             have_libGLU=yes
++#             AC_DEFINE(HAVE_LIBGLU, 1, [Define to 1 if you have the GLU library (-lGLU). ])
++#             LIBS="$LIBS -lGLU",
++#             have_libGLU=no)
++have_libGLU=no
+ AM_CONDITIONAL(INCLUDE_GLU, test "x$have_libGLU" = "xyes")
+ AC_CHECK_LIB(glut,main,
+              have_libglut=yes

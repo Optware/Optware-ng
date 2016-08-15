@@ -1,0 +1,36 @@
+--- configure.ac.orig
++++ configure.ac
+@@ -256,29 +256,10 @@
+ dnl End of macros from acinclude.m4
+ dnl ************************************************************************
+ 
+-dnl Set up GTK/GNOME for the various GUIs
+-dnl we do it before configuring drivers in case they have GUI bits
+-dnl The logic is: only use pkg-config
+-if test "x$have_pkg_config" = "xno"; then
+-  AC_MSG_WARN([Can't locate GTK/GNOME without pkg-config.])
+-  AC_MSG_WARN([No GTK/GNOME-based GUIs will be built.])
+-  with_gtk=no
+-  with_gnomecanvas=no
+-  with_gdkpixbuf=no
+-else
+-  dnl pkg-config is available, so we use it.
+-  dnl check for libgnomecanvas and gtk, which some utils
+-  dnl (e.g., playernav, playervcr) need
+-  PKG_CHECK_MODULES(GNOMECANVAS, libgnomecanvas-2.0,
+-                    with_gnomecanvas=yes,
+-                    with_gnomecanvas=no)
+-  PKG_CHECK_MODULES(GTK, gtk+-2.0,
+-                    with_gtk=yes,
+-                    with_gtk=no)
+-  PKG_CHECK_MODULES(GDK_PIXBUF, gdk-pixbuf-2.0,
+-                    with_gdkpixbuf=yes,
+-                    with_gdkpixbuf=no)
+-fi
++dnl Disable GTK
++with_gnomecanvas=no
++with_gdkpixbuf=no
++
+ AM_CONDITIONAL(WITH_GNOMECANVAS, test "x$with_gnomecanvas" = "xyes")
+ AM_CONDITIONAL(WITH_GTK, test "x$with_gtk" = "xyes")
+ AM_CONDITIONAL(WITH_GDKPIXBUF, test "x$with_gdkpixbuf" = "xyes")
