@@ -39,7 +39,7 @@ LIBMEMCACHED_CONFLICTS=
 #
 # LIBMEMCACHED_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBMEMCACHED_IPK_VERSION=1
+LIBMEMCACHED_IPK_VERSION=2
 
 #
 # LIBMEMCACHED_CONFFILES should be a list of user-editable files
