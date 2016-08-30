@@ -42,7 +42,7 @@ ICU_CONFLICTS=
 #
 # ICU_IPK_VERSION should be incremented when the ipk changes.
 #
-ICU_IPK_VERSION=2
+ICU_IPK_VERSION=3
 
 #
 # ICU_CONFFILES should be a list of user-editable files
@@ -52,7 +52,8 @@ ICU_IPK_VERSION=2
 # ICU_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#ICU_PATCHES=$(ICU_SOURCE_DIR)/configure.patch
+ICU_PATCHES=\
+$(ICU_SOURCE_DIR)/link-icudata-as-data-only.patch
 
 #
 # If the compilation of the package requires additional
@@ -118,7 +119,7 @@ $(ICU_BUILD_DIR)/.configured: 	$(DL_DIR)/$(ICU_SOURCE) $(ICU_PATCHES) make/icu.m
 	$(ICU_UNZIP) $(DL_DIR)/$(ICU_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ICU_PATCHES)" ; \
 		then cat $(ICU_PATCHES) | \
-		$(PATCH) -d $(BUILD_DIR)/$(ICU_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(ICU_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(ICU_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(ICU_DIR) $(@D) ; \
