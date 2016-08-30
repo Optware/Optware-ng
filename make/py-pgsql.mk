@@ -30,14 +30,14 @@ PY-PGSQL_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-PGSQL_DESCRIPTION=A Python DB-API 2.0 compliant interface to PostgreSQL databases.
 PY-PGSQL_SECTION=misc
 PY-PGSQL_PRIORITY=optional
-PY24-PGSQL_DEPENDS=python24
-PY25-PGSQL_DEPENDS=python25
+PY24-PGSQL_DEPENDS=python24, postgresql
+PY25-PGSQL_DEPENDS=python25, postgresql
 PY-PGSQL_CONFLICTS=
 
 #
 # PY-PGSQL_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-PGSQL_IPK_VERSION=2
+PY-PGSQL_IPK_VERSION=3
 
 #
 # PY-PGSQL_CONFFILES should be a list of user-editable files

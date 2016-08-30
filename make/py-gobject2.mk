@@ -51,7 +51,7 @@ PY-GOBJECT2_DEV_CONFLICTS=
 #
 # PY-GOBJECT2_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-GOBJECT2_IPK_VERSION=3
+PY-GOBJECT2_IPK_VERSION=4
 
 #
 # PY-GOBJECT2_CONFFILES should be a list of user-editable files
@@ -297,7 +297,7 @@ $(PY3-GOBJECT2_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(PY-GOBJECT2_MAINTAINER)" >>$@
 	@echo "Source: $(PY-GOBJECT2_SITE)/$(PY-GOBJECT2_SOURCE)" >>$@
 	@echo "Description: $(PY-GOBJECT2_DESCRIPTION)" >>$@
-	@echo "Depends:" >>$@
+	@echo "Depends: $(PY3-GOBJECT2_DEPENDS)" >>$@
 	@echo "Suggests: $(PY3-GOBJECT2_SUGGESTS)" >>$@
 	@echo "Conflicts: $(PY3-GOBJECT2_CONFLICTS)" >>$@
 

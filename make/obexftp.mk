@@ -29,7 +29,7 @@ OBEXFTP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 OBEXFTP_DESCRIPTION=Transfer files to/from any OBEX enabled device (most likely mobiles).
 OBEXFTP_SECTION=net
 OBEXFTP_PRIORITY=optional
-OBEXFTP_DEPENDS=bluez-libs, openobex
+OBEXFTP_DEPENDS=bluez-libs, openobex, libusb
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 OBEXFTP_DEPENDS+=, libiconv
 endif
@@ -39,7 +39,7 @@ OBEXFTP_CONFLICTS=
 #
 # OBEXFTP_IPK_VERSION should be incremented when the ipk changes.
 #
-OBEXFTP_IPK_VERSION=1
+OBEXFTP_IPK_VERSION=2
 
 #
 # OBEXFTP_CONFFILES should be a list of user-editable files
@@ -112,9 +112,7 @@ obexftp-source: $(DL_DIR)/$(OBEXFTP_SOURCE) $(OBEXFTP_PATCHES)
 #		ac_cv_path_OPENOBEX_CONFIG=$(STAGING_PREFIX)/bin/openobex-config \
 #
 $(OBEXFTP_BUILD_DIR)/.configured: $(DL_DIR)/$(OBEXFTP_SOURCE) $(OBEXFTP_PATCHES) make/obexftp.mk
-	$(MAKE) bluez-libs-stage
-	$(MAKE) libopensync-stage
-	$(MAKE) openobex-stage
+	$(MAKE) bluez-libs-stage libopensync-stage openobex-stage libusb-stage
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
 endif

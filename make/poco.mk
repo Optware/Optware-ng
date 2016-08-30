@@ -29,14 +29,14 @@ POCO_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 POCO_DESCRIPTION=POCO C++ Libraries.
 POCO_SECTION=libs
 POCO_PRIORITY=optional
-POCO_DEPENDS=
+POCO_DEPENDS=libstdc++
 POCO_SUGGESTS=
 POCO_CONFLICTS=
 
 #
 # POCO_IPK_VERSION should be incremented when the ipk changes.
 #
-POCO_IPK_VERSION=2
+POCO_IPK_VERSION=3
 
 #
 # POCO_CONFFILES should be a list of user-editable files
@@ -54,7 +54,7 @@ POCO_IPK_VERSION=2
 # compilation or linking flags, then list them here.
 #
 POCO_CPPFLAGS=-fPIC
-POCO_LDFLAGS=-Wl,-rpath,$(TARGET_PREFIX)/lib
+POCO_LDFLAGS=
 
 #
 # POCO_BUILD_DIR is the directory in which the build is done.

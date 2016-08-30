@@ -35,12 +35,12 @@ POSTGRESQL_MAINTAINER=Brian Zhou <bzhou@users.sf.net>
 POSTGRESQL_DESCRIPTION=PostgreSQL is a highly-scalable, SQL compliant, open source object-relational database management system
 POSTGRESQL_SECTION=misc
 POSTGRESQL_PRIORITY=optional
-POSTGRESQL_DEPENDS=readline, coreutils, openssl
+POSTGRESQL_DEPENDS=readline, coreutils, openssl, zlib
 
 #
 # POSTGRESQL_IPK_VERSION should be incremented when the ipk changes.
 #
-POSTGRESQL_IPK_VERSION=3
+POSTGRESQL_IPK_VERSION=4
 
 #
 # POSTGRESQL_CONFFILES should be a list of user-editable files
@@ -116,7 +116,7 @@ postgresql-source: $(DL_DIR)/$(POSTGRESQL_SOURCE) $(POSTGRESQL_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(POSTGRESQL_BUILD_DIR)/.configured: $(DL_DIR)/$(POSTGRESQL_SOURCE) $(POSTGRESQL_PATCHES) make/postgresql.mk
-	$(MAKE) readline-stage zlib-stage openssl-stage
+	$(MAKE) readline-stage zlib-stage openssl-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(POSTGRESQL_DIR) $(@D)
 	$(POSTGRESQL_UNZIP) $(DL_DIR)/$(POSTGRESQL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(POSTGRESQL_PATCHES)" ; then \

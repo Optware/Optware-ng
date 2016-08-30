@@ -35,14 +35,14 @@ NTFS-3G_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 NTFS-3G_DESCRIPTION=ntfs-3g - Third Generation Read/Write NTFS Driver.
 NTFS-3G_SECTION=admin
 NTFS-3G_PRIORITY=optional
-NTFS-3G_DEPENDS=
-NTFS-3G_SUGGESTS=kernel-module-fuse
+NTFS-3G_DEPENDS=e2fslibs
+NTFS-3G_SUGGESTS=
 NTFS-3G_CONFLICTS=
 
 #
 # NTFS-3G_IPK_VERSION should be incremented when the ipk changes.
 #
-NTFS-3G_IPK_VERSION=1
+NTFS-3G_IPK_VERSION=2
 
 #
 # NTFS-3G_CONFFILES should be a list of user-editable files
@@ -111,6 +111,7 @@ ntfs-3g-source: $(DL_DIR)/$(NTFS-3G_SOURCE) $(NTFS-3G_PATCHES)
 # shown below to make various patches to it.
 #
 $(NTFS-3G_BUILD_DIR)/.configured: $(DL_DIR)/$(NTFS-3G_SOURCE) $(NTFS-3G_PATCHES) make/ntfs-3g.mk
+	$(MAKE) e2fslibs-stage
 	rm -rf $(BUILD_DIR)/$(NTFS-3G_DIR) $(@D)
 	$(NTFS-3G_UNZIP) $(DL_DIR)/$(NTFS-3G_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NTFS-3G_PATCHES)" ; \

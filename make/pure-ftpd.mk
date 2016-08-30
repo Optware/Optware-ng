@@ -29,14 +29,14 @@ PURE-FTPD_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PURE-FTPD_DESCRIPTION=A free (BSD), secure, production-quality and standard-conformant FTP server.
 PURE-FTPD_SECTION=net
 PURE-FTPD_PRIORITY=optional
-PURE-FTPD_DEPENDS=openssl
+PURE-FTPD_DEPENDS=openssl, libcap
 PURE-FTPD_SUGGESTS=
 PURE-FTPD_CONFLICTS=
 
 #
 # PURE-FTPD_IPK_VERSION should be incremented when the ipk changes.
 #
-PURE-FTPD_IPK_VERSION=2
+PURE-FTPD_IPK_VERSION=3
 
 #
 # PURE-FTPD_CONFFILES should be a list of user-editable files
@@ -105,7 +105,7 @@ pure-ftpd-source: $(DL_DIR)/$(PURE-FTPD_SOURCE) $(PURE-FTPD_PATCHES)
 # shown below to make various patches to it.
 #
 $(PURE-FTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(PURE-FTPD_SOURCE) $(PURE-FTPD_PATCHES) make/pure-ftpd.mk
-	$(MAKE) openssl-stage
+	$(MAKE) openssl-stage libcap-stage
 	rm -rf $(BUILD_DIR)/$(PURE-FTPD_DIR) $(@D)
 	$(PURE-FTPD_UNZIP) $(DL_DIR)/$(PURE-FTPD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PURE-FTPD_PATCHES)" ; \

@@ -17,13 +17,16 @@ PHP_APACHE_DESCRIPTION=The php scripting language, built as an apache module
 PHP_APACHE_SECTION=net
 PHP_APACHE_PRIORITY=optional
 PHP_APACHE_DEPENDS=apache, php, libxml2, sqlite
+ifeq (openldap, $(filter openldap, $(PACKAGES)))
+PHP_APACHE_DEPENDS+=, cyrus-sasl-libs
+endif
 
 PHP_APACHE_VERSION:=$(shell sed -n -e 's/^PHP_VERSION *=//p' make/php.mk)
 
 #
 # PHP_APACHE_IPK_VERSION should be incremented when the ipk changes.
 #
-PHP_APACHE_IPK_VERSION=2
+PHP_APACHE_IPK_VERSION=3
 
 #
 # PHP_APACHE_CONFFILES should be a list of user-editable files

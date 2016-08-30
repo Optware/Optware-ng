@@ -48,7 +48,7 @@ OPENJDK7_JRE_HEADLESS_DEPENDS=libstdc++, freetype, fontconfig, libffi, glib, lib
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 OPENJDK7_JRE_HEADLESS_DEPENDS+=, libiconv
 endif
-OPENJDK7_JRE_DEPENDS=openjdk7-jre-headless, x11, xinerama, xrender, libxcomposite, gtk2, alsa-lib
+OPENJDK7_JRE_DEPENDS=openjdk7-jre-headless, x11, xinerama, xrender, libxcomposite, gtk2, alsa-lib, xi, xtst
 OPENJDK7_JDK_DEPENDS=openjdk7-jre
 
 OPENJDK7_JRE_HEADLESS_SUGGESTS=
@@ -63,7 +63,7 @@ OPENJDK7_JDK_CONFLICTS=
 #
 # OPENJDK7_IPK_VERSION should be incremented when the ipk changes.
 #
-OPENJDK7_IPK_VERSION=4
+OPENJDK7_IPK_VERSION=5
 
 #
 # OPENJDK7_JRE_HEADLESS_CONFFILES should be a list of user-editable files
@@ -334,7 +334,7 @@ openjdk7-source: $(OPENJDK7_SOURCES) $(OPENJDK7_PATCHES)
 $(OPENJDK7_BUILD_DIR)/.configured: $(OPENJDK7_SOURCES) $(OPENJDK7_PATCHES) \
 		$(OPENJDK7_OPENJDK_PATCHES) make/openjdk7.mk
 	$(MAKE) libstdc++-stage freetype-stage x11-stage xinerama-stage xrender-stage libxcomposite-stage libffi-stage cups-stage \
-		gtk2-stage glib-stage fontconfig-stage alsa-lib-stage jre-cacerts
+		gtk2-stage glib-stage fontconfig-stage alsa-lib-stage jre-cacerts xi-stage xtst-stage
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
 endif

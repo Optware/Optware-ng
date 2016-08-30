@@ -32,7 +32,7 @@ VLC_VERSION=2.1.5
 VLC_UNZIP=xzcat
 VLC_SOURCE_SUFFIX=tar.xz
 endif
-VLC_IPK_VERSION=2
+VLC_IPK_VERSION=3
 VLC_SITE=http://download.videolan.org/pub/videolan/vlc/$(VLC_VERSION)
 VLC_SOURCE=vlc-$(VLC_VERSION).$(VLC_SOURCE_SUFFIX)
 VLC_DIR=vlc-$(VLC_VERSION)
@@ -40,7 +40,7 @@ VLC_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 VLC_DESCRIPTION=VLC is a cross-platform media player and streaming server.
 VLC_SECTION=video
 VLC_PRIORITY=optional
-VLC_DEPENDS=dbus, libidn, gnutls
+VLC_DEPENDS=libstdc++, dbus, libidn, gnutls
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 VLC_DEPENDS+=, libiconv
 endif
@@ -51,6 +51,7 @@ flac, \
 freetype, \
 fribidi, \
 liba52, \
+libass, \
 libdvbpsi, \
 libdvdnav, \
 libdvdread, \
@@ -62,6 +63,7 @@ libmpeg2, \
 libogg, \
 libpng, \
 libshout, \
+libudev, \
 libupnp, \
 libvorbis, \
 libxml2, \
@@ -69,6 +71,9 @@ lua, \
 mkvtoolnix, \
 ncursesw, \
 speex
+ifeq (harfbuzz, $(filter harfbuzz, $(PACKAGES)))
+VLC_SUGGESTS+=, harfbuzz
+endif
 ifeq (avahi, $(filter avahi, $(PACKAGES)))
 VLC_SUGGESTS+=, avahi
 endif
@@ -222,7 +227,11 @@ endif
 	ncurses-stage ncursesw-stage \
 	speex-stage \
 	lua-stage lua-host-stage \
-	libgcrypt-stage mkvtoolnix-stage
+	libgcrypt-stage mkvtoolnix-stage \
+	udev-stage libass-stage
+ifeq (harfbuzz, $(filter harfbuzz, $(PACKAGES)))
+	$(MAKE) harfbuzz-stage
+endif
 ifeq (x264, $(filter x264, $(PACKAGES)))
 	$(MAKE) x264-stage
 endif

@@ -30,14 +30,14 @@ PY-PYGRESQL_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-PYGRESQL_DESCRIPTION=Python module that interfaces to a PostgreSQL database.
 PY-PYGRESQL_SECTION=misc
 PY-PYGRESQL_PRIORITY=optional
-PY24-PYGRESQL_DEPENDS=python24, py24-mx-base
-PY25-PYGRESQL_DEPENDS=python25, py25-mx-base
+PY24-PYGRESQL_DEPENDS=python24, py24-mx-base, postgresql
+PY25-PYGRESQL_DEPENDS=python25, py25-mx-base, postgresql
 PY-PYGRESQL_CONFLICTS=
 
 #
 # PY-PYGRESQL_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-PYGRESQL_IPK_VERSION=3
+PY-PYGRESQL_IPK_VERSION=4
 
 #
 # PY-PYGRESQL_CONFFILES should be a list of user-editable files

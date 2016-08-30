@@ -30,13 +30,13 @@ OPEN2300_DESCRIPTION=Open2300 is a package of software tools that reads (and wri
 OPEN2300_SECTION=misc
 OPEN2300_PRIORITY=optional
 OPEN2300_DEPENDS=
-OPEN2300_SUGGESTS=
+OPEN2300_SUGGESTS=mysql, postgresql
 OPEN2300_CONFLICTS=
 
 #
 # OPEN2300_IPK_VERSION should be incremented when the ipk changes.
 #
-OPEN2300_IPK_VERSION=1
+OPEN2300_IPK_VERSION=2
 
 #
 # OPEN2300_CONFFILES should be a list of user-editable files

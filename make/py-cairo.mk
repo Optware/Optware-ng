@@ -53,7 +53,7 @@ PY2-CAIRO_DEV_CONFLICTS=
 #
 # PY-CAIRO_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-CAIRO_IPK_VERSION=3
+PY-CAIRO_IPK_VERSION=4
 
 #
 # PY-CAIRO_CONFFILES should be a list of user-editable files
@@ -313,7 +313,7 @@ $(PY3-CAIRO_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(PY-CAIRO_MAINTAINER)" >>$@
 	@echo "Source: $(PY-CAIRO_SITE)/$(PY-CAIRO_SOURCE3)" >>$@
 	@echo "Description: $(PY-CAIRO_DESCRIPTION)" >>$@
-	@echo "Depends:" >>$@
+	@echo "Depends: $(PY3-CAIRO_DEPENDS)" >>$@
 	@echo "Suggests: $(PY3-CAIRO_SUGGESTS)" >>$@
 	@echo "Conflicts: $(PY3-CAIRO_CONFLICTS)" >>$@
 

@@ -17,7 +17,7 @@ PWGEN_PRIORITY=optional
 #
 # PWGEN_IPK_VERSION should be incremented when the ipk changes.
 #
-PWGEN_IPK_VERSION=1
+PWGEN_IPK_VERSION=2
 
 #
 # PWGEN_CONFFILES should be a list of user-editable files
@@ -126,6 +126,7 @@ $(PWGEN_IPK_DIR)/CONTROL/control:
 	@echo "Priority: $(PWGEN_PRIORITY)" >>$@
 	@echo "Section: $(PWGEN_SECTION)" >>$@
 	@echo "Version: $(PWGEN_VERSION)-$(PWGEN_IPK_VERSION)" >>$@
+	@echo "Depends: $(PWGEN_DEPENDS)" >>@
 	@echo "Maintainer: $(PWGEN_MAINTAINER)" >>$@
 	@echo "Source: $(PWGEN_SITE)/$(PWGEN_SOURCE)" >>$@
 	@echo "Description: $(PWGEN_DESCRIPTION)" >>$@

@@ -30,14 +30,14 @@ PY-MYSQL_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-MYSQL_DESCRIPTION=MySQL support for Python.
 PY-MYSQL_SECTION=misc
 PY-MYSQL_PRIORITY=optional
-PY25-MYSQL_DEPENDS=python25
-PY26-MYSQL_DEPENDS=python26
+PY25-MYSQL_DEPENDS=python25, mysql
+PY26-MYSQL_DEPENDS=python26, mysql
 PY-MYSQL_CONFLICTS=
 
 #
 # PY-MYSQL_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-MYSQL_IPK_VERSION=3
+PY-MYSQL_IPK_VERSION=4
 
 #
 # PY-MYSQL_CONFFILES should be a list of user-editable files

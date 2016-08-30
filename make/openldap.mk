@@ -28,13 +28,13 @@ OPENLDAP_MAINTAINER=Joerg Berg <caplink@gmx.net>
 OPENLDAP_DESCRIPTION=Open Lightweight Directory Access Protocol
 OPENLDAP_SECTION=net
 OPENLDAP_PRIORITY=optional
-OPENLDAP_DEPENDS=openssl, libdb, gdbm, cyrus-sasl-libs, psmisc
+OPENLDAP_DEPENDS=openssl, libdb, gdbm, cyrus-sasl-libs, psmisc, icu
 OPENLDAP_CONFLICTS=
 
 #
 # OPENLDAP_IPK_VERSION should be incremented when the ipk changes.
 #
-OPENLDAP_IPK_VERSION=2
+OPENLDAP_IPK_VERSION=3
 
 #
 # OPENLDAP_CONFFILES should be a list of user-editable files
@@ -110,7 +110,7 @@ openldap-source: $(DL_DIR)/$(OPENLDAP_SOURCE) $(OPENLDAP_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(OPENLDAP_BUILD_DIR)/.configured: $(DL_DIR)/$(OPENLDAP_SOURCE) $(OPENLDAP_PATCHES) make/openldap.mk
-	$(MAKE) libdb-stage openssl-stage gdbm-stage cyrus-sasl-stage
+	$(MAKE) libdb-stage openssl-stage gdbm-stage cyrus-sasl-stage icu-stage
 	rm -rf $(BUILD_DIR)/$(OPENLDAP_DIR) $(@D)
 	$(OPENLDAP_UNZIP) $(DL_DIR)/$(OPENLDAP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(OPENLDAP_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(OPENLDAP_DIR) -p1

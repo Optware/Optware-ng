@@ -51,7 +51,7 @@ OPENJDK8_JRE_HEADLESS_DEPENDS=libstdc++, freetype, libffi
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 OPENJDK8_JRE_HEADLESS_DEPENDS+=, libiconv
 endif
-OPENJDK8_JRE_DEPENDS=openjdk8-jre-headless, x11
+OPENJDK8_JRE_DEPENDS=openjdk8-jre-headless, x11, alsa-lib, xext, xi, xrender, xtst
 OPENJDK8_JDK_DEPENDS=openjdk8-jre, x11
 
 OPENJDK8_JRE_HEADLESS_SUGGESTS=
@@ -66,7 +66,7 @@ OPENJDK8_JDK_CONFLICTS=
 #
 # OPENJDK8_IPK_VERSION should be incremented when the ipk changes.
 #
-OPENJDK8_IPK_VERSION=1
+OPENJDK8_IPK_VERSION=2
 
 #
 # OPENJDK8_JRE_HEADLESS_CONFFILES should be a list of user-editable files
@@ -271,7 +271,7 @@ openjdk8-source: $(OPENJDK8_SOURCES) $(OPENJDK8_PATCHES)
 $(OPENJDK8_BUILD_DIR)/.configured: $(OPENJDK8_SOURCES) $(OPENJDK8_PATCHES) \
 		$(OPENJDK8_JAMVM_PATCHES) $(OPENJDK8_OPENJDK_PATCHES) make/openjdk8.mk
 	$(MAKE) libstdc++-stage freetype-stage x11-stage autoconf-host-stage libffi-stage \
-		jre-cacerts
+		jre-cacerts alsa-lib-stage xext-stage xi-stage xrender-stage xtst-stage
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
 endif

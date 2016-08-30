@@ -19,14 +19,14 @@ NTFSPROGS_MAINTAINER=Marcel Nijenhof <nslu2@pion.xs4all.nl>
 NTFSPROGS_DESCRIPTION=NTFS filesystem libraries and utilities
 NTFSPROGS_SECTION=admin
 NTFSPROGS_PRIORITY=optional
-NTFSPROGS_DEPENDS=
+NTFSPROGS_DEPENDS=e2fslibs
 NTFSPROGS_SUGGESTS=
 NTFSPROGS_CONFLICTS=
 
 #
 # NTFSPROGS_IPK_VERSION should be incremented when the ipk changes.
 #
-NTFSPROGS_IPK_VERSION=1
+NTFSPROGS_IPK_VERSION=2
 
 #
 # NTFSPROGS_CONFFILES should be a list of user-editable files
@@ -92,7 +92,7 @@ ntfsprogs-source: $(DL_DIR)/$(NTFSPROGS_SOURCE) $(NTFSPROGS_PATCHES)
 # shown below to make various patches to it.
 #
 $(NTFSPROGS_BUILD_DIR)/.configured: $(DL_DIR)/$(NTFSPROGS_SOURCE) $(NTFSPROGS_PATCHES) make/ntfsprogs.mk
-#	$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) e2fslibs-stage
 	rm -rf $(BUILD_DIR)/$(NTFSPROGS_DIR) $(NTFSPROGS_BUILD_DIR)
 	$(NTFSPROGS_UNZIP) $(DL_DIR)/$(NTFSPROGS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NTFSPROGS_PATCHES)" ; \

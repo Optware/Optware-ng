@@ -29,14 +29,14 @@ NODE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 NODE_DESCRIPTION=Node.js is a platform built on Chrome's JavaScript runtime.
 NODE_SECTION=lang
 NODE_PRIORITY=optional
-NODE_DEPENDS=libuv, icu, openssl
+NODE_DEPENDS=libstdc++, libuv, icu, openssl, zlib
 NODE_SUGGESTS=
 NODE_CONFLICTS=
 
 #
 # NODE_IPK_VERSION should be incremented when the ipk changes.
 #
-NODE_IPK_VERSION=2
+NODE_IPK_VERSION=3
 
 #
 # NODE_CONFFILES should be a list of user-editable files
@@ -136,7 +136,7 @@ node-source: $(DL_DIR)/$(NODE_SOURCE) $(NODE_PATCHES)
 # shown below to make various patches to it.
 #
 $(NODE_BUILD_DIR)/.configured: $(DL_DIR)/$(NODE_SOURCE) $(NODE_PATCHES) make/node.mk
-	$(MAKE) libuv-stage icu-stage openssl-stage python27-host-stage
+	$(MAKE) libuv-stage icu-stage openssl-stage python27-host-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(NODE_DIR) $(@D)
 	$(NODE_UNZIP) $(DL_DIR)/$(NODE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NODE_PATCHES)" ; \

@@ -29,14 +29,14 @@ PRIVOXY_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PRIVOXY_DESCRIPTION=A Web proxy based on Internet Junkbuster.
 PRIVOXY_SECTION=net
 PRIVOXY_PRIORITY=optional
-PRIVOXY_DEPENDS=
+PRIVOXY_DEPENDS=zlib
 PRIVOXY_SUGGESTS=
 PRIVOXY_CONFLICTS=
 
 #
 # PRIVOXY_IPK_VERSION should be incremented when the ipk changes.
 #
-PRIVOXY_IPK_VERSION=2
+PRIVOXY_IPK_VERSION=3
 
 #
 # PRIVOXY_CONFFILES should be a list of user-editable files
@@ -109,7 +109,7 @@ privoxy-source: $(DL_DIR)/$(PRIVOXY_SOURCE) $(PRIVOXY_PATCHES)
 # shown below to make various patches to it.
 #
 $(PRIVOXY_BUILD_DIR)/.configured: $(DL_DIR)/$(PRIVOXY_SOURCE) $(PRIVOXY_PATCHES) make/privoxy.mk
-#	$(MAKE) pcre-stage
+	$(MAKE) zlib-stage
 	rm -rf $(BUILD_DIR)/$(PRIVOXY_DIR) $(@D)
 	$(PRIVOXY_UNZIP) $(DL_DIR)/$(PRIVOXY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PRIVOXY_PATCHES)" ; \

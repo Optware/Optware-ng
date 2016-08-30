@@ -35,14 +35,14 @@ TSHARK_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 TSHARK_DESCRIPTION=Terminal based wireshark to dump and analyze network traffic
 TSHARK_SECTION=net
 TSHARK_PRIORITY=optional
-TSHARK_DEPENDS=c-ares, glib, libpcap, pcre, zlib, gnutls, geoip, libgcrypt, libpcap, lua
+TSHARK_DEPENDS=c-ares, glib, libcap, pcre, zlib, gnutls, geoip, libgcrypt, libpcap, lua
 TSHARK_SUGGESTS=
 TSHARK_CONFLICTS=
 
 #
 # TSHARK_IPK_VERSION should be incremented when the ipk changes.
 #
-TSHARK_IPK_VERSION ?= 3
+TSHARK_IPK_VERSION ?= 4
 
 #
 # TSHARK_CONFFILES should be a list of user-editable files

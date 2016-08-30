@@ -21,7 +21,7 @@
 #
 TAR_SITE=http://ftp.gnu.org/gnu/tar
 TAR_VERSION ?= 1.29
-TAR_IPK_VERSION ?= 1
+TAR_IPK_VERSION ?= 2
 TAR_SOURCE=tar-$(TAR_VERSION).tar.bz2
 TAR_DIR=tar-$(TAR_VERSION)
 TAR_UNZIP=bzcat
@@ -29,8 +29,8 @@ TAR_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 TAR_DESCRIPTION=heavyweight version of the Tape ARchiver
 TAR_SECTION=util
 TAR_PRIORITY=optional
-TAR_DEPENDS=
-TAR_SUGGESTS=bzip2, gzip, xz-utils, libacl
+TAR_DEPENDS=libacl
+TAR_SUGGESTS=bzip2, gzip, xz-utils
 TAR_CONFLICTS=
 
 

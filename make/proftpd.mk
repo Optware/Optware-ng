@@ -32,7 +32,7 @@ PROFTPD_UNZIP=bzcat
 #
 # PROFTPD_IPK_VERSION should be incremented when the ipk changes.
 #
-PROFTPD_IPK_VERSION=2
+PROFTPD_IPK_VERSION=3
 
 #
 # Control file info
@@ -42,7 +42,7 @@ PROFTPD_DESCRIPTION=Highly configurable FTP server with SSL-TLS
 PROFTPD_SECTION=net
 PROFTPD_PRIORITY=optional
 PROFTPD_CONFLICTS=
-PROFTPD_DEPENDS=openssl, psmisc
+PROFTPD_DEPENDS=libcap, zlib, openssl, psmisc
 
 #
 # PROFTPD_CONFFILES should be a list of user-editable files
@@ -141,7 +141,7 @@ proftpd-source: $(DL_DIR)/$(PROFTPD_SOURCE) $(PROFTPD_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(PROFTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(PROFTPD_SOURCE) $(PROFTPD_PATCHES) make/proftpd.mk
-	$(MAKE) openssl-stage
+	$(MAKE) openssl-stage libcap-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(PROFTPD_DIR) $(PROFTPD_BUILD_DIR)
 	$(PROFTPD_UNZIP) $(DL_DIR)/$(PROFTPD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(PROFTPD_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PROFTPD_DIR) -p1

@@ -29,14 +29,17 @@ OPENDCHUB_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 OPENDCHUB_DESCRIPTION=Open DC hub is a Unix/Linux version of the hub software for the Direct Connect network.
 OPENDCHUB_SECTION=net
 OPENDCHUB_PRIORITY=optional
-OPENDCHUB_DEPENDS=$(filter perl, $(PACKAGES))
+OPENDCHUB_DEPENDS=openssl
+ifeq ($(filter perl, $(PACKAGES)), perl)
+OPENDCHUB_DEPENDS+=, perl
+endif
 OPENDCHUB_SUGGESTS=
 OPENDCHUB_CONFLICTS=
 
 #
 # OPENDCHUB_IPK_VERSION should be incremented when the ipk changes.
 #
-OPENDCHUB_IPK_VERSION=3
+OPENDCHUB_IPK_VERSION=4
 
 #
 # OPENDCHUB_CONFFILES should be a list of user-editable files
@@ -110,6 +113,7 @@ opendchub-source: $(DL_DIR)/$(OPENDCHUB_SOURCE) $(OPENDCHUB_PATCHES)
 # shown below to make various patches to it.
 #
 $(OPENDCHUB_BUILD_DIR)/.configured: $(DL_DIR)/$(OPENDCHUB_SOURCE) $(OPENDCHUB_PATCHES) make/opendchub.mk
+	$(MAKE) openssl-stage
 ifeq (perl, $(filter perl, $(PACKAGES)))
 	$(MAKE) perl-stage
 endif

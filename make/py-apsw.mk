@@ -30,14 +30,14 @@ PY-APSW_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-APSW_DESCRIPTION=Another Python SQLite Wrapper.
 PY-APSW_SECTION=misc
 PY-APSW_PRIORITY=optional
-PY24-APSW_DEPENDS=python24
-PY25-APSW_DEPENDS=python25
+PY24-APSW_DEPENDS=python24, sqlite
+PY25-APSW_DEPENDS=python25, sqlite
 PY-APSW_CONFLICTS=
 
 #
 # PY-APSW_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-APSW_IPK_VERSION=2
+PY-APSW_IPK_VERSION=3
 
 #
 # PY-APSW_CONFFILES should be a list of user-editable files

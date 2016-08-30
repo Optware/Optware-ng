@@ -35,14 +35,14 @@ NVI_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 NVI_DESCRIPTION=The original Berkeley Vi.
 NVI_SECTION=editor
 NVI_PRIORITY=optional
-NVI_DEPENDS=
+NVI_DEPENDS=ncurses
 NVI_SUGGESTS=
 NVI_CONFLICTS=
 
 #
 # NVI_IPK_VERSION should be incremented when the ipk changes.
 #
-NVI_IPK_VERSION=2
+NVI_IPK_VERSION=3
 
 #
 # NVI_CONFFILES should be a list of user-editable files

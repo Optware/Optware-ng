@@ -29,14 +29,14 @@ OPENOBEX_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 OPENOBEX_DESCRIPTION=Free open source implementation of the Object Exchange (OBEX) protocol.
 OPENOBEX_SECTION=net
 OPENOBEX_PRIORITY=optional
-OPENOBEX_DEPENDS=
+OPENOBEX_DEPENDS=libusb
 OPENOBEX_SUGGESTS=
 OPENOBEX_CONFLICTS=
 
 #
 # OPENOBEX_IPK_VERSION should be incremented when the ipk changes.
 #
-OPENOBEX_IPK_VERSION=1
+OPENOBEX_IPK_VERSION=2
 
 #
 # OPENOBEX_CONFFILES should be a list of user-editable files
@@ -105,7 +105,7 @@ openobex-source: $(DL_DIR)/$(OPENOBEX_SOURCE) $(OPENOBEX_PATCHES)
 # shown below to make various patches to it.
 #
 $(OPENOBEX_BUILD_DIR)/.configured: $(DL_DIR)/$(OPENOBEX_SOURCE) $(OPENOBEX_PATCHES) make/openobex.mk
-#	$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) libusb-stage
 	rm -rf $(BUILD_DIR)/$(OPENOBEX_DIR) $(OPENOBEX_BUILD_DIR)
 	$(OPENOBEX_UNZIP) $(DL_DIR)/$(OPENOBEX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(OPENOBEX_PATCHES)" ; \

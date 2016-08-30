@@ -30,14 +30,14 @@ PY-PSYCOPG_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PY-PSYCOPG_DESCRIPTION=psycopg is a PostgreSQL database adapter for the Python programming language.
 PY-PSYCOPG_SECTION=misc
 PY-PSYCOPG_PRIORITY=optional
-PY24-PSYCOPG_DEPENDS=python24, py24-mx-base
-PY25-PSYCOPG_DEPENDS=python25, py25-mx-base
+PY24-PSYCOPG_DEPENDS=python24, py24-mx-base, postgresql
+PY25-PSYCOPG_DEPENDS=python25, py25-mx-base, postgresql
 PY-PSYCOPG_CONFLICTS=
 
 #
 # PY-PSYCOPG_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-PSYCOPG_IPK_VERSION=7
+PY-PSYCOPG_IPK_VERSION=8
 
 #
 # PY-PSYCOPG_CONFFILES should be a list of user-editable files
