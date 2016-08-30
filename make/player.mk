@@ -214,8 +214,9 @@ $(PLAYER_IPK_DIR)/CONTROL/control:
 #
 $(PLAYER_IPK): $(PLAYER_BUILD_DIR)/.built
 	rm -rf $(PLAYER_IPK_DIR) $(BUILD_DIR)/player_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(PLAYER_BUILD_DIR) DESTDIR=$(PLAYER_IPK_DIR) install-strip
+	$(MAKE) -C $(PLAYER_BUILD_DIR) DESTDIR=$(PLAYER_IPK_DIR) install
 	rm -f $(PLAYER_IPK_DIR)$(TARGET_PREFIX)/lib/libplayer*.la
+	-$(STRIP_COMMAND) $(PLAYER_IPK_DIR)$(TARGET_PREFIX)/{bin/*,lib/*.so*,share/player/examples/*/*,share/player/examples/plugins/*/*} 2>/dev/null
 #	$(INSTALL) -d $(PLAYER_IPK_DIR)$(TARGET_PREFIX)/etc/
 #	$(INSTALL) -m 644 $(PLAYER_SOURCE_DIR)/player.conf $(PLAYER_IPK_DIR)$(TARGET_PREFIX)/etc/player.conf
 #	$(INSTALL) -d $(PLAYER_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
