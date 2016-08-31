@@ -33,7 +33,7 @@ LIBCUPSMIME_DESCRIPTION=Common Unix Printing System - MIME library
 LIBCUPSPPDC_DESCRIPTION=Common Unix Printing System - PPDC library
 CUPS_SECTION=net
 CUPS_PRIORITY=optional
-LIBCUPS_DEPENDS=zlib
+LIBCUPS_DEPENDS=zlib, avahi
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 LIBCUPS_DEPENDS+=, libiconv
 endif
@@ -44,7 +44,7 @@ LIBCUPSCGI_DEPENDS=libcups
 LIBCUPSIMAGE_DEPENDS=libcups
 LIBCUPSMIME_DEPENDS=libcups
 LIBCUPSPPDC_DEPENDS=libcups, libstdc++
-CUPS_DEPENDS=libcups, libcupscgi, libcupsimage, libcupsmime, libcupsppdc, libjpeg, libpng, libpam, libtiff, openssl, psmisc, libusb1, dbus
+CUPS_DEPENDS=libcups, libcupscgi, libcupsimage, libcupsmime, libcupsppdc, libjpeg, libpng, libpam, libtiff, openssl, psmisc, libusb1, dbus, libacl
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
 CUPS_DEPENDS+=, openldap-libs
 endif
@@ -55,7 +55,7 @@ CUPS_CONFLICTS=
 #
 # CUPS_IPK_VERSION should be incremented when the ipk changes.
 #
-CUPS_IPK_VERSION=2
+CUPS_IPK_VERSION=3
 
 CUPS_DOC_DESCRIPTION=Common Unix Printing System documentation.
 CUPS-DEV_DESCRIPTION=Development files for CUPS
@@ -219,7 +219,7 @@ cups-host-stage: $(CUPS_HOST_BUILD_DIR)/.staged
 $(CUPS_BUILD_DIR)/.configured: $(CUPS_HOST_BUILD_DIR)/.built $(DL_DIR)/$(CUPS_SOURCE) $(CUPS_PATCHES) make/cups.mk
 	$(MAKE) openssl-stage zlib-stage libpng-stage \
 		libjpeg-stage libtiff-stage libpam-stage \
-		libusb1-stage dbus-stage libstdc++-stage
+		libusb1-stage dbus-stage libstdc++-stage avahi-stage libacl-stage
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
 	$(MAKE) openldap-stage
 endif
