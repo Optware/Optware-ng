@@ -1,0 +1,37 @@
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -10,33 +10,17 @@
+ ENDIF(NOT CMAKE_CONFIGURATION_TYPES AND NOT CMAKE_BUILD_TYPE)
+ 
+ # Select flags.
+-SET(CMAKE_C_FLAGS "-pipe -W -Wall -DFORTIFY_SOURCE=2")
+ SET(CMAKE_C_FLAGS_RELWITHDEBINFO "-O2 -g")
+ SET(CMAKE_C_FLAGS_RELEASE "-O2")
+ SET(CMAKE_C_FLAGS_DEBUG "-O0 -g -DDEBUG")
+ 
+-if (UNIX AND APPLE)
+-  include_directories("/usr/local/include/osxfuse/fuse")
+-endif()
+-
+ add_definitions(-D_FILE_OFFSET_BITS=64 -DFUSE_USE_VERSION=26)
+ 
+ option(WITH_XATTR "Enable support for extended attributes" OFF)
+ 
+ # .h include files
+ IF (WITH_XATTR)
+-	CHECK_INCLUDE_FILES("sys/xattr.h" HAVE_LIBC_XATTR)
+-	CHECK_INCLUDE_FILES("attr/xattr.h" HAVE_LIBATTR_XATTR)
+-
+-	IF (HAVE_LIBC_XATTR)
+-		add_definitions(-DLIBC_XATTR)
+-	ELSEIF(HAVE_LIBATTR_XATTR)
+-		add_definitions(-DLIBATTR_XATTR)
+-	ENDIF()
+-
+-	IF (NOT HAVE_LIBC_XATTR AND NOT HAVE_LIBATTR_XATTR)
+-		add_definitions(-DDISABLE_XATTR)
+-	ENDIF()
++	add_definitions(-DLIBATTR_XATTR)
+ ELSE (WITH_XATTR)
+ 	add_definitions(-DDISABLE_XATTR)
+ ENDIF (WITH_XATTR)

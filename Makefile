@@ -403,7 +403,7 @@ COMMON_PACKAGES = \
 	transmission \
 	transmissiond transmissiondcfp tre tree trickle \
 	tshark tsocks ttf-bitstream-vera tz tzwatch \
-	ucl udev udns udpxy uemacs ulogd unarj uncia unfs3 units unixodbc \
+	ucl udev udns udpxy uemacs ulogd unarj uncia unfs3 unionfs-fuse units unixodbc \
 	unrar unrtf \
 	unzip up-imapproxy updatedd upslug2 \
 	upx usbutils ushare utelnetd utf8proc util-linux \
