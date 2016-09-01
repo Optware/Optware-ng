@@ -6,6 +6,9 @@ SPECIFIC_PACKAGES = \
 # libexplain: kernel-related issues
 # node: linux/auxvec.h: No such file or directory
 # libopenzwave: linux/hidraw.h: No such file or directory
+# unionfs-fuse:
+#	builds/unionfs-fuse/src/uioctl.h:19:2: error: declaration of type name as array of voids
+#	  UNIONFS_STATS_BYTES_WRITTEN = _IOW('E', 3, void),
 BROKEN_PACKAGES = \
 	6relayd \
 	buildroot \
@@ -19,7 +22,8 @@ BROKEN_PACKAGES = \
 	inferno \
 	libexplain \
 	node \
-	libopenzwave py-openzwave
+	libopenzwave py-openzwave \
+	unionfs-fuse
 
 STRACE_VERSION = 4.5.20
 STRACE_IPK_VERSION = 1
