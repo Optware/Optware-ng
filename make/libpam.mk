@@ -36,11 +36,11 @@ LIBPAM_CONFLICTS=
 #
 # LIBPAM_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBPAM_IPK_VERSION=1
+LIBPAM_IPK_VERSION=2
 
 #
 # LIBPAM_CONFFILES should be a list of user-editable files
-#LIBPAM_CONFFILES=$(TARGET_PREFIX)/etc/libpam.conf $(TARGET_PREFIX)/etc/init.d/SXXlibpam
+LIBPAM_CONFFILES=$(TARGET_PREFIX)/etc/pam.conf
 
 #
 # LIBPAM_PATCHES should list any patches, in the the order in
@@ -49,6 +49,8 @@ LIBPAM_IPK_VERSION=1
 LIBPAM_PATCHES=\
 $(LIBPAM_SOURCE_DIR)/pam_unix_fix_sgid_shadow_auth.patch \
 $(LIBPAM_SOURCE_DIR)/pam_unix_dont_trust_chkpwd_caller.patch \
+$(LIBPAM_SOURCE_DIR)/000-optware_paths.patch \
+$(LIBPAM_SOURCE_DIR)/001-buildroot-patches.patch \
 $(LIBPAM_SOURCE_DIR)/007_modules_pam_unix \
 $(LIBPAM_SOURCE_DIR)/008_modules_pam_limits_chroot \
 $(LIBPAM_SOURCE_DIR)/021_nis_cleanup \
@@ -153,6 +155,15 @@ $(LIBPAM_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBPAM_SOURCE) $(LIBPAM_PATCHES) ma
 		--disable-nls \
 		--disable-static \
 		--disable-audit \
+		--disable-prelude \
+		--disable-isadir \
+		--disable-nis \
+		--disable-db \
+		--disable-regenerate-docu \
+		--with-mailspool=$(TARGET_PREFIX)/var/spool/mail \
+		--with-xauth=$(TARGET_PREFIX)/bin/xauth \
+		--enable-securedir=$(TARGET_PREFIX)/lib/security \
+		--libdir=$(TARGET_PREFIX)/lib \
 	)
 	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
@@ -164,7 +175,7 @@ libpam-unpack: $(LIBPAM_BUILD_DIR)/.configured
 #
 $(LIBPAM_BUILD_DIR)/.built: $(LIBPAM_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(@D)/libpam
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -221,11 +232,13 @@ $(LIBPAM_IPK_DIR)/CONTROL/control:
 #
 $(LIBPAM_IPK): $(LIBPAM_BUILD_DIR)/.built
 	rm -rf $(LIBPAM_IPK_DIR) $(BUILD_DIR)/libpam_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(LIBPAM_BUILD_DIR)/libpam DESTDIR=$(LIBPAM_IPK_DIR) install
-	$(STRIP_COMMAND) $(LIBPAM_IPK_DIR)/$(TARGET_PREFIX)/lib/*.so
+	$(MAKE) -C $(LIBPAM_BUILD_DIR) DESTDIR=$(LIBPAM_IPK_DIR) install
+	$(STRIP_COMMAND) $(LIBPAM_IPK_DIR)/$(TARGET_PREFIX)/lib{,/security}/*.so \
+			$(LIBPAM_IPK_DIR)/$(TARGET_PREFIX)/lib/security/pam_filter/upperLOWER \
+			$(LIBPAM_IPK_DIR)/$(TARGET_PREFIX)/sbin/*
 	find $(LIBPAM_IPK_DIR)/$(TARGET_PREFIX) -type f -name '*.la' -exec rm -f {} \;
-#	$(INSTALL) -d $(LIBPAM_IPK_DIR)$(TARGET_PREFIX)/etc/
-#	$(INSTALL) -m 644 $(LIBPAM_SOURCE_DIR)/libpam.conf $(LIBPAM_IPK_DIR)$(TARGET_PREFIX)/etc/libpam.conf
+	$(INSTALL) -d $(LIBPAM_IPK_DIR)$(TARGET_PREFIX)/etc/pam.d
+	$(INSTALL) -m 644 $(LIBPAM_BUILD_DIR)/conf/pam.conf $(LIBPAM_IPK_DIR)$(TARGET_PREFIX)/etc/pam.conf
 #	$(INSTALL) -d $(LIBPAM_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
 #	$(INSTALL) -m 755 $(LIBPAM_SOURCE_DIR)/rc.libpam $(LIBPAM_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibpam
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBPAM_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibpam
