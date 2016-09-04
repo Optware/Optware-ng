@@ -21,16 +21,20 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 DBUS_SITE=http://dbus.freedesktop.org/releases/dbus
-DBUS_VERSION ?= 1.9.14
-DBUS_IPK_VERSION ?= 4
+DBUS_VERSION ?= 1.11.4
+DBUS_IPK_VERSION ?= 1
 DBUS_SOURCE=dbus-$(DBUS_VERSION).tar.gz
 DBUS_DIR=dbus-$(DBUS_VERSION)
 DBUS_UNZIP=zcat
 DBUS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 DBUS_DESCRIPTION=D-Bus is a message bus system, a simple way for applications to talk to one another.
+LIBDBUS_DESCRIPTION=D-Bus client library
 DBUS_SECTION=misc
+LIBDBUS_SECTION=libs
 DBUS_PRIORITY=optional
-DBUS_DEPENDS=expat, adduser
+LIBDBUS_PRIORITY=optional
+DBUS_DEPENDS=libdbus, expat, adduser
+LIBDBUS_DEPENDS=
 ifeq (x11, $(filter x11, $(PACKAGES)))
 DBUS_DEPENDS+=, x11, sm
 endif
@@ -79,8 +83,12 @@ endif
 #
 DBUS_BUILD_DIR=$(BUILD_DIR)/dbus
 DBUS_SOURCE_DIR=$(SOURCE_DIR)/dbus
+
 DBUS_IPK_DIR=$(BUILD_DIR)/dbus-$(DBUS_VERSION)-ipk
 DBUS_IPK=$(BUILD_DIR)/dbus_$(DBUS_VERSION)-$(DBUS_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+LIBDBUS_IPK_DIR=$(BUILD_DIR)/libdbus-$(DBUS_VERSION)-ipk
+LIBDBUS_IPK=$(BUILD_DIR)/libdbus_$(DBUS_VERSION)-$(DBUS_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 .PHONY: dbus-source dbus-unpack dbus dbus-stage dbus-ipk dbus-clean dbus-dirclean dbus-check
 
@@ -209,6 +217,21 @@ $(DBUS_IPK_DIR)/CONTROL/control:
 	@echo "Suggests: $(DBUS_SUGGESTS)" >>$@
 	@echo "Conflicts: $(DBUS_CONFLICTS)" >>$@
 
+$(LIBDBUS_IPK_DIR)/CONTROL/control:
+	@$(INSTALL) -d $(@D)
+	@rm -f $@
+	@echo "Package: libdbus" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(LIBDBUS_PRIORITY)" >>$@
+	@echo "Section: $(LIBDBUS_SECTION)" >>$@
+	@echo "Version: $(DBUS_VERSION)-$(DBUS_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(DBUS_MAINTAINER)" >>$@
+	@echo "Source: $(DBUS_SITE)/$(DBUS_SOURCE)" >>$@
+	@echo "Description: $(LIBDBUS_DESCRIPTION)" >>$@
+	@echo "Depends: $(LIBDBUS_DEPENDS)" >>$@
+	@echo "Suggests: $(LIBDBUS_SUGGESTS)" >>$@
+	@echo "Conflicts: $(LIBDBUS_CONFLICTS)" >>$@
+
 #
 # This builds the IPK file.
 #
@@ -221,9 +244,11 @@ $(DBUS_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(DBUS_IPK): $(DBUS_BUILD_DIR)/.built
-	rm -rf $(DBUS_IPK_DIR) $(BUILD_DIR)/dbus_*_$(TARGET_ARCH).ipk
+$(DBUS_IPK) $(LIBDBUS_IPK): $(DBUS_BUILD_DIR)/.built
+	rm -rf  $(DBUS_IPK_DIR) $(BUILD_DIR)/dbus_*_$(TARGET_ARCH).ipk \
+		$(LIBDBUS_IPK_DIR) $(BUILD_DIR)/libdbus_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(DBUS_BUILD_DIR) DESTDIR=$(DBUS_IPK_DIR) transform='' install
+	rm -f $(DBUS_IPK_DIR)$(TARGET_PREFIX)/lib/*.la
 	$(STRIP_COMMAND) \
 		$(DBUS_IPK_DIR)$(TARGET_PREFIX)/bin/* \
 		$(DBUS_IPK_DIR)$(TARGET_PREFIX)/libexec/dbus-daemon-launch-helper \
@@ -235,6 +260,10 @@ $(DBUS_IPK): $(DBUS_BUILD_DIR)/.built
 	$(INSTALL) -d $(DBUS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
 	$(INSTALL) -m 755 $(DBUS_SOURCE_DIR)/dbus.init $(DBUS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S20dbus
 	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(DBUS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S20dbus
+	$(INSTALL) -d $(LIBDBUS_IPK_DIR)$(TARGET_PREFIX)
+	mv -f $(DBUS_IPK_DIR)$(TARGET_PREFIX)/{lib,include} $(LIBDBUS_IPK_DIR)$(TARGET_PREFIX)
+	$(MAKE) $(LIBDBUS_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBDBUS_IPK_DIR)
 	$(MAKE) $(DBUS_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 755 $(DBUS_SOURCE_DIR)/postinst $(DBUS_IPK_DIR)/CONTROL/postinst
 	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(DBUS_IPK_DIR)/CONTROL/postinst
@@ -246,7 +275,7 @@ $(DBUS_IPK): $(DBUS_BUILD_DIR)/.built
 #
 # This is called from the top level makefile to create the IPK file.
 #
-dbus-ipk: $(DBUS_IPK)
+dbus-ipk: $(DBUS_IPK) $(LIBDBUS_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -260,10 +289,12 @@ dbus-clean:
 # directories.
 #
 dbus-dirclean:
-	rm -rf $(BUILD_DIR)/$(DBUS_DIR) $(DBUS_BUILD_DIR) $(DBUS_IPK_DIR) $(DBUS_IPK)
+	rm -rf  $(BUILD_DIR)/$(DBUS_DIR) $(DBUS_BUILD_DIR) \
+		$(DBUS_IPK_DIR) $(DBUS_IPK) \
+		$(LIBDBUS_IPK_DIR) $(LIBDBUS_IPK)
 #
 #
 # Some sanity check for the package.
 #
-dbus-check: $(DBUS_IPK)
+dbus-check: $(DBUS_IPK) $(LIBDBUS_IPK)
 	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
