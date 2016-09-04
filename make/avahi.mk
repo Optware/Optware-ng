@@ -21,18 +21,39 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 AVAHI_SITE=http://avahi.org/download
-AVAHI_VERSION=0.6.30
+AVAHI_VERSION=0.6.31
 AVAHI_SOURCE=avahi-$(AVAHI_VERSION).tar.gz
 AVAHI_DIR=avahi-$(AVAHI_VERSION)
 AVAHI_UNZIP=zcat
 AVAHI_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 AVAHI_DESCRIPTION=A system for multicast DNS service discovery, an implementation of Zeroconf.
+LIBAVAHI_COMMON_DESCRIPTION=Avahi common library
+LIBAVAHI_CLIENT_DESCRIPTION=Avahi client library
+LIBAVAHI_CORE_DESCRIPTION=Avahi core library
+LIBAVAHI_GLIB_DESCRIPTION=Avahi glib library
+LIBAVAHI_GOBJECT_DESCRIPTION=Avahi gobject library
 AVAHI_SECTION=net
+LIBAVAHI_COMMON_SECTION=libs
+LIBAVAHI_CLIENT_SECTION=libs
+LIBAVAHI_CORE_SECTION=libs
+LIBAVAHI_GLIB_SECTION=libs
+LIBAVAHI_GOBJECT_SECTION=libs
 AVAHI_PRIORITY=optional
-AVAHI_DEPENDS=expat, libdaemon, dbus
-ifeq (enable, $(GETTEXT_NLS))
-AVAHI_DEPENDS += , gettext
+LIBAVAHI_COMMON_PRIORITY=optional
+LIBAVAHI_CLIENT_PRIORITY=optional
+LIBAVAHI_CORE_PRIORITY=optional
+LIBAVAHI_GLIB_PRIORITY=optional
+LIBAVAHI_GOBJECT_PRIORITY=optional
+AVAHI_DEPENDS=libavahi-common, libavahi-client, libavahi-glib, libavahi-gobject, expat, libdaemon, dbus
+ifeq (uclibc,$(LIBC_STYLE))
+LIBAVAHI_COMMON_DEPENDS=libintl
+else
+LIBAVAHI_COMMON_DEPENDS=
 endif
+LIBAVAHI_CLIENT_DEPENDS=libavahi-common, libdbus
+LIBAVAHI_CORE_DEPENDS=libavahi-common
+LIBAVAHI_GLIB_DEPENDS=libavahi-common, glib
+LIBAVAHI_GOBJECT_DEPENDS=libavahi-common, libavahi-client, libavahi-glib
 AVAHI_SUGGESTS=
 AVAHI_CONFLICTS=
 
@@ -43,7 +64,15 @@ AVAHI_IPK_VERSION=1
 
 #
 # AVAHI_CONFFILES should be a list of user-editable files
-#AVAHI_CONFFILES=$(TARGET_PREFIX)/etc/avahi.conf $(TARGET_PREFIX)/etc/init.d/SXXavahi
+AVAHI_CONFFILES=\
+$(TARGET_PREFIX)/etc/avahi/avahi-autoipd.action \
+$(TARGET_PREFIX)/etc/avahi/avahi-daemon.conf \
+$(TARGET_PREFIX)/etc/avahi/avahi-dnsconfd.action \
+$(TARGET_PREFIX)/etc/avahi/hosts \
+$(TARGET_PREFIX)/etc/avahi/services/sftp-ssh.service \
+$(TARGET_PREFIX)/etc/avahi/services/ssh.service \
+$(TARGET_PREFIX)/etc/dbus-1/system.d/avahi-dbus.conf \
+#$(TARGET_PREFIX)/etc/init.d/SXXavahi
 
 #
 # AVAHI_PATCHES should list any patches, in the the order in
@@ -74,8 +103,24 @@ endif
 #
 AVAHI_BUILD_DIR=$(BUILD_DIR)/avahi
 AVAHI_SOURCE_DIR=$(SOURCE_DIR)/avahi
+
 AVAHI_IPK_DIR=$(BUILD_DIR)/avahi-$(AVAHI_VERSION)-ipk
 AVAHI_IPK=$(BUILD_DIR)/avahi_$(AVAHI_VERSION)-$(AVAHI_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+LIBAVAHI_COMMON_IPK_DIR=$(BUILD_DIR)/libavahi-common-$(AVAHI_VERSION)-ipk
+LIBAVAHI_COMMON_IPK=$(BUILD_DIR)/libavahi-common_$(AVAHI_VERSION)-$(AVAHI_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+LIBAVAHI_CLIENT_IPK_DIR=$(BUILD_DIR)/libavahi-client-$(AVAHI_VERSION)-ipk
+LIBAVAHI_CLIENT_IPK=$(BUILD_DIR)/libavahi-client_$(AVAHI_VERSION)-$(AVAHI_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+LIBAVAHI_CORE_IPK_DIR=$(BUILD_DIR)/libavahi-core-$(AVAHI_VERSION)-ipk
+LIBAVAHI_CORE_IPK=$(BUILD_DIR)/libavahi-core_$(AVAHI_VERSION)-$(AVAHI_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+LIBAVAHI_GLIB_IPK_DIR=$(BUILD_DIR)/libavahi-glib-$(AVAHI_VERSION)-ipk
+LIBAVAHI_GLIB_IPK=$(BUILD_DIR)/libavahi-glib_$(AVAHI_VERSION)-$(AVAHI_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+LIBAVAHI_GOBJECT_IPK_DIR=$(BUILD_DIR)/libavahi-gobject-$(AVAHI_VERSION)-ipk
+LIBAVAHI_GOBJECT_IPK=$(BUILD_DIR)/libavahi-gobject_$(AVAHI_VERSION)-$(AVAHI_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 .PHONY: avahi-source avahi-unpack avahi avahi-stage avahi-ipk avahi-clean avahi-dirclean avahi-check
 
@@ -114,7 +159,7 @@ avahi-source: $(DL_DIR)/$(AVAHI_SOURCE) $(AVAHI_PATCHES)
 #
 $(AVAHI_BUILD_DIR)/.configured: $(DL_DIR)/$(AVAHI_SOURCE) $(AVAHI_PATCHES) make/avahi.mk
 	$(MAKE) dbus-stage expat-stage gdbm-stage glib-stage libdaemon-stage
-ifeq (enable, $(GETTEXT_NLS))
+ifeq (uclibc,$(LIBC_STYLE))
 	$(MAKE) gettext-stage
 endif
 ifneq ($(HOSTCC), $(TARGET_CC))
@@ -146,6 +191,9 @@ endif
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=$(TARGET_PREFIX) \
 		\
+		--with-avahi-user=nobody \
+		--with-avahi-group=nobody \
+		--with-avahi-priv-access-group=nobody \
 		--enable-libdaemon \
 		--with-distro=none \
 		--enable-dbus \
@@ -210,6 +258,21 @@ $(AVAHI_IPK_DIR)/CONTROL/control:
 	@echo "Suggests: $(AVAHI_SUGGESTS)" >>$@
 	@echo "Conflicts: $(AVAHI_CONFLICTS)" >>$@
 
+$(BUILD_DIR)/libavahi-%-$(AVAHI_VERSION)-ipk/CONTROL/control:
+	@$(INSTALL) -d $(@D)
+	@rm -f $@
+	@echo "Package: libavahi-$*" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(AVAHI_PRIORITY)" >>$@
+	@echo "Section: libs" >>$@
+	@echo "Version: $(AVAHI_VERSION)-$(AVAHI_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(AVAHI_MAINTAINER)" >>$@
+	@echo "Source: $(AVAHI_SITE)/$(AVAHI_SOURCE)" >>$@
+	@echo "Description: $(LIBAVAHI_$(shell echo $* | tr a-z A-Z)_DESCRIPTION)" >>$@
+	@echo "Depends: $(LIBAVAHI_$(shell echo $* | tr a-z A-Z)_DEPENDS)" >>$@
+	@echo "Suggests: $(LIBAVAHI_$(shell echo $* | tr a-z A-Z)_SUGGESTS)" >>$@
+	@echo "Conflicts: $(LIBAVAHI_$(shell echo $* | tr a-z A-Z)_CONFLICTS)" >>$@
+
 #
 # This builds the IPK file.
 #
@@ -222,10 +285,24 @@ $(AVAHI_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(AVAHI_IPK): $(AVAHI_BUILD_DIR)/.built
-	rm -rf $(AVAHI_IPK_DIR) $(BUILD_DIR)/avahi_*_$(TARGET_ARCH).ipk
+$(AVAHI_IPK) $(LIBAVAHI_COMMON_IPK) $(LIBAVAHI_CLIENT_IPK) $(LIBAVAHI_CORE_IPK) \
+$(LIBAVAHI_GLIB_IPK) $(LIBAVAHI_GOBJECT_IPK): $(AVAHI_BUILD_DIR)/.built
+	rm -rf  $(AVAHI_IPK_DIR) $(BUILD_DIR)/avahi_*_$(TARGET_ARCH).ipk \
+		$(LIBAVAHI_COMMON_IPK_DIR) $(BUILD_DIR)/libavahi-common_*_$(TARGET_ARCH).ipk \
+		$(LIBAVAHI_CLIENT_IPK_DIR) $(BUILD_DIR)/libavahi-client_*_$(TARGET_ARCH).ipk \
+		$(LIBAVAHI_CORE_IPK_DIR) $(BUILD_DIR)/libavahi-core_*_$(TARGET_ARCH).ipk \
+		$(LIBAVAHI_GLIB_IPK_DIR) $(BUILD_DIR)/libavahi-glib_*_$(TARGET_ARCH).ipk \
+		$(LIBAVAHI_GOBJECT_IPK_DIR) $(BUILD_DIR)/libavahi-gobject_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(AVAHI_BUILD_DIR) DESTDIR=$(AVAHI_IPK_DIR) install-strip
 	rm -f $(AVAHI_IPK_DIR)$(TARGET_PREFIX)/lib/libavahi*.la
+	for lib in common client core glib gobject; do \
+		$(INSTALL) -d $(BUILD_DIR)/libavahi-$$lib-$(AVAHI_VERSION)-ipk$(TARGET_PREFIX)/lib; \
+		mv -f $(AVAHI_IPK_DIR)$(TARGET_PREFIX)/lib/libavahi-$${lib}.so* $(BUILD_DIR)/libavahi-$$lib-$(AVAHI_VERSION)-ipk$(TARGET_PREFIX)/lib; \
+		$(MAKE) $(BUILD_DIR)/libavahi-$$lib-$(AVAHI_VERSION)-ipk/CONTROL/control; \
+		pushd $(BUILD_DIR); $(IPKG_BUILD) $(BUILD_DIR)/libavahi-$$lib-$(AVAHI_VERSION)-ipk; \
+		popd; \
+		$(WHAT_TO_DO_WITH_IPK_DIR) $(BUILD_DIR)/libavahi-$$lib-$(AVAHI_VERSION)-ipk; \
+	done
 #	$(INSTALL) -d $(AVAHI_IPK_DIR)$(TARGET_PREFIX)/etc/
 #	$(INSTALL) -m 644 $(AVAHI_SOURCE_DIR)/avahi.conf $(AVAHI_IPK_DIR)$(TARGET_PREFIX)/etc/avahi.conf
 #	$(INSTALL) -d $(AVAHI_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
@@ -243,7 +320,8 @@ $(AVAHI_IPK): $(AVAHI_BUILD_DIR)/.built
 #
 # This is called from the top level makefile to create the IPK file.
 #
-avahi-ipk: $(AVAHI_IPK)
+avahi-ipk: $(AVAHI_IPK) $(LIBAVAHI_COMMON_IPK) $(LIBAVAHI_CLIENT_IPK) $(LIBAVAHI_CORE_IPK) \
+	   $(LIBAVAHI_GLIB_IPK) $(LIBAVAHI_GOBJECT_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -257,10 +335,17 @@ avahi-clean:
 # directories.
 #
 avahi-dirclean:
-	rm -rf $(BUILD_DIR)/$(AVAHI_DIR) $(AVAHI_BUILD_DIR) $(AVAHI_IPK_DIR) $(AVAHI_IPK)
+	rm -rf  $(BUILD_DIR)/$(AVAHI_DIR) $(AVAHI_BUILD_DIR) \
+		$(AVAHI_IPK_DIR) $(AVAHI_IPK) \
+		$(LIBAVAHI_COMMON_IPK_DIR) $(LIBAVAHI_COMMON_IPK) \
+		$(LIBAVAHI_CLIENT_IPK_DIR) $(LIBAVAHI_CLIENT_IPK) \
+		$(LIBAVAHI_CORE_IPK_DIR) $(LIBAVAHI_CORE_IPK) \
+		$(LIBAVAHI_GLIB_IPK_DIR) $(LIBAVAHI_GLIB_IPK) \
+		$(LIBAVAHI_GOBJECT_IPK_DIR) $(LIBAVAHI_GOBJECT_IPK)
 #
 #
 # Some sanity check for the package.
 #
-avahi-check: $(AVAHI_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(AVAHI_IPK)
+avahi-check: $(AVAHI_IPK) $(LIBAVAHI_COMMON_IPK) $(LIBAVAHI_CLIENT_IPK) $(LIBAVAHI_CORE_IPK) \
+	     $(LIBAVAHI_GLIB_IPK) $(LIBAVAHI_GOBJECT_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
