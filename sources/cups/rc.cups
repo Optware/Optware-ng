@@ -1,0 +1,56 @@
+#! /bin/sh
+
+PATH=$PATH:%OPTWARE_TARGET_PREFIX%/bin:%OPTWARE_TARGET_PREFIX%/sbin
+
+NAME=cupsd
+DAEMON=%OPTWARE_TARGET_PREFIX%/sbin/$NAME
+DESC="CUPS printing server"
+
+test -x $DAEMON || exit 0
+
+# Source defaults file; edit that file to configure this script.
+ENABLED=1
+PARAMS=""
+if [ -e %OPTWARE_TARGET_PREFIX%/etc/default/cups ]; then
+  . %OPTWARE_TARGET_PREFIX%/etc/default/cups
+fi
+
+test "$ENABLED" != "0" || exit 0
+
+start_it_up()
+{
+  if [ -z "`%OPTWARE_TARGET_PREFIX%/bin/busybox pidof $NAME`" ]; then
+    echo "$DESC already started; not starting."
+  else
+    echo -n "Starting $DESC: "
+    ${DAEMON} $PARAMS
+    echo "$NAME."
+  fi
+}
+
+shut_it_down()
+{
+  echo -n "Stopping $DESC: "
+    killall ${NAME}
+  echo "$NAME."
+}
+
+case "$1" in
+  start)
+    start_it_up
+  ;;
+  stop)
+    shut_it_down
+  ;;
+  restart)
+    shut_it_down
+    sleep 1
+    start_it_up
+  ;;
+  *)
+    echo "Usage: $0 {start|stop|restart}" >&2
+    exit 1
+  ;;
+esac
+
+exit 0

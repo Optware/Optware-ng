@@ -44,7 +44,7 @@ LIBCUPSCGI_DEPENDS=libcups
 LIBCUPSIMAGE_DEPENDS=libcups
 LIBCUPSMIME_DEPENDS=libcups
 LIBCUPSPPDC_DEPENDS=libcups, libstdc++
-CUPS_DEPENDS=libcups, libcupscgi, libcupsimage, libcupsmime, libcupsppdc, libjpeg, libpng, libpam, libtiff, openssl, psmisc, libusb1, dbus, avahi, libacl
+CUPS_DEPENDS=libcups, libcupscgi, libcupsimage, libcupsmime, libcupsppdc, libjpeg, libpng, libpam, libtiff, openssl, psmisc, libusb1, dbus, avahi, libacl, busybox-base
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
 CUPS_DEPENDS+=, openldap-libs
 endif
@@ -55,7 +55,7 @@ CUPS_CONFLICTS=
 #
 # CUPS_IPK_VERSION should be incremented when the ipk changes.
 #
-CUPS_IPK_VERSION=4
+CUPS_IPK_VERSION=5
 
 CUPS_DOC_DESCRIPTION=Common Unix Printing System documentation.
 CUPS-DEV_DESCRIPTION=Development files for CUPS
@@ -64,7 +64,8 @@ CUPS-DEV_DESCRIPTION=Development files for CUPS
 # CUPS_CONFFILES should be a list of user-editable files
 CUPS_CONFFILES=$(TARGET_PREFIX)/etc/cups/cupsd.conf $(TARGET_PREFIX)/etc/cups/printers.conf \
 		$(TARGET_PREFIX)/etc/cups/cups-files.conf $(TARGET_PREFIX)/etc/cups/printers.conf \
-		$(TARGET_PREFIX)/etc/cups/snmp.conf $(TARGET_PREFIX)/etc/cups/mime.types $(TARGET_PREFIX)/etc/cups/mime.convs
+		$(TARGET_PREFIX)/etc/cups/snmp.conf $(TARGET_PREFIX)/etc/cups/mime.types $(TARGET_PREFIX)/etc/cups/mime.convs \
+		$(TARGET_PREFIX)/etc/init.d/S88cupsd
 
 #
 # CUPS_PATCHES should list any patches, in the the order in
@@ -498,7 +499,8 @@ $(CUPS_IPK) $(CUPS-DEV_IPK): $(CUPS_BUILD_DIR)/.locales
 	$(INSTALL) -m 644 $(CUPS_SOURCE_DIR)/mime.types $(CUPS_IPK_DIR)$(TARGET_PREFIX)/etc/cups
 	$(INSTALL) -m 644 $(CUPS_SOURCE_DIR)/mime.convs $(CUPS_IPK_DIR)$(TARGET_PREFIX)/etc/cups
 # Copy the init.d startup file
-	$(INSTALL) -m 755 $(CUPS_SOURCE_DIR)/S88cups $(CUPS_IPK_DIR)$(TARGET_PREFIX)/doc/cups
+	$(INSTALL) -d $(CUPS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(INSTALL) -m 755 $(CUPS_SOURCE_DIR)/rc.cups $(CUPS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S88cupsd
 # Copy lpd startup files
 	$(INSTALL) -m 755 $(CUPS_SOURCE_DIR)/S89cups-lpd \
 		$(CUPS_IPK_DIR)$(TARGET_PREFIX)/doc/cups
