@@ -3,27 +3,27 @@
 # Debian init.d script for D-BUS
 # Copyright © 2003 Colin Walters <walters@debian.org>
 
-PATH=/sbin:/bin:/usr/bin:/usr/sbin:%OPTWARE_TARGET_PREFIX%/bin:%OPTWARE_TARGET_PREFIX%/sbin
+PATH=$PATH:%OPTWARE_TARGET_PREFIX%/bin:%OPTWARE_TARGET_PREFIX%/sbin
 
-if grep -q ^messagebus: /etc/group; then
-	# echo There already is an messagebus group on the system.
-	ADDUSER_OPT="-G messagebus"
-fi
+#if grep -q ^messagebus: /etc/group; then
+#	# echo There already is an messagebus group on the system.
+#	ADDUSER_OPT="-G messagebus"
+#fi
 
-if grep -q ^messagebus: /etc/passwd; then
-	# echo There already is an messagebus user on the system.
-	true
-else
-	echo -n "No messagebus user found, creating it... "
-	adduser -h %OPTWARE_TARGET_PREFIX%/var/run/dbus -g "messagebus daemon" -s /bin/false -D -H $ADDUSER_OPT messagebus > /dev/null 2>&1
-	echo done
-fi
+#if grep -q ^messagebus: /etc/passwd; then
+#	# echo There already is an messagebus user on the system.
+#	true
+#else
+#	echo -n "No messagebus user found, creating it... "
+#	adduser -h %OPTWARE_TARGET_PREFIX%/var/run/dbus -g "messagebus daemon" -s /bin/false -D -H $ADDUSER_OPT messagebus > /dev/null 2>&1
+#	echo done
+#fi
 
 set -e
 
 DAEMON=%OPTWARE_TARGET_PREFIX%/bin/dbus-daemon
 NAME=dbus
-DAEMONUSER=messagebus
+DAEMONUSER=nobody
 PIDDIR=%OPTWARE_TARGET_PREFIX%/var/run/dbus
 PIDFILE=$PIDDIR/pid
 DESC="system message bus"
@@ -80,7 +80,7 @@ case "$1" in
     start_it_up
   ;;
   *)
-    echo "Usage: %OPTWARE_TARGET_PREFIX%/etc/init.d/$NAME {start|stop|restart|force-reload}" >&2
+    echo "Usage: $0 {start|stop|restart|force-reload}" >&2
     exit 1
   ;;
 esac
