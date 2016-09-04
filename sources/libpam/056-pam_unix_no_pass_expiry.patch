@@ -1,0 +1,171 @@
+This patch is ported from Fedora. Additionally patch modules/pam_unix/pam_unix.8 accordingly.
+Original commit message:
+
+Author: Tomas Mraz <tmraz(a)fedoraproject.org>
+
+    pam_unix: Add no_pass_expiry option to ignore password expiration.
+    
+    * modules/pam_unix/pam_unix.8.xml: Document the no_pass_expiry option.
+    * modules/pam_unix/pam_unix_acct.c (pam_sm_acct_mgmt): If no_pass_expiry
+    is on and return value data is not set to PAM_SUCCESS then ignore
+    PAM_NEW_AUTHTOK_REQD and PAM_AUTHTOK_EXPIRED returns.
+    * modules/pam_unix/pam_unix_auth.c (pam_sm_authenticate): Always set the
+    return value data.
+    (pam_sm_setcred): Test for likeauth option and use the return value data
+    only if set.
+    * modules/pam_unix/support.h: Add the no_pass_expiry option.
+
+--- a/modules/pam_unix/pam_unix.8.xml
++++ b/modules/pam_unix/pam_unix.8.xml
+@@ -364,6 +364,25 @@
+           </para>
+         </listitem>
+       </varlistentry>
++      <varlistentry>
++        <term>
++          <option>no_pass_expiry</option>
++        </term>
++        <listitem>
++          <para>
++            When set ignore password expiration as defined by the
++            <emphasis>shadow</emphasis> entry of the user. The option has an
++            effect only in case <emphasis>pam_unix</emphasis> was not used
++            for the authentication or it returned authentication failure
++            meaning that other authentication source or method succeeded.
++            The example can be public key authentication in
++            <emphasis>sshd</emphasis>. The module will return
++            <emphasis remap='B'>PAM_SUCCESS</emphasis> instead of eventual
++            <emphasis remap='B'>PAM_NEW_AUTHTOK_REQD</emphasis> or
++            <emphasis remap='B'>PAM_AUTHTOK_EXPIRED</emphasis>.
++          </para>
++        </listitem>
++      </varlistentry>
+     </variablelist>
+     <para>
+       Invalid arguments are logged with  <citerefentry>
+--- a/modules/pam_unix/pam_unix_acct.c
++++ b/modules/pam_unix/pam_unix_acct.c
+@@ -235,6 +235,19 @@ pam_sm_acct_mgmt(pam_handle_t *pamh, int flags, int argc, const char **argv)
+ 	} else
+ 		retval = check_shadow_expiry(pamh, spent, &daysleft);
+ 
++	if (on(UNIX_NO_PASS_EXPIRY, ctrl)) {
++		const void *pretval = NULL;
++		int authrv = PAM_AUTHINFO_UNAVAIL; /* authentication not called */
++
++		if (pam_get_data(pamh, "unix_setcred_return", &pretval) == PAM_SUCCESS
++			&& pretval)
++			authrv = *(const int *)pretval;
++
++		if (authrv != PAM_SUCCESS
++			&& (retval == PAM_NEW_AUTHTOK_REQD || retval == PAM_AUTHTOK_EXPIRED))
++			retval = PAM_SUCCESS;
++	}
++
+ 	switch (retval) {
+ 	case PAM_ACCT_EXPIRED:
+ 		pam_syslog(pamh, LOG_NOTICE,
+--- a/modules/pam_unix/pam_unix_auth.c
++++ b/modules/pam_unix/pam_unix_auth.c
+@@ -82,14 +82,13 @@
+ 
+ #define AUTH_RETURN						\
+ do {								\
+-	if (on(UNIX_LIKE_AUTH, ctrl) && ret_data) {		\
++	if (ret_data) {						\
+ 		D(("recording return code for next time [%d]",	\
+ 					retval));		\
+ 		*ret_data = retval;				\
+ 		pam_set_data(pamh, "unix_setcred_return",	\
+ 		             (void *) ret_data, setcred_free);	\
+-	} else if (ret_data)					\
+-	  free (ret_data);                                      \
++	}							\
+ 	D(("done. [%s]", pam_strerror(pamh, retval)));		\
+ 	return retval;						\
+ } while (0)
+@@ -115,9 +114,8 @@ pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc, const char **argv)
+ 	ctrl = _set_ctrl(pamh, flags, NULL, NULL, NULL, argc, argv);
+ 
+ 	/* Get a few bytes so we can pass our return value to
+-	   pam_sm_setcred(). */
+-	if (on(UNIX_LIKE_AUTH, ctrl))
+-		ret_data = malloc(sizeof(int));
++	   pam_sm_setcred() and pam_sm_acct_mgmt(). */
++	ret_data = malloc(sizeof(int));
+ 
+ 	/* get the user'name' */
+ 
+@@ -194,20 +192,24 @@ pam_sm_authenticate(pam_handle_t *pamh, int flags, int argc, const char **argv)
+  */
+ 
+ int
+-pam_sm_setcred (pam_handle_t *pamh, int flags UNUSED,
+-		int argc UNUSED, const char **argv UNUSED)
++pam_sm_setcred (pam_handle_t *pamh, int flags,
++		int argc, const char **argv)
+ {
+ 	int retval;
+ 	const void *pretval = NULL;
++	unsigned int ctrl;
+ 
+ 	D(("called."));
+ 
++	ctrl = _set_ctrl(pamh, flags, NULL, NULL, NULL, argc, argv);
++
+ 	retval = PAM_SUCCESS;
+ 
+ 	D(("recovering return code from auth call"));
+ 	/* We will only find something here if UNIX_LIKE_AUTH is set --
+ 	   don't worry about an explicit check of argv. */
+-	if (pam_get_data(pamh, "unix_setcred_return", &pretval) == PAM_SUCCESS
++	if (on(UNIX_LIKE_AUTH, ctrl)
++	    && pam_get_data(pamh, "unix_setcred_return", &pretval) == PAM_SUCCESS
+ 	    && pretval) {
+ 	        retval = *(const int *)pretval;
+ 		pam_set_data(pamh, "unix_setcred_return", NULL, NULL);
+--- a/modules/pam_unix/support.h
++++ b/modules/pam_unix/support.h
+@@ -99,8 +99,9 @@
+ #define UNIX_MIN_PASS_LEN        27	/* min length for password */
+ #define UNIX_OBSCURE_CHECKS      28	/* enable obscure checks on passwords */
+ #define UNIX_NULLOK_SECURE       29	/* NULL passwords allowed only on secure ttys */
++#define UNIX_NO_PASS_EXPIRY      30     /* Don't check for password expiration if not used for authentication */
+ /* -------------- */
+-#define UNIX_CTRLS_              30	/* number of ctrl arguments defined */
++#define UNIX_CTRLS_              31	/* number of ctrl arguments defined */
+ 
+ #define UNIX_DES_CRYPT(ctrl)	(off(UNIX_MD5_PASS,ctrl)&&off(UNIX_BIGCRYPT,ctrl)&&off(UNIX_SHA256_PASS,ctrl)&&off(UNIX_SHA512_PASS,ctrl)&&off(UNIX_BLOWFISH_PASS,ctrl))
+ 
+@@ -139,6 +140,7 @@
+ /* UNIX_MIN_PASS_LEN */    {"minlen=",         _ALL_ON_,            0x4000000, 0},
+ /* UNIX_OBSCURE_CHECKS */  {"obscure",         _ALL_ON_,            0x8000000, 0},
+ /* UNIX_NULLOK_SECURE */   {"nullok_secure",   _ALL_ON_^(0x200),   0x10000000, 0},
++/* UNIX_NO_PASS_EXPIRY */  {"no_pass_expiry",  _ALL_ON_,          02000000000, 0},
+ };
+ 
+ #define UNIX_DEFAULTS  (unix_args[UNIX__NONULL].flag)
+--- a/modules/pam_unix/pam_unix.8
++++ b/modules/pam_unix/pam_unix.8
+@@ -224,6 +224,21 @@
+ .sp
+ .RE
+ .PP
++\fBno_pass_expiry\fR
++.RS 4
++When set ignore password expiration as defined by the
++\fIshadow\fR
++entry of the user\&. The option has an effect only in case
++\fIpam_unix\fR
++was not used for the authentication or it returned authentication failure meaning that other authentication source or method succeeded\&. The example can be public key authentication in
++\fIsshd\fR\&. The module will return
++\fBPAM_SUCCESS\fR
++instead of eventual
++\fBPAM_NEW_AUTHTOK_REQD\fR
++or
++\fBPAM_AUTHTOK_EXPIRED\fR\&.
++.RE
++.PP
+ Invalid arguments are logged with
+ \fBsyslog\fR(3)\&.
+ .SH "MODULE TYPES PROVIDED"

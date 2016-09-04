@@ -36,11 +36,23 @@ LIBPAM_CONFLICTS=
 #
 # LIBPAM_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBPAM_IPK_VERSION=2
+LIBPAM_IPK_VERSION=3
 
 #
 # LIBPAM_CONFFILES should be a list of user-editable files
-LIBPAM_CONFFILES=$(TARGET_PREFIX)/etc/pam.conf
+LIBPAM_CONFFILES=\
+$(TARGET_PREFIX)/etc/pam.conf \
+$(TARGET_PREFIX)/etc/security/time.conf \
+$(TARGET_PREFIX)/etc/security/access.conf \
+$(TARGET_PREFIX)/etc/security/pam_env.conf \
+$(TARGET_PREFIX)/etc/security/group.conf \
+$(TARGET_PREFIX)/etc/security/namespace.conf \
+$(TARGET_PREFIX)/etc/security/limits.conf \
+$(TARGET_PREFIX)/etc/pam.d/common-account \
+$(TARGET_PREFIX)/etc/pam.d/common-auth \
+$(TARGET_PREFIX)/etc/pam.d/common-password \
+$(TARGET_PREFIX)/etc/pam.d/common-session \
+$(TARGET_PREFIX)/etc/pam.d/other \
 
 #
 # LIBPAM_PATCHES should list any patches, in the the order in
@@ -66,6 +78,7 @@ $(LIBPAM_SOURCE_DIR)/040_pam_limits_log_failure \
 $(LIBPAM_SOURCE_DIR)/045_pam_dispatch_jump_is_ignore \
 $(LIBPAM_SOURCE_DIR)/054_pam_security_abstract_securetty_handling \
 $(LIBPAM_SOURCE_DIR)/055_pam_unix_nullok_secure \
+$(LIBPAM_SOURCE_DIR)/056-pam_unix_no_pass_expiry.patch \
 $(LIBPAM_SOURCE_DIR)/cve-2011-4708.patch \
 $(LIBPAM_SOURCE_DIR)/update-motd \
 $(LIBPAM_SOURCE_DIR)/no_PATH_MAX_on_hurd \
@@ -239,6 +252,7 @@ $(LIBPAM_IPK): $(LIBPAM_BUILD_DIR)/.built
 	find $(LIBPAM_IPK_DIR)/$(TARGET_PREFIX) -type f -name '*.la' -exec rm -f {} \;
 	$(INSTALL) -d $(LIBPAM_IPK_DIR)$(TARGET_PREFIX)/etc/pam.d
 	$(INSTALL) -m 644 $(LIBPAM_BUILD_DIR)/conf/pam.conf $(LIBPAM_IPK_DIR)$(TARGET_PREFIX)/etc/pam.conf
+	$(INSTALL) -m 644 $(LIBPAM_SOURCE_DIR)/conf/{common-account,common-auth,common-password,common-session,other} $(LIBPAM_IPK_DIR)$(TARGET_PREFIX)/etc/pam.d
 #	$(INSTALL) -d $(LIBPAM_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
 #	$(INSTALL) -m 755 $(LIBPAM_SOURCE_DIR)/rc.libpam $(LIBPAM_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibpam
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIBPAM_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXlibpam
