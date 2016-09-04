@@ -44,7 +44,7 @@ LIBAVAHI_CLIENT_PRIORITY=optional
 LIBAVAHI_CORE_PRIORITY=optional
 LIBAVAHI_GLIB_PRIORITY=optional
 LIBAVAHI_GOBJECT_PRIORITY=optional
-AVAHI_DEPENDS=libavahi-common, libavahi-client, libavahi-glib, libavahi-gobject, expat, libdaemon, dbus
+AVAHI_DEPENDS=libavahi-common, libavahi-client, libavahi-core, libavahi-glib, libavahi-gobject, expat, libdaemon, dbus
 ifeq (uclibc,$(LIBC_STYLE))
 LIBAVAHI_COMMON_DEPENDS=libintl
 else
@@ -60,7 +60,7 @@ AVAHI_CONFLICTS=
 #
 # AVAHI_IPK_VERSION should be incremented when the ipk changes.
 #
-AVAHI_IPK_VERSION=1
+AVAHI_IPK_VERSION=2
 
 #
 # AVAHI_CONFFILES should be a list of user-editable files
