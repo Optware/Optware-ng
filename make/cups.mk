@@ -33,7 +33,7 @@ LIBCUPSMIME_DESCRIPTION=Common Unix Printing System - MIME library
 LIBCUPSPPDC_DESCRIPTION=Common Unix Printing System - PPDC library
 CUPS_SECTION=net
 CUPS_PRIORITY=optional
-LIBCUPS_DEPENDS=zlib, avahi
+LIBCUPS_DEPENDS=zlib, libavahi-common, libavahi-client
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 LIBCUPS_DEPENDS+=, libiconv
 endif
@@ -44,7 +44,7 @@ LIBCUPSCGI_DEPENDS=libcups
 LIBCUPSIMAGE_DEPENDS=libcups
 LIBCUPSMIME_DEPENDS=libcups
 LIBCUPSPPDC_DEPENDS=libcups, libstdc++
-CUPS_DEPENDS=libcups, libcupscgi, libcupsimage, libcupsmime, libcupsppdc, libjpeg, libpng, libpam, libtiff, openssl, psmisc, libusb1, dbus, libacl
+CUPS_DEPENDS=libcups, libcupscgi, libcupsimage, libcupsmime, libcupsppdc, libjpeg, libpng, libpam, libtiff, openssl, psmisc, libusb1, dbus, avahi, libacl
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
 CUPS_DEPENDS+=, openldap-libs
 endif
@@ -55,7 +55,7 @@ CUPS_CONFLICTS=
 #
 # CUPS_IPK_VERSION should be incremented when the ipk changes.
 #
-CUPS_IPK_VERSION=3
+CUPS_IPK_VERSION=4
 
 CUPS_DOC_DESCRIPTION=Common Unix Printing System documentation.
 CUPS-DEV_DESCRIPTION=Development files for CUPS
