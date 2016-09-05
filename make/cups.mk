@@ -55,7 +55,7 @@ CUPS_CONFLICTS=
 #
 # CUPS_IPK_VERSION should be incremented when the ipk changes.
 #
-CUPS_IPK_VERSION=5
+CUPS_IPK_VERSION=6
 
 CUPS_DOC_DESCRIPTION=Common Unix Printing System documentation.
 CUPS-DEV_DESCRIPTION=Development files for CUPS
@@ -64,7 +64,7 @@ CUPS-DEV_DESCRIPTION=Development files for CUPS
 # CUPS_CONFFILES should be a list of user-editable files
 CUPS_CONFFILES=$(TARGET_PREFIX)/etc/cups/cupsd.conf $(TARGET_PREFIX)/etc/cups/printers.conf \
 		$(TARGET_PREFIX)/etc/cups/cups-files.conf $(TARGET_PREFIX)/etc/cups/printers.conf \
-		$(TARGET_PREFIX)/etc/cups/snmp.conf $(TARGET_PREFIX)/etc/cups/mime.types $(TARGET_PREFIX)/etc/cups/mime.convs \
+		$(TARGET_PREFIX)/etc/cups/snmp.conf $(TARGET_PREFIX)/share/cups/mime/mime.types $(TARGET_PREFIX)/share/cups/mime/mime.convs \
 		$(TARGET_PREFIX)/etc/init.d/S88cupsd
 
 #
@@ -494,10 +494,8 @@ $(CUPS_IPK) $(CUPS-DEV_IPK): $(CUPS_BUILD_DIR)/.locales
 	$(STRIP_COMMAND) $(CUPS_IPK_DIR)$(TARGET_PREFIX)/lib/cups/$$d/*; \
 	done
 # Copy the configuration file
-	$(INSTALL) -m 644 $(CUPS_SOURCE_DIR)/cupsd.conf $(CUPS_IPK_DIR)$(TARGET_PREFIX)/etc/cups
-	$(INSTALL) -m 644 $(CUPS_SOURCE_DIR)/printers.conf $(CUPS_IPK_DIR)$(TARGET_PREFIX)/etc/cups
-	$(INSTALL) -m 644 $(CUPS_SOURCE_DIR)/mime.types $(CUPS_IPK_DIR)$(TARGET_PREFIX)/etc/cups
-	$(INSTALL) -m 644 $(CUPS_SOURCE_DIR)/mime.convs $(CUPS_IPK_DIR)$(TARGET_PREFIX)/etc/cups
+#	$(INSTALL) -m 644 $(CUPS_SOURCE_DIR)/mime.types $(CUPS_IPK_DIR)$(TARGET_PREFIX)/share/cups/mime
+#	$(INSTALL) -m 644 $(CUPS_SOURCE_DIR)/mime.convs $(CUPS_IPK_DIR)$(TARGET_PREFIX)/share/cups/mime
 # Copy the init.d startup file
 	$(INSTALL) -d $(CUPS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
 	$(INSTALL) -m 755 $(CUPS_SOURCE_DIR)/rc.cups $(CUPS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S88cupsd

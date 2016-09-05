@@ -19,7 +19,7 @@ test "$ENABLED" != "0" || exit 0
 
 start_it_up()
 {
-  if [ -z "`%OPTWARE_TARGET_PREFIX%/bin/busybox pidof $NAME`" ]; then
+  if [ -n "`%OPTWARE_TARGET_PREFIX%/bin/busybox pidof $NAME`" ]; then
     echo "$DESC already started; not starting."
   else
     echo -n "Starting $DESC: "
