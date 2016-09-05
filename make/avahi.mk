@@ -44,7 +44,7 @@ LIBAVAHI_CLIENT_PRIORITY=optional
 LIBAVAHI_CORE_PRIORITY=optional
 LIBAVAHI_GLIB_PRIORITY=optional
 LIBAVAHI_GOBJECT_PRIORITY=optional
-AVAHI_DEPENDS=libavahi-common, libavahi-client, libavahi-core, libavahi-glib, libavahi-gobject, expat, libdaemon, dbus
+AVAHI_DEPENDS=libavahi-common, libavahi-client, libavahi-core, libavahi-glib, libavahi-gobject, libcap, expat, libdaemon, dbus
 ifeq (uclibc,$(LIBC_STYLE))
 LIBAVAHI_COMMON_DEPENDS=libintl
 else
@@ -60,7 +60,7 @@ AVAHI_CONFLICTS=
 #
 # AVAHI_IPK_VERSION should be incremented when the ipk changes.
 #
-AVAHI_IPK_VERSION=2
+AVAHI_IPK_VERSION=3
 
 #
 # AVAHI_CONFFILES should be a list of user-editable files
@@ -158,7 +158,7 @@ avahi-source: $(DL_DIR)/$(AVAHI_SOURCE) $(AVAHI_PATCHES)
 # shown below to make various patches to it.
 #
 $(AVAHI_BUILD_DIR)/.configured: $(DL_DIR)/$(AVAHI_SOURCE) $(AVAHI_PATCHES) make/avahi.mk
-	$(MAKE) dbus-stage expat-stage gdbm-stage glib-stage libdaemon-stage
+	$(MAKE) dbus-stage expat-stage gdbm-stage glib-stage libdaemon-stage libcap-stage
 ifeq (uclibc,$(LIBC_STYLE))
 	$(MAKE) gettext-stage
 endif
@@ -294,6 +294,7 @@ $(LIBAVAHI_GLIB_IPK) $(LIBAVAHI_GOBJECT_IPK): $(AVAHI_BUILD_DIR)/.built
 		$(LIBAVAHI_GLIB_IPK_DIR) $(BUILD_DIR)/libavahi-glib_*_$(TARGET_ARCH).ipk \
 		$(LIBAVAHI_GOBJECT_IPK_DIR) $(BUILD_DIR)/libavahi-gobject_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(AVAHI_BUILD_DIR) DESTDIR=$(AVAHI_IPK_DIR) install-strip
+	sed -i -e '/rlimit-nproc/s/^/#/' $(AVAHI_IPK_DIR)$(TARGET_PREFIX)/etc/avahi/avahi-daemon.conf
 	rm -f $(AVAHI_IPK_DIR)$(TARGET_PREFIX)/lib/libavahi*.la
 	for lib in common client core glib gobject; do \
 		$(INSTALL) -d $(BUILD_DIR)/libavahi-$$lib-$(AVAHI_VERSION)-ipk$(TARGET_PREFIX)/lib; \
