@@ -493,9 +493,11 @@ $(CUPS_IPK) $(CUPS-DEV_IPK): $(CUPS_BUILD_DIR)/.locales
 	for d in backend cgi-bin daemon filter monitor notifier; do \
 	$(STRIP_COMMAND) $(CUPS_IPK_DIR)$(TARGET_PREFIX)/lib/cups/$$d/*; \
 	done
-# Copy the configuration file
 #	$(INSTALL) -m 644 $(CUPS_SOURCE_DIR)/mime.types $(CUPS_IPK_DIR)$(TARGET_PREFIX)/share/cups/mime
 #	$(INSTALL) -m 644 $(CUPS_SOURCE_DIR)/mime.convs $(CUPS_IPK_DIR)$(TARGET_PREFIX)/share/cups/mime
+# Copy the configuration file
+	$(INSTALL) -m 644 $(CUPS_SOURCE_DIR)/cupsd.conf $(CUPS_IPK_DIR)$(TARGET_PREFIX)/etc/cups
+	$(INSTALL) -m 644 $(CUPS_SOURCE_DIR)/printers.conf $(CUPS_IPK_DIR)$(TARGET_PREFIX)/etc/cups
 # Copy the init.d startup file
 	$(INSTALL) -d $(CUPS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
 	$(INSTALL) -m 755 $(CUPS_SOURCE_DIR)/rc.cups $(CUPS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S88cupsd
