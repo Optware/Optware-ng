@@ -28,7 +28,7 @@ GHOSTSCRIPT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 GHOSTSCRIPT_DESCRIPTION=An interpreter for the PostScript (TM) language
 GHOSTSCRIPT_SECTION=text
 GHOSTSCRIPT_PRIORITY=optional
-GHOSTSCRIPT_DEPENDS=cups, fontconfig, libpng, libjpeg, liblcms2, openssl
+GHOSTSCRIPT_DEPENDS=libcups, libcupsimage, fontconfig, libpng, libjpeg, liblcms2, openssl, libidn
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 GHOSTSCRIPT_DEPENDS+=, libiconv
 endif
@@ -38,7 +38,7 @@ GHOSTSCRIPT_CONFLICTS=
 #
 # GHOSTSCRIPT_IPK_VERSION should be incremented when the ipk changes.
 #
-GHOSTSCRIPT_IPK_VERSION=1
+GHOSTSCRIPT_IPK_VERSION=2
 
 #
 # GHOSTSCRIPT_CONFFILES should be a list of user-editable files
@@ -148,7 +148,7 @@ else
 $(GHOSTSCRIPT_BUILD_DIR)/.configured: $(GHOSTSCRIPT_HOST_BUILD_DIR)/.built $(GHOSTSCRIPT_PATCHES)
 endif
 	$(MAKE) cups-stage fontconfig-stage openssl-stage \
-		libjpeg-stage libpng-stage libtiff-stage liblcms2-stage
+		libjpeg-stage libpng-stage libtiff-stage liblcms2-stage libidn-stage
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
 endif
