@@ -376,7 +376,7 @@ COMMON_PACKAGES = \
 	ppower ppp printproto privoxy procmail \
 	procps proftpd proxytunnel psmisc psutils pthread-stubs puppy pure-ftpd pv pwgen \
 	python python24 python25 python26 python27 python3 $(PYTHON_PACKAGES) \
-	qemacs qemu qemu-libc-i386 qpopper quagga quickie quilt \
+	qemacs qemu qemu-libc-i386 qpdf qpopper quagga quickie quilt \
 	radiusclient-ng rc rc5pipe rcs rdate \
 	readline re2c recode recordext recordprotos \
 	redir renderext renderproto rhtvision rkhunter \
