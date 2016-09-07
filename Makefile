@@ -371,7 +371,7 @@ COMMON_PACKAGES = \
 	pcal pcapsipdump pciutils pcre pcsc-lite pen perltgd $(PERL_PACKAGES) pinentry pixman \
 	phoneme-advanced \
 	php php-apache php-thttpd php-memcached phpmyadmin \
-	picocom picolisp pkgconfig plowshare poco polipo pop3proxy \
+	picocom picolisp pkgconfig plowshare poco polipo pop3proxy poppler \
 	popt poptop portmap postgresql postfix pound powertop \
 	ppower ppp printproto privoxy procmail \
 	procps proftpd proxytunnel psmisc psutils pthread-stubs puppy pure-ftpd pv pwgen \
