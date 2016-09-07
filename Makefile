@@ -267,7 +267,7 @@ COMMON_PACKAGES = \
 	classpath clamav clearsilver climm clinkcc clips cmdftp collectd \
 	confuse connect coreutils corkscrew cpio cppunit cpufrequtils cron cryptcat \
 	cscope ctags ctcs ctorrent ctrlproxy \
-	cups cups-pdf cvs \
+	cups cups-filters cups-pdf cvs \
 	cyrus-imapd cyrus-sasl \
 	daemonize dansguardian dash davtools \
 	dbus dbus-glib dbus-python \
