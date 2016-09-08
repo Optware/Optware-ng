@@ -61,7 +61,7 @@ CUPS_FILTERS_CONFLICTS=
 #
 # CUPS_FILTERS_IPK_VERSION should be incremented when the ipk changes.
 #
-CUPS_FILTERS_IPK_VERSION=2
+CUPS_FILTERS_IPK_VERSION=3
 
 #
 # CUPS_FILTERS_CONFFILES should be a list of user-editable files
@@ -343,6 +343,7 @@ $(LIBCUPSFILTERS_IPK) $(LIBCUPSFILTERS_DEV_IPK): $(CUPS_FILTERS_BUILD_DIR)/.buil
 		$(LIBCUPSFILTERS_IPK_DIR) $(BUILD_DIR)/libcupsfilters_*_$(TARGET_ARCH).ipk \
 		$(LIBCUPSFILTERS_DEV_IPK_DIR) $(BUILD_DIR)/libcupsfilters-dev_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(CUPS_FILTERS_BUILD_DIR) DESTDIR=$(CUPS_FILTERS_IPK_DIR) install-strip
+	chmod 755 $(CUPS_FILTERS_IPK_DIR)$(TARGET_PREFIX)/lib/cups/*
 	rm -f $(CUPS_FILTERS_IPK_DIR)$(TARGET_PREFIX)/lib/*.la
 	sed -i -e 's|$(STAGING_PREFIX)|$(TARGET_PREFIX)|g' $(CUPS_FILTERS_IPK_DIR)$(TARGET_PREFIX)/lib/pkgconfig/{libfontembed,libcupsfilters}.pc
 	$(INSTALL) -d $(CUPS_FILTERS_DOC_IPK_DIR)$(TARGET_PREFIX)/share
