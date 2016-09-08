@@ -55,7 +55,7 @@ CUPS_CONFLICTS=
 #
 # CUPS_IPK_VERSION should be incremented when the ipk changes.
 #
-CUPS_IPK_VERSION=6
+CUPS_IPK_VERSION=7
 
 CUPS_DOC_DESCRIPTION=Common Unix Printing System documentation.
 CUPS-DEV_DESCRIPTION=Development files for CUPS
@@ -493,6 +493,7 @@ $(CUPS_IPK) $(CUPS-DEV_IPK): $(CUPS_BUILD_DIR)/.locales
 	for d in backend cgi-bin daemon filter monitor notifier; do \
 	$(STRIP_COMMAND) $(CUPS_IPK_DIR)$(TARGET_PREFIX)/lib/cups/$$d/*; \
 	done
+	chmod 700 $(CUPS_IPK_DIR)$(TARGET_PREFIX)/lib/cups/backend/usb
 #	$(INSTALL) -m 644 $(CUPS_SOURCE_DIR)/mime.types $(CUPS_IPK_DIR)$(TARGET_PREFIX)/share/cups/mime
 #	$(INSTALL) -m 644 $(CUPS_SOURCE_DIR)/mime.convs $(CUPS_IPK_DIR)$(TARGET_PREFIX)/share/cups/mime
 # Copy the configuration file
@@ -513,8 +514,8 @@ $(CUPS_IPK) $(CUPS-DEV_IPK): $(CUPS_BUILD_DIR)/.locales
 	mv $(CUPS_IPK_DIR)$(TARGET_PREFIX)/include $(CUPS_IPK_DIR)-dev$(TARGET_PREFIX)/
 	sed -i -e '/^SystemGroup/s/^/#/' $(CUPS_IPK_DIR)$(TARGET_PREFIX)/etc/cups/cups-files.conf
 	$(MAKE) $(CUPS_IPK_DIR)/CONTROL/control
-#	$(INSTALL) -m 644 $(CUPS_SOURCE_DIR)/postinst $(CUPS_IPK_DIR)/CONTROL/postinst
-	$(INSTALL) -m 644 $(CUPS_SOURCE_DIR)/prerm $(CUPS_IPK_DIR)/CONTROL/prerm
+	$(INSTALL) -m 755 $(CUPS_SOURCE_DIR)/postinst $(CUPS_IPK_DIR)/CONTROL/postinst
+	$(INSTALL) -m 755 $(CUPS_SOURCE_DIR)/prerm $(CUPS_IPK_DIR)/CONTROL/prerm
 	echo $(CUPS_CONFFILES) | sed -e 's/ /\n/g' > $(CUPS_IPK_DIR)/CONTROL/conffiles
 	$(MAKE) $(CUPS_IPK_DIR)-dev/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CUPS_IPK_DIR)

@@ -1,3 +1,4 @@
 #!/bin/sh
-cat %OPTWARE_TARGET_PREFIX%/doc/cups/cups-install.doc
-exit 0
+#cat %OPTWARE_TARGET_PREFIX%/doc/cups/cups-install.doc
+#exit 0
+chmod 755 %OPTWARE_TARGET_PREFIX%/lib/cups/filter
