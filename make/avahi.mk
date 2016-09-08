@@ -20,8 +20,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-AVAHI_SITE=http://avahi.org/download
-AVAHI_VERSION=0.6.31
+AVAHI_SITE=https://github.com/lathiat/avahi/releases/download/v$(AVAHI_VERSION)
+AVAHI_VERSION=0.6.32
 AVAHI_SOURCE=avahi-$(AVAHI_VERSION).tar.gz
 AVAHI_DIR=avahi-$(AVAHI_VERSION)
 AVAHI_UNZIP=zcat
@@ -60,7 +60,7 @@ AVAHI_CONFLICTS=
 #
 # AVAHI_IPK_VERSION should be incremented when the ipk changes.
 #
-AVAHI_IPK_VERSION=3
+AVAHI_IPK_VERSION=1
 
 #
 # AVAHI_CONFFILES should be a list of user-editable files
@@ -72,7 +72,7 @@ $(TARGET_PREFIX)/etc/avahi/hosts \
 $(TARGET_PREFIX)/etc/avahi/services/sftp-ssh.service \
 $(TARGET_PREFIX)/etc/avahi/services/ssh.service \
 $(TARGET_PREFIX)/etc/dbus-1/system.d/avahi-dbus.conf \
-#$(TARGET_PREFIX)/etc/init.d/SXXavahi
+$(TARGET_PREFIX)/etc/init.d/S68avahi-daemon
 
 #
 # AVAHI_PATCHES should list any patches, in the the order in
@@ -306,8 +306,8 @@ $(LIBAVAHI_GLIB_IPK) $(LIBAVAHI_GOBJECT_IPK): $(AVAHI_BUILD_DIR)/.built
 	done
 #	$(INSTALL) -d $(AVAHI_IPK_DIR)$(TARGET_PREFIX)/etc/
 #	$(INSTALL) -m 644 $(AVAHI_SOURCE_DIR)/avahi.conf $(AVAHI_IPK_DIR)$(TARGET_PREFIX)/etc/avahi.conf
-#	$(INSTALL) -d $(AVAHI_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
-#	$(INSTALL) -m 755 $(AVAHI_SOURCE_DIR)/rc.avahi $(AVAHI_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXavahi
+	$(INSTALL) -d $(AVAHI_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(INSTALL) -m 755 $(AVAHI_SOURCE_DIR)/rc.avahi-daemon $(AVAHI_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S68avahi-daemon
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(AVAHI_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXavahi
 	$(MAKE) $(AVAHI_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(AVAHI_SOURCE_DIR)/postinst $(AVAHI_IPK_DIR)/CONTROL/postinst

@@ -1,6 +1,6 @@
 --- a/configure
 +++ configure
-@@ -18599,19 +18599,28 @@
+@@ -19383,19 +19383,28 @@
  fi
  
  
@@ -19,11 +19,11 @@
  
 -done
 +#include <sys/inotify.h>
- 
++
 +int
 +main ()
 +{
-+
+ 
 +inotify_init();
 +
 +  ;
@@ -40,24 +40,18 @@
  
   if test "x$have_inotify" = "xyes"; then
    HAVE_INOTIFY_TRUE=
-@@ -18682,20 +18691,6 @@
-     ;;
- esac
- 
+@@ -19469,14 +19478,6 @@
+ INTLTOOL_REQUIRED_VERSION_AS_INT=`echo 0.35.0 | awk -F. '{ print $ 1 * 1000 + $ 2 * 100 + $ 3; }'`
+ INTLTOOL_APPLIED_VERSION=`intltool-update --version | head -1 | cut -d" " -f3`
+ INTLTOOL_APPLIED_VERSION_AS_INT=`echo $INTLTOOL_APPLIED_VERSION | awk -F. '{ print $ 1 * 1000 + $ 2 * 100 + $ 3; }'`
 -if test -n "0.35.0"; then
 -    { $as_echo "$as_me:${as_lineno-$LINENO}: checking for intltool >= 0.35.0" >&5
 -$as_echo_n "checking for intltool >= 0.35.0... " >&6; }
--
--    INTLTOOL_REQUIRED_VERSION_AS_INT=`echo 0.35.0 | awk -F. '{ print $ 1 * 1000 + $ 2 * 100 + $ 3; }'`
--    INTLTOOL_APPLIED_VERSION=`intltool-update --version | head -1 | cut -d" " -f3`
--    INTLTOOL_APPLIED_VERSION_AS_INT=`echo $INTLTOOL_APPLIED_VERSION | awk -F. '{ print $ 1 * 1000 + $ 2 * 100 + $ 3; }'`
--
 -    { $as_echo "$as_me:${as_lineno-$LINENO}: result: $INTLTOOL_APPLIED_VERSION found" >&5
 -$as_echo "$INTLTOOL_APPLIED_VERSION found" >&6; }
 -    test "$INTLTOOL_APPLIED_VERSION_AS_INT" -ge "$INTLTOOL_REQUIRED_VERSION_AS_INT" ||
 -	as_fn_error $? "Your intltool is too old.  You need intltool 0.35.0 or later." "$LINENO" 5
 -fi
--
+ 
  # Extract the first word of "intltool-update", so it can be a program name with args.
  set dummy intltool-update; ac_word=$2
- { $as_echo "$as_me:${as_lineno-$LINENO}: checking for $ac_word" >&5

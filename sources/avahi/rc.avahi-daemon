@@ -1,0 +1,30 @@
+#!/bin/sh
+
+case "$1" in
+   start)
+      echo "Starting the Avahi Daemon"
+      %OPTWARE_TARGET_PREFIX%/sbin/avahi-daemon -D
+
+   stop)
+      echo "Stopping the Avahi Daemon"
+      %OPTWARE_TARGET_PREFIX%/sbin/avahi-daemon -k
+      ;;
+
+   reload)
+      echo "Reloading the Avahi Daemon"
+      %OPTWARE_TARGET_PREFIX%/sbin/avahi-daemon -r
+      ;;
+
+   restart)
+      $0 stop
+      sleep 1
+      $0 start
+      ;;
+
+   *)
+      echo "Usage: $0 {start|stop|reload|restart}"
+      exit 1
+      ;;
+esac
+
+exit 0
