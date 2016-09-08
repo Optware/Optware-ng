@@ -1,4 +1,6 @@
 #!/bin/sh
 #cat %OPTWARE_TARGET_PREFIX%/doc/cups/cups-install.doc
 #exit 0
-chmod 755 %OPTWARE_TARGET_PREFIX%/lib/cups/filter
+for dir in backend cgi-bin daemon driver filter monitor notifier; do
+	chmod 755 %OPTWARE_TARGET_PREFIX%/lib/cups/$dir
+done

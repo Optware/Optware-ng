@@ -55,7 +55,7 @@ CUPS_CONFLICTS=
 #
 # CUPS_IPK_VERSION should be incremented when the ipk changes.
 #
-CUPS_IPK_VERSION=7
+CUPS_IPK_VERSION=8
 
 CUPS_DOC_DESCRIPTION=Common Unix Printing System documentation.
 CUPS-DEV_DESCRIPTION=Development files for CUPS
@@ -72,7 +72,10 @@ CUPS_CONFFILES=$(TARGET_PREFIX)/etc/cups/cupsd.conf $(TARGET_PREFIX)/etc/cups/pr
 # which they should be applied to the source code.
 #
 #CUPS_PATCHES=$(CUPS_SOURCE_DIR)/man-Makefile.patch $(CUPS_SOURCE_DIR)/ppdc-Makefile.patch
-CUPS_PATCHES=#$(CUPS_SOURCE_DIR)/build_without_gnutls.patch
+CUPS_PATCHES=\
+$(CUPS_SOURCE_DIR)/airprint-support.patch \
+$(CUPS_SOURCE_DIR)/ppdc.patch \
+#$(CUPS_SOURCE_DIR)/build_without_gnutls.patch
 
 ifeq ($(LIBC_STYLE), uclibc)
 ifneq ($(OPTWARE_TARGET), ts101)

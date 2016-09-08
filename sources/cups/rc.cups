@@ -23,6 +23,9 @@ start_it_up()
     echo "$DESC already started; not starting."
   else
     echo -n "Starting $DESC: "
+    for dir in backend cgi-bin daemon driver filter monitor notifier; do
+        chmod 755 %OPTWARE_TARGET_PREFIX%/lib/cups/$dir
+    done
     ${DAEMON} $PARAMS
     echo "$NAME."
   fi

@@ -1,0 +1,70 @@
+Description: Patch to support Apple AirPrint (printing from iPhone, iPad, iPod Touch to a CUPS server)
+Author: Till Kamppeter <till.kamppeter@gmail.com>
+Bug: https://bugs.launchpad.net/bugs/711779
+Bug: https://bugs.launchpad.net/bugs/1054495
+Bug-Debian: http://bugs.debian.org/700961
+Last-Update: 2013-02-20
+
+--- a/scheduler/dirsvc.c
++++ b/scheduler/dirsvc.c
+@@ -622,6 +622,12 @@
+     keyvalue[count  ][0] = "pdl";
+     keyvalue[count++][1] = p->pdl ? p->pdl : "application/postscript";
+ 
++    /* iOS 6 does not accept this printer as AirPrint printer if there is
++       no URF txt record or "URF=none", "DM3" is the minimum needed found
++       by try and error */
++    keyvalue[count  ][0] = "URF";
++    keyvalue[count++][1] = "DM3";
++
+     if (get_auth_info_required(p, air_str, sizeof(air_str)))
+     {
+       keyvalue[count  ][0] = "air";
+--- a/conf/mime.convs.in
++++ b/conf/mime.convs.in
+@@ -48,6 +48,9 @@
+ # PWG Raster filter for IPP Everywhere...
+ application/vnd.cups-raster	image/pwg-raster		100	rastertopwg
+ 
++# Needed for printing from iOS (AirPrint) clients
++image/urf    	      	       application/pdf			100	-
++
+ ########################################################################
+ #
+ # Raw filter...
+--- a/conf/mime.types
++++ b/conf/mime.types
+@@ -110,6 +110,9 @@
+ image/x-bitmap			bmp string(0,BM) + !printable(2,14)
+ image/x-icon			ico
+ 
++# Needed for printing from iOS (AirPrint) clients
++image/urf			urf string(0,UNIRAST<00>)
++
+ ########################################################################
+ #
+ # Text files...
+--- a/scheduler/printers.c
++++ b/scheduler/printers.c
+@@ -3592,7 +3592,9 @@
+       }
+       else if (!_cups_strcasecmp(type->super, "image"))
+       {
+-        if (!_cups_strcasecmp(type->type, "jpeg"))
++        if (!_cups_strcasecmp(type->type, "urf"))
++	  strlcat(pdl, "image/urf,", sizeof(pdl));
++	else if (!_cups_strcasecmp(type->type, "jpeg"))
+ 	  strlcat(pdl, "image/jpeg,", sizeof(pdl));
+ 	else if (!_cups_strcasecmp(type->type, "png"))
+ 	  strlcat(pdl, "image/png,", sizeof(pdl));
+--- a/scheduler/conf.c
++++ b/scheduler/conf.c
+@@ -746,7 +746,7 @@
+   DefaultShared            = CUPS_DEFAULT_DEFAULT_SHARED;
+ 
+ #if defined(HAVE_DNSSD) || defined(HAVE_AVAHI)
+-  cupsdSetString(&DNSSDSubTypes, "_cups,_print");
++  cupsdSetString(&DNSSDSubTypes, "_cups,_print,_universal");
+ #endif /* HAVE_DNSSD || HAVE_AVAHI */
+ 
+   cupsdSetString(&LPDConfigFile, CUPS_DEFAULT_LPD_CONFIG_FILE);
