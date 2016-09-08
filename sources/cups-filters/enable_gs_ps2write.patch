@@ -1,0 +1,88 @@
+--- a/configure
++++ b/configure
+@@ -879,6 +879,7 @@
+ enable_ijs
+ with_pdftops
+ with_gs_path
++enable_gs_ps2write
+ with_pdftops_path
+ with_pdftocairo_path
+ with_acroread_path
+@@ -1585,6 +1586,8 @@
+   --disable-mutool        Disable filters using mutool.
+   --disable-ghostscript   Disable filters using Ghostscript.
+   --disable-ijs           Disable filters using IJS.
++  --enable-gs-ps2write    Use ps2write gs device instead of pswrite (default:
++                          auto).
+   --disable-foomatic      Disable Foomatic-based filters.
+   --enable-werror         Treat all warnings as errors, useful for
+                           development.
+@@ -19525,6 +19528,14 @@
+ 
+ fi
+ 
++# Check whether --enable-gs-ps2write was given.
++if test "${enable_gs_ps2write+set}" = set; then :
++  enableval=$enable_gs_ps2write; enable_gs_ps2write="$enableval"
++else
++  enable_gs_ps2write=auto
++
++fi
++
+ 
+ # Check whether --with-pdftops-path was given.
+ if test "${with_pdftops_path+set}" = set; then :
+@@ -19650,9 +19661,11 @@
+ 
+ 		{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether gs supports the ps2write device" >&5
+ $as_echo_n "checking whether gs supports the ps2write device... " >&6; }
+-		if `$CUPS_GHOSTSCRIPT -h 2>&1 | grep -q ps2write`; then :
++		if test "x$enable_gs_ps2write" == "xauto"; then :
+ 
+-			{ $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
++			if `$CUPS_GHOSTSCRIPT -h 2>&1 | grep -q ps2write`; then :
++
++				{ $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+ $as_echo "yes" >&6; }
+ 
+ $as_echo "#define HAVE_GHOSTSCRIPT_PS2WRITE /**/" >>confdefs.h
+@@ -19660,11 +19673,38 @@
+ 
+ else
+ 
+-			{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
++				{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+ $as_echo "no" >&6; }
+ 
+ fi
+ 
++else
++
++			if test "x$enable_gs_ps2write" == "xyes"; then :
++
++				{ $as_echo "$as_me:${as_lineno-$LINENO}: result: yes (forced)" >&5
++$as_echo "yes (forced)" >&6; }
++
++$as_echo "#define HAVE_GHOSTSCRIPT_PS2WRITE /**/" >>confdefs.h
++
++
++else
++
++				if test "x$enable_gs_ps2write" == "xno"; then :
++
++					{ $as_echo "$as_me:${as_lineno-$LINENO}: result: no (forced)" >&5
++$as_echo "no (forced)" >&6; }
++
++else
++
++					as_fn_error $? "Unknown value of enable-gs-ps2write provided: $enable_gs_ps2write" "$LINENO" 5
++
++fi
++
++fi
++
++fi
++
+ else
+ 
+ 		CUPS_GHOSTSCRIPT="gs"

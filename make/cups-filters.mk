@@ -61,7 +61,7 @@ CUPS_FILTERS_CONFLICTS=
 #
 # CUPS_FILTERS_IPK_VERSION should be incremented when the ipk changes.
 #
-CUPS_FILTERS_IPK_VERSION=1
+CUPS_FILTERS_IPK_VERSION=2
 
 #
 # CUPS_FILTERS_CONFFILES should be a list of user-editable files
@@ -81,7 +81,8 @@ $(TARGET_PREFIX)/share/cups/mime/cupsfilters.types \
 # CUPS_FILTERS_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#CUPS_FILTERS_PATCHES=$(CUPS_FILTERS_SOURCE_DIR)/configure.patch
+CUPS_FILTERS_PATCHES=\
+$(CUPS_FILTERS_SOURCE_DIR)/enable_gs_ps2write.patch \
 
 #
 # If the compilation of the package requires additional
@@ -171,7 +172,7 @@ endif
 	$(CUPS_FILTERS_UNZIP) $(DL_DIR)/$(CUPS_FILTERS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(CUPS_FILTERS_PATCHES)" ; \
 		then cat $(CUPS_FILTERS_PATCHES) | \
-		$(PATCH) -d $(BUILD_DIR)/$(CUPS_FILTERS_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(CUPS_FILTERS_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(CUPS_FILTERS_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(CUPS_FILTERS_DIR) $(@D) ; \
@@ -193,6 +194,7 @@ endif
 		--with-cups-config=$(STAGING_PREFIX)/bin/cups-config \
 		--without-rcdir \
 		--with-gs-path=$(TARGET_PREFIX)/bin/gs \
+		--enable-gs-ps2write \
 		--with-pdftops-path=$(TARGET_PREFIX)/bin/gs \
 		--docdir=$(TARGET_PREFIX)/share/doc/cups-filters \
 	)

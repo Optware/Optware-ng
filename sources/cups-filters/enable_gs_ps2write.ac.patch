@@ -1,0 +1,43 @@
+--- a/configure.ac
++++ b/configure.ac
+@@ -513,6 +513,11 @@
+ 	[with_gs_path="$withval"],
+ 	[with_gs_path=system]
+ )
++AC_ARG_ENABLE([gs-ps2write],
++	[AS_HELP_STRING([--enable-gs-ps2write], [Use ps2write gs device instead of pswrite (default: auto).])],
++	[enable_gs_ps2write="$enableval"],
++	[enable_gs_ps2write=auto]
++)
+ AC_ARG_WITH([pdftops-path],
+         [AS_HELP_STRING([--with-pdftops-path=value], [Set path to pdftops/ghostscript binary (default: system).])],
+         [with_pdftops_path="$withval"],
+@@ -557,11 +562,24 @@
+ 		AS_IF([test x"$with_pdftops" = xgs], [AC_DEFINE_UNQUOTED([CUPS_PDFTOPS_RENDERER], [GS], [Define default renderer])])
+ 
+ 		AC_MSG_CHECKING(whether gs supports the ps2write device)
+-		AS_IF([`$CUPS_GHOSTSCRIPT -h 2>&1 | grep -q ps2write`], [
+-			AC_MSG_RESULT([yes])
+-			AC_DEFINE([HAVE_GHOSTSCRIPT_PS2WRITE], [], [gs supports ps2write])
++		AS_IF([test "x$enable_gs_ps2write" == "xauto"], [
++			AS_IF([`$CUPS_GHOSTSCRIPT -h 2>&1 | grep -q ps2write`], [
++				AC_MSG_RESULT([yes])
++				AC_DEFINE([HAVE_GHOSTSCRIPT_PS2WRITE], [], [gs supports ps2write])
++			], [
++				AC_MSG_RESULT([no])
++			])
+ 		], [
+-			AC_MSG_RESULT([no])
++			AS_IF([test "x$enable_gs_ps2write" == "xyes"], [
++				AC_MSG_RESULT([yes (forced)])
++				AC_DEFINE([HAVE_GHOSTSCRIPT_PS2WRITE], [], [gs supports ps2write])
++			], [
++				AS_IF([test "x$enable_gs_ps2write" == "xno"], [
++					AC_MSG_RESULT([no (forced)])
++				], [
++					AC_MSG_ERROR([Unknown value of enable-gs-ps2write provided: $enable_gs_ps2write])
++				])
++			])
+ 		])
+ 	], [
+ 		CUPS_GHOSTSCRIPT="gs"
