@@ -11,3 +11,47 @@
  
      return g_strdup (locale);
  }
+ 
+--- a/intl/localcharset.c
++++ b/intl/localcharset.c
+@@ -310,7 +310,12 @@
+ 	{
+ 	  locale = getenv ("LC_CTYPE");
+ 	  if (locale == NULL || locale[0] == '\0')
+-	    locale = getenv ("LANG");
++	    {
++	      locale = getenv ("LANG");
++/* Optware-ng change: default locale to en_US.UTF-8 */
++	      if (locale == NULL || locale[0] == '\0'
++	        locale = "en_US.UTF-8";
++	    }
+ 	}
+     }
+ 
+@@ -343,7 +348,12 @@
+     {
+       locale = getenv ("LC_CTYPE");
+       if (locale == NULL || locale[0] == '\0')
+-	locale = getenv ("LANG");
++	    {
++	      locale = getenv ("LANG");
++/* Optware-ng change: default locale to en_US.UTF-8 */
++	      if (locale == NULL || locale[0] == '\0'
++	        locale = "en_US.UTF-8";
++	    }
+     }
+   if (locale != NULL && locale[0] != '\0')
+     {
+--- a/intl/localename.c
++++ b/intl/localename.c
+@@ -733,7 +733,9 @@
+   if (retval != NULL && retval[0] != '\0')
+     return retval;
+ 
+-  return NULL;
++/* Optware-ng change: default locale to en_US.UTF-8
++  return NULL; */
++  return "en_US.UTF-8";
+ #endif
+ }
+ 
