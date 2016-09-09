@@ -1,0 +1,64 @@
+--- a/lib/tty/color-slang.c
++++ b/lib/tty/color-slang.c
+@@ -62,7 +62,8 @@
+ 
+     if (!mc_tty_color_disable)
+     {
+-        const char *terminal = getenv ("TERM");
++/*      const char *terminal = getenv ("TERM");*/
++        const char *terminal = "xterm";
+         const size_t len = strlen (terminal);
+         char *cts = mc_global.tty.color_terminal_string;
+ 
+--- a/lib/tty/key.c	2015-11-06 01:11:08.000000000 -0800
++++ b/lib/tty/key.c	2016-09-09 05:16:43.578251917 -0700
+@@ -1317,7 +1317,8 @@
+ void
+ init_key (void)
+ {
+-    const char *term = getenv ("TERM");
++/*    const char *term = getenv ("TERM");*/
++    const char *term = "xterm";
+ 
+     /* This has to be the first define_sequence */
+     /* So, we can assume that the first keys member has ESC */
+--- a/lib/tty/tty.c
++++ b/lib/tty/tty.c
+@@ -95,12 +95,13 @@
+     const char *termvalue;
+     const char *xdisplay;
+ 
+-    termvalue = getenv ("TERM");
++/*  termvalue = getenv ("TERM");
+     if (termvalue == NULL || *termvalue == '\0')
+     {
+         fputs (_("The TERM environment variable is unset!\n"), stderr);
+         exit (EXIT_FAILURE);
+-    }
++    }*/
++    termvalue = "xterm";
+ 
+     xdisplay = getenv ("DISPLAY");
+     if (xdisplay != NULL && *xdisplay == '\0')
+@@ -270,7 +271,8 @@
+ {
+     const char *termvalue;
+ 
+-    termvalue = getenv ("TERM");
++/*  termvalue = getenv ("TERM");*/
++    termvalue = "xterm";
+ 
+     /* Check mouse and ca capabilities */
+     /* terminfo/termcap structures have been already initialized,
+--- a/src/learn.c
++++ b/src/learn.c
+@@ -353,7 +353,8 @@
+     char *section;
+     gboolean profile_changed = FALSE;
+ 
+-    section = g_strconcat ("terminal:", getenv ("TERM"), (char *) NULL);
++/*  section = g_strconcat ("terminal:", getenv ("TERM"), (char *) NULL);*/
++    section = g_strconcat ("terminal:", "xterm", (char *) NULL);
+ 
+     for (i = 0; i < learn_total; i++)
+         if (learnkeys[i].sequence != NULL)

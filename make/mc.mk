@@ -19,13 +19,14 @@ MC_CONFLICTS=
 #
 # MC_IPK_VERSION should be incremented when the ipk changes.
 #
-MC_IPK_VERSION=2
+MC_IPK_VERSION=3
 
 #
 # MC_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#MC_PATCHES=$(MC_SOURCE_DIR)/src-man2hlp.c.patch
+MC_PATCHES=\
+$(MC_SOURCE_DIR)/force-xterm.patch
 
 #
 # If the compilation of the package requires additional
