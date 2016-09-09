@@ -30,14 +30,14 @@ SPLIX_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SPLIX_DESCRIPTION=Splix is a driver for printers that speak SPL (Samsung Printer Language). This includes printers made by Samsung, Dell, and Xerox.
 SPLIX_SECTION=print
 SPLIX_PRIORITY=optional
-SPLIX_DEPENDS=cups, libjbigkit
+SPLIX_DEPENDS=libcups, libcupsimage, libjbigkit, libpng, libstdc++, libtiff
 SPLIX_SUGGESTS=
 SPLIX_CONFLICTS=
 
 #
 # SPLIX_IPK_VERSION should be incremented when the ipk changes.
 #
-SPLIX_IPK_VERSION=1
+SPLIX_IPK_VERSION=2
 
 #
 # SPLIX_CONFFILES should be a list of user-editable files
@@ -190,6 +190,7 @@ $(SPLIX_IPK): $(SPLIX_BUILD_DIR)/.built
 	rm -rf $(SPLIX_IPK_DIR) $(BUILD_DIR)/splix_*_$(TARGET_ARCH).ipk
 	PATH=$(STAGING_PREFIX)/bin:$$PATH \
 	$(MAKE) -C $(SPLIX_BUILD_DIR) DESTDIR=$(SPLIX_IPK_DIR) install
+	chmod 755 $(SPLIX_IPK_DIR)$(TARGET_PREFIX)/lib/cups/filter
 	$(STRIP_COMMAND) $(SPLIX_IPK_DIR)$(TARGET_PREFIX)/lib/cups/filter/*
 #	$(INSTALL) -d $(SPLIX_IPK_DIR)$(TARGET_PREFIX)/etc/
 #	$(INSTALL) -m 644 $(SPLIX_SOURCE_DIR)/splix.conf $(SPLIX_IPK_DIR)$(TARGET_PREFIX)/etc/splix.conf
