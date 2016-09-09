@@ -31,8 +31,8 @@ GUTENPRINT-CUPS-DRIVER_DESCRIPTION=CUPS driver from Gutenprint.
 GUTENPRINT-FOOMATIC-DB_DESCRIPTION=Support for printers using the Gutenprint printer driver suite.
 GUTENPRINT_SECTION=print
 GUTENPRINT_PRIORITY=optional
-GUTENPRINT_DEPENDS=cups, libijs, ncurses, readline
-GUTENPRINT_SUGGESTS=
+GUTENPRINT_DEPENDS=readline, libcupsimage, libcups, libijs, ncurses, readline
+GUTENPRINT_SUGGESTS=cups
 GUTENPRINT_CONFLICTS=
 
 #
@@ -154,6 +154,7 @@ $(GUTENPRINT_BUILD_DIR)/.configured: $(DL_DIR)/$(GUTENPRINT_SOURCE) $(GUTENPRINT
 		--disable-gtktest \
 		--disable-nls \
 		--disable-static \
+		--disable-rpath \
 	)
 	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
@@ -222,6 +223,7 @@ $(GUTENPRINT-CUPS-DRIVER_IPK_DIR)/CONTROL/control:
 $(GUTENPRINT_IPK): $(GUTENPRINT_BUILD_DIR)/.built
 	rm -rf $(GUTENPRINT_IPK_DIR) $(BUILD_DIR)/gutenprint_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GUTENPRINT_BUILD_DIR) install-strip DESTDIR=$(GUTENPRINT_IPK_DIR)
+	chmod 755 $(GUTENPRINT_IPK_DIR)$(TARGET_PREFIX)/lib/cups/*
 	$(MAKE) $(GUTENPRINT_IPK_DIR)/CONTROL/control
 	echo $(GUTENPRINT_CONFFILES) | sed -e 's/ /\n/g' > $(GUTENPRINT_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GUTENPRINT_IPK_DIR)
