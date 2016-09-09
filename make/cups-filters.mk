@@ -44,7 +44,7 @@ LIBFONTEMBED_PRIORITY=optional
 LIBFONTEMBED_DEV_PRIORITY=optional
 LIBCUPSFILTERS_PRIORITY=optional
 LIBCUPSFILTERS_DEV_PRIORITY=optional
-CUPS_FILTERS_DEPENDS=libavahi-client, libavahi-common, libavahi-glib, libcupsfilters, libcupsimage, libcups, libfontembed, libijs, openldap-libs, libpoppler, libqpdf
+CUPS_FILTERS_DEPENDS=libavahi-client, libavahi-common, libavahi-glib, libcupsfilters, libcupsimage, libcups, libfontembed, libijs, openldap-libs, libpoppler, libqpdf, ghostscript
 CUPS_FILTERS_DOC_DEPENDS=cups-filters
 LIBFONTEMBED_DEPENDS=libjpeg, openldap-libs, libtiff
 LIBFONTEMBED_DEV_DEPENDS=
@@ -61,7 +61,7 @@ CUPS_FILTERS_CONFLICTS=
 #
 # CUPS_FILTERS_IPK_VERSION should be incremented when the ipk changes.
 #
-CUPS_FILTERS_IPK_VERSION=3
+CUPS_FILTERS_IPK_VERSION=4
 
 #
 # CUPS_FILTERS_CONFFILES should be a list of user-editable files
