@@ -29,8 +29,8 @@ SLANG_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SLANG_DESCRIPTION=S-Lang is a multi-platform library designed to allow a developer to create robust multi-platform software.
 SLANG_SECTION=lib
 SLANG_PRIORITY=optional
-SLANG_DEPENDS=
-SLANG_SUGGESTS=pcre, libpng, ncurses-base
+SLANG_DEPENDS=ncurses-base
+SLANG_SUGGESTS=pcre, libpng
 ifneq (, $(filter libiconv, $(PACKAGES)))
 SLANG_SUGGESTS +=, libiconv
 endif
@@ -39,7 +39,7 @@ SLANG_CONFLICTS=
 #
 # SLANG_IPK_VERSION should be incremented when the ipk changes.
 #
-SLANG_IPK_VERSION ?= 2
+SLANG_IPK_VERSION ?= 3
 
 #
 # SLANG_CONFFILES should be a list of user-editable files
