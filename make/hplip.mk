@@ -29,17 +29,17 @@ HPLIP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 HPLIP_DESCRIPTION=HP Linux Imaging and Printing
 HPLIP_SECTION=misc
 HPLIP_PRIORITY=optional
-HPLIP_DEPENDS=sane-backends, python25, libstdc++, libusb1
+HPLIP_DEPENDS=sane-backends, python25, libstdc++, libusb1, libcups, libcupsimage
 ifneq (, $(filter net-snmp, $(PACKAGES)))
 HPLIP_DEPENDS +=, net-snmp
 endif
-HPLIP_SUGGESTS=cups, dbus
+HPLIP_SUGGESTS=cups
 HPLIP_CONFLICTS=
 
 #
 # HPLIP_IPK_VERSION should be incremented when the ipk changes.
 #
-HPLIP_IPK_VERSION=2
+HPLIP_IPK_VERSION=3
 
 #
 # HPLIP_CONFFILES should be a list of user-editable files
@@ -252,6 +252,7 @@ $(HPLIP_IPK): $(HPLIP_BUILD_DIR)/.built
 	rm -rf $(HPLIP_IPK_DIR) $(BUILD_DIR)/hplip_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(HPLIP_BUILD_DIR) DESTDIR=$(HPLIP_IPK_DIR) install-strip
 	rm -rf $(HPLIP_IPK_DIR)$(TARGET_PREFIX)/lib/*.la $(HPLIP_IPK_DIR)$(TARGET_PREFIX)/lib/*/*.la
+	chmod 755 $(HPLIP_IPK_DIR)$(TARGET_PREFIX)/lib/cups/*
 #	$(INSTALL) -d $(HPLIP_IPK_DIR)$(TARGET_PREFIX)/etc/
 #	$(INSTALL) -m 644 $(HPLIP_SOURCE_DIR)/hplip.conf $(HPLIP_IPK_DIR)$(TARGET_PREFIX)/etc/hplip.conf
 #	$(INSTALL) -d $(HPLIP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
