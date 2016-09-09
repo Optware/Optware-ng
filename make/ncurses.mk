@@ -14,9 +14,13 @@ NCURSES_SOURCE=$(NCURSES).tar.gz
 NCURSES_UNZIP=zcat
 NCURSES_MAINTAINER=Christopher Blunck <christopher.blunck@gmail.com>
 NCURSES_DESCRIPTION=NCurses libraries
+NCURSES_BASE_DESCRIPTION=Basic terminal type definitions
 NCURSES_SECTION=net
+NCURSES_BASE_SECTION=misc
 NCURSES_PRIORITY=optional
-NCURSES_DEPENDS=
+NCURSES_BASE_PRIORITY=optional
+NCURSES_DEPENDS=ncurses-base
+NCURSES_BASE_DEPENDS=
 NCURSES_CONFLICTS=
 
 ifneq ($(OPTWARE_TARGET), wl500g)
@@ -25,15 +29,18 @@ else
 NCURSES_FOR_OPTWARE_TARGET=ncurses
 endif
 
-NCURSES_IPK_VERSION=4
+NCURSES_IPK_VERSION=5
 
 NCURSES_PATCHES=$(NCURSES_SOURCE_DIR)/MKlib_gen_sh.patch
 
 NCURSES_IPK=$(BUILD_DIR)/ncurses_$(NCURSES_VERSION)-$(NCURSES_IPK_VERSION)_$(TARGET_ARCH).ipk
 NCURSES_IPK_DIR=$(BUILD_DIR)/ncurses-$(NCURSES_VERSION)-ipk
 
-NCURSES-DEV_IPK=$(BUILD_DIR)/ncurses-dev_$(NCURSES_VERSION)-$(NCURSES_IPK_VERSION)_$(TARGET_ARCH).ipk
-NCURSES-DEV_IPK_DIR=$(BUILD_DIR)/ncurses-dev-$(NCURSES_VERSION)-ipk
+NCURSES_BASE_IPK=$(BUILD_DIR)/ncurses-base_$(NCURSES_VERSION)-$(NCURSES_IPK_VERSION)_$(TARGET_ARCH).ipk
+NCURSES_BASE_IPK_DIR=$(BUILD_DIR)/ncurses-base-$(NCURSES_VERSION)-ipk
+
+NCURSES_DEV_IPK=$(BUILD_DIR)/ncurses-dev_$(NCURSES_VERSION)-$(NCURSES_IPK_VERSION)_$(TARGET_ARCH).ipk
+NCURSES_DEV_IPK_DIR=$(BUILD_DIR)/ncurses-dev-$(NCURSES_VERSION)-ipk
 
 NCURSES_HOST_BUILD_DIR=$(HOST_BUILD_DIR)/ncurses
 
@@ -146,7 +153,21 @@ $(NCURSES_IPK_DIR)/CONTROL/control:
 	@echo "Depends: $(NCURSES_DEPENDS)" >>$@
 	@echo "Conflicts: $(NCURSES_CONFLICTS)" >>$@
 
-$(NCURSES-DEV_IPK_DIR)/CONTROL/control:
+$(NCURSES_BASE_IPK_DIR)/CONTROL/control:
+	@$(INSTALL) -d $(@D)
+	@rm -f $@
+	@echo "Package: ncurses-base" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(NCURSES_BASE_PRIORITY)" >>$@
+	@echo "Section: $(NCURSES_BASE_SECTION)" >>$@
+	@echo "Version: $(NCURSES_VERSION)-$(NCURSES_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(NCURSES_MAINTAINER)" >>$@
+	@echo "Source: $(NCURSES_SITE)/$(NCURSES_SOURCE)" >>$@
+	@echo "Description: $(NCURSES_BASE_DESCRIPTION)" >>$@
+	@echo "Depends: $(NCURSES_BASE_DEPENDS)" >>$@
+	@echo "Conflicts: $(NCURSES_CONFLICTS)" >>$@
+
+$(NCURSES_DEV_IPK_DIR)/CONTROL/control:
 	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: ncurses-dev" >>$@
@@ -160,9 +181,10 @@ $(NCURSES-DEV_IPK_DIR)/CONTROL/control:
 	@echo "Depends: ncurses" >>$@
 	@echo "Conflicts: " >>$@
 
-$(NCURSES_IPK) $(NCURSES-DEV_IPK): $(NCURSES_DIR)/.built
+$(NCURSES_IPK) $(NCURSES_BASE_IPK) $(NCURSES_DEV_IPK): $(NCURSES_DIR)/.built
 	rm -rf 	$(NCURSES_IPK_DIR) $(BUILD_DIR)/ncurses_*_$(TARGET_ARCH).ipk \
-		$(NCURSES-DEV_IPK_DIR) $(BUILD_DIR)/ncurses-dev_*_$(TARGET_ARCH).ipk
+		$(NCURSES_BASE_IPK_DIR) $(BUILD_DIR)/ncurses-base_*_$(TARGET_ARCH).ipk \
+		$(NCURSES_DEV_IPK_DIR) $(BUILD_DIR)/ncurses-dev_*_$(TARGET_ARCH).ipk
 	$(if $(filter $(HOSTCC), $(TARGET_CC)),,PATH=$(NCURSES_HOST_BUILD_DIR)/progs:$$PATH) \
 		$(MAKE) -C $(NCURSES_DIR) DESTDIR=$(NCURSES_IPK_DIR) \
 		install.libs install.progs install.data  -j 1
@@ -188,27 +210,33 @@ endif
 		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \
 			$(NCURSES_IPK_DIR)/CONTROL/postinst $(NCURSES_IPK_DIR)/CONTROL/prerm; \
 	fi
+	# ncurses-base
+	$(INSTALL) -d $(NCURSES_BASE_IPK_DIR)$(TARGET_PREFIX)
+	mv -f $(NCURSES_IPK_DIR)$(TARGET_PREFIX)/share $(NCURSES_BASE_IPK_DIR)$(TARGET_PREFIX)
+	$(MAKE) $(NCURSES_BASE_IPK_DIR)/CONTROL/control
 	# ncurses-dev
-	$(INSTALL) -d $(NCURSES-DEV_IPK_DIR)$(TARGET_PREFIX)/include/ncurses
-	$(MAKE) -C $(NCURSES_DIR) DESTDIR=$(NCURSES-DEV_IPK_DIR) install.includes  -j 1
-	ln -sf ncurses/ncurses.h $(NCURSES-DEV_IPK_DIR)$(TARGET_PREFIX)/include/
-	ln -sf ncurses/curses.h $(NCURSES-DEV_IPK_DIR)$(TARGET_PREFIX)/include/
+	$(INSTALL) -d $(NCURSES_DEV_IPK_DIR)$(TARGET_PREFIX)/include/ncurses
+	$(MAKE) -C $(NCURSES_DIR) DESTDIR=$(NCURSES_DEV_IPK_DIR) install.includes  -j 1
+	ln -sf ncurses/ncurses.h $(NCURSES_DEV_IPK_DIR)$(TARGET_PREFIX)/include/
+	ln -sf ncurses/curses.h $(NCURSES_DEV_IPK_DIR)$(TARGET_PREFIX)/include/
+	$(MAKE) $(NCURSES_DEV_IPK_DIR)/CONTROL/control
 	# building ipk's
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NCURSES_IPK_DIR)
-	$(MAKE) $(NCURSES-DEV_IPK_DIR)/CONTROL/control
-	cd $(BUILD_DIR); $(IPKG_BUILD) $(NCURSES-DEV_IPK_DIR)
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(NCURSES_DEV_IPK_DIR)
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(NCURSES_BASE_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(NCURSES_IPK_DIR) $(NCURSES_DEV_IPK_DIR) $(NCURSES_BASE_IPK_DIR)
 
-ncurses-ipk: $(NCURSES_IPK) $(NCURSES-DEV_IPK)
+ncurses-ipk: $(NCURSES_IPK) $(NCURSES_BASE_IPK) $(NCURSES_DEV_IPK)
 
 ncurses-clean:
 	-$(MAKE) -C $(NCURSES_DIR) clean
 	-$(MAKE) -C $(NCURSES_HOST_BUILD_DIR) clean
 
 ncurses-dirclean:
-	rm -rf $(NCURSES_DIR) \
+	rm -rf $(NCURSES_DIR) $(NCURSES_HOST_BUILD_DIR) \
 	$(NCURSES_IPK_DIR) $(NCURSES_IPK) \
-	$(NCURSES_HOST_BUILD_DIR) \
-	$(NCURSES-DEV_IPK_DIR) $(NCURSES-DEV_IPK)	
+	$(NCURSES_BASE_IPK_DIR) $(NCURSES_BASE_IPK) \
+	$(NCURSES_DEV_IPK_DIR) $(NCURSES_DEV_IPK) \
 
-ncurses-check: $(NCURSES_IPK) $(NCURSES-DEV_IPK)
+ncurses-check: $(NCURSES_IPK) $(NCURSES_BASE_IPK) $(NCURSES_DEV_IPK)
 	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
