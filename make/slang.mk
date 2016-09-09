@@ -39,7 +39,7 @@ SLANG_CONFLICTS=
 #
 # SLANG_IPK_VERSION should be incremented when the ipk changes.
 #
-SLANG_IPK_VERSION ?= 3
+SLANG_IPK_VERSION ?= 4
 
 #
 # SLANG_CONFFILES should be a list of user-editable files
@@ -52,6 +52,7 @@ SLANG_IPK_VERSION ?= 3
 SLANG_PATCHES?=\
 $(SLANG_SOURCE_DIR)/WCONTINUED.patch \
 $(SLANG_SOURCE_DIR)/force-xterm.patch \
+$(SLANG_SOURCE_DIR)/default_to_utf8.patch \
 
 
 #

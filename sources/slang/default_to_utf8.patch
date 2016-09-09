@@ -1,0 +1,13 @@
+--- src/slcommon.c.orig
++++ src/slcommon.c
+@@ -118,7 +118,9 @@
+        && ((NULL == (locale = getenv ("LC_ALL"))) || (*locale == 0))
+        && ((NULL == (locale = getenv ("LC_CTYPE"))) || (*locale == 0))
+        && ((NULL == (locale = getenv ("LANG"))) || (*locale == 0)))
+-     return 0;
++/* Optware-ng change: default to utf8
++     return 0;*/
++     return 1;
+ 
+    /* setlocale man page says the return value is something like:
+     *   language[_territory][.codeset][@modifier][+special][,...
