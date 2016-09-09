@@ -4,6 +4,7 @@ case "$1" in
    start)
       echo "Starting the Avahi Daemon"
       %OPTWARE_TARGET_PREFIX%/sbin/avahi-daemon -D
+      ;;
 
    stop)
       echo "Stopping the Avahi Daemon"
