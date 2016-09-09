@@ -1,0 +1,100 @@
+Description: Add IPP attributes required by IPP Everywhere for PWG Raster when
+ PWG Raster as input format is supported
+Author: Till Kamppeter <till.kamppeter@gmail.com>
+Bug-Upstream: https://www.cups.org/str.php?L4428
+Last-Update: 2015-02-10
+--- a/scheduler/printers.c
++++ b/scheduler/printers.c
+@@ -2142,9 +2142,10 @@
+   cupsd_location_t *auth;		/* Pointer to authentication element */
+   const char	*auth_supported;	/* Authentication supported */
+   ipp_t		*oldattrs;		/* Old printer attributes */
+-  ipp_attribute_t *attr;		/* Attribute data */
++  ipp_attribute_t *attr, *attr2;	/* Attribute data */
+   char		*name,			/* Current user/group name */
+ 		*filter;		/* Current filter */
++  mime_type_t   *type;
+ 
+ 
+   DEBUG_printf(("cupsdSetPrinterAttrs: entering name = %s, type = %x\n", p->name,
+@@ -2497,6 +2498,80 @@
+   DEBUG_printf(("cupsdSetPrinterAttrs: leaving name = %s, type = %x\n", p->name,
+                 p->type));
+ 
++  /* 
++   * Add "pwg-raster-document-xxx-supported" attributes if PWG Raster input
++   * is supported
++   */
++  for (type = (mime_type_t *)cupsArrayFirst(p->filetypes);
++       type;
++       type = (mime_type_t *)cupsArrayNext(p->filetypes))
++  {
++    if (!_cups_strcasecmp(type->super, "image"))
++    {
++      if (!_cups_strcasecmp(type->type, "pwg-raster"))
++      {
++	if (p->ppd_attrs != NULL &&
++	    (attr = ippFindAttribute(p->ppd_attrs,
++				     "printer-resolution-supported",
++				     IPP_TAG_ZERO)) != NULL)
++	{
++	  attr2 = ippAddResolutions(p->attrs, IPP_TAG_PRINTER,
++				    "pwg-raster-document-resolution-supported",
++				    attr->num_values, IPP_RES_PER_INCH,
++				    NULL, NULL);
++	  for (i = 0; i < attr->num_values; i ++)
++	  {
++	    attr2->values[i].resolution.xres =
++	      attr->values[i].resolution.xres;
++	    attr2->values[i].resolution.yres =
++	      attr->values[i].resolution.yres;
++	    attr2->values[i].resolution.units = IPP_RES_PER_INCH;
++	  }
++	}
++	else
++	{
++	  static const int	pwg_raster_document_resolution_supported[] =
++	  {
++	    300,
++	    600,
++	    1200
++	  };
++	  ippAddResolutions(p->attrs, IPP_TAG_PRINTER,
++			    "pwg-raster-document-resolution-supported",
++			    (int)(sizeof(pwg_raster_document_resolution_supported) /
++				  sizeof(pwg_raster_document_resolution_supported[0])),
++			    IPP_RES_PER_INCH,
++			    pwg_raster_document_resolution_supported,
++			    pwg_raster_document_resolution_supported);
++	}
++	ippAddString(p->attrs, IPP_TAG_PRINTER, IPP_TAG_KEYWORD,
++		     "pwg-raster-document-sheet-back", NULL, "normal");
++	static const char * const pwg_raster_document_type_supported[] =
++	{
++	  "adobergb-8",
++	  "adobergb-16",
++	  "black-1",
++	  "black-8",
++	  "black-16",
++	  "cmyk-8",
++	  "cmyk-16",
++	  "rgb-8",
++	  "rgb-16",
++	  "sgray-1",
++	  "sgray-8",
++	  "sgray-16",
++	  "srgb-8",
++	  "srgb-16"
++	};
++	ippAddStrings(p->attrs, IPP_TAG_PRINTER, IPP_TAG_KEYWORD,
++		      "pwg-raster-document-type-supported",
++		      (int)(sizeof(pwg_raster_document_type_supported) /
++			    sizeof(pwg_raster_document_type_supported[0])), NULL,
++		      pwg_raster_document_type_supported);
++      }
++    }
++  }
++
+  /*
+   * Add name-default attributes...
+   */

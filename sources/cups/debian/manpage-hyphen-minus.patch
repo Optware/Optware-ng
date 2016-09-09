@@ -1,0 +1,412 @@
+Description: Fix all spotted hyphen-used-as-minus-sign manpage errors
+ Automatically generated using sed -i -s 's/^-/\\-/g;s/ -/ \\-/g;s/"-/"\\-/g' man/*.man*
+ Also fix a missing backslash escape
+Author: Didier Raboud <odyx@debian.org>
+Origin: vendor
+Bug-Upstream: https://cups.org/str.php?L4299
+Last-Update: 2015-02-10
+
+--- a/man/backend.man
++++ b/man/backend.man
+@@ -154,7 +154,7 @@
+ The print file was not successfully transmitted because one or more attributes are not supported or the job was canceled at the printer. The scheduler will respond to this by canceling the job.
+ .TP 5
+ .B CUPS_BACKEND_RETRY
+-The print file was not successfully transmitted because of a temporary issue. The scheduler will retry the job at a future time - other jobs may print before this one.
++The print file was not successfully transmitted because of a temporary issue. The scheduler will retry the job at a future time \- other jobs may print before this one.
+ .TP 5
+ .B CUPS_BACKEND_RETRY_CURRENT
+ The print file was not successfully transmitted because of a temporary issue. The scheduler will retry the job immediately without allowing intervening jobs.
+@@ -184,7 +184,7 @@
+ .BR lpr (1)
+ programs to send print jobs or
+ .BR lpinfo (8)
+-to query for available printers using the backend. The one exception is the SNMP backend - see
++to query for available printers using the backend. The one exception is the SNMP backend \- see
+ .BR cups-snmp (8)
+ for more information.
+ .SH SEE ALSO
+--- a/man/cups-lpd.man.in
++++ b/man/cups-lpd.man.in
+@@ -20,9 +20,9 @@
+ [
+ \fB\-h \fIhostname\fR[\fB:\fIport\fR]
+ ] [
+-.B -n
++.B \-n
+ ] [
+-.B -o
++.B \-o
+ .I option=value
+ ]
+ .SH DESCRIPTION
+@@ -39,7 +39,7 @@
+ \fB-h \fIhostname\fR[\fB:\fIport\fR]
+ Sets the CUPS server (and port) to use.
+ .TP 5
+-.B -n
++.B \-n
+ Disables reverse address lookups; normally
+ .B cups-lpd
+ will try to discover the hostname of the client via a reverse DNS lookup.
+--- a/man/cups-snmp.conf.man
++++ b/man/cups-snmp.conf.man
+@@ -21,7 +21,7 @@
+ file configures how the standard CUPS network backends (http, https, ipp, ipps, lpd, snmp, and socket) access printer information using SNMPv1 and is normally located in the \fI/etc/cups\fR directory.
+ Each line in the file can be a configuration directive, a blank line, or a comment. Comment lines start with the # character.
+ .LP
+-The Community and DebugLevel directives are used by all backends. The remainder apply only to the SNMP backend -
++The Community and DebugLevel directives are used by all backends. The remainder apply only to the SNMP backend \-
+ .BR cups-snmp (8).
+ .SH DIRECTIVES
+ The following directives are understood by the CUPS network backends:
+--- a/man/cups.man
++++ b/man/cups.man
+@@ -43,7 +43,7 @@
+ .LP
+ When you are asked for a username and password, enter your login username and password or the "root" username and password.
+ .LP
+-After the printer is added you will be asked to set the default printer options (paper size, output mode, etc.) for the printer. Make any changes as needed and then click/press on the Set Default Options button to save them. Some printers also support auto-configuration - click/press on the Query Printer for Default Options button to update the options automatically.
++After the printer is added you will be asked to set the default printer options (paper size, output mode, etc.) for the printer. Make any changes as needed and then click/press on the Set Default Options button to save them. Some printers also support auto-configuration \- click/press on the Query Printer for Default Options button to update the options automatically.
+ .LP
+ Once you have added the printer, you can print to it from any application. You can also choose Print Test Page from the maintenance menu to print a simple test page and verify that everything is working properly.
+ .LP
+--- a/man/cupsaddsmb.man.in
++++ b/man/cupsaddsmb.man.in
+@@ -97,7 +97,7 @@
+     pscript5.dll
+ 
+ .fi
+-\fBNote:\fR Unlike Windows, case is significant - make sure that you use the lowercase filenames shown above, otherwise \fBcupsaddsmb\fR will fail to export the drivers.
++\fBNote:\fR Unlike Windows, case is significant \- make sure that you use the lowercase filenames shown above, otherwise \fBcupsaddsmb\fR will fail to export the drivers.
+ .SH OPTIONS
+ \fBcupsaddsmb\fR supports the following options:
+ .TP 5
+--- a/man/cupsctl.man
++++ b/man/cupsctl.man
+@@ -78,19 +78,19 @@
+ Enable debug logging:
+ .nf
+ 
+-    cupsctl --debug-logging
++    cupsctl \--debug-logging
+ 
+ .fi
+ Get the current debug logging state:
+ .nf
+ 
+-    cupsctl | grep '^_debug_logging' | awk -F= '{print $2}'
++    cupsctl | grep '^_debug_logging' | awk \-F= '{print $2}'
+ 
+ .fi
+ Disable printer sharing:
+ .nf
+ 
+-    cupsctl --no-share-printers
++    cupsctl \--no-share-printers
+ .fi
+ .SH KNOWN ISSUES
+ You cannot set the Listen or Port directives using \fBcupsctl\fR.
+--- a/man/cupsd-logs.man
++++ b/man/cupsd-logs.man
+@@ -35,25 +35,25 @@
+ For example:
+ .nf
+ 
+-    10.0.1.2 - - [01/Dec/2005:21:50:28 +0000] "POST / HTTP/1.1" 200 317
++    10.0.1.2 \- \- [01/Dec/2005:21:50:28 +0000] "POST / HTTP/1.1" 200 317
+       CUPS-Get-Printers successful-ok-ignored-or-substituted-attributes
+-    localhost - - [01/Dec/2005:21:50:32 +0000] "GET /admin HTTP/1.1"
+-      200 0 - -
+-    localhost - - [01/Dec/2005:21:50:32 +0000] "POST / HTTP/1.1"
++    localhost \- \- [01/Dec/2005:21:50:32 +0000] "GET /admin HTTP/1.1"
++      200 0 \- \-
++    localhost \- \- [01/Dec/2005:21:50:32 +0000] "POST / HTTP/1.1"
+       200 157 CUPS-Get-Printers
+       successful-ok-ignored-or-substituted-attributes
+-    localhost - - [01/Dec/2005:21:50:32 +0000] "POST / HTTP/1.1"
+-      200 1411 CUPS-Get-Devices -
+-    localhost - - [01/Dec/2005:21:50:32 +0000] "GET /admin HTTP/1.1"
+-      200 6667 - -
++    localhost \- \- [01/Dec/2005:21:50:32 +0000] "POST / HTTP/1.1"
++      200 1411 CUPS-Get-Devices \-
++    localhost \- \- [01/Dec/2005:21:50:32 +0000] "GET /admin HTTP/1.1"
++      200 6667 \- \-
+ 
+ .fi
+ The \fIhost\fR field will normally only be an IP address unless you have enabled the HostNameLookups directive in the \fIcupsd.conf\fR file or if the IP address corresponds to your local machine.
+ .LP
+-The \fIgroup\fR field always contains "-".
++The \fIgroup\fR field always contains "\-".
+ .LP
+ The \fIuser\fR field is the authenticated username of the requesting user.
+-If no username and password is supplied for the request then this field contains "-".
++If no username and password is supplied for the request then this field contains "\-".
+ .LP
+ The \fIdate-time\fR field is the date and time of the request in local time and is in the format "[DD/MON/YYYY:HH:MM:SS +ZZZZ]".
+ .LP
+@@ -103,7 +103,7 @@
+ Upgrading to TLS-encrypted connection.
+ .TP 5
+ 500
+-Server error; typically this happens when the server is unable to open/create a file - consult the error_log file for details.
++Server error; typically this happens when the server is unable to open/create a file \- consult the error_log file for details.
+ .TP 5
+ 501
+ The client requested encryption but encryption support is not enabled/compiled in.
+@@ -115,11 +115,11 @@
+ The \fIbytes\fR field contains the number of bytes in the request.
+ For POST requests the bytes field contains the number of bytes of non-IPP data that is received from the client.
+ .LP
+-The \fIipp-operation\fR field contains either "-" for non-IPP requests or the IPP operation name for POST requests containing an IPP request.
++The \fIipp-operation\fR field contains either "\-" for non-IPP requests or the IPP operation name for POST requests containing an IPP request.
+ .LP
+-The \fIipp-status\fR field contains either "-" for non-IPP requests or the IPP status code name for POST requests containing an IPP response.
++The \fIipp-status\fR field contains either "\-" for non-IPP requests or the IPP status code name for POST requests containing an IPP response.
+ .SS ERROR LOG FILE FORMAT
+-The \fIerror_log\fR file lists messages from the scheduler - errors, warnings, etc. The LogLevel directive in the
++The \fIerror_log\fR file lists messages from the scheduler \- errors, warnings, etc. The LogLevel directive in the
+ .BR cupsd.conf (5)
+ file controls which messages are logged:
+ .nf
+@@ -220,15 +220,15 @@
+ .LP
+ Lines containing the keyword "total" have a \fInum-impressions\fR field instead which provides the total number of impressions (sides) that have been printed on for the job.
+ .LP
+-The \fIjob-billing\fR field contains a copy of the job-billing or job-account-id attributes provided with the IPP Create-Job or Print-Job requests or "-" if neither was provided.
++The \fIjob-billing\fR field contains a copy of the job-billing or job-account-id attributes provided with the IPP Create-Job or Print-Job requests or "\-" if neither was provided.
+ .LP
+ The \fIjob-originating-host-name\fR field contains the hostname or IP address of the client that printed the job.
+ .LP
+-The \fIjob-name\fR field contains a copy of the job-name attribute provided with the IPP Create-Job or Print-Job requests or "-" if none was provided.
++The \fIjob-name\fR field contains a copy of the job-name attribute provided with the IPP Create-Job or Print-Job requests or "\-" if none was provided.
+ .LP
+-The \fImedia\fR field contains a copy of the media or media-col/media-size attribute provided with the IPP Create-Job or Print-Job requests or "-" if none was provided.
++The \fImedia\fR field contains a copy of the media or media-col/media-size attribute provided with the IPP Create-Job or Print-Job requests or "\-" if none was provided.
+ .LP
+-The \fIsides\fR field contains a copy of the sides attribute provided with the IPP Create-Job or Print-Job requests or "-" if none was provided.
++The \fIsides\fR field contains a copy of the sides attribute provided with the IPP Create-Job or Print-Job requests or "\-" if none was provided.
+ .SH SEE ALSO
+ .BR cupsd (8),
+ .BR cupsd.conf (5),
+--- a/man/cupsfilter.man
++++ b/man/cupsfilter.man
+@@ -127,7 +127,7 @@
+ The following command will generate a PDF preview of job 42 for a printer named "myprinter" and save it to a file named "preview.pdf":
+ .nf
+ 
+-    cupsfilter -m application/pdf -d myprinter -j 42 >preview.pdf
++    cupsfilter \-m application/pdf \-d myprinter \-j 42 >preview.pdf
+ .fi
+ .SH SEE ALSO
+ .BR cups (1),
+--- a/man/filter.man
++++ b/man/filter.man
+@@ -141,7 +141,7 @@
+ .TP 5
+ \fBSTATE: +\fI printer-state-reason \fR[ \fI... printer-state-reason\fR ]
+ .TP 5
+-\fBSTATE: -\fI printer-state-reason \fR[ \fI... printer-state-reason\fR ]
++\fBSTATE: \-\fI printer-state-reason \fR[ \fI... printer-state-reason\fR ]
+ Sets, adds, or removes "printer-state-reason" keywords for the current queue. Typically this is used to indicate media, ink, and toner conditions on a printer.
+ .TP 5
+ \fBWARNING:\fI message\fR
+--- a/man/ippfind.man
++++ b/man/ippfind.man
+@@ -80,7 +80,7 @@
+ .B \-l
+ .TP 5
+ .B \-\-ls
+-Lists attributes returned by Get-Printer-Attributes for IPP printers and traditional \fIfind\fR "-ls" output for HTTP URLs.
++Lists attributes returned by Get-Printer-Attributes for IPP printers and traditional \fIfind\fR "\-ls" output for HTTP URLs.
+ The result is true if the URI is accessible, false otherwise.
+ .TP 5
+ .B \-\-local
+@@ -108,7 +108,7 @@
+ .B \-q
+ .TP 5
+ .B \-\-quiet
+-Quiet mode - just returns the exit codes below.
++Quiet mode \- just returns the exit codes below.
+ .TP 5
+ .B \-r
+ .TP 5
+@@ -141,7 +141,7 @@
+ .TP 5
+ \fB\-\-exec \fIutility \fR[ \fIargument \fR... ] \fB;\fR
+ Executes the specified program if the current result is true.
+-"{foo}" arguments are replaced with the corresponding value - see SUBSTITUTIONS below.
++"{foo}" arguments are replaced with the corresponding value \- see SUBSTITUTIONS below.
+ .PP
+ Expressions may also contain modifiers:
+ .TP 5
+--- a/man/ipptoolfile.man
++++ b/man/ipptoolfile.man
+@@ -142,7 +142,7 @@
+ The following directives are understood within a \fItest\fR:
+ .TP 5
+ \fBATTR \fItag attribute-name value(s)\fR
+-Adds an attribute to the test request. Values are separated by the comma (",") character - escape commas using the "\" character. Common attributes and values are listed in the IANA IPP registry - see references below.
++Adds an attribute to the test request. Values are separated by the comma (",") character \- escape commas using the "\" character. Common attributes and values are listed in the IANA IPP registry \- see references below.
+ .TP 5
+ \fBATTR collection \fIattribute-name \fB{ MEMBER \fItag member-name value(s) ... \fB}\fR [ \fI... \fB,{ \fI... \fB} \fR]
+ Adds a collection attribute to the test request. Member attributes follow the same syntax as regular attributes and can themselves be nested collections. Multiple collection values can be supplied as needed, separated by commas.
+@@ -166,7 +166,7 @@
+ \fBEXPECT ?\fIattribute-name predicate(s)\fR
+ .TP 5
+ \fBEXPECT !\fIattribute-name\fR
+-Specifies that the response must/may/must not include the named attribute. Additional requirements can be added as predicates - see the "EXPECT PREDICATES" section for more information on predicates. Attribute names can specify member attributes by separating the attribute and member names with the forward slash, for example "media\-col/media\-size/x\-dimension".
++Specifies that the response must/may/must not include the named attribute. Additional requirements can be added as predicates \- see the "EXPECT PREDICATES" section for more information on predicates. Attribute names can specify member attributes by separating the attribute and member names with the forward slash, for example "media\-col/media\-size/x\-dimension".
+ .TP 5
+ \fBEXPECT-ALL \fIattribute-name \fR[ \fIpredicate(s) \fR]
+ .TP 5
+@@ -218,7 +218,7 @@
+ will skip the current test if the previous test resulted in an error/failure.
+ .TP 5
+ \fBSTATUS \fIstatus-code \fR[ \fIpredicate\fR ]
+-Specifies an expected response status-code value. Additional requirements can be added as predicates - see the "STATUS PREDICATES" section for more information on predicates.
++Specifies an expected response status-code value. Additional requirements can be added as predicates \- see the "STATUS PREDICATES" section for more information on predicates.
+ .TP 5
+ \fBTEST\-ID "\fIidentifier\fR"
+ Specifies an identifier string for the current test.
+--- a/man/lp.man
++++ b/man/lp.man
+@@ -88,7 +88,7 @@
+ ]
+ .SH DESCRIPTION
+ \fBlp\fR submits files for printing or alters a pending job.
+-Use a filename of "-" to force printing from the standard input.
++Use a filename of "\-" to force printing from the standard input.
+ .SS THE DEFAULT DESTINATION
+ CUPS provides many ways to set the default destination. The \fBLPDEST\fR and \fBPRINTER\fR environment variables are consulted first.
+ If neither are set, the current default set using the
+@@ -157,7 +157,7 @@
+ \fB\-P \fIpage-list\fR
+ Specifies which pages to print in the document.
+ The list can contain a list of numbers and ranges (#-#) separated by commas, e.g., "1,3-5,16".
+-The page numbers refer to the output pages and not the document's original pages - options like "number-up" can affect the numbering of the pages.
++The page numbers refer to the output pages and not the document's original pages \- options like "number-up" can affect the numbering of the pages.
+ .SS COMMON JOB OPTIONS
+ Aside from the printer-specific options reported by the
+ .BR lpoptions (1)
+@@ -192,19 +192,19 @@
+ Print two copies of a document to the default printer:
+ .nf
+ 
+-    lp -n 2 filename
++    lp \-n 2 filename
+ 
+ .fi
+ Print a double-sided legal document to a printer called "foo":
+ .nf
+ 
+-    lp -d foo -o media=legal -o sides=two-sided-long-edge filename
++    lp \-d foo \-o media=legal \-o sides=two-sided-long-edge filename
+ 
+ .fi
+ Print a presentation document 2-up to a printer called "foo":
+ .nf
+ 
+-    lp -d foo -o number-up=2 filename
++    lp \-d foo \-o number-up=2 filename
+ .fi
+ .SH SEE ALSO
+ .BR cancel (1),
+--- a/man/lpoptions.man.in
++++ b/man/lpoptions.man.in
+@@ -122,9 +122,9 @@
+ .BR lpadmin (8)
+ command.
+ .SH FILES
+-\fI~/.cups/lpoptions\fR - user defaults and instances created by non-root users.
++\fI~/.cups/lpoptions\fR \- user defaults and instances created by non-root users.
+ .br
+-\fI/etc/cups/lpoptions\fR - system-wide defaults and instances created by the root user.
++\fI/etc/cups/lpoptions\fR \- system-wide defaults and instances created by the root user.
+ .SH CONFORMING TO
+ The \fBlpoptions\fR command is unique to CUPS.
+ .SH SEE ALSO
+--- a/man/lpr.man
++++ b/man/lpr.man
+@@ -119,19 +119,19 @@
+ Print two copies of a document to the default printer:
+ .nf
+ 
+-    lpr -# 2 filename
++    lpr \-# 2 filename
+ 
+ .fi
+ Print a double-sided legal document to a printer called "foo":
+ .nf
+ 
+-    lpr -P foo -o media=legal -o sides=two-sided-long-edge filename
++    lpr \-P foo \-o media=legal \-o sides=two-sided-long-edge filename
+ 
+ .fi
+ Print a presentation document 2-up to a printer called "foo":
+ .nf
+ 
+-    lpr -P foo -o number-up=2 filename
++    lpr \-P foo \-o number-up=2 filename
+ .fi
+ .SH SEE ALSO
+ .BR cancel (1),
+--- a/man/mime.convs.man
++++ b/man/mime.convs.man
+@@ -40,11 +40,11 @@
+ The \fIfilter\fR field specifies the filter program filename.
+ Filenames are relative to the CUPS filter directory.
+ .SH FILES
+-\fI/etc/cups\fR - Typical CUPS configuration directory.
++\fI/etc/cups\fR \- Typical CUPS configuration directory.
+ .br
+-\fI/usr/lib/cups/filter\fR - Typical CUPS filter directory.
++\fI/usr/lib/cups/filter\fR \- Typical CUPS filter directory.
+ .br
+-\fI/usr/libexec/cups/filter\fR - CUPS filter directory on OS X.
++\fI/usr/libexec/cups/filter\fR \- CUPS filter directory on OS X.
+ .SH EXAMPLES
+ Define a filter that converts PostScript documents to CUPS Raster format:
+ .nf
+--- a/man/mime.types.man
++++ b/man/mime.types.man
+@@ -40,7 +40,7 @@
+ .LP
+ The rules may be grouped using parenthesis, joined using "+" for a logical AND, joined using "," or whitespace for a logical OR, and negated using "!".
+ .SS RULES
+-Rules take two forms - a filename extension by itself and functions with test
++Rules take two forms \- a filename extension by itself and functions with test
+ values inside parenthesis.
+ The following functions are available:
+ .TP 5
+@@ -90,7 +90,7 @@
+ alphanumerically smaller than "text/foo".
+ However, if "text/foo" also defines a higher priority than "text/bar", "text/foo" will be chosen instead.
+ .SH FILES
+-\fI/etc/cups\fR - Typical CUPS configuration directory.
++\fI/etc/cups\fR \- Typical CUPS configuration directory.
+ .SH EXAMPLES
+ Define two MIME media types for raster data, with one being a subset with higher priority:
+ .nf
+--- a/man/ppdc.man
++++ b/man/ppdc.man
+@@ -90,7 +90,7 @@
+ \fB\-\-crlf\fR
+ .TP 5
+ \fB\-\-lf\fR
+-Specifies the line ending to use - carriage return, carriage return and line feed, or line feed alone.
++Specifies the line ending to use \- carriage return, carriage return and line feed, or line feed alone.
+ The default is to use the line feed character alone.
+ .SH SEE ALSO
+ .BR ppdhtml (1),
+--- a/man/lpadmin.man
++++ b/man/lpadmin.man
+@@ -128,7 +128,7 @@
+ .TP 5
+ \fB\-o \fIname\fB-default=\fIvalue\fR
+ Sets a default server-side option for the destination.
+-Any print-time option can be defaulted, e.g., "-o number-up-default=2" to set the default "number-up" option value to 2.
++Any print-time option can be defaulted, e.g., "\-o number-up-default=2" to set the default "number-up" option value to 2.
+ .TP 5
+ \fB\-o port\-monitor=\fIname\fR
+ Sets the binary communications program to use when printing, "none", "bcp", or "tbcp".

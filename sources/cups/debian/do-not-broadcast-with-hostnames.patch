@@ -1,0 +1,17 @@
+Description: Do not use host names for broadcasting print queues and
+ managing print queues broadcasted from other servers by default. Many
+ networks do not have valid host names for all machines.
+Bug-Ubuntu: https://bugs.launchpad.net/bugs/449586
+Author: till.kamppeter@gmail.com
+
+--- a/scheduler/conf.c
++++ b/scheduler/conf.c
+@@ -966,7 +966,7 @@
+     cupsdAddAlias(ServerAlias, temp);
+     cupsdLogMessage(CUPSD_LOG_DEBUG, "Added auto ServerAlias %s", temp);
+ 
+-    if (HostNameLookups || RemotePort)
++    if (HostNameLookups)
+     {
+       struct hostent	*host;		/* Host entry to get FQDN */
+ 

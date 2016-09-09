@@ -1,0 +1,52 @@
+Description: Move cupsd.conf.default from SERVERROOT to DATADIR
+Author: Didier Raboud <odyx@debian.org>
+Origin: vendor
+Bug: https://cups.org/str.php?L4342
+Bug-Debian: http://bugs.debian.org/640124
+Last-Update: 2015-02-10
+
+--- a/cgi-bin/admin.c
++++ b/cgi-bin/admin.c
+@@ -1923,6 +1923,7 @@
+     int		ch;			/* Character from file */
+     char	filename[1024];		/* Filename */
+     const char	*server_root;		/* Location of config files */
++    const char	*data_dir;		/* Location of data files */
+ 
+ 
+    /*
+@@ -2006,7 +2007,10 @@
+     * well...
+     */
+ 
+-    strlcat(filename, ".default", sizeof(filename));
++    if ((data_dir = getenv("CUPS_DATADIR")) == NULL)
++      data_dir = CUPS_DATADIR;
++
++    snprintf(filename, sizeof(filename), "%s/cupsd.conf.default",data_dir);
+ 
+     if (!stat(filename, &info) && info.st_size < (1024 * 1024) &&
+         (cupsd = cupsFileOpen(filename, "r")) != NULL)
+--- a/conf/Makefile
++++ b/conf/Makefile
+@@ -76,7 +76,7 @@
+ 		else \
+ 			$(INSTALL_CONFIG) -g $(CUPS_GROUP) $$file $(SERVERROOT) ; \
+ 		fi ; \
+-		$(INSTALL_CONFIG) -g $(CUPS_GROUP) $$file $(SERVERROOT)/$$file.default; \
++		$(INSTALL_CONFIG) -g $(CUPS_GROUP) $$file $(DATADIR)/$$file.default; \
+ 	done
+ 	$(INSTALL_DIR) -m 755 $(DATADIR)/mime
+ 	for file in $(REPLACE); do \
+@@ -124,9 +124,10 @@
+ #
+ 
+ uninstall:
+-	for file in $(KEEP) $(REPLACE) cupsd.conf.default; do \
++	for file in $(KEEP) $(REPLACE); do \
+ 		$(RM) $(SERVERROOT)/$$file; \
+ 	done
++	$(RM) $(DATADIR)/cupsd.conf.default
+ 	-$(RMDIR) $(SERVERROOT)
+ 	for file in $(REPLACE); do \
+ 		$(RM) $(DATADIR)/mime/$$file; \

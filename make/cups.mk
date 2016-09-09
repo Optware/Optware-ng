@@ -19,11 +19,11 @@
 #
 # You should change all these variables to suit your package.
 #
-CUPS_VERSION=2.1.2
-CUPS_SITE=https://www.cups.org/software/$(CUPS_VERSION)
-CUPS_SOURCE=cups-$(CUPS_VERSION)-source.tar.bz2
+CUPS_VERSION=2.1.4
+CUPS_SITE=https://github.com/apple/cups/releases/download/release-$(CUPS_VERSION)
+CUPS_SOURCE=cups-$(CUPS_VERSION)-source.tar.gz
 CUPS_DIR=cups-$(CUPS_VERSION)
-CUPS_UNZIP=bzcat
+CUPS_UNZIP=zcat
 CUPS_MAINTAINER=Inge Arnesen <inge.arnesen@gmail.com>
 CUPS_DESCRIPTION=Common Unix Printing System
 LIBCUPS_DESCRIPTION=Common Unix Printing System - Core library
@@ -44,7 +44,7 @@ LIBCUPSCGI_DEPENDS=libcups
 LIBCUPSIMAGE_DEPENDS=libcups
 LIBCUPSMIME_DEPENDS=libcups
 LIBCUPSPPDC_DEPENDS=libcups, libstdc++
-CUPS_DEPENDS=libcups, libcupscgi, libcupsimage, libcupsmime, libcupsppdc, libjpeg, libpng, libpam, libtiff, openssl, psmisc, libusb1, dbus, avahi, libacl, busybox-base
+CUPS_DEPENDS=libcups, libcupscgi, libcupsimage, libcupsmime, libcupsppdc, libjpeg, libpng, libpam, libtiff, openssl, psmisc, libusb1, dbus, avahi, libacl, start-stop-daemon
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
 CUPS_DEPENDS+=, openldap-libs
 endif
@@ -55,7 +55,7 @@ CUPS_CONFLICTS=
 #
 # CUPS_IPK_VERSION should be incremented when the ipk changes.
 #
-CUPS_IPK_VERSION=8
+CUPS_IPK_VERSION=1
 
 CUPS_DOC_DESCRIPTION=Common Unix Printing System documentation.
 CUPS-DEV_DESCRIPTION=Development files for CUPS
@@ -73,9 +73,35 @@ CUPS_CONFFILES=$(TARGET_PREFIX)/etc/cups/cupsd.conf $(TARGET_PREFIX)/etc/cups/pr
 #
 #CUPS_PATCHES=$(CUPS_SOURCE_DIR)/man-Makefile.patch $(CUPS_SOURCE_DIR)/ppdc-Makefile.patch
 CUPS_PATCHES=\
-$(CUPS_SOURCE_DIR)/airprint-support.patch \
-$(CUPS_SOURCE_DIR)/ppdc.patch \
+$(CUPS_SOURCE_DIR)/debian/pwg-raster-attributes.patch \
+$(CUPS_SOURCE_DIR)/debian/manpage-hyphen-minus.patch \
+$(CUPS_SOURCE_DIR)/debian/fixes-for-jobs-with-multiple-files-and-multiple-formats.patch \
+$(CUPS_SOURCE_DIR)/debian/move-cupsd-conf-default-to-share.patch \
+$(CUPS_SOURCE_DIR)/debian/drop_unnecessary_dependencies.patch \
+$(CUPS_SOURCE_DIR)/debian/read-embedded-options-from-incoming-postscript-and-add-to-ipp-attrs.patch \
+$(CUPS_SOURCE_DIR)/debian/cups-deviced-allow-device-ids-with-newline.patch \
+$(CUPS_SOURCE_DIR)/debian/airprint-support.patch \
+$(CUPS_SOURCE_DIR)/debian/cups-snmp-oids-device-id-hp-ricoh.patch \
+$(CUPS_SOURCE_DIR)/debian/no-conffile-timestamp.patch \
+$(CUPS_SOURCE_DIR)/debian/pidfile.patch \
+$(CUPS_SOURCE_DIR)/debian/ppd-poll-with-client-conf.patch \
+$(CUPS_SOURCE_DIR)/debian/removecvstag.patch \
+$(CUPS_SOURCE_DIR)/debian/do-not-broadcast-with-hostnames.patch \
+$(CUPS_SOURCE_DIR)/debian/reactivate_recommended_driver.patch \
+$(CUPS_SOURCE_DIR)/debian/add-ipp-backend-of-cups-1.4.patch \
+$(CUPS_SOURCE_DIR)/debian/show-compile-command-lines.patch \
+$(CUPS_SOURCE_DIR)/debian/log-debug-history-nearly-unlimited.patch \
+$(CUPS_SOURCE_DIR)/debian/cupsd-set-default-for-SyncOnClose-to-Yes.patch \
+$(CUPS_SOURCE_DIR)/debian/cups-set-default-error-policy-retry-job.patch \
+$(CUPS_SOURCE_DIR)/debian/man-cups-lpd-drop-dangling-references.patch \
 #$(CUPS_SOURCE_DIR)/build_without_gnutls.patch
+
+CUPS_HOST_PATCHES=\
+$(CUPS_PATCHES) \
+
+CUPS_TARGET_PATCHES=\
+$(CUPS_PATCHES) \
+$(CUPS_SOURCE_DIR)/ppdc.patch \
 
 ifeq ($(LIBC_STYLE), uclibc)
 ifneq ($(OPTWARE_TARGET), ts101)
@@ -174,13 +200,16 @@ $(DL_DIR)/$(CUPS_SOURCE):
 #
 cups-source: $(DL_DIR)/$(CUPS_SOURCE) $(CUPS_PATCHES)
 
-$(CUPS_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(CUPS_SOURCE) make/cups.mk
+$(CUPS_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(CUPS_SOURCE) $(CUPS_HOST_PATCHES) make/cups.mk
 #	$(MAKE) libjpeg-host-stage libpng-host-stage
 #	$(MAKE) openssl-host-stage
 	rm -rf  $(HOST_BUILD_DIR)/$(CUPS_DIR) $(@D) \
 		$(HOST_STAGING_PREFIX)/share/cups $(HOST_STAGING_PREFIX)/etc/cups
 	$(CUPS_UNZIP) $(DL_DIR)/$(CUPS_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
-#	cat $(CUPS_SOURCE_DIR)/build_without_gnutls.patch | $(PATCH) -d $(HOST_BUILD_DIR)/$(CUPS_DIR) -p1
+	if test -n "$(CUPS_HOST_PATCHES)" ; \
+		then cat $(CUPS_HOST_PATCHES) | \
+		$(PATCH) -d $(HOST_BUILD_DIR)/$(CUPS_DIR) -p1 ; \
+	fi
 	if test "$(HOST_BUILD_DIR)/$(CUPS_DIR)" != "$(@D)" ; \
 		then mv $(HOST_BUILD_DIR)/$(CUPS_DIR) $(@D) ; \
 	fi
@@ -220,7 +249,7 @@ $(CUPS_HOST_BUILD_DIR)/.staged: $(CUPS_HOST_BUILD_DIR)/.built
 
 cups-host-stage: $(CUPS_HOST_BUILD_DIR)/.staged
 
-$(CUPS_BUILD_DIR)/.configured: $(CUPS_HOST_BUILD_DIR)/.built $(DL_DIR)/$(CUPS_SOURCE) $(CUPS_PATCHES) make/cups.mk
+$(CUPS_BUILD_DIR)/.configured: $(CUPS_HOST_BUILD_DIR)/.built $(DL_DIR)/$(CUPS_SOURCE) $(CUPS_TARGET_PATCHES) make/cups.mk
 	$(MAKE) openssl-stage zlib-stage libpng-stage \
 		libjpeg-stage libtiff-stage libpam-stage \
 		libusb1-stage dbus-stage libstdc++-stage avahi-stage libacl-stage
@@ -236,8 +265,8 @@ endif
 	rm -rf  $(BUILD_DIR)/$(CUPS_DIR) $(@D) \
 		$(STAGING_PREFIX)/share/cups $(STAGING_PREFIX)/etc/cups
 	$(CUPS_UNZIP) $(DL_DIR)/$(CUPS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	if test -n "$(CUPS_PATCHES)" ; \
-		then cat $(CUPS_PATCHES) | \
+	if test -n "$(CUPS_TARGET_PATCHES)" ; \
+		then cat $(CUPS_TARGET_PATCHES) | \
 		$(PATCH) -d $(BUILD_DIR)/$(CUPS_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(CUPS_DIR)" != "$(@D)" ; \

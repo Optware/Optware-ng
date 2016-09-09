@@ -1,0 +1,25 @@
+Author: till.kamppeter@gmail.com
+
+Last-Update: 2015-02-10
+--- a/scheduler/conf.c
++++ b/scheduler/conf.c
+@@ -757,7 +757,7 @@
+   KeepAlive                = TRUE;
+   KeepAliveTimeout         = DEFAULT_KEEPALIVE;
+   ListenBackLog            = SOMAXCONN;
+-  LogDebugHistory          = 200;
++  LogDebugHistory          = 99999;
+   LogFilePerm              = CUPS_DEFAULT_LOG_FILE_PERM;
+   LogLevel                 = CUPSD_LOG_WARN;
+   LogTimeFormat            = CUPSD_TIME_STANDARD;
+--- a/scheduler/conf.h
++++ b/scheduler/conf.h
+@@ -166,7 +166,7 @@
+ 					/* Access log level */
+ VAR int			ClassifyOverride	VALUE(0),
+ 					/* Allow overrides? */
+-			LogDebugHistory		VALUE(200),
++			LogDebugHistory		VALUE(99999),
+ 					/* Amount of automatic debug history */
+ 			FatalErrors		VALUE(CUPSD_FATAL_CONFIG),
+ 					/* Which errors are fatal? */

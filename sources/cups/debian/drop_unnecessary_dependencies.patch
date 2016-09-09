@@ -1,0 +1,50 @@
+Description: Do not link libcups.so and libcupsimage.so against
+ unnecessary libraries.  This avoids unnecessary package dependencies for
+ both libcups, as well as for packages using cups-config.
+Author: Martin Pitt <mpitt@debian.org>
+Bug: https://www.cups.org/str.php?L4343
+Bug-Debian: http://bugs.debian.org/438067
+Last-Update: 2015-10-02
+
+--- a/Makedefs.in
++++ b/Makedefs.in
+@@ -136,7 +136,7 @@
+ DBUS_NOTIFIERLIBS =	@DBUS_NOTIFIERLIBS@
+ DNSSD_BACKEND	=	@DNSSD_BACKEND@
+ DSOFLAGS	=	-L../cups @DSOFLAGS@
+-DSOLIBS		=	@DSOLIBS@ $(COMMONLIBS)
++DSOLIBS		=	@DSOLIBS@
+ DNSSDLIBS	=	@DNSSDLIBS@
+ IPPFIND_BIN	=	@IPPFIND_BIN@
+ IPPFIND_MAN	=	@IPPFIND_MAN@
+--- a/cups/Makefile
++++ b/cups/Makefile
+@@ -309,7 +309,7 @@
+ libcups.so.2:	$(LIBOBJS)
+ 	echo Linking $@...
+ 	$(DSO) $(ARCHFLAGS) $(DSOFLAGS) -o $@ $(LIBOBJS) $(LIBGSSAPI) \
+-		$(SSLLIBS) $(DNSSDLIBS) $(COMMONLIBS) $(LIBZ)
++		$(SSLLIBS) $(DNSSDLIBS) -lpthread $(LIBZ) -lm
+ 	$(RM) `basename $@ .2`
+ 	$(LN) $@ `basename $@ .2`
+ 
+@@ -330,7 +330,7 @@
+ 		-compatibility_version 2.0.0 \
+ 		-exported_symbols_list t.exp \
+ 		$(LIBOBJS) $(LIBGSSAPI) $(SSLLIBS) $(DNSSDLIBS) \
+-		$(COMMONLIBS) $(LIBZ)
++		-lpthread $(LIBZ) -lm
+ 	$(RM) libcups.dylib t.exp
+ 	$(LN) $@ libcups.dylib
+ 
+--- a/filter/Makefile
++++ b/filter/Makefile
+@@ -269,7 +269,7 @@
+ libcupsimage.so.2 libcupsimage.sl.2:	$(IMAGEOBJS)
+ 	echo Linking $@...
+ 	$(DSO) $(ARCHFLAGS) $(DSOFLAGS) -o $@ $(IMAGEOBJS) $(DSOLIBS) \
+-		-L../cups $(LINKCUPS)
++		-L../cups $(LINKCUPS) -lpthread
+ 	$(RM) `basename $@ .2`
+ 	$(LN) $@ `basename $@ .2`
+ 

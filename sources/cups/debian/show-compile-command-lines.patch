@@ -1,0 +1,12 @@
+Author: till.kamppeter@gmail.com
+
+--- a/Makedefs.in
++++ b/Makedefs.in
+@@ -241,7 +241,6 @@
+ # Rules...
+ #
+ 
+-.SILENT:
+ .SUFFIXES:	.1 .1.gz .1m .1m.gz .3 .3.gz .5 .5.gz .7 .7.gz .8 .8.gz .a .c .cxx .h .man .o .gz
+ 
+ .c.o:

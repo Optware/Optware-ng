@@ -1,13 +1,14 @@
 Description: Patch to support Apple AirPrint (printing from iPhone, iPad, iPod Touch to a CUPS server)
 Author: Till Kamppeter <till.kamppeter@gmail.com>
-Bug: https://bugs.launchpad.net/bugs/711779
-Bug: https://bugs.launchpad.net/bugs/1054495
+Bug-Ubuntu: https://bugs.launchpad.net/bugs/711779
+Bug-Ubuntu: https://bugs.launchpad.net/bugs/1054495
 Bug-Debian: http://bugs.debian.org/700961
-Last-Update: 2013-02-20
+Bug: https://cups.org/str.php?L4341
+Last-Update: 2015-02-10
 
 --- a/scheduler/dirsvc.c
 +++ b/scheduler/dirsvc.c
-@@ -622,6 +622,12 @@
+@@ -416,6 +416,12 @@
      keyvalue[count  ][0] = "pdl";
      keyvalue[count++][1] = p->pdl ? p->pdl : "application/postscript";
  
@@ -34,7 +35,7 @@ Last-Update: 2013-02-20
  # Raw filter...
 --- a/conf/mime.types
 +++ b/conf/mime.types
-@@ -110,6 +110,9 @@
+@@ -118,6 +118,9 @@
  image/x-bitmap			bmp string(0,BM) + !printable(2,14)
  image/x-icon			ico
  
@@ -46,7 +47,7 @@ Last-Update: 2013-02-20
  # Text files...
 --- a/scheduler/printers.c
 +++ b/scheduler/printers.c
-@@ -3592,7 +3592,9 @@
+@@ -3721,7 +3721,9 @@
        }
        else if (!_cups_strcasecmp(type->super, "image"))
        {
@@ -59,7 +60,7 @@ Last-Update: 2013-02-20
  	  strlcat(pdl, "image/png,", sizeof(pdl));
 --- a/scheduler/conf.c
 +++ b/scheduler/conf.c
-@@ -746,7 +746,7 @@
+@@ -779,7 +779,7 @@
    DefaultShared            = CUPS_DEFAULT_DEFAULT_SHARED;
  
  #if defined(HAVE_DNSSD) || defined(HAVE_AVAHI)

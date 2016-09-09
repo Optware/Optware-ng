@@ -1,0 +1,48 @@
+Description: Set the default for SyncOnClose to Yes
+Author: Tim Waugh <twaugh@redhat.com>
+Last-Update: 2015-02-10
+
+--- a/conf/cups-files.conf.in
++++ b/conf/cups-files.conf.in
+@@ -7,7 +7,7 @@
+ #FatalErrors @CUPS_FATAL_ERRORS@
+ 
+ # Do we call fsync() after writing configuration or status files?
+-#SyncOnClose No
++#SyncOnClose Yes
+ 
+ # Default user and group for filters/backends/helper programs; this cannot be
+ # any user or group that resolves to ID 0 for security reasons...
+--- a/doc/help/man-cups-files.conf.html
++++ b/doc/help/man-cups-files.conf.html
+@@ -138,7 +138,7 @@
+ <dd style="margin-left: 5.0em">Specifies whether the scheduler calls
+ <b>fsync</b>(2)
+ after writing configuration or state files.
+-The default is "No".
++The default is "Yes".
+ <dt><a name="SystemGroup"></a><b>SystemGroup </b><i>group-name </i>[ ... <i>group-name</i> ]
+ <dd style="margin-left: 5.0em">Specifies the group(s) to use for <i>@SYSTEM</i> group authentication.
+ The default contains "admin", "lpadmin", "root", "sys", and/or "system".
+--- a/man/cups-files.conf.man.in
++++ b/man/cups-files.conf.man.in
+@@ -196,7 +196,7 @@
+ Specifies whether the scheduler calls
+ .BR fsync (2)
+ after writing configuration or state files.
+-The default is "No".
++The default is "Yes".
+ .\"#SystemGroup
+ .TP 5
+ \fBSystemGroup \fIgroup-name \fR[ ... \fIgroup-name\fR ]
+--- a/scheduler/conf.c
++++ b/scheduler/conf.c
+@@ -771,7 +771,7 @@
+   RootCertDuration         = 300;
+   Sandboxing               = CUPSD_SANDBOXING_STRICT;
+   StrictConformance        = FALSE;
+-  SyncOnClose              = FALSE;
++  SyncOnClose              = TRUE;
+   Timeout                  = DEFAULT_TIMEOUT;
+   WebInterface             = CUPS_DEFAULT_WEBIF;
+ 

@@ -1,0 +1,30 @@
+Description: CUPS removes the "(recommended)" comments of the NickNames of Foomatic PPDs when listing available PPDs. This patch removes this remocval action.
+Author: till.kamppeter@gmail.com
+Last-Update: 2015-02-10
+
+--- a/scheduler/cups-driverd.cxx
++++ b/scheduler/cups-driverd.cxx
+@@ -248,7 +248,6 @@
+ 	const char *scheme)		/* I - PPD scheme */
+ {
+   ppd_info_t	*ppd;			/* PPD */
+-  char		*recommended;		/* Foomatic driver string */
+ 
+ 
+  /*
+@@ -287,15 +286,6 @@
+   strlcpy(ppd->record.scheme, scheme, sizeof(ppd->record.scheme));
+ 
+  /*
+-  * Strip confusing (and often wrong) "recommended" suffix added by
+-  * Foomatic drivers...
+-  */
+-
+-  if ((recommended = strstr(ppd->record.make_and_model,
+-                            " (recommended)")) != NULL)
+-    *recommended = '\0';
+-
+- /*
+   * Add the PPD to the PPD arrays...
+   */
+ 

@@ -1,0 +1,46 @@
+Description: Some printers have broken device IDs with newline
+ characters inside. These break the cups-deviced printer discovery
+ mechanism and so the printers get ignored. This patch allows newline
+ characters in device IDs
+Bug-Ubuntu: https://bugs.launchpad.net/bugs/468701
+Bug: https://www.cups.org/str.php?L4345
+Author: Till Kamppeter <till.kamppeter@gmail.com>
+Last-Update: 2015-02-10
+
+--- a/scheduler/cups-deviced.c
++++ b/scheduler/cups-deviced.c
+@@ -564,15 +564,30 @@
+ 
+     if (*ptr == '\"')
+     {
+-      for (ptr ++, device_id = ptr; *ptr && *ptr != '\"'; ptr ++)
++      for (ptr ++, device_id = ptr; *ptr != '\"'; ptr ++)
+       {
+ 	if (*ptr == '\\' && ptr[1])
+ 	  _cups_strcpy(ptr, ptr + 1);
++	if (!*ptr)
++	{
++	  fprintf(stderr, "WARNING: [cups-deviced] Possible newline in device ID \"%s\": %s\n",
++		  backend->name, line);
++	  *ptr = ' ';
++	  ptr ++;
++	  *ptr = 0;
++	  if (!cupsFileGets(backend->pipe, ptr, sizeof(line) - (ptr - temp)))
++	  {
++	    cupsFileClose(backend->pipe);
++	    backend->pipe = NULL;
++	    fprintf(stderr, "ERROR: [cups-deviced] Bad line from \"%s\": %s\n",
++		    backend->name, line);
++	    return (-1);
++	  }
++	}
++	if (!*ptr)
++	  goto error;
+       }
+ 
+-      if (*ptr != '\"')
+-	goto error;
+-
+       for (*ptr++ = '\0'; isspace(*ptr & 255); *ptr++ = '\0');
+ 
+      /*
