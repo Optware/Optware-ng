@@ -30,7 +30,7 @@ SLANG_DESCRIPTION=S-Lang is a multi-platform library designed to allow a develop
 SLANG_SECTION=lib
 SLANG_PRIORITY=optional
 SLANG_DEPENDS=
-SLANG_SUGGESTS=pcre, libpng
+SLANG_SUGGESTS=pcre, libpng, ncurses-base
 ifneq (, $(filter libiconv, $(PACKAGES)))
 SLANG_SUGGESTS +=, libiconv
 endif
@@ -39,7 +39,7 @@ SLANG_CONFLICTS=
 #
 # SLANG_IPK_VERSION should be incremented when the ipk changes.
 #
-SLANG_IPK_VERSION ?= 1
+SLANG_IPK_VERSION ?= 2
 
 #
 # SLANG_CONFFILES should be a list of user-editable files
@@ -49,7 +49,10 @@ SLANG_IPK_VERSION ?= 1
 # SLANG_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-SLANG_PATCHES?=$(SLANG_SOURCE_DIR)/WCONTINUED.patch
+SLANG_PATCHES?=\
+$(SLANG_SOURCE_DIR)/WCONTINUED.patch \
+$(SLANG_SOURCE_DIR)/force-xterm.patch \
+
 
 #
 # If the compilation of the package requires additional
@@ -150,7 +153,7 @@ endif
 		$(SLANG_CONFIGURE_ARGS) \
 	)
 	sed -i -e '/^LIBS =/s|$$| $$(LDFLAGS)|' $(@D)/modules/Makefile
-#	$(PATCH_LIBTOOL) $(SLANG_BUILD_DIR)/libtool
+#	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 slang-unpack: $(SLANG_BUILD_DIR)/.configured
@@ -161,7 +164,7 @@ slang-unpack: $(SLANG_BUILD_DIR)/.configured
 $(SLANG_BUILD_DIR)/.built: $(SLANG_BUILD_DIR)/.configured
 	rm -f $@
 	mkdir -p $(@D)/modules/objs $(@D)/src/elfobjs
-	$(MAKE) -C $(@D)
+	$(MAKE) -C $(@D) MISC_TERMINFO_DIRS=$(TARGET_PREFIX)/share/terminfo
 	touch $@
 
 #
@@ -230,6 +233,7 @@ $(SLANG_IPK): $(SLANG_BUILD_DIR)/.built
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(SLANG_IPK_DIR)/CONTROL/prerm
 	echo $(SLANG_CONFFILES) | sed -e 's/ /\n/g' > $(SLANG_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SLANG_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(SLANG_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.

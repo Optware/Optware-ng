@@ -1,0 +1,54 @@
+--- src/sldisply.c.orig
++++ src/sldisply.c
+@@ -2469,9 +2469,11 @@
+    char *term;
+    int status;
+ 
+-   term = getenv ("TERM");
++/* term = getenv ("TERM");
+    if (term == NULL)
+-     SLang_exit_error("TERM environment variable needs set.");
++     SLang_exit_error("TERM environment variable needs set.");*/
++
++   term = "xterm";
+ 
+    if (0 == (status = SLtt_initialize (term)))
+      return;
+@@ -2514,9 +2516,10 @@
+ 
+    if (term == NULL)
+      {
+-	term = getenv ("TERM");
++/*	term = getenv ("TERM");
+ 	if (term == NULL)
+-	  return -1;
++	  return -1;*/
++	term = "xterm";
+      }
+ 
+    if (_pSLsecure_issetugid ()
+@@ -3007,9 +3010,10 @@
+ 
+    if (force == 0)
+      {
+-	if (NULL == (term = (char *) getenv("TERM"))) return -1;
++/*	if (NULL == (term = (char *) getenv("TERM"))) return -1;
+ 	if (strncmp ("xterm", term, 5))
+-	  return -1;
++	  return -1;*/
++	return -1; /* term == "xterm" */
+      }
+ 
+    Mouse_Mode = (mode != 0);
+--- src/untic.c.orig
++++ src/untic.c
+@@ -15,7 +15,8 @@
+    unsigned char *str;
+    char *term;
+ 
+-   term = getenv ("TERM");
++/* term = getenv ("TERM");*/
++   term = "xterm";
+    if (argc > 1)
+      {
+ 	if (!strcmp ("--help", argv[1])) usage ();
