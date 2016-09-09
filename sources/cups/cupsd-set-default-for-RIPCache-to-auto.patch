@@ -1,0 +1,44 @@
+--- a/scheduler/conf.c
++++ b/scheduler/conf.c
+@@ -666,7 +666,7 @@
+ 
+   cupsdClearString(&DefaultPaperSize);
+ 
+-  cupsdSetString(&RIPCache, "128m");
++  cupsdSetString(&RIPCache, "auto");
+ 
+   cupsdSetString(&TempDir, NULL);
+ 
+--- a/scheduler/cupsfilter.c
++++ b/scheduler/cupsfilter.c
+@@ -1388,7 +1388,7 @@
+   else
+     set_string(&FontPath, CUPS_FONTPATH);
+ 
+-  set_string(&RIPCache, "128m");
++  set_string(&RIPCache, "auto");
+ 
+   if ((temp = getenv("CUPS_SERVERBIN")) != NULL)
+     set_string(&ServerBin, temp);
+--- a/doc/help/man-cupsd.conf.html
++++ b/doc/help/man-cupsd.conf.html
+@@ -266,7 +266,7 @@
+ The default is "30".
+ <dt><a name="RIPCache"></a><b>RIPCache </b><i>size</i>
+ <dd style="margin-left: 5.0em">Specifies the maximum amount of memory to use when converting documents into bitmaps for a printer.
+-The default is "128m".
++The default is "auto".
+ <dt><a name="ServerAdmin"></a><b>ServerAdmin </b><i>email-address</i>
+ <dd style="margin-left: 5.0em">Specifies the email address of the server administrator.
+ The default value is "root@ServerName".
+--- a/man/cupsd.conf.man.in
++++ b/man/cupsd.conf.man.in
+@@ -413,7 +413,7 @@
+ .TP 5
+ \fBRIPCache \fIsize\fR
+ Specifies the maximum amount of memory to use when converting documents into bitmaps for a printer.
+-The default is "128m".
++The default is "auto".
+ .\"#ServerAdmin
+ .TP 5
+ \fBServerAdmin \fIemail-address\fR

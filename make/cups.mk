@@ -55,7 +55,7 @@ CUPS_CONFLICTS=
 #
 # CUPS_IPK_VERSION should be incremented when the ipk changes.
 #
-CUPS_IPK_VERSION=1
+CUPS_IPK_VERSION=2
 
 CUPS_DOC_DESCRIPTION=Common Unix Printing System documentation.
 CUPS-DEV_DESCRIPTION=Development files for CUPS
@@ -94,6 +94,7 @@ $(CUPS_SOURCE_DIR)/debian/log-debug-history-nearly-unlimited.patch \
 $(CUPS_SOURCE_DIR)/debian/cupsd-set-default-for-SyncOnClose-to-Yes.patch \
 $(CUPS_SOURCE_DIR)/debian/cups-set-default-error-policy-retry-job.patch \
 $(CUPS_SOURCE_DIR)/debian/man-cups-lpd-drop-dangling-references.patch \
+$(CUPS_SOURCE_DIR)/cupsd-set-default-for-RIPCache-to-auto.patch \
 #$(CUPS_SOURCE_DIR)/build_without_gnutls.patch
 
 CUPS_HOST_PATCHES=\
