@@ -22,7 +22,7 @@
 +	    {
 +	      locale = getenv ("LANG");
 +/* Optware-ng change: default locale to en_US.UTF-8 */
-+	      if (locale == NULL || locale[0] == '\0'
++	      if (locale == NULL || locale[0] == '\0')
 +	        locale = "en_US.UTF-8";
 +	    }
  	}
@@ -36,7 +36,7 @@
 +	    {
 +	      locale = getenv ("LANG");
 +/* Optware-ng change: default locale to en_US.UTF-8 */
-+	      if (locale == NULL || locale[0] == '\0'
++	      if (locale == NULL || locale[0] == '\0')
 +	        locale = "en_US.UTF-8";
 +	    }
      }

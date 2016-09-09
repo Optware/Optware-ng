@@ -1,0 +1,36 @@
+--- a/src/main.c
++++ b/src/main.c
+@@ -78,6 +78,12 @@
+ 
+ #include "consaver/cons.saver.h"        /* cons_saver_pid */
+ 
++/* Optware-ng change: needed to check if %OPTWARE_TARGET_PREFIX%/bin/nano exists and is executable */
++#include <sys/types.h>
++#include <sys/stat.h>
++#include <unistd.h>
++
++
+ /*** global variables ****************************************************************************/
+ 
+ /*** file scope macro definitions ****************************************************************/
+@@ -241,6 +247,20 @@
+ 
+     mc_global.timer = mc_timer_new ();
+ 
++/* Optware-ng change: set LANG env variable if no locale is set */
++    char *locale;
++    if (((NULL == (locale = getenv ("LC_ALL"))) || (*locale == 0))
++            && ((NULL == (locale = getenv ("LC_CTYPE"))) || (*locale == 0))
++            && ((NULL == (locale = getenv ("LANG"))) || (*locale == 0)))
++	    setenv("LANG", "en_US.UTF-8", 1);
++
++/* Optware-ng change: set EDITOR to %OPTWARE_TARGET_PREFIX%/bin/nano if it exists and is executable */
++    char *editor;
++    struct stat sb;
++    if (((NULL == (editor = getenv ("EDITOR"))) || (*editor == 0)) &&
++            ((stat("%OPTWARE_TARGET_PREFIX%/bin/nano", &sb) == 0) && (sb.st_mode & S_IXUSR)))
++            setenv("EDITOR", "%OPTWARE_TARGET_PREFIX%/bin/nano", 1);
++
+     /* We had LC_CTYPE before, LC_ALL includs LC_TYPE as well */
+ #ifdef HAVE_SETLOCALE
+     (void) setlocale (LC_ALL, "");

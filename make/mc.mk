@@ -19,7 +19,7 @@ MC_CONFLICTS=
 #
 # MC_IPK_VERSION should be incremented when the ipk changes.
 #
-MC_IPK_VERSION=6
+MC_IPK_VERSION=7
 
 #
 # MC_PATCHES should list any patches, in the the order in
@@ -29,7 +29,8 @@ MC_PATCHES=
 
 MC_POST_AUTORECONF_PATCHES=\
 $(MC_SOURCE_DIR)/force-xterm.patch \
-$(MC_SOURCE_DIR)/default_locale_to_en_US.UTF-8.patch
+$(MC_SOURCE_DIR)/default_locale_to_en_US.UTF-8.patch \
+$(MC_SOURCE_DIR)/default_optware_env_variables.patch \
 
 #
 # If the compilation of the package requires additional
