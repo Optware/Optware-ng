@@ -19,13 +19,15 @@ MC_CONFLICTS=
 #
 # MC_IPK_VERSION should be incremented when the ipk changes.
 #
-MC_IPK_VERSION=5
+MC_IPK_VERSION=6
 
 #
 # MC_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-MC_PATCHES=\
+MC_PATCHES=
+
+MC_POST_AUTORECONF_PATCHES=\
 $(MC_SOURCE_DIR)/force-xterm.patch \
 $(MC_SOURCE_DIR)/default_locale_to_en_US.UTF-8.patch
 
@@ -86,7 +88,7 @@ mc-source: $(DL_DIR)/$(MC_SOURCE) $(MC_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(MC_BUILD_DIR)/.configured: $(DL_DIR)/$(MC_SOURCE) $(MC_PATCHES) make/mc.mk
+$(MC_BUILD_DIR)/.configured: $(DL_DIR)/$(MC_SOURCE) $(MC_PATCHES) $(MC_POST_AUTORECONF_PATCHES) make/mc.mk
 	$(MAKE) e2fsprogs-stage glib-stage slang-stage gettext-stage
 	rm -rf $(BUILD_DIR)/$(MC_DIR) $(MC_BUILD_DIR)
 	$(MC_UNZIP) $(DL_DIR)/$(MC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -97,6 +99,10 @@ $(MC_BUILD_DIR)/.configured: $(DL_DIR)/$(MC_SOURCE) $(MC_PATCHES) make/mc.mk
 	mv $(BUILD_DIR)/$(MC_DIR) $(@D)
 #	sed -i -e 's|/man2hlp |/man2hlp.host |' $(@D)/doc/hlp/Makefile.am $(@D)/doc/hlp/*/Makefile.am
 	$(AUTORECONF1.10) -vif $(@D)
+	if test -n "$(MC_POST_AUTORECONF_PATCHES)" ; \
+		then cat $(MC_POST_AUTORECONF_PATCHES) | \
+		$(PATCH) -bd $(@D) -p1 ; \
+	fi
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MC_CPPFLAGS)" \
