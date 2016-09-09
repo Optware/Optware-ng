@@ -19,14 +19,15 @@ MC_CONFLICTS=
 #
 # MC_IPK_VERSION should be incremented when the ipk changes.
 #
-MC_IPK_VERSION=3
+MC_IPK_VERSION=4
 
 #
 # MC_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
 MC_PATCHES=\
-$(MC_SOURCE_DIR)/force-xterm.patch
+$(MC_SOURCE_DIR)/force-xterm.patch \
+$(MC_SOURCE_DIR)/default_locale_to_en_US.UTF-8.patch
 
 #
 # If the compilation of the package requires additional

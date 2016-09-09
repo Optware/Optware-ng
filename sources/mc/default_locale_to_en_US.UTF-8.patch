@@ -1,0 +1,13 @@
+--- a/lib/util.c
++++ b/lib/util.c
+@@ -1400,7 +1400,9 @@
+     }
+ 
+     if (locale == NULL)
+-        locale = "";
++/* Optware-ng change: default locale to en_US.UTF-8
++        locale = "";*/
++        locale = "en_US.UTF-8";
+ 
+     return g_strdup (locale);
+ }
