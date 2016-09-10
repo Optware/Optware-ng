@@ -1,0 +1,112 @@
+#!/bin/sh
+
+PATH=%OPTWARE_TARGET_PREFIX%/bin:%OPTWARE_TARGET_PREFIX%/sbin:${PATH}
+DESC="DDclient dynamic DNS client"
+NAME=ddclient
+DAEMON_OPTS=""
+DAEMON=%OPTWARE_TARGET_PREFIX%/sbin/$NAME
+pid=%OPTWARE_TARGET_PREFIX%/var/run/$NAME.pid
+START_STOP_DAEMON=%OPTWARE_TARGET_PREFIX%/sbin/start-stop-daemon-start-stop-daemon
+
+[ -f %OPTWARE_TARGET_PREFIX%/etc/ddclient/ddclient.conf ] && . %OPTWARE_TARGET_PREFIX%/etc/ddclient/ddclient.conf
+
+DAEMON_OPTS="-pid \"${pid}\" ${DAEMON_OPTS}"
+
+case "$1" in
+  start)
+	if ${START_STOP_DAEMON} --status --pidfile ${pid}
+	  then
+	    echo "Error: $DESC already running" >&2
+	    exit 1
+	  fi
+	echo "Starting $DESC"
+	if [ ! -d "`dirname $pid`" ]
+	  then
+	    mkdir -p `dirname $pid` || (echo "Error: failed to make \"`dirname $pid`\" pid file dir" >&2; exit 1)
+	  fi
+	rm -f ${pid}
+	${START_STOP_DAEMON} --pidfile ${pid} --start --exec ${DAEMON} -- ${DAEMON_OPTS}
+	;;
+  stop)
+	case `${START_STOP_DAEMON} --status --pidfile ${pid}; echo $?` in
+	0)
+	  echo -n "Stopping $DESC: "
+	  ${START_STOP_DAEMON} --pidfile ${pid} --stop --retry=TERM/30/KILL/5
+	  case `${START_STOP_DAEMON} --status --pidfile ${pid}; echo $?` in
+	  [13])
+	    echo "Success"
+	    rm -f ${pid}
+	    ;;
+	  0)
+	    echo "Failure"
+	    ;;
+	  *)
+	    echo "Status unknown"
+	    ;;
+	  esac
+	  ;;
+	1)
+	  echo "$DESC is not running and the pid file ${pid} exists: removing the pid file"
+	  rm -f ${pid}
+	  ;;
+	3)
+	  echo "$DESC is not running"
+	  ;;
+	4)
+	  echo "Unable to determine $DESC status"
+	  ;;
+	*)
+	  echo "Unknown exit start-stop-daemon code"
+	  ;;
+	esac
+        ;;
+  restart)
+	case `${START_STOP_DAEMON} --status --pidfile ${pid}; echo $?` in
+	0)
+	  echo "Restarting $DESC"
+	  ${START_STOP_DAEMON} --pidfile ${pid} --stop --retry=TERM/30/KILL/5
+	  "$0" start
+	  ;;
+	1)
+	  echo "$DESC is not running and the pid file ${pid} exists: removing the pid file"
+	  rm -f ${pid}
+	  "$0" start
+	  ;;
+	3)
+	  echo "$DESC is not running"
+	  "$0" start
+	  ;;
+	4)
+	  echo "Unable to determine $DESC status" >&2
+	  exit 1
+	  ;;
+	*)
+	  echo "Unknown start-stop-daemon exit code" >&2
+	  exit 1
+	  ;;
+	esac
+        ;;
+  status)
+	case `${START_STOP_DAEMON} --status --pidfile ${pid}; echo $?` in
+	0)
+	  echo "$DESC running"
+	  ;;
+	1)
+	  echo "$DESC is not running and the pid file ${pid} exists"
+	  ;;
+	3)
+	  echo "$DESC is not running"
+	  ;;
+	4)
+	  echo "Unable to determine $DESC status" >&2
+	  ;;
+	*)
+	  echo "Unknown exit start-stop-daemon code" >&2
+	  ;;
+	esac
+        ;;
+  *)
+	echo "Usage: $0 {start|stop|restart|status}"
+	exit 1
+	;;
+esac

@@ -5,7 +5,7 @@
 ###########################################################
 
 DDCLIENT_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/ddclient
-DDCLIENT_VERSION=3.8.1
+DDCLIENT_VERSION=3.8.3
 DDCLIENT_SOURCE=ddclient-$(DDCLIENT_VERSION).tar.gz
 DDCLIENT_DIR=ddclient-$(DDCLIENT_VERSION)
 DDCLIENT_UNZIP=zcat
@@ -13,14 +13,19 @@ DDCLIENT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 DDCLIENT_DESCRIPTION=A client for updating dynamic DNS entries for accounts on a number of dynamic DNS providers.
 DDCLIENT_SECTION=util
 DDCLIENT_PRIORITY=optional
-DDCLIENT_DEPENDS=perl
+DDCLIENT_DEPENDS=perl, perl-file-pid
 DDCLIENT_SUGGESTS=
 DDCLIENT_CONFLICTS=
 
-DDCLIENT_IPK_VERSION=2
+DDCLIENT_IPK_VERSION=1
 
-DDCLIENT_CONFFILES=
-DDCLIENT_PATCHES=$(DDCLIENT_SOURCE_DIR)/ddclient-opt.patch
+DDCLIENT_CONFFILES=\
+$(TARGET_PREFIX)/etc/ddclient/ddclient.conf \
+$(TARGET_PREFIX)/etc/init.d/S95ddclient \
+
+DDCLIENT_PATCHES=\
+$(DDCLIENT_SOURCE_DIR)/ddclient_file_pid.patch \
+$(DDCLIENT_SOURCE_DIR)/ddclient-opt.patch \
 
 DDCLIENT_BUILD_DIR=$(BUILD_DIR)/ddclient
 DDCLIENT_SOURCE_DIR=$(SOURCE_DIR)/ddclient
@@ -35,7 +40,7 @@ ddclient-source: $(DL_DIR)/$(DDCLIENT_SOURCE) $(DDCLIENT_PATCHES)
 $(DDCLIENT_BUILD_DIR)/.configured: $(DL_DIR)/$(DDCLIENT_SOURCE) $(DDCLIENT_PATCHES) make/ddclient.mk
 	rm -rf $(BUILD_DIR)/$(DDCLIENT_DIR) $(DDCLIENT_BUILD_DIR)
 	$(DDCLIENT_UNZIP) $(DL_DIR)/$(DDCLIENT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(DDCLIENT_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(DDCLIENT_DIR) -p0
+	cat $(DDCLIENT_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(DDCLIENT_DIR) -p1
 	mv $(BUILD_DIR)/$(DDCLIENT_DIR) $(@D)
 #	(cd $(DDCLIENT_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -85,8 +90,11 @@ $(DDCLIENT_IPK): $(DDCLIENT_BUILD_DIR)/.built
 	$(INSTALL) -d $(DDCLIENT_IPK_DIR)$(TARGET_PREFIX)/sbin
 	$(INSTALL) -m 755 $(DDCLIENT_BUILD_DIR)/ddclient $(DDCLIENT_IPK_DIR)$(TARGET_PREFIX)/sbin
 	$(INSTALL) -d $(DDCLIENT_IPK_DIR)$(TARGET_PREFIX)/etc/ddclient
-	$(INSTALL) -m 644 $(DDCLIENT_BUILD_DIR)/sample-etc_ddclient.conf $(DDCLIENT_IPK_DIR)$(TARGET_PREFIX)/etc/ddclient/ddclient.conf-dist
+	$(INSTALL) -m 644 $(DDCLIENT_BUILD_DIR)/sample-etc_ddclient.conf $(DDCLIENT_IPK_DIR)$(TARGET_PREFIX)/etc/ddclient/ddclient.conf
+	$(INSTALL) -d $(DDCLIENT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
+	$(INSTALL) -m 755 $(DDCLIENT_SOURCE_DIR)/rc.ddclient $(DDCLIENT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S95ddclient
 	$(INSTALL) -d $(DDCLIENT_IPK_DIR)$(TARGET_PREFIX)/var/cache/ddclient
+	$(INSTALL) -d $(DDCLIENT_IPK_DIR)$(TARGET_PREFIX)/var/run
 	$(INSTALL) -d $(DDCLIENT_IPK_DIR)$(TARGET_PREFIX)/tmp
 	$(INSTALL) -d $(DDCLIENT_IPK_DIR)$(TARGET_PREFIX)/share/doc/ddclient
 	$(INSTALL) $(DDCLIENT_BUILD_DIR)/README* $(DDCLIENT_IPK_DIR)$(TARGET_PREFIX)/share/doc/ddclient

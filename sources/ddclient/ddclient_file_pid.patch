@@ -1,0 +1,87 @@
+--- a/ddclient
++++ b/ddclient
+@@ -24,6 +24,7 @@
+ use Getopt::Long;
+ use Sys::Hostname;
+ use IO::Socket;
++use File::Pid;
+ 
+ my $version  = "3.8.3";
+ my $programd  = $0; 
+@@ -33,6 +34,7 @@
+ my $now       = time;
+ my $hostname  = hostname();
+ my $etc       = ($program =~ /test/i) ? './'   : '/etc/ddclient/';
++my $run       = ($program =~ /test/i) ? './'   : '/var/run/';
+ my $cachedir  = ($program =~ /test/i) ? './'   : '/var/cache/ddclient/';
+ my $savedir   = ($program =~ /test/i) ? 'URL/' : '/tmp/';
+ my $msgs      = '';
+@@ -323,7 +325,7 @@
+ 	'foreground'          => setv(T_BOOL,  0, 0, 1, 0,                    undef),
+ 	'file'                => setv(T_FILE,  0, 0, 1, "$etc$program.conf",  undef),
+ 	'cache'               => setv(T_FILE,  0, 0, 1, "$cachedir$program.cache", undef),
+-	'pid'                 => setv(T_FILE,  0, 0, 1, "",                   undef),
++	'pid'                 => setv(T_FILE,  0, 0, 1, "$run$program.pid",   undef),
+ 	'proxy'               => setv(T_FQDNP, 0, 0, 1, '',                   undef),
+ 	'protocol'            => setv(T_PROTO, 0, 0, 1, 'dyndns2',            undef),
+ 
+@@ -775,6 +777,7 @@
+ if (opt('foreground') || opt('force')) {
+     ;
+ } elsif (opt('daemon')) {
++    test_pid();
+     $SIG{'CHLD'}   = 'IGNORE';
+     my $pid = fork;
+     if ($pid < 0) {
+@@ -791,6 +794,7 @@
+ 
+ # write out the pid file if we're daemon'ized
+ if(opt('daemon')) { 
++    test_pid();
+     write_pid();
+     $opt{'syslog'} = 1;
+ }
+@@ -849,7 +853,9 @@
+ } while ($daemon && !$result && !$caught_term && !$caught_kill);
+ 
+ warning("caught SIGKILL; exiting") if $caught_kill;
+-unlink_pid();
++if(opt('daemon')) { 
++    unlink_pid();
++}
+ sendmail();
+ 
+ exit($result);
+@@ -929,6 +935,32 @@
+ 	write_cache(opt('cache'));
+ }
+ ######################################################################
++## test_pid()
++######################################################################
++sub test_pid {
++    if (opt('daemon')) {
++        my $file = opt('pid');
++
++        if ($file && opt('daemon')) {	
++            local *FD;
++    	    if (! open(FD, ">> $file")) {
++                fatal("pid file '%s' is not writeable. ($!)\n", $file);
++            } else {
++                close(FD);
++            }
++        }
++
++        my $pidfile = File::Pid->new({
++            file => "$file",
++        });
++
++        if (my $num = $pidfile->running) {
++           fatal("program with PID $num from pid file '%s' already running\n", $file);
++        }
++    }
++}
++
++######################################################################
+ ## unlink_pid()
+ ######################################################################
+ sub unlink_pid {

@@ -1,31 +1,50 @@
---- ddclient.orig	2007-08-22 22:37:11.000000000 -0700
-+++ ddclient	2007-08-22 22:38:39.000000000 -0700
+--- a/ddclient
++++ b/ddclient
 @@ -1,5 +1,4 @@
 -#!/usr/bin/perl -w
 -#!/usr/local/bin/perl -w
 +#!%OPTWARE_TARGET_PREFIX%/bin/perl -w
  ######################################################################
- # $Id: ddclient 78 2007-08-07 06:35:55Z wimpunk $
  #
-@@ -24,9 +23,9 @@
+ # DDCLIENT - a Perl client for updating DynDNS information
+@@ -33,10 +32,10 @@
  $program  =~ s/d$//;
  my $now       = time;
  my $hostname  = hostname();
 -my $etc       = ($program =~ /test/i) ? './'   : '/etc/ddclient/';
+-my $run       = ($program =~ /test/i) ? './'   : '/var/run/';
 -my $cachedir  = ($program =~ /test/i) ? './'   : '/var/cache/ddclient/';
 -my $savedir   = ($program =~ /test/i) ? 'URL/' : '/tmp/';
 +my $etc       = ($program =~ /test/i) ? './'   : '%OPTWARE_TARGET_PREFIX%/etc/ddclient/';
++my $run       = ($program =~ /test/i) ? './'   : '%OPTWARE_TARGET_PREFIX%/var/run/';
 +my $cachedir  = ($program =~ /test/i) ? './'   : '%OPTWARE_TARGET_PREFIX%/var/cache/ddclient/';
 +my $savedir   = ($program =~ /test/i) ? 'URL/' : '%OPTWARE_TARGET_PREFIX%/tmp/';
  my $msgs      = '';
  my $last_msgs = '';
  
-@@ -34,7 +33,7 @@
+@@ -44,7 +43,7 @@
  local $file   = '';
  local $lineno = '';
  
 -$ENV{'PATH'} = (exists($ENV{PATH}) ? "$ENV{PATH}:" : "") . "/sbin:/usr/sbin:/bin:/usr/bin:/etc:/usr/lib:";
-+$ENV{'PATH'} = (exists($ENV{PATH}) ? "$ENV{PATH}:" : "") . "%OPTWARE_TARGET_PREFIX%/sbin:%OPTWARE_TARGET_PREFIX%/bin:/sbin:/usr/sbin:/bin:/usr/bin:/etc:/usr/lib:";
++$ENV{'PATH'} = (exists($ENV{PATH}) ? "$ENV{PATH}:" : "") . "%OPTWARE_TARGET_PREFIX%/sbin:%OPTWARE_TARGET_PREFIX%/bin:/sbin:/usr/sbin:/bin:/usr/bin:";
  
  sub T_ANY	{'any'};
  sub T_STRING	{'string'};
+--- a/sample-etc_ddclient.conf
++++ b/sample-etc_ddclient.conf
+@@ -20,10 +20,10 @@
+ ######################################################################
+ daemon=300				# check every 300 seconds
+ syslog=yes				# log update msgs to syslog
+-mail=root				# mail all msgs to root
+-mail-failure=root			# mail failed update msgs to root
+-pid=/var/run/ddclient.pid		# record PID in file.
+-ssl=yes					# use ssl-support.  Works with
++#mail=root				# mail all msgs to root
++#mail-failure=root			# mail failed update msgs to root
++pid=%OPTWARE_TARGET_PREFIX%/var/run/ddclient.pid		# record PID in file. Default = %OPTWARE_TARGET_PREFIX%/var/run/$0.pid
++#ssl=yes					# use ssl-support.  Works with
+ 					# ssl-library
+ # postscript=script			# run script after updating.  The
+ 					# new IP is added as argument.
