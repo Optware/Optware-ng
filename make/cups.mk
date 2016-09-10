@@ -55,7 +55,7 @@ CUPS_CONFLICTS=
 #
 # CUPS_IPK_VERSION should be incremented when the ipk changes.
 #
-CUPS_IPK_VERSION=2
+CUPS_IPK_VERSION=3
 
 CUPS_DOC_DESCRIPTION=Common Unix Printing System documentation.
 CUPS-DEV_DESCRIPTION=Development files for CUPS
@@ -292,6 +292,8 @@ endif
 		--with-icondir=$(TARGET_PREFIX)/share/icons \
 		--with-menudir=$(TARGET_PREFIX)/share/applications \
 		--libdir=$(TARGET_PREFIX)/lib \
+		--with-printcap=$(TARGET_PREFIX)/etc/printcap \
+		--with-local-protocols="dnssd" \
 		--disable-nls \
 		--disable-dbus \
 		$(CUPS_CONFIG_OPTS) \
@@ -303,6 +305,9 @@ endif
 		--without-python \
 		--disable-slp \
 		--disable-gssapi \
+		--with-cups-user=nobody \
+		--with-cups-group=nobody \
+		--with-system-groups="root sys system" \
 	)
 ifdef CUPS_GCC_DOES_NOT_SUPPORT_PIE
 	sed -i -e 's/ -pie -fPIE//' $(@D)/Makedefs
@@ -526,7 +531,8 @@ $(CUPS_IPK) $(CUPS-DEV_IPK): $(CUPS_BUILD_DIR)/.locales
 	for d in backend cgi-bin daemon filter monitor notifier; do \
 	$(STRIP_COMMAND) $(CUPS_IPK_DIR)$(TARGET_PREFIX)/lib/cups/$$d/*; \
 	done
-	chmod 700 $(CUPS_IPK_DIR)$(TARGET_PREFIX)/lib/cups/backend/usb
+	chmod 755 $(CUPS_IPK_DIR)$(TARGET_PREFIX)/lib/cups/*
+	chmod 700 $(CUPS_IPK_DIR)$(TARGET_PREFIX)/lib/cups/backend/*
 #	$(INSTALL) -m 644 $(CUPS_SOURCE_DIR)/mime.types $(CUPS_IPK_DIR)$(TARGET_PREFIX)/share/cups/mime
 #	$(INSTALL) -m 644 $(CUPS_SOURCE_DIR)/mime.convs $(CUPS_IPK_DIR)$(TARGET_PREFIX)/share/cups/mime
 # Copy the configuration file
