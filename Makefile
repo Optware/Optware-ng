@@ -86,7 +86,7 @@ PERL_PACKAGES = \
 	perl-encode-detect \
 	perl-encode-locale \
 	perl-extutils-cbuilder perl-extutils-parsexs \
-	perl-file-next perl-file-rename \
+	perl-file-next perl-file-pid perl-file-rename \
 	perl-gd perl-gd-barcode \
 	perl-html-form \
 	perl-html-parser perl-html-tagparser perl-html-tagset perl-html-template perl-hottproxy \
