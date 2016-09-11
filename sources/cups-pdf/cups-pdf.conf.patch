@@ -1,0 +1,68 @@
+--- a/extra/cups-pdf.conf
++++ b/extra/cups-pdf.conf
+@@ -38,23 +38,23 @@
+ ##     ${USER} will be expanded to the user name
+ ##  in case it is an NFS export make sure it is exported without
+ ##  root_squash! 
+-### Default: /var/spool/cups-pdf/${USER}
++### Default: %OPTWARE_TARGET_PREFIX%/var/spool/cups-pdf/${USER}
+ 
+-#Out /var/spool/cups-pdf/${USER}
++#Out %OPTWARE_TARGET_PREFIX%/var/spool/cups-pdf/${USER}
+ 
+ ### Key: AnonDirName
+ ##  ABSOLUTE path for anonymously created PDF files
+ ##  if anonymous access is disabled this setting has no effect
+-### Default: /var/spool/cups-pdf/ANONYMOUS
++### Default: %OPTWARE_TARGET_PREFIX%/var/spool/cups-pdf/ANONYMOUS
+ 
+-#AnonDirName /var/spool/cups-pdf/ANONYMOUS
++#AnonDirName %OPTWARE_TARGET_PREFIX%/var/spool/cups-pdf/ANONYMOUS
+ 
+ ### Key: Spool
+ ##  CUPS-PDF spool directory - make sure there is no user 'SPOOL' on your
+ ##  system or change the path	
+-### Default: /var/spool/cups-pdf/SPOOL
++### Default: %OPTWARE_TARGET_PREFIX%/var/spool/cups-pdf/SPOOL
+ 
+-#Spool /var/spool/cups-pdf/SPOOL
++#Spool %OPTWARE_TARGET_PREFIX%/var/spool/cups-pdf/SPOOL
+ 
+ 
+ ###########################################################################
+@@ -194,9 +194,9 @@
+ ### Key: Log
+ ##  CUPS-PDF log directory 
+ ##  set this to an empty value to disable all logging
+-### Default: /var/log/cups
++### Default: %OPTWARE_TARGET_PREFIX%/var/log/cups
+ 
+-#Log /var/log/cups
++#Log %OPTWARE_TARGET_PREFIX%/var/log/cups
+ 
+ ### Key: LogType
+ ##  log-mode 
+@@ -218,18 +218,16 @@
+ 
+ ### Key: GhostScript
+ ##  location of GhostScript binary (gs) 
+-##  MacOSX: for using pstopdf (recommended) set this to /usr/bin/pstopdf
+-##          or its proper location on your system
+-### Default: /usr/bin/gs
++### Default: %OPTWARE_TARGET_PREFIX%/bin/gs
+ 
+-#GhostScript /usr/bin/gs
++#GhostScript %OPTWARE_TARGET_PREFIX%/bin/gs
+ 
+ ### Key: GSTmp
+ ##  location of temporary files during GhostScript operation 
+-##  this must be user-writable like /var/tmp or /tmp ! 
+-### Default: /var/tmp
++##  this must be user-writable like %OPTWARE_TARGET_PREFIX%/var/spool/cups/tmp or /tmp ! 
++### Default: %OPTWARE_TARGET_PREFIX%/var/spool/cups/tmp
+ 
+-#GSTmp /var/tmp
++#GSTmp %OPTWARE_TARGET_PREFIX%/var/spool/cups/tmp
+ 
+ ### Key: GSCall
+ ## command line for calling GhostScript (!!! DO NOT USE NEWLINES !!!)
