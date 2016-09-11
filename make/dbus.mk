@@ -22,7 +22,7 @@
 #
 DBUS_SITE=http://dbus.freedesktop.org/releases/dbus
 DBUS_VERSION=1.11.4
-DBUS_IPK_VERSION=3
+DBUS_IPK_VERSION=4
 DBUS_SOURCE=dbus-$(DBUS_VERSION).tar.gz
 DBUS_DIR=dbus-$(DBUS_VERSION)
 DBUS_UNZIP=zcat

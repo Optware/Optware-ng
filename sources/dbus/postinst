@@ -11,4 +11,4 @@ mkdir -p %OPTWARE_TARGET_PREFIX%/etc
 # echo "Please read the dbus documentation to create a configuration file matching you needs."
 # echo
 
-%OPTWARE_TARGET_PREFIX%/etc/init.d/S20dbus start
+%OPTWARE_TARGET_PREFIX%/etc/init.d/S20dbus restart
