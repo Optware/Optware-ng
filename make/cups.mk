@@ -49,13 +49,13 @@ ifeq (openldap, $(filter openldap, $(PACKAGES)))
 CUPS_DEPENDS+=, openldap-libs
 endif
 
-CUPS_SUGGESTS=
+CUPS_SUGGESTS=xinetd, samba36
 CUPS_CONFLICTS=
 
 #
 # CUPS_IPK_VERSION should be incremented when the ipk changes.
 #
-CUPS_IPK_VERSION=3
+CUPS_IPK_VERSION=4
 
 CUPS_DOC_DESCRIPTION=Common Unix Printing System documentation.
 CUPS-DEV_DESCRIPTION=Development files for CUPS
@@ -65,7 +65,8 @@ CUPS-DEV_DESCRIPTION=Development files for CUPS
 CUPS_CONFFILES=$(TARGET_PREFIX)/etc/cups/cupsd.conf $(TARGET_PREFIX)/etc/cups/printers.conf \
 		$(TARGET_PREFIX)/etc/cups/cups-files.conf $(TARGET_PREFIX)/etc/cups/printers.conf \
 		$(TARGET_PREFIX)/etc/cups/snmp.conf $(TARGET_PREFIX)/share/cups/mime/mime.types $(TARGET_PREFIX)/share/cups/mime/mime.convs \
-		$(TARGET_PREFIX)/etc/init.d/S88cupsd
+		$(TARGET_PREFIX)/etc/init.d/S88cupsd \
+		$(TARGET_PREFIX)/etc/xinetd.d/cups-lpd
 
 #
 # CUPS_PATCHES should list any patches, in the the order in
@@ -308,6 +309,8 @@ endif
 		--with-cups-user=nobody \
 		--with-cups-group=nobody \
 		--with-system-groups="root sys system" \
+		--with-lpdconfigfile=xinetd://$(TARGET_PREFIX)/etc/xinetd.d/cups-lpd \
+		--with-smbconfigfile=samba://$(TARGET_PREFIX)/etc/samba/smb.conf \
 	)
 ifdef CUPS_GCC_DOES_NOT_SUPPORT_PIE
 	sed -i -e 's/ -pie -fPIE//' $(@D)/Makedefs
@@ -541,6 +544,9 @@ $(CUPS_IPK) $(CUPS-DEV_IPK): $(CUPS_BUILD_DIR)/.locales
 # Copy the init.d startup file
 	$(INSTALL) -d $(CUPS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
 	$(INSTALL) -m 755 $(CUPS_SOURCE_DIR)/rc.cups $(CUPS_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S88cupsd
+# Install etc/xinetd.d/cups-lpd
+	$(INSTALL) -d $(CUPS_IPK_DIR)$(TARGET_PREFIX)/etc/xinetd.d
+	$(INSTALL) -m 644 $(CUPS_SOURCE_DIR)/xinetd.d/cups-lpd $(CUPS_IPK_DIR)$(TARGET_PREFIX)/etc/xinetd.d/cups-lpd
 # Copy lpd startup files
 	$(INSTALL) -m 755 $(CUPS_SOURCE_DIR)/S89cups-lpd \
 		$(CUPS_IPK_DIR)$(TARGET_PREFIX)/doc/cups
