@@ -1,6 +1,6 @@
 #!/bin/sh
 
-PATH=%OPTWARE_TARGET_PREFIX%/bin:%OPTWARE_TARGET_PREFIX%/sbin:${PATH}
+PATH=%OPTWARE_TARGET_PREFIX%/bin:%OPTWARE_TARGET_PREFIX%/sbin:/bin:${PATH}
 DESC="DDclient dynamic DNS client"
 NAME=ddclient
 DAEMON_OPTS=""
@@ -8,7 +8,7 @@ DAEMON=%OPTWARE_TARGET_PREFIX%/sbin/$NAME
 pid=%OPTWARE_TARGET_PREFIX%/var/run/$NAME.pid
 START_STOP_DAEMON=%OPTWARE_TARGET_PREFIX%/sbin/start-stop-daemon-start-stop-daemon
 
-[ -f %OPTWARE_TARGET_PREFIX%/etc/ddclient/ddclient.conf ] && pid=`. %OPTWARE_TARGET_PREFIX%/etc/ddclient/ddclient.conf; echo "$pid"`
+[ -f %OPTWARE_TARGET_PREFIX%/etc/ddclient/ddclient.conf ] && pid=`(echo pid=\""$pid"\"; cat /opt/etc/ddclient/ddclient.conf | sed -n '/[ \t]*pid=/p'; echo 'echo "$pid"') | sh`
 
 case "$1" in
   start)
