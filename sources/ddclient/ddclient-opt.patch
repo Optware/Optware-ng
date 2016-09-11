@@ -5,9 +5,9 @@
 -#!/usr/local/bin/perl -w
 +#!%OPTWARE_TARGET_PREFIX%/bin/perl -w
  ######################################################################
+ # $Id: ddclient 184 2015-05-28 19:59:34Z wimpunk $
  #
- # DDCLIENT - a Perl client for updating DynDNS information
-@@ -33,10 +32,10 @@
+@@ -36,10 +35,10 @@
  $program  =~ s/d$//;
  my $now       = time;
  my $hostname  = hostname();
@@ -22,7 +22,7 @@
  my $msgs      = '';
  my $last_msgs = '';
  
-@@ -44,7 +43,7 @@
+@@ -47,7 +46,7 @@
  local $file   = '';
  local $lineno = '';
  
@@ -43,7 +43,7 @@
 -ssl=yes					# use ssl-support.  Works with
 +#mail=root				# mail all msgs to root
 +#mail-failure=root			# mail failed update msgs to root
-+pid=%OPTWARE_TARGET_PREFIX%/var/run/ddclient.pid		# record PID in file. Default = %OPTWARE_TARGET_PREFIX%/var/run/$0.pid
++pid=%OPTWARE_TARGET_PREFIX%/var/run/ddclient.pid		# record PID in file. Default = %OPTWARE_TARGET_PREFIX%/var/run/ddclient.pid
 +#ssl=yes					# use ssl-support.  Works with
  					# ssl-library
  # postscript=script			# run script after updating.  The

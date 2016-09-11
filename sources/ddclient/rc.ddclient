@@ -8,9 +8,7 @@ DAEMON=%OPTWARE_TARGET_PREFIX%/sbin/$NAME
 pid=%OPTWARE_TARGET_PREFIX%/var/run/$NAME.pid
 START_STOP_DAEMON=%OPTWARE_TARGET_PREFIX%/sbin/start-stop-daemon-start-stop-daemon
 
-[ -f %OPTWARE_TARGET_PREFIX%/etc/ddclient/ddclient.conf ] && . %OPTWARE_TARGET_PREFIX%/etc/ddclient/ddclient.conf
-
-DAEMON_OPTS="-pid \"${pid}\" ${DAEMON_OPTS}"
+[ -f %OPTWARE_TARGET_PREFIX%/etc/ddclient/ddclient.conf ] && pid=`. %OPTWARE_TARGET_PREFIX%/etc/ddclient/ddclient.conf; echo "$pid"`
 
 case "$1" in
   start)
@@ -25,7 +23,7 @@ case "$1" in
 	    mkdir -p `dirname $pid` || (echo "Error: failed to make \"`dirname $pid`\" pid file dir" >&2; exit 1)
 	  fi
 	rm -f ${pid}
-	${START_STOP_DAEMON} --pidfile ${pid} --start --exec ${DAEMON} -- ${DAEMON_OPTS}
+	${START_STOP_DAEMON} --pidfile ${pid} --start --exec ${DAEMON} -- ${DAEMON_OPTS} -pid "${pid}"
 	;;
   stop)
 	case `${START_STOP_DAEMON} --status --pidfile ${pid}; echo $?` in
@@ -110,3 +108,5 @@ case "$1" in
 	exit 1
 	;;
 esac
+
+exit 0
