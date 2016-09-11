@@ -1,34 +1,4 @@
-#! /bin/sh
-# -*- coding: utf-8 -*-
-# Debian init.d script for D-BUS
-# Copyright © 2003 Colin Walters <walters@debian.org>
-
-PATH=$PATH:%OPTWARE_TARGET_PREFIX%/bin:%OPTWARE_TARGET_PREFIX%/sbin
-
-#if grep -q ^messagebus: /etc/group; then
-#	# echo There already is an messagebus group on the system.
-#	ADDUSER_OPT="-G messagebus"
-#fi
-
-#if grep -q ^messagebus: /etc/passwd; then
-#	# echo There already is an messagebus user on the system.
-#	true
-#else
-#	echo -n "No messagebus user found, creating it... "
-#	adduser -h %OPTWARE_TARGET_PREFIX%/var/run/dbus -g "messagebus daemon" -s /bin/false -D -H $ADDUSER_OPT messagebus > /dev/null 2>&1
-#	echo done
-#fi
-
-set -e
-
-DAEMON=%OPTWARE_TARGET_PREFIX%/bin/dbus-daemon
-NAME=dbus
-DAEMONUSER=nobody
-PIDDIR=%OPTWARE_TARGET_PREFIX%/var/run/dbus
-PIDFILE=$PIDDIR/pid
-DESC="system message bus"
-
-test -x $DAEMON || exit 0
+#!/bin/sh
 
 # Source defaults file; edit that file to configure this script.
 ENABLED=1
@@ -39,50 +9,101 @@ fi
 
 test "$ENABLED" != "0" || exit 0
 
-start_it_up()
-{
-  if [ ! -d $PIDDIR ]; then
-    mkdir -p $PIDDIR
-    chown $DAEMONUSER $PIDDIR
-    chgrp $DAEMONUSER $PIDDIR
-  fi
-  if [ -e $PIDFILE ]; then
-    echo "$DESC already started; not starting."
-  else
-    echo -n "Starting $DESC: "
-    ${DAEMON} --system $PARAMS
-    echo "$NAME."
-  fi
-}
+PATH=%OPTWARE_TARGET_PREFIX%/bin:%OPTWARE_TARGET_PREFIX%/sbin:${PATH}
+DESC="System message bus"
+NAME=dbus-daemon
+DAEMON=%OPTWARE_TARGET_PREFIX%/bin/$NAME
+DAEMON_OPTS="--system $PARAMS"
+pidfile=%OPTWARE_TARGET_PREFIX%/var/run/dbus/pid
+START_STOP_DAEMON=%OPTWARE_TARGET_PREFIX%/sbin/start-stop-daemon-start-stop-daemon
 
-shut_it_down()
-{
-  echo -n "Stopping $DESC: "
-  if [ -e $PIDFILE ]; then
-    kill `cat $PIDFILE`
-  else
-    killall ${DAEMON}
-  fi
-  echo "$NAME."
-  rm -f $PIDFILE
-}
+
 
 case "$1" in
   start)
-    start_it_up
-  ;;
+	if ${START_STOP_DAEMON} --status --name $NAME --pidfile ${pidfile}
+	  then
+	    echo "Error: $DESC already running" >&2
+	    exit 1
+	  fi
+	echo "Starting $DESC"
+	if [ ! -d "%OPTWARE_TARGET_PREFIX%/var/run/dbus" ]
+	  then
+	    mkdir -p %OPTWARE_TARGET_PREFIX%/var/run/dbus
+	  fi
+	rm -f ${pidfile}
+	${START_STOP_DAEMON} --pidfile ${pidfile} --name $NAME --start --exec ${DAEMON} -- ${DAEMON_OPTS}
+	;;
   stop)
-    shut_it_down
-  ;;
-  restart|force-reload)
-    shut_it_down
-    sleep 1
-    start_it_up
-  ;;
+	case `${START_STOP_DAEMON} --status --pidfile ${pidfile} --name $NAME; echo $?` in
+	0)
+	  echo "Stopping $DESC"
+	  ${START_STOP_DAEMON} --pidfile ${pidfile} --name $NAME --stop --retry=TERM/30/KILL/5
+	  ;;
+	1)
+	  echo "$DESC is not running and the pid file ${pidfile} exists: removing the pid file"
+	  rm -f ${pidfile}
+	  ;;
+	3)
+	  echo "$DESC is not running"
+	  ;;
+	4)
+	  echo "Unable to determine $DESC status"
+	  ;;
+	*)
+	  echo "Unknown start-stop-daemon exit code"
+	  ;;
+	esac
+        ;;
+  restart)
+	case `${START_STOP_DAEMON} --status --pidfile ${pidfile} --name $NAME; echo $?` in
+	0)
+	  echo "Restarting $DESC"
+	  ${START_STOP_DAEMON} --pidfile ${pidfile} --name $NAME --stop --retry=TERM/30/KILL/5
+	  "$0" start
+	  ;;
+	1)
+	  echo "$DESC is not running and the pid file ${pidfile} exists: removing the pid file"
+	  rm -f ${pidfile}
+	  "$0" start
+	  ;;
+	3)
+	  echo "$DESC is not running"
+	  "$0" start
+	  ;;
+	4)
+	  echo "Unable to determine $DESC status" >&2
+	  exit 1
+	  ;;
+	*)
+	  echo "Unknown start-stop-daemon exit code" >&2
+	  exit 1
+	  ;;
+	esac
+        ;;
+  status)
+	case `${START_STOP_DAEMON} --status --pidfile ${pidfile}; echo $?` in
+	0)
+	  echo "$DESC running"
+	  ;;
+	1)
+	  echo "$DESC is not running and the pid file ${pidfile} exists"
+	  ;;
+	3)
+	  echo "$DESC is not running"
+	  ;;
+	4)
+	  echo "Unable to determine $DESC status" >&2
+	  ;;
+	*)
+	  echo "Unknown exit start-stop-daemon code" >&2
+	  ;;
+	esac
+        ;;
   *)
-    echo "Usage: $0 {start|stop|restart|force-reload}" >&2
-    exit 1
-  ;;
+	echo "Usage: $0 {start|stop|restart|status}"
+	exit 1
+	;;
 esac
 
 exit 0

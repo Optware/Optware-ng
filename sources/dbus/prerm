@@ -1,4 +1,3 @@
 #!/bin/sh
 
-killall dbus-daemon
-
+%OPTWARE_TARGET_PREFIX%/etc/init.d/S20dbus stop

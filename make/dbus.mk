@@ -21,8 +21,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 DBUS_SITE=http://dbus.freedesktop.org/releases/dbus
-DBUS_VERSION ?= 1.11.4
-DBUS_IPK_VERSION ?= 2
+DBUS_VERSION=1.11.4
+DBUS_IPK_VERSION=3
 DBUS_SOURCE=dbus-$(DBUS_VERSION).tar.gz
 DBUS_DIR=dbus-$(DBUS_VERSION)
 DBUS_UNZIP=zcat
@@ -33,7 +33,7 @@ DBUS_SECTION=misc
 LIBDBUS_SECTION=libs
 DBUS_PRIORITY=optional
 LIBDBUS_PRIORITY=optional
-DBUS_DEPENDS=libdbus, expat, adduser
+DBUS_DEPENDS=libdbus, expat, start-stop-daemon
 LIBDBUS_DEPENDS=
 ifeq (x11, $(filter x11, $(PACKAGES)))
 DBUS_DEPENDS+=, x11, sm
@@ -57,14 +57,9 @@ DBUS_CONFFILES=$(TARGET_PREFIX)/etc/init.d/S20dbus $(TARGET_PREFIX)/etc/default/
 # compilation or linking flags, then list them here.
 #
 DBUS_CPPFLAGS=
-DBUS_LDFLAGS ?=
+DBUS_LDFLAGS=
 
-ifneq ($(HOSTCC), $(TARGET_CC))
 DBUS_CROSS_CONFIG_ENVS=ac_cv_have_abstract_sockets=yes
-ifeq ($(OPTWARE_TARGET), wl500g)
-DBUS_CROSS_CONFIG_ENVS+= ac_cv_func_posix_getpwnam_r=no ac_cv_func_nonposix_getpwnam_r=no
-endif
-endif
 
 ifeq (x11, $(filter x11, $(PACKAGES)))
 DBUS_CONFIG_ARGS=--with-x
