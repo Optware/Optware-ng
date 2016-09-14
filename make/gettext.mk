@@ -5,7 +5,7 @@
 ###########################################################
 
 #
-# GETTEXT_VERSION, GETTEXT_SITE and GETTEXT_SOURCE define
+# GETTEXT_VERSION_EXACT, GETTEXT_SITE and GETTEXT_SOURCE define
 # the upstream location of the source code for the package.
 # GETTEXT_DIR is the directory which is created when the source
 # archive is unpacked.
@@ -15,10 +15,11 @@
 # You should change all these variables to suit your package.
 #
 GETTEXT_SITE=http://ftp.gnu.org/gnu/gettext
-GETTEXT_VERSION=0.19.8.1
+GETTEXT_VERSION_EXACT=0.19.8.1
+GETTEXT_VERSION=0.19.8
 GETTEXT_VERSION_MAJOR=0.19
-GETTEXT_SOURCE=gettext-$(GETTEXT_VERSION).tar.gz
-GETTEXT_DIR=gettext-$(GETTEXT_VERSION)
+GETTEXT_SOURCE=gettext-$(GETTEXT_VERSION_EXACT).tar.gz
+GETTEXT_DIR=gettext-$(GETTEXT_VERSION_EXACT)
 GETTEXT_UNZIP=zcat
 GETTEXT_SECTION=devel
 LIBINTL_SECTION=libs
@@ -79,11 +80,11 @@ endif
 GETTEXT_BUILD_DIR=$(BUILD_DIR)/gettext
 GETTEXT_SOURCE_DIR=$(SOURCE_DIR)/gettext
 
-GETTEXT_IPK_DIR=$(BUILD_DIR)/gettext-$(GETTEXT_VERSION)-ipk
-GETTEXT_IPK=$(BUILD_DIR)/gettext_$(GETTEXT_VERSION)-$(GETTEXT_IPK_VERSION)_$(TARGET_ARCH).ipk
+GETTEXT_IPK_DIR=$(BUILD_DIR)/gettext-$(GETTEXT_VERSION_EXACT)-ipk
+GETTEXT_IPK=$(BUILD_DIR)/gettext_$(GETTEXT_VERSION_EXACT)-$(GETTEXT_IPK_VERSION)_$(TARGET_ARCH).ipk
 
-LIBINTL_IPK_DIR=$(BUILD_DIR)/libintl-$(GETTEXT_VERSION)-ipk
-LIBINTL_IPK=$(BUILD_DIR)/libintl_$(GETTEXT_VERSION)-$(GETTEXT_IPK_VERSION)_$(TARGET_ARCH).ipk
+LIBINTL_IPK_DIR=$(BUILD_DIR)/libintl-$(GETTEXT_VERSION_EXACT)-ipk
+LIBINTL_IPK=$(BUILD_DIR)/libintl_$(GETTEXT_VERSION_EXACT)-$(GETTEXT_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 GETTEXT_HOST_BUILD_DIR=$(HOST_BUILD_DIR)/gettext
 
@@ -225,7 +226,7 @@ $(GETTEXT_IPK_DIR)/CONTROL/control:
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(GETTEXT_PRIORITY)" >>$@
 	@echo "Section: $(GETTEXT_SECTION)" >>$@
-	@echo "Version: $(GETTEXT_VERSION)-$(GETTEXT_IPK_VERSION)" >>$@
+	@echo "Version: $(GETTEXT_VERSION_EXACT)-$(GETTEXT_IPK_VERSION)" >>$@
 	@echo "Maintainer: $(GETTEXT_MAINTAINER)" >>$@
 	@echo "Source: $(GETTEXT_SITE)/$(GETTEXT_SOURCE)" >>$@
 	@echo "Description: $(GETTEXT_DESCRIPTION)" >>$@
@@ -240,7 +241,7 @@ $(LIBINTL_IPK_DIR)/CONTROL/control:
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(LIBINTL_PRIORITY)" >>$@
 	@echo "Section: $(LIBINTL_SECTION)" >>$@
-	@echo "Version: $(GETTEXT_VERSION)-$(GETTEXT_IPK_VERSION)" >>$@
+	@echo "Version: $(GETTEXT_VERSION_EXACT)-$(GETTEXT_IPK_VERSION)" >>$@
 	@echo "Maintainer: $(GETTEXT_MAINTAINER)" >>$@
 	@echo "Source: $(GETTEXT_SITE)/$(GETTEXT_SOURCE)" >>$@
 	@echo "Description: $(LIBINTL_DESCRIPTION)" >>$@
