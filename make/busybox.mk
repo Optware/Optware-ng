@@ -21,7 +21,7 @@
 #
 BUSYBOX_SITE=http://www.busybox.net/downloads
 # If you change this version, you must check the adduser package as well.
-BUSYBOX_VERSION=1.23.0
+BUSYBOX_VERSION=1.25.0
 BUSYBOX_SOURCE=busybox-$(BUSYBOX_VERSION).tar.bz2
 BUSYBOX_DIR=busybox-$(BUSYBOX_VERSION)
 BUSYBOX_UNZIP=bzcat
@@ -42,7 +42,10 @@ BUSYBOX_IPK_VERSION=1
 # compilation or linking flags, then list them here.
 #
 BUSYBOX_CPPFLAGS=
-#BUSYBOX_LDFLAGS=-Wl,lm
+#BUSYBOX_LDFLAGS=
+
+BUSYBOX_PATCHES=\
+$(BUSYBOX_SOURCE_DIR)/nsenter.c.patch \
 
 #
 # USHARE_BUILD_DIR is the directory in which the build is done.
@@ -92,40 +95,65 @@ busybox-source: $(DL_DIR)/$(BUSYBOX_SOURCE) $(BUSYBOX_PATCHES)
 # If the compilation of the package requires other packages to be staged
 ## first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(BUSYBOX_BUILD_DIR)/.configured: $(DL_DIR)/$(BUSYBOX_SOURCE) $(BUSYBOX_PATCHES) $(BUSYBOX_SOURCE_DIR)/defconfig make/busybox.mk $(wildcard $(BUSYBOX_SOURCE_DIR)/defconfig.$(OPTWARE_TARGET))
+$(BUSYBOX_BUILD_DIR)/.configured: $(DL_DIR)/$(BUSYBOX_SOURCE) $(BUSYBOX_PATCHES) $(BUSYBOX_SOURCE_DIR)/defconfig make/busybox.mk
 	rm -rf $(BUILD_DIR)/$(BUSYBOX_DIR) $(@D)
 	$(BUSYBOX_UNZIP) $(DL_DIR)/$(BUSYBOX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	if ls $(BUSYBOX_SOURCE_DIR)/$(OPTWARE_TARGET)*.patch >/dev/null 2>&1; \
-		then cat $(BUSYBOX_SOURCE_DIR)/$(OPTWARE_TARGET)*.patch | \
+	if test -n "$(BUSYBOX_PATCHES)" ; \
+		then cat $(BUSYBOX_PATCHES) | \
 		$(PATCH) -d $(BUILD_DIR)/$(BUSYBOX_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(BUSYBOX_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(BUSYBOX_DIR) $(@D) ; \
 	fi
-	if test -f $(BUSYBOX_SOURCE_DIR)/defconfig.$(OPTWARE_TARGET); then \
-		$(INSTALL) -m 644 $(BUSYBOX_SOURCE_DIR)/defconfig.$(OPTWARE_TARGET) $(@D)/.config; \
-	else \
-		$(INSTALL) -m 644 $(BUSYBOX_SOURCE_DIR)/defconfig $(@D)/.config; \
-	fi
-ifeq ($(LIBC_STYLE),uclibc)
-# default on, turn off if uclibc
-	sed -i -e "s/^.*CONFIG_FEATURE_SORT_BIG.*/# CONFIG_FEATURE_SORT_BIG is not set/" \
-		$(@D)/.config
-endif
-ifeq (module-init-tools, $(filter module-init-tools, $(PACKAGES)))
-ifneq ($(OPTWARE_TARGET), $(filter fsg3v4, $(OPTWARE_TARGET)))
-# default off, turn on if linux 2.6
-	sed -i -e "s/^.*CONFIG_MONOTONIC_SYSCALL.*/CONFIG_MONOTONIC_SYSCALL=y/" $(@D)/.config
-endif
-endif
-	sed -i -e 's/-strip /-$$(STRIP) /' $(@D)/scripts/Makefile.IMA
-ifeq ($(OPTWARE_TARGET), $(filter ds101g, $(OPTWARE_TARGET)))
-	sed -i -e '/sort-common/d; /sort-section/d' $(@D)/scripts/trylink
-endif
-ifeq ($(OPTWARE_TARGET), $(filter openwiz, $(OPTWARE_TARGET)))
-	sed -i -e "s/re_exec(/re_execnew(/" $(@D)/include/libbb.h
-	sed -i -e "s/re_exec(/re_execnew(/" $(@D)/libbb/vfork_daemon_rexec.c
-endif
+	$(INSTALL) -m 644 $(BUSYBOX_SOURCE_DIR)/defconfig $(@D)/.config
+### FEATURE_SYNC_FANCY requires syncfs syscall
+	if (echo "#include <sys/syscall.h>"; \
+		echo "#include <stdio.h>"; \
+		echo "int main() {"; \
+		echo "#ifndef __NR_syncfs"; \
+		echo 'printf("no"\n);'; \
+		echo "#else"; \
+		echo 'printf("yes"\n);'; \
+		echo "#endif"; \
+		echo "}") | $(TARGET_CC) -E -P - | grep -xq 'printf("no"\\n);'; then \
+			sed -i -e "s/^.*CONFIG_FEATURE_SYNC_FANCY.*/# CONFIG_FEATURE_SYNC_FANCY is not set/" $(@D)/.config; \
+		fi
+### I2CSET requires I2C_SMBUS_I2C_BLOCK_BROKEN support in the kernel
+	if (echo "#include <linux/i2c.h>"; \
+		echo "#include <stdio.h>"; \
+		echo "int main() {"; \
+		echo "#ifndef I2C_SMBUS_I2C_BLOCK_BROKEN"; \
+		echo 'printf("no"\n);'; \
+		echo "#else"; \
+		echo 'printf("yes"\n);'; \
+		echo "#endif"; \
+		echo "}") | $(TARGET_CC) -E -P - | grep -xq 'printf("no"\\n);'; then \
+			sed -i -e "s/^.*CONFIG_I2CSET.*/# CONFIG_I2CSET is not set/" $(@D)/.config; \
+		fi
+### I2CGET||I2CSET||I2CDUMP||I2CDETECT require I2C_FUNC_SMBUS_PEC support in the kernel
+	if (echo "#include <linux/i2c.h>"; \
+		echo "#include <stdio.h>"; \
+		echo "int main() {"; \
+		echo "#ifndef I2C_FUNC_SMBUS_PEC"; \
+		echo 'printf("no"\n);'; \
+		echo "#else"; \
+		echo 'printf("yes"\n);'; \
+		echo "#endif"; \
+		echo "}") | $(TARGET_CC) -E -P - | grep -xq 'printf("no"\\n);'; then \
+			sed -i -e "s/^.*CONFIG_\(I2CGET\|I2CSET\|I2CDUMP\|I2CDETECT\).*/# CONFIG_\1 is not set/" $(@D)/.config; \
+		fi
+### BLKDISCARD requires support in the kernel
+	if (echo "#include <linux/fs.h>"; \
+		echo "#include <stdio.h>"; \
+		echo "int main() {"; \
+		echo "#ifndef BLKSECDISCARD"; \
+		echo 'printf("no"\n);'; \
+		echo "#else"; \
+		echo 'printf("yes"\n);'; \
+		echo "#endif"; \
+		echo "}") | $(TARGET_CC) -E -P - | grep -xq 'printf("no"\\n);'; then \
+			sed -i -e "s/^.*CONFIG_BLKDISCARD.*/# CONFIG_BLKDISCARD is not set/" $(@D)/.config; \
+		fi
 	$(MAKE) HOSTCC=$(HOSTCC) CC=$(TARGET_CC) CROSS="$(TARGET_CROSS)" \
 		-C $(@D) oldconfig
 #		-C $(@D) menuconfig

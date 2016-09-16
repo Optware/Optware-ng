@@ -1,0 +1,16 @@
+--- a/util-linux/nsenter.c
++++ b/util-linux/nsenter.c
+@@ -78,6 +78,13 @@
+ 
+ #include "libbb.h"
+ 
++#if defined(__UCLIBC__) && !defined(__NR_setns)
++extern int setns (int __fd, int __nstype)
++{
++  return -1;
++}
++#endif
++
+ struct namespace_descr {
+ 	int flag;		/* value passed to setns() */
+ 	char ns_nsfile8[8];	/* "ns/" + namespace file in process' procfs entry */

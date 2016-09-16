@@ -1,11 +1,15 @@
 #!/bin/sh
 
-update-alternatives --remove chpasswd %OPTWARE_TARGET_PREFIX%/bin/adduser 30
-update-alternatives --remove cryptpw %OPTWARE_TARGET_PREFIX%/bin/adduser 30
-update-alternatives --remove getty %OPTWARE_TARGET_PREFIX%/bin/adduser 30
-update-alternatives --remove login %OPTWARE_TARGET_PREFIX%/bin/adduser 30
-update-alternatives --remove mkpasswd %OPTWARE_TARGET_PREFIX%/bin/adduser 30
-update-alternatives --remove passwd %OPTWARE_TARGET_PREFIX%/bin/adduser 30
-update-alternatives --remove su %OPTWARE_TARGET_PREFIX%/bin/adduser 30
-update-alternatives --remove sulogin %OPTWARE_TARGET_PREFIX%/bin/adduser 30
-update-alternatives --remove vlock %OPTWARE_TARGET_PREFIX%/bin/adduser 30
+update-alternatives --remove addgroup %OPTWARE_TARGET_PREFIX%/bin/adduser-dir/busybox 30
+update-alternatives --remove adduser %OPTWARE_TARGET_PREFIX%/bin/adduser-dir/busybox 30
+update-alternatives --remove delgroup %OPTWARE_TARGET_PREFIX%/bin/adduser-dir/busybox 30
+update-alternatives --remove deluser %OPTWARE_TARGET_PREFIX%/bin/adduser-dir/busybox 30
+update-alternatives --remove chpasswd %OPTWARE_TARGET_PREFIX%/bin/adduser-dir/busybox 30
+update-alternatives --remove cryptpw %OPTWARE_TARGET_PREFIX%/bin/adduser-dir/busybox 30
+update-alternatives --remove getty %OPTWARE_TARGET_PREFIX%/bin/adduser-dir/busybox 30
+update-alternatives --remove login %OPTWARE_TARGET_PREFIX%/bin/adduser-dir/busybox 30
+update-alternatives --remove mkpasswd %OPTWARE_TARGET_PREFIX%/bin/adduser-dir/busybox 30
+update-alternatives --remove passwd %OPTWARE_TARGET_PREFIX%/bin/adduser-dir/busybox 30
+update-alternatives --remove su %OPTWARE_TARGET_PREFIX%/bin/adduser-dir/busybox 30
+update-alternatives --remove sulogin %OPTWARE_TARGET_PREFIX%/bin/adduser-dir/busybox 30
+update-alternatives --remove vlock %OPTWARE_TARGET_PREFIX%/bin/adduser-dir/busybox 30

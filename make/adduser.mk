@@ -38,7 +38,7 @@ ADDUSER_VERSION:=$(shell sed -n -e 's/^BUSYBOX_VERSION *=\([0-9]\)/\1/p' make/bu
 #
 # ADDUSER_IPK_VERSION should be incremented when the ipk changes.
 #
-ADDUSER_IPK_VERSION=2
+ADDUSER_IPK_VERSION=1
 
 #
 # ADDUSER_CONFFILES should be a list of user-editable files
@@ -48,7 +48,7 @@ ADDUSER_IPK_VERSION=2
 # ADDUSER_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-ADDUSER_PATCHES=$(ADDUSER_SOURCE_DIR)/install.sh.patch
+ADDUSER_PATCHES=
 
 #
 # If the compilation of the package requires additional
@@ -102,24 +102,16 @@ adduser-source: $(DL_DIR)/$(BUSYBOX_SOURCE)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(ADDUSER_BUILD_DIR)/.configured: $(ADDUSER_SOURCE_DIR)/defconfig make/adduser.mk
+$(ADDUSER_BUILD_DIR)/.configured: $(widlcard $(ADDUSER_SOURCE_DIR)/{defconfig,postinst,prerm}) make/adduser.mk $(ADDUSER_PATCHES)
 	$(MAKE) $(DL_DIR)/$(BUSYBOX_SOURCE)
 	rm -rf $(BUILD_DIR)/$(BUSYBOX_DIR) $(ADDUSER_BUILD_DIR)
 	$(BUSYBOX_UNZIP) $(DL_DIR)/$(BUSYBOX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	cat $(ADDUSER_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(BUSYBOX_DIR) -p1
+	if test -n "$(ADDUSER_PATCHES)" ; \
+		then cat $(ADDUSER_PATCHES) | \
+		$(PATCH) -d $(BUILD_DIR)/$(BUSYBOX_DIR) -p1 ; \
+	fi
 	mv $(BUILD_DIR)/$(BUSYBOX_DIR) $(ADDUSER_BUILD_DIR)
 	$(INSTALL) -m 644 $(ADDUSER_SOURCE_DIR)/defconfig $(ADDUSER_BUILD_DIR)/.config
-ifeq (module-init-tools, $(filter module-init-tools, $(PACKAGES)))
-ifneq ($(OPTWARE_TARGET), $(filter fsg3v4 syno-x07, $(OPTWARE_TARGET)))
-# default off, turn on if linux 2.6
-	sed -i -e "s/^.*CONFIG_MONOTONIC_SYSCALL.*/CONFIG_MONOTONIC_SYSCALL=y/" \
-		$(ADDUSER_BUILD_DIR)/.config
-endif
-endif
-	sed -i -e 's/-strip /-$$(STRIP) /' $(ADDUSER_BUILD_DIR)/scripts/Makefile.IMA
-ifeq ($(OPTWARE_TARGET), $(filter ds101g, $(OPTWARE_TARGET)))
-	sed -i -e '/sort-common/d; /sort-section/d' $(ADDUSER_BUILD_DIR)/scripts/trylink
-endif
 	$(MAKE) HOSTCC=$(HOSTCC) CC=$(TARGET_CC) CROSS=$(TARGET_CROSS) \
 		-C $(ADDUSER_BUILD_DIR) oldconfig
 #		-C $(ADDUSER_BUILD_DIR) menuconfig
@@ -178,11 +170,8 @@ $(ADDUSER_IPK_DIR)/CONTROL/control:
 #
 $(ADDUSER_IPK): $(ADDUSER_BUILD_DIR)/.built
 	rm -rf $(ADDUSER_IPK_DIR) $(BUILD_DIR)/adduser_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(ADDUSER_IPK_DIR)$(TARGET_PREFIX)/bin
-	$(INSTALL) -m 755 $(ADDUSER_BUILD_DIR)/busybox $(ADDUSER_IPK_DIR)$(TARGET_PREFIX)/bin/adduser
-	cd $(ADDUSER_IPK_DIR)$(TARGET_PREFIX)/bin && ln -fs adduser addgroup
-	cd $(ADDUSER_IPK_DIR)$(TARGET_PREFIX)/bin && ln -fs adduser delgroup
-	cd $(ADDUSER_IPK_DIR)$(TARGET_PREFIX)/bin && ln -fs adduser deluser
+	$(INSTALL) -d $(ADDUSER_IPK_DIR)$(TARGET_PREFIX)/bin/adduser-dir
+	$(INSTALL) -m 755 $(ADDUSER_BUILD_DIR)/busybox $(ADDUSER_IPK_DIR)$(TARGET_PREFIX)/bin/adduser-dir/busybox
 	$(MAKE) $(ADDUSER_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 644 $(ADDUSER_SOURCE_DIR)/postinst $(ADDUSER_IPK_DIR)/CONTROL/postinst
 	$(INSTALL) -m 644 $(ADDUSER_SOURCE_DIR)/prerm $(ADDUSER_IPK_DIR)/CONTROL/prerm
