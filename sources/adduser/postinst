@@ -23,5 +23,5 @@ update-alternatives --install %OPTWARE_TARGET_PREFIX%/bin/login login %OPTWARE_T
 update-alternatives --install %OPTWARE_TARGET_PREFIX%/bin/mkpasswd mkpasswd %OPTWARE_TARGET_PREFIX%/bin/adduser-dir/busybox 30
 update-alternatives --install %OPTWARE_TARGET_PREFIX%/bin/passwd passwd %OPTWARE_TARGET_PREFIX%/bin/adduser-dir/busybox 30
 update-alternatives --install %OPTWARE_TARGET_PREFIX%/bin/su su %OPTWARE_TARGET_PREFIX%/bin/adduser-dir/busybox 30
-update-alternatives --install %OPTWARE_TARGET_PREFIX%/bin/sulogin sulogin %OPTWARE_TARGET_PREFIX%/bin/adduser-dir/busybox 30
+update-alternatives --install %OPTWARE_TARGET_PREFIX%/sbin/sulogin sulogin %OPTWARE_TARGET_PREFIX%/bin/adduser-dir/busybox 30
 update-alternatives --install %OPTWARE_TARGET_PREFIX%/bin/vlock vlock %OPTWARE_TARGET_PREFIX%/bin/adduser-dir/busybox 30
