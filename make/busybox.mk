@@ -253,8 +253,8 @@ $(BUSYBOX_IPK_DIR)-links/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(BUSYBOX_IPK): $(BUSYBOX_BUILD_DIR)/.built
-	rm -rf $(BUSYBOX_IPK_DIR) $(BUILD_DIR)/busybox_*_$(TARGET_ARCH).ipk
+$(BUSYBOX_IPK) $(BUSYBOX-BASE_IPK) $(BUSYBOX-LINKS_IPK): $(BUSYBOX_BUILD_DIR)/.built
+	rm -rf $(BUSYBOX_IPK_DIR) $(BUILD_DIR)/busybox{,-base,-links}_*_$(TARGET_ARCH).ipk
 	$(INSTALL) -d $(BUSYBOX_IPK_DIR)$(TARGET_PREFIX)
 	CPPFLAGS="$(STAGING_CPPFLAGS) $(BUSYBOX_CPPFLAGS)" \
 	LDFLAGS="$(STAGING_LDFLAGS) $(BUSYBOX_LDFLAGS)" \
@@ -306,7 +306,7 @@ $(BUSYBOX_IPK): $(BUSYBOX_BUILD_DIR)/.built
 #
 # This is called from the top level makefile to create the IPK file.
 #
-busybox-ipk: $(BUSYBOX_IPK)
+busybox-ipk: $(BUSYBOX_IPK) $(BUSYBOX-BASE_IPK) $(BUSYBOX-LINKS_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -327,5 +327,5 @@ busybox-dirclean:
 #
 # Some sanity check for the package.
 #
-busybox-check: $(BUSYBOX_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(BUSYBOX-BASE_IPK)
+busybox-check: $(BUSYBOX_IPK) $(BUSYBOX-BASE_IPK) $(BUSYBOX-LINKS_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
