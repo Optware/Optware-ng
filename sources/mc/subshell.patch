@@ -1,0 +1,44 @@
+--- a/src/subshell/common.c
++++ b/src/subshell/common.c
+@@ -279,7 +279,7 @@
+         if (!exist_file (init_file))
+         {
+             g_free (init_file);
+-            init_file = g_strdup (".bashrc");
++            init_file = g_strdup_printf ("%s/.bashrc", g_getenv ("HOME"));
+         }
+ 
+         /* Make MC's special commands not show up in bash's history and also suppress
+@@ -310,7 +310,7 @@
+         if (!exist_file (init_file))
+         {
+             g_free (init_file);
+-            init_file = g_strdup (".profile");
++            init_file = g_strdup_printf ("%s/.profile", g_getenv ("HOME"));
+         }
+ 
+         /* Put init file to ENV variable used by ash */
+@@ -355,7 +355,7 @@
+     switch (mc_global.shell->type)
+     {
+     case SHELL_BASH:
+-        execl (mc_global.shell->path, "bash", "-rcfile", init_file, (char *) NULL);
++        execl (mc_global.shell->path, mc_global.shell->name, "-rcfile", init_file, (char *) NULL);
+         break;
+ 
+     case SHELL_ZSH:
+--- a/lib/shell.c
++++ b/lib/shell.c
+@@ -187,6 +187,12 @@
+         mc_shell->type = SHELL_ASH_BUSYBOX;
+         mc_shell->name = mc_shell->path;
+     }
++    else if (strstr (mc_shell->real_path, "/bash") != NULL)
++    {
++        /* Sometimes /bin/sh or /bin/ash is a link to bash */
++        mc_shell->type = SHELL_BASH;
++        mc_shell->name = mc_shell->path;
++    }
+     else
+         mc_shell->type = SHELL_NONE;
+ }
