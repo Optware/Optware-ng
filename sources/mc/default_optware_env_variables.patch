@@ -13,7 +13,7 @@
  /*** global variables ****************************************************************************/
  
  /*** file scope macro definitions ****************************************************************/
-@@ -241,6 +247,20 @@
+@@ -241,6 +247,26 @@
  
      mc_global.timer = mc_timer_new ();
  
@@ -30,6 +30,12 @@
 +    if (((NULL == (editor = getenv ("EDITOR"))) || (*editor == 0)) &&
 +            ((stat("%OPTWARE_TARGET_PREFIX%/bin/nano", &sb) == 0) && (sb.st_mode & S_IXUSR)))
 +            setenv("EDITOR", "%OPTWARE_TARGET_PREFIX%/bin/nano", 1);
++
++/* Optware-ng change: default MC_HOME to %OPTWARE_TARGET_PREFIX% for root if not set */
++    char *dir;
++    if (((NULL == (dir = getenv ("MC_HOME"))) || (*dir == 0)) &&
++            (getuid() == 0))
++            setenv("MC_HOME", "%OPTWARE_TARGET_PREFIX%", 1);
 +
      /* We had LC_CTYPE before, LC_ALL includs LC_TYPE as well */
  #ifdef HAVE_SETLOCALE

@@ -19,7 +19,7 @@ MC_CONFLICTS=
 #
 # MC_IPK_VERSION should be incremented when the ipk changes.
 #
-MC_IPK_VERSION=1
+MC_IPK_VERSION=2
 
 #
 # MC_PATCHES should list any patches, in the the order in
