@@ -63,7 +63,7 @@ endif
 #
 # GCC_IPK_VERSION should be incremented when the ipk changes.
 #
-GCC_IPK_VERSION ?= 10
+GCC_IPK_VERSION ?= 11
 
 #
 # GCC_CONFFILES should be a list of user-editable files
@@ -209,8 +209,8 @@ endif
 		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
-		--with-as=$(TARGET_AS) \
-		--with-ld=$(TARGET_LD) \
+		--with-as=$(TARGET_PREFIX)/bin/as \
+		--with-ld=$(TARGET_PREFIX)/bin/ld \
 		--enable-languages=c,c++ \
 		--disable-multilib \
 		$(NATIVE_GCC_EXTRA_CONFIG_ARGS) \
