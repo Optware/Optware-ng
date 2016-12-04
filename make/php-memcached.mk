@@ -21,8 +21,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 PHP_MEMCACHED_REPOSITORY=https://github.com/php-memcached-dev/php-memcached.git
-PHP_MEMCACHED_VERSION=2.2.0+git20151113
-PHP_MEMCACHED_TREEISH=`git rev-list --max-count=1 --until=2015-11-13 HEAD`
+PHP_MEMCACHED_VERSION=2.2.0+git20160613
+PHP_MEMCACHED_TREEISH=`git rev-list --max-count=1 --until=2016-06-13 HEAD`
 PHP_MEMCACHED_SOURCE=php-memcached-$(PHP_MEMCACHED_VERSION).tar.gz
 PHP_MEMCACHED_DIR=php-memcached-$(PHP_MEMCACHED_VERSION)
 PHP_MEMCACHED_UNZIP=zcat
