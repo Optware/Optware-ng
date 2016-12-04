@@ -42,7 +42,7 @@ STRONGSWAN_CONFLICTS=
 #
 # STRONGSWAN_IPK_VERSION should be incremented when the ipk changes.
 #
-STRONGSWAN_IPK_VERSION=1
+STRONGSWAN_IPK_VERSION=2
 
 #
 # STRONGSWAN_CONFFILES should be a list of user-editable files
@@ -143,6 +143,7 @@ $(STRONGSWAN_BUILD_DIR)/.configured: $(DL_DIR)/$(STRONGSWAN_SOURCE) $(STRONGSWAN
 		--enable-eap-peap \
 		--enable-agent \
 		--enable-monolithic \
+		--enable-eap-identity \
 	)
 	sed -i -e 's|^LDFLAGS =|LDFLAGS = -L../../src/libtls/.libs -ltls|' $(@D)/src/charon/Makefile
 	$(PATCH_LIBTOOL) $(@D)/libtool
