@@ -35,7 +35,7 @@ BUSYBOX_CONFLICTS=
 #
 # BUSYBOX_IPK_VERSION should be incremented when the ipk changes.
 #
-BUSYBOX_IPK_VERSION=2
+BUSYBOX_IPK_VERSION=3
 
 #
 # If the compilation of the package requires additional
