@@ -21,10 +21,10 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LZMA_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/sevenzip
-LZMA_VERSION=443
-LZMA_SOURCE=lzma$(LZMA_VERSION).tar.bz2
+LZMA_VERSION=1700
+LZMA_SOURCE=lzma$(LZMA_VERSION).7z
 LZMA_DIR=lzma$(LZMA_VERSION)
-LZMA_UNZIP=bzcat
+LZMA_UNZIP=7z
 LZMA_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 # This make/lzma.mk file currently does not generate package, lzma-unpack is used by make/upx.mk
 LZMA_DESCRIPTION=Lempel-Ziv-Markov chain-Algorithm (LZMA) is a data compression algorithm in development since 1998 and used in the 7z format of the 7-Zip archiver.
@@ -86,7 +86,8 @@ $(LZMA_BUILD_DIR)/.configured: $(DL_DIR)/$(LZMA_SOURCE) $(LZMA_PATCHES) make/lzm
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(LZMA_DIR) $(LZMA_BUILD_DIR)
 	mkdir -p $(BUILD_DIR)/$(LZMA_DIR)
-	$(LZMA_UNZIP) $(DL_DIR)/$(LZMA_SOURCE) | tar -C $(BUILD_DIR)/$(LZMA_DIR) -xvf -
+#	$(LZMA_UNZIP) $(DL_DIR)/$(LZMA_SOURCE) | tar -C $(BUILD_DIR)/$(LZMA_DIR) -xvf -
+	7z x -t7z $(DL_DIR)/$(LZMA_SOURCE) -o$(BUILD_DIR)/$(LZMA_DIR)
 	if test -n "$(LZMA_PATCHES)" ; \
 		then cat $(LZMA_PATCHES) | \
 		$(PATCH) -d $(BUILD_DIR)/$(LZMA_DIR) -p0 ; \
