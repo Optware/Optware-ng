@@ -20,11 +20,11 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-UPX_SITE=http://upx.sourceforge.net/download
-UPX_VERSION=3.91
-UPX_SOURCE=upx-$(UPX_VERSION)-src.tar.bz2
+UPX_SITE=https://github.com/upx/upx/releases/download/v$(UPX_VERSION)
+UPX_VERSION=3.94
+UPX_SOURCE=upx-$(UPX_VERSION)-src.tar.xz
 UPX_DIR=upx-$(UPX_VERSION)-src
-UPX_UNZIP=bzcat
+UPX_UNZIP=xzcat
 UPX_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 UPX_DESCRIPTION=UPX is a free, portable, extendable, high-performance executable packer for several different executable formats.
 UPX_SECTION=util
@@ -39,7 +39,7 @@ UPX_CONFLICTS=
 #
 # UPX_IPK_VERSION should be incremented when the ipk changes.
 #
-UPX_IPK_VERSION=2
+UPX_IPK_VERSION=1
 
 #
 # UPX_CONFFILES should be a list of user-editable files
@@ -150,6 +150,7 @@ $(UPX_BUILD_DIR)/.built: $(UPX_BUILD_DIR)/.configured
 		LDFLAGS="$(STAGING_LDFLAGS) $(UPX_LDFLAGS)" \
 		UPX_UCLDIR=$(STAGING_PREFIX) \
 		UPX_LZMADIR=$(UPX_BUILD_DIR)/lzma \
+		CHECK_WHITESPACE=: \
 		;
 	touch $@
 
