@@ -36,7 +36,7 @@ NGINX_CONFLICTS=
 #
 # NGINX_IPK_VERSION should be incremented when the ipk changes.
 #
-NGINX_IPK_VERSION?=3
+NGINX_IPK_VERSION?=4
 
 #
 # NGINX_CONFFILES should be a list of user-editable files
@@ -172,6 +172,7 @@ $(NGINX_BUILD_DIR)/.configured: $(DL_DIR)/$(NGINX_SOURCE) $(NGINX_PATCHES) make/
 		--with-sha1=$(STAGING_LIB_DIR) \
                 --with-http_ssl_module \
 		--without-http_upstream_zone_module \
+		--with-ipv6 \
 		; \
 	)
 	sed -i.orig \
