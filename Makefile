@@ -408,7 +408,7 @@ COMMON_PACKAGES = \
 	unzip up-imapproxy updatedd upslug2 \
 	upx usbutils ushare utelnetd utf8proc util-linux \
 	vblade vdr-mediamvp vim vitetris vlc \
-	vnstat vorbis-tools vpnc vsftpd vte vtun \
+	vnstat vorbis-tools vorbisgain vpnc vsftpd vte vtun \
 	w3cam w3m wayland wakelan wavpack webalizer weechat werc wget \
 	which whois wizd wpa-supplicant wput wxbase \
 	xerces-c xmlrpc-c \
