@@ -4,8 +4,10 @@
 #
 #############################################################
 
-BIND_UPSTREAM_VERSION=9.6.1-P3
-BIND_VERSION=9.6.1.3
+#BIND_UPSTREAM_VERSION=9.11.1-P3
+BIND_UPSTREAM_VERSION=9.11.2
+#BIND_VERSION=9.11.1.3
+BIND_VERSION=9.11.2
 BIND_SITE=ftp://ftp.isc.org/isc/bind9/$(BIND_UPSTREAM_VERSION)
 BIND_SOURCE=bind-$(BIND_UPSTREAM_VERSION).tar.gz
 BIND_DIR=bind-$(BIND_UPSTREAM_VERSION)
@@ -16,7 +18,7 @@ BIND_SECTION=net
 BIND_PRIORITY=optional
 BIND_DEPENDS=openssl, psmisc
 
-BIND_IPK_VERSION=5
+BIND_IPK_VERSION=1
 
 BIND_PATCHES=$(BIND_SOURCE_DIR)/libtool.patch
 
@@ -63,11 +65,14 @@ $(BIND_BUILD_DIR)/.configured: $(DL_DIR)/$(BIND_SOURCE) make/bind.mk
 		--prefix=$(TARGET_PREFIX) \
 		--with-libtool \
 		--with-openssl=$(STAGING_PREFIX) \
+		--with-ecdsa \
+		--with-gost \
 		--without-libxml2 \
 		--sysconfdir=$(TARGET_PREFIX)/etc/named \
 		--localstatedir=$(TARGET_PREFIX)/var \
 		--with-randomdev=/dev/random \
-		--disable-getifaddrs ; }
+		--disable-getifaddrs \
+		--enable-filter-aaaa ; }
 	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
@@ -105,6 +110,10 @@ $(BIND_IPK): $(BIND_BUILD_DIR)/.built
 		$(BIND_IPK_DIR)$(TARGET_PREFIX)/bin/host \
 		$(BIND_IPK_DIR)$(TARGET_PREFIX)/bin/nslookup \
 		$(BIND_IPK_DIR)$(TARGET_PREFIX)/bin/nsupdate \
+		$(BIND_IPK_DIR)$(TARGET_PREFIX)/bin/arpaname \
+		$(BIND_IPK_DIR)$(TARGET_PREFIX)/bin/delv \
+		$(BIND_IPK_DIR)$(TARGET_PREFIX)/bin/mdig \
+		$(BIND_IPK_DIR)$(TARGET_PREFIX)/bin/named-rrchecker \
 		$(BIND_IPK_DIR)$(TARGET_PREFIX)/sbin/*
 	# cp -p $(BIND_IPK_DIR)$(TARGET_PREFIX)/sbin/named $(BIND_IPK_DIR)$(TARGET_PREFIX)/sbin/named.exe
 	rm -rf $(BIND_IPK_DIR)$(TARGET_PREFIX)/{man,include}
