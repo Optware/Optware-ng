@@ -259,7 +259,7 @@ COMMON_PACKAGES = \
 	bsdgames bsdmainutils \
 	btpd busybox byrequest bzflag bzip2 \
 	bluez-libs bluez-utils bluez-hcidump \
-	bluez2-libs bluez2-utils \
+	bluez2-libs bluez2-utils bvi \
 	c-ares cabextract cacerts jre-cacerts cadaver cairo calc calcurse castget \
 	catdoc ccollect ccrypt ccxstream cdargs \
 	cdrtools centerim cuetools \
