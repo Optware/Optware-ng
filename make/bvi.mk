@@ -29,7 +29,7 @@ BVI_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 BVI_DESCRIPTION=bvi is a screen-oriented computer program used to edit binary files.
 BVI_SECTION=editor
 BVI_PRIORITY=optional
-BVI_DEPENDS=
+BVI_DEPENDS=ncurses
 BVI_SUGGESTS=
 BVI_CONFLICTS=
 
@@ -109,7 +109,7 @@ bvi-source: $(DL_DIR)/$(BVI_SOURCE) $(BVI_PATCHES)
 # shown below to make various patches to it.
 #
 $(BVI_BUILD_DIR)/.configured: $(DL_DIR)/$(BVI_SOURCE) $(BVI_PATCHES) make/bvi.mk
-#	$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) ncurses-stage
 	rm -rf $(BUILD_DIR)/$(BVI_DIR) $(@D)
 	$(BVI_UNZIP) $(DL_DIR)/$(BVI_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(BVI_PATCHES)" ; \
