@@ -42,7 +42,7 @@ PYTHON27_SUGGESTS=
 #
 # PYTHON27_IPK_VERSION should be incremented when the ipk changes.
 #
-PYTHON27_IPK_VERSION=2
+PYTHON27_IPK_VERSION=3
 
 #
 # PYTHON27_CONFFILES should be a list of user-editable files
@@ -55,8 +55,9 @@ PYTHON27_IPK_VERSION=2
 PYTHON27_CPPFLAGS=
 # workaround for uclibc bug, see http://www.geocities.com/robm351/uclibc/index-8.html?20063#sec:ldso-python
 # as for -lgcc_s flag, see: http://bugs.python.org/issue23340
+# for -lintl see #190
 ifeq ($(LIBC_STYLE),uclibc)
-PYTHON27_LDFLAGS=-lgcc_s -lbz2 -lcrypt -ldb-$(LIBDB_LIB_VERSION) -lncurses -lreadline -lssl -lz -lffi
+PYTHON27_LDFLAGS=-lgcc_s -lbz2 -lcrypt -ldb-$(LIBDB_LIB_VERSION) -lncurses -lreadline -lssl -lz -lffi -lintl
 else
 PYTHON27_LDFLAGS=
 endif
@@ -250,6 +251,7 @@ $(PYTHON27_IPK): $(PYTHON27_BUILD_DIR)/.built
 	       -e 's|$(STAGING_LIB_DIR)|$(TARGET_PREFIX)/lib|g' \
 	       -e '/^RUNSHARED=/s|=.*|=|' \
 	       $(PYTHON27_IPK_DIR)$(TARGET_PREFIX)/lib/python2.7/config/Makefile
+	sed -i -e 's|$(HOST_STAGING_PREFIX)|$(TARGET_PREFIX)|g' $(PYTHON27_IPK_DIR)$(TARGET_PREFIX)/lib/python2.7/_sysconfigdata.py
 #ifeq ($(OPTWARE_WRITE_OUTSIDE_OPT_ALLOWED),true)
 #	$(INSTALL) -d $(PYTHON27_IPK_DIR)/usr/bin
 #	ln -s $(TARGET_PREFIX)/bin/python $(PYTHON27_IPK_DIR)/usr/bin/python
