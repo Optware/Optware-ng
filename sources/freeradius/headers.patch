@@ -1,11 +1,11 @@
 --- a/src/include/all.mk
 +++ b/src/include/all.mk
-@@ -119,6 +119,8 @@
+@@ -109,6 +109,8 @@
  	@$(ECHO) HEADER $@
  	@cd src/include && /bin/sh build-radpaths-h
  
-+headers: $(HEADERS_DY)
++headers: $(addprefix src/include/,$(HEADERS_DY))
 +
- ${BUILD_DIR}/make/jlibtool: $(HEADERS_DY)
- 
- ######################################################################
+ #
+ #  Create the soft link for the fake include file path.
+ #

@@ -21,7 +21,7 @@
 #
 FREERADIUS_SITE=ftp://ftp.freeradius.org/pub/radius
 FREERADIUS_SITE2=$(FREERADIUS_SITE)/old
-FREERADIUS_VERSION=3.0.10
+FREERADIUS_VERSION=3.0.15
 FREERADIUS_DIR=freeradius-server-$(FREERADIUS_VERSION)
 FREERADIUS_SOURCE=$(FREERADIUS_DIR).tar.bz2
 FREERADIUS_UNZIP=bzcat
@@ -29,24 +29,24 @@ FREERADIUS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 FREERADIUS_DESCRIPTION=An open source RADIUS server.
 FREERADIUS_SECTION=net
 FREERADIUS_PRIORITY=optional
-FREERADIUS_DEPENDS=libtool, openssl, psmisc, talloc, libpcap, busybox-base
+FREERADIUS_DEPENDS=libtool, openssl, psmisc, talloc, libpcap, busybox-base, readline, libcap, pcre
 FREERADIUS_SUGGESTS=freeradius-doc
 FREERADIUS_CONFLICTS=
 
 #
 # FREERADIUS_IPK_VERSION should be incremented when the ipk changes.
 #
-FREERADIUS_IPK_VERSION=4
+FREERADIUS_IPK_VERSION=1
 
 #
 # FREERADIUS_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
 FREERADIUS_PATCHES=\
-$(FREERADIUS_SOURCE_DIR)/configure.ac.patch \
 $(FREERADIUS_SOURCE_DIR)/headers.patch \
 $(FREERADIUS_SOURCE_DIR)/acinclude.m4.patch \
 $(FREERADIUS_SOURCE_DIR)/hostname.patch \
+$(FREERADIUS_SOURCE_DIR)/freeradius-fix-error-for-expansion-of-macro.patch \
 
 #
 # If the compilation of the package requires additional
@@ -114,7 +114,8 @@ freeradius-source: $(DL_DIR)/$(FREERADIUS_SOURCE) $(FREERADIUS_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(FREERADIUS_BUILD_DIR)/.configured: $(DL_DIR)/$(FREERADIUS_SOURCE) $(FREERADIUS_PATCHES) make/freeradius.mk
-	$(MAKE) openssl-stage libtool-stage talloc-stage postgresql-stage unixodbc-stage libpcap-stage
+	$(MAKE) openssl-stage libtool-stage talloc-stage postgresql-stage unixodbc-stage libpcap-stage \
+		readline-stage libcap-stage pcre-stage
 ifeq (, $(filter --without-rlm-sql-mysql, $(FREERADIUS_CONFIG_ARGS)))
 	$(MAKE) mysql-stage
 endif
