@@ -383,7 +383,7 @@ COMMON_PACKAGES = \
 	rlfe rlwrap rox-filer rrdcollect rrdtool \
 	rssh rsstail rsync rtmpdump rtorrent rtpproxy ruby rubygems rxtx \
 	sablevm samba samba2 samba34 samba35 samba36 sane-backends \
-	scli scponly screen scrobby scsi-idle sdl sdparm \
+	scli scponly screen scrobby scsi-idle sd-idle sdl sdparm \
 	sed sendmail ser ser2net setserial setpwc sg3-utils shared-mime-info \
 	sharutils shellinabox shntool silc-client simh sipcalc siproxd sispmctl \
 	slang slrn slsc \

@@ -1,0 +1,42 @@
+#!/bin/sh
+
+prefix="%OPTWARE_TARGET_PREFIX%"
+PATH=${prefix}/bin:${prefix}/sbin:/sbin:/bin:/usr/sbin:/usr/bin
+NAME=sd-idle
+DAEMON=${prefix}/bin/${NAME}
+DAEMON_OPTS="-i 600"
+
+test -x $DAEMON || exit 0
+
+if [ -z "$1" ] ; then
+    case `echo "$0" | sed 's:^.*/\(.*\):\1:g'` in
+        S??*) rc="start" ;;
+        K??*) rc="stop" ;;
+        *) rc="usage" ;;
+    esac
+else
+    rc="$1"
+fi
+
+case "$rc" in
+    start)
+	echo "Starting disk idle spindown program: $NAME"
+	$DAEMON $DAEMON_OPTS
+        ;;
+    stop)
+        if [ -n "`pidof $NAME`" ]; then
+            echo "Stopping disk idle spindown program: $NAME"
+            killall $NAME 2> /dev/null
+        fi
+        ;;
+    restart)
+        "$0" stop
+        sleep 1
+        "$0" start
+        ;;
+    *)
+        echo "Usage: $0 (start|stop|restart|usage)"
+        ;;
+esac
+
+exit 0
