@@ -1,21 +1,48 @@
---- configure.orig	2007-06-15 21:19:16.000000000 -0700
-+++ configure	2007-06-15 21:21:38.000000000 -0700
-@@ -25,9 +25,9 @@
- if test -z "$NGX_PLATFORM"; then
-     echo "checking for OS"
+--- auto/cc/conf.orig	2017-07-11 13:18:31.000000000 +0000
++++ auto/cc/conf	2017-08-07 07:00:18.343113663 +0000
+@@ -204,7 +204,7 @@
+     else
+         ngx_feature="C99 variadic macros"
+         ngx_feature_name="NGX_HAVE_C99_VARIADIC_MACROS"
+-        ngx_feature_run=yes
++        ngx_feature_run=no
+         ngx_feature_incs="#include <stdio.h>
+ #define var(dummy, ...)  sprintf(__VA_ARGS__)"
+         ngx_feature_path=
+@@ -218,7 +218,7 @@
  
--    NGX_SYSTEM=`uname -s 2>/dev/null`
--    NGX_RELEASE=`uname -r 2>/dev/null`
--    NGX_MACHINE=`uname -m 2>/dev/null`
-+    test -n "$NGX_SYSTEM" || NGX_SYSTEM=`uname -s 2>/dev/null`
-+    test -n "$NGX_RELEASE" || NGX_RELEASE=`uname -r 2>/dev/null`
-+    test -n "$NGX_MACHINE" || NGX_MACHINE=`uname -m 2>/dev/null`
+     ngx_feature="gcc variadic macros"
+     ngx_feature_name="NGX_HAVE_GCC_VARIADIC_MACROS"
+-    ngx_feature_run=yes
++    ngx_feature_run=no
+     ngx_feature_incs="#include <stdio.h>
+ #define var(dummy, args...)  sprintf(args)"
+     ngx_feature_path=
+--- auto/cc/name.orig	2017-07-11 13:18:31.000000000 +0000
++++ auto/cc/name	2017-08-07 07:00:18.343113663 +0000
+@@ -7,7 +7,7 @@
  
-     echo " + $NGX_SYSTEM $NGX_RELEASE $NGX_MACHINE"
+     ngx_feature="C compiler"
+     ngx_feature_name=
+-    ngx_feature_run=yes
++    ngx_feature_run=
+     ngx_feature_incs=
+     ngx_feature_path=
+     ngx_feature_libs=
+--- auto/endianness.orig	2017-07-11 13:18:31.000000000 +0000
++++ auto/endianness	2017-08-07 07:00:18.343113663 +0000
+@@ -32,7 +32,7 @@
+ eval "$ngx_test >> $NGX_AUTOCONF_ERR 2>&1"
  
---- auto/feature.orig	2011-05-11 11:50:19.000000000 +0000
-+++ auto/feature	2011-07-25 03:57:49.021227931 +0000
-@@ -48,11 +48,14 @@
+ if [ -x $NGX_AUTOTEST ]; then
+-    if $NGX_AUTOTEST >/dev/null 2>&1; then
++    if test "$ngx_cache_ENDIAN" = "LITTLE" || $NGX_AUTOTEST >/dev/null 2>&1; then
+         echo " little endian"
+         have=NGX_HAVE_LITTLE_ENDIAN . auto/have
+     else
+--- auto/feature.orig	2017-07-11 13:18:31.000000000 +0000
++++ auto/feature	2017-08-07 07:00:18.343113663 +0000
+@@ -49,11 +49,14 @@
  
  if [ -x $NGX_AUTOTEST ]; then
  
@@ -31,7 +58,7 @@
                  echo " found"
                  ngx_found=yes
  
-@@ -67,7 +70,7 @@
+@@ -68,7 +71,7 @@
  
          value)
              # /bin/sh is used to intercept "Killed" or "Abort trap" messages
@@ -40,7 +67,7 @@
                  echo " found"
                  ngx_found=yes
  
-@@ -78,6 +81,17 @@
+@@ -79,6 +82,17 @@
  #endif
  
  END
@@ -58,7 +85,7 @@
              else
                  echo " found but is not working"
              fi
-@@ -85,7 +99,8 @@
+@@ -86,7 +100,8 @@
  
          bug)
              # /bin/sh is used to intercept "Killed" or "Abort trap" messages
@@ -68,77 +95,9 @@
                  echo " not found"
  
              else
---- auto/types/sizeof.orig
-+++ auto/types/sizeof
-@@ -25,8 +25,13 @@ $NGX_INCLUDE_UNISTD_H
- $NGX_INCLUDE_INTTYPES_H
- $NGX_INCLUDE_AUTO_CONFIG_H
- 
-+char object_code_block[] = {
-+	'\n', 'e', '4', 'V', 'A',
-+	'0', 'x', ('0' + sizeof($ngx_type)),
-+	'Y', '3', 'p', 'M', '\n'
-+};
-+
- int main() {
--    printf("%d", (int) sizeof($ngx_type));
-     return 0;
- }
- 
-@@ -40,7 +45,7 @@ eval "$ngx_test >> $NGX_AUTOCONF_ERR 2>&
- 
- 
- if [ -x $NGX_AUTOTEST ]; then
--    ngx_size=`$NGX_AUTOTEST`
-+    ngx_size=`sed -ne 's/^e4VA0x\(.\)Y3pM$/\1/p' < $NGX_AUTOTEST`
-     echo " $ngx_size bytes"
- fi
- 
---- auto/endianness.orig
-+++ auto/endianness
-@@ -32,7 +32,7 @@
- eval "$ngx_test >> $NGX_AUTOCONF_ERR 2>&1"
- 
- if [ -x $NGX_AUTOTEST ]; then
--    if $NGX_AUTOTEST >/dev/null 2>&1; then
-+    if test "$ngx_cache_ENDIAN" = "LITTLE" || $NGX_AUTOTEST >/dev/null 2>&1; then
-         echo " little endian"
-         have=NGX_HAVE_LITTLE_ENDIAN . auto/have
-     else
---- auto/cc/name.orig
-+++ auto/cc/name
-@@ -7,7 +7,7 @@ if [ "$NGX_PLATFORM" != win32 ]; then
- 
-     ngx_feature="C compiler"
-     ngx_feature_name=
--    ngx_feature_run=yes
-+    ngx_feature_run=
-     ngx_feature_incs=
-     ngx_feature_path=
-     ngx_feature_libs=
---- auto/cc/conf.orig
-+++ auto/cc/conf
-@@ -178,7 +178,7 @@ if [ "$NGX_PLATFORM" != win32 ]; then
-     else
-         ngx_feature="C99 variadic macros"
-         ngx_feature_name="NGX_HAVE_C99_VARIADIC_MACROS"
--        ngx_feature_run=yes
-+        ngx_feature_run=no
-         ngx_feature_incs="#include <stdio.h>
- #define var(dummy, ...)  sprintf(__VA_ARGS__)"
-         ngx_feature_path=
-@@ -192,7 +192,7 @@ if [ "$NGX_PLATFORM" != win32 ]; then
- 
-     ngx_feature="gcc variadic macros"
-     ngx_feature_name="NGX_HAVE_GCC_VARIADIC_MACROS"
--    ngx_feature_run=yes
-+    ngx_feature_run=no
-     ngx_feature_incs="#include <stdio.h>
- #define var(dummy, args...)  sprintf(args)"
-     ngx_feature_path=
---- auto/os/linux.orig
-+++ auto/os/linux
-@@ -36,7 +36,7 @@ fi
+--- auto/os/linux.orig	2017-07-11 13:18:32.000000000 +0000
++++ auto/os/linux	2017-08-07 07:00:18.343113663 +0000
+@@ -36,7 +36,7 @@
  
  ngx_feature="epoll"
  ngx_feature_name="NGX_HAVE_EPOLL"
@@ -147,7 +106,7 @@
  ngx_feature_incs="#include <sys/epoll.h>"
  ngx_feature_path=
  ngx_feature_libs=
-@@ -93,7 +93,7 @@ ngx_feature_test="int fd; struct stat sb
+@@ -110,7 +110,7 @@
  CC_AUX_FLAGS="$cc_aux_flags -D_GNU_SOURCE"
  ngx_feature="sendfile()"
  ngx_feature_name="NGX_HAVE_SENDFILE"
@@ -156,7 +115,7 @@
  ngx_feature_incs="#include <sys/sendfile.h>
                    #include <errno.h>"
  ngx_feature_path=
-@@ -114,7 +114,7 @@ fi
+@@ -131,7 +131,7 @@
  CC_AUX_FLAGS="$cc_aux_flags -D_GNU_SOURCE -D_FILE_OFFSET_BITS=64"
  ngx_feature="sendfile64()"
  ngx_feature_name="NGX_HAVE_SENDFILE64"
@@ -165,7 +124,7 @@
  ngx_feature_incs="#include <sys/sendfile.h>
                    #include <errno.h>"
  ngx_feature_path=
-@@ -132,7 +132,7 @@ ngx_include="sys/prctl.h"; . auto/includ
+@@ -149,7 +149,7 @@
  
  ngx_feature="prctl(PR_SET_DUMPABLE)"
  ngx_feature_name="NGX_HAVE_PR_SET_DUMPABLE"
@@ -174,9 +133,35 @@
  ngx_feature_incs="#include <sys/prctl.h>"
  ngx_feature_path=
  ngx_feature_libs=
---- auto/unix.orig
-+++ auto/unix
-@@ -678,7 +678,7 @@ ngx_feature_test="void *p; p = memalign(
+--- auto/types/sizeof.orig	2017-07-11 13:18:32.000000000 +0000
++++ auto/types/sizeof	2017-08-07 07:01:23.219920428 +0000
+@@ -25,8 +25,13 @@
+ $NGX_INCLUDE_INTTYPES_H
+ $NGX_INCLUDE_AUTO_CONFIG_H
+ 
++char object_code_block[] = {
++       '\n', 'e', '4', 'V', 'A',
++       '0', 'x', ('0' + sizeof($ngx_type)),
++       'Y', '3', 'p', 'M', '\n'
++};
++
+ int main(void) {
+-    printf("%d", (int) sizeof($ngx_type));
+     return 0;
+ }
+ 
+@@ -40,7 +45,7 @@
+ 
+ 
+ if [ -x $NGX_AUTOTEST ]; then
+-    ngx_size=`$NGX_AUTOTEST`
++    ngx_size=`sed -ne 's/^e4VA0x\(.\)Y3pM$/\1/p' < $NGX_AUTOTEST`
+     echo " $ngx_size bytes"
+ fi
+ 
+--- auto/unix.orig	2017-07-11 13:18:32.000000000 +0000
++++ auto/unix	2017-08-07 07:00:18.343113663 +0000
+@@ -816,7 +816,7 @@
  
  ngx_feature="mmap(MAP_ANON|MAP_SHARED)"
  ngx_feature_name="NGX_HAVE_MAP_ANON"
@@ -185,7 +170,7 @@
  ngx_feature_incs="#include <sys/mman.h>"
  ngx_feature_path=
  ngx_feature_libs=
-@@ -691,7 +691,7 @@ ngx_feature_test="void *p;
+@@ -829,7 +829,7 @@
  
  ngx_feature='mmap("/dev/zero", MAP_SHARED)'
  ngx_feature_name="NGX_HAVE_MAP_DEVZERO"
@@ -194,7 +179,7 @@
  ngx_feature_incs="#include <sys/mman.h>
                    #include <sys/stat.h>
                    #include <fcntl.h>"
-@@ -706,7 +706,7 @@ ngx_feature_test='void *p; int  fd;
+@@ -844,7 +844,7 @@
  
  ngx_feature="System V shared memory"
  ngx_feature_name="NGX_HAVE_SYSVSHM"
@@ -203,7 +188,7 @@
  ngx_feature_incs="#include <sys/ipc.h>
                    #include <sys/shm.h>"
  ngx_feature_path=
-@@ -720,7 +720,7 @@ ngx_feature_test="int  id;
+@@ -858,7 +858,7 @@
  
  ngx_feature="POSIX semaphores"
  ngx_feature_name="NGX_HAVE_POSIX_SEM"
@@ -212,3 +197,18 @@
  ngx_feature_incs="#include <semaphore.h>"
  ngx_feature_path=
  ngx_feature_libs=
+--- configure.orig	2017-07-11 13:18:31.000000000 +0000
++++ configure	2017-08-07 07:00:18.343113663 +0000
+@@ -27,9 +27,9 @@
+ if test -z "$NGX_PLATFORM"; then
+     echo "checking for OS"
+ 
+-    NGX_SYSTEM=`uname -s 2>/dev/null`
+-    NGX_RELEASE=`uname -r 2>/dev/null`
+-    NGX_MACHINE=`uname -m 2>/dev/null`
++    test -n "$NGX_SYSTEM" || NGX_SYSTEM=`uname -s 2>/dev/null`
++    test -n "$NGX_RELEASE" || NGX_RELEASE=`uname -r 2>/dev/null`
++    test -n "$NGX_MACHINE" || NGX_MACHINE=`uname -m 2>/dev/null`
+ 
+     echo " + $NGX_SYSTEM $NGX_RELEASE $NGX_MACHINE"
+ 
