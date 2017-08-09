@@ -52,7 +52,7 @@ MEDIAINFO_IPK_VERSION=1
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-MEDIAINFO_CPPFLAGS=-I$(@D)/Source
+MEDIAINFO_CPPFLAGS=
 MEDIAINFO_LDFLAGS=
 
 #
@@ -120,12 +120,12 @@ $(MEDIAINFO_BUILD_DIR)/.configured: $(DL_DIR)/$(MEDIAINFO_SOURCE) $(MEDIAINFO_PA
 		then mv $(BUILD_DIR)/$(MEDIAINFO_DIR) $(@D) ; \
 	fi
 	$(AUTORECONF1.10) -vif $(@D)/Project/GNU/CLI
-	(cd $(@D); \
+	(cd $(@D)/Project/GNU/CLI; \
 		$(TARGET_CONFIGURE_OPTS) \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MEDIAINFO_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(MEDIAINFO_LDFLAGS)" \
-		./Project/GNU/CLI/configure \
+		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
@@ -134,7 +134,7 @@ $(MEDIAINFO_BUILD_DIR)/.configured: $(DL_DIR)/$(MEDIAINFO_SOURCE) $(MEDIAINFO_PA
 		--disable-static \
 		--enable-shared \
 	)
-	$(PATCH_LIBTOOL) $(@D)/libtool
+	$(PATCH_LIBTOOL) $(@D)/Project/GNU/CLI/libtool
 	touch $@
 
 mediainfo-unpack: $(MEDIAINFO_BUILD_DIR)/.configured
@@ -144,7 +144,7 @@ mediainfo-unpack: $(MEDIAINFO_BUILD_DIR)/.configured
 #
 $(MEDIAINFO_BUILD_DIR)/.built: $(MEDIAINFO_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(@D)
+	$(MAKE) -C $(@D)/Project/GNU/CLI
 	touch $@
 
 #
@@ -157,7 +157,7 @@ mediainfo: $(MEDIAINFO_BUILD_DIR)/.built
 #
 $(MEDIAINFO_BUILD_DIR)/.staged: $(MEDIAINFO_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D)/Project/GNU/CLI DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 mediainfo-stage: $(MEDIAINFO_BUILD_DIR)/.staged
@@ -195,7 +195,7 @@ $(MEDIAINFO_IPK_DIR)/CONTROL/control:
 #
 $(MEDIAINFO_IPK): $(MEDIAINFO_BUILD_DIR)/.built
 	rm -rf $(MEDIAINFO_IPK_DIR) $(BUILD_DIR)/mediainfo_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(MEDIAINFO_BUILD_DIR) DESTDIR=$(MEDIAINFO_IPK_DIR) install-strip
+	$(MAKE) -C $(MEDIAINFO_BUILD_DIR)/Project/GNU/CLI DESTDIR=$(MEDIAINFO_IPK_DIR) install-strip
 #	$(INSTALL) -d $(MEDIAINFO_IPK_DIR)$(TARGET_PREFIX)/etc/
 #	$(INSTALL) -m 644 $(MEDIAINFO_SOURCE_DIR)/mediainfo.conf $(MEDIAINFO_IPK_DIR)$(TARGET_PREFIX)/etc/mediainfo.conf
 #	$(INSTALL) -d $(MEDIAINFO_IPK_DIR)$(TARGET_PREFIX)/etc/init.d

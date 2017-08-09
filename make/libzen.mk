@@ -52,7 +52,7 @@ LIBZEN_IPK_VERSION=1
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-LIBZEN_CPPFLAGS=-I$(@D)/Source
+LIBZEN_CPPFLAGS=
 LIBZEN_LDFLAGS=
 
 #
@@ -120,11 +120,11 @@ $(LIBZEN_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBZEN_SOURCE) $(LIBZEN_PATCHES) ma
 		then mv $(BUILD_DIR)/$(LIBZEN_DIR) $(@D) ; \
 	fi
 	$(AUTORECONF1.10) -vif $(@D)/Project/GNU/Library
-	(cd $(@D); \
+	(cd $(@D)/Project/GNU/Library; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBZEN_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBZEN_LDFLAGS)" \
-		./Project/GNU/Library/configure \
+		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
@@ -132,7 +132,7 @@ $(LIBZEN_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBZEN_SOURCE) $(LIBZEN_PATCHES) ma
 		--disable-nls \
 		--disable-static \
 	)
-	$(PATCH_LIBTOOL) $(@D)/libtool
+	$(PATCH_LIBTOOL) $(@D)/Project/GNU/Library/libtool
 	touch $@
 
 libzen-unpack: $(LIBZEN_BUILD_DIR)/.configured
@@ -142,7 +142,7 @@ libzen-unpack: $(LIBZEN_BUILD_DIR)/.configured
 #
 $(LIBZEN_BUILD_DIR)/.built: $(LIBZEN_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(@D)
+	$(MAKE) -C $(@D)/Project/GNU/Library
 	touch $@
 
 #
@@ -155,7 +155,7 @@ libzen: $(LIBZEN_BUILD_DIR)/.built
 #
 $(LIBZEN_BUILD_DIR)/.staged: $(LIBZEN_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D)/Project/GNU/Library DESTDIR=$(STAGING_DIR) install
 	rm -f $(STAGING_LIB_DIR)/libzen.la
 	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/libzen.pc
 	touch $@
@@ -195,7 +195,7 @@ $(LIBZEN_IPK_DIR)/CONTROL/control:
 #
 $(LIBZEN_IPK): $(LIBZEN_BUILD_DIR)/.built
 	rm -rf $(LIBZEN_IPK_DIR) $(BUILD_DIR)/libzen_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(LIBZEN_BUILD_DIR) DESTDIR=$(LIBZEN_IPK_DIR) install-strip
+	$(MAKE) -C $(LIBZEN_BUILD_DIR)/Project/GNU/Library DESTDIR=$(LIBZEN_IPK_DIR) install-strip
 	rm -f $(LIBZEN_IPK_DIR)$(TARGET_PREFIX)/lib/libzen.la
 #	$(INSTALL) -d $(LIBZEN_IPK_DIR)$(TARGET_PREFIX)/etc/
 #	$(INSTALL) -m 644 $(LIBZEN_SOURCE_DIR)/libzen.conf $(LIBZEN_IPK_DIR)$(TARGET_PREFIX)/etc/libzen.conf

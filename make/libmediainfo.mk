@@ -52,10 +52,7 @@ LIBMEDIAINFO_IPK_VERSION=1
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-LIBMEDIAINFO_CPPFLAGS=-I$(@D)/Source -I$(@D)/Source/ThirdParty/aes-gladman -I$(@D)/Source/ThirdParty/base64 \
-			-I$(@D)/Source/ThirdParty/hmac-gladman -I$(@D)/Source/ThirdParty/md5 \
-			-I$(@D)/Source/ThirdParty/sha1-gladman -I$(@D)/Source/ThirdParty/sha2-gladman \
-			-I$(@D)/Source/ThirdParty/tinyxml2
+LIBMEDIAINFO_CPPFLAGS=
 LIBMEDIAINFO_LDFLAGS=
 
 #
@@ -123,12 +120,12 @@ $(LIBMEDIAINFO_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBMEDIAINFO_SOURCE) $(LIBMED
 		then mv $(BUILD_DIR)/$(LIBMEDIAINFO_DIR) $(@D) ; \
 	fi
 	$(AUTORECONF1.10) -vif $(@D)/Project/GNU/Library
-	(cd $(@D); \
+	(cd $(@D)/Project/GNU/Library; \
 		$(TARGET_CONFIGURE_OPTS) \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBMEDIAINFO_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBMEDIAINFO_LDFLAGS)" \
-		./Project/GNU/Library/configure \
+		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
@@ -136,7 +133,7 @@ $(LIBMEDIAINFO_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBMEDIAINFO_SOURCE) $(LIBMED
 		--disable-nls \
 		--disable-static \
 	)
-	$(PATCH_LIBTOOL) $(@D)/libtool
+	$(PATCH_LIBTOOL) $(@D)/Project/GNU/Library/libtool
 	touch $@
 
 libmediainfo-unpack: $(LIBMEDIAINFO_BUILD_DIR)/.configured
@@ -146,7 +143,7 @@ libmediainfo-unpack: $(LIBMEDIAINFO_BUILD_DIR)/.configured
 #
 $(LIBMEDIAINFO_BUILD_DIR)/.built: $(LIBMEDIAINFO_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(@D)
+	$(MAKE) -C $(@D)/Project/GNU/Library
 	touch $@
 
 #
@@ -159,7 +156,7 @@ libmediainfo: $(LIBMEDIAINFO_BUILD_DIR)/.built
 #
 $(LIBMEDIAINFO_BUILD_DIR)/.staged: $(LIBMEDIAINFO_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D)/Project/GNU/Library DESTDIR=$(STAGING_DIR) install
 	rm -f $(STAGING_LIB_DIR)/libmediainfo.la
 	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/libmediainfo.pc
 	touch $@
@@ -199,7 +196,7 @@ $(LIBMEDIAINFO_IPK_DIR)/CONTROL/control:
 #
 $(LIBMEDIAINFO_IPK): $(LIBMEDIAINFO_BUILD_DIR)/.built
 	rm -rf $(LIBMEDIAINFO_IPK_DIR) $(BUILD_DIR)/libmediainfo_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(LIBMEDIAINFO_BUILD_DIR) DESTDIR=$(LIBMEDIAINFO_IPK_DIR) install-strip
+	$(MAKE) -C $(LIBMEDIAINFO_BUILD_DIR)/Project/GNU/Library DESTDIR=$(LIBMEDIAINFO_IPK_DIR) install-strip
 	rm -f $(LIBMEDIAINFO_IPK_DIR)$(TARGET_PREFIX)/lib/libmediainfo.la
 #	$(INSTALL) -d $(LIBMEDIAINFO_IPK_DIR)$(TARGET_PREFIX)/etc/
 #	$(INSTALL) -m 644 $(LIBMEDIAINFO_SOURCE_DIR)/libmediainfo.conf $(LIBMEDIAINFO_IPK_DIR)$(TARGET_PREFIX)/etc/libmediainfo.conf
