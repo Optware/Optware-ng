@@ -6,7 +6,8 @@ BROKEN_PACKAGES = \
 	rssh \
 	sandbox \
 	libopensync msynctool obexftp \
-	modutils
+	modutils \
+	node
 
 BOOST_ADDITIONAL_LIBS:= atomic \
 			chrono \

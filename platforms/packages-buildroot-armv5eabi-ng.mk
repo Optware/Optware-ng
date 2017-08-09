@@ -6,7 +6,8 @@ BROKEN_PACKAGES = \
 	rssh \
 	sandbox \
 	libopensync msynctool obexftp \
-	modutils
+	modutils \
+	node
 
 FFMPEG_CONFIG_OPTS := --disable-armv6
 

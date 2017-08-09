@@ -1,0 +1,117 @@
+--- a/configure
++++ b/configure
+@@ -49,9 +49,9 @@
+ valid_arch = ('arm', 'arm64', 'ia32', 'mips', 'mipsel', 'mips64el', 'ppc',
+               'ppc64', 'x32','x64', 'x86', 's390', 's390x')
+ valid_arm_float_abi = ('soft', 'softfp', 'hard')
+-valid_arm_fpu = ('vfp', 'vfpv3', 'vfpv3-d16', 'neon')
++valid_arm_fpu = ('vfp', 'vfpv3', 'vfpv3-d16', 'neon', 'none')
+ valid_mips_arch = ('loongson', 'r1', 'r2', 'r6', 'rx')
+-valid_mips_fpu = ('fp32', 'fp64', 'fpxx')
++valid_mips_fpu = ('fp32', 'fp64', 'fpxx', 'soft')
+ valid_mips_float_abi = ('soft', 'hard')
+ valid_intl_modes = ('none', 'small-icu', 'full-icu', 'system-icu')
+ 
+--- a/deps/v8/build/toolchain.gypi
++++ b/deps/v8/build/toolchain.gypi
+@@ -56,10 +56,24 @@
+     'arm_test_noprobe%': 'off',
+ 
+     # Similar to vfp but on MIPS.
+-    'v8_can_use_fpu_instructions%': 'true',
++    'conditions': [
++      ['mips_fpu_mode!="soft"', {
++        'v8_can_use_fpu_instructions%': 'true',
++      }],
++      ['mips_fpu_mode=="soft"', {
++        'v8_can_use_fpu_instructions%': 'false',
++      }],
++    ],
+ 
+     # Similar to the ARM hard float ABI but on MIPS.
+-    'v8_use_mips_abi_hardfloat%': 'true',
++    'conditions': [
++      ['mips_fpu_mode!="soft"', {
++        'v8_use_mips_abi_hardfloat%': 'true',
++      }],
++      ['mips_fpu_mode=="soft"', {
++        'v8_use_mips_abi_hardfloat%': 'false',
++      }],
++    ],
+ 
+     # Force disable libstdc++ debug mode.
+     'disable_glibcxx_debug%': 0,
+@@ -207,7 +221,7 @@
+                   }],
+                   [ 'arm_version==7 or arm_version=="default"', {
+                     'conditions': [
+-                      [ 'arm_fpu!="default"', {
++                      [ 'arm_fpu!="default" and arm_fpu!="none"', {
+                         'cflags': ['-mfpu=<(arm_fpu)',],
+                       }],
+                     ],
+@@ -250,7 +264,7 @@
+                   }],
+                   [ 'arm_version==7 or arm_version=="default"', {
+                     'conditions': [
+-                      [ 'arm_fpu!="default"', {
++                      [ 'arm_fpu!="default" and arm_fpu!="none"', {
+                         'cflags': ['-mfpu=<(arm_fpu)',],
+                       }],
+                     ],
+@@ -526,6 +540,11 @@
+                           'FPU_MODE_FP32',
+                         ],
+                       }],
++                      ['mips_fpu_mode=="soft"', {
++                        'defines': [
++                          '_MIPS_ARCH_MIPS32R2',
++                        ],
++                      }],
+                     ],
+                   }],
+                   ['mips_arch_variant=="r1"', {
+@@ -665,6 +684,12 @@
+                       [ 'clang==0', {
+                         'cflags': ['-Wa,-mips32r2'],
+                       }],
++                      ['mips_fpu_mode=="soft"', {
++                        'defines': [
++                          '_MIPS_ARCH_MIPS32R2',
++                        ],
++                        'cflags': ['-msoft-float'],
++                      }],
+                     ],
+                     'cflags': ['-mips32r2'],
+                     'ldflags': ['-mips32r2'],
+--- a/deps/v8/src/base/build_config.h
++++ b/deps/v8/src/base/build_config.h
+@@ -71,7 +71,7 @@
+     defined(__ARM_ARCH_7__)
+ # define CAN_USE_ARMV7_INSTRUCTIONS 1
+ # ifndef CAN_USE_VFP3_INSTRUCTIONS
+-//#  define CAN_USE_VFP3_INSTRUCTIONS
++#  define CAN_USE_VFP3_INSTRUCTIONS
+ # endif
+ #endif
+ 
+--- a/deps/v8/src/base/cpu.cc
++++ b/deps/v8/src/base/cpu.cc
+@@ -137,6 +137,7 @@
+ 
+ #if V8_HOST_ARCH_MIPS
+ int __detect_fp64_mode(void) {
++#ifndef __mips_soft_float
+   double result = 0;
+   // Bit representation of (double)1 is 0x3FF0000000000000.
+   __asm__ volatile(
+@@ -153,6 +154,9 @@
+       : "t0", "$f0", "$f1", "memory");
+ 
+   return !(result == 1);
++#else
++  return 0;
++#endif
+ }
+ 
+ 

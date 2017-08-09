@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 NODE_URL=http://nodejs.org/dist/v$(NODE_VERSION)/node-v$(NODE_VERSION).tar.gz
-NODE_VERSION=6.3.1
+NODE_VERSION=6.11.2
 NODE_SOURCE=node-v$(NODE_VERSION).tar.gz
 NODE_DIR=node-v$(NODE_VERSION)
 NODE_UNZIP=zcat
@@ -36,7 +36,7 @@ NODE_CONFLICTS=
 #
 # NODE_IPK_VERSION should be incremented when the ipk changes.
 #
-NODE_IPK_VERSION=3
+NODE_IPK_VERSION=1
 
 #
 # NODE_CONFFILES should be a list of user-editable files
@@ -47,8 +47,7 @@ NODE_IPK_VERSION=3
 # which they should be applied to the source code.
 #
 NODE_PATCHES=\
-$(NODE_SOURCE_DIR)/backtrace_posix.cc.patch \
-$(NODE_SOURCE_DIR)/mips-no-fpu.patch \
+$(NODE_SOURCE_DIR)/mips_arm-no-fpu.patch \
 
 #
 # If the compilation of the package requires additional
@@ -66,7 +65,8 @@ NODE_CONFIGURE_ARCH_OPTS=--dest-cpu=$(NODE_ARCH)
 
 ifeq ($(OPTWARE_TARGET), $(filter buildroot-armeabi-ng buildroot-armv5eabi-ng buildroot-armv5eabi-ng-legacy, $(OPTWARE_TARGET)))
 NODE_CONFIGURE_ARCH_OPTS += \
---with-arm-float-abi=softfp
+--with-arm-float-abi=softfp \
+--with-arm-fpu=none
 endif
 
 ifeq ($(OPTWARE_TARGET), $(filter buildroot-armeabihf, $(OPTWARE_TARGET)))
