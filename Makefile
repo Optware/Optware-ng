@@ -324,7 +324,7 @@ COMMON_PACKAGES = \
 	libglade libhid \
 	libical \
 	libid3tag libidn libieee1284 libijs libinklevel libjansson libjbigkit libjpeg \
-	libksba liblcms liblcms2 libmaa libmad libmatroska libmemcache libmemcached libmicrohttpd \
+	libksba liblcms liblcms2 libmaa libmad libmatroska libmediainfo libmemcache libmemcached libmicrohttpd \
 	libmcrypt libmm \
 	libmms libmnl libmpc libmpcdec libmpdclient libmpeg2 libmpfr libmrss libmtp \
 	libnetfilter-acct libnetfilter-conntrack libnetfilter-log libnetfilter-queue libnfnetlink libnettle libnl libnsl libnxml \
@@ -333,13 +333,13 @@ COMMON_PACKAGES = \
 	libsamplerate libserf libshout libsigc++ libsoup libsndfile libsodium libsoxr libstdc++ \
 	libtasn1 libtheora libtiff libtool libtorrent \
 	libunistring libupnp libusb libusb1 libuv libvncserver \
-	libvorbis libvorbisidec libwebsockets libxfce4ui libxfce4util libxkbcommon libxml2 libxslt libzip \
+	libvorbis libvorbisidec libwebsockets libxfce4ui libxfce4util libxkbcommon libxml2 libxslt libzen libzip \
 	lighttpd lirc links2 linksys-tftp linphone littlesmalltalk llink \
 	logrotate lookat loudmouth lrzsz lsof ltrace \
 	lua luarocks lxappearance lxde-icon-theme \
 	lynx lzo \
 	m4 madplay make man man-pages mc mcabber md5deep mdadm \
-	mediatomb mediawiki megatools memcached mesalib metalog memtester \
+	mediainfo mediatomb mediawiki megatools memcached mesalib metalog memtester \
 	mg miau microcom microdc2 microperl mimms \
 	minicom minidlna minidlna-rescan minihttpd miniupnpd \
 	mini-sendmail mini-snmpd \
