@@ -20,10 +20,10 @@
 # You should change all these variables to suit your package.
 #
 GZIP_SITE=http://ftp.gnu.org/pub/gnu/gzip
-GZIP_VERSION=1.5
-GZIP_SOURCE=gzip-$(GZIP_VERSION).tar.gz
+GZIP_VERSION=1.8
+GZIP_SOURCE=gzip-$(GZIP_VERSION).tar.xz
 GZIP_DIR=gzip-$(GZIP_VERSION)
-GZIP_UNZIP=zcat
+GZIP_UNZIP=xzcat
 GZIP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 GZIP_DESCRIPTION=GNU Zip data compression program
 GZIP_SECTION=compression
