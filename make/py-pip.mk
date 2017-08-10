@@ -21,8 +21,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-PIP_VERSION=8.1.2
-PY-PIP_SITE=https://pypi.python.org/packages/e7/a8/7556133689add8d1a54c0b14aeff0acb03c64707ce100ecd53934da1aa13
+PY-PIP_VERSION=9.0.1
+PY-PIP_SITE=https://pypi.python.org/packages/11/b6/abcb525026a4be042b486df43905d6893fb04f05aac21c32c638e939e447
 PY-PIP_SOURCE=pip-$(PY-PIP_VERSION).tar.gz
 PY-PIP_DIR=pip-$(PY-PIP_VERSION)
 PY-PIP_UNZIP=zcat
@@ -38,7 +38,7 @@ PY-PIP_CONFLICTS=
 #
 # PY-PIP_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-PIP_IPK_VERSION=2
+PY-PIP_IPK_VERSION=1
 
 #
 # PY-PIP_CONFFILES should be a list of user-editable files
