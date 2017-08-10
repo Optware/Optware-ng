@@ -22,8 +22,7 @@
 #
 ARIA2_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/aria2
 
-ARIA2_VERSION=$(strip \
-$(if $(filter 3, $(firstword $(subst ., ,$(TARGET_CC_VER)))), 1.4.1, 1.18.10))
+ARIA2_VERSION=1.19.0
 
 ARIA2_SOURCE=aria2-$(ARIA2_VERSION).tar.bz2
 ARIA2_DIR=aria2-$(ARIA2_VERSION)
@@ -42,7 +41,7 @@ ARIA2_CONFLICTS=
 #
 # ARIA2_IPK_VERSION should be incremented when the ipk changes.
 #
-ARIA2_IPK_VERSION=2
+ARIA2_IPK_VERSION=1
 
 #
 # ARIA2_CONFFILES should be a list of user-editable files
@@ -59,19 +58,7 @@ ARIA2_PATCHES=$(ARIA2_SOURCE_DIR)/configure.patch
 # compilation or linking flags, then list them here.
 #
 ARIA2_CPPFLAGS=
-ARIA2_LDFLAGS=-lpthread
-
-ifeq ($(HOSTCC), $(TARGET_CC))
-ARIA2_CONFIGURE_ENVS=
-else
-ARIA2_CONFIGURE_ENVS=ac_cv_func_malloc_0_nonnull=yes ac_cv_func_realloc_0_nonnull=yes
-endif
-
-ifeq ($(LIBC_STYLE), uclibc)
-ifdef TARGET_GXX
-ARIA2_CONFIGURE_ENVS += CXX=$(TARGET_GXX)
-endif
-endif
+ARIA2_LDFLAGS=-pthread
 
 #
 # ARIA2_BUILD_DIR is the directory in which the build is done.
@@ -138,11 +125,12 @@ endif
 	fi
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
-		$(ARIA2_CONFIGURE_ENVS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(ARIA2_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(ARIA2_LDFLAGS)" \
 		PATH="$(STAGING_PREFIX)/bin:$$PATH" \
 		PKG_CONFIG_PATH=$(STAGING_LIB_DIR)/pkgconfig \
+		ac_cv_func_malloc_0_nonnull=yes \
+		ac_cv_func_realloc_0_nonnull=yes \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
