@@ -22,8 +22,8 @@
 # http://developer.berlios.de/projects/amule/
 
 #AMULE_SITE=http://download.berlios.de/amule
-AMULE_VERSION=2.3.1release
-AMULE_VERSION_REAL=2.3.1
+AMULE_VERSION=2.3.2
+AMULE_VERSION_REAL=2.3.2
 #AMULE_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/amule
 AMULE_SITE=http://$(SOURCEFORGE_MIRROR)/project/amule/aMule/$(AMULE_VERSION_REAL)
 AMULE_SOURCE=aMule-$(AMULE_VERSION_REAL).tar.bz2
@@ -40,7 +40,7 @@ AMULE_CONFLICTS=
 #
 # AMULE_IPK_VERSION should be incremented when the ipk changes.
 #
-AMULE_IPK_VERSION=3
+AMULE_IPK_VERSION=1
 
 #
 # AMULE_CONFFILES should be a list of user-editable files
