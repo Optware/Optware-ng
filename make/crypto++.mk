@@ -47,7 +47,7 @@ CRYPTO++_CONFLICTS=
 # which they should be applied to the source code.
 #
 CRYPTO++_PATCHES=$(CRYPTO++_SOURCE_DIR)/mipsel-endian.patch \
-$(CRYPTO++_SOURCE_DIR)/config.h.patch
+$(CRYPTO++_SOURCE_DIR)/config.h.patch $(CRYPTO++_SOURCE_DIR)/PIC.patch
 
 #
 # If the compilation of the package requires additional
@@ -55,10 +55,6 @@ $(CRYPTO++_SOURCE_DIR)/config.h.patch
 #
 CRYPTO++_CPPFLAGS=
 CRYPTO++_LDFLAGS=
-
-ifdef TARGET_GXX
-CRYPTO++_CXX_OPTS = CXX=$(TARGET_GXX)
-endif
 
 #
 # CRYPTO++_BUILD_DIR is the directory in which the build is done.
@@ -148,7 +144,6 @@ $(CRYPTO++_BUILD_DIR)/.built: $(CRYPTO++_BUILD_DIR)/.configured
 	rm -f $@
 	$(MAKE) -C $(@D) \
 		$(TARGET_CONFIGURE_OPTS) \
-		$(CRYPTO++_CXX_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(CRYPTO++_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(CRYPTO++_LDFLAGS)" \
 		;
