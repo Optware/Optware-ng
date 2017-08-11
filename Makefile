@@ -339,7 +339,7 @@ COMMON_PACKAGES = \
 	lua luarocks lxappearance lxde-icon-theme \
 	lynx lzo \
 	m4 madplay make man man-pages mc mcabber md5deep mdadm \
-	mediainfo mediatomb mediawiki megatools memcached mesalib metalog memtester \
+	mediainfo mediatomb mediawiki meganz-sdk megatools memcached mesalib metalog memtester \
 	mg miau microcom microdc2 microperl mimms \
 	minicom minidlna minidlna-rescan minihttpd miniupnpd \
 	mini-sendmail mini-snmpd \
