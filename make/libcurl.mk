@@ -51,7 +51,9 @@ LIBCURL_CONFFILES=#$(TARGET_PREFIX)/etc/libcurl.conf $(TARGET_PREFIX)/etc/init.d
 # LIBCURL_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-LIBCURL_PATCHES=$(LIBCURL_SOURCE_DIR)/timeval-uclibc.patch
+LIBCURL_PATCHES=\
+$(LIBCURL_SOURCE_DIR)/timeval-uclibc.patch \
+$(LIBCURL_SOURCE_DIR)/powerpc.patch
 
 #
 # If the compilation of the package requires additional
