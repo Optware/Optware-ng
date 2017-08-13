@@ -21,30 +21,18 @@
 #
 IMAGEMAGICK_SITE=ftp://ftp.imagemagick.org/pub/ImageMagick/releases
 IMAGEMAGICK_SITE2=http://ftp.sunet.se/pub/multimedia/graphics/ImageMagic
-ifneq ($(OPTWARE_TARGET), $(filter wl500g mss, $(OPTWARE_TARGET)))
-IMAGEMAGICK_VER=6.9.3
-IMAGEMAGICK_REV=5
+IMAGEMAGICK_VER=6.9.8
+IMAGEMAGICK_REV=10
 IMAGEMAGICK_IPK_VERSION=1
 IMAGEMAGICK_SOURCE=ImageMagick-$(IMAGEMAGICK_VER)-$(IMAGEMAGICK_REV).tar.xz
 IMAGEMAGICK_UNZIP=xzcat
 IMAGEMAGICK_DIR=ImageMagick-$(IMAGEMAGICK_VER)-$(IMAGEMAGICK_REV)
-else
-IMAGEMAGICK_VER=6.3.1
-IMAGEMAGICK_REV=6
-IMAGEMAGICK_IPK_VERSION=4
-IMAGEMAGICK_SOURCE=ImageMagick-$(IMAGEMAGICK_VER)-$(IMAGEMAGICK_REV).tar.gz
-IMAGEMAGICK_UNZIP=zcat
-IMAGEMAGICK_DIR=ImageMagick-$(IMAGEMAGICK_VER)
-ifeq ($(LIBC_STYLE), uclibc)
-IMAGEMAGICK_PATCHES=$(IMAGEMAGICK_SOURCE_DIR)/uClibc-errno.patch
-endif
-endif
 IMAGEMAGICK_VERSION=$(IMAGEMAGICK_VER).$(IMAGEMAGICK_REV)
 IMAGEMAGICK_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 IMAGEMAGICK_DESCRIPTION=A set of image processing utilities.
 IMAGEMAGICK_SECTION=graphics
 IMAGEMAGICK_PRIORITY=optional
-IMAGEMAGICK_DEPENDS=zlib, freetype, libjpeg, libpng, libtiff, libstdc++, libtool, bzip2, liblcms, pango
+IMAGEMAGICK_DEPENDS=zlib, freetype, libjpeg, libpng, libtiff, libstdc++, libtool, bzip2, liblcms2, libxml2 pango
 IMAGEMAGICK_SUGGESTS=
 IMAGEMAGICK_CONFLICTS=
 
@@ -53,9 +41,6 @@ IMAGEMAGICK_CONFLICTS=
 # compilation or linking flags, then list them here.
 #
 IMAGEMAGICK_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/freetype2
-ifeq ($(OPTWARE_TARGET), openwrt-ixp4xx)
-IMAGEMAGICK_CPPFLAGS+=-D__error_t_defined
-endif
 IMAGEMAGICK_LDFLAGS=
 
 #
@@ -106,7 +91,8 @@ imagemagick-source: $(DL_DIR)/$(IMAGEMAGICK_SOURCE) $(IMAGEMAGICK_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(IMAGEMAGICK_BUILD_DIR)/.configured: $(DL_DIR)/$(IMAGEMAGICK_SOURCE) $(IMAGEMAGICK_PATCHES) make/imagemagick.mk
-	make zlib-stage freetype-stage libjpeg-stage libpng-stage bzip2-stage libtiff-stage pango-stage
+	$(MAKE) zlib-stage freetype-stage libjpeg-stage libpng-stage bzip2-stage libtiff-stage pango-stage \
+		liblcms2-stage libxml2-stage
 	rm -rf $(BUILD_DIR)/$(IMAGEMAGICK_DIR) $(@D)
 	$(IMAGEMAGICK_UNZIP) $(DL_DIR)/$(IMAGEMAGICK_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(IMAGEMAGICK_PATCHES)" ; \
