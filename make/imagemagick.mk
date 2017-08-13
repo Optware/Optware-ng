@@ -21,8 +21,8 @@
 #
 IMAGEMAGICK_SITE=ftp://ftp.imagemagick.org/pub/ImageMagick/releases
 IMAGEMAGICK_SITE2=http://ftp.sunet.se/pub/multimedia/graphics/ImageMagic
-IMAGEMAGICK_VER=6.9.8
-IMAGEMAGICK_REV=10
+IMAGEMAGICK_VER=6.9.9
+IMAGEMAGICK_REV=7
 IMAGEMAGICK_SOURCE=ImageMagick-$(IMAGEMAGICK_VER)-$(IMAGEMAGICK_REV).tar.xz
 IMAGEMAGICK_UNZIP=xzcat
 IMAGEMAGICK_DIR=ImageMagick-$(IMAGEMAGICK_VER)-$(IMAGEMAGICK_REV)
@@ -39,7 +39,7 @@ IMAGEMAGICK_CONFLICTS=
 #
 # IMAGEMAGICK_IPK_VERSION should be incremented when the ipk changes.
 #
-IMAGEMAGICK_IPK_VERSION=2
+IMAGEMAGICK_IPK_VERSION=1
 
 #
 # If the compilation of the package requires additional
