@@ -39,7 +39,7 @@ IMAGEMAGICK_CONFLICTS=
 #
 # IMAGEMAGICK_IPK_VERSION should be incremented when the ipk changes.
 #
-IMAGEMAGICK_IPK_VERSION=1
+IMAGEMAGICK_IPK_VERSION=2
 
 #
 # If the compilation of the package requires additional
@@ -202,6 +202,8 @@ $(IMAGEMAGICK_IPK): $(IMAGEMAGICK_BUILD_DIR)/.built
 			$(STRIP_COMMAND) $$f; \
 			mv -f "$$f" "imagemagick-$$f"; \
 		done
+	sed -i -e 's|$(OPTWARE_TOP)/scripts/pkg-config.sh|$(TARGET_PREFIX)/bin/pkg-config|g' \
+		$(IMAGEMAGICK_IPK_DIR)$(TARGET_PREFIX)/bin/*-config
 	rm -f $(IMAGEMAGICK_IPK_DIR)$(TARGET_PREFIX)/lib/libltdl*
 #	rm -f $(IMAGEMAGICK_IPK_DIR)$(TARGET_PREFIX)/lib/*.la
 	find $(IMAGEMAGICK_IPK_DIR)$(TARGET_PREFIX)/lib/ \
