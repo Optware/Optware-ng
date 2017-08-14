@@ -1,0 +1,74 @@
+#!/bin/sh
+
+prefix="%OPTWARE_TARGET_PREFIX%"
+PATH=${prefix}/bin:${prefix}/sbin:$PATH
+NAME=sshguard
+PIDFILE=${prefix}/var/run/$NAME.pid
+WHITELIST=${prefix}/etc/sshguard/whitelist
+DAEMON=${prefix}/sbin/${NAME}
+DAEMON_OPTS="-i $PIDFILE -w $WHITELIST"
+
+START_STOP_DAEMON="${prefix}/sbin/start-stop-daemon-start-stop-daemon"
+
+test -x $DAEMON || exit 0
+
+do_enable_firewall()
+{
+	#log_progress_msg "enabling firewall"
+	# creating sshguard chain
+	iptables -N sshguard 2> /dev/null
+	ip6tables -N sshguard 2> /dev/null
+	# block traffic from abusers
+	iptables -I INPUT -j sshguard 2> /dev/null
+	ip6tables -I INPUT -j sshguard 2> /dev/null
+}
+#
+# Function that disables firewall
+#
+do_disable_firewall()
+{
+	#log_progress_msg "disabling firewall"
+	# flushes list of abusers
+	iptables -F sshguard 2> /dev/null
+	ip6tables -F sshguard 2> /dev/null
+	# removes sshguard firewall rules
+	iptables -D INPUT -j sshguard 2> /dev/null
+	ip6tables -D INPUT -j sshguard 2> /dev/null
+	# removing sshguard chain
+	iptables -X sshguard 2> /dev/null
+	ip6tables -X sshguard 2> /dev/null
+}
+
+if [ -z "$1" ] ; then
+    case `echo "$0" | sed 's:^.*/\(.*\):\1:g'` in
+        S??*) rc="start" ;;
+        K??*) rc="stop" ;;
+        *) rc="usage" ;;
+    esac
+else
+    rc="$1"
+fi
+
+case "$rc" in
+    start)
+	echo "Starting brute-force attacks protector: $NAME"
+	do_enable_firewall
+	mkdir -p ${prefix}/var/run
+	$DAEMON $DAEMON_OPTS 0<&- &>/dev/null &
+        ;;
+    stop)
+	echo "Stopping brute-force attacks protector: $NAME"
+	do_disable_firewall
+        ${START_STOP_DAEMON} --stop -s KILL --pidfile $PIDFILE
+        ;;
+    restart)
+        "$0" stop
+        sleep 1
+        "$0" start
+        ;;
+    *)  
+        echo "Usage: $0 (start|stop|restart|usage)"
+        ;;
+esac
+
+exit 0

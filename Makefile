@@ -364,7 +364,7 @@ COMMON_PACKAGES = \
 	ocaml oleo open2300 $(OPENJDK_PACKAGES) \
 	openobex obexftp \
 	opendchub openjpeg openldap opensips \
-	openssl openssh sshfs openvpn oscam \
+	openssl openssh sshfs sshguard openvpn oscam \
 	optware-devel ossp-js oww owwlog \
 	p7zip p910nd pal palantir pango parted \
 	par2cmdline patch patchutils \
