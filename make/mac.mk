@@ -20,7 +20,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-MAC_URL=http://etree.org/shnutils/shntool/support/formats/ape/unix/3.99-u4-b5-s7/mac-$(MAC_VERSION).tar.gz
+MAC_URL=http://etree.org/shnutils/shntool/support/formats/ape/unix/$(MAC_VERSION)/mac-$(MAC_VERSION).tar.gz
 MAC_VERSION=3.99-u4-b5-s7
 MAC_SOURCE=mac-$(MAC_VERSION).tar.gz
 MAC_DIR=mac-$(MAC_VERSION)
