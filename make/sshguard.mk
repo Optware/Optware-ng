@@ -36,7 +36,7 @@ SSHGUARD_CONFLICTS=
 #
 # SSHGUARD_IPK_VERSION should be incremented when the ipk changes.
 #
-SSHGUARD_IPK_VERSION=1
+SSHGUARD_IPK_VERSION=2
 
 #
 # SSHGUARD_CONFFILES should be a list of user-editable files

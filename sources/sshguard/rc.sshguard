@@ -54,7 +54,7 @@ case "$rc" in
 	echo "Starting brute-force attacks protector: $NAME"
 	do_enable_firewall
 	mkdir -p ${prefix}/var/run
-	$DAEMON $DAEMON_OPTS 0<&- &>/dev/null &
+	(cd /; $DAEMON $DAEMON_OPTS 0<&- &>/dev/null &)
         ;;
     stop)
 	echo "Stopping brute-force attacks protector: $NAME"
