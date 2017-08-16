@@ -263,7 +263,7 @@ COMMON_PACKAGES = \
 	c-ares cabextract cacerts jre-cacerts cadaver cairo calc calcurse castget \
 	catdoc ccollect ccrypt ccxstream cdargs \
 	cdrtools centerim cuetools \
-	cherokee chicken chillispot chrpath cksfv \
+	cherokee chicken chillispot chromaprint chrpath cksfv \
 	classpath clamav clearsilver climm clinkcc clips cmdftp collectd \
 	confuse connect coreutils corkscrew cpio cppunit cpufrequtils cron cryptcat \
 	cscope ctags ctcs ctorrent ctrlproxy \

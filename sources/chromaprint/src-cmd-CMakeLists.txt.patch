@@ -1,0 +1,17 @@
+--- a/src/cmd/CMakeLists.txt
++++ b/src/cmd/CMakeLists.txt
+@@ -24,11 +24,11 @@
+ 	configure_file(${CMAKE_CURRENT_SOURCE_DIR}/fpcalc.Info.plist.in ${CMAKE_CURRENT_BINARY_DIR}/fpcalc.Info.plist)
+ endif()
+ 
+-add_library(fpcalc_libs INTERFACE)
+-target_link_libraries(fpcalc_libs INTERFACE ${fpcalc_LIBS})
++#add_library(fpcalc_libs INTERFACE)
++#target_link_libraries(fpcalc_libs INTERFACE ${fpcalc_LIBS})
+ 
+ add_executable(fpcalc fpcalc.cpp)
+-target_link_libraries(fpcalc PRIVATE fpcalc_libs)
++target_link_libraries(fpcalc ${fpcalc_LIBS})
+ if(fpcalc_LINK_FLAGS)
+ 	set_target_properties(fpcalc PROPERTIES LINK_FLAGS ${fpcalc_LINK_FLAGS})
+ endif()
