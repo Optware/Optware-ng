@@ -26,10 +26,10 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-LIBTORRENT-RASTERBAR_SITE=https://github.com/arvidn/libtorrent/releases/download/libtorrent-1_0_9
+LIBTORRENT-RASTERBAR_SITE=https://github.com/arvidn/libtorrent/releases/download/libtorrent-1_1_4
 #LIBTORRENT-RASTERBAR_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/libtorrent
 #LIBTORRENT-RASTERBAR_SITE=http://libtorrent.googlecode.com/files
-LIBTORRENT-RASTERBAR_VERSION=1.0.9
+LIBTORRENT-RASTERBAR_VERSION=1.1.4
 LIBTORRENT-RASTERBAR_SOURCE=libtorrent-rasterbar-$(LIBTORRENT-RASTERBAR_VERSION).tar.gz
 LIBTORRENT-RASTERBAR_DIR=libtorrent-rasterbar-$(LIBTORRENT-RASTERBAR_VERSION)
 LIBTORRENT-RASTERBAR_UNZIP=zcat
@@ -38,7 +38,7 @@ LIBTORRENT-RASTERBAR_DESCRIPTION=libtorrent rasterbar.
 LIBTORRENT-RASTERBAR_PYTHON_BINDING_DESCRIPTION=libtorrent rasterbar python binding.
 LIBTORRENT-RASTERBAR_SECTION=net
 LIBTORRENT-RASTERBAR_PRIORITY=optional
-LIBTORRENT-RASTERBAR_DEPENDS= openssl, boost-system
+LIBTORRENT-RASTERBAR_DEPENDS= openssl, boost-system, boost-chrono, boost-random
 LIBTORRENT-RASTERBAR_PYTHON_BINDING26_DEPENDS= libtorrent-rasterbar, python26, boost-python26
 LIBTORRENT-RASTERBAR_PYTHON_BINDING27_DEPENDS= libtorrent-rasterbar, python27, boost-python27
 LIBTORRENT-RASTERBAR_PYTHON_BINDING3_DEPENDS= libtorrent-rasterbar, python3, boost-python3
@@ -52,7 +52,7 @@ endif
 #
 # LIBTORRENT-RASTERBAR_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBTORRENT-RASTERBAR_IPK_VERSION?=3
+LIBTORRENT-RASTERBAR_IPK_VERSION=1
 
 #
 # LIBTORRENT-RASTERBAR_CONFFILES should be a list of user-editable files
@@ -62,7 +62,7 @@ LIBTORRENT-RASTERBAR_IPK_VERSION?=3
 # LIBTORRENT-RASTERBAR_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#LIBTORRENT-RASTERBAR_PATCHES=$(LIBTORRENT-RASTERBAR_SOURCE_DIR)/config.hpp.patch
+LIBTORRENT-RASTERBAR_PATCHES=$(LIBTORRENT-RASTERBAR_SOURCE_DIR)/config.hpp.patch
 
 #
 # If the compilation of the package requires additional
@@ -177,7 +177,9 @@ endif
 		--disable-static \
 		--disable-debug \
 		--enable-python-binding \
-		--with-boost-system=boost_system  \
+		--with-boost-system=boost_system \
+		--with-boost-chrono=boost_chrono \
+		--with-boost-random=boost_random \
 		--with-boost-python=boost_python-py26 \
 		--with-asio=shipped \
 		--with-dht=on \
