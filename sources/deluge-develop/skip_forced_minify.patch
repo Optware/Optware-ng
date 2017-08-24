@@ -1,31 +1,28 @@
 --- a/setup.py
 +++ b/setup.py
-@@ -86,27 +86,7 @@
-         self.set_undefined_options('build', ('build_lib', 'build_lib'))
- 
+@@ -114,25 +114,6 @@
      def run(self):
--        if self.develop:
--            js_basedir = os.path.join(os.path.dirname(__file__), 'deluge', 'ui', 'web', 'js')
--        else:
--            js_basedir = os.path.join(self.build_lib, 'deluge', 'ui', 'web', 'js')
--
--        js_source_dirs = [os.path.join(js_basedir, 'deluge-all'),
--                          os.path.join(js_basedir, 'extjs', 'ext-extensions')]
--
--        import_error = ''
+         js_basedir = os.path.join(os.path.dirname(__file__), self.JS_DIR)
+ 
 -        try:
 -            from minify_web_js import minify_js_dir
+-            import_error = ''
 -        except ImportError as err:
 -            import_error = err
 -
--        for source_dir in js_source_dirs:
--            # If unable to import minify script and there is no existing minified file, raise error.
--            if import_error:
--                js_file = os.path.join(os.path.dirname(source_dir), os.path.basename(source_dir)) + '.js'
--                if not os.path.exists(js_file):
--                    raise ImportError(import_error)
--            minify_js_dir(source_dir)
-+        js_basedir = os.path.join(os.path.dirname(__file__), 'deluge', 'ui', 'web', 'js')
- 
- 
- class BuildTranslations(cmd.Command):
+-        for js_src_dir in self.JS_SRC_DIRS:
+-            source_dir = os.path.join(js_basedir, js_src_dir)
+-            try:
+-                minify_js_dir(source_dir)
+-            except NameError:
+-                js_file = source_dir + '.js'
+-                if os.path.isfile(js_file):
+-                    print('Unable to minify but found existing minified: {}'.format(js_file))
+-                else:
+-                    # Unable to minify and no existing minified file found so exiting.
+-                    print('Import error: %s' % import_error)
+-                    sys.exit(1)
+-
+         # Create the gettext.js file for translations.
+         try:
+             from gen_web_gettext import create_gettext_js
