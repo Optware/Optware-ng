@@ -59,7 +59,7 @@ case "$rc" in
     stop)
 	echo "Stopping brute-force attacks protector: $NAME"
 	do_disable_firewall
-        ${START_STOP_DAEMON} --stop -s KILL --pidfile $PIDFILE
+        ${START_STOP_DAEMON} --stop -s KILL --pidfile $PIDFILE --remove-pidfile
         ;;
     restart)
         "$0" stop
