@@ -44,13 +44,14 @@ endif
 ifeq (avahi, $(filter avahi, $(PACKAGES)))
 MPD_DEPENDS+=, avahi
 endif
+MPD_DEPENDS+=, libupnp, libmpdclient, mpg123, libsndfile, sqlite
 MPD_SUGGESTS=
 MPD_CONFLICTS=
 
 #
 # MPD_IPK_VERSION should be incremented when the ipk changes.
 #
-MPD_IPK_VERSION=1
+MPD_IPK_VERSION=2
 
 #
 # MPD_CONFFILES should be a list of user-editable files
@@ -156,7 +157,8 @@ endif
 	glib-stage libcurl-stage libmms-stage icu-stage \
 	audiofile-stage libao-stage libid3tag-stage \
 	libmad-stage libmpcdec-stage libshout-stage alsa-lib-stage \
-	wavpack-stage audiofile-stage expat-stage boost-stage
+	wavpack-stage audiofile-stage expat-stage boost-stage \
+	libupnp-stage libmpdclient-stage mpg123-stage libsndfile-stage sqlite-stage
 ifneq (, $(filter i686, $(TARGET_ARCH)))
 	$(MAKE) libsamplerate-stage libvorbis-stage
 else
