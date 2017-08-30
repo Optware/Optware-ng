@@ -10,7 +10,7 @@ BROKEN_PACKAGES = \
 	qemu-libc-i386 \
 	syx \
 	lm-sensors \
-	ldconfig modutils samba2
+	ldconfig modutils samba2 node010
 
 BOOST_ADDITIONAL_LIBS:= atomic \
 			chrono \

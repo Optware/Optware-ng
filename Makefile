@@ -358,7 +358,7 @@ COMMON_PACKAGES = \
 	newsbeuter newt \
 	nfs-server nfs-utils \
 	nget nginx ngrep nickle ninvaders nload \
-	nmap nmon node noip nostromo nrpe \
+	nmap nmon node node010 noip nostromo nrpe \
 	ntfs-3g ntfsprogs \
 	ntop ntp ntpclient nttcp nut nvi nylon nzbget nzbget-testing \
 	ocaml oleo open2300 $(OPENJDK_PACKAGES) \

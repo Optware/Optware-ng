@@ -12,7 +12,7 @@ BROKEN_PACKAGES = \
 	syx \
 	inferno \
 	lm-sensors \
-	ldconfig modutils samba2
+	ldconfig modutils samba2 node010
 
 FFMPEG_OLD_CONFIG_OPTS := --disable-altivec
 

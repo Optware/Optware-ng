@@ -31,12 +31,12 @@ NODE_SECTION=lang
 NODE_PRIORITY=optional
 NODE_DEPENDS=libstdc++, libuv, icu, openssl, zlib
 NODE_SUGGESTS=
-NODE_CONFLICTS=
+NODE_CONFLICTS=node010
 
 #
 # NODE_IPK_VERSION should be incremented when the ipk changes.
 #
-NODE_IPK_VERSION=1
+NODE_IPK_VERSION=2
 
 #
 # NODE_CONFFILES should be a list of user-editable files
