@@ -208,7 +208,8 @@ endif
 		--enable-wavpack \
 		--enable-expat \
 		$(MPD_CONFIGURE_OPTIONS) \
-		\
+		--disable-eventfd \
+		--disable-epoll \
 		--with-faad=$(STAGING_PREFIX) \
 		--with-lame=$(STAGING_PREFIX) \
 	)
