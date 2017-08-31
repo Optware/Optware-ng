@@ -19,23 +19,23 @@
 #
 # You should change all these variables to suit your package.
 #
-LIBVORBISIDEC_SITE=http://nslu.sourceforge.net/downloads
-LIBVORBISIDEC_VERSION=cvs-20050221
-LIBVORBISIDEC_SOURCE=libvorbisidec-$(LIBVORBISIDEC_VERSION).tar.gz
-LIBVORBISIDEC_DIR=libvorbisidec-$(LIBVORBISIDEC_VERSION)
+LIBVORBISIDEC_SITE=https://launchpad.net/ubuntu/+archive/primary/+files
+LIBVORBISIDEC_VERSION=svn18153
+LIBVORBISIDEC_SOURCE=libvorbisidec_1.0.2+$(LIBVORBISIDEC_VERSION).orig.tar.gz
+LIBVORBISIDEC_DIR=libvorbisidec-1.0.2+$(LIBVORBISIDEC_VERSION)
 LIBVORBISIDEC_UNZIP=zcat
 LIBVORBISIDEC_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 LIBVORBISIDEC_DESCRIPTION=libvorbisidec is the integer-only ogg decoder library, AKA "Tremor"
 LIBVORBISIDEC_SECTION=lib
 LIBVORBISIDEC_PRIORITY=optional
-LIBVORBISIDEC_DEPENDS=
+LIBVORBISIDEC_DEPENDS=libogg
 LIBVORBISIDEC_SUGGESTS=
 LIBVORBISIDEC_CONFLICTS=
 
 #
 # LIBVORBISIDEC_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBVORBISIDEC_IPK_VERSION=2
+LIBVORBISIDEC_IPK_VERSION=1
 
 #
 # LIBVORBISIDEC_CONFFILES should be a list of user-editable files
@@ -104,15 +104,17 @@ libvorbisidec-source: $(DL_DIR)/$(LIBVORBISIDEC_SOURCE) $(LIBVORBISIDEC_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(LIBVORBISIDEC_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBVORBISIDEC_SOURCE) $(LIBVORBISIDEC_PATCHES) make/libvorbisidec.mk
-#	$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) libogg-stage
 	rm -rf $(BUILD_DIR)/$(LIBVORBISIDEC_DIR) $(LIBVORBISIDEC_BUILD_DIR)
 	$(LIBVORBISIDEC_UNZIP) $(DL_DIR)/$(LIBVORBISIDEC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(LIBVORBISIDEC_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(LIBVORBISIDEC_DIR) -p1
 	mv $(BUILD_DIR)/$(LIBVORBISIDEC_DIR) $(LIBVORBISIDEC_BUILD_DIR)
-	(cd $(LIBVORBISIDEC_BUILD_DIR); \
+	$(AUTORECONF1.10) -vif $(@D)
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBVORBISIDEC_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBVORBISIDEC_LDFLAGS)" \
+		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -120,8 +122,8 @@ $(LIBVORBISIDEC_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBVORBISIDEC_SOURCE) $(LIBV
 		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 	)
-	$(PATCH_LIBTOOL) $(LIBVORBISIDEC_BUILD_DIR)/libtool
-	touch $(LIBVORBISIDEC_BUILD_DIR)/.configured
+	$(PATCH_LIBTOOL) $(@D)/libtool
+	touch $@
 
 libvorbisidec-unpack: $(LIBVORBISIDEC_BUILD_DIR)/.configured
 
@@ -129,9 +131,9 @@ libvorbisidec-unpack: $(LIBVORBISIDEC_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(LIBVORBISIDEC_BUILD_DIR)/.built: $(LIBVORBISIDEC_BUILD_DIR)/.configured
-	rm -f $(LIBVORBISIDEC_BUILD_DIR)/.built
-	$(MAKE) -C $(LIBVORBISIDEC_BUILD_DIR)
-	touch $(LIBVORBISIDEC_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
 
 #
 # This is the build convenience target.
@@ -142,10 +144,10 @@ libvorbisidec: $(LIBVORBISIDEC_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(LIBVORBISIDEC_BUILD_DIR)/.staged: $(LIBVORBISIDEC_BUILD_DIR)/.built
-	rm -f $(LIBVORBISIDEC_BUILD_DIR)/.staged
-	$(MAKE) -C $(LIBVORBISIDEC_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	rm -f $(STAGING_LIB_DIR)/libvorbisidec.la
-	touch $(LIBVORBISIDEC_BUILD_DIR)/.staged
+	touch $@
 
 libvorbisidec-stage: $(LIBVORBISIDEC_BUILD_DIR)/.staged
 
