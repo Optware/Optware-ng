@@ -42,7 +42,7 @@ else
 MPD_DEPENDS+=, libvorbisidec
 endif
 ifeq (avahi, $(filter avahi, $(PACKAGES)))
-MPD_DEPENDS+=, avahi
+MPD_DEPENDS+=, libavahi-client, libavahi-common
 endif
 MPD_DEPENDS+=, libupnp, libmpdclient, mpg123, libsndfile, sqlite
 MPD_SUGGESTS=
@@ -210,6 +210,7 @@ endif
 		$(MPD_CONFIGURE_OPTIONS) \
 		--disable-eventfd \
 		--disable-epoll \
+		--disable-signalfd \
 		--with-faad=$(STAGING_PREFIX) \
 		--with-lame=$(STAGING_PREFIX) \
 	)
