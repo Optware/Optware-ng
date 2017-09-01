@@ -147,6 +147,7 @@ $(LIBVORBISIDEC_BUILD_DIR)/.staged: $(LIBVORBISIDEC_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	rm -f $(STAGING_LIB_DIR)/libvorbisidec.la
+	sed -i -e 's|prefix=$(TARGET_PREFIX)|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/vorbisidec.pc
 	touch $@
 
 libvorbisidec-stage: $(LIBVORBISIDEC_BUILD_DIR)/.staged
