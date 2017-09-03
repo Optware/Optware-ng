@@ -347,7 +347,7 @@ COMMON_PACKAGES = \
 	moc modutils monit most motif motion motor mousepad \
 	mod-fastcgi moe moreutils mp3blaster mp3info mpack mpage \
 	mpc mpd mpdscribble \
-	mpg123 mpop mrtg msmtp \
+	mpg123 mplayer mpop mrtg msmtp \
 	msort msynctool mt-daapd mt-daapd-svn mtools \
 	mtr multitail mussh mutt mxml \
 	myrapbook \
