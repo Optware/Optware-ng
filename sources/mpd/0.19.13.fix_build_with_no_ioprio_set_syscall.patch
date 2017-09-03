@@ -1,0 +1,29 @@
+--- a/src/thread/Util.hxx
++++ b/src/thread/Util.hxx
+@@ -38,7 +38,7 @@
+ #include <windows.h>
+ #endif
+ 
+-#ifdef __linux__
++#if defined(__linux__) && defined(__NR_ioprio_set)
+ 
+ static int
+ ioprio_set(int which, int who, int ioprio)
+@@ -66,7 +66,7 @@
+ static inline void
+ SetThreadIdlePriority()
+ {
+-#ifdef __linux__
++#if defined(__linux__) && defined(__NR_ioprio_set)
+ #ifdef SCHED_IDLE
+ 	static struct sched_param sched_param;
+ 	sched_setscheduler(0, SCHED_IDLE, &sched_param);
+@@ -85,7 +85,7 @@
+ static inline void
+ SetThreadRealtime()
+ {
+-#ifdef __linux__
++#if defined(__linux__) && defined(__NR_ioprio_set)
+ 	struct sched_param sched_param;
+ 	sched_param.sched_priority = 50;
+ 

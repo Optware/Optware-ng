@@ -24,7 +24,13 @@ MPD_SITE=http://www.musicpd.org/download/mpd/$(shell echo $(MPD_VERSION)|cut -d 
 #MPD_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/musicpd
 #MPD_SVN_REPO=https://svn.musicpd.org/mpd/trunk
 #MPD_SVN_REV=5324
+ifeq (, $(filter buildroot-armv5eabi-ng buildroot-armv5eabi-ng-legacy, $(OPTWARE_TARGET)))
+# All except ARMv5
 MPD_VERSION=0.20.10
+else
+# ARMv5
+MPD_VERSION=0.19.13
+endif
 MPD_SOURCE=mpd-$(MPD_VERSION).tar.xz
 MPD_DIR=mpd-$(MPD_VERSION)
 MPD_UNZIP=xzcat
@@ -51,7 +57,13 @@ MPD_CONFLICTS=
 #
 # MPD_IPK_VERSION should be incremented when the ipk changes.
 #
+ifeq (, $(filter buildroot-armv5eabi-ng buildroot-armv5eabi-ng-legacy, $(OPTWARE_TARGET)))
+# All except ARMv5
 MPD_IPK_VERSION=1
+else
+# ARMv5
+MPD_IPK_VERSION=2
+endif
 
 #
 # MPD_CONFFILES should be a list of user-editable files
@@ -61,7 +73,13 @@ MPD_IPK_VERSION=1
 # MPD_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
+ifeq (, $(filter buildroot-armv5eabi-ng buildroot-armv5eabi-ng-legacy, $(OPTWARE_TARGET)))
+# All except ARMv5
 MPD_PATCHES=$(MPD_SOURCE_DIR)/fix_build_with_no_ioprio_set_syscall.patch
+else
+# ARMv5
+MPD_PATCHES=$(MPD_SOURCE_DIR)/0.19.13.fix_build_with_no_ioprio_set_syscall.patch
+endif
 
 #
 # If the compilation of the package requires additional
