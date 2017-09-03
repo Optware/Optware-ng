@@ -17,6 +17,7 @@
 XVID_SITE=http://downloads.xvid.org/downloads
 XVID_VERSION=1.3.2
 XVID_LIB_VER=4.3
+XVID_LIB_VER_MAJOR=4
 XVID_SOURCE=xvidcore-$(XVID_VERSION).tar.bz2
 #XVID_REPOSITORY=:pserver:anonymous@cvs.xvid.org:/xvid
 #XVID_TAG=-D 2006-12-26
@@ -33,7 +34,7 @@ XVID_CONFLICTS=
 #
 # XVID_IPK_VERSION should be incremented when the ipk changes.
 #
-XVID_IPK_VERSION=2
+XVID_IPK_VERSION=3
 
 #
 # XVID_PATCHES should list any patches, in the the order in
@@ -200,7 +201,8 @@ $(XVID_IPK): $(XVID_BUILD_DIR)/.built
 	$(MAKE) DESTDIR=$(XVID_IPK_DIR) -C $(XVID_BUILD_DIR)/build/generic install
 	rm -f $(XVID_IPK_DIR)$(TARGET_PREFIX)/lib/libxvidcore.a
 	$(STRIP_COMMAND) $(XVID_IPK_DIR)$(TARGET_PREFIX)/lib/libxvidcore.so.$(XVID_LIB_VER)
-	ln -s libxvidcore.so.$(XVID_LIB_VER) $(XVID_IPK_DIR)$(TARGET_PREFIX)/lib/libxvidcore.so
+	ln -s libxvidcore.so.$(XVID_LIB_VER) $(XVID_IPK_DIR)$(TARGET_PREFIX)/lib/libxvidcore.so.$(XVID_LIB_VER_MAJOR)
+	ln -s libxvidcore.so.$(XVID_LIB_VER_MAJOR) $(XVID_IPK_DIR)$(TARGET_PREFIX)/lib/libxvidcore.so
 	$(MAKE) $(XVID_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XVID_IPK_DIR)
 
