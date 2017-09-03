@@ -7,7 +7,7 @@ BROKEN_PACKAGES = \
 	sandbox \
 	libopensync msynctool obexftp \
 	modutils \
-	node
+	node mplayer
 
 FFMPEG_CONFIG_OPTS := --disable-armv6
 
