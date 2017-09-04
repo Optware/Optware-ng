@@ -62,7 +62,7 @@ AVAHI_CONFLICTS=
 #
 # AVAHI_IPK_VERSION should be incremented when the ipk changes.
 #
-AVAHI_IPK_VERSION=1
+AVAHI_IPK_VERSION=2
 
 #
 # AVAHI_CONFFILES should be a list of user-editable files
@@ -315,6 +315,7 @@ $(LIBAVAHI_GLIB_IPK) $(LIBAVAHI_GOBJECT_IPK) $(LIBAVAHI_COMPAT_LIBDNS_SD_IPK): $
 		$(LIBAVAHI_GLIB_IPK_DIR) $(BUILD_DIR)/libavahi-glib_*_$(TARGET_ARCH).ipk \
 		$(LIBAVAHI_GOBJECT_IPK_DIR) $(BUILD_DIR)/libavahi-gobject_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(AVAHI_BUILD_DIR) DESTDIR=$(AVAHI_IPK_DIR) install-strip
+	$(INSTALL) -d $(AVAHI_IPK_DIR)$(TARGET_PREFIX)/var/run/avahi-daemon
 	rm -rf $(AVAHI_IPK_DIR)/run
 	sed -i -e '/rlimit-nproc/s/^/#/' $(AVAHI_IPK_DIR)$(TARGET_PREFIX)/etc/avahi/avahi-daemon.conf
 	rm -f $(AVAHI_IPK_DIR)$(TARGET_PREFIX)/lib/*.la
@@ -322,8 +323,7 @@ $(LIBAVAHI_GLIB_IPK) $(LIBAVAHI_GOBJECT_IPK) $(LIBAVAHI_COMPAT_LIBDNS_SD_IPK): $
 		$(INSTALL) -d $(BUILD_DIR)/libavahi-$$lib-$(AVAHI_VERSION)-ipk$(TARGET_PREFIX)/lib; \
 		mv -f $(AVAHI_IPK_DIR)$(TARGET_PREFIX)/lib/libavahi-$${lib}.so* $(BUILD_DIR)/libavahi-$$lib-$(AVAHI_VERSION)-ipk$(TARGET_PREFIX)/lib; \
 		$(MAKE) $(BUILD_DIR)/libavahi-$$lib-$(AVAHI_VERSION)-ipk/CONTROL/control; \
-		pushd $(BUILD_DIR); $(IPKG_BUILD) $(BUILD_DIR)/libavahi-$$lib-$(AVAHI_VERSION)-ipk; \
-		popd; \
+		(cd $(BUILD_DIR); $(IPKG_BUILD) $(BUILD_DIR)/libavahi-$$lib-$(AVAHI_VERSION)-ipk); \
 		$(WHAT_TO_DO_WITH_IPK_DIR) $(BUILD_DIR)/libavahi-$$lib-$(AVAHI_VERSION)-ipk; \
 	done
 	$(INSTALL) -d $(LIBAVAHI_COMPAT_LIBDNS_SD_IPK_DIR)$(TARGET_PREFIX)/lib

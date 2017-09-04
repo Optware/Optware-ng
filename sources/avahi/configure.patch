@@ -1,6 +1,6 @@
 --- a/configure
 +++ configure
-@@ -19383,19 +19383,28 @@
+@@ -19392,19 +19392,28 @@
  fi
  
  
@@ -40,7 +40,7 @@
  
   if test "x$have_inotify" = "xyes"; then
    HAVE_INOTIFY_TRUE=
-@@ -19469,14 +19478,6 @@
+@@ -19478,14 +19487,6 @@
  INTLTOOL_REQUIRED_VERSION_AS_INT=`echo 0.35.0 | awk -F. '{ print $ 1 * 1000 + $ 2 * 100 + $ 3; }'`
  INTLTOOL_APPLIED_VERSION=`intltool-update --version | head -1 | cut -d" " -f3`
  INTLTOOL_APPLIED_VERSION_AS_INT=`echo $INTLTOOL_APPLIED_VERSION | awk -F. '{ print $ 1 * 1000 + $ 2 * 100 + $ 3; }'`
@@ -55,3 +55,12 @@
  
  # Extract the first word of "intltool-update", so it can be a program name with args.
  set dummy intltool-update; ac_word=$2
+@@ -23523,7 +23524,7 @@
+ #
+ # Avahi runtime dir
+ #
+-avahi_runtime_dir="/run"
++avahi_runtime_dir="\${prefix}/var/run"
+ avahi_socket="${avahi_runtime_dir}/avahi-daemon/socket"
+ 
+ 
