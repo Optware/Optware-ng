@@ -48,7 +48,9 @@ MPLAYER_IPK_VERSION=1
 # MPLAYER_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#MPLAYER_PATCHES=$(MPLAYER_SOURCE_DIR)/configure.patch
+ifneq (, $(filter buildroot-armv5eabi-ng-legacy, $(OPTWARE_TARGET)))
+MPLAYER_PATCHES=$(MPLAYER_SOURCE_DIR)/libvo-vo_4l2.c.patch
+endif
 
 #
 # If the compilation of the package requires additional
@@ -120,7 +122,7 @@ $(MPLAYER_BUILD_DIR)/.configured: $(DL_DIR)/$(MPLAYER_SOURCE) $(MPLAYER_PATCHES)
 	$(MPLAYER_UNZIP) $(DL_DIR)/$(MPLAYER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MPLAYER_PATCHES)" ; \
 		then cat $(MPLAYER_PATCHES) | \
-		$(PATCH) -d $(BUILD_DIR)/$(MPLAYER_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(MPLAYER_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(MPLAYER_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(MPLAYER_DIR) $(@D) ; \

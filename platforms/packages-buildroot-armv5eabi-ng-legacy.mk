@@ -23,8 +23,7 @@ BROKEN_PACKAGES = \
 	libexplain \
 	node \
 	libopenzwave py-openzwave \
-	unionfs-fuse \
-	mplayer
+	unionfs-fuse
 
 STRACE_VERSION = 4.5.20
 STRACE_IPK_VERSION = 1
