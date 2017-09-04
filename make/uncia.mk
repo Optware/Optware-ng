@@ -40,7 +40,7 @@ UNCIA_CONFLICTS=
 #
 # UNCIA_IPK_VERSION should be incremented when the ipk changes.
 #
-UNCIA_IPK_VERSION=1
+UNCIA_IPK_VERSION=2
 
 #
 # UNCIA_CONFFILES should be a list of user-editable files
@@ -199,7 +199,8 @@ $(UNCIA_IPK_DIR)/CONTROL/control:
 $(UNCIA_IPK): $(UNCIA_BUILD_DIR)/.built
 	rm -rf $(UNCIA_IPK_DIR) $(BUILD_DIR)/uncia_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(UNCIA_BUILD_DIR) DESTDIR=$(UNCIA_IPK_DIR) install
-	$(STRIP_COMMAND) $(UNCIA_IPK_DIR)$(TARGET_PREFIX)/bin/*
+	$(STRIP_COMMAND) $(UNCIA_IPK_DIR)$(TARGET_PREFIX)/bin/* \
+		$(UNCIA_IPK_DIR)$(TARGET_PREFIX)/lib/libuncia.so
 	$(MAKE) $(UNCIA_IPK_DIR)/CONTROL/control
 	echo $(UNCIA_CONFFILES) | sed -e 's/ /\n/g' > $(UNCIA_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(UNCIA_IPK_DIR)
