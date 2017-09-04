@@ -36,7 +36,7 @@ FINCH_IPK_VERSION=1
 # FINCH_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#FINCH_PATCHES=$(FINCH_SOURCE_DIR)/glib2.6-G_PARAM_STATIC.patch
+FINCH_PATCHES=$(FINCH_SOURCE_DIR)/configure.ac.patch
 
 #
 # If the compilation of the package requires additional
@@ -103,11 +103,12 @@ endif
 	$(FINCH_UNZIP) $(DL_DIR)/$(FINCH_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(FINCH_PATCHES)" ; \
 		then cat $(FINCH_PATCHES) | \
-		$(PATCH) -d $(BUILD_DIR)/$(FINCH_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(FINCH_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(FINCH_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(FINCH_DIR) $(@D) ; \
 	fi
+	$(AUTORECONF1.14) -vif $(@D)
 	sed -i.orig -e '/^SUBDIRS/s/ plugins//' $(@D)/finch/Makefile.in
 	sed -i -e 's|sys.prefix|"$(STAGING_PREFIX)"|' \
 	       -e 's|sys.exec_prefix|"$(STAGING_PREFIX)"|' \

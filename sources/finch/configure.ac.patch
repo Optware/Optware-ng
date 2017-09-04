@@ -1,0 +1,38 @@
+--- a/configure.ac
++++ b/configure.ac
+@@ -1484,21 +1484,22 @@
+ 
+ AM_CONDITIONAL(ENABLE_DBUS, test "x$enable_dbus" = "xyes")
+ 
++dnl Don't use python headers
+ dnl Check for Python headers (currently useful only for libgnt)
+ dnl (Thanks to XChat)
+-if test "x$enable_consoleui" = "xyes" -a ! -z "$PYTHON" -a x"$PYTHON" != x"no" ; then
+-	AC_MSG_CHECKING(for Python compile flags)
+-	if test -f ${PYTHON}-config; then
+-		PY_CFLAGS=`${PYTHON}-config --includes`
+-		PY_LIBS=`${PYTHON}-config --libs`
+-		AC_DEFINE(USE_PYTHON, [1], [Define if python headers are available.])
+-		AC_MSG_RESULT(ok)
+-	else
+-		AC_MSG_RESULT([Cannot find ${PYTHON}-config])
+-		PY_CFLAGS=""
+-		PY_LIBS=""
+-	fi
+-fi
++dnl if test "x$enable_consoleui" = "xyes" -a ! -z "$PYTHON" -a x"$PYTHON" != x"no" ; then
++dnl	AC_MSG_CHECKING(for Python compile flags)
++dnl	if test -f ${PYTHON}-config; then
++dnl		PY_CFLAGS=`${PYTHON}-config --includes`
++dnl		PY_LIBS=`${PYTHON}-config --libs`
++dnl		AC_DEFINE(USE_PYTHON, [1], [Define if python headers are available.])
++dnl		AC_MSG_RESULT(ok)
++dnl	else
++dnl		AC_MSG_RESULT([Cannot find ${PYTHON}-config])
++PY_CFLAGS=""
++PY_LIBS=""
++dnl	fi
++dnlfi
+ AC_SUBST(PY_CFLAGS)
+ AC_SUBST(PY_LIBS)
+ 
