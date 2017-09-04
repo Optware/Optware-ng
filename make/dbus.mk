@@ -22,22 +22,23 @@
 #
 DBUS_SITE=http://dbus.freedesktop.org/releases/dbus
 DBUS_VERSION=1.11.4
-DBUS_IPK_VERSION=4
+DBUS_IPK_VERSION=5
 DBUS_SOURCE=dbus-$(DBUS_VERSION).tar.gz
 DBUS_DIR=dbus-$(DBUS_VERSION)
 DBUS_UNZIP=zcat
 DBUS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 DBUS_DESCRIPTION=D-Bus is a message bus system, a simple way for applications to talk to one another.
+DBUS_LAUNCH_DESCRIPTION=dbus-launch command is used to start a session bus instance of dbus-daemon from a shell script. Built with X11 support
 LIBDBUS_DESCRIPTION=D-Bus client library
 DBUS_SECTION=misc
+DBUS_LAUNCH_SECTION=misc
 LIBDBUS_SECTION=libs
 DBUS_PRIORITY=optional
+DBUS_LAUNCH_PRIORITY=optional
 LIBDBUS_PRIORITY=optional
 DBUS_DEPENDS=libdbus, expat, start-stop-daemon
 LIBDBUS_DEPENDS=
-ifeq (x11, $(filter x11, $(PACKAGES)))
-DBUS_DEPENDS+=, x11, sm
-endif
+DBUS_LAUNCH_DEPENDS=dbus, x11, sm
 DBUS_SUGGESTS=
 DBUS_CONFLICTS=
 
@@ -61,12 +62,6 @@ DBUS_LDFLAGS=
 
 DBUS_CROSS_CONFIG_ENVS=ac_cv_have_abstract_sockets=yes
 
-ifeq (x11, $(filter x11, $(PACKAGES)))
-DBUS_CONFIG_ARGS=--with-x
-else
-DBUS_CONFIG_ARGS=--without-x
-endif
-
 #
 # DBUS_BUILD_DIR is the directory in which the build is done.
 # DBUS_SOURCE_DIR is the directory which holds all the
@@ -84,6 +79,9 @@ DBUS_IPK=$(BUILD_DIR)/dbus_$(DBUS_VERSION)-$(DBUS_IPK_VERSION)_$(TARGET_ARCH).ip
 
 LIBDBUS_IPK_DIR=$(BUILD_DIR)/libdbus-$(DBUS_VERSION)-ipk
 LIBDBUS_IPK=$(BUILD_DIR)/libdbus_$(DBUS_VERSION)-$(DBUS_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+DBUS_LAUNCH_IPK_DIR=$(BUILD_DIR)/dbus-launch-$(DBUS_VERSION)-ipk
+DBUS_LAUNCH_IPK=$(BUILD_DIR)/dbus-launch_$(DBUS_VERSION)-$(DBUS_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 .PHONY: dbus-source dbus-unpack dbus dbus-stage dbus-ipk dbus-clean dbus-dirclean dbus-check
 
@@ -121,10 +119,7 @@ dbus-source: $(DL_DIR)/$(DBUS_SOURCE) $(DBUS_PATCHES)
 # shown below to make various patches to it.
 #
 $(DBUS_BUILD_DIR)/.configured: $(DL_DIR)/$(DBUS_SOURCE) $(DBUS_PATCHES) make/dbus.mk
-	$(MAKE) expat-stage
-ifeq (x11, $(filter x11, $(PACKAGES)))
-	$(MAKE) x11-stage sm-stage
-endif
+	$(MAKE) expat-stage x11-stage sm-stage
 	rm -rf $(BUILD_DIR)/$(DBUS_DIR) $(DBUS_BUILD_DIR)
 	$(DBUS_UNZIP) $(DL_DIR)/$(DBUS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(DBUS_PATCHES)" ; \
@@ -152,7 +147,7 @@ endif
 		--prefix=$(TARGET_PREFIX) \
 		--enable-abstract-sockets \
 		--with-xml=expat \
-		$(DBUS_CONFIG_ARGS) \
+		--with-x \
 		--disable-doxygen-docs \
 		--disable-xml-docs \
 		--disable-nls \
@@ -227,6 +222,21 @@ $(LIBDBUS_IPK_DIR)/CONTROL/control:
 	@echo "Suggests: $(LIBDBUS_SUGGESTS)" >>$@
 	@echo "Conflicts: $(LIBDBUS_CONFLICTS)" >>$@
 
+$(DBUS_LAUNCH_IPK_DIR)/CONTROL/control:
+	@$(INSTALL) -d $(@D)
+	@rm -f $@
+	@echo "Package: dbus-launch" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(DBUS_LAUNCH_PRIORITY)" >>$@
+	@echo "Section: $(DBUS_LAUNCH_SECTION)" >>$@
+	@echo "Version: $(DBUS_VERSION)-$(DBUS_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(DBUS_MAINTAINER)" >>$@
+	@echo "Source: $(DBUS_SITE)/$(DBUS_SOURCE)" >>$@
+	@echo "Description: $(DBUS_LAUNCH_DESCRIPTION)" >>$@
+	@echo "Depends: $(DBUS_LAUNCH_DEPENDS)" >>$@
+	@echo "Suggests: $(DBUS_LAUNCH_SUGGESTS)" >>$@
+	@echo "Conflicts: $(DBUS_LAUNCH_CONFLICTS)" >>$@
+
 #
 # This builds the IPK file.
 #
@@ -239,9 +249,10 @@ $(LIBDBUS_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(DBUS_IPK) $(LIBDBUS_IPK): $(DBUS_BUILD_DIR)/.built
+$(DBUS_IPK) $(LIBDBUS_IPK) $(DBUS_LAUNCH_IPK): $(DBUS_BUILD_DIR)/.built
 	rm -rf  $(DBUS_IPK_DIR) $(BUILD_DIR)/dbus_*_$(TARGET_ARCH).ipk \
-		$(LIBDBUS_IPK_DIR) $(BUILD_DIR)/libdbus_*_$(TARGET_ARCH).ipk
+		$(LIBDBUS_IPK_DIR) $(BUILD_DIR)/libdbus_*_$(TARGET_ARCH).ipk \
+		$(DBUS_LAUNCH_IPK_DIR) $(BUILD_DIR)/dbus-launch_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(DBUS_BUILD_DIR) DESTDIR=$(DBUS_IPK_DIR) transform='' install
 	rm -f $(DBUS_IPK_DIR)$(TARGET_PREFIX)/lib/*.la
 	$(STRIP_COMMAND) \
@@ -259,6 +270,10 @@ $(DBUS_IPK) $(LIBDBUS_IPK): $(DBUS_BUILD_DIR)/.built
 	mv -f $(DBUS_IPK_DIR)$(TARGET_PREFIX)/{lib,include} $(LIBDBUS_IPK_DIR)$(TARGET_PREFIX)
 	$(MAKE) $(LIBDBUS_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBDBUS_IPK_DIR)
+	$(INSTALL) -d $(DBUS_LAUNCH_IPK_DIR)$(TARGET_PREFIX)/bin
+	mv -f $(DBUS_IPK_DIR)$(TARGET_PREFIX)/bin/dbus-launch $(DBUS_LAUNCH_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(MAKE) $(DBUS_LAUNCH_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(DBUS_LAUNCH_IPK_DIR)
 	$(MAKE) $(DBUS_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 755 $(DBUS_SOURCE_DIR)/postinst $(DBUS_IPK_DIR)/CONTROL/postinst
 	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(DBUS_IPK_DIR)/CONTROL/postinst
@@ -270,7 +285,7 @@ $(DBUS_IPK) $(LIBDBUS_IPK): $(DBUS_BUILD_DIR)/.built
 #
 # This is called from the top level makefile to create the IPK file.
 #
-dbus-ipk: $(DBUS_IPK) $(LIBDBUS_IPK)
+dbus-ipk: $(DBUS_IPK) $(LIBDBUS_IPK) $(DBUS_LAUNCH_IPK)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -291,5 +306,5 @@ dbus-dirclean:
 #
 # Some sanity check for the package.
 #
-dbus-check: $(DBUS_IPK) $(LIBDBUS_IPK)
+dbus-check: $(DBUS_IPK) $(LIBDBUS_IPK) $(DBUS_LAUNCH_IPK)
 	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
