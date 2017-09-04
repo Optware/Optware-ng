@@ -806,7 +806,7 @@ query-%:
 
 TARGET_CC_VER = $(shell test -x "$(TARGET_CC)" && $(TARGET_CC) -dumpversion)
 
-include make/*.mk
+include $(shell ls make/*.mk)
 
 .NOTPARALLEL: %/.configured %/.built %/.staged %.ipk %/.packaged
 
