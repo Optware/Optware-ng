@@ -24,7 +24,7 @@ X11_DEPENDS=xau, xdmcp, xcb
 #
 # X11_IPK_VERSION should be incremented when the ipk changes.
 #
-X11_IPK_VERSION=1
+X11_IPK_VERSION=2
 
 #
 # X11_CONFFILES should be a list of user-editable files
@@ -192,3 +192,9 @@ x11-clean:
 #
 x11-dirclean:
 	rm -rf $(BUILD_DIR)/$(X11_DIR) $(X11_BUILD_DIR) $(X11_IPK_DIR) $(X11_IPK)
+
+#
+# Some sanity check for the package.
+#
+x11-check: $(X11_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
