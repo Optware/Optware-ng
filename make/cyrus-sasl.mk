@@ -122,7 +122,7 @@ $(CYRUS-SASL_BUILD_DIR)/.configured: $(DL_DIR)/$(CYRUS-SASL_SOURCE) $(CYRUS-SASL
 		--disable-nls \
 		--disable-static \
 	)
-	$(PATCH_LIBTOOL) $(@D)/libtool
+	-$(PATCH_LIBTOOL) $(@D)/libtool
 	sed -i -e 's/#elif WITH_DES/#elif defined WITH_DES/' $(@D)/plugins/digestmd5.c
 	touch $@
 
