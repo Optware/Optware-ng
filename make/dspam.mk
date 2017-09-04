@@ -232,7 +232,7 @@ $(DSPAM_MYSQL_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(DSPAM_IPK): $(DSPAM_BUILD_DIR)/.built
+$(DSPAM_IPK) $(DSPAM_PGSQL_IPK) $(DSPAM_MYSQL_IPK): $(DSPAM_BUILD_DIR)/.built
 	rm -rf $(DSPAM_IPK_DIR) $(BUILD_DIR)/dspam_*_$(TARGET_ARCH).ipk
 	rm -rf $(DSPAM_PGSQL_IPK_DIR) $(BUILD_DIR)/dspam-pgsql_*_$(TARGET_ARCH).ipk
 	rm -rf $(DSPAM_MYSQL_IPK_DIR) $(BUILD_DIR)/dspam-mysql_*_$(TARGET_ARCH).ipk
