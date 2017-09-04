@@ -160,7 +160,7 @@ uncia: $(UNCIA_BUILD_DIR)/.built
 #
 $(UNCIA_BUILD_DIR)/.staged: $(UNCIA_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install -j1
 	touch $@
 
 uncia-stage: $(UNCIA_BUILD_DIR)/.staged
@@ -198,7 +198,7 @@ $(UNCIA_IPK_DIR)/CONTROL/control:
 #
 $(UNCIA_IPK): $(UNCIA_BUILD_DIR)/.built
 	rm -rf $(UNCIA_IPK_DIR) $(BUILD_DIR)/uncia_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(UNCIA_BUILD_DIR) DESTDIR=$(UNCIA_IPK_DIR) install
+	$(MAKE) -C $(UNCIA_BUILD_DIR) DESTDIR=$(UNCIA_IPK_DIR) install -j1
 	$(STRIP_COMMAND) $(UNCIA_IPK_DIR)$(TARGET_PREFIX)/bin/* \
 		$(UNCIA_IPK_DIR)$(TARGET_PREFIX)/lib/libuncia.so
 	$(MAKE) $(UNCIA_IPK_DIR)/CONTROL/control
