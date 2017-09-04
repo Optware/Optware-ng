@@ -125,9 +125,10 @@ $(PLAYER_BUILD_DIR)/.configured: $(DL_DIR)/$(PLAYER_SOURCE) $(PLAYER_PATCHES) ma
 	if test "$(BUILD_DIR)/$(PLAYER_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(PLAYER_DIR) $(@D) ; \
 	fi
-ifeq ($(shell test $(shell echo $(BOOST_VERSION) | cut -d '_' -f2) -ge 50; echo $$?),0)
+
+# boost 1_50_0+ fix
 	find $(@D) -type f -name '*.cc' -exec sed -i -e 's/TIME_UTC/TIME_UTC_/g' {} \;
-endif
+
 	sed -i -e '/^#include <stdio.h>/ i #include <stdlib.h>' $(@D)/server/drivers/mixed/erratic/erratic.cc
 	sed -i -e 's/gzseek(\|gzgets(/&(gzFile)/' $(@D)/server/drivers/shell/readlog.cc
 	sed -i -e '/^ *have_pkg_config=no/s/=no/=yes/' $(@D)/configure
