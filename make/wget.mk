@@ -16,7 +16,7 @@
 # You should change all these variables to suit your package.
 #
 WGET_SITE=http://ftp.gnu.org/pub/gnu/wget
-WGET_VERSION=1.16.1
+WGET_VERSION=1.19.1
 WGET_SOURCE=wget-$(WGET_VERSION).tar.gz
 WGET_DIR=wget-$(WGET_VERSION)
 WGET_UNZIP=zcat
@@ -28,6 +28,7 @@ WGET_DEPENDS=
 WGET_CONFLICTS=wget-ssl
 WGET-SSL_DEPENDS=libidn, openssl, gnutls, libnettle, e2fslibs, pcre
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+WGET_DEPENDS=libiconv
 WGET-SSL_DEPENDS+=, libiconv
 endif
 WGET-SSL_CONFLICTS=wget
@@ -35,7 +36,7 @@ WGET-SSL_CONFLICTS=wget
 #
 # WGET_IPK_VERSION should be incremented when the ipk changes.
 #
-WGET_IPK_VERSION=2
+WGET_IPK_VERSION=1
 
 #
 # WGET_CONFFILES should be a list of user-editable files
@@ -57,9 +58,12 @@ WGET_LDFLAGS=
 WGET-SSL_CPPFLAGS=
 WGET-SSL_LDFLAGS=
 
+WGET_CONFIGURE_ARGS=
 WGET-SSL_CONFIGURE_ARGS=
 
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+WGET_CONFIGURE_ARGS+= --with-libiconv-prefix=$(STAGING_PREFIX)
+WGET_LDFLAGS+= -liconv
 WGET-SSL_CONFIGURE_ARGS+= --with-libiconv-prefix=$(STAGING_PREFIX)
 WGET-SSL_LDFLAGS+= -liconv
 endif
@@ -124,6 +128,9 @@ wget-ssl-source: $(DL_DIR)/$(WGET_SOURCE) $(WGET_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(WGET_BUILD_DIR)/.configured: $(DL_DIR)/$(WGET_SOURCE) $(WGET_PATCHES) make/wget.mk
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+	$(MAKE) libiconv-stage
+endif
 	rm -rf $(BUILD_DIR)/$(WGET_DIR) $(@D)
 	$(WGET_UNZIP) $(DL_DIR)/$(WGET_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(WGET_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(WGET_DIR) -p1
@@ -149,6 +156,7 @@ endif
 		--disable-pcre \
 		--disable-ntlm \
 		--disable-iri \
+		$(WGET_CONFIGURE_ARGS) \
 		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 	)
@@ -281,6 +289,7 @@ $(WGET-SSL_IPK): $(WGET-SSL_BUILD_DIR)/.built
 	$(INSTALL) -m 644 $(WGET-SSL_BUILD_DIR)/doc/wget.1 $(WGET-SSL_IPK_DIR)$(TARGET_PREFIX)/man/man1
 	$(INSTALL) -d $(WGET-SSL_IPK_DIR)$(TARGET_PREFIX)/etc/
 	$(INSTALL) -m 755 $(WGET-SSL_BUILD_DIR)/doc/sample.wgetrc $(WGET-SSL_IPK_DIR)$(TARGET_PREFIX)/etc/wgetrc
+	echo -e '\nca_directory = $(TARGET_PREFIX)/etc/ssl/certs' >> $(WGET-SSL_IPK_DIR)$(TARGET_PREFIX)/etc/wgetrc
 	$(MAKE) $(WGET-SSL_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 644 $(WGET-SSL_SOURCE_DIR)/postinst $(WGET-SSL_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 644 $(WGET-SSL_SOURCE_DIR)/prerm $(WGET-SSL_IPK_DIR)/CONTROL/prerm
