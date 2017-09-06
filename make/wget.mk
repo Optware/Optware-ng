@@ -36,7 +36,7 @@ WGET-SSL_CONFLICTS=wget
 #
 # WGET_IPK_VERSION should be incremented when the ipk changes.
 #
-WGET_IPK_VERSION=1
+WGET_IPK_VERSION=2
 
 #
 # WGET_CONFFILES should be a list of user-editable files
@@ -46,7 +46,7 @@ WGET_CONFFILES=$(TARGET_PREFIX)/etc/wgetrc
 # WGET_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-WGET_PATCHES=
+WGET_PATCHES=$(WGET_SOURCE_DIR)/optware-ca_diretory.patch
 
 #
 # If the compilation of the package requires additional
@@ -133,7 +133,10 @@ ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 endif
 	rm -rf $(BUILD_DIR)/$(WGET_DIR) $(@D)
 	$(WGET_UNZIP) $(DL_DIR)/$(WGET_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(WGET_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(WGET_DIR) -p1
+	if test -n "$(WGET_PATCHES)" ; \
+		then cat $(WGET_PATCHES) | \
+		$(PATCH) -d $(BUILD_DIR)/$(WGET_DIR) -p1 ; \
+	fi
 	mv $(BUILD_DIR)/$(WGET_DIR) $(@D)
 ifeq ($(OPTWARE_TARGET), $(filter ts101 vt4, $(OPTWARE_TARGET)))
 	sed -i -e '/_POSIX_TIMERS/s|#elif .*|#elif 0|' $(@D)/src/ptimer.c
@@ -170,7 +173,10 @@ ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 endif
 	rm -rf $(BUILD_DIR)/$(WGET_DIR) $(@D)
 	$(WGET_UNZIP) $(DL_DIR)/$(WGET_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(WGET_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(WGET_DIR) -p1
+	if test -n "$(WGET_PATCHES)" ; \
+		then cat $(WGET_PATCHES) | \
+		$(PATCH) -d $(BUILD_DIR)/$(WGET_DIR) -p1 ; \
+	fi
 	mv $(BUILD_DIR)/$(WGET_DIR) $(@D)
 ifeq ($(OPTWARE_TARGET), $(filter ts101 vt4, $(OPTWARE_TARGET)))
 	sed -i -e '/_POSIX_TIMERS/s|#elif .*|#elif 0|' $(@D)/src/ptimer.c
@@ -289,7 +295,6 @@ $(WGET-SSL_IPK): $(WGET-SSL_BUILD_DIR)/.built
 	$(INSTALL) -m 644 $(WGET-SSL_BUILD_DIR)/doc/wget.1 $(WGET-SSL_IPK_DIR)$(TARGET_PREFIX)/man/man1
 	$(INSTALL) -d $(WGET-SSL_IPK_DIR)$(TARGET_PREFIX)/etc/
 	$(INSTALL) -m 755 $(WGET-SSL_BUILD_DIR)/doc/sample.wgetrc $(WGET-SSL_IPK_DIR)$(TARGET_PREFIX)/etc/wgetrc
-	echo -e '\nca_directory = $(TARGET_PREFIX)/etc/ssl/certs' >> $(WGET-SSL_IPK_DIR)$(TARGET_PREFIX)/etc/wgetrc
 	$(MAKE) $(WGET-SSL_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 644 $(WGET-SSL_SOURCE_DIR)/postinst $(WGET-SSL_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 644 $(WGET-SSL_SOURCE_DIR)/prerm $(WGET-SSL_IPK_DIR)/CONTROL/prerm

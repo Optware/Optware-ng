@@ -1,0 +1,11 @@
+--- a/src/gnutls.c
++++ b/src/gnutls.c
+@@ -108,7 +108,7 @@
+    * Also use old behaviour if the CA directory is user-provided.  */
+   if (ncerts <= 0)
+     {
+-      ca_directory = opt.ca_directory ? opt.ca_directory : "/etc/ssl/certs";
++      ca_directory = opt.ca_directory ? opt.ca_directory : "%OPTWARE_TARGET_PREFIX%/etc/ssl/certs";
+       if ((dir = opendir (ca_directory)) == NULL)
+         {
+           if (opt.ca_directory && *opt.ca_directory)
