@@ -14,7 +14,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 APACHE_SITE=http://archive.apache.org/dist/httpd
-APACHE_VERSION=2.4.18
+APACHE_VERSION=2.4.27
 APACHE_SOURCE=httpd-$(APACHE_VERSION).tar.bz2
 APACHE_DIR=httpd-$(APACHE_VERSION)
 APACHE_UNZIP=bzcat
@@ -31,7 +31,7 @@ APACHE_MPM=worker
 #
 # APACHE_IPK_VERSION should be incremented when the ipk changes.
 #
-APACHE_IPK_VERSION=2
+APACHE_IPK_VERSION=1
 
 #
 # APACHE_CONFFILES should be a list of user-editable files
@@ -257,18 +257,9 @@ $(APACHE_IPK) $(APACHE_MANUAL_IPK): $(APACHE_BUILD_DIR)/.built
 	$(MAKE) -C $(APACHE_BUILD_DIR) DESTDIR=$(APACHE_IPK_DIR) installbuilddir=$(TARGET_PREFIX)/share/apache2/build install
 	rm -rf $(APACHE_IPK_DIR)$(TARGET_PREFIX)/share/apache2/manual
 	mv -f $(APACHE_IPK_DIR)$(TARGET_PREFIX)/bin/* $(APACHE_IPK_DIR)$(TARGET_PREFIX)/sbin/
-#	$(TARGET_STRIP) $(APACHE_IPK_DIR)$(TARGET_PREFIX)/libexec/*.so
-#	$(TARGET_STRIP) $(APACHE_IPK_DIR)$(TARGET_PREFIX)/sbin/ab
-#	$(TARGET_STRIP) $(APACHE_IPK_DIR)$(TARGET_PREFIX)/sbin/checkgid
-#	$(TARGET_STRIP) $(APACHE_IPK_DIR)$(TARGET_PREFIX)/sbin/htcacheclean
-#	$(TARGET_STRIP) $(APACHE_IPK_DIR)$(TARGET_PREFIX)/sbin/htdbm
-#	$(TARGET_STRIP) $(APACHE_IPK_DIR)$(TARGET_PREFIX)/sbin/htdigest
-#	$(TARGET_STRIP) $(APACHE_IPK_DIR)$(TARGET_PREFIX)/sbin/htpasswd
-#	$(TARGET_STRIP) $(APACHE_IPK_DIR)$(TARGET_PREFIX)/sbin/httxt2dbm
-#	$(TARGET_STRIP) $(APACHE_IPK_DIR)$(TARGET_PREFIX)/sbin/httpd
-#	$(TARGET_STRIP) $(APACHE_IPK_DIR)$(TARGET_PREFIX)/sbin/logresolve
-#	$(TARGET_STRIP) $(APACHE_IPK_DIR)$(TARGET_PREFIX)/sbin/rotatelogs
-#	$(TARGET_STRIP) $(APACHE_IPK_DIR)$(TARGET_PREFIX)/sbin/fcgistarter
+	cd $(APACHE_IPK_DIR)$(TARGET_PREFIX)/sbin/; $(STRIP_COMMAND) ab htpasswd httpd checkgid \
+			fcgistarter htcacheclean htdbm htdigest httxt2dbm logresolve rotatelogs
+	$(STRIP_COMMAND) $(APACHE_IPK_DIR)$(TARGET_PREFIX)/libexec/*.so
 	mv $(APACHE_IPK_DIR)$(TARGET_PREFIX)/sbin/httpd $(APACHE_IPK_DIR)$(TARGET_PREFIX)/sbin/apache-httpd
 	mv $(APACHE_IPK_DIR)$(TARGET_PREFIX)/sbin/htpasswd $(APACHE_IPK_DIR)$(TARGET_PREFIX)/sbin/apache-htpasswd
 	rm -f $(APACHE_IPK_DIR)$(TARGET_PREFIX)/man/man1/htpasswd.1
