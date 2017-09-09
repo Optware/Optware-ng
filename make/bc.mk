@@ -185,7 +185,7 @@ $(BC_IPK_DIR)/CONTROL/control:
 $(BC_IPK): $(BC_BUILD_DIR)/.built
 	rm -rf $(BC_IPK_DIR) $(BUILD_DIR)/bc_*_$(TARGET_ARCH).ipk
 	umask 0022; $(MAKE) -C $(BC_BUILD_DIR) DESTDIR=$(BC_IPK_DIR) install -j1
-	rm -f $(BC_IPK_DIR)$(TARGET_PREFIX)/info/dir
+	rm -f $(BC_IPK_DIR)$(TARGET_PREFIX)/share/info/dir
 	$(STRIP_COMMAND) $(BC_IPK_DIR)$(TARGET_PREFIX)/bin/[bd]c
 	$(MAKE) $(BC_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BC_IPK_DIR)
