@@ -42,7 +42,7 @@ LIBGPG-ERROR_CONFLICTS=
 #
 # LIBGPG-ERROR_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBGPG-ERROR_IPK_VERSION?=1
+LIBGPG-ERROR_IPK_VERSION?=2
 
 #
 # LIBGPG-ERROR_CONFFILES should be a list of user-editable files
@@ -204,6 +204,7 @@ $(LIBGPG-ERROR_IPK_DIR)/CONTROL/control:
 $(LIBGPG-ERROR_IPK): $(LIBGPG-ERROR_BUILD_DIR)/.built
 	rm -rf $(LIBGPG-ERROR_IPK_DIR) $(BUILD_DIR)/libgpg-error_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBGPG-ERROR_BUILD_DIR) DESTDIR=$(LIBGPG-ERROR_IPK_DIR) install-strip
+	rm -f $(LIBPG-ERROR_IPK_DIR)$(TARGET_PREFIX)/share/info/dir
 	#$(INSTALL) -d $(LIBGPG-ERROR_IPK_DIR)$(TARGET_PREFIX)/etc/
 	#$(INSTALL) -m 644 $(LIBGPG-ERROR_SOURCE_DIR)/libgpg-error.conf $(LIBGPG-ERROR_IPK_DIR)$(TARGET_PREFIX)/etc/libgpg-error.conf
 	#$(INSTALL) -d $(LIBGPG-ERROR_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
