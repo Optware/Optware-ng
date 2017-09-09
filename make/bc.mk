@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 BC_SITE=http://ftp.gnu.org/gnu/bc
-BC_VERSION=1.06
+BC_VERSION=1.07.1
 BC_SOURCE=bc-$(BC_VERSION).tar.gz
 BC_DIR=bc-$(BC_VERSION)
 BC_UNZIP=zcat
@@ -40,7 +40,7 @@ BC_DEPENDS=
 #
 # BC_IPK_VERSION should be incremented when the ipk changes.
 #
-BC_IPK_VERSION=2
+BC_IPK_VERSION=1
 
 #
 # BC_CONFFILES should be a list of user-editable files
@@ -50,7 +50,9 @@ BC_IPK_VERSION=2
 # BC_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#BC_PATCHES=$(BC_SOURCE_DIR)/configure.patch
+BC_PATCHES=\
+$(BC_SOURCE_DIR)/libmath_h.patch \
+$(BC_SOURCE_DIR)/skip_libmath_h_gen.patch
 
 #
 # If the compilation of the package requires additional
@@ -102,14 +104,18 @@ bc-source: $(DL_DIR)/$(BC_SOURCE) $(BC_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(BC_BUILD_DIR)/.configured: $(DL_DIR)/$(BC_SOURCE) $(BC_PATCHES)
+$(BC_BUILD_DIR)/.configured: $(DL_DIR)/$(BC_SOURCE) $(BC_PATCHES) make/bc.mk
 	#$(MAKE) <bar>-stage <baz>-stage
-	rm -rf $(BUILD_DIR)/$(BC_DIR) $(BC_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(BC_DIR) $(@D)
 	$(BC_UNZIP) $(DL_DIR)/$(BC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	#cat $(BC_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(BC_DIR) -p1
-	mv $(BUILD_DIR)/$(BC_DIR) $(BC_BUILD_DIR)
-	(cd $(BC_BUILD_DIR); \
-		sed -i -e 's/program.*save/static &/' bc/load.c; \
+	if test -n "$(BC_PATCHES)" ; \
+		then cat $(BC_PATCHES) | \
+		$(PATCH) -d $(BUILD_DIR)/$(BC_DIR) -p1 ; \
+	fi
+	if test "$(BUILD_DIR)/$(BC_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(BC_DIR) $(@D) ; \
+	fi
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(BC_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(BC_LDFLAGS)" \
@@ -120,7 +126,7 @@ $(BC_BUILD_DIR)/.configured: $(DL_DIR)/$(BC_SOURCE) $(BC_PATCHES)
 		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 	)
-	touch $(BC_BUILD_DIR)/.configured
+	touch $@
 
 bc-unpack: $(BC_BUILD_DIR)/.configured
 
@@ -128,9 +134,9 @@ bc-unpack: $(BC_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(BC_BUILD_DIR)/.built: $(BC_BUILD_DIR)/.configured
-	rm -f $(BC_BUILD_DIR)/.built
-	$(MAKE) -C $(BC_BUILD_DIR)
-	touch $(BC_BUILD_DIR)/.built
+	rm -f $@
+	$(MAKE) -C $(@D) -j1
+	touch $@
 
 #
 # This is the build convenience target.
@@ -141,9 +147,9 @@ bc: $(BC_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(BC_BUILD_DIR)/.staged: $(BC_BUILD_DIR)/.built
-	rm -f $(BC_BUILD_DIR)/.staged
-	$(MAKE) -C $(BC_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(BC_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install -j1
+	touch $@
 
 bc-stage: $(BC_BUILD_DIR)/.staged
 
@@ -178,8 +184,9 @@ $(BC_IPK_DIR)/CONTROL/control:
 #
 $(BC_IPK): $(BC_BUILD_DIR)/.built
 	rm -rf $(BC_IPK_DIR) $(BUILD_DIR)/bc_*_$(TARGET_ARCH).ipk
-	umask 0022; $(MAKE) -C $(BC_BUILD_DIR) DESTDIR=$(BC_IPK_DIR) install
+	umask 0022; $(MAKE) -C $(BC_BUILD_DIR) DESTDIR=$(BC_IPK_DIR) install -j1
 	rm -f $(BC_IPK_DIR)$(TARGET_PREFIX)/info/dir
+	$(STRIP_COMMAND) $(BC_IPK_DIR)$(TARGET_PREFIX)/bin/[bd]c
 	$(MAKE) $(BC_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BC_IPK_DIR)
 
@@ -200,3 +207,9 @@ bc-clean:
 #
 bc-dirclean:
 	rm -rf $(BUILD_DIR)/$(BC_DIR) $(BC_BUILD_DIR) $(BC_IPK_DIR) $(BC_IPK)
+
+#
+# Some sanity check for the package.
+#
+bc-check: $(BC_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^

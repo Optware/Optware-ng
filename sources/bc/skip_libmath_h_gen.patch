@@ -1,0 +1,23 @@
+--- a/bc/Makefile.in
++++ b/bc/Makefile.in
+@@ -624,13 +624,13 @@
+ scan.o: bc.h
+ global.o: libmath.h
+ 
+-libmath.h: libmath.b $(fbcOBJ) $(LIBBC)
+-	echo '{0}' > libmath.h
+-	$(MAKE) global.o
+-	$(LINK) -o fbc $(fbcOBJ) global.o $(LIBBC) $(LIBL) $(READLINELIB) $(LIBS)
+-	./fbc -c $(srcdir)/libmath.b </dev/null >libmath.h
+-	$(srcdir)/fix-libmath_h
+-	rm -f ./fbc ./global.o
++#libmath.h: libmath.b $(fbcOBJ) $(LIBBC)
++#	echo '{0}' > libmath.h
++#	$(MAKE) global.o
++#	$(LINK) -o fbc $(fbcOBJ) global.o $(LIBBC) $(LIBL) $(READLINELIB) $(LIBS)
++#	./fbc -c $(srcdir)/libmath.b </dev/null >libmath.h
++#	$(srcdir)/fix-libmath_h
++#	rm -f ./fbc ./global.o
+ sbc.o: sbc.c
+ sbc: $(sbcOBJ) $(LIBBC)
+ 	$(LINK) $(sbcOBJ) $(LIBBC) $(LIBL) $(READLINELIB) $(LIBS)
