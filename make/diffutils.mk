@@ -20,10 +20,10 @@
 # You should change all these variables to suit your package.
 #
 DIFFUTILS_SITE=http://ftp.gnu.org/pub/gnu/diffutils
-DIFFUTILS_VERSION=3.1
-DIFFUTILS_SOURCE=diffutils-$(DIFFUTILS_VERSION).tar.gz
+DIFFUTILS_VERSION=3.6
+DIFFUTILS_SOURCE=diffutils-$(DIFFUTILS_VERSION).tar.xz
 DIFFUTILS_DIR=diffutils-$(DIFFUTILS_VERSION)
-DIFFUTILS_UNZIP=zcat
+DIFFUTILS_UNZIP=xzcat
 DIFFUTILS_MAINTAINER=Jeremy Eglen <jieglen@sbcglobal.net>
 DIFFUTILS_DESCRIPTION=contains gnu diff, cmp, sdiff and diff3 to display differences between and among text files
 DIFFUTILS_SECTION=util
@@ -91,7 +91,6 @@ $(DIFFUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(DIFFUTILS_SOURCE) $(DIFFUTILS_PA
 	rm -rf $(BUILD_DIR)/$(DIFFUTILS_DIR) $(@D)
 	$(DIFFUTILS_UNZIP) $(DL_DIR)/$(DIFFUTILS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(DIFFUTILS_DIR) $(@D)
-	sed -i.orig -e '/gets is a security hole - use fgets instead/s|^|//|' $(@D)/lib/stdio.in.h
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(DIFFUTILS_CPPFLAGS)" \
@@ -102,6 +101,7 @@ $(DIFFUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(DIFFUTILS_SOURCE) $(DIFFUTILS_PA
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
+		--disable-rpath \
 	)
 	touch $@
 
