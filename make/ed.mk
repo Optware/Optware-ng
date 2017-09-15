@@ -20,10 +20,10 @@
 # You should change all these variables to suit your package.
 #
 ED_SITE=http://ftp.gnu.org/gnu/ed
-ED_VERSION=1.5
-ED_SOURCE=ed-$(ED_VERSION).tar.gz
+ED_VERSION=1.14.2
+ED_SOURCE=ed-$(ED_VERSION).tar.lz
 ED_DIR=ed-$(ED_VERSION)
-ED_UNZIP=zcat
+ED_UNZIP=lzip -d -c -k
 ED_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 ED_DESCRIPTION=Line editor
 ED_SECTION=util
