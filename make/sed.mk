@@ -15,10 +15,10 @@
 # You should change all these variables to suit your package.
 #
 SED_SITE=http://ftp.gnu.org/gnu/sed
-SED_VERSION=4.2.2
-SED_SOURCE=sed-$(SED_VERSION).tar.gz
+SED_VERSION=4.4
+SED_SOURCE=sed-$(SED_VERSION).tar.xz
 SED_DIR=sed-$(SED_VERSION)
-SED_UNZIP=zcat
+SED_UNZIP=xzcat
 SED_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SED_DESCRIPTION=Stream editor.
 SED_SECTION=util
@@ -187,6 +187,7 @@ $(SED_IPK): $(SED_BUILD_DIR)/.built
 			$(SED_IPK_DIR)/CONTROL/postinst $(SED_IPK_DIR)/CONTROL/prerm; \
 	fi
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SED_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(SED_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
