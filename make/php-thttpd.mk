@@ -118,6 +118,7 @@ $(PHP_THTTPD_LIBPHP_BUILD_DIR)/.configured: $(PHP_HOST_CLI) $(DL_DIR)/$(PHP_THTT
 	$(MAKE) php-source bzip2-stage gdbm-stage libcurl-stage libdb-stage libgd-stage libxml2-stage \
 		libxslt-stage openssl-stage mysql-stage postgresql-stage freetds-stage \
 		unixodbc-stage imap-stage libpng-stage libjpeg-stage libzip-stage icu-stage \
+		libpam-stage net-snmp-stage \
 		libgmp-stage sqlite-stage libmcrypt-stage libtool-stage libtool-host-stage
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
