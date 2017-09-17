@@ -47,7 +47,7 @@ PHP_THTTPD_LIBPHP_UNZIP=$(PHP_UNZIP)
 #
 # PHP_THTTPD_IPK_VERSION should be incremented when the ipk changes.
 #
-PHP_THTTPD_IPK_VERSION=1
+PHP_THTTPD_IPK_VERSION=2
 
 #
 # PHP_THTTPD_CONFFILES should be a list of user-editable files
@@ -219,6 +219,7 @@ endif
 		--with-mssql=shared,$(STAGING_PREFIX) \
 		--with-unixODBC=shared,$(STAGING_PREFIX) \
 		--with-openssl=shared,$(STAGING_PREFIX) \
+		--with-snmp=shared,$(STAGING_PREFIX) \
 		--with-sqlite=shared,$(STAGING_PREFIX) \
 		--with-pdo-mysql=shared,$(STAGING_PREFIX) \
 		--with-pdo-pgsql=shared,$(STAGING_PREFIX) \
