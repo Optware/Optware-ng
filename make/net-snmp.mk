@@ -174,6 +174,10 @@ net-snmp-unpack: $(NET_SNMP_BUILD_DIR)/.configured
 $(NET_SNMP_BUILD_DIR)/.built: $(NET_SNMP_BUILD_DIR)/.configured
 	rm -f $@
 	$(MAKE) -C $(@D)
+	# missing some built libs workaround
+	rm -f $(@D)/agent/*.la
+	$(MAKE) -C $(@D)/agent
+	$(MAKE) -C $(@D)/apps
 	touch $@
 
 #
