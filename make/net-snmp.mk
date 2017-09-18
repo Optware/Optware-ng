@@ -13,16 +13,26 @@ NET_SNMP_DIR=net-snmp-$(NET_SNMP_VERSION)
 NET_SNMP_UNZIP=zcat
 NET_SNMP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 NET_SNMP_DESCRIPTION=net-SNMP is a suite of applications used to implement SNMP v1, SNMP v2c and SNMP v3 using both IPv4 and IPv6
+LIBNETSNMP_DESCRIPTION=SNMP main library
+LIBNETSNMPAGENT_DESCRIPTION=SNMP agent library
+LIBNETSNMPHELPERS_DESCRIPTION=SNMP helpers library
+LIBNETSNMPMIBS_DESCRIPTION=SNMP MIBs library
+LIBNETSNMPTRAPD_DESCRIPTION=SNMP trapd library
 NET_SNMP_SECTION=net
 NET_SNMP_PRIORITY=optional
-NET_SNMP_DEPENDS=openssl, libnl
+NET_SNMP_DEPENDS=libnetsnmp, libnetsnmpagent, libnetsnmphelpers, libnetsnmpmibs, libnetsnmptrapd, openssl, libnl
+LIBNETSNMP_DEPENDS=openssl
+LIBNETSNMPAGENT_DEPENDS=libnetsnmp, libnl
+LIBNETSNMPHELPERS_DEPENDS=
+LIBNETSNMPMIBS_DEPENDS=libnetsnmpagent
+LIBNETSNMPTRAPD_DEPENDS=libnetsnmpmibs
 NET_SNMP_SUGGESTS=
 NET_SNMP_CONFLICTS=
 
 #
 # NET_SNMP_IPK_VERSION should be incremented when the ipk changes.
 #
-NET_SNMP_IPK_VERSION=4
+NET_SNMP_IPK_VERSION=5
 
 #
 # NET_SNMP_CONFFILES should be a list of user-editable files
@@ -57,8 +67,37 @@ endif
 #
 NET_SNMP_BUILD_DIR=$(BUILD_DIR)/net-snmp
 NET_SNMP_SOURCE_DIR=$(SOURCE_DIR)/net-snmp
+
 NET_SNMP_IPK_DIR=$(BUILD_DIR)/net-snmp-$(NET_SNMP_VERSION)-ipk
 NET_SNMP_IPK=$(BUILD_DIR)/net-snmp_$(NET_SNMP_VERSION)-$(NET_SNMP_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+LIBNETSNMP_IPK_DIR=$(BUILD_DIR)/libnetsnmp-$(NET_SNMP_VERSION)-ipk
+LIBNETSNMP_IPK=$(BUILD_DIR)/libnetsnmp_$(NET_SNMP_VERSION)-$(NET_SNMP_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+LIBNETSNMPAGENT_IPK_DIR=$(BUILD_DIR)/libnetsnmpagent-$(NET_SNMP_VERSION)-ipk
+LIBNETSNMPAGENT_IPK=$(BUILD_DIR)/libnetsnmpagent_$(NET_SNMP_VERSION)-$(NET_SNMP_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+LIBNETSNMPHELPERS_IPK_DIR=$(BUILD_DIR)/libnetsnmphelpers-$(NET_SNMP_VERSION)-ipk
+LIBNETSNMPHELPERS_IPK=$(BUILD_DIR)/libnetsnmphelpers_$(NET_SNMP_VERSION)-$(NET_SNMP_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+LIBNETSNMPMIBS_IPK_DIR=$(BUILD_DIR)/libnetsnmpmibs-$(NET_SNMP_VERSION)-ipk
+LIBNETSNMPMIBS_IPK=$(BUILD_DIR)/libnetsnmpmibs_$(NET_SNMP_VERSION)-$(NET_SNMP_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+LIBNETSNMPTRAPD_IPK_DIR=$(BUILD_DIR)/libnetsnmptrapd-$(NET_SNMP_VERSION)-ipk
+LIBNETSNMPTRAPD_IPK=$(BUILD_DIR)/libnetsnmptrapd_$(NET_SNMP_VERSION)-$(NET_SNMP_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+NET_SNMP_IPKS=$(NET_SNMP_IPK) $(LIBNETSNMP_IPK) $(LIBNETSNMPAGENT_IPK) \
+		$(LIBNETSNMPHELPERS_IPK) $(LIBNETSNMPMIBS_IPK) $(LIBNETSNMPTRAPD_IPK)
+
+NET_SNMP_IPK_DIRS=$(NET_SNMP_IPK_DIR) $(LIBNETSNMP_IPK_DIR) $(LIBNETSNMPAGENT_IPK_DIR) \
+	$(LIBNETSNMPHELPERS_IPK_DIR) $(LIBNETSNMPMIBS_IPK_DIR) $(LIBNETSNMPTRAPD_IPK_DIR)
+
+NET_SNMP_IPKS_WILDCARD=$(BUILD_DIR)/net-snmp_*_$(TARGET_ARCH).ipk \
+			$(BUILD_DIR)/libnetsnmp_*_$(TARGET_ARCH).ipk \
+			$(BUILD_DIR)/libnetsnmpagent_*_$(TARGET_ARCH).ipk \
+			$(BUILD_DIR)/libnetsnmphelpers_*_$(TARGET_ARCH).ipk \
+			$(BUILD_DIR)/libnetsnmpmibs_*_$(TARGET_ARCH).ipk \
+			$(BUILD_DIR)/libnetsnmptrapd_*_$(TARGET_ARCH).ipk
 
 .PHONY: net-snmp-source net-snmp-unpack net-snmp net-snmp-stage net-snmp-ipk net-snmp-clean net-snmp-dirclean net-snmp-check
 
@@ -125,11 +164,6 @@ $(NET_SNMP_BUILD_DIR)/.configured: $(DL_DIR)/$(NET_SNMP_SOURCE) $(NET_SNMP_PATCH
 		--with-logfile=$(TARGET_PREFIX)/var/log/snmpd.log \
 		--with-persistent-directory=$(TARGET_PREFIX)/var/net-snmp \
 	)
-ifeq ($(OPTWARE_TARGET), $(filter syno-x07, $(OPTWARE_TARGET)))
-	sed -i -e 's/#if HAVE_NETINET_IF_ETHER_H/#if 0/' \
-		$(@D)/agent/mibgroup/mibII/at.c \
-		$(@D)/agent/mibgroup/mibII/interfaces.c
-endif
 	touch $@
 
 net-snmp-unpack: $(NET_SNMP_BUILD_DIR)/.configured
@@ -176,6 +210,81 @@ $(NET_SNMP_IPK_DIR)/CONTROL/control:
 	@echo "Suggests: $(NET_SNMP_SUGGESTS)" >>$@
 	@echo "Conflicts: $(NET_SNMP_CONFLICTS)" >>$@
 
+$(LIBNETSNMP_IPK_DIR)/CONTROL/control:
+	@$(INSTALL) -d $(@D)
+	@rm -f $@
+	@echo "Package: libnetsnmp" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(NET_SNMP_PRIORITY)" >>$@
+	@echo "Section: lib" >>$@
+	@echo "Version: $(NET_SNMP_VERSION)-$(NET_SNMP_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(NET_SNMP_MAINTAINER)" >>$@
+	@echo "Source: $(NET_SNMP_SITE)/$(NET_SNMP_SOURCE)" >>$@
+	@echo "Description: $(LIBNETSNMP_DESCRIPTION)" >>$@
+	@echo "Depends: $(LIBNETSNMP_DEPENDS)" >>$@
+	@echo "Suggests: $(LIBNETSNMP_SUGGESTS)" >>$@
+	@echo "Conflicts: $(LIBNETSNMP_CONFLICTS)" >>$@
+
+$(LIBNETSNMPAGENT_IPK_DIR)/CONTROL/control:
+	@$(INSTALL) -d $(@D)
+	@rm -f $@
+	@echo "Package: libnetsnmpagent" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(NET_SNMP_PRIORITY)" >>$@
+	@echo "Section: lib" >>$@
+	@echo "Version: $(NET_SNMP_VERSION)-$(NET_SNMP_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(NET_SNMP_MAINTAINER)" >>$@
+	@echo "Source: $(NET_SNMP_SITE)/$(NET_SNMP_SOURCE)" >>$@
+	@echo "Description: $(LIBNETSNMPAGENT_DESCRIPTION)" >>$@
+	@echo "Depends: $(LIBNETSNMPAGENT_DEPENDS)" >>$@
+	@echo "Suggests: $(LIBNETSNMPAGENT_SUGGESTS)" >>$@
+	@echo "Conflicts: $(LIBNETSNMPAGENT_CONFLICTS)" >>$@
+
+$(LIBNETSNMPHELPERS_IPK_DIR)/CONTROL/control:
+	@$(INSTALL) -d $(@D)
+	@rm -f $@
+	@echo "Package: libnetsnmphelpers" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(NET_SNMP_PRIORITY)" >>$@
+	@echo "Section: lib" >>$@
+	@echo "Version: $(NET_SNMP_VERSION)-$(NET_SNMP_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(NET_SNMP_MAINTAINER)" >>$@
+	@echo "Source: $(NET_SNMP_SITE)/$(NET_SNMP_SOURCE)" >>$@
+	@echo "Description: $(LIBNETSNMPHELPERS_DESCRIPTION)" >>$@
+	@echo "Depends: $(LIBNETSNMPHELPERS_DEPENDS)" >>$@
+	@echo "Suggests: $(LIBNETSNMPHELPERS_SUGGESTS)" >>$@
+	@echo "Conflicts: $(LIBNETSNMPHELPERS_CONFLICTS)" >>$@
+
+$(LIBNETSNMPMIBS_IPK_DIR)/CONTROL/control:
+	@$(INSTALL) -d $(@D)
+	@rm -f $@
+	@echo "Package: libnetsnmpmibs" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(NET_SNMP_PRIORITY)" >>$@
+	@echo "Section: lib" >>$@
+	@echo "Version: $(NET_SNMP_VERSION)-$(NET_SNMP_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(NET_SNMP_MAINTAINER)" >>$@
+	@echo "Source: $(NET_SNMP_SITE)/$(NET_SNMP_SOURCE)" >>$@
+	@echo "Description: $(LIBNETSNMPMIBS_DESCRIPTION)" >>$@
+	@echo "Depends: $(LIBNETSNMPMIBS_DEPENDS)" >>$@
+	@echo "Suggests: $(LIBNETSNMPMIBS_SUGGESTS)" >>$@
+	@echo "Conflicts: $(LIBNETSNMPMIBS_CONFLICTS)" >>$@
+
+$(LIBNETSNMPTRAPD_IPK_DIR)/CONTROL/control:
+	@$(INSTALL) -d $(@D)
+	@rm -f $@
+	@echo "Package: libnetsnmptrapd" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(NET_SNMP_PRIORITY)" >>$@
+	@echo "Section: lib" >>$@
+	@echo "Version: $(NET_SNMP_VERSION)-$(NET_SNMP_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(NET_SNMP_MAINTAINER)" >>$@
+	@echo "Source: $(NET_SNMP_SITE)/$(NET_SNMP_SOURCE)" >>$@
+	@echo "Description: $(LIBNETSNMPTRAPD_DESCRIPTION)" >>$@
+	@echo "Depends: $(LIBNETSNMPTRAPD_DEPENDS)" >>$@
+	@echo "Suggests: $(LIBNETSNMPTRAPD_SUGGESTS)" >>$@
+	@echo "Conflicts: $(LIBNETSNMPTRAPD_CONFLICTS)" >>$@
+
 #
 # This builds the IPK file.
 #
@@ -188,8 +297,8 @@ $(NET_SNMP_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(NET_SNMP_IPK): $(NET_SNMP_BUILD_DIR)/.built
-	rm -rf $(NET_SNMP_IPK_DIR) $(BUILD_DIR)/net-snmp_*_$(TARGET_ARCH).ipk
+$(NET_SNMP_IPKS): $(NET_SNMP_BUILD_DIR)/.built
+	rm -rf $(NET_SNMP_IPK_DIRS) $(NET_SNMP_IPKS_WILDCARD)
 	$(MAKE) -C $(NET_SNMP_BUILD_DIR) INSTALL_PREFIX=$(NET_SNMP_IPK_DIR) install
 	for F in $(NET_SNMP_IPK_DIR)$(TARGET_PREFIX)/bin/* ; do (file $$F |fgrep -vq ELF) || $(STRIP_COMMAND) $$F ; done
 	$(STRIP_COMMAND) $(NET_SNMP_IPK_DIR)$(TARGET_PREFIX)/sbin/*
@@ -200,16 +309,49 @@ $(NET_SNMP_IPK): $(NET_SNMP_BUILD_DIR)/.built
 	$(INSTALL) -m 644 $(NET_SNMP_SOURCE_DIR)/snmpd.conf $(NET_SNMP_IPK_DIR)$(TARGET_PREFIX)/etc/snmpd.conf
 	$(INSTALL) -d $(NET_SNMP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
 	$(INSTALL) -m 755 $(NET_SNMP_SOURCE_DIR)/rc.net-snmp $(NET_SNMP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/S70net-snmp
+	# package libnetsnmp
+	$(INSTALL) -d $(LIBNETSNMP_IPK_DIR)$(TARGET_PREFIX)/lib
+	mv -f $(NET_SNMP_IPK_DIR)$(TARGET_PREFIX)/lib/libnetsnmp.so* $(LIBNETSNMP_IPK_DIR)$(TARGET_PREFIX)/lib
+	$(MAKE) $(LIBNETSNMP_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBNETSNMP_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(LIBNETSNMP_IPK_DIR)
+	# package libnetsnmpagent
+	$(INSTALL) -d $(LIBNETSNMPAGENT_IPK_DIR)$(TARGET_PREFIX)/lib
+	mv -f $(NET_SNMP_IPK_DIR)$(TARGET_PREFIX)/lib/libnetsnmpagent.so* $(LIBNETSNMPAGENT_IPK_DIR)$(TARGET_PREFIX)/lib
+	$(MAKE) $(LIBNETSNMPAGENT_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBNETSNMPAGENT_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(LIBNETSNMPAGENT_IPK_DIR)
+	# package libnetsnmphelpers
+	$(INSTALL) -d $(LIBNETSNMPHELPERS_IPK_DIR)$(TARGET_PREFIX)/lib
+	mv -f $(NET_SNMP_IPK_DIR)$(TARGET_PREFIX)/lib/libnetsnmphelpers.so* $(LIBNETSNMPHELPERS_IPK_DIR)$(TARGET_PREFIX)/lib
+	$(MAKE) $(LIBNETSNMPHELPERS_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBNETSNMPHELPERS_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(LIBNETSNMPHELPERS_IPK_DIR)
+	# package libnetsnmpmibs
+	$(INSTALL) -d $(LIBNETSNMPMIBS_IPK_DIR)$(TARGET_PREFIX)/lib
+	mv -f $(NET_SNMP_IPK_DIR)$(TARGET_PREFIX)/lib/libnetsnmpmibs.so* $(LIBNETSNMPMIBS_IPK_DIR)$(TARGET_PREFIX)/lib
+	$(MAKE) $(LIBNETSNMPMIBS_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBNETSNMPMIBS_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(LIBNETSNMPMIBS_IPK_DIR)
+	# package libnetsnmptrapd
+	$(INSTALL) -d $(LIBNETSNMPTRAPD_IPK_DIR)$(TARGET_PREFIX)/lib
+	mv -f $(NET_SNMP_IPK_DIR)$(TARGET_PREFIX)/lib/libnetsnmptrapd.so* $(LIBNETSNMPTRAPD_IPK_DIR)$(TARGET_PREFIX)/lib
+	$(MAKE) $(LIBNETSNMPTRAPD_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBNETSNMPTRAPD_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(LIBNETSNMPTRAPD_IPK_DIR)
+	# finally, package net-snmp
+	rm -rf $(NET_SNMP_IPK_DIR)$(TARGET_PREFIX)/lib
 	$(MAKE) $(NET_SNMP_IPK_DIR)/CONTROL/control
 	$(INSTALL) -m 755 $(NET_SNMP_SOURCE_DIR)/postinst $(NET_SNMP_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 755 $(NET_SNMP_SOURCE_DIR)/prerm $(NET_SNMP_IPK_DIR)/CONTROL/prerm
 	echo $(NET_SNMP_CONFFILES) | sed -e 's/ /\n/g' > $(NET_SNMP_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NET_SNMP_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(NET_SNMP_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
 #
-net-snmp-ipk: $(NET_SNMP_IPK)
+net-snmp-ipk: $(NET_SNMP_IPKS)
 
 #
 # This is called from the top level makefile to clean all of the built files.
@@ -222,10 +364,10 @@ net-snmp-clean:
 # directories.
 #
 net-snmp-dirclean:
-	rm -rf $(BUILD_DIR)/$(NET_SNMP_DIR) $(NET_SNMP_BUILD_DIR) $(NET_SNMP_IPK_DIR) $(NET_SNMP_IPK)
+	rm -rf $(BUILD_DIR)/$(NET_SNMP_DIR) $(NET_SNMP_BUILD_DIR) $(NET_SNMP_IPK_DIRS) $(NET_SNMP_IPKS)
 
 #
 # Some sanity check for the package.
 #
-net-snmp-check: $(NET_SNMP_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(NET_SNMP_IPK)
+net-snmp-check: $(NET_SNMP_IPKS)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^

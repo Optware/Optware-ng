@@ -1,11 +1,41 @@
 #!/bin/sh
-#
-# $Header$
-#
 
-if [ -n "`pidof snmpd`" ] ; then
-    killall snmpd 2>/dev/null
+prefix="%OPTWARE_TARGET_PREFIX%"
+NAME=snmpd
+DAEMON=${prefix}/sbin/${NAME}
+DAEMON_OPTS="-c ${prefix}/etc/snmpd.conf"
+
+test -x $DAEMON || exit 0
+
+if [ -z "$1" ] ; then
+    case `echo "$0" | sed 's:^.*/\(.*\):\1:g'` in
+        S??*) rc="start" ;;
+        K??*) rc="stop" ;;
+        *) rc="usage" ;;
+    esac
+else
+    rc="$1"
 fi
 
-sleep 2
-%OPTWARE_TARGET_PREFIX%/sbin/snmpd -c %OPTWARE_TARGET_PREFIX%/etc/snmpd.conf
+case "$rc" in
+    start)
+	echo "Starting SNMP daemon: $NAME"
+	$DAEMON $DAEMON_OPTS
+        ;;
+    stop)
+        if [ -n "`pidof $NAME`" ]; then
+            echo "Stopping SNMP daemon: $NAME"
+            killall $NAME 2> /dev/null
+        fi
+        ;;
+    restart)
+        "$0" stop
+        sleep 1
+        "$0" start
+        ;;
+    *)  
+        echo "Usage: $0 (start|stop|restart|usage)"
+        ;;
+esac
+
+exit 0

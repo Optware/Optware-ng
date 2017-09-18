@@ -2,4 +2,4 @@
 #
 # $Header$
 
-%OPTWARE_TARGET_PREFIX%/etc/init.d/S70net-snmp
+%OPTWARE_TARGET_PREFIX%/etc/init.d/S70net-snmp start
