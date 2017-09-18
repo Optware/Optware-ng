@@ -18,21 +18,23 @@ LIBNETSNMPAGENT_DESCRIPTION=SNMP agent library
 LIBNETSNMPHELPERS_DESCRIPTION=SNMP helpers library
 LIBNETSNMPMIBS_DESCRIPTION=SNMP MIBs library
 LIBNETSNMPTRAPD_DESCRIPTION=SNMP trapd library
+SNMP_MIBS_DESCRIPTION=SNMP MIBs modules
 NET_SNMP_SECTION=net
 NET_SNMP_PRIORITY=optional
-NET_SNMP_DEPENDS=libnetsnmp, libnetsnmpagent, libnetsnmphelpers, libnetsnmpmibs, libnetsnmptrapd, openssl, libnl
+NET_SNMP_DEPENDS=libnetsnmp, libnetsnmpagent, libnetsnmphelpers, libnetsnmpmibs, libnetsnmptrapd, openssl, libnl, snmp-mibs
 LIBNETSNMP_DEPENDS=openssl
 LIBNETSNMPAGENT_DEPENDS=libnetsnmp, libnl
 LIBNETSNMPHELPERS_DEPENDS=
 LIBNETSNMPMIBS_DEPENDS=libnetsnmpagent
 LIBNETSNMPTRAPD_DEPENDS=libnetsnmpmibs
+SNMP_MIBS_DEPENDS=
 NET_SNMP_SUGGESTS=
 NET_SNMP_CONFLICTS=
 
 #
 # NET_SNMP_IPK_VERSION should be incremented when the ipk changes.
 #
-NET_SNMP_IPK_VERSION=5
+NET_SNMP_IPK_VERSION=6
 
 #
 # NET_SNMP_CONFFILES should be a list of user-editable files
@@ -86,13 +88,17 @@ LIBNETSNMPMIBS_IPK=$(BUILD_DIR)/libnetsnmpmibs_$(NET_SNMP_VERSION)-$(NET_SNMP_IP
 LIBNETSNMPTRAPD_IPK_DIR=$(BUILD_DIR)/libnetsnmptrapd-$(NET_SNMP_VERSION)-ipk
 LIBNETSNMPTRAPD_IPK=$(BUILD_DIR)/libnetsnmptrapd_$(NET_SNMP_VERSION)-$(NET_SNMP_IPK_VERSION)_$(TARGET_ARCH).ipk
 
-NET_SNMP_IPKS=$(NET_SNMP_IPK) $(LIBNETSNMP_IPK) $(LIBNETSNMPAGENT_IPK) \
+SNMP_MIBS_IPK_DIR=$(BUILD_DIR)/snmp-mibs-$(NET_SNMP_VERSION)-ipk
+SNMP_MIBS_IPK=$(BUILD_DIR)/snmp-mibs_$(NET_SNMP_VERSION)-$(NET_SNMP_IPK_VERSION)_$(TARGET_ARCH).ipk
+
+NET_SNMP_IPKS=$(NET_SNMP_IPK) $(SNMP_MIBS_IPK) $(LIBNETSNMP_IPK) $(LIBNETSNMPAGENT_IPK) \
 		$(LIBNETSNMPHELPERS_IPK) $(LIBNETSNMPMIBS_IPK) $(LIBNETSNMPTRAPD_IPK)
 
-NET_SNMP_IPK_DIRS=$(NET_SNMP_IPK_DIR) $(LIBNETSNMP_IPK_DIR) $(LIBNETSNMPAGENT_IPK_DIR) \
+NET_SNMP_IPK_DIRS=$(NET_SNMP_IPK_DIR) $(SNMP_MIBS_IPK_DIR) $(LIBNETSNMP_IPK_DIR) $(LIBNETSNMPAGENT_IPK_DIR) \
 	$(LIBNETSNMPHELPERS_IPK_DIR) $(LIBNETSNMPMIBS_IPK_DIR) $(LIBNETSNMPTRAPD_IPK_DIR)
 
 NET_SNMP_IPKS_WILDCARD=$(BUILD_DIR)/net-snmp_*_$(TARGET_ARCH).ipk \
+			$(BUILD_DIR)/snmp-mibs_*_$(TARGET_ARCH).ipk \
 			$(BUILD_DIR)/libnetsnmp_*_$(TARGET_ARCH).ipk \
 			$(BUILD_DIR)/libnetsnmpagent_*_$(TARGET_ARCH).ipk \
 			$(BUILD_DIR)/libnetsnmphelpers_*_$(TARGET_ARCH).ipk \
@@ -213,6 +219,21 @@ $(NET_SNMP_IPK_DIR)/CONTROL/control:
 	@echo "Depends: $(NET_SNMP_DEPENDS)" >>$@
 	@echo "Suggests: $(NET_SNMP_SUGGESTS)" >>$@
 	@echo "Conflicts: $(NET_SNMP_CONFLICTS)" >>$@
+
+$(SNMP_MIBS_IPK_DIR)/CONTROL/control:
+	@$(INSTALL) -d $(@D)
+	@rm -f $@
+	@echo "Package: snmp-mibs" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(NET_SNMP_PRIORITY)" >>$@
+	@echo "Section: $(NET_SNMP_SECTION)" >>$@
+	@echo "Version: $(NET_SNMP_VERSION)-$(NET_SNMP_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(NET_SNMP_MAINTAINER)" >>$@
+	@echo "Source: $(NET_SNMP_SITE)/$(NET_SNMP_SOURCE)" >>$@
+	@echo "Description: $(SNMP_MIBS_DESCRIPTION)" >>$@
+	@echo "Depends: $(SNMP_MIBS_DEPENDS)" >>$@
+	@echo "Suggests: $(SNMP_MIBS_SUGGESTS)" >>$@
+	@echo "Conflicts: $(SNMP_MIBS_CONFLICTS)" >>$@
 
 $(LIBNETSNMP_IPK_DIR)/CONTROL/control:
 	@$(INSTALL) -d $(@D)
@@ -343,6 +364,12 @@ $(NET_SNMP_IPKS): $(NET_SNMP_BUILD_DIR)/.built
 	$(MAKE) $(LIBNETSNMPTRAPD_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBNETSNMPTRAPD_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(LIBNETSNMPTRAPD_IPK_DIR)
+	# package snmp-mibs
+	$(INSTALL) -d $(SNMP_MIBS_IPK_DIR)$(TARGET_PREFIX)/share/snmp
+	mv -f $(NET_SNMP_IPK_DIR)$(TARGET_PREFIX)/share/snmp/mibs $(SNMP_MIBS_IPK_DIR)$(TARGET_PREFIX)/share/snmp
+	$(MAKE) $(SNMP_MIBS_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(SNMP_MIBS_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(SNMP_MIBS_IPK_DIR)
 	# finally, package net-snmp
 	rm -rf $(NET_SNMP_IPK_DIR)$(TARGET_PREFIX)/lib
 	$(MAKE) $(NET_SNMP_IPK_DIR)/CONTROL/control
