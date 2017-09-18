@@ -1,36 +1,36 @@
 --- a/src/cups-pdf.h
 +++ b/src/cups-pdf.h
-@@ -19,7 +19,7 @@
+@@ -18,7 +18,7 @@
  /  they are reasonable for most systems.			     */
  
  /* location of the configuration file */
--#define CPCONFIG "/etc/cups/cups-pdf.conf"
-+#define CPCONFIG "%OPTWARE_TARGET_PREFIX%/etc/cups/cups-pdf.conf"
+-#define CP_CONFIG_PATH "/etc/cups"
++#define CP_CONFIG_PATH "%OPTWARE_TARGET_PREFIX%/etc/cups"
  
  
- 
-@@ -67,17 +67,17 @@
- } conf;
- 
- static void _set_defaults() {
--  snprintf(conf.anondirname,BUFSIZE,"%s","/var/spool/cups-pdf/ANONYMOUS");
-+  snprintf(conf.anondirname,BUFSIZE,"%s","%OPTWARE_TARGET_PREFIX%/var/spool/cups-pdf/ANONYMOUS");
-   snprintf(conf.anonuser,BUFSIZE,"%s","nobody");
--  snprintf(conf.ghostscript,BUFSIZE,"/usr/bin/gs");
-+  snprintf(conf.ghostscript,BUFSIZE,"%OPTWARE_TARGET_PREFIX%/bin/gs");
-   snprintf(conf.gscall,BUFSIZE,"%s","%s -q -dCompatibilityLevel=%s -dNOPAUSE -dBATCH -dSAFER -sDEVICE=pdfwrite -sOutputFile=\"%s\" -dAutoRotatePages=/PageByPage -dAutoFilterColorImages=false -dColorImageFilter=/FlateEncode -dPDFSETTINGS=/prepress -c .setpdfwrite -f %s");
--  snprintf(conf.grp,BUFSIZE,"%s","lp");
--  snprintf(conf.gstmp,BUFSIZE,"%s","TMPDIR=/var/tmp");
--  snprintf(conf.log,BUFSIZE,"%s","/var/log/cups");
-+  snprintf(conf.grp,BUFSIZE,"%s","nobody");
-+  snprintf(conf.gstmp,BUFSIZE,"%s","TMPDIR=%OPTWARE_TARGET_PREFIX%/var/spool/cups/tmp");
-+  snprintf(conf.log,BUFSIZE,"%s","%OPTWARE_TARGET_PREFIX%/var/log/cups");
-   snprintf(conf.pdfver,BUFSIZE,"%s","1.4");
-   snprintf(conf.postprocessing,BUFSIZE,"%s","");
--  snprintf(conf.out,BUFSIZE,"%s","/var/spool/cups-pdf/${USER}");
--  snprintf(conf.spool,BUFSIZE,"%s","/var/spool/cups-pdf/SPOOL");
-+  snprintf(conf.out,BUFSIZE,"%s","%OPTWARE_TARGET_PREFIX%/var/spool/cups-pdf/${USER}");
-+  snprintf(conf.spool,BUFSIZE,"%s","%OPTWARE_TARGET_PREFIX%/var/spool/cups-pdf/SPOOL");
-   snprintf(conf.userprefix,BUFSIZE,"%s","");
-   snprintf(conf.removeprefix,BUFSIZE,"%s","");
-   conf.cut=3;
+ /* --- DO NOT EDIT BELOW THIS LINE --- */
+@@ -55,17 +55,17 @@
+     mode_t modval;
+   } value;
+ } configData[] = {
+-  { "AnonDirName", SEC_CONF|SEC_PPD, { "/var/spool/cups-pdf/ANONYMOUS" } },
++  { "AnonDirName", SEC_CONF|SEC_PPD, { "%OPTWARE_TARGET_PREFIX%/var/spool/cups-pdf/ANONYMOUS" } },
+   { "AnonUser", SEC_CONF|SEC_PPD, { "nobody" } },
+-  { "GhostScript", SEC_CONF|SEC_PPD, { "/usr/bin/gs" } },
++  { "GhostScript", SEC_CONF|SEC_PPD, { "%OPTWARE_TARGET_PREFIX%/bin/gs" } },
+   { "GSCall", SEC_CONF|SEC_PPD, { "%s -q -dCompatibilityLevel=%s -dNOPAUSE -dBATCH -dSAFER -sDEVICE=pdfwrite -sOutputFile=\"%s\" -dAutoRotatePages=/PageByPage -dAutoFilterColorImages=false -dColorImageFilter=/FlateEncode -dPDFSETTINGS=/prepress -c .setpdfwrite -f %s" } },
+-  { "Grp", SEC_CONF|SEC_PPD, { "lp" } },
+-  { "GSTmp", SEC_CONF|SEC_PPD, { "TMPDIR=/var/tmp" } },
+-  { "Log", SEC_CONF|SEC_PPD, { "/var/log/cups" } },
++  { "Grp", SEC_CONF|SEC_PPD, { "nobody" } },
++  { "GSTmp", SEC_CONF|SEC_PPD, { "TMPDIR=%OPTWARE_TARGET_PREFIX%/var/spool/cups/tmp" } },
++  { "Log", SEC_CONF|SEC_PPD, { "%OPTWARE_TARGET_PREFIX%/var/log/cups" } },
+   { "PDFVer", SEC_CONF|SEC_PPD|SEC_LPOPT, { "1.4" } },
+   { "PostProcessing", SEC_CONF|SEC_PPD|SEC_LPOPT, { "" } },
+-  { "Out", SEC_CONF|SEC_PPD, { "/var/spool/cups-pdf/${USER}" } },
+-  { "Spool", SEC_CONF|SEC_PPD, { "/var/spool/cups-pdf/SPOOL" } },
++  { "Out", SEC_CONF|SEC_PPD, { "%OPTWARE_TARGET_PREFIX%/var/spool/cups-pdf/${USER}" } },
++  { "Spool", SEC_CONF|SEC_PPD, { "%OPTWARE_TARGET_PREFIX%/var/spool/cups-pdf/SPOOL" } },
+   { "UserPrefix", SEC_CONF|SEC_PPD, { "" } },
+   { "RemovePrefix", SEC_CONF|SEC_PPD, { "" } },
+   { "OutExtension", SEC_CONF|SEC_PPD|SEC_LPOPT, { "pdf" } },

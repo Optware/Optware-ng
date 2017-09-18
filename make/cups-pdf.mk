@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 CUPS_PDF_SITE=http://www.cups-pdf.de/src
-CUPS_PDF_VERSION=2.6.1
+CUPS_PDF_VERSION=3.0.1
 CUPS_PDF_SOURCE=cups-pdf_$(CUPS_PDF_VERSION).tar.gz
 CUPS_PDF_DIR=cups-pdf-$(CUPS_PDF_VERSION)
 CUPS_PDF_UNZIP=zcat
@@ -55,7 +55,7 @@ $(CUPS_PDF_SOURCE_DIR)/cups-pdf.conf.patch \
 # compilation or linking flags, then list them here.
 #
 CUPS_PDF_CPPFLAGS=
-CUPS_PDF_LDFLAGS=
+CUPS_PDF_LDFLAGS=-lcups
 
 #
 # CUPS_PDF_BUILD_DIR is the directory in which the build is done.
@@ -187,15 +187,16 @@ $(CUPS_PDF_IPK): $(CUPS_PDF_BUILD_DIR)/.built
 	$(INSTALL) -m 644 $(CUPS_PDF_BUILD_DIR)/extra/cups-pdf.conf $(CUPS_PDF_IPK_DIR)$(TARGET_PREFIX)/etc/cups
 	$(INSTALL) -d $(CUPS_PDF_IPK_DIR)$(TARGET_PREFIX)/var/tmp
 	$(INSTALL) -d $(CUPS_PDF_IPK_DIR)$(TARGET_PREFIX)/share/cups/model
-	$(INSTALL) -m 644 $(CUPS_PDF_BUILD_DIR)/extra/CUPS-PDF.ppd \
-		$(CUPS_PDF_IPK_DIR)$(TARGET_PREFIX)/share/cups/model/
-	$(INSTALL) -d $(CUPS_PDF_IPK_DIR)$(TARGET_PREFIX)/share/doc/cups-pdf/examples/
+	$(INSTALL) -m 644 $(CUPS_PDF_BUILD_DIR)/extra/CUPS-PDF_opt.ppd \
+		$(CUPS_PDF_IPK_DIR)$(TARGET_PREFIX)/share/cups/model/CUPS-PDF.ppd
+	$(INSTALL) -d $(CUPS_PDF_IPK_DIR)$(TARGET_PREFIX)/share/doc/cups-pdf/
+#	$(INSTALL) -d $(CUPS_PDF_IPK_DIR)$(TARGET_PREFIX)/share/doc/cups-pdf/examples/
 	$(INSTALL) \
 		$(CUPS_PDF_BUILD_DIR)/ChangeLog \
 		$(CUPS_PDF_BUILD_DIR)/COPYING \
 		$(CUPS_PDF_BUILD_DIR)/README \
 		$(CUPS_PDF_IPK_DIR)$(TARGET_PREFIX)/share/doc/cups-pdf/
-	cp -rp \
+#	cp -rp \
 		$(CUPS_PDF_BUILD_DIR)/contrib/cups-pdf-dispatch* \
 		$(CUPS_PDF_BUILD_DIR)/contrib/pstitleiconv* \
 		$(CUPS_PDF_IPK_DIR)$(TARGET_PREFIX)/share/doc/cups-pdf/examples/
