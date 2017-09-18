@@ -37,7 +37,7 @@ PHP_HOST_CLI=$(HOST_STAGING_PREFIX)/bin/php
 #
 # PHP_IPK_VERSION should be incremented when the ipk changes.
 #
-PHP_IPK_VERSION=4
+PHP_IPK_VERSION=5
 
 #
 # PHP_CONFFILES should be a list of user-editable files
@@ -448,7 +448,7 @@ $(PHP_SNMP_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(PHP_MAINTAINER)" >>$@
 	@echo "Source: $(PHP_SITE)/$(PHP_SOURCE)" >>$@
 	@echo "Description: snmp extension for php" >>$@
-	@echo "Depends: php, libnetsnmp, libnl" >>$@
+	@echo "Depends: php, libnetsnmp, libnl, snmp-mibs" >>$@
 
 $(PHP_XMLRPC_IPK_DIR)/CONTROL/control:
 	@$(INSTALL) -d $(@D)
