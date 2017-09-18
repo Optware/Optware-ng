@@ -1,4 +1,8 @@
-Description: Make CUPS reading all option settings in PostScript print
+From e4e9820740f714f6aaa8826aef77e80b4c35fa33 Mon Sep 17 00:00:00 2001
+From: Till Kamppeter <till.kamppeter@gmail.com>
+Date: Tue, 9 Aug 2016 18:11:27 +0200
+Subject: Make CUPS reading all option settings in PostScript print
+
  jobs and add the option settings to the filter command line before
  starting the filter chain. This fixes the problem that in the PDF
  printing workflow (where incoming PostScript gets converted to PDF by
@@ -6,13 +10,19 @@ Description: Make CUPS reading all option settings in PostScript print
  not get obeyed. Especially the options of jobs from Windows clients get
  ignored.
 Origin: vendor
-Author: Till Kamppeter <till.kamppeter@gmail.com>
 Bug: https://www.cups.org/str.php?L4344
 Last-Update: 2015-02-10
 
+Patch-Name: read-embedded-options-from-incoming-postscript-and-add-to-ipp-attrs.patch
+---
+ scheduler/ipp.c | 84 +++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+ 1 file changed, 84 insertions(+)
+
+diff --git a/scheduler/ipp.c b/scheduler/ipp.c
+index 49a05a407..813df320e 100644
 --- a/scheduler/ipp.c
 +++ b/scheduler/ipp.c
-@@ -8400,6 +8400,11 @@
+@@ -8661,6 +8661,11 @@ read_job_ticket(cupsd_client_t *con)	/* I - Client connection */
    ipp_attribute_t	*attr,		/* Current attribute */
  			*attr2,		/* Job attribute */
  			*prev2;		/* Previous job attribute */
@@ -24,7 +34,7 @@ Last-Update: 2015-02-10
  
  
   /*
-@@ -8461,6 +8466,85 @@
+@@ -8722,6 +8727,85 @@ read_job_ticket(cupsd_client_t *con)	/* I - Client connection */
    }
  
   /*

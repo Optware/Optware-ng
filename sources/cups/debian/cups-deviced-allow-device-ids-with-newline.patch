@@ -1,15 +1,25 @@
-Description: Some printers have broken device IDs with newline
+From 86bafc165a69ac96115f5db41ec6fdeb82ef4e1c Mon Sep 17 00:00:00 2001
+From: Till Kamppeter <till.kamppeter@gmail.com>
+Date: Tue, 9 Aug 2016 18:11:28 +0200
+Subject: Some printers have broken device IDs with newline
+
  characters inside. These break the cups-deviced printer discovery
  mechanism and so the printers get ignored. This patch allows newline
  characters in device IDs
 Bug-Ubuntu: https://bugs.launchpad.net/bugs/468701
 Bug: https://www.cups.org/str.php?L4345
-Author: Till Kamppeter <till.kamppeter@gmail.com>
 Last-Update: 2015-02-10
 
+Patch-Name: cups-deviced-allow-device-ids-with-newline.patch
+---
+ scheduler/cups-deviced.c | 23 +++++++++++++++++++----
+ 1 file changed, 19 insertions(+), 4 deletions(-)
+
+diff --git a/scheduler/cups-deviced.c b/scheduler/cups-deviced.c
+index 9a1b8d3e1..3cc4eecd0 100644
 --- a/scheduler/cups-deviced.c
 +++ b/scheduler/cups-deviced.c
-@@ -564,15 +564,30 @@
+@@ -562,15 +562,30 @@ get_device(cupsd_backend_t *backend)	/* I - Backend to read from */
  
      if (*ptr == '\"')
      {

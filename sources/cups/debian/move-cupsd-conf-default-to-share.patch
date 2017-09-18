@@ -1,13 +1,24 @@
-Description: Move cupsd.conf.default from SERVERROOT to DATADIR
-Author: Didier Raboud <odyx@debian.org>
+From f8a4c7d5128804a40e985a21995fe8fed0c01d16 Mon Sep 17 00:00:00 2001
+From: Didier Raboud <odyx@debian.org>
+Date: Tue, 9 Aug 2016 18:11:24 +0200
+Subject: Move cupsd.conf.default from SERVERROOT to DATADIR
+
 Origin: vendor
 Bug: https://cups.org/str.php?L4342
 Bug-Debian: http://bugs.debian.org/640124
 Last-Update: 2015-02-10
 
+Patch-Name: move-cupsd-conf-default-to-share.patch
+---
+ cgi-bin/admin.c | 6 +++++-
+ conf/Makefile   | 5 +++--
+ 2 files changed, 8 insertions(+), 3 deletions(-)
+
+diff --git a/cgi-bin/admin.c b/cgi-bin/admin.c
+index 576fac0bc..eb64ede63 100644
 --- a/cgi-bin/admin.c
 +++ b/cgi-bin/admin.c
-@@ -1923,6 +1923,7 @@
+@@ -1921,6 +1921,7 @@ do_config_server(http_t *http)		/* I - HTTP connection */
      int		ch;			/* Character from file */
      char	filename[1024];		/* Filename */
      const char	*server_root;		/* Location of config files */
@@ -15,7 +26,7 @@ Last-Update: 2015-02-10
  
  
     /*
-@@ -2006,7 +2007,10 @@
+@@ -2004,7 +2005,10 @@ do_config_server(http_t *http)		/* I - HTTP connection */
      * well...
      */
  
@@ -27,9 +38,11 @@ Last-Update: 2015-02-10
  
      if (!stat(filename, &info) && info.st_size < (1024 * 1024) &&
          (cupsd = cupsFileOpen(filename, "r")) != NULL)
+diff --git a/conf/Makefile b/conf/Makefile
+index e8f88ec88..4302ebac9 100644
 --- a/conf/Makefile
 +++ b/conf/Makefile
-@@ -76,7 +76,7 @@
+@@ -74,7 +74,7 @@ install-data:
  		else \
  			$(INSTALL_CONFIG) -g $(CUPS_GROUP) $$file $(SERVERROOT) ; \
  		fi ; \
@@ -38,7 +51,7 @@ Last-Update: 2015-02-10
  	done
  	$(INSTALL_DIR) -m 755 $(DATADIR)/mime
  	for file in $(REPLACE); do \
-@@ -124,9 +124,10 @@
+@@ -122,9 +122,10 @@ install-libs:
  #
  
  uninstall:

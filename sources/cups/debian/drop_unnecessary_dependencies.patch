@@ -1,14 +1,26 @@
-Description: Do not link libcups.so and libcupsimage.so against
+From 1fb1dbacafd3f8bbc0323051c0277fff44fdd930 Mon Sep 17 00:00:00 2001
+From: Martin Pitt <mpitt@debian.org>
+Date: Tue, 9 Aug 2016 18:11:25 +0200
+Subject: Do not link libcups.so and libcupsimage.so against
+
  unnecessary libraries.  This avoids unnecessary package dependencies for
  both libcups, as well as for packages using cups-config.
-Author: Martin Pitt <mpitt@debian.org>
 Bug: https://www.cups.org/str.php?L4343
 Bug-Debian: http://bugs.debian.org/438067
 Last-Update: 2015-10-02
 
+Patch-Name: drop_unnecessary_dependencies.patch
+---
+ Makedefs.in     | 2 +-
+ cups/Makefile   | 4 ++--
+ filter/Makefile | 2 +-
+ 3 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/Makedefs.in b/Makedefs.in
+index f958c263f..e3cef751f 100644
 --- a/Makedefs.in
 +++ b/Makedefs.in
-@@ -136,7 +136,7 @@
+@@ -142,7 +142,7 @@ DBUS_NOTIFIER	=	@DBUS_NOTIFIER@
  DBUS_NOTIFIERLIBS =	@DBUS_NOTIFIERLIBS@
  DNSSD_BACKEND	=	@DNSSD_BACKEND@
  DSOFLAGS	=	-L../cups @DSOFLAGS@
@@ -17,9 +29,11 @@ Last-Update: 2015-10-02
  DNSSDLIBS	=	@DNSSDLIBS@
  IPPFIND_BIN	=	@IPPFIND_BIN@
  IPPFIND_MAN	=	@IPPFIND_MAN@
+diff --git a/cups/Makefile b/cups/Makefile
+index 962bee636..35dd9c6a0 100644
 --- a/cups/Makefile
 +++ b/cups/Makefile
-@@ -309,7 +309,7 @@
+@@ -311,7 +311,7 @@ uninstall:
  libcups.so.2:	$(LIBOBJS)
  	echo Linking $@...
  	$(DSO) $(ARCHFLAGS) $(DSOFLAGS) -o $@ $(LIBOBJS) $(LIBGSSAPI) \
@@ -28,7 +42,7 @@ Last-Update: 2015-10-02
  	$(RM) `basename $@ .2`
  	$(LN) $@ `basename $@ .2`
  
-@@ -330,7 +330,7 @@
+@@ -333,7 +333,7 @@ libcups.2.dylib:	$(LIBOBJS) $(LIBCUPSORDER)
  		-compatibility_version 2.0.0 \
  		-exported_symbols_list t.exp \
  		$(LIBOBJS) $(LIBGSSAPI) $(SSLLIBS) $(DNSSDLIBS) \
@@ -37,9 +51,11 @@ Last-Update: 2015-10-02
  	$(RM) libcups.dylib t.exp
  	$(LN) $@ libcups.dylib
  
+diff --git a/filter/Makefile b/filter/Makefile
+index 7da764d31..5ff6bc5e5 100644
 --- a/filter/Makefile
 +++ b/filter/Makefile
-@@ -269,7 +269,7 @@
+@@ -235,7 +235,7 @@ gziptoany:	gziptoany.o ../Makedefs ../cups/$(LIBCUPS)
  libcupsimage.so.2 libcupsimage.sl.2:	$(IMAGEOBJS)
  	echo Linking $@...
  	$(DSO) $(ARCHFLAGS) $(DSOFLAGS) -o $@ $(IMAGEOBJS) $(DSOLIBS) \

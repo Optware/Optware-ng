@@ -1,37 +1,27 @@
-Description: Set default job error policy to "retry-job", since it is less
+From c2df8b6c63b576980b2610c8f30cceb9393e62e4 Mon Sep 17 00:00:00 2001
+From: Martin Pitt <martin.pitt@ubuntu.com>
+Date: Tue, 9 Aug 2016 18:11:47 +0200
+Subject: Set default job error policy to "retry-job", since it is less
+
  confusing and a better default on most machines.
  .
  Amend documentation accordingly.
-Author: Martin Pitt <martin.pitt@ubuntu.com>
 Author: Didier Raboud <odyx@debian.org>
 Origin: vendor
 Last-Update: 2016-07-03
 
---- a/scheduler/conf.c
-+++ b/scheduler/conf.c
-@@ -787,7 +787,7 @@
-   cupsdSetString(&LPDConfigFile, CUPS_DEFAULT_LPD_CONFIG_FILE);
-   cupsdSetString(&SMBConfigFile, CUPS_DEFAULT_SMB_CONFIG_FILE);
- 
--  cupsdSetString(&ErrorPolicy, "stop-printer");
-+  cupsdSetString(&ErrorPolicy, "retry-job");
- 
-   JobHistory          = DEFAULT_HISTORY;
-   JobFiles            = DEFAULT_FILES;
-@@ -1309,8 +1309,8 @@
-       strcmp(ErrorPolicy, "retry-job") &&
-       strcmp(ErrorPolicy, "stop-printer"))
-   {
--    cupsdLogMessage(CUPSD_LOG_ALERT, "Invalid ErrorPolicy \"%s\", resetting to \"stop-printer\".", ErrorPolicy);
--    cupsdSetString(&ErrorPolicy, "stop-printer");
-+    cupsdLogMessage(CUPSD_LOG_ALERT, "Invalid ErrorPolicy \"%s\", resetting to \"retry-job\".", ErrorPolicy);
-+    cupsdSetString(&ErrorPolicy, "retry-job");
-   }
- 
-  /*
+Patch-Name: cups-set-default-error-policy-retry-job.patch
+---
+ doc/help/man-cupsd.conf.html | 4 ++--
+ man/cupsd.conf.man.in        | 4 ++--
+ scheduler/conf.c             | 6 +++---
+ 3 files changed, 7 insertions(+), 7 deletions(-)
+
+diff --git a/doc/help/man-cupsd.conf.html b/doc/help/man-cupsd.conf.html
+index 85e601edf..943059efc 100644
 --- a/doc/help/man-cupsd.conf.html
 +++ b/doc/help/man-cupsd.conf.html
-@@ -99,11 +99,11 @@
+@@ -99,11 +99,11 @@ The default value is "30".
  <dt><a name="ErrorPolicy"></a><b>ErrorPolicy abort-job</b>
  <dd style="margin-left: 5.0em">Specifies that a failed print job should be aborted (discarded) unless otherwise specified for the printer.
  <dt><b>ErrorPolicy retry-job</b>
@@ -45,9 +35,11 @@ Last-Update: 2016-07-03
  <dt><a name="FilterLimit"></a><b>FilterLimit </b><i>limit</i>
  <dd style="margin-left: 5.0em">Specifies the maximum cost of filters that are run concurrently, which can be used to minimize disk, memory, and CPU resource problems.
  A limit of 0 disables filter limiting.
+diff --git a/man/cupsd.conf.man.in b/man/cupsd.conf.man.in
+index 40fea92e3..d2cf3495a 100644
 --- a/man/cupsd.conf.man.in
 +++ b/man/cupsd.conf.man.in
-@@ -150,13 +150,13 @@
+@@ -148,13 +148,13 @@ The default value is "30".
  Specifies that a failed print job should be aborted (discarded) unless otherwise specified for the printer.
  .TP 5
  \fBErrorPolicy retry-job\fR
@@ -63,3 +55,27 @@ Last-Update: 2016-07-03
  .\"#FilterLimit
  .TP 5
  \fBFilterLimit \fIlimit\fR
+diff --git a/scheduler/conf.c b/scheduler/conf.c
+index 57912fd40..908fc56af 100644
+--- a/scheduler/conf.c
++++ b/scheduler/conf.c
+@@ -753,7 +753,7 @@ cupsdReadConfiguration(void)
+   cupsdSetString(&LPDConfigFile, CUPS_DEFAULT_LPD_CONFIG_FILE);
+   cupsdSetString(&SMBConfigFile, CUPS_DEFAULT_SMB_CONFIG_FILE);
+ 
+-  cupsdSetString(&ErrorPolicy, "stop-printer");
++  cupsdSetString(&ErrorPolicy, "retry-job");
+ 
+   JobHistory          = DEFAULT_HISTORY;
+   JobFiles            = DEFAULT_FILES;
+@@ -1233,8 +1233,8 @@ cupsdReadConfiguration(void)
+       strcmp(ErrorPolicy, "retry-job") &&
+       strcmp(ErrorPolicy, "stop-printer"))
+   {
+-    cupsdLogMessage(CUPSD_LOG_ALERT, "Invalid ErrorPolicy \"%s\", resetting to \"stop-printer\".", ErrorPolicy);
+-    cupsdSetString(&ErrorPolicy, "stop-printer");
++    cupsdLogMessage(CUPSD_LOG_ALERT, "Invalid ErrorPolicy \"%s\", resetting to \"retry-job\".", ErrorPolicy);
++    cupsdSetString(&ErrorPolicy, "retry-job");
+   }
+ 
+  /*

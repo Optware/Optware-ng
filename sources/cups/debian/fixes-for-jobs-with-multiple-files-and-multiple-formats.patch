@@ -1,11 +1,21 @@
-Description: Fix jobs with multiple files or multiple formats
-Author: Tim Waugh <twaugh@redhat.com>
+From b7e70de26090edec40b40cf637226a03e865f09b Mon Sep 17 00:00:00 2001
+From: Tim Waugh <twaugh@redhat.com>
+Date: Tue, 9 Aug 2016 18:11:07 +0200
+Subject: Fix jobs with multiple files or multiple formats
+
 Bug-Redhat: https://bugzilla.redhat.com/show_bug.cgi?id=972242
 Bug: https://www.cups.org/str.php?L4348
 Last-Updated: 2015-02-10
+Patch-Name: fixes-for-jobs-with-multiple-files-and-multiple-formats.patch
+---
+ backend/ipp.c | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/backend/ipp.c b/backend/ipp.c
+index 685d4d9df..3b2451396 100644
 --- a/backend/ipp.c
 +++ b/backend/ipp.c
-@@ -1736,7 +1736,10 @@
+@@ -1779,7 +1779,10 @@ main(int  argc,				/* I - Number of command-line args */
  	ippAddBoolean(request, IPP_TAG_OPERATION, "last-document",
          	      (i + 1) >= num_files);
  

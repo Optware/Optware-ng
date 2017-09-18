@@ -1,12 +1,25 @@
-Description: Add support for creating pid files.
-Author: Martin Pitt <mpitt@debian.org>
+From 0f1c21f3369cc722107fb18ad6cbfa15793c0f8e Mon Sep 17 00:00:00 2001
+From: Martin Pitt <mpitt@debian.org>
+Date: Tue, 9 Aug 2016 18:11:32 +0200
+Subject: Add support for creating pid files in /run
+
 Bug: http://www.cups.org/str.php?L2465
 
 Last-Update: 2015-02-10
 
+Patch-Name: pidfile.patch
+---
+ scheduler/conf.c      |  5 ++++-
+ scheduler/conf.h      |  2 ++
+ scheduler/main.c      | 38 ++++++++++++++++++++++++++++++++++++++
+ test/run-stp-tests.sh |  1 +
+ 4 files changed, 45 insertions(+), 1 deletion(-)
+
+diff --git a/scheduler/conf.c b/scheduler/conf.c
+index 0e06044a7..ea6d22372 100644
 --- a/scheduler/conf.c
 +++ b/scheduler/conf.c
-@@ -162,7 +162,8 @@
+@@ -163,7 +163,8 @@ static const cupsd_var_t	cupsfiles_vars[] =
  #ifdef HAVE_AUTHORIZATION_H
    { "SystemGroupAuthKey",	&SystemGroupAuthKey,	CUPSD_VARTYPE_STRING },
  #endif /* HAVE_AUTHORIZATION_H */
@@ -16,15 +29,15 @@ Last-Update: 2015-02-10
  };
  
  static int		default_auth_type = CUPSD_AUTH_AUTO;
-@@ -627,6 +628,7 @@
+@@ -592,6 +593,7 @@ cupsdReadConfiguration(void)
    cupsdSetStringf(&ServerHeader, "CUPS/%d.%d IPP/2.1", CUPS_VERSION_MAJOR,
                    CUPS_VERSION_MINOR);
    cupsdSetString(&StateDir, CUPS_STATEDIR);
-+  cupsdSetString(&PidFile, "%OPTWARE_TARGET_PREFIX%/var/run/cups/cupsd.pid");
++  cupsdSetString(&PidFile, "/run/cups/cupsd.pid");
  
    if (!strcmp(CUPS_DEFAULT_PRINTCAP, "/etc/printers.conf"))
      PrintcapFormat = PRINTCAP_SOLARIS;
-@@ -3505,6 +3507,7 @@
+@@ -3431,6 +3433,7 @@ read_cupsd_conf(cups_file_t *fp)	/* I - File to read from */
               !_cups_strcasecmp(line, "SystemGroup") ||
               !_cups_strcasecmp(line, "SystemGroupAuthKey") ||
               !_cups_strcasecmp(line, "TempDir") ||
@@ -32,29 +45,33 @@ Last-Update: 2015-02-10
  	     !_cups_strcasecmp(line, "User"))
      {
        cupsdLogMessage(CUPSD_LOG_INFO,
+diff --git a/scheduler/conf.h b/scheduler/conf.h
+index 873c370e6..66e4f68a6 100644
 --- a/scheduler/conf.h
 +++ b/scheduler/conf.h
-@@ -245,6 +245,8 @@
+@@ -245,6 +245,8 @@ VAR int			CreateSelfSignedCerts	VALUE(TRUE);
  VAR char		*ServerKeychain		VALUE(NULL);
  					/* Keychain holding cert + key */
  #endif /* HAVE_SSL */
 +VAR char		*PidFile		VALUE(NULL);
 +					/* Debian CUPS pid file */
  
- #if defined(HAVE_LAUNCHD) || defined(HAVE_SYSTEMD)
+ #ifdef HAVE_ONDEMAND
  VAR int			IdleExitTimeout		VALUE(60);
+diff --git a/scheduler/main.c b/scheduler/main.c
+index 4a66cbcae..3a51e7bea 100644
 --- a/scheduler/main.c
 +++ b/scheduler/main.c
-@@ -79,6 +79,8 @@
+@@ -72,6 +72,8 @@ static void		service_checkin(void);
  static void		service_checkout(void);
- #endif /* HAVE_LAUNCHD || HAVE_SYSTEMD */
+ #endif /* HAVE_ONDEMAND */
  static void		usage(int status) __attribute__((noreturn));
 +int			write_pid(void);
 +int			remove_pid(void);
  
  
  /*
-@@ -664,6 +666,11 @@
+@@ -676,6 +678,11 @@ main(int  argc,				/* I - Number of command-line args */
      cupsdStartSystemMonitor();
  #endif /* __APPLE__ */
  
@@ -66,7 +83,7 @@ Last-Update: 2015-02-10
   /*
    * Send server-started event...
    */
-@@ -1162,10 +1169,41 @@
+@@ -1179,10 +1186,41 @@ main(int  argc,				/* I - Number of command-line args */
  
    cupsdStopSelect();
  
@@ -108,9 +125,11 @@ Last-Update: 2015-02-10
  /*
   * 'cupsdAddString()' - Copy and add a string to an array.
   */
+diff --git a/test/run-stp-tests.sh b/test/run-stp-tests.sh
+index 0dd860289..106091805 100755
 --- a/test/run-stp-tests.sh
 +++ b/test/run-stp-tests.sh
-@@ -541,6 +541,7 @@
+@@ -525,6 +525,7 @@ FontPath $BASE/share/fonts
  DocumentRoot $root/doc
  RequestRoot $BASE/spool
  TempDir $BASE/spool/temp

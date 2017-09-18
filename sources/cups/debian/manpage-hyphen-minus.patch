@@ -1,14 +1,44 @@
-Description: Fix all spotted hyphen-used-as-minus-sign manpage errors
- Automatically generated using sed -i -s 's/^-/\\-/g;s/ -/ \\-/g;s/"-/"\\-/g' man/*.man*
- Also fix a missing backslash escape
-Author: Didier Raboud <odyx@debian.org>
+From eac43c0b76de756eba43b388c63d816689b63cad Mon Sep 17 00:00:00 2001
+From: Didier Raboud <odyx@debian.org>
+Date: Tue, 9 Aug 2016 18:11:05 +0200
+Subject: Fix hyphen-used-as-minus-sign manpage errors
+
+Automatically generated using sed -i -s 's/^-/\\-/g;s/ -/ \\-/g;s/"-/"\\-/g' man/*.man*
+Also fix a missing backslash escape
+
 Origin: vendor
 Bug-Upstream: https://cups.org/str.php?L4299
 Last-Update: 2015-02-10
 
+Patch-Name: manpage-hyphen-minus.patch
+---
+ man/backend.man        |  4 ++--
+ man/client.conf.man.in |  4 ++--
+ man/cups-lpd.man.in    |  6 +++---
+ man/cups-snmp.conf.man |  2 +-
+ man/cups.man           |  2 +-
+ man/cupsaddsmb.man.in  |  2 +-
+ man/cupsctl.man        |  6 +++---
+ man/cupsd-logs.man     | 36 ++++++++++++++++++------------------
+ man/cupsd.conf.man.in  |  2 +-
+ man/cupsfilter.man     |  2 +-
+ man/filter.man         |  2 +-
+ man/ippfind.man        |  6 +++---
+ man/ipptoolfile.man    |  8 ++++----
+ man/lp.man             | 14 +++++++-------
+ man/lpadmin.man        |  6 +++---
+ man/lpoptions.man.in   |  4 ++--
+ man/lpr.man            | 10 +++++-----
+ man/mime.convs.man     |  6 +++---
+ man/mime.types.man     |  4 ++--
+ man/ppdc.man           |  2 +-
+ 20 files changed, 64 insertions(+), 64 deletions(-)
+
+diff --git a/man/backend.man b/man/backend.man
+index 40f8f5439..e3941b291 100644
 --- a/man/backend.man
 +++ b/man/backend.man
-@@ -154,7 +154,7 @@
+@@ -152,7 +152,7 @@ The print file was not successfully transmitted because it cannot be printed at
  The print file was not successfully transmitted because one or more attributes are not supported or the job was canceled at the printer. The scheduler will respond to this by canceling the job.
  .TP 5
  .B CUPS_BACKEND_RETRY
@@ -17,7 +47,7 @@ Last-Update: 2015-02-10
  .TP 5
  .B CUPS_BACKEND_RETRY_CURRENT
  The print file was not successfully transmitted because of a temporary issue. The scheduler will retry the job immediately without allowing intervening jobs.
-@@ -184,7 +184,7 @@
+@@ -182,7 +182,7 @@ or
  .BR lpr (1)
  programs to send print jobs or
  .BR lpinfo (8)
@@ -26,9 +56,33 @@ Last-Update: 2015-02-10
  .BR cups-snmp (8)
  for more information.
  .SH SEE ALSO
+diff --git a/man/client.conf.man.in b/man/client.conf.man.in
+index fba9fe977..eb8bd5b40 100644
+--- a/man/client.conf.man.in
++++ b/man/client.conf.man.in
+@@ -65,7 +65,7 @@ The \fIAllowDH\fR option enables cipher suites using plain Diffie-Hellman key ne
+ The \fIAllowRC4\fR option enables the 128-bit RC4 cipher suites, which are required for some older clients that do not implement newer ones.
+ The \fIAllowSSL3\fR option enables SSL v3.0, which is required for some older clients that do not support TLS v1.0.
+ The \fIDenyCBC\fR option disables all CBC cipher suites.
+-The \fIDenyTLS1.0\fR option disables TLS v1.0 support - this sets the minimum protocol version to TLS v1.1.
++The \fIDenyTLS1.0\fR option disables TLS v1.0 support \- this sets the minimum protocol version to TLS v1.1.
+ .TP 5
+ \fBTrustOnFirstUse Yes\fR
+ .TP 5
+@@ -88,7 +88,7 @@ Configuration settings can instead be viewed or changed using the
+ command:
+ .nf
+ defaults write /Library/Preferences/org.cups.PrintingPrefs.plist Encryption Required
+-defaults write /Library/Preferences/org.cups.PrintingPrefs.plist TrustOnFirstUse -bool NO
++defaults write /Library/Preferences/org.cups.PrintingPrefs.plist TrustOnFirstUse \-bool NO
+ 
+ defaults read /Library/Preferences/org.cups.PrintingPrefs.plist Encryption
+ .fi
+diff --git a/man/cups-lpd.man.in b/man/cups-lpd.man.in
+index 54e38928a..ceb4ef4f4 100644
 --- a/man/cups-lpd.man.in
 +++ b/man/cups-lpd.man.in
-@@ -20,9 +20,9 @@
+@@ -18,9 +18,9 @@ cups-lpd \- receive print jobs and report printer status to lpd clients
  [
  \fB\-h \fIhostname\fR[\fB:\fIport\fR]
  ] [
@@ -40,7 +94,7 @@ Last-Update: 2015-02-10
  .I option=value
  ]
  .SH DESCRIPTION
-@@ -39,7 +39,7 @@
+@@ -37,7 +37,7 @@ and
  \fB-h \fIhostname\fR[\fB:\fIport\fR]
  Sets the CUPS server (and port) to use.
  .TP 5
@@ -49,9 +103,11 @@ Last-Update: 2015-02-10
  Disables reverse address lookups; normally
  .B cups-lpd
  will try to discover the hostname of the client via a reverse DNS lookup.
+diff --git a/man/cups-snmp.conf.man b/man/cups-snmp.conf.man
+index edf4040eb..9f0ff8ba2 100644
 --- a/man/cups-snmp.conf.man
 +++ b/man/cups-snmp.conf.man
-@@ -21,7 +21,7 @@
+@@ -19,7 +19,7 @@ The
  file configures how the standard CUPS network backends (http, https, ipp, ipps, lpd, snmp, and socket) access printer information using SNMPv1 and is normally located in the \fI/etc/cups\fR directory.
  Each line in the file can be a configuration directive, a blank line, or a comment. Comment lines start with the # character.
  .LP
@@ -60,9 +116,11 @@ Last-Update: 2015-02-10
  .BR cups-snmp (8).
  .SH DIRECTIVES
  The following directives are understood by the CUPS network backends:
+diff --git a/man/cups.man b/man/cups.man
+index 33e8ba501..055cade1c 100644
 --- a/man/cups.man
 +++ b/man/cups.man
-@@ -43,7 +43,7 @@
+@@ -41,7 +41,7 @@ The easiest way to start is by using the web interface to configure your printer
  .LP
  When you are asked for a username and password, enter your login username and password or the "root" username and password.
  .LP
@@ -71,9 +129,11 @@ Last-Update: 2015-02-10
  .LP
  Once you have added the printer, you can print to it from any application. You can also choose Print Test Page from the maintenance menu to print a simple test page and verify that everything is working properly.
  .LP
+diff --git a/man/cupsaddsmb.man.in b/man/cupsaddsmb.man.in
+index 98f3c4245..93387dfaa 100644
 --- a/man/cupsaddsmb.man.in
 +++ b/man/cupsaddsmb.man.in
-@@ -97,7 +97,7 @@
+@@ -95,7 +95,7 @@ Copy the 32-bit drivers to the \fI/usr/share/cups/drivers\fR directory and the 6
      pscript5.dll
  
  .fi
@@ -82,9 +142,11 @@ Last-Update: 2015-02-10
  .SH OPTIONS
  \fBcupsaddsmb\fR supports the following options:
  .TP 5
+diff --git a/man/cupsctl.man b/man/cupsctl.man
+index bdd47ebd4..3b31c7ca5 100644
 --- a/man/cupsctl.man
 +++ b/man/cupsctl.man
-@@ -78,19 +78,19 @@
+@@ -76,19 +76,19 @@ Display the current settings:
  Enable debug logging:
  .nf
  
@@ -107,9 +169,11 @@ Last-Update: 2015-02-10
  .fi
  .SH KNOWN ISSUES
  You cannot set the Listen or Port directives using \fBcupsctl\fR.
+diff --git a/man/cupsd-logs.man b/man/cupsd-logs.man
+index d12fab35f..19db8a677 100644
 --- a/man/cupsd-logs.man
 +++ b/man/cupsd-logs.man
-@@ -35,25 +35,25 @@
+@@ -33,25 +33,25 @@ Each line is in an extended version of the so-called "Common Log Format" used by
  For example:
  .nf
  
@@ -145,7 +209,7 @@ Last-Update: 2015-02-10
  .LP
  The \fIdate-time\fR field is the date and time of the request in local time and is in the format "[DD/MON/YYYY:HH:MM:SS +ZZZZ]".
  .LP
-@@ -103,7 +103,7 @@
+@@ -101,7 +101,7 @@ Request too large; typically this means that a client tried to print a file larg
  Upgrading to TLS-encrypted connection.
  .TP 5
  500
@@ -154,7 +218,7 @@ Last-Update: 2015-02-10
  .TP 5
  501
  The client requested encryption but encryption support is not enabled/compiled in.
-@@ -115,11 +115,11 @@
+@@ -113,11 +113,11 @@ HTTP version number not supported; typically this means that you have a maliciou
  The \fIbytes\fR field contains the number of bytes in the request.
  For POST requests the bytes field contains the number of bytes of non-IPP data that is received from the client.
  .LP
@@ -169,7 +233,7 @@ Last-Update: 2015-02-10
  .BR cupsd.conf (5)
  file controls which messages are logged:
  .nf
-@@ -220,15 +220,15 @@
+@@ -218,15 +218,15 @@ For printers that cannot produce copies on their own, the num-copies field will
  .LP
  Lines containing the keyword "total" have a \fInum-impressions\fR field instead which provides the total number of impressions (sides) that have been printed on for the job.
  .LP
@@ -189,9 +253,24 @@ Last-Update: 2015-02-10
  .SH SEE ALSO
  .BR cupsd (8),
  .BR cupsd.conf (5),
+diff --git a/man/cupsd.conf.man.in b/man/cupsd.conf.man.in
+index 7843360b4..40fea92e3 100644
+--- a/man/cupsd.conf.man.in
++++ b/man/cupsd.conf.man.in
+@@ -489,7 +489,7 @@ The \fIAllowDH\fR option enables cipher suites using plain Diffie-Hellman key ne
+ The \fIAllowRC4\fR option enables the 128-bit RC4 cipher suites, which are required for some older clients that do not implement newer ones.
+ The \fIAllowSSL3\fR option enables SSL v3.0, which is required for some older clients that do not support TLS v1.0.
+ The \fIDenyCBC\fR option disables all CBC cipher suites.
+-The \fIDenyTLS1.0\fR option disables TLS v1.0 support - this sets the minimum protocol version to TLS v1.1.
++The \fIDenyTLS1.0\fR option disables TLS v1.0 support \- this sets the minimum protocol version to TLS v1.1.
+ .\"#SSLPort
+ .TP 5
+ \fBSSLPort \fIport\fR
+diff --git a/man/cupsfilter.man b/man/cupsfilter.man
+index ae64b8b66..52d249978 100644
 --- a/man/cupsfilter.man
 +++ b/man/cupsfilter.man
-@@ -127,7 +127,7 @@
+@@ -125,7 +125,7 @@ command use the current user and security session. This may result in different
  The following command will generate a PDF preview of job 42 for a printer named "myprinter" and save it to a file named "preview.pdf":
  .nf
  
@@ -200,9 +279,11 @@ Last-Update: 2015-02-10
  .fi
  .SH SEE ALSO
  .BR cups (1),
+diff --git a/man/filter.man b/man/filter.man
+index b7078a2cc..55784eb68 100644
 --- a/man/filter.man
 +++ b/man/filter.man
-@@ -141,7 +141,7 @@
+@@ -139,7 +139,7 @@ Sets the named keywords in the printer's PPD file. This is typically used to upd
  .TP 5
  \fBSTATE: +\fI printer-state-reason \fR[ \fI... printer-state-reason\fR ]
  .TP 5
@@ -211,9 +292,11 @@ Last-Update: 2015-02-10
  Sets, adds, or removes "printer-state-reason" keywords for the current queue. Typically this is used to indicate media, ink, and toner conditions on a printer.
  .TP 5
  \fBWARNING:\fI message\fR
+diff --git a/man/ippfind.man b/man/ippfind.man
+index 219c47db1..161b33c45 100644
 --- a/man/ippfind.man
 +++ b/man/ippfind.man
-@@ -80,7 +80,7 @@
+@@ -78,7 +78,7 @@ True is the hostname matches the given regular expression.
  .B \-l
  .TP 5
  .B \-\-ls
@@ -222,7 +305,7 @@ Last-Update: 2015-02-10
  The result is true if the URI is accessible, false otherwise.
  .TP 5
  .B \-\-local
-@@ -108,7 +108,7 @@
+@@ -106,7 +106,7 @@ The result is always true.
  .B \-q
  .TP 5
  .B \-\-quiet
@@ -231,7 +314,7 @@ Last-Update: 2015-02-10
  .TP 5
  .B \-r
  .TP 5
-@@ -141,7 +141,7 @@
+@@ -139,7 +139,7 @@ True if the URI matches the given regular expression.
  .TP 5
  \fB\-\-exec \fIutility \fR[ \fIargument \fR... ] \fB;\fR
  Executes the specified program if the current result is true.
@@ -240,18 +323,22 @@ Last-Update: 2015-02-10
  .PP
  Expressions may also contain modifiers:
  .TP 5
+diff --git a/man/ipptoolfile.man b/man/ipptoolfile.man
+index 35b050419..c10254f64 100644
 --- a/man/ipptoolfile.man
 +++ b/man/ipptoolfile.man
-@@ -142,7 +142,7 @@
- The following directives are understood within a \fItest\fR:
- .TP 5
+@@ -169,8 +169,8 @@ The following directives are understood within a \fItest\fR:
  \fBATTR \fItag attribute-name value(s)\fR
--Adds an attribute to the test request. Values are separated by the comma (",") character - escape commas using the "\" character. Common attributes and values are listed in the IANA IPP registry - see references below.
-+Adds an attribute to the test request. Values are separated by the comma (",") character \- escape commas using the "\" character. Common attributes and values are listed in the IANA IPP registry \- see references below.
+ Adds an attribute to the test request.
+ Out-of-band tags (admin-define, delete-attribute, no-value, not-settable, unknown, unsupported) have no value.
+-Values for other tags are separated by the comma (",") character - escape commas using the "\" character.
+-Common attributes and values are listed in the IANA IPP registry - see references below.
++Values for other tags are separated by the comma (",") character \- escape commas using the "\" character.
++Common attributes and values are listed in the IANA IPP registry \- see references below.
  .TP 5
  \fBATTR collection \fIattribute-name \fB{ MEMBER \fItag member-name value(s) ... \fB}\fR [ \fI... \fB,{ \fI... \fB} \fR]
- Adds a collection attribute to the test request. Member attributes follow the same syntax as regular attributes and can themselves be nested collections. Multiple collection values can be supplied as needed, separated by commas.
-@@ -166,7 +166,7 @@
+ Adds a collection attribute to the test request.
+@@ -197,7 +197,7 @@ test report.
  \fBEXPECT ?\fIattribute-name predicate(s)\fR
  .TP 5
  \fBEXPECT !\fIattribute-name\fR
@@ -260,7 +347,7 @@ Last-Update: 2015-02-10
  .TP 5
  \fBEXPECT-ALL \fIattribute-name \fR[ \fIpredicate(s) \fR]
  .TP 5
-@@ -218,7 +218,7 @@
+@@ -249,7 +249,7 @@ Specifies whether
  will skip the current test if the previous test resulted in an error/failure.
  .TP 5
  \fBSTATUS \fIstatus-code \fR[ \fIpredicate\fR ]
@@ -269,9 +356,11 @@ Last-Update: 2015-02-10
  .TP 5
  \fBTEST\-ID "\fIidentifier\fR"
  Specifies an identifier string for the current test.
+diff --git a/man/lp.man b/man/lp.man
+index b4cb55ef8..4207ad218 100644
 --- a/man/lp.man
 +++ b/man/lp.man
-@@ -88,7 +88,7 @@
+@@ -86,7 +86,7 @@ lp \- print files
  ]
  .SH DESCRIPTION
  \fBlp\fR submits files for printing or alters a pending job.
@@ -280,7 +369,7 @@ Last-Update: 2015-02-10
  .SS THE DEFAULT DESTINATION
  CUPS provides many ways to set the default destination. The \fBLPDEST\fR and \fBPRINTER\fR environment variables are consulted first.
  If neither are set, the current default set using the
-@@ -157,7 +157,7 @@
+@@ -156,7 +156,7 @@ Use a value of \fIrestart\fR with the \fI-i\fR option to restart a completed job
  \fB\-P \fIpage-list\fR
  Specifies which pages to print in the document.
  The list can contain a list of numbers and ranges (#-#) separated by commas, e.g., "1,3-5,16".
@@ -289,7 +378,25 @@ Last-Update: 2015-02-10
  .SS COMMON JOB OPTIONS
  Aside from the printer-specific options reported by the
  .BR lpoptions (1)
-@@ -192,19 +192,19 @@
+@@ -197,7 +197,7 @@ Prints 2, 4, 6, 9, or 16 document (input) pages on each output page.
+ .TP 5
+ \fB\-o number\-up\-layout=\fIlayout\fR
+ Specifies the layout of pages with the "number-up" option.
+-The "layout" string can be "btlr", "btrl", "lrbt", "lrtb", "rlbt", "rltb", "tblr", or "tbrl" - the first two letters determine the column order while the second two letters determine the row order.
++The "layout" string can be "btlr", "btrl", "lrbt", "lrtb", "rlbt", "rltb", "tblr", or "tbrl" \- the first two letters determine the column order while the second two letters determine the row order.
+ "bt" is bottom-to-top, "lr" is left-to-right, "rl" is right-to-left, and "tb" is top-to-bottom.
+ .TP 5
+ \fB\-o orientation\-requested=4\fR
+@@ -219,7 +219,7 @@ Prints a border around each document page.
+ \fB\-o page\-ranges=\fIpage-list\fR
+ Specifies which pages to print in the document.
+ The list can contain a list of numbers and ranges (#-#) separated by commas, e.g., "1,3-5,16".
+-The page numbers refer to the output pages and not the document's original pages - options like "number-up" can affect the numbering of the pages.
++The page numbers refer to the output pages and not the document's original pages \- options like "number-up" can affect the numbering of the pages.
+ .TP 5
+ \fB\-o sides=one\-sided\fR
+ Prints on one side of the paper.
+@@ -238,19 +238,19 @@ The \fI-q\fR option accepts a different range of values than the Solaris lp comm
  Print two copies of a document to the default printer:
  .nf
  
@@ -312,9 +419,42 @@ Last-Update: 2015-02-10
  .fi
  .SH SEE ALSO
  .BR cancel (1),
+diff --git a/man/lpadmin.man b/man/lpadmin.man
+index 17607287c..3275ed914 100644
+--- a/man/lpadmin.man
++++ b/man/lpadmin.man
+@@ -127,7 +127,7 @@ command.
+ .TP 5
+ \fB\-o \fIname\fB-default=\fIvalue\fR
+ Sets a default server-side option for the destination.
+-Any print-time option can be defaulted, e.g., "-o number-up-default=2" to set the default "number-up" option value to 2.
++Any print-time option can be defaulted, e.g., "\-o number-up-default=2" to set the default "number-up" option value to 2.
+ .TP 5
+ \fB\-o port\-monitor=\fIname\fR
+ Sets the binary communications program to use when printing, "none", "bcp", or "tbcp".
+@@ -169,7 +169,7 @@ If the resulting class becomes empty it is removed.
+ Sets user-level access control on a destination.
+ Names starting with "@" are interpreted as UNIX groups.
+ The latter two forms turn user-level access control off.
+-Note: The user 'root' is not granted special access - using "-u allow:foo,bar" will allow users 'foo' and 'bar' to access the printer but NOT 'root'.
++Note: The user 'root' is not granted special access \- using "\-u allow:foo,bar" will allow users 'foo' and 'bar' to access the printer but NOT 'root'.
+ .TP 5
+ \fB\-v "\fIdevice-uri\fB"\fR
+ Sets the \fIdevice-uri\fR attribute of the printer queue.
+@@ -200,7 +200,7 @@ The CUPS version of \fBlpadmin\fR does not support all of the System V or Solari
+ Create an IPP Everywhere print queue:
+ .nf
+ 
+-    lpadmin -p myprinter -E -v ipp://myprinter.local/ipp/print -m everywhere
++    lpadmin \-p myprinter \-E \-v ipp://myprinter.local/ipp/print \-m everywhere
+ 
+ .fi
+ .SH SEE ALSO
+diff --git a/man/lpoptions.man.in b/man/lpoptions.man.in
+index 2aab12f45..bb1a3a73c 100644
 --- a/man/lpoptions.man.in
 +++ b/man/lpoptions.man.in
-@@ -122,9 +122,9 @@
+@@ -120,9 +120,9 @@ Destinations can only be removed using the
  .BR lpadmin (8)
  command.
  .SH FILES
@@ -326,9 +466,29 @@ Last-Update: 2015-02-10
  .SH CONFORMING TO
  The \fBlpoptions\fR command is unique to CUPS.
  .SH SEE ALSO
+diff --git a/man/lpr.man b/man/lpr.man
+index bfd727fbe..c4e250932 100644
 --- a/man/lpr.man
 +++ b/man/lpr.man
-@@ -119,19 +119,19 @@
+@@ -152,7 +152,7 @@ Prints 2, 4, 6, 9, or 16 document (input) pages on each output page.
+ .TP 5
+ \fB\-o number\-up\-layout=\fIlayout\fR
+ Specifies the layout of pages with the "number-up" option.
+-The "layout" string can be "btlr", "btrl", "lrbt", "lrtb", "rlbt", "rltb", "tblr", or "tbrl" - the first two letters determine the column order while the second two letters determine the row order.
++The "layout" string can be "btlr", "btrl", "lrbt", "lrtb", "rlbt", "rltb", "tblr", or "tbrl" \- the first two letters determine the column order while the second two letters determine the row order.
+ "bt" is bottom-to-top, "lr" is left-to-right, "rl" is right-to-left, and "tb" is top-to-bottom.
+ .TP 5
+ \fB\-o orientation\-requested=4\fR
+@@ -174,7 +174,7 @@ Prints a border around each document page.
+ \fB\-o page\-ranges=\fIpage-list\fR
+ Specifies which pages to print in the document.
+ The list can contain a list of numbers and ranges (#-#) separated by commas, e.g., "1,3-5,16".
+-The page numbers refer to the output pages and not the document's original pages - options like "number-up" can affect the numbering of the pages.
++The page numbers refer to the output pages and not the document's original pages \- options like "number-up" can affect the numbering of the pages.
+ .TP 5
+ \fB\-o sides=one\-sided\fR
+ Prints on one side of the paper.
+@@ -190,19 +190,19 @@ The \fI\-c\fR, \fI\-d\fR, \fI\-f\fR, \fI\-g\fR, \fI\-i\fR, \fI\-n\fR, \fI\-t\fR,
  Print two copies of a document to the default printer:
  .nf
  
@@ -351,9 +511,11 @@ Last-Update: 2015-02-10
  .fi
  .SH SEE ALSO
  .BR cancel (1),
+diff --git a/man/mime.convs.man b/man/mime.convs.man
+index 9776256bc..8f4f62902 100644
 --- a/man/mime.convs.man
 +++ b/man/mime.convs.man
-@@ -40,11 +40,11 @@
+@@ -38,11 +38,11 @@ A value of 100 means that the filter uses a large amount of resources while a va
  The \fIfilter\fR field specifies the filter program filename.
  Filenames are relative to the CUPS filter directory.
  .SH FILES
@@ -363,14 +525,16 @@ Last-Update: 2015-02-10
 -\fI/usr/lib/cups/filter\fR - Typical CUPS filter directory.
 +\fI/usr/lib/cups/filter\fR \- Typical CUPS filter directory.
  .br
--\fI/usr/libexec/cups/filter\fR - CUPS filter directory on OS X.
-+\fI/usr/libexec/cups/filter\fR \- CUPS filter directory on OS X.
+-\fI/usr/libexec/cups/filter\fR - CUPS filter directory on macOS.
++\fI/usr/libexec/cups/filter\fR \- CUPS filter directory on macOS.
  .SH EXAMPLES
  Define a filter that converts PostScript documents to CUPS Raster format:
  .nf
+diff --git a/man/mime.types.man b/man/mime.types.man
+index 971526135..eea0a0d96 100644
 --- a/man/mime.types.man
 +++ b/man/mime.types.man
-@@ -40,7 +40,7 @@
+@@ -38,7 +38,7 @@ See the "TYPE MATCHING AND PRIORITY" section for more information.
  .LP
  The rules may be grouped using parenthesis, joined using "+" for a logical AND, joined using "," or whitespace for a logical OR, and negated using "!".
  .SS RULES
@@ -379,7 +543,7 @@ Last-Update: 2015-02-10
  values inside parenthesis.
  The following functions are available:
  .TP 5
-@@ -90,7 +90,7 @@
+@@ -88,7 +88,7 @@ extension "doc", normally the type "text/bar" will be chosen since its name is
  alphanumerically smaller than "text/foo".
  However, if "text/foo" also defines a higher priority than "text/bar", "text/foo" will be chosen instead.
  .SH FILES
@@ -388,9 +552,11 @@ Last-Update: 2015-02-10
  .SH EXAMPLES
  Define two MIME media types for raster data, with one being a subset with higher priority:
  .nf
+diff --git a/man/ppdc.man b/man/ppdc.man
+index 3c16aa442..acae21d77 100644
 --- a/man/ppdc.man
 +++ b/man/ppdc.man
-@@ -90,7 +90,7 @@
+@@ -88,7 +88,7 @@ The default is to generate uncompressed PPD files.
  \fB\-\-crlf\fR
  .TP 5
  \fB\-\-lf\fR
@@ -399,14 +565,3 @@ Last-Update: 2015-02-10
  The default is to use the line feed character alone.
  .SH SEE ALSO
  .BR ppdhtml (1),
---- a/man/lpadmin.man
-+++ b/man/lpadmin.man
-@@ -128,7 +128,7 @@
- .TP 5
- \fB\-o \fIname\fB-default=\fIvalue\fR
- Sets a default server-side option for the destination.
--Any print-time option can be defaulted, e.g., "-o number-up-default=2" to set the default "number-up" option value to 2.
-+Any print-time option can be defaulted, e.g., "\-o number-up-default=2" to set the default "number-up" option value to 2.
- .TP 5
- \fB\-o port\-monitor=\fIname\fR
- Sets the binary communications program to use when printing, "none", "bcp", or "tbcp".
