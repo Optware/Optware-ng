@@ -37,7 +37,7 @@ PHP_HOST_CLI=$(HOST_STAGING_PREFIX)/bin/php
 #
 # PHP_IPK_VERSION should be incremented when the ipk changes.
 #
-PHP_IPK_VERSION=8
+PHP_IPK_VERSION=9
 
 #
 # PHP_CONFFILES should be a list of user-editable files
@@ -577,6 +577,7 @@ endif
 		--with-layout=GNU \
 		--disable-static \
 		--disable-opcache \
+		--enable-maintainer-zts \
 		--enable-cgi \
 		--enable-bcmath=shared \
 		--enable-calendar=shared \

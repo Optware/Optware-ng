@@ -47,7 +47,7 @@ PHP_THTTPD_LIBPHP_UNZIP=$(PHP_UNZIP)
 #
 # PHP_THTTPD_IPK_VERSION should be incremented when the ipk changes.
 #
-PHP_THTTPD_IPK_VERSION=3
+PHP_THTTPD_IPK_VERSION=4
 
 #
 # PHP_THTTPD_CONFFILES should be a list of user-editable files
@@ -185,6 +185,7 @@ endif
 		--with-config-file-scan-dir=$(TARGET_PREFIX)/etc/php.d \
 		--with-layout=GNU \
 		--disable-static \
+		--enable-maintainer-zts \
 		--disable-cgi \
 		--disable-cli \
 		--enable-bcmath=shared \

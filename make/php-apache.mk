@@ -179,6 +179,7 @@ endif
 		--with-config-file-scan-dir=$(TARGET_PREFIX)/etc/php.d \
 		--with-layout=GNU \
 		--disable-static \
+		--enable-maintainer-zts \
 		--disable-cgi \
 		--disable-cli \
 		--enable-bcmath=shared \

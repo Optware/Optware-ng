@@ -43,7 +43,7 @@ EACCELERATOR_CONFLICTS=
 #
 # EACCELERATOR_IPK_VERSION should be incremented when the ipk changes.
 #
-EACCELERATOR_IPK_VERSION=2
+EACCELERATOR_IPK_VERSION=3
 
 #
 # EACCELERATOR_CONFFILES should be a list of user-editable files
