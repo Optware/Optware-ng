@@ -37,7 +37,7 @@ PHP_HOST_CLI=$(HOST_STAGING_PREFIX)/bin/php
 #
 # PHP_IPK_VERSION should be incremented when the ipk changes.
 #
-PHP_IPK_VERSION=7
+PHP_IPK_VERSION=8
 
 #
 # PHP_CONFFILES should be a list of user-editable files
@@ -59,10 +59,9 @@ PHP_LOCALES=
 # which they should be applied to the source code.
 #
 PHP_PATCHES=\
+	$(PHP_SOURCE_DIR)/cross-compile.patch \
 	$(PHP_SOURCE_DIR)/DSA_get_default_method-detection.patch \
 	$(PHP_SOURCE_DIR)/aclocal.m4.patch \
-	$(PHP_SOURCE_DIR)/configure.in.patch \
-	$(PHP_SOURCE_DIR)/threads.m4.patch \
 	$(PHP_SOURCE_DIR)/endian-5.0.4.patch \
 	$(PHP_SOURCE_DIR)/ext-posix-uclibc.patch \
 	$(PHP_SOURCE_DIR)/no_libmysql_r.patch \
@@ -556,9 +555,7 @@ endif
 	echo 'AC_CONFIG_MACRO_DIR([m4])' >> $(@D)/configure.in
 
 	$(AUTORECONF1.10) -vif $(@D)
-	sed -i -e 's/as_fn_error \$$? "cannot run test program while cross compiling/\$$as_echo \$$? "cannot run test program while cross compiling/' \
-		-e 's|flock_type=unknown|flock_type=linux\n\$$as_echo "#define HAVE_FLOCK_LINUX /\*\*/" >>confdefs\.h|' \
-		-e 's|icu_install_prefix=.*|icu_install_prefix=$(STAGING_PREFIX)|' $(@D)/configure
+	sed -i -e 's|icu_install_prefix=.*|icu_install_prefix=$(STAGING_PREFIX)|' $(@D)/configure
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PHP_CPPFLAGS)" \

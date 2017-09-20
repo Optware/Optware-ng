@@ -1,0 +1,364 @@
+diff -ru a/acinclude.m4 b/acinclude.m4
+--- a/acinclude.m4	2016-01-06 07:14:47.000000000 -0800
++++ acinclude.m4	2016-01-27 12:33:50.115406080 -0800
+@@ -1393,7 +1393,7 @@
+           ac_cv_what_readdir_r=none
+       ])
+     ],[
+-      ac_cv_what_readdir_r=none
++      ac_cv_what_readdir_r=POSIX
+    ])
+   ])
+     case $ac_cv_what_readdir_r in
+@@ -2532,7 +2532,7 @@
+ AC_DEFUN([PHP_SETUP_LIBXML], [
+ AC_CACHE_CHECK([for xml2-config path], ac_cv_php_xml2_config_path,
+ [
+-  for i in $PHP_LIBXML_DIR /usr/local /usr; do
++  for i in $PHP_LIBXML_DIR; do
+     if test -x "$i/bin/xml2-config"; then
+       ac_cv_php_xml2_config_path="$i/bin/xml2-config"
+       break
+@@ -2562,11 +2562,10 @@
+         ], [
+           AC_MSG_RESULT(no)
+           AC_MSG_ERROR([build test failed.  Please check the config.log for details.])
+-        ], [
+-          [$]$1
+         ])
+       ])
+       if test "$php_cv_libxml_build_works" = "yes"; then
++        AC_MSG_RESULT(yes)
+         AC_DEFINE(HAVE_LIBXML, 1, [ ])
+       fi
+       $2
+@@ -2895,7 +2894,7 @@
+     ],[
+       ac_cv_write_stdout=no
+     ],[
+-      ac_cv_write_stdout=no
++      ac_cv_write_stdout=yes
+     ])
+   ])
+   if test "$ac_cv_write_stdout" = "yes"; then
+diff -ru a/configure.in b/configure.in
+--- a/configure.in	2016-01-06 07:14:47.000000000 -0800
++++ configure.in	2016-01-27 12:02:06.563333391 -0800
+@@ -453,7 +453,10 @@
+ PHP_CHECK_FUNC(gethostbyaddr, nsl)
+ PHP_CHECK_FUNC(yp_get_default_domain, nsl)
+ 
+-PHP_CHECK_FUNC(dlopen, dl)
++PHP_ADD_LIBRARY(dl)
++PHP_DEF_HAVE(dlopen)
++PHP_DEF_HAVE(libdl)
++ac_cv_func_dlopen=yes
+ if test "$ac_cv_func_dlopen" = "yes"; then
+   AC_DEFINE(HAVE_LIBDL, 1, [ ])
+ fi
+@@ -734,7 +737,7 @@
+   freeaddrinfo(ai);
+   exit(0);
+ }
+-  ],ac_cv_func_getaddrinfo=yes, ac_cv_func_getaddrinfo=no, ac_cv_func_getaddrinfo=no),
++  ],ac_cv_func_getaddrinfo=yes, ac_cv_func_getaddrinfo=no, ac_cv_func_getaddrinfo=yes),
+ ac_cv_func_getaddrinfo=no)])
+ if test "$ac_cv_func_getaddrinfo" = yes; then
+   AC_DEFINE(HAVE_GETADDRINFO,1,[Define if you have the getaddrinfo function])
+diff -ru a/ext/curl/config.m4 b/ext/curl/config.m4
+--- a/ext/curl/config.m4	2016-01-06 07:14:47.000000000 -0800
++++ ext/curl/config.m4	2016-01-27 12:02:06.563333391 -0800
+@@ -83,7 +83,10 @@
+     ], [
+       AC_MSG_RESULT([no])
+     ], [
+-      AC_MSG_RESULT([no])
++      AC_MSG_RESULT([yes])
++      AC_CHECK_HEADERS([openssl/crypto.h], [
++        AC_DEFINE([HAVE_CURL_OPENSSL], [1], [Have cURL with OpenSSL support])
++      ])
+     ])
+    
+     AC_MSG_CHECKING([for gnutls support in libcurl])
+diff -ru a/ext/fileinfo/config.m4 b/ext/fileinfo/config.m4
+--- a/ext/fileinfo/config.m4	2016-01-06 07:14:47.000000000 -0800
++++ ext/fileinfo/config.m4	2016-01-27 12:02:06.563333391 -0800
+@@ -46,6 +46,10 @@
+     AC_MSG_RESULT(no)
+     AC_MSG_NOTICE(using libmagic strcasestr implementation)
+     libmagic_sources="$libmagic_sources libmagic/strcasestr.c"
++  ],[
++    dnl cross-compiling; assume not present
++    AC_MSG_NOTICE(using libmagic strcasestr implementation)
++    libmagic_sources="$libmagic_sources libmagic/strcasestr.c"
+   ])
+ 
+   PHP_NEW_EXTENSION(fileinfo, fileinfo.c $libmagic_sources, $ext_shared,,-I@ext_srcdir@/libmagic)
+diff -ru a/ext/iconv/config.m4 b/ext/iconv/config.m4
+--- a/ext/iconv/config.m4	2016-01-06 07:14:47.000000000 -0800
++++ ext/iconv/config.m4	2016-01-27 12:02:06.567333352 -0800
+@@ -154,9 +154,9 @@
+       PHP_DEFINE([ICONV_SUPPORTS_ERRNO],0,[ext/iconv])
+       AC_DEFINE([ICONV_SUPPORTS_ERRNO],0,[Whether iconv supports error no or not])
+     ],[
+-      AC_MSG_RESULT(no, cross-compiling)
+-      PHP_DEFINE([ICONV_SUPPORTS_ERRNO],0,[ext/iconv])
+-      AC_DEFINE([ICONV_SUPPORTS_ERRNO],0,[Whether iconv supports error no or not])
++      AC_MSG_RESULT(yes, cross-compiling)
++      PHP_DEFINE([ICONV_SUPPORTS_ERRNO],1,[ext/iconv])
++      AC_DEFINE([ICONV_SUPPORTS_ERRNO],1,[Whether iconv supports error no or not])
+     ])
+ 
+     AC_MSG_CHECKING([if iconv supports //IGNORE])
+diff -ru a/ext/mbstring/config.m4 b/ext/mbstring/config.m4
+--- a/ext/mbstring/config.m4	2016-01-06 07:14:47.000000000 -0800
++++ ext/mbstring/config.m4	2016-01-27 12:02:06.567333352 -0800
+@@ -88,14 +88,7 @@
+ int main() { return foo(10, "", 3.14); }
+         ], [php_cv_mbstring_stdarg=yes], [php_cv_mbstring_stdarg=no], [
+           dnl cross-compile needs something here
+-          case $host_alias in
+-          *netware*)
+           php_cv_mbstring_stdarg=yes
+-          ;;
+-          *)
+-          php_cv_mbstring_stdarg=no
+-          ;;
+-          esac
+         ])
+       ])
+ 
+diff -ru a/ext/opcache/config.m4 b/ext/opcache/config.m4
+--- a/ext/opcache/config.m4	2016-01-06 07:14:47.000000000 -0800
++++ ext/opcache/config.m4	2016-01-27 12:02:06.567333352 -0800
+@@ -78,7 +78,9 @@
+ }
+ ],dnl
+     AC_DEFINE(HAVE_SHM_IPC, 1, [Define if you have SysV IPC SHM support])
+-    msg=yes,msg=no,msg=no)
++    msg=yes,msg=no, [
++    AC_DEFINE(HAVE_SHM_IPC, 1, [Define if you have SysV IPC SHM support])
++    msg=yes ])
+   AC_MSG_RESULT([$msg])
+ 
+   AC_MSG_CHECKING(for mmap() using MAP_ANON shared memory support)
+@@ -130,7 +132,9 @@
+ }
+ ],dnl
+     AC_DEFINE(HAVE_SHM_MMAP_ANON, 1, [Define if you have mmap(MAP_ANON) SHM support])
+-    msg=yes,msg=no,msg=no)
++    msg=yes,msg=no, [
++    AC_DEFINE(HAVE_SHM_MMAP_ANON, 1, [Define if you have mmap(MAP_ANON) SHM support])
++    msg=yes ])
+   AC_MSG_RESULT([$msg])
+ 
+   AC_MSG_CHECKING(for mmap() using /dev/zero shared memory support)
+@@ -185,7 +189,9 @@
+ }
+ ],dnl
+     AC_DEFINE(HAVE_SHM_MMAP_ZERO, 1, [Define if you have mmap("/dev/zero") SHM support])
+-    msg=yes,msg=no,msg=no)
++    msg=yes,msg=no, [
++    AC_DEFINE(HAVE_SHM_MMAP_ZERO, 1, [Define if you have mmap("/dev/zero") SHM support])
++    msg=yes ])
+   AC_MSG_RESULT([$msg])
+ 
+   AC_MSG_CHECKING(for mmap() using shm_open() shared memory support)
+@@ -254,7 +260,9 @@
+ }
+ ],dnl
+     AC_DEFINE(HAVE_SHM_MMAP_POSIX, 1, [Define if you have POSIX mmap() SHM support])
+-    msg=yes,msg=no,msg=no)
++    msg=yes,msg=no, [
++    AC_DEFINE(HAVE_SHM_MMAP_POSIX, 1, [Define if you have POSIX mmap() SHM support])
++    msg=yes ])
+   AC_MSG_RESULT([$msg])
+ 
+   AC_MSG_CHECKING(for mmap() using regular file shared memory support)
+@@ -323,7 +331,9 @@
+ }
+ ],dnl
+     AC_DEFINE(HAVE_SHM_MMAP_FILE, 1, [Define if you have mmap() SHM support])
+-    msg=yes,msg=no,msg=no)
++    msg=yes,msg=no, [
++    AC_DEFINE(HAVE_SHM_MMAP_FILE, 1, [Define if you have mmap() SHM support])
++    msg=yes ])
+   AC_MSG_RESULT([$msg])
+ 
+ flock_type=unknown
+@@ -341,7 +351,14 @@
+ 	flock_type=linux
+     AC_DEFINE([HAVE_FLOCK_LINUX], [], [Struct flock is Linux-type])
+     AC_MSG_RESULT("yes")
+-], AC_MSG_RESULT("no") )
++], [
++    AC_MSG_RESULT("no")
++], [
++    dnl cross-compiling; assume Linux
++       flock_type=linux
++    AC_DEFINE([HAVE_FLOCK_LINUX], [], [Struct flock is Linux-type])
++    AC_MSG_RESULT("yes")
++])
+ 
+ AC_MSG_CHECKING("whether flock struct is BSD ordered")
+ AC_TRY_RUN([
+@@ -357,7 +374,12 @@
+ 	flock_type=bsd
+     AC_DEFINE([HAVE_FLOCK_BSD], [], [Struct flock is BSD-type]) 
+     AC_MSG_RESULT("yes")
+-], AC_MSG_RESULT("no") )
++], [
++    AC_MSG_RESULT("no")
++], [
++    dnl cross-compiling; assume Linux
++    AC_MSG_RESULT("no")
++])
+ 
+ if test "$flock_type" == "unknown"; then
+ 	AC_MSG_ERROR([Don't know how to define struct flock on this system[,] set --enable-opcache=no])
+diff -ru a/ext/posix/config.m4 b/ext/posix/config.m4
+--- a/ext/posix/config.m4	2016-01-06 07:14:47.000000000 -0800
++++ ext/posix/config.m4	2016-01-27 12:02:06.567333352 -0800
+@@ -29,7 +29,8 @@
+   ],[
+     AC_MSG_RESULT([no, posix_ttyname() will be thread-unsafe])
+   ], [
+-    AC_MSG_RESULT([no, cannot detect working ttyname_r() when cross compiling. posix_ttyname() will be thread-unsafe])
++    AC_MSG_RESULT([yes, cross-compiling])
++    AC_DEFINE(HAVE_TTYNAME_R, 1, [Whether you have a working ttyname_r])
+   ])
+ 
+   AC_CACHE_CHECK([for utsname.domainname], ac_cv_have_utsname_domainname, [
+diff -ru a/ext/standard/config.m4 b/ext/standard/config.m4
+--- a/ext/standard/config.m4	2016-01-06 07:14:47.000000000 -0800
++++ ext/standard/config.m4	2016-01-27 12:02:06.567333352 -0800
+@@ -104,7 +104,7 @@
+ ],[
+   ac_cv_crypt_ext_des=no
+ ],[
+-  ac_cv_crypt_ext_des=no
++  ac_cv_crypt_ext_des=yes
+ ])])
+ 
+ AC_CACHE_CHECK(for MD5 crypt, ac_cv_crypt_md5,[
+@@ -137,7 +137,7 @@
+ ],[
+   ac_cv_crypt_md5=no
+ ],[
+-  ac_cv_crypt_md5=no
++  ac_cv_crypt_md5=yes
+ ])])
+ 
+ AC_CACHE_CHECK(for Blowfish crypt, ac_cv_crypt_blowfish,[
+@@ -167,7 +167,7 @@
+ ],[
+   ac_cv_crypt_blowfish=no
+ ],[
+-  ac_cv_crypt_blowfish=no
++  ac_cv_crypt_blowfish=yes
+ ])])
+ 
+ AC_CACHE_CHECK(for SHA512 crypt, ac_cv_crypt_sha512,[
+@@ -196,7 +196,7 @@
+ ],[
+   ac_cv_crypt_sha512=no
+ ],[
+-  ac_cv_crypt_sha512=no
++  ac_cv_crypt_sha512=yes
+ ])])
+ 
+ AC_CACHE_CHECK(for SHA256 crypt, ac_cv_crypt_sha256,[
+@@ -226,7 +226,7 @@
+ ],[
+   ac_cv_crypt_sha256=no
+ ],[
+-  ac_cv_crypt_sha256=no
++  ac_cv_crypt_sha256=yes
+ ])])
+ 
+ 
+@@ -425,7 +425,7 @@
+ ],[
+   ac_cv_atof_accept_nan=no
+ ],[
+-  ac_cv_atof_accept_nan=no
++  ac_cv_atof_accept_nan=yes
+ ])])
+ if test "$ac_cv_atof_accept_nan" = "yes"; then
+   AC_DEFINE([HAVE_ATOF_ACCEPTS_NAN], 1, [whether atof() accepts NAN])
+@@ -459,7 +459,7 @@
+ ],[
+   ac_cv_atof_accept_inf=no
+ ],[
+-  ac_cv_atof_accept_inf=no
++  ac_cv_atof_accept_inf=yes
+ ])])
+ if test "$ac_cv_atof_accept_inf" = "yes"; then
+   AC_DEFINE([HAVE_ATOF_ACCEPTS_INF], 1, [whether atof() accepts INF])
+diff -ru a/sapi/fpm/config.m4 b/sapi/fpm/config.m4
+--- a/sapi/fpm/config.m4	2016-01-06 07:14:47.000000000 -0800
++++ sapi/fpm/config.m4	2016-01-27 12:02:06.571333310 -0800
+@@ -115,6 +115,9 @@
+     AC_MSG_RESULT([yes])
+   ], [
+     AC_MSG_RESULT([no])
++  ], [
++    have_ptrace=yes
++    AC_MSG_RESULT([yes])
+   ])
+ 
+   if test "$have_ptrace" = "yes"; then
+diff -ru a/TSRM/threads.m4 b/TSRM/threads.m4
+--- a/TSRM/threads.m4	2016-01-06 07:14:47.000000000 -0800
++++ TSRM/threads.m4	2016-01-27 12:02:06.571333310 -0800
+@@ -86,7 +86,7 @@
+   pthreads_working=no
+   ], [
+   dnl For cross compiling running this test is of no use. NetWare supports pthreads
+-  pthreads_working=no
++  pthreads_working=yes
+   case $host_alias in
+   *netware*)
+     pthreads_working=yes
+@@ -124,7 +124,7 @@
+   AC_CACHE_CHECK(for pthreads_cflags,ac_cv_pthreads_cflags,[
+   ac_cv_pthreads_cflags=
+   if test "$pthreads_working" != "yes"; then
+-    for flag in -kthread -pthread -pthreads -mthreads -Kthread -threads -mt -qthreaded; do 
++    for flag in -pthread; do 
+       ac_save=$CFLAGS
+       CFLAGS="$CFLAGS $flag"
+       PTHREADS_CHECK_COMPILE
+diff -ru a/Zend/Zend.m4 b/Zend/Zend.m4
+--- a/Zend/Zend.m4	2016-01-06 07:14:47.000000000 -0800
++++ Zend/Zend.m4	2016-01-27 12:02:06.571333310 -0800
+@@ -135,7 +135,8 @@
+ ], [
+   AC_MSG_RESULT(no)
+ ], [
+-  AC_MSG_RESULT(no)
++  AC_DEFINE([ZEND_DVAL_TO_LVAL_CAST_OK], 1, [Define if double cast to long preserves least significant bits])
++  AC_MSG_RESULT(yes)
+ ])
+ 	
+ ])
+@@ -332,7 +333,8 @@
+   AC_MSG_RESULT(no)
+ ], [
+   dnl cross-compile needs something here
+-  AC_MSG_RESULT(no)
++  AC_DEFINE([HAVE_MEM_MMAP_ANON], 1, [Define if the target system has support for memory allocation using mmap(MAP_ANON)])
++  AC_MSG_RESULT(yes)
+ ])
+ 
+ dnl test for memory allocation using mmap("/dev/zero")
+@@ -387,7 +389,8 @@
+   AC_MSG_RESULT(no)
+ ], [
+   dnl cross-compile needs something here
+-  AC_MSG_RESULT(no)
++  AC_DEFINE([HAVE_MEM_MMAP_ZERO], 1, [Define if the target system has support for memory allocation using mmap("/dev/zero")])
++  AC_MSG_RESULT(yes)
+ ])
+ 
+ AC_CHECK_FUNCS(mremap)
