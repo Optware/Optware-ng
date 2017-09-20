@@ -304,7 +304,7 @@ $(PHP_THTTPD_LIBPHP_BUILD_DIR)/.built: $(PHP_THTTPD_LIBPHP_BUILD_DIR)/.configure
 
 $(PHP_THTTPD_BUILD_DIR)/.built: $(PHP_THTTPD_LIBPHP_BUILD_DIR)/.built $(PHP_THTTPD_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(@D) PHP_LIBS="libphp5.a -lxml2 -lcrypt -lm" CCOPT="-I$(@D)/_libphp/TSRM -I$(@D)/_libphp/Zend -include $(@D)/_libphp/Zend/zend.h"
+	$(MAKE) -C $(@D) -j1 PHP_LIBS="libphp5.a -lxml2 -lcrypt -lm" CCOPT="-I$(@D)/_libphp/TSRM -I$(@D)/_libphp/Zend -include $(@D)/_libphp/Zend/zend.h"
 	touch $@
 
 #
