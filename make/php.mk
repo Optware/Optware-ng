@@ -37,7 +37,7 @@ PHP_HOST_CLI=$(HOST_STAGING_PREFIX)/bin/php
 #
 # PHP_IPK_VERSION should be incremented when the ipk changes.
 #
-PHP_IPK_VERSION=6
+PHP_IPK_VERSION=7
 
 #
 # PHP_CONFFILES should be a list of user-editable files
@@ -66,7 +66,6 @@ PHP_PATCHES=\
 	$(PHP_SOURCE_DIR)/endian-5.0.4.patch \
 	$(PHP_SOURCE_DIR)/ext-posix-uclibc.patch \
 	$(PHP_SOURCE_DIR)/no_libmysql_r.patch \
-	$(PHP_SOURCE_DIR)/zend_opcache-TMP_DIR.patch \
 
 #
 # If the compilation of the package requires additional
@@ -580,6 +579,7 @@ endif
 		--with-config-file-scan-dir=$(TARGET_PREFIX)/etc/php.d \
 		--with-layout=GNU \
 		--disable-static \
+		--disable-opcache \
 		--enable-cgi \
 		--enable-bcmath=shared \
 		--enable-calendar=shared \
@@ -681,11 +681,12 @@ php: $(PHP_BUILD_DIR)/.built
 $(PHP_BUILD_DIR)/.staged: $(PHP_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(@D) INSTALL_ROOT=$(STAGING_DIR) program_prefix="" install
-	cp $(STAGING_PREFIX)/bin/php-config $(STAGING_DIR)/bin/php-config
-	cp $(STAGING_PREFIX)/bin/phpize $(STAGING_DIR)/bin/phpize
-	sed -i -e 's!prefix=.*!prefix=$(STAGING_PREFIX)!' $(STAGING_DIR)/bin/phpize
-	sed -i -e 's!^prefix=.*!prefix="$(STAGING_PREFIX)"!' $(STAGING_DIR)/bin/php-config
-	chmod a+rx $(STAGING_DIR)/bin/phpize
+	cp -af $(STAGING_PREFIX)/bin/php-config $(STAGING_DIR)/bin/php-config
+	cp -af $(STAGING_PREFIX)/bin/phpize $(STAGING_DIR)/bin/phpize
+	sed -i -e "s!^prefix=.*!prefix='$(STAGING_PREFIX)'!" \
+		-e "s|^datarootdir=.*|datarootdir='$(STAGING_PREFIX)/share'|" $(STAGING_DIR)/bin/phpize
+	sed -i -e 's!^prefix=.*!prefix="$(STAGING_PREFIX)"!' \
+		-e 's|^datarootdir=.*|datarootdir="$(STAGING_PREFIX)/share"|' $(STAGING_DIR)/bin/php-config
 	touch $@
 
 php-stage: $(PHP_BUILD_DIR)/.staged

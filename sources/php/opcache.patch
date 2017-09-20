@@ -1,0 +1,87 @@
+--- a/ext/opcache/config.m4	2016-01-06 07:14:47.000000000 -0800
++++ b/ext/opcache/config.m4	2016-01-27 12:02:06.567333352 -0800
+@@ -78,7 +78,9 @@
+ }
+ ],dnl
+     AC_DEFINE(HAVE_SHM_IPC, 1, [Define if you have SysV IPC SHM support])
+-    msg=yes,msg=no,msg=no)
++    msg=yes,msg=no, [
++    AC_DEFINE(HAVE_SHM_IPC, 1, [Define if you have SysV IPC SHM support])
++    msg=yes ])
+   AC_MSG_RESULT([$msg])
+ 
+   AC_MSG_CHECKING(for mmap() using MAP_ANON shared memory support)
+@@ -130,7 +132,9 @@
+ }
+ ],dnl
+     AC_DEFINE(HAVE_SHM_MMAP_ANON, 1, [Define if you have mmap(MAP_ANON) SHM support])
+-    msg=yes,msg=no,msg=no)
++    msg=yes,msg=no, [
++    AC_DEFINE(HAVE_SHM_MMAP_ANON, 1, [Define if you have mmap(MAP_ANON) SHM support])
++    msg=yes ])
+   AC_MSG_RESULT([$msg])
+ 
+   AC_MSG_CHECKING(for mmap() using /dev/zero shared memory support)
+@@ -185,7 +189,9 @@
+ }
+ ],dnl
+     AC_DEFINE(HAVE_SHM_MMAP_ZERO, 1, [Define if you have mmap("/dev/zero") SHM support])
+-    msg=yes,msg=no,msg=no)
++    msg=yes,msg=no, [
++    AC_DEFINE(HAVE_SHM_MMAP_ZERO, 1, [Define if you have mmap("/dev/zero") SHM support])
++    msg=yes ])
+   AC_MSG_RESULT([$msg])
+ 
+   AC_MSG_CHECKING(for mmap() using shm_open() shared memory support)
+@@ -254,7 +260,9 @@
+ }
+ ],dnl
+     AC_DEFINE(HAVE_SHM_MMAP_POSIX, 1, [Define if you have POSIX mmap() SHM support])
+-    msg=yes,msg=no,msg=no)
++    msg=yes,msg=no, [
++    AC_DEFINE(HAVE_SHM_MMAP_POSIX, 1, [Define if you have POSIX mmap() SHM support])
++    msg=yes ])
+   AC_MSG_RESULT([$msg])
+ 
+   AC_MSG_CHECKING(for mmap() using regular file shared memory support)
+@@ -323,7 +331,9 @@
+ }
+ ],dnl
+     AC_DEFINE(HAVE_SHM_MMAP_FILE, 1, [Define if you have mmap() SHM support])
+-    msg=yes,msg=no,msg=no)
++    msg=yes,msg=no, [
++    AC_DEFINE(HAVE_SHM_MMAP_FILE, 1, [Define if you have mmap() SHM support])
++    msg=yes ])
+   AC_MSG_RESULT([$msg])
+ 
+ flock_type=unknown
+@@ -341,7 +351,14 @@
+ 	flock_type=linux
+     AC_DEFINE([HAVE_FLOCK_LINUX], [], [Struct flock is Linux-type])
+     AC_MSG_RESULT("yes")
+-], AC_MSG_RESULT("no") )
++], [
++    AC_MSG_RESULT("no")
++], [
++    dnl cross-compiling; assume Linux
++       flock_type=linux
++    AC_DEFINE([HAVE_FLOCK_LINUX], [], [Struct flock is Linux-type])
++    AC_MSG_RESULT("yes")
++])
+ 
+ AC_MSG_CHECKING("whether flock struct is BSD ordered")
+ AC_TRY_RUN([
+@@ -357,7 +374,12 @@
+ 	flock_type=bsd
+     AC_DEFINE([HAVE_FLOCK_BSD], [], [Struct flock is BSD-type]) 
+     AC_MSG_RESULT("yes")
+-], AC_MSG_RESULT("no") )
++], [
++    AC_MSG_RESULT("no")
++], [
++    dnl cross-compiling; assume Linux
++    AC_MSG_RESULT("no")
++])
+ 
+ if test "$flock_type" == "unknown"; then
+ 	AC_MSG_ERROR([Don't know how to define struct flock on this system[,] set --enable-opcache=no])
