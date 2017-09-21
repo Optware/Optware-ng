@@ -37,7 +37,7 @@ PHP_HOST_CLI=$(HOST_STAGING_PREFIX)/bin/php
 #
 # PHP_IPK_VERSION should be incremented when the ipk changes.
 #
-PHP_IPK_VERSION=9
+PHP_IPK_VERSION=10
 
 #
 # PHP_CONFFILES should be a list of user-editable files
@@ -316,7 +316,7 @@ $(PHP_IMAP_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(PHP_MAINTAINER)" >>$@
 	@echo "Source: $(PHP_SITE)/$(PHP_SOURCE)" >>$@
 	@echo "Description: imap extension for php" >>$@
-	@echo "Depends: php, imap-libs, libpam" >>$@
+	@echo "Depends: php, imap-libs, libpam, openssl" >>$@
 
 $(PHP_INTL_IPK_DIR)/CONTROL/control:
 	@$(INSTALL) -d $(@D)
@@ -606,6 +606,7 @@ endif
 		--with-gdbm=$(STAGING_PREFIX) \
 		--with-gd=shared,$(STAGING_PREFIX) \
 		--with-imap=shared,$(STAGING_PREFIX) \
+		--with-imap-ssl=$(STAGING_PREFIX) \
 		--without-mysql \
 		--with-mysql-sock=/tmp/mysql.sock \
 		--with-mysqli=shared,$(STAGING_PREFIX)/bin/mysql_config \
