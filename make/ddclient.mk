@@ -17,7 +17,7 @@ DDCLIENT_DEPENDS=perl, perl-file-pid
 DDCLIENT_SUGGESTS=
 DDCLIENT_CONFLICTS=
 
-DDCLIENT_IPK_VERSION=3
+DDCLIENT_IPK_VERSION=4
 
 DDCLIENT_CONFFILES=\
 $(TARGET_PREFIX)/etc/ddclient/ddclient.conf \
@@ -26,6 +26,7 @@ $(TARGET_PREFIX)/etc/init.d/S95ddclient \
 DDCLIENT_PATCHES=\
 $(DDCLIENT_SOURCE_DIR)/ddclient_file_pid.patch \
 $(DDCLIENT_SOURCE_DIR)/ddclient-opt.patch \
+$(DDCLIENT_SOURCE_DIR)/ddclient-logger.patch \
 
 DDCLIENT_BUILD_DIR=$(BUILD_DIR)/ddclient
 DDCLIENT_SOURCE_DIR=$(SOURCE_DIR)/ddclient

@@ -1,0 +1,11 @@
+--- a/ddclient
++++ b/ddclient
+@@ -1597,7 +1597,7 @@
+     if (opt('syslog') && opt('facility') &&  opt('priority')) { 
+ 	my $facility = opt('facility');
+ 	my $priority = opt('priority');
+-    	return pipecmd("logger -p$facility.$priority -t${program}\[$$\]", @_);
++    	return pipecmd("logger -p\"$facility.$priority -t${program}\[$$\]\"", @_);
+     }
+     return 1;
+ }
