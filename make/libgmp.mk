@@ -22,9 +22,9 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBGMP_SITE=ftp://ftp.gnu.org/gnu/gmp
-LIBGMP_VERSION=6.0.0a
+LIBGMP_VERSION=6.1.2
 LIBGMP_SOURCE=gmp-$(LIBGMP_VERSION).tar.bz2
-LIBGMP_DIR=gmp-6.0.0
+LIBGMP_DIR=gmp-$(LIBGMP_VERSION)
 LIBGMP_UNZIP=bzcat
 LIBGMP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 LIBGMP_DESCRIPTION=GNU Multiple Precision Arithmetic Library.
