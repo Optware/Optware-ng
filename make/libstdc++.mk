@@ -43,7 +43,7 @@ LIBSTDC++_DESCRIPTION==Standard C++ library, wrapped for uClibc++
 LIBSTDC++_LIBNAME=
 endif
 
-LIBSTDC++_IPK_VERSION=6
+LIBSTDC++_IPK_VERSION=1
 
 LIBSTDC++_TARGET_LIBDIR ?= $(strip \
 	$(if $(filter cs08q1armel ts509 pre i686g25, $(OPTWARE_TARGET)), $(TARGET_USRLIBDIR), \
