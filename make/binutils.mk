@@ -22,8 +22,8 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 BINUTILS_SITE=http://ftp.gnu.org/gnu/binutils
-BINUTILS_VERSION ?= 2.25.1
-BINUTILS_IPK_VERSION ?= 4
+BINUTILS_VERSION ?= 2.29
+BINUTILS_IPK_VERSION ?= 1
 BINUTILS_SOURCE=binutils-$(BINUTILS_VERSION).tar.bz2
 BINUTILS_DIR?=binutils-$(BINUTILS_VERSION)
 BINUTILS_UNZIP=bzcat
