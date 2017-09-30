@@ -1,0 +1,59 @@
+Ported from https://gcc.gnu.org/ml/gcc-patches/2016-02/msg01303.html
+
+--- a/gcc/combine.c
++++ b/gcc/combine.c
+@@ -2568,6 +2568,32 @@ can_split_parallel_of_n_reg_sets (rtx_in
+   return true;
+ }
+ 
++/* Remove all REG_EQUAL and REG_EQUIV notes referring to REGNO.  This is
++   like rtlanal's remove_reg_equal_equiv_notes_for_regno but with some big
++   differences, because combine does not keep the DF info up-to-date.
++   We do however never add or move these notes during combine, so we can
++   still use the DF info as it was at the start of combine to find all
++   such notes.  */
++
++static void
++combine_remove_reg_equal_equiv_notes_for_regno (unsigned int regno)
++{
++  gcc_assert (df);
++
++  rtx reg = regno_reg_rtx[regno];
++
++  for (df_ref eq_use = DF_REG_EQ_USE_CHAIN (regno);
++       eq_use;
++       eq_use = DF_REF_NEXT_REG (eq_use))
++    {
++      rtx_insn *insn = DF_REF_INSN (eq_use);
++      rtx note = find_reg_equal_equiv_note (insn);
++
++      if (note && reg_overlap_mentioned_p (reg, XEXP (note, 0)))
++	remove_note (insn, note);
++    }
++}
++
+ /* Try to combine the insns I0, I1 and I2 into I3.
+    Here I0, I1 and I2 appear earlier than I3.
+    I0 and I1 can be zero; then we combine just I2 into I3, or I1 and I2 into
+@@ -3201,6 +3227,8 @@ try_combine (rtx_insn *i3, rtx_insn *i2,
+ 		    newpat_dest = gen_rtx_REG (compare_mode, regno);
+ 		  else
+ 		    {
++		      combine_remove_reg_equal_equiv_notes_for_regno (regno);
++
+ 		      SUBST_MODE (regno_reg_rtx[regno], compare_mode);
+ 		      newpat_dest = regno_reg_rtx[regno];
+ 		    }
+@@ -6711,6 +6739,12 @@ simplify_set (rtx x)
+ 		new_dest = gen_rtx_REG (compare_mode, regno);
+ 	      else
+ 		{
++		  /* We change the mode of the result pseudo.  The expression
++		     in REG_EQ* notes refering to that pseudo will likely no
++		     longer make sense, so delete those notes.
++		     This is PR60818.  */
++		  combine_remove_reg_equal_equiv_notes_for_regno (regno);
++
+ 		  SUBST_MODE (regno_reg_rtx[regno], compare_mode);
+ 		  new_dest = regno_reg_rtx[regno];
+ 		}

@@ -1,19 +1,20 @@
---- a/config/kernel/linux.in
-+++ b/config/kernel/linux.in
-@@ -82,7 +82,7 @@
+--- a/config/versions/linux.in
++++ b/config/versions/linux.in
+@@ -373,7 +373,7 @@ config LINUX_V_2_6_33
+     depends on !LINUX_REQUIRE_3_2_or_later
  
- config KERNEL_V_2_6_32
-     bool
--    prompt "2.6.32.70"
-+    prompt "2.6.32"
-     help
-  
- endchoice
-@@ -100,6 +100,6 @@
-     default "3.10.98" if KERNEL_V_3_10
-     default "3.4.110" if KERNEL_V_3_4
-     default "3.2.77" if KERNEL_V_3_2
--    default "2.6.32.70" if KERNEL_V_2_6_32
-+    default "2.6.32" if KERNEL_V_2_6_32
+ config LINUX_V_2_6_32
+-    bool "2.6.32.27"
++    bool "2.6.32"
+     select LINUX_3_2_or_older
+     depends on !LINUX_REQUIRE_3_2_or_later
  
- endif # ! KERNEL_LINUX_CUSTOM
+@@ -429,7 +429,7 @@ config LINUX_VERSION
+     default "2.6.35.9" if LINUX_V_2_6_35
+     default "2.6.34.7" if LINUX_V_2_6_34
+     default "2.6.33.7" if LINUX_V_2_6_33
+-    default "2.6.32.27" if LINUX_V_2_6_32
++    default "2.6.32" if LINUX_V_2_6_32
+     default "unknown"
+ 
+ config LINUX_MIRRORS

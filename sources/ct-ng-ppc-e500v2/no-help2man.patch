@@ -1,11 +1,11 @@
 --- a/configure.ac
-+++ b/configure.ac
-@@ -184,7 +184,7 @@ ACX_CHECK_PROGS_REQ([wget], [wget])
- ACX_CHECK_PROGS_REQ([tar], [tar])
++++ b/configure.ac	2017-09-30 16:31:22.000000000 +0000
+@@ -218,7 +218,7 @@ ACX_CHECK_PROGS_REQ([tar], [tar])
  ACX_CHECK_PROGS_REQ([gzip], [gzip])
  ACX_CHECK_PROGS_REQ([bzip2], [bzip2])
+ ACX_CHECK_PROGS_REQ([xz], [xz])
 -ACX_CHECK_PROGS_REQ([help2man], [help2man])
 +#ACX_CHECK_PROGS_REQ([help2man], [help2man])
  
- #--------------------------------------------------------------------
- # Still boring, but remember the path, now...
+ # Not a fatal failure even if we have neither - the tarballs may
+ # be provided in a local directory.

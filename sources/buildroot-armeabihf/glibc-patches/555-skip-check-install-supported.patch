@@ -1,0 +1,20 @@
+--- a/Makerules
++++ b/Makerules
+@@ -928,13 +928,13 @@
+ # an error message since doing so is not supported (set DESTDIR
+ # instead).
+ ifeq ($(origin prefix),command line)
+-check-install-supported:
+-	$(error Overriding prefix is not supported. Set DESTDIR instead.)
++#check-install-supported:
++#	$(error Overriding prefix is not supported. Set DESTDIR instead.)
+ endif
+ 
+ ifeq ($(origin exec_prefix),command line)
+-check-install-supported:
+-	$(error Overriding exec_prefix is not supported. Set DESTDIR instead.)
++#check-install-supported:
++#	$(error Overriding exec_prefix is not supported. Set DESTDIR instead.)
+ endif
+ 
+ install: check-install-supported

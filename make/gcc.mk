@@ -34,7 +34,7 @@ endif
 GCC_SITE?=http://ftp.gnu.org/gnu/gcc/gcc-$(GCC_VERSION)
 GCC_SOURCE?=gcc-$(GCC_VERSION).tar.bz2
 GCC_DIR?=gcc-$(GCC_VERSION)
-GCC_UNZIP=bzcat
+GCC_UNZIP?=bzcat
 GCC_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 GCC_DESCRIPTION=The GNU Compiler Collection.
 GCC_SECTION=base
@@ -63,7 +63,7 @@ endif
 #
 # GCC_IPK_VERSION should be incremented when the ipk changes.
 #
-GCC_IPK_VERSION ?= 11
+GCC_IPK_VERSION ?= 1
 
 #
 # GCC_CONFFILES should be a list of user-editable files

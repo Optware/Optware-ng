@@ -18,7 +18,7 @@ endif
 UCLIBC-OPT_DESCRIPTION=micro C library for embedded Linux systems
 UCLIBC-OPT_SECTION=base
 UCLIBC-OPT_PRIORITY=required
-UCLIBC-OPT_DEPENDS=libnsl
+UCLIBC-OPT_DEPENDS=$(strip $(if $(filter true, $(NO_LIBNSL)), , libnsl))
 UCLIBC-OPT_SUGGESTS=
 UCLIBC-OPT_CONFLICTS=
 
@@ -67,7 +67,7 @@ $(UCLIBC-OPT_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 ifdef UCLIBC-OPT_FROM_BUILDROOT
-UCLIBC-OPT_LIBS=ld-uClibc libc libdl libgcc_s libm libintl libnsl libpthread \
+UCLIBC-OPT_LIBS=ld-uClibc libc libdl libgcc_s libm libintl libpthread \
 	libthread_db libresolv  librt libutil libuClibc libstdc++
 ifeq ($(BUILRTOOT_GCC), 4.1.1)
 UCLIBC-OPT_LIBS+=libssp

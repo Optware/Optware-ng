@@ -1,0 +1,21 @@
+--- a/package/gcc/gcc.mk
++++ b/package/gcc/gcc.mk
+@@ -62,7 +62,7 @@
+ endef
+ 
+ HOST_GCC_EXCLUDES = \
+-	libjava/* libgo/* \
++	libjava/* \
+ 	gcc/testsuite/* libstdc++-v3/testsuite/*
+ 
+ define HOST_GCC_FAKE_TESTSUITE
+--- a/package/gcc/gcc-final/gcc-final.mk
++++ b/package/gcc/gcc-final/gcc-final.mk
+@@ -55,6 +55,7 @@
+ GCC_FINAL_CROSS_LANGUAGES-y = c
+ GCC_FINAL_CROSS_LANGUAGES-$(BR2_INSTALL_LIBSTDCPP) += c++
+ GCC_FINAL_CROSS_LANGUAGES-$(BR2_TOOLCHAIN_BUILDROOT_FORTRAN) += fortran
++GCC_FINAL_CROSS_LANGUAGES-y += go
+ GCC_FINAL_CROSS_LANGUAGES = $(subst $(space),$(comma),$(GCC_FINAL_CROSS_LANGUAGES-y))
+ 
+ HOST_GCC_FINAL_CONF_OPTS = \

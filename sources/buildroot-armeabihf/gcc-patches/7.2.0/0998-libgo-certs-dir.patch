@@ -1,0 +1,12 @@
+Originally taken from Entware-ng:
+https://github.com/Entware-ng/Entware-ng/blob/master/toolchain/gcc/patches/6.3.0/998-libgo-certs-dir.patch
+--- a/libgo/go/crypto/x509/root_unix.go
++++ b/libgo/go/crypto/x509/root_unix.go
+@@ -13,6 +13,7 @@
+ var certDirectories = []string{
+ 	"/etc/ssl/certs",               // SLES10/SLES11, https://golang.org/issue/12139
+ 	"/system/etc/security/cacerts", // Android
++	"%OPTWARE_TARGET_PREFIX%/etc/ssl/certs/",          // Optware
+ }
+ 
+ func (c *Certificate) systemVerify(opts *VerifyOptions) (chains [][]*Certificate, err error) {

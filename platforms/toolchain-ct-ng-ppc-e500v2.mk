@@ -1,4 +1,4 @@
-# This toolchain is gcc 5.3.0 on glibc 2.23
+# This toolchain is gcc 7.2.0 on glibc 2.23
 
 GNU_TARGET_NAME = powerpc-linux-gnuspe
 EXACT_TARGET_NAME = powerpc-e500v2-linux-gnuspe
@@ -10,15 +10,15 @@ LIBC_STYLE=glibc
 TARGET_ARCH=powerpc
 TARGET_OS=linux
 
-LIBSTDC++_VERSION=6.0.21
+LIBSTDC++_VERSION=6.0.24
 
-LIBC-DEV_IPK_VERSION=3
+LIBC-DEV_IPK_VERSION=4
 
 GETTEXT_NLS=enable
 #NO_BUILTIN_MATH=true
 IPV6=yes
 
-CROSS_CONFIGURATION_GCC_VERSION=5.3.0
+CROSS_CONFIGURATION_GCC_VERSION=7.2.0
 CROSS_CONFIGURATION_GLIBC_VERSION=2.23
 
 ifeq ($(HOST_MACHINE),ppc)
@@ -42,7 +42,7 @@ CROSS_CONFIGURATION_GCC=gcc-$(CROSS_CONFIGURATION_GCC_VERSION)
 CROSS_CONFIGURATION_GLIBC=glibc-$(CROSS_CONFIGURATION_GLIBC_VERSION)
 CROSS_CONFIGURATION=$(CROSS_CONFIGURATION_GCC)-$(CROSS_CONFIGURATION_GLIBC)
 TARGET_CROSS_BUILD_DIR = $(BASE_DIR)/toolchain/crosstool-ng-$(TOOLCHAIN_VERSION)
-TARGET_CROSS_TOP = $(BASE_DIR)/toolchain/ct-ng-powerpc-linux-2.6.32-glibc-5.3.0
+TARGET_CROSS_TOP = $(BASE_DIR)/toolchain/ct-ng-powerpc-linux-2.6.32-glibc-7.2.0
 TARGET_CROSS = $(TARGET_CROSS_TOP)/bin/powerpc-e500v2-linux-gnuspe-
 TARGET_LIBDIR = $(TARGET_CROSS_TOP)/powerpc-e500v2-linux-gnuspe/sysroot/usr/lib
 TARGET_INCDIR = $(TARGET_CROSS_TOP)/powerpc-e500v2-linux-gnuspe/sysroot/usr/include
@@ -59,9 +59,9 @@ TARGET_CUSTOM_FLAGS= -pipe -mfloat-gprs=double -Xassembler -me500x2 -fno-var-tra
 TARGET_CFLAGS=$(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
 
 TOOLCHAIN_GIT=https://github.com/crosstool-ng/crosstool-ng.git
-TOOLCHAIN_GIT_DATE=20160326
+TOOLCHAIN_GIT_DATE=20170923
 TOOLCHAIN_VERSION=git$(TOOLCHAIN_GIT_DATE)
-TOOLCHAIN_TREEISH=`git rev-list --max-count=1 --until=2016-03-26 HEAD`
+TOOLCHAIN_TREEISH=`git rev-list --max-count=1 --until=2017-09-23 HEAD`
 TOOLCHAIN_SOURCE=crosstool-ng-$(TOOLCHAIN_VERSION).tar.bz2
 
 LIBSTDC++_TARGET_LIBDIR = $(TARGET_CROSS_TOP)/powerpc-e500v2-linux-gnuspe/sysroot/lib
@@ -72,7 +72,7 @@ GLIBC-OPT_LIBS_SOURCE_DIR = $(TARGET_CROSS_TOP)/powerpc-e500v2-linux-gnuspe/sysr
 LIBNSL_SO_DIR = $(TARGET_CROSS_TOP)/powerpc-e500v2-linux-gnuspe/sysroot/usr/lib
 
 LIBNSL_VERSION = 2.23
-LIBNSL_IPK_VERSION = 2
+LIBNSL_IPK_VERSION = 3
 
 CT-NG-PPC_E500v2_SOURCE_DIR=$(SOURCE_DIR)/ct-ng-ppc-e500v2
 
@@ -80,7 +80,11 @@ CT-NG-PPC_E500v2_PATCHES=\
 $(CT-NG-PPC_E500v2_SOURCE_DIR)/linux-2.6.32.patch \
 $(CT-NG-PPC_E500v2_SOURCE_DIR)/glibc-prefix.patch \
 
-CT-NG-PPC_E500v2_GCC_PATCHES=$(wildcard $(CT-NG-PPC_E500v2_SOURCE_DIR)/gcc-patches/*.patch)
+CT-NG-PPC_E500v2_GCC_PATCHES=\
+$(wildcard $(CT-NG-PPC_E500v2_SOURCE_DIR)/gcc-patches/$(CROSS_CONFIGURATION_GCC_VERSION)/*.patch)
+
+CT-NG-PPC_E500v2_GLIBC_PATCHES=\
+$(wildcard $(CT-NG-PPC_E500v2_SOURCE_DIR)/glibc-patches/*.patch)
 
 toolchain: $(TARGET_CROSS_BUILD_DIR)/.built
 
@@ -91,17 +95,23 @@ $(DL_DIR)/$(TOOLCHAIN_SOURCE):
 		git clone $(TOOLCHAIN_GIT) crosstool-ng-$(TOOLCHAIN_VERSION) && \
 		(cd crosstool-ng-$(TOOLCHAIN_VERSION) && \
 		git checkout $(TOOLCHAIN_TREEISH) && \
-		$(PATCH) -p1 < $(CT-NG-PPC_E500v2_SOURCE_DIR)/no-help2man.patch && \
+		cat $(CT-NG-PPC_E500v2_SOURCE_DIR)/no-help2man.patch \
+		$(CT-NG-PPC_E500v2_SOURCE_DIR)/bootstrap-no-autoconf.patch | \
+		$(PATCH) -p1 && \
+		./bootstrap && \
 		$(AUTORECONF1.14) -vif && \
 		rm -rf .git) && \
-		tar -cjvf $@ crosstool-ng-$(TOOLCHAIN_VERSION) && \
+		tar -cjf $@ crosstool-ng-$(TOOLCHAIN_VERSION) && \
 		rm -rf crosstool-ng-$(TOOLCHAIN_VERSION) ; \
 	)
 
+toolchain-src: $(DL_DIR)/$(TOOLCHAIN_SOURCE)
+
 $(TARGET_CROSS_BUILD_DIR)/.configured: $(DL_DIR)/$(TOOLCHAIN_SOURCE) \
-				$(CT-NG-PPC_E500v2_SOURCE_DIR)/glibc-patches/*.patch \
-				$(CT-NG-PPC_E500v2_GCC_PATCHES) \
+				$(CT-NG-PPC_E500v2_SOURCE_DIR)/config \
 				$(CT-NG-PPC_E500v2_PATCHES) \
+				$(CT-NG-PPC_E500v2_GCC_PATCHES) \
+				$(CT-NG-PPC_E500v2_GLIBC_PATCHES) \
 				#$(OPTWARE_TOP)/platforms/toolchain-$(OPTWARE_TARGET).mk
 	$(MAKE) libtool-host
 	rm -rf $(@D) $(TARGET_CROSS_TOP)
@@ -110,11 +120,13 @@ $(TARGET_CROSS_BUILD_DIR)/.configured: $(DL_DIR)/$(TOOLCHAIN_SOURCE) \
 		then cat $(CT-NG-PPC_E500v2_PATCHES) | \
 		$(PATCH) -d $(TARGET_CROSS_BUILD_DIR) -p1 ; \
 	fi
-	mkdir -p $(@D)/patches/glibc/2.23
-	$(INSTALL) -m 644 $(CT-NG-PPC_E500v2_SOURCE_DIR)/glibc-patches/* $(@D)/patches/glibc/2.23
+ifneq ($(CT-NG-PPC_E500v2_GLIBC_PATCHES), )
+	mkdir -p $(@D)/packages/glibc/$(CROSS_CONFIGURATION_GLIBC_VERSION)
+	$(INSTALL) -m 644 $(CT-NG-PPC_E500v2_GLIBC_PATCHES) $(@D)/packages/glibc/$(CROSS_CONFIGURATION_GLIBC_VERSION)
+endif
 ifneq ($(CT-NG-PPC_E500v2_GCC_PATCHES), )
-	mkdir -p $(@D)/patches/gcc/5.3.0
-	$(INSTALL) -m 644 $(CT-NG-PPC_E500v2_GCC_PATCHES) $(@D)/patches/gcc/5.3.0
+	mkdir -p $(@D)/packages/gcc/$(CROSS_CONFIGURATION_GCC_VERSION)
+	$(INSTALL) -m 644 $(CT-NG-PPC_E500v2_GCC_PATCHES) $(@D)/packages/gcc/$(CROSS_CONFIGURATION_GCC_VERSION)
 endif
 	cd $(@D); \
 		LIBTOOL=$(HOST_STAGING_PREFIX)/bin/libtool \
@@ -124,7 +136,6 @@ endif
 	sed -e 's|^CT_PREFIX_DIR=.*|CT_PREFIX_DIR="$(TARGET_CROSS_TOP)"|' $(CT-NG-PPC_E500v2_SOURCE_DIR)/config > $(TARGET_CROSS_BUILD_DIR)/.config
 	mkdir -p $(@D)/.build
 	ln -s $(DL_DIR) $(@D)/.build/tarballs
-	cd $(@D); ./ct-ng +libc_check_config
 	touch $@
 
 $(TARGET_CROSS_BUILD_DIR)/.built: $(TARGET_CROSS_BUILD_DIR)/.configured
@@ -134,10 +145,9 @@ ifneq ($(MAKE_JOBS), )
 else
 	cd $(@D); ./ct-ng build
 endif
-	chmod -R u+w $(TARGET_CROSS_TOP)
 	install -m 644 $(CT-NG-PPC_E500v2_SOURCE_DIR)/videodev.h $(TARGET_CROSS_TOP)/powerpc-e500v2-linux-gnuspe/sysroot/usr/include/linux
 	cp -af  $(TARGET_CROSS_TOP)/powerpc-e500v2-linux-gnuspe/sysroot/lib/* \
-		$(TARGET_CROSS_TOP)/lib/gcc/powerpc-e500v2-linux-gnuspe/5.3.0/*.a $(GLIBC-OPT_LIBS_SOURCE_DIR)/
+		$(TARGET_CROSS_TOP)/lib/gcc/powerpc-e500v2-linux-gnuspe/7.2.0/*.a $(GLIBC-OPT_LIBS_SOURCE_DIR)/
 	touch $@
 
 GLIBC-OPT_LIBS := 	ld libc libm libdl libgcc librt libanl libutil libcrypt libnss_db \
@@ -150,7 +160,7 @@ GCC_CPPFLAGS := -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
 
 GCC_EXTRA_CONF_ENV := ac_cv_lbl_unaligned_fail=yes ac_cv_func_mmap_fixed_mapped=yes ac_cv_func_memcmp_working=yes ac_cv_have_decl_malloc=yes gl_cv_func_malloc_0_nonnull=yes ac_cv_func_malloc_0_nonnull=yes ac_cv_func_calloc_0_nonnull=yes ac_cv_func_realloc_0_nonnull=yes lt_cv_sys_lib_search_path_spec="" ac_cv_c_bigendian=yes
 
-NATIVE_GCC_EXTRA_CONFIG_ARGS=--with-gxx-include-dir=$(TARGET_PREFIX)/include/c++/5.3.0 --disable-__cxa_atexit --with-gnu-ld --disable-libssp --disable-libquadmath --enable-tls --disable-libmudflap --enable-threads --without-isl --without-cloog --disable-decimal-float --with-cpu=8548 --with-float=soft --enable-shared --disable-libgomp --with-gmp=$(STAGING_PREFIX) --with-mpfr=$(STAGING_PREFIX) --with-mpc=$(STAGING_PREFIX) --with-default-libstdcxx-abi=gcc4-compatible --with-system-zlib --enable-lto --enable-long-long --enable-e500_double --enable-e500_double
+NATIVE_GCC_EXTRA_CONFIG_ARGS=--with-gxx-include-dir=$(TARGET_PREFIX)/include/c++/7.2.0 --enable-__cxa_atexit --with-gnu-ld --disable-libssp --disable-libquadmath --enable-tls --disable-libmudflap --enable-threads --without-isl --without-cloog --disable-decimal-float --with-cpu=8548 --with-float=soft --enable-shared --disable-libgomp --with-gmp=$(STAGING_PREFIX) --with-mpfr=$(STAGING_PREFIX) --with-mpc=$(STAGING_PREFIX) --with-default-libstdcxx-abi=gcc4-compatible --with-system-zlib --enable-lto --enable-long-long --enable-e500_double --enable-e500_double
 
 NATIVE_BINUTILS_CONFIG_ARGS=--enable-spe=yes --enable-e500x2 --with-e500x2
 

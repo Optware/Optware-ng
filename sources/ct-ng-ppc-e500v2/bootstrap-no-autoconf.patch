@@ -1,0 +1,12 @@
+--- a/bootstrap
++++ b/bootstrap
+@@ -719,7 +719,7 @@ gen_selection choice libc "C library"
+ gen_selection menu debug "Debug facilities"
+ gen_selection menu comp_tools "Companion tools"
+ 
+-msg "*** Running autoconf"
+-autoconf -Wall --force
++#msg "*** Running autoconf"
++#autoconf -Wall --force
+ 
+ msg "*** Done!"

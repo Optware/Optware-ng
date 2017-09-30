@@ -4,7 +4,7 @@
  xtests-special += $(objpfx)test-iconvconfig.out
  endif
  
-+rtld-LDFLAGS = -Wl,--dynamic-linker=%OPTWARE_TARGET_PREFIX%/lib/ld.so.1
++rtld-LDFLAGS = -Wl,--dynamic-linker=%OPTWARE_TARGET_PREFIX%/lib/ld-linux-armhf.so.3
 +LDFLAGS-iconvconfig = -Wl,-rpath,%OPTWARE_TARGET_PREFIX%/lib
 +LDFLAGS-iconv_prog = -Wl,-rpath,%OPTWARE_TARGET_PREFIX%/lib
 +

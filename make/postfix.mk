@@ -17,7 +17,10 @@ POSTFIX_MAINTAINER=Matthias Appel <private_tweety@gmx.net>
 POSTFIX_DESCRIPTION=The Postfix mail system is an alternative to sendmail.
 POSTFIX_SECTION=util
 POSTFIX_PRIORITY=optional
-POSTFIX_DEPENDS=libdb, libnsl, pcre, cyrus-sasl, findutils, openssl
+POSTFIX_DEPENDS=libdb, pcre, cyrus-sasl, findutils, openssl
+ifneq ($(NO_LIBNSL), true)
+POSTFIX_DEPENDS += , libnsl
+endif
 POSTFIX_SUGGESTS=cyrus-imapd
 POSTFIX_CONFLICTS=xmail
 
@@ -53,7 +56,10 @@ $(DL_DIR)/$(POSTFIX_SOURCE):
 postfix-source: $(DL_DIR)/$(POSTFIX_SOURCE) $(POSTFIX_PATCHES)
 
 $(POSTFIX_BUILD_DIR)/.configured: $(DL_DIR)/$(POSTFIX_SOURCE) $(POSTFIX_PATCHES) make/postfix.mk
-	$(MAKE) libdb-stage libnsl-stage pcre-stage cyrus-sasl-stage openssl-stage
+	$(MAKE) libdb-stage pcre-stage cyrus-sasl-stage openssl-stage
+ifneq ($(NO_LIBNSL), true)
+	$(MAKE) libnsl-stage
+endif
 	rm -rf $(BUILD_DIR)/$(POSTFIX_DIR) $(@D)
 	$(POSTFIX_UNZIP) $(DL_DIR)/$(POSTFIX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(POSTFIX_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(POSTFIX_DIR) -p1

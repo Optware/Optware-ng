@@ -29,7 +29,7 @@ LIBC-DEV_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 LIBC-DEV_DESCRIPTION=libc development files.
 LIBC-DEV_SECTION=devel
 LIBC-DEV_PRIORITY=optional
-LIBC-DEV_DEPENDS=libnsl
+LIBC-DEV_DEPENDS=$(strip $(if $(filter true, $(NO_LIBNSL)), , libnsl))
 LIBC-DEV_SUGGESTS=
 LIBC-DEV_CONFLICTS=
 

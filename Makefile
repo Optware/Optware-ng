@@ -325,9 +325,9 @@ COMMON_PACKAGES = \
 	libical \
 	libid3tag libidn libieee1284 libijs libinklevel libjansson libjbigkit libjpeg \
 	libksba liblcms liblcms2 libmaa libmad libmatroska libmediainfo libmemcache libmemcached libmicrohttpd \
-	libmcrypt libmm \
+	libmcrypt libmm $(strip $(if $(filter true, $(NO_LIBNSL)), , libnsl)) \
 	libmms libmnl libmpc libmpcdec libmpdclient libmpeg2 libmpfr libmrss libmtp \
-	libnetfilter-acct libnetfilter-conntrack libnetfilter-log libnetfilter-queue libnfnetlink libnettle libnl libnsl libnxml \
+	libnetfilter-acct libnetfilter-conntrack libnetfilter-log libnetfilter-queue libnfnetlink libnettle libnl libnxml \
 	libol libogg libosip2 libopensync libopenzwave libotr libpam \
 	libpar2 libpcap libpeas libpng libpth librsync librsvg \
 	libsamplerate libserf libshout libsigc++ libsoup libsndfile libsodium libsoxr libstdc++ \
