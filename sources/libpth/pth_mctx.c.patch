@@ -1,0 +1,11 @@
+--- a/pth_mctx.c
++++ b/pth_mctx.c
+@@ -473,7 +473,7 @@ intern int pth_mctx_set(
+     && __GLIBC__ >= 2 && __GLIBC_MINOR__ >= 0 && defined(__mc68000__)
+     mctx->jb[0].__jmpbuf[0].__aregs[0] = (long int)func;
+     mctx->jb[0].__jmpbuf[0].__sp = (int *)sk_addr_hi;
+-#elif defined(__GNU_LIBRARY__) && defined(__i386__)
++#elif (defined(__GNU_LIBRARY__) && defined(__i386__)) || defined(__UCLIBC__)
+     mctx->jb[0].__jmpbuf[0].__pc = (char *)func;
+     mctx->jb[0].__jmpbuf[0].__sp = sk_addr_hi;
+ #else
