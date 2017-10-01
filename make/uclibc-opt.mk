@@ -73,8 +73,8 @@ ifeq ($(BUILRTOOT_GCC), 4.1.1)
 UCLIBC-OPT_LIBS+=libssp
 endif
 else
-UCLIBC-OPT_LIBS=ld-uClibc libc libdl libgcc_s libm libpthread \
-	libthread_db libresolv librt libutil libuClibc
+UCLIBC-OPT_LIBS=ld-uClibc libc libgcc_s \
+	libthread_db libuClibc
 endif
 
 UCLIBC-OPT_LIBS_PATTERN=$(patsubst %,$(UCLIBC-OPT_LIBS_SOURCE_DIR)/%*so*,$(UCLIBC-OPT_LIBS))
@@ -107,9 +107,8 @@ endif
 	# this is provided by libc-dev
 	rm -f $(UCLIBC-OPT_IPK_DIR)$(TARGET_PREFIX)/lib/libgcc_s.so
 	$(STRIP_COMMAND) $(patsubst %, $(UCLIBC-OPT_IPK_DIR)$(TARGET_PREFIX)/lib/%*so*, $(UCLIBC-OPT_LIBS))
-	### package non-stripped libpthread and libthread_db
-	cp -f $(UCLIBC-OPT_LIBS_SOURCE_DIR)/libpthread* $(UCLIBC-OPT_LIBS_SOURCE_DIR)/libthread_db* \
-							$(UCLIBC-OPT_IPK_DIR)$(TARGET_PREFIX)/lib
+	### package non-stripped libthread_db
+	cp -f $(UCLIBC-OPT_LIBS_SOURCE_DIR)/libthread_db* $(UCLIBC-OPT_IPK_DIR)$(TARGET_PREFIX)/lib
 	$(MAKE) $(UCLIBC-OPT_IPK_DIR)/CONTROL/control
 ifdef UCLIBC-OPT_FROM_BUILDROOT
 	$(INSTALL) -d $(UCLIBC-OPT_IPK_DIR)$(TARGET_PREFIX)/usr/lib
