@@ -36,7 +36,7 @@ GPGME_CONFLICTS=
 #
 # GPGME_IPK_VERSION should be incremented when the ipk changes.
 #
-GPGME_IPK_VERSION=1
+GPGME_IPK_VERSION=2
 
 #
 # GPGME_CONFFILES should be a list of user-editable files

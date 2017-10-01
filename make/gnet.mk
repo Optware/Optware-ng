@@ -36,7 +36,7 @@ GNET_CONFLICTS=
 #
 # GNET_IPK_VERSION should be incremented when the ipk changes.
 #
-GNET_IPK_VERSION=1
+GNET_IPK_VERSION=2
 
 #
 # GNET_CONFFILES should be a list of user-editable files

@@ -42,7 +42,7 @@ LRZSZ_CONFLICTS=
 #
 # LRZSZ_IPK_VERSION should be incremented when the ipk changes.
 #
-LRZSZ_IPK_VERSION=1
+LRZSZ_IPK_VERSION=2
 
 #
 # LRZSZ_CONFFILES should be a list of user-editable files

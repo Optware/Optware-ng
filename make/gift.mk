@@ -33,7 +33,7 @@ GIFT_DESCRIPTION=gIFt is a multi-platform multi-networks peer-to-peer client. gI
 #
 # GIFT_IPK_VERSION should be incremented when the ipk changes.
 #
-GIFT_IPK_VERSION=5
+GIFT_IPK_VERSION=6
 
 #
 # GIFT_CONFFILES should be a list of user-editable files

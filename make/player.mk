@@ -31,12 +31,15 @@ Player''s client/server model allows robot control programs to be written in any
 PLAYER_SECTION=misc
 PLAYER_PRIORITY=optional
 PLAYER_DEPENDS=boost-thread, boost-system, libjpeg, openssl, libtool, zlib
+ifeq (uclibc, $(LIBC_STYLE))
+PLAYER_DEPENDS +=, librpc-uclibc
+endif
 PLAYER_CONFLICTS=
 
 #
 # PLAYER_IPK_VERSION should be incremented when the ipk changes.
 #
-PLAYER_IPK_VERSION?=14
+PLAYER_IPK_VERSION?=15
 
 #
 # PLAYER_CONFFILES should be a list of user-editable files
@@ -63,6 +66,9 @@ PLAYER_CPPFLAGS+=-fno-builtin-round -fno-builtin-rint \
 	-fno-builtin-cos -fno-builtin-sin -fno-builtin-exp
 endif
 PLAYER_LDFLAGS=-lboost_system -lm -lgcc
+ifeq (uclibc, $(LIBC_STYLE))
+PLAYER_LDFLAGS += -lrpc-uclibc
+endif
 
 #
 # PLAYER_BUILD_DIR is the directory in which the build is done.
@@ -116,6 +122,9 @@ player-source: $(DL_DIR)/$(PLAYER_SOURCE) $(PLAYER_PATCHES)
 $(PLAYER_BUILD_DIR)/.configured: $(DL_DIR)/$(PLAYER_SOURCE) $(PLAYER_PATCHES) make/player.mk
 	$(MAKE) libstdc++-stage \
 		boost-stage libjpeg-stage openssl-stage libtool-stage zlib-stage
+ifeq (uclibc, $(LIBC_STYLE))
+	$(MAKE) librpc-uclibc-stage
+endif
 	rm -rf $(BUILD_DIR)/$(PLAYER_DIR) $(@D)
 	$(PLAYER_UNZIP) $(DL_DIR)/$(PLAYER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(PLAYER_PATCHES)" ; \

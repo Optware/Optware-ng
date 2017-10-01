@@ -36,7 +36,7 @@ AUTOSSH_CONFLICTS=
 #
 # AUTOSSH_IPK_VERSION should be incremented when the ipk changes.
 #
-AUTOSSH_IPK_VERSION=2
+AUTOSSH_IPK_VERSION=3
 
 #
 # AUTOSSH_CONFFILES should be a list of user-editable files

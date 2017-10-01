@@ -37,7 +37,7 @@ UNIXODBC_CONFLICTS=
 #
 # UNIXODBC_IPK_VERSION should be incremented when the ipk changes.
 #
-UNIXODBC_IPK_VERSION=2
+UNIXODBC_IPK_VERSION=3
 
 #
 # UNIXODBC_CONFFILES should be a list of user-editable files

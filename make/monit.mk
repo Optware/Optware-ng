@@ -20,7 +20,7 @@ MONIT_CONFLICTS=
 #
 # MONIT_IPK_VERSION should be incremented when the ipk changes.
 #
-MONIT_IPK_VERSION=3
+MONIT_IPK_VERSION=4
 
 #
 # MONIT_CONFFILES should be a list of user-editable files

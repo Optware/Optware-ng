@@ -34,7 +34,7 @@ LIBOL_CONFLICTS=
 #
 # LIBOL_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBOL_IPK_VERSION=3
+LIBOL_IPK_VERSION=4
 
 #
 # LIBOL_CONFFILES should be a list of user-editable files

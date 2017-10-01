@@ -42,7 +42,7 @@ ANTINAT_CONFLICTS=
 #
 # ANTINAT_IPK_VERSION should be incremented when the ipk changes.
 #
-ANTINAT_IPK_VERSION=4
+ANTINAT_IPK_VERSION=5
 
 #
 # ANTINAT_CONFFILES should be a list of user-editable files

@@ -42,7 +42,7 @@ XERCES-C_CONFLICTS=
 #
 # XERCES-C_IPK_VERSION should be incremented when the ipk changes.
 #
-XERCES-C_IPK_VERSION=3
+XERCES-C_IPK_VERSION=4
 
 #
 # XERCES-C_CONFFILES should be a list of user-editable files

@@ -40,7 +40,7 @@ TINYPROXY_CONFLICTS=
 #
 # TINYPROXY_IPK_VERSION should be incremented when the ipk changes.
 #
-TINYPROXY_IPK_VERSION=2
+TINYPROXY_IPK_VERSION=3
 
 #
 # TINYPROXY_CONFFILES should be a list of user-editable files

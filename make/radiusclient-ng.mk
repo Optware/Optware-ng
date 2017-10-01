@@ -38,7 +38,7 @@ RADIUSCLIENT_NG_CONFLICTS=
 #
 # RADIUSCLIENT_NG_IPK_VERSION should be incremented when the ipk changes.
 #
-RADIUSCLIENT_NG_IPK_VERSION=1
+RADIUSCLIENT_NG_IPK_VERSION=2
 
 #
 # RADIUSCLIENT_NG_CONFFILES should be a list of user-editable files

@@ -36,7 +36,7 @@ PEN_CONFLICTS=
 #
 # PEN_IPK_VERSION should be incremented when the ipk changes.
 #
-PEN_IPK_VERSION=1
+PEN_IPK_VERSION=2
 
 #
 # PEN_CONFFILES should be a list of user-editable files

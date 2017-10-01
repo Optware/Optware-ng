@@ -36,7 +36,7 @@ PRIVOXY_CONFLICTS=
 #
 # PRIVOXY_IPK_VERSION should be incremented when the ipk changes.
 #
-PRIVOXY_IPK_VERSION=3
+PRIVOXY_IPK_VERSION=4
 
 #
 # PRIVOXY_CONFFILES should be a list of user-editable files

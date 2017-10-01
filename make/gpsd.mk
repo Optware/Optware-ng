@@ -36,7 +36,7 @@ GPSD_CONFLICTS=
 #
 # GPSD_IPK_VERSION should be incremented when the ipk changes.
 #
-GPSD_IPK_VERSION=1
+GPSD_IPK_VERSION=2
 
 #
 # GPSD_CONFFILES should be a list of user-editable files

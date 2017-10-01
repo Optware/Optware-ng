@@ -36,7 +36,7 @@ UPDATEDD_CONFLICTS=
 #
 # UPDATEDD_IPK_VERSION should be incremented when the ipk changes.
 #
-UPDATEDD_IPK_VERSION=1
+UPDATEDD_IPK_VERSION=2
 
 #
 # UPDATEDD_CONFFILES should be a list of user-editable files

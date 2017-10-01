@@ -36,7 +36,7 @@ SIPCALC_CONFLICTS=
 #
 # SIPCALC_IPK_VERSION should be incremented when the ipk changes.
 #
-SIPCALC_IPK_VERSION=1
+SIPCALC_IPK_VERSION=2
 
 #
 # SIPCALC_CONFFILES should be a list of user-editable files

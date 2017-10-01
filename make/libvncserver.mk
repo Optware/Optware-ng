@@ -36,7 +36,7 @@ LIBVNCSERVER_CONFLICTS=
 #
 # LIBVNCSERVER_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBVNCSERVER_IPK_VERSION=3
+LIBVNCSERVER_IPK_VERSION=4
 
 #
 # LIBVNCSERVER_CONFFILES should be a list of user-editable files

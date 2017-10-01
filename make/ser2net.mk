@@ -36,7 +36,7 @@ SER2NET_CONFLICTS=
 #
 # SER2NET_IPK_VERSION should be incremented when the ipk changes.
 #
-SER2NET_IPK_VERSION=1
+SER2NET_IPK_VERSION=2
 
 #
 # SER2NET_CONFFILES should be a list of user-editable files

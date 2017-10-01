@@ -36,7 +36,7 @@ OSSP_JS_CONFLICTS=
 #
 # OSSP_JS_IPK_VERSION should be incremented when the ipk changes.
 #
-OSSP_JS_IPK_VERSION=1
+OSSP_JS_IPK_VERSION=2
 
 #
 # OSSP_JS_CONFFILES should be a list of user-editable files

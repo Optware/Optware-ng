@@ -36,7 +36,7 @@ LOUDMOUTH_CONFLICTS=
 #
 # LOUDMOUTH_IPK_VERSION should be incremented when the ipk changes.
 #
-LOUDMOUTH_IPK_VERSION=1
+LOUDMOUTH_IPK_VERSION=2
 
 #
 # LOUDMOUTH_CONFFILES should be a list of user-editable files

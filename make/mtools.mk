@@ -38,7 +38,7 @@ MTOOLS_CONFLICTS=
 #
 # MTOOLS_IPK_VERSION should be incremented when the ipk changes.
 #
-MTOOLS_IPK_VERSION=1
+MTOOLS_IPK_VERSION=2
 
 #
 # MTOOLS_CONFFILES should be a list of user-editable files

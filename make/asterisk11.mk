@@ -79,7 +79,7 @@ ASTERISK11_CONFLICTS=asterisk18,asterisk10
 #
 # ASTERISK11_IPK_VERSION should be incremented when the ipk changes.
 #
-ASTERISK11_IPK_VERSION=3
+ASTERISK11_IPK_VERSION=4
 
 #
 # ASTERISK11_CONFFILES should be a list of user-editable files
