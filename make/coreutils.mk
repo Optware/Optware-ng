@@ -40,7 +40,7 @@ COREUTILS_CONFLICTS=
 #
 # COREUTILS_IPK_VERSION should be incremented when the ipk changes.
 #
-COREUTILS_IPK_VERSION=2
+COREUTILS_IPK_VERSION=3
 
 #
 # COREUTILS_PATCHES should list any patches, in the the order in
@@ -79,9 +79,9 @@ gl_cv_func_fflush_stdin=yes \
 gl_cv_func_rename_trailing_slash_bug=no \
 gl_cv_func_rename_dest_exists_bug=no \
 
-ifeq ($(OPTWARE_TARGET), dns323)
-# binutils too old, ld does not recognize --as-needed
-COREUTILS_CONFIG_ENVS += gl_cv_ignore_unused_libraries=none
+ifeq (uclibc, $(LIBC_STYLE))
+# internal obstack support removed starting from uClibc-ng 1.0.21
+COREUTILS_CONFIG_ENVS += ac_cv_func_obstack=no
 endif
 
 #

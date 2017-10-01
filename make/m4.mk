@@ -34,7 +34,7 @@ M4_CONFLICTS=
 #
 # M4_IPK_VERSION should be incremented when the ipk changes.
 #
-M4_IPK_VERSION=1
+M4_IPK_VERSION=2
 
 #
 # M4_PATCHES should list any patches, in the the order in

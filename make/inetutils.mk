@@ -28,13 +28,8 @@
 #
 INETUTILS_NAME=inetutils
 INETUTILS_SITE=ftp://ftp.gnu.org/pub/gnu/inetutils
-ifneq ($(OPTWARE_TARGET), wl500g)
 INETUTILS_VERSION=1.9
-INETUTILS_IPK_VERSION=1
-else
-INETUTILS_VERSION=1.4.2
-INETUTILS_IPK_VERSION=11
-endif
+INETUTILS_IPK_VERSION=2
 INETUTILS_SOURCE=$(INETUTILS_NAME)-$(INETUTILS_VERSION).tar.gz
 INETUTILS_DIR=$(INETUTILS_NAME)-$(INETUTILS_VERSION)
 INETUTILS_UNZIP=zcat
@@ -129,6 +124,11 @@ $(INETUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(INETUTILS_SOURCE) $(INETUTILS_PA
 		--with-ncurses \
 		--with-ncurses-include-dir=$(STAGING_INCLUDE_DIR)/ncurses \
 		--program-prefix="" \
+		$(strip $(if $(filter uclibc, $(LIBC_STYLE)), \
+			--disable-rlogin \
+			--disable-rcp \
+			--disable-rsh \
+		)) \
 	)
 	touch $@
 

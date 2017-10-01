@@ -23,7 +23,7 @@
 #
 GIT_SITE=http://ftp.be.debian.org/pub/software/scm/git-core
 GIT_VERSION=2.9.3
-GIT_IPK_VERSION=1
+GIT_IPK_VERSION=2
 GIT_SOURCE=git-$(GIT_VERSION).tar.gz
 GIT_DIR=git-$(GIT_VERSION)
 GIT_UNZIP=zcat
