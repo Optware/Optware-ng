@@ -41,7 +41,7 @@ LFTP_CONFLICTS=
 #
 # LFTP_IPK_VERSION should be incremented when the ipk changes.
 #
-LFTP_IPK_VERSION=1
+LFTP_IPK_VERSION=2
 
 #
 # LFTP_CONFFILES should be a list of user-editable files
@@ -51,7 +51,9 @@ LFTP_IPK_VERSION=1
 # LFTP_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-LFTP_PATCHES=$(LFTP_SOURCE_DIR)/IPV6_V6ONLY.patch
+LFTP_PATCHES=\
+$(LFTP_SOURCE_DIR)/IPV6_V6ONLY.patch \
+$(LFTP_SOURCE_DIR)/signbit.patch \
 
 #
 # If the compilation of the package requires additional
@@ -137,7 +139,7 @@ endif
 	$(LFTP_UNZIP) $(DL_DIR)/$(LFTP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LFTP_PATCHES)" ; \
 		then cat $(LFTP_PATCHES) | \
-		$(PATCH) -d $(BUILD_DIR)/$(LFTP_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LFTP_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LFTP_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LFTP_DIR) $(@D) ; \
