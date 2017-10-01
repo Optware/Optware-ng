@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBTASN1_SITE=http://ftp.gnu.org/gnu/libtasn1
-LIBTASN1_VERSION=4.2
+LIBTASN1_VERSION=4.9
 LIBTASN1_SOURCE=libtasn1-$(LIBTASN1_VERSION).tar.gz
 LIBTASN1_DIR=libtasn1-$(LIBTASN1_VERSION)
 LIBTASN1_UNZIP=zcat
@@ -134,7 +134,7 @@ libtasn1-unpack: $(LIBTASN1_BUILD_DIR)/.configured
 #
 $(LIBTASN1_BUILD_DIR)/.built: $(LIBTASN1_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(@D)
+	$(MAKE) -C $(@D) WERROR_CFLAGS=""
 	touch $@
 
 #
