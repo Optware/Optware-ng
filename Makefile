@@ -41,6 +41,9 @@ PACKAGES_READY_FOR_TESTING = qt-embedded \
 # doxygen - host binary, not stripped
 # bpalogin - for some reason it can't find 'sed' on the build machine
 # btg - needs old boost and libtorrent-rasterbar
+# clinkcc - fails to build with GCC 7:
+#	../../src/cybergarage/upnp/Service.cpp: In member function ‘bool CyberLink::Service::loadSCPD(CyberIO::File*)’:
+#	../../src/cybergarage/upnp/Service.cpp:349:33: error: ISO C++ forbids comparison between pointer and integer [-fpermissive]
 #
 PACKAGES_THAT_NEED_TO_BE_FIXED = lumikki \
 	doxygen \
@@ -50,6 +53,7 @@ PACKAGES_THAT_NEED_TO_BE_FIXED = lumikki \
 	nemesis \
 	appweb libextractor sandbox \
 	btg \
+	clinkcc \
  
 PERL_PACKAGES = \
 	intltool \
@@ -264,7 +268,7 @@ COMMON_PACKAGES = \
 	catdoc ccollect ccrypt ccxstream cdargs \
 	cdrtools centerim cuetools \
 	cherokee chicken chillispot chromaprint chrpath cksfv \
-	classpath clamav clearsilver climm clinkcc clips cmdftp collectd \
+	classpath clamav clearsilver climm clips cmdftp collectd \
 	confuse connect coreutils corkscrew cpio cppunit cpufrequtils cron cryptcat \
 	cscope ctags ctcs ctorrent ctrlproxy \
 	cups cups-filters cups-pdf cvs \
