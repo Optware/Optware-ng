@@ -49,7 +49,7 @@ endif
 #
 # ERLANG_IPK_VERSION should be incremented when the ipk changes.
 #
-ERLANG_IPK_VERSION=2
+ERLANG_IPK_VERSION=3
 
 ERLANG_TARGET=$(shell $(SOURCE_DIR)/common/config.sub $(GNU_TARGET_NAME))
 
@@ -70,6 +70,7 @@ ERLANG_SMP ?= --disable-smp-support
 ERLANG_PATCHES=\
 	$(ERLANG_SOURCE_DIR)/erts-configure.in.patch \
 	$(ERLANG_SOURCE_DIR)/lib-odbc-c_src-Makefile.in.patch \
+	$(ERLANG_SOURCE_DIR)/beam_makeops.patch \
 
 ERLANG_CROSS_PATCHES=$(ERLANG_PATCHES)
 
