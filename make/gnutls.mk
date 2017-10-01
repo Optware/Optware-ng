@@ -26,8 +26,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-GNUTLS_SITE=ftp://ftp.gnutls.org/gcrypt/gnutls/v3.3
-GNUTLS_VERSION=3.3.13
+GNUTLS_SITE=ftp://ftp.gnutls.org/gcrypt/gnutls/v3.5
+GNUTLS_VERSION=3.5.15
 GNUTLS_SOURCE=gnutls-$(GNUTLS_VERSION).tar.xz
 GNUTLS_DIR=gnutls-$(GNUTLS_VERSION)
 GNUTLS_UNZIP=xzcat
@@ -135,6 +135,8 @@ $(GNUTLS_BUILD_DIR)/.configured: $(DL_DIR)/$(GNUTLS_SOURCE) $(GNUTLS_PATCHES) ma
 		--without-p11-kit \
 		--disable-nls \
 		--disable-static \
+		--disable-doc \
+		--enable-manpages \
 	)
 	find $(@D) -type f -name Makefile -exec sed -i -e "s|-Wl,-rpath -Wl,$(STAGING_LIB_DIR)||g" -e "s|-R$(STAGING_LIB_DIR)||g" {} \;
 	$(PATCH_LIBTOOL) $(@D)/libtool
@@ -224,9 +226,6 @@ $(GNUTLS_IPK) $(GNUTLS-DEV_IPK): $(GNUTLS_BUILD_DIR)/.built
 	mv $(GNUTLS_IPK_DIR)$(TARGET_PREFIX)/include $(GNUTLS-DEV_IPK_DIR)$(TARGET_PREFIX)/
 	$(INSTALL) -d $(GNUTLS-DEV_IPK_DIR)$(TARGET_PREFIX)/share/man
 	mv $(GNUTLS_IPK_DIR)$(TARGET_PREFIX)/share/man/man3 $(GNUTLS-DEV_IPK_DIR)$(TARGET_PREFIX)/share/man/
-	rm -rf $(GNUTLS_IPK_DIR)$(TARGET_PREFIX)/share/info/dir
-	mv $(GNUTLS_IPK_DIR)$(TARGET_PREFIX)/share/info $(GNUTLS-DEV_IPK_DIR)$(TARGET_PREFIX)/share/
-#	mv $(GNUTLS_IPK_DIR)$(TARGET_PREFIX)/share/aclocal $(GNUTLS-DEV_IPK_DIR)$(TARGET_PREFIX)/share/
 	$(INSTALL) -d $(GNUTLS-DEV_IPK_DIR)$(TARGET_PREFIX)/bin $(GNUTLS-DEV_IPK_DIR)$(TARGET_PREFIX)/lib
 #	mv $(GNUTLS_IPK_DIR)$(TARGET_PREFIX)/bin/libgnutls*-config $(GNUTLS-DEV_IPK_DIR)$(TARGET_PREFIX)/bin/
 	mv $(GNUTLS_IPK_DIR)$(TARGET_PREFIX)/lib/pkgconfig $(GNUTLS-DEV_IPK_DIR)$(TARGET_PREFIX)/lib/
