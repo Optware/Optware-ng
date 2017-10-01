@@ -36,7 +36,7 @@ CENTERIM_CONFLICTS=
 #
 # CENTERIM_IPK_VERSION should be incremented when the ipk changes.
 #
-CENTERIM_IPK_VERSION=3
+CENTERIM_IPK_VERSION=4
 
 #
 # CENTERIM_CONFFILES should be a list of user-editable files
@@ -46,7 +46,8 @@ CENTERIM_IPK_VERSION=3
 # CENTERIM_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#CENTERIM_PATCHES=$(CENTERIM_SOURCE_DIR)/configure.patch
+CENTERIM_PATCHES=\
+$(CENTERIM_SOURCE_DIR)/src-icqface.h.patch \
 
 #
 # If the compilation of the package requires additional
@@ -112,7 +113,7 @@ $(CENTERIM_BUILD_DIR)/.configured: $(DL_DIR)/$(CENTERIM_SOURCE) $(CENTERIM_PATCH
 	$(CENTERIM_UNZIP) $(DL_DIR)/$(CENTERIM_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(CENTERIM_PATCHES)" ; \
 		then cat $(CENTERIM_PATCHES) | \
-		$(PATCH) -d $(BUILD_DIR)/$(CENTERIM_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(CENTERIM_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(CENTERIM_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(CENTERIM_DIR) $(@D) ; \

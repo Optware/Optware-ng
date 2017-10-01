@@ -1,0 +1,11 @@
+--- a/src/icqface.h
++++ b/src/icqface.h
+@@ -245,7 +245,7 @@ class icqface {
+ 	bool updateconf(icqconf::regsound &s, icqconf::regcolor &c);
+ 
+ 	bool finddialog(imsearchparams &s, findsubject subj);
+-	bool findresults(const imsearchparams &sp, bool auto = false);
++	bool findresults(const imsearchparams &sp, bool _auto = false);
+ 	void findready();
+ 
+ 	bool conferencedialog(protocolname &pname, string &name);
