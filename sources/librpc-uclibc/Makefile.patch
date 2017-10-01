@@ -1,0 +1,19 @@
+--- /dev/null	2017-09-28 09:17:39.380000000 +0000
++++ b/Makefile	2017-10-01 09:37:35.000000000 +0000
+@@ -0,0 +1,16 @@
++SOURCES = $(wildcard *.c)
++OBJS = $(patsubst %.c,%.o,$(SOURCES))
++
++CFLAGS = -O2 -Wall --std=gnu99 -g3 -fPIC -I. -include rpc/compat.h
++
++librpc-uclibc.so: librpc-uclibc.so.1
++	rm -f $@
++	ln -s $^ $@
++
++librpc-uclibc.so.1: $(OBJS)
++	$(CC) $(LDFLAGS) -shared -Wl,-soname,$@ -o $@ $^
++
++.PHONY: clean
++
++clean:
++	rm -f $(OBJS) librpc-uclibc.so librpc-uclibc.so.1

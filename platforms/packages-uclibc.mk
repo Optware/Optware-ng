@@ -24,7 +24,7 @@ BROKEN_PACKAGES += \
 	xchat \
 	mlocate \
 
-SPECIFIC_PACKAGES += libiconv uclibc-opt
+SPECIFIC_PACKAGES += libiconv uclibc-opt librpc-uclibc
 
 TSHARK_VERSION := 1.2.12
 TSHARK_IPK_VERSION := 1
