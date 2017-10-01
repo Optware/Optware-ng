@@ -22,7 +22,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBNETTLE_SITE=ftp://ftp.gnu.org/gnu/nettle
-LIBNETTLE_VERSION=2.7.1
+LIBNETTLE_VERSION=3.1.1
 LIBNETTLE_SOURCE=nettle-$(LIBNETTLE_VERSION).tar.gz
 LIBNETTLE_DIR=nettle-$(LIBNETTLE_VERSION)
 LIBNETTLE_UNZIP=zcat
@@ -193,7 +193,7 @@ $(LIBNETTLE_IPK): $(LIBNETTLE_BUILD_DIR)/.built
 	rm -rf $(LIBNETTLE_IPK_DIR) $(BUILD_DIR)/libnettle_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBNETTLE_BUILD_DIR) DESTDIR=$(LIBNETTLE_IPK_DIR) install
 	$(STRIP_COMMAND) $(LIBNETTLE_IPK_DIR)$(TARGET_PREFIX)/lib/lib*.so $(LIBNETTLE_IPK_DIR)$(TARGET_PREFIX)/bin/*
-	rm -f $(LIBNETTLE_IPK_DIR)$(TARGET_PREFIX)/lib/libnettle.a
+	rm -f $(LIBNETTLE_IPK_DIR)$(TARGET_PREFIX)/lib/lib{nettle,hogweed}.a
 #	$(INSTALL) -d $(LIBNETTLE_IPK_DIR)$(TARGET_PREFIX)/etc/
 #	$(INSTALL) -m 644 $(LIBNETTLE_SOURCE_DIR)/libnettle.conf $(LIBNETTLE_IPK_DIR)$(TARGET_PREFIX)/etc/libnettle.conf
 #	$(INSTALL) -d $(LIBNETTLE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
