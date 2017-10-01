@@ -15,13 +15,16 @@ TRICKLE_DESCRIPTION=Trickle is a portable lightweight userspace bandwidth shaper
 TRICKLE_SECTION=net
 TRICKLE_PRIORITY=optional
 TRICKLE_DEPENDS=libevent (>=1.4)
+ifeq (uclibc, $(LIBC_STYLE))
+TRICKLE_DEPENDS +=, librpc-uclibc
+endif
 TRICKLE_SUGGESTS=
 TRICKLE_CONFLICTS=
 
 #
 # TRICKLE_IPK_VERSION should be incremented when the ipk changes.
 #
-TRICKLE_IPK_VERSION=1
+TRICKLE_IPK_VERSION=2
 
 #
 # TRICKLE_PATCHES should list any patches, in the the order in
@@ -37,6 +40,9 @@ $(TRICKLE_SOURCE_DIR)/Makefile.am.patch \
 #
 TRICKLE_CPPFLAGS=
 TRICKLE_LDFLAGS=
+ifeq (uclibc, $(LIBC_STYLE))
+TRICKLE_LDFLAGS += -lrpc-uclibc
+endif
 
 #
 # TRICKLE_BUILD_DIR is the directory in which the build is done.
@@ -84,6 +90,9 @@ trickle-source: $(DL_DIR)/$(TRICKLE_SOURCE) $(TRICKLE_PATCHES)
 #
 $(TRICKLE_BUILD_DIR)/.configured: $(DL_DIR)/$(TRICKLE_SOURCE) $(TRICKLE_PATCHES) make/trickle.mk
 	$(MAKE) libevent-stage
+ifeq (uclibc, $(LIBC_STYLE))
+	$(MAKE) librpc-uclibc-stage
+endif
 	rm -rf $(BUILD_DIR)/$(TRICKLE_DIR) $(TRICKLE_BUILD_DIR)
 	$(TRICKLE_UNZIP) $(DL_DIR)/$(TRICKLE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(TRICKLE_PATCHES) | $(PATCH) -bd $(BUILD_DIR)/$(TRICKLE_DIR) -p0
