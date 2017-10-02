@@ -38,7 +38,7 @@ ASPELL_CONFLICTS=
 #
 # ASPELL_IPK_VERSION should be incremented when the ipk changes.
 #
-ASPELL_IPK_VERSION=1
+ASPELL_IPK_VERSION=2
 
 #
 # ASPELL_CONFFILES should be a list of user-editable files
@@ -48,7 +48,8 @@ ASPELL_CONFFILES=$(TARGET_PREFIX)/etc/aspell.conf
 # ASPELL_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#ASPELL_PATCHES=$(ASPELL_SOURCE_DIR)/configure.patch
+ASPELL_PATCHES=\
+$(ASPELL_SOURCE_DIR)/fix_compare_pointer_to_NULL.patch \
 
 #
 # If the compilation of the package requires additional
@@ -112,7 +113,7 @@ $(ASPELL_BUILD_DIR)/.configured: $(DL_DIR)/$(ASPELL_SOURCE) $(ASPELL_PATCHES) ma
 	$(ASPELL_UNZIP) $(DL_DIR)/$(ASPELL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ASPELL_PATCHES)" ; \
 		then cat $(ASPELL_PATCHES) | \
-		$(PATCH) -d $(BUILD_DIR)/$(ASPELL_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(ASPELL_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(ASPELL_DIR)" != "$(ASPELL_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(ASPELL_DIR) $(ASPELL_BUILD_DIR) ; \

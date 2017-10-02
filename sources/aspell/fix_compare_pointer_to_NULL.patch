@@ -1,0 +1,22 @@
+--- a/prog/check_funs.cpp
++++ b/prog/check_funs.cpp
+@@ -647,7 +647,7 @@ static void print_truncate(FILE * out, c
+     }
+   }
+   if (i == width-1) {
+-    if (word == '\0')
++    if (word == NULL)
+       put(out,' ');
+     else if (word[len] == '\0')
+       put(out, word, len);
+--- a/modules/filter/tex.cpp
++++ b/modules/filter/tex.cpp
+@@ -174,7 +174,7 @@ namespace {
+ 
+     if (c == '{') {
+ 
+-      if (top.in_what == Parm || top.in_what == Opt || top.do_check == '\0')
++      if (top.in_what == Parm || top.in_what == Opt || top.do_check == NULL)
+ 	push_command(Parm);
+ 
+       top.in_what = Parm;
