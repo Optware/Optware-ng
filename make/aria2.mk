@@ -20,9 +20,9 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-ARIA2_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/aria2
+ARIA2_SITE=https://github.com/aria2/aria2/releases/download/release-$(ARIA2_VERSION)
 
-ARIA2_VERSION=1.19.0
+ARIA2_VERSION=1.32.0
 
 ARIA2_SOURCE=aria2-$(ARIA2_VERSION).tar.bz2
 ARIA2_DIR=aria2-$(ARIA2_VERSION)
@@ -147,6 +147,7 @@ endif
 		--with-libz-prefix=$(STAGING_PREFIX) \
 		--disable-nls \
 		--disable-static \
+		--disable-rpath \
 	)
 #	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
