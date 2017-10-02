@@ -42,7 +42,7 @@ LIBUPNP_CONFLICTS=
 #
 # LIBUPNP_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBUPNP_IPK_VERSION=1
+LIBUPNP_IPK_VERSION=2
 
 #
 # LIBUPNP_CONFFILES should be a list of user-editable files
@@ -52,7 +52,8 @@ LIBUPNP_IPK_VERSION=1
 # LIBUPNP_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#LIBUPNP_PATCHES=$(LIBUPNP_SOURCE_DIR)/configure.patch
+LIBUPNP_PATCHES=\
+$(LIBUPNP_SOURCE_DIR)/get_content_type_not_inline.patch \
 
 #
 # If the compilation of the package requires additional
@@ -116,7 +117,7 @@ $(LIBUPNP_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBUPNP_SOURCE) $(LIBUPNP_PATCHES)
 	$(LIBUPNP_UNZIP) $(DL_DIR)/$(LIBUPNP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBUPNP_PATCHES)" ; \
 		then cat $(LIBUPNP_PATCHES) | \
-		$(PATCH) -d $(BUILD_DIR)/$(LIBUPNP_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBUPNP_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBUPNP_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBUPNP_DIR) $(@D) ; \
