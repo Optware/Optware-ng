@@ -1,0 +1,13 @@
+--- GNUmakefile.orig
++++ GNUmakefile
+@@ -5,6 +5,10 @@ CXXFLAGS += -fPIC
+ # the following options reduce code size, but breaks link or makes link very slow on some systems
+ # CXXFLAGS += -ffunction-sections -fdata-sections
+ # LDFLAGS += -Wl,--gc-sections
++
++# fix GCC 7.2.0 compilation
++CXXFLAGS += -Wno-error=narrowing
++
+ ARFLAGS = -cr	# ar needs the dash on OpenBSD
+ RANLIB = ranlib
+ CP = cp
