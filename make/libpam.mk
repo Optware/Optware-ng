@@ -36,7 +36,7 @@ LIBPAM_CONFLICTS=
 #
 # LIBPAM_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBPAM_IPK_VERSION=3
+LIBPAM_IPK_VERSION=4
 
 #
 # LIBPAM_CONFFILES should be a list of user-editable files
@@ -63,6 +63,7 @@ $(LIBPAM_SOURCE_DIR)/pam_unix_fix_sgid_shadow_auth.patch \
 $(LIBPAM_SOURCE_DIR)/pam_unix_dont_trust_chkpwd_caller.patch \
 $(LIBPAM_SOURCE_DIR)/000-optware_paths.patch \
 $(LIBPAM_SOURCE_DIR)/001-buildroot-patches.patch \
+$(LIBPAM_SOURCE_DIR)/002-configure_libcrypt.patch \
 $(LIBPAM_SOURCE_DIR)/007_modules_pam_unix \
 $(LIBPAM_SOURCE_DIR)/008_modules_pam_limits_chroot \
 $(LIBPAM_SOURCE_DIR)/021_nis_cleanup \

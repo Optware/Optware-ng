@@ -1,0 +1,12 @@
+--- a/configure.in
++++ b/configure.in
+@@ -405,6 +405,9 @@ AS_IF([test "x$ac_cv_header_xcrypt_h" =
+ 
+ BACKUP_LIBS=$LIBS
+ AC_SEARCH_LIBS([crypt],[$crypt_libs], LIBCRYPT="-l$ac_lib", LIBCRYPT="")
++if test "$LIBCRYPT" = "-l"; then
++        LIBCRYPT=""
++fi
+ AC_CHECK_FUNCS(crypt_r crypt_gensalt_r)
+ LIBS=$BACKUP_LIBS
+ AC_SUBST(LIBCRYPT)
