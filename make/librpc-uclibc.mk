@@ -22,7 +22,7 @@
 #
 LIBRPC_UCLIBC_URL=https://git.openwrt.org/project/librpc-uclibc.git
 LIBRPC_UCLIBC_VERSION=20151104
-LIBRPC_UCLIBC_TREEISH=`git rev-list --max-count=1 --until=2015-11-04 HEAD`
+LIBRPC_UCLIBC_TREEISH=a921e3ded051746f9f7cd5e5a312fb6771716aac
 LIBRPC_UCLIBC_SOURCE=librpc-uclibc-$(LIBRPC_UCLIBC_VERSION).tar.gz
 LIBRPC_UCLIBC_DIR=librpc-uclibc-$(LIBRPC_UCLIBC_VERSION)
 LIBRPC_UCLIBC_UNZIP=zcat
@@ -49,7 +49,6 @@ LIBRPC_UCLIBC_IPK_VERSION=1
 #
 LIBRPC_UCLIBC_PATCHES=\
 $(LIBRPC_UCLIBC_SOURCE_DIR)/Makefile.patch \
-$(LIBRPC_UCLIBC_SOURCE_DIR)/compat.patch \
 
 #
 # If the compilation of the package requires additional
