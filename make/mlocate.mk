@@ -13,7 +13,7 @@
 ifeq ($(LIBC_STYLE), uclibc)
 MLOCATE_SITE=http://people.redhat.com/mitr/mlocate
 MLOCATE_VERSION=0.15
-MLOCATE_IPK_VERSION=1
+MLOCATE_IPK_VERSION=2
 MLOCATE_SOURCE=mlocate-$(MLOCATE_VERSION).tar.gz
 MLOCATE_UNZIP=zcat
 else
@@ -45,8 +45,9 @@ MLOCATE_CONFFILES=$(TARGET_PREFIX)/etc/cron.d/updatedb-mlocate
 # MLOCATE_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
+MLOCATE_PATCHES=$(MLOCATE_SOURCE_DIR)/obstack.patch
 ifeq ($(LIBC_STYLE), glibc)
-MLOCATE_PATCHES=$(MLOCATE_SOURCE_DIR)/mlocate-0.26-include-order-fix.patch
+MLOCATE_PATCHES += $(MLOCATE_SOURCE_DIR)/mlocate-0.26-include-order-fix.patch
 endif
 
 #
@@ -128,6 +129,7 @@ endif
 	if test "$(BUILD_DIR)/$(MLOCATE_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(MLOCATE_DIR) $(@D) ; \
 	fi
+	$(AUTORECONF1.10) -vif $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MLOCATE_CPPFLAGS)" \
