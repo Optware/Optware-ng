@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 RRDTOOL_SITE=http://oss.oetiker.ch/rrdtool/pub/
-RRDTOOL_VERSION=1.2.30
+RRDTOOL_VERSION=1.7.0
 RRDTOOL_SOURCE=rrdtool-$(RRDTOOL_VERSION).tar.gz
 RRDTOOL_DIR=rrdtool-$(RRDTOOL_VERSION)
 RRDTOOL_UNZIP=zcat
@@ -59,7 +59,7 @@ RRDTOOL_IPK_VERSION=1
 # which they should be applied to the source code.
 # uClibc badly compiles with -std=gnu99
 ifeq ($(LIBC_STYLE), uclibc)
-RRDTOOL_PATCHES=$(RRDTOOL_SOURCE_DIR)/configure.patch
+#RRDTOOL_PATCHES=$(RRDTOOL_SOURCE_DIR)/configure.patch
 endif
 #
 # If the compilation of the package requires additional
@@ -138,7 +138,7 @@ endif
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(RRDTOOL_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(RRDTOOL_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
-		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
+		PERL=$(PERL_HOSTPERL) \
 		rd_cv_ieee_works=yes \
 		rd_cv_null_realloc=nope \
 		ac_cv_func_mmap_fixed_mapped=yes \
@@ -149,6 +149,7 @@ endif
 		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-tcl \
+		--disable-ruby \
 		$(RRDTOOL_PERL) \
 		--disable-python \
 		--program-prefix="" \
@@ -166,6 +167,9 @@ ifneq (,$(filter perl, $(PACKAGES)))
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
 		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
+		ABS_TOP_SRCDIR=$(@D) \
+		ABS_TOP_BUILDDIR=$(@D) \
+		ABS_SRCDIR=$(@D)/bindings/$$m \
 		$(PERL_HOSTPERL) Makefile.PL \
 		$(TARGET_CONFIGURE_OPTS) \
 		LD=$(TARGET_CC) \
@@ -186,7 +190,10 @@ rrdtool-unpack: $(RRDTOOL_BUILD_DIR)/.configured
 #
 $(RRDTOOL_BUILD_DIR)/.built: $(RRDTOOL_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(RRDTOOL_BUILD_DIR)
+	$(MAKE) -C $(@D)/src librrd.la
+	$(MAKE) -C $(@D)/bindings/perl-piped -j1
+	$(MAKE) -C $(@D)/bindings/perl-shared -j1
+	$(MAKE) -C $(@D) PERL="echo > /dev/null"
 	touch $@
 
 #
@@ -199,7 +206,7 @@ rrdtool: $(RRDTOOL_BUILD_DIR)/.built
 #
 $(RRDTOOL_BUILD_DIR)/.staged: $(RRDTOOL_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(RRDTOOL_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install PERL="echo > /dev/null"
 	rm -f $(STAGING_LIB_DIR)/librrd.la
 	rm -f $(STAGING_LIB_DIR)/librrd_th.la
 	touch $@
@@ -239,7 +246,9 @@ $(RRDTOOL_IPK_DIR)/CONTROL/control:
 #
 $(RRDTOOL_IPK): $(RRDTOOL_BUILD_DIR)/.built
 	rm -rf $(RRDTOOL_IPK_DIR) $(BUILD_DIR)/rrdtool_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(RRDTOOL_BUILD_DIR) DESTDIR=$(RRDTOOL_IPK_DIR) install-strip
+	$(MAKE) -C $(RRDTOOL_BUILD_DIR) DESTDIR=$(RRDTOOL_IPK_DIR) install-strip PERL="echo > /dev/null"
+	$(MAKE) -C $(RRDTOOL_BUILD_DIR)/bindings/perl-piped DESTDIR=$(RRDTOOL_IPK_DIR) install -j1
+	$(MAKE) -C $(RRDTOOL_BUILD_DIR)/bindings/perl-shared DESTDIR=$(RRDTOOL_IPK_DIR) install -j1
 	rm -f $(RRDTOOL_IPK_DIR)$(TARGET_PREFIX)/lib/librrd.la $(RRDTOOL_IPK_DIR)$(TARGET_PREFIX)/lib/librrd_th.la
 	rm -f $(RRDTOOL_IPK_DIR)$(TARGET_PREFIX)/lib/librrd.a $(RRDTOOL_IPK_DIR)$(TARGET_PREFIX)/lib/librrd_th.a
 ifneq (,$(filter perl, $(PACKAGES)))
