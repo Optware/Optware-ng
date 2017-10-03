@@ -36,7 +36,7 @@ LIBFDK_AAC_CONFLICTS=
 #
 # LIBFDK_AAC_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBFDK_AAC_IPK_VERSION=1
+LIBFDK_AAC_IPK_VERSION=2
 
 #
 # LIBFDK_AAC_CONFFILES should be a list of user-editable files
@@ -52,7 +52,7 @@ LIBFDK_AAC_IPK_VERSION=1
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-LIBFDK_AAC_CPPFLAGS=
+LIBFDK_AAC_CPPFLAGS=-Wno-error=narrowing
 LIBFDK_AAC_LDFLAGS=
 
 #
