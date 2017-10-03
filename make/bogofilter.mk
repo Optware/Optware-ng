@@ -5,7 +5,7 @@
 ###########################################################
 
 BOGOFILTER_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/bogofilter
-BOGOFILTER_VERSION=1.2.2
+BOGOFILTER_VERSION=1.2.4
 BOGOFILTER_IPK_VERSION=1
 BOGOFILTER_SOURCE=bogofilter-$(BOGOFILTER_VERSION).tar.bz2
 BOGOFILTER_DIR=bogofilter-$(BOGOFILTER_VERSION)
@@ -27,7 +27,7 @@ ifeq ($(HOSTCC), $(TARGET_CC))
 BOGOFILTER_PATCHES=
 BOGOFILTER_CONFIGURE_OPTIONS=
 else
-BOGOFILTER_PATCHES=$(BOGOFILTER_SOURCE_DIR)/configure.ac.patch
+BOGOFILTER_PATCHES=
 BOGOFILTER_CONFIGURE_OPTIONS=--enable-rpath=no
 endif
 
@@ -76,7 +76,7 @@ endif
 	fi
 	mv $(BUILD_DIR)/$(BOGOFILTER_DIR) $(@D)
 ifneq ($(HOSTCC), $(TARGET_CC))
-	$(AUTORECONF1.10) -vif $(@D)
+#	$(AUTORECONF1.10) -vif $(@D)
 endif
 	sed -i -e '/names_next_round=/s/db /db-$(LIBDB_LIB_VERSION) /' $(@D)/configure
 	(cd $(@D); \
