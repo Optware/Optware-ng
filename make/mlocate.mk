@@ -45,9 +45,10 @@ MLOCATE_CONFFILES=$(TARGET_PREFIX)/etc/cron.d/updatedb-mlocate
 # MLOCATE_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-MLOCATE_PATCHES=$(MLOCATE_SOURCE_DIR)/obstack.patch
 ifeq ($(LIBC_STYLE), glibc)
-MLOCATE_PATCHES += $(MLOCATE_SOURCE_DIR)/mlocate-0.26-include-order-fix.patch
+MLOCATE_PATCHES=$(MLOCATE_SOURCE_DIR)/mlocate-0.26-include-order-fix.patch
+else
+MLOCATE_PATCHES=$(MLOCATE_SOURCE_DIR)/obstack.patch
 endif
 
 #
