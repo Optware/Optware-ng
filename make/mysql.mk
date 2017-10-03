@@ -42,14 +42,14 @@ ifneq ($(OPTWARE_TARGET), $(filter $(MYSQL_OLD_TARGETS), $(OPTWARE_TARGET)))
 MYSQL_SITE=https://dev.mysql.com/get/Downloads/MySQL-5.7
 MYSQL_VERSION=5.7.9
 MYSQL_DIR=mysql-$(MYSQL_VERSION)
-MYSQL_IPK_VERSION=7
+MYSQL_IPK_VERSION=8
 else
 # some needed gcc atomic builtins are missing, which
 # makes compiling newer mysql impossible
 MYSQL_SITE=https://github.com/mysql/mysql-server/archive
 MYSQL_VERSION=5.7.4
 MYSQL_DIR=mysql-server-mysql-$(MYSQL_VERSION)
-MYSQL_IPK_VERSION=7
+MYSQL_IPK_VERSION=8
 endif
 MYSQL_SOURCE=mysql-$(MYSQL_VERSION).tar.gz
 MYSQL_UNZIP=zcat
@@ -95,7 +95,8 @@ $(MYSQL_SOURCE_DIR)/my.cnf_location.patch \
 $(MYSQL_SOURCE_DIR)/my_default.patch \
 $(MYSQL_SOURCE_DIR)/mysqld.patch \
 $(MYSQL_SOURCE_DIR)/no_64bit_atomics.patch \
-$(MYSQL_SOURCE_DIR)/sasl_defs.patch
+$(MYSQL_SOURCE_DIR)/sasl_defs.patch \
+$(MYSQL_SOURCE_DIR)/yassl_lock.hpp.patch
 else
 MYSQL_PATCHES=\
 $(MYSQL_SOURCE_DIR)/bison3.fix.patch \
