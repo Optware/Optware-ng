@@ -61,7 +61,7 @@ endif
 #
 # X264_IPK_VERSION should be incremented when the ipk changes.
 #
-X264_IPK_VERSION=2
+X264_IPK_VERSION=3
 
 #
 # X264_CONFFILES should be a list of user-editable files
@@ -113,6 +113,7 @@ endif
 # You should not change any of these variables.
 #
 X264_BUILD_DIR=$(BUILD_DIR)/x264
+X264_BIN_BUILD_DIR=$(BUILD_DIR)/x264-bin
 X264_SOURCE_DIR=$(SOURCE_DIR)/x264
 
 X264_IPK_DIR=$(BUILD_DIR)/x264-$(X264_VERSION)-ipk
@@ -153,7 +154,7 @@ x264-source: $(DL_DIR)/$(X264_SOURCE)
 # first, then do that first (e.g. "$(MAKE) <foo>-stage <baz>-stage").
 #
 $(X264_BUILD_DIR)/.configured: $(DL_DIR)/$(X264_SOURCE) make/x264.mk
-	$(MAKE) ffmpeg-stage bzip2-stage zlib-stage
+	$(MAKE) bzip2-stage zlib-stage
 ifeq ($(TARGET_ARCH), $(filter i686 x86_64, $(TARGET_ARCH)))
 	$(MAKE) yasm-host-stage
 endif
@@ -179,7 +180,7 @@ endif
 		--host=$(GNU_TARGET_NAME) \
 		--prefix=$(TARGET_PREFIX) \
 		--enable-shared \
-		--disable-share \
+		--disable-cli \
 		$(X264_CONFIGURE_OPTIONS) \
 	)
 	sed -i -e 's/-mcpu=[^ ]*\|-mfpu=[^ ]*//g' $(@D)/config.mak
@@ -210,6 +211,63 @@ $(X264_BUILD_DIR)/.staged: $(X264_BUILD_DIR)/.built
 	touch $@
 
 x264-stage: $(X264_BUILD_DIR)/.staged
+
+#
+# This target also configures the build within the build directory.
+# Flags such as LDFLAGS and CPPFLAGS should be passed into configure
+# and NOT $(MAKE) below.  Passing it to configure causes configure to
+# correctly BUILD the Makefile with the right paths, where passing it
+# to Make causes it to override the default search paths of the compiler.
+#
+# If the compilation of the package requires other packages to be staged
+# first, then do that first (e.g. "$(MAKE) <foo>-stage <baz>-stage").
+#
+$(X264_BIN_BUILD_DIR)/.configured: $(DL_DIR)/$(X264_SOURCE) make/x264.mk
+	$(MAKE) ffmpeg-stage bzip2-stage zlib-stage
+ifeq ($(TARGET_ARCH), $(filter i686 x86_64, $(TARGET_ARCH)))
+	$(MAKE) yasm-host-stage
+endif
+	rm -rf $(BUILD_DIR)/$(X264_DIR) $(@D)
+	$(X264_UNZIP) $(DL_DIR)/$(X264_SOURCE) | tar -C $(BUILD_DIR) -xf -
+	if test -n "$(X264_PATCHES)" ; \
+		then cat $(X264_PATCHES) | \
+		$(PATCH) -d $(BUILD_DIR)/$(X264_DIR) -p0 ; \
+	fi
+	if test "$(BUILD_DIR)/$(X264_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(X264_DIR) $(@D) ; \
+	fi
+	sed -i -e '/MACHINE=/s|$$(./config.guess)|$(TARGET_ARCH)-unknown-linux-gnu|' $(@D)/configure
+ifeq ($(TARGET_ARCH), $(filter i686 x86_64, $(TARGET_ARCH)))
+	sed -i -e 's|AS="yasm"|AS="$(HOST_STAGING_PREFIX)/bin/yasm"|' $(@D)/configure
+endif
+	(cd $(@D); \
+		$(TARGET_CONFIGURE_OPTS) \
+		AS="$(TARGET_CC)" \
+		CFLAGS="-I. $(STAGING_CPPFLAGS) $(X264_CPPFLAGS)" \
+		LDFLAGS="$(STAGING_LDFLAGS) $(X264_LDFLAGS)" \
+		./configure \
+		--host=$(GNU_TARGET_NAME) \
+		--prefix=$(TARGET_PREFIX) \
+		--enable-shared \
+		$(X264_CONFIGURE_OPTIONS) \
+	)
+	sed -i -e 's/-mcpu=[^ ]*\|-mfpu=[^ ]*//g' $(@D)/config.mak
+	touch $@
+
+x264-bin-unpack: $(X264_BIN_BUILD_DIR)/.configured
+
+#
+# This builds the actual binary.
+#
+$(X264_BIN_BUILD_DIR)/.built: $(X264_BIN_BUILD_DIR)/.configured
+	rm -f $@
+	$(MAKE) -C $(@D)
+	touch $@
+
+#
+# This is the build convenience target.
+#
+x264-bin: $(X264_BIN_BUILD_DIR)/.built
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -257,27 +315,31 @@ $(X264_BIN_IPK_DIR)/CONTROL/control:
 #
 # You may need to patch your application to make it use these locations.
 #
-$(X264_IPK) $(X264_BIN_IPK): $(X264_BUILD_DIR)/.built
+$(X264_IPK): $(X264_BUILD_DIR)/.built
 	rm -rf $(X264_IPK_DIR) $(BUILD_DIR)/x264_*_$(TARGET_ARCH).ipk
-	rm -rf $(X264_BIN_IPK_DIR) $(BUILD_DIR)/x264-bin_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(X264_BUILD_DIR) DESTDIR=$(X264_IPK_DIR) install
 	rm -f $(X264_IPK_DIR)$(TARGET_PREFIX)/lib/libx264.a
-	$(STRIP_COMMAND) $(X264_IPK_DIR)$(TARGET_PREFIX)/lib/libx264.so \
-			 $(X264_IPK_DIR)$(TARGET_PREFIX)/bin/x264
-	$(INSTALL) -d $(X264_BIN_IPK_DIR)$(TARGET_PREFIX)/bin
-	mv -f $(X264_IPK_DIR)$(TARGET_PREFIX)/bin/x264 $(X264_BIN_IPK_DIR)$(TARGET_PREFIX)/bin/
+	$(STRIP_COMMAND) $(X264_IPK_DIR)$(TARGET_PREFIX)/lib/libx264.so
 #	$(INSTALL) -d $(X264_IPK_DIR)$(TARGET_PREFIX)/etc/
 #	$(INSTALL) -m 644 $(X264_SOURCE_DIR)/x264.conf $(X264_IPK_DIR)$(TARGET_PREFIX)/etc/x264.conf
 #	$(INSTALL) -d $(X264_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
 #	$(INSTALL) -m 755 $(X264_SOURCE_DIR)/rc.x264 $(X264_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXx264
 	$(MAKE) $(X264_IPK_DIR)/CONTROL/control
-	$(MAKE) $(X264_BIN_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(X264_SOURCE_DIR)/postinst $(X264_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 755 $(X264_SOURCE_DIR)/prerm $(X264_IPK_DIR)/CONTROL/prerm
 	echo $(X264_CONFFILES) | sed -e 's/ /\n/g' > $(X264_IPK_DIR)/CONTROL/conffiles
-	echo $(X264_BIN_CONFFILES) | sed -e 's/ /\n/g' > $(X264_BIN_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(X264_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(X264_IPK_DIR)
+
+$(X264_BIN_IPK): $(X264_BIN_BUILD_DIR)/.built
+	rm -rf $(X264_BIN_IPK_DIR) $(BUILD_DIR)/x264-bin_*_$(TARGET_ARCH).ipk
+	$(INSTALL) -d $(X264_BIN_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(INSTALL) -m 755 $(X264_BIN_BUILD_DIR)/x264 $(X264_BIN_IPK_DIR)$(TARGET_PREFIX)/bin
+	$(STRIP_COMMAND) $(X264_BIN_IPK_DIR)$(TARGET_PREFIX)/bin/x264
+	$(MAKE) $(X264_BIN_IPK_DIR)/CONTROL/control
+	echo $(X264_BIN_CONFFILES) | sed -e 's/ /\n/g' > $(X264_BIN_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(X264_BIN_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(X264_BIN_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
@@ -296,7 +358,8 @@ x264-clean:
 # directories.
 #
 x264-dirclean:
-	rm -rf $(BUILD_DIR)/$(X264_DIR) $(X264_BUILD_DIR) \
+	rm -rf $(BUILD_DIR)/$(X264_DIR) \
+		$(X264_BUILD_DIR) $(X264_BIN_BUILD_DIR) \
 		$(X264_IPK_DIR) $(X264_IPK) \
 		$(X264_BIN_IPK_DIR) $(X264_BIN_IPK)
 
