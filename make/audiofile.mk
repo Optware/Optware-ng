@@ -48,7 +48,7 @@ AUDIOFILE_CONFLICTS=
 #
 # AUDIOFILE_IPK_VERSION should be incremented when the ipk changes.
 #
-AUDIOFILE_IPK_VERSION=1
+AUDIOFILE_IPK_VERSION=2
 
 #
 # AUDIOFILE_CONFFILES should be a list of user-editable files
@@ -64,7 +64,7 @@ AUDIOFILE_PATCHES=#$(AUDIOFILE_SOURCE_DIR)/configure.patch
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-AUDIOFILE_CPPFLAGS=
+AUDIOFILE_CPPFLAGS=-fpermissive
 AUDIOFILE_LDFLAGS=
 
 #
