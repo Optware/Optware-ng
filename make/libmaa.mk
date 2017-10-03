@@ -46,7 +46,8 @@ LIBMAA_IPK_VERSION=2
 # LIBMAA_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#LIBMAA_PATCHES=$(LIBMAA_SOURCE_DIR)/configure.patch
+LIBMAA_PATCHES=\
+$(LIBMAA_SOURCE_DIR)/obstack.patch \
 
 #
 # If the compilation of the package requires additional
@@ -110,7 +111,7 @@ $(LIBMAA_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBMAA_SOURCE) $(LIBMAA_PATCHES) ma
 	$(LIBMAA_UNZIP) $(DL_DIR)/$(LIBMAA_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBMAA_PATCHES)" ; \
 		then cat $(LIBMAA_PATCHES) | \
-		$(PATCH) -d $(BUILD_DIR)/$(LIBMAA_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBMAA_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBMAA_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBMAA_DIR) $(@D) ; \
