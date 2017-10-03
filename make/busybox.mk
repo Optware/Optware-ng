@@ -29,20 +29,29 @@ BUSYBOX_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 BUSYBOX_DESCRIPTION=A userland replacement for embedded systems.
 BUSYBOX_SECTION=core
 BUSYBOX_PRIORITY=optional
+ifeq (uclibc, $(LIBC_STYLE))
+BUSYBOX_DEPENDS=librpc-uclibc
+else
 BUSYBOX_DEPENDS=
+endif
 BUSYBOX_CONFLICTS=
 
 #
 # BUSYBOX_IPK_VERSION should be incremented when the ipk changes.
 #
-BUSYBOX_IPK_VERSION=3
+BUSYBOX_IPK_VERSION=4
 
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
 BUSYBOX_CPPFLAGS=
-#BUSYBOX_LDFLAGS=
+BUSYBOX_LDFLAGS=
+BUSYBOX_LDLIBS=
+ifeq (uclibc, $(LIBC_STYLE))
+BUSYBOX_CPPFLAGS += -D__UCLIBC_HAS_RPC__
+BUSYBOX_LDLIBS += rpc-uclibc
+endif
 
 BUSYBOX_PATCHES=\
 $(BUSYBOX_SOURCE_DIR)/nsenter.c.patch \
@@ -96,6 +105,9 @@ busybox-source: $(DL_DIR)/$(BUSYBOX_SOURCE) $(BUSYBOX_PATCHES)
 ## first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(BUSYBOX_BUILD_DIR)/.configured: $(DL_DIR)/$(BUSYBOX_SOURCE) $(BUSYBOX_PATCHES) $(BUSYBOX_SOURCE_DIR)/defconfig make/busybox.mk
+ifeq (uclibc, $(LIBC_STYLE))
+	$(MAKE) librpc-uclibc-stage
+endif
 	rm -rf $(BUILD_DIR)/$(BUSYBOX_DIR) $(@D)
 	$(BUSYBOX_UNZIP) $(DL_DIR)/$(BUSYBOX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(BUSYBOX_PATCHES)" ; \
@@ -154,6 +166,9 @@ $(BUSYBOX_BUILD_DIR)/.configured: $(DL_DIR)/$(BUSYBOX_SOURCE) $(BUSYBOX_PATCHES)
 		echo "}") | $(TARGET_CC) -E -P - | grep -xq 'printf("no"\\n);'; then \
 			sed -i -e "s/^.*CONFIG_BLKDISCARD.*/# CONFIG_BLKDISCARD is not set/" $(@D)/.config; \
 		fi
+ifneq ($(BUSYBOX_LDLIBS),)
+	sed -i -e '/^CONFIG_EXTRA_LDLIBS=/s/"$$/ $(BUSYBOX_LDLIBS)"/' $(@D)/.config
+endif
 	$(MAKE) HOSTCC=$(HOSTCC) CC=$(TARGET_CC) CROSS="$(TARGET_CROSS)" \
 		-C $(@D) oldconfig
 #		-C $(@D) menuconfig
