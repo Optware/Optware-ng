@@ -21,8 +21,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-IPERF_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/iperf
-IPERF_VERSION=2.0.4
+IPERF_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/iperf2
+IPERF_VERSION=2.0.10
 IPERF_SOURCE=iperf-$(IPERF_VERSION).tar.gz
 IPERF_DIR=iperf-$(IPERF_VERSION)
 IPERF_UNZIP=zcat
@@ -41,7 +41,7 @@ IPERF_CONFLICTS=
 #
 # IPERF_IPK_VERSION should be incremented when the ipk changes.
 #
-IPERF_IPK_VERSION=2
+IPERF_IPK_VERSION=1
 
 #
 # IPERF_CONFFILES should be a list of user-editable files
@@ -104,7 +104,7 @@ iperf-source: $(DL_DIR)/$(IPERF_SOURCE) $(IPERF_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(IPERF_BUILD_DIR)/.configured: $(DL_DIR)/$(IPERF_SOURCE) $(IPERF_PATCHES)
+$(IPERF_BUILD_DIR)/.configured: $(DL_DIR)/$(IPERF_SOURCE) $(IPERF_PATCHES) make/iperf.mk
 	#$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(IPERF_DIR) $(@D)
 	$(IPERF_UNZIP) $(DL_DIR)/$(IPERF_SOURCE) | tar -C $(BUILD_DIR) -xvf -
