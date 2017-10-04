@@ -53,7 +53,7 @@ LIBUPNP_IPK_VERSION=2
 # which they should be applied to the source code.
 #
 LIBUPNP_PATCHES=\
-$(LIBUPNP_SOURCE_DIR)/get_content_type_not_inline.patch \
+$(LIBUPNP_SOURCE_DIR)/get_content_type_static_inline.patch \
 
 #
 # If the compilation of the package requires additional
