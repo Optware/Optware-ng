@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 GLOOX_SITE=http://camaya.net/download
-GLOOX_VERSION=1.0
+GLOOX_VERSION=1.0.20
 GLOOX_SOURCE=gloox-$(GLOOX_VERSION).tar.bz2
 GLOOX_DIR=gloox-$(GLOOX_VERSION)
 GLOOX_UNZIP=bzcat
@@ -53,7 +53,7 @@ GLOOX_IPK_VERSION=1
 # compilation or linking flags, then list them here.
 #
 GLOOX_CPPFLAGS=
-GLOOX_LDFLAGS=-lgcc -lgnutls
+GLOOX_LDFLAGS=
 
 #
 # GLOOX_BUILD_DIR is the directory in which the build is done.
