@@ -45,7 +45,7 @@ LCD4LINUX_CONFLICTS=
 #
 # LCD4LINUX_IPK_VERSION should be incremented when the ipk changes.
 #
-LCD4LINUX_IPK_VERSION=1
+LCD4LINUX_IPK_VERSION=2
 
 #
 # LCD4LINUX_CONFFILES should be a list of user-editable files $(TARGET_PREFIX)/etc/init.d/SXXlcd4linux
@@ -63,7 +63,7 @@ LCD4LINUX_CONFFILES=$(TARGET_PREFIX)/etc/lcd4linux.conf
 #
 LCD4LINUX_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/ncurses
 ifeq ($(LIBC_STYLE),uclibc)
-LCD4LINUX_CPPFLAGS += -Dlog2l=log2
+#LCD4LINUX_CPPFLAGS += -Dlog2l=log2 # log2l present in newer uClibc-ng
 endif
 LCD4LINUX_LDFLAGS=-ljpeg -lmpdclient
 
