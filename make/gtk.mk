@@ -38,7 +38,7 @@ GTK_PRINT_DEPENDS=gtk, cups
 #
 # GTK_IPK_VERSION should be incremented when the ipk changes.
 #
-GTK_IPK_VERSION=3
+GTK_IPK_VERSION=4
 
 #
 # GTK_LOCALES defines which locales get installed
@@ -53,7 +53,8 @@ GTK_LOCALES=
 # GTK_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#GTK_PATCHES=$(GTK_SOURCE_DIR)/no-update-icon-cache.patch #$(GTK_SOURCE_DIR)/configure.patch
+GTK_PATCHES=\
+$(GTK_SOURCE_DIR)/configure.patch \
 
 #
 # If the compilation of the package requires additional

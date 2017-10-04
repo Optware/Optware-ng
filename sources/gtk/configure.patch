@@ -1,95 +1,11 @@
---- gtk/configure.orig	2009-06-27 20:36:41.000000000 -0700
-+++ gtk/configure	2009-07-01 21:10:31.000000000 -0700
-@@ -26141,92 +26141,13 @@
-   gtk_save_CFLAGS="$CFLAGS"
-   LIBS="`$PKG_CONFIG --libs gio-2.0`"
-   CFLAGS="`$PKG_CONFIG --cflags gio-2.0`"
--  if test "$cross_compiling" = yes; then
--  { { $as_echo "$as_me:$LINENO: error: in \`$ac_pwd':" >&5
--$as_echo "$as_me: error: in \`$ac_pwd':" >&2;}
--{ { $as_echo "$as_me:$LINENO: error: cannot run test program while cross compiling
--See \`config.log' for more details." >&5
--$as_echo "$as_me: error: cannot run test program while cross compiling
--See \`config.log' for more details." >&2;}
--   { (exit 1); exit 1; }; }; }
--else
--  cat >conftest.$ac_ext <<_ACEOF
--/* confdefs.h.  */
--_ACEOF
--cat confdefs.h >>conftest.$ac_ext
--cat >>conftest.$ac_ext <<_ACEOF
--/* end confdefs.h.  */
-
--  #include <gio/gio.h>
--  static const gsize data_size = 159;
--  static const guint8 data[] =
--  {
--    0x89, 0x50, 0x4e, 0x47, 0x0d, 0x0a, 0x1a, 0x0a, 0x00, 0x00, 0x00, 0x0d,
--    0x49, 0x48, 0x44, 0x52, 0x00, 0x00, 0x00, 0x01, 0x00, 0x00, 0x00, 0x01,
--    0x08, 0x02, 0x00, 0x00, 0x00, 0x90, 0x77, 0x53, 0xde, 0x00, 0x00, 0x00,
--    0x01, 0x73, 0x52, 0x47, 0x42, 0x00, 0xae, 0xce, 0x1c, 0xe9, 0x00, 0x00,
--    0x00, 0x09, 0x70, 0x48, 0x59, 0x73, 0x00, 0x00, 0x0b, 0x13, 0x00, 0x00,
--    0x0b, 0x13, 0x01, 0x00, 0x9a, 0x9c, 0x18, 0x00, 0x00, 0x00, 0x07, 0x74,
--    0x49, 0x4d, 0x45, 0x07, 0xd8, 0x07, 0x0f, 0x10, 0x08, 0x15, 0x61, 0xd8,
--    0x35, 0x37, 0x00, 0x00, 0x00, 0x19, 0x74, 0x45, 0x58, 0x74, 0x43, 0x6f,
--    0x6d, 0x6d, 0x65, 0x6e, 0x74, 0x00, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65,
--    0x64, 0x20, 0x77, 0x69, 0x74, 0x68, 0x20, 0x47, 0x49, 0x4d, 0x50, 0x57,
--    0x81, 0x0e, 0x17, 0x00, 0x00, 0x00, 0x0c, 0x49, 0x44, 0x41, 0x54, 0x08,
--    0xd7, 0x63, 0xf8, 0xff, 0xff, 0x3f, 0x00, 0x05, 0xfe, 0x02, 0xfe, 0xdc,
--    0xcc, 0x59, 0xe7, 0x00, 0x00, 0x00, 0x00, 0x49, 0x45, 0x4e, 0x44, 0xae,
--    0x42, 0x60, 0x82
--  };
--  int
--  main (int argc, char **argv)
--  {
--    char *content_type;
--    char *image_png;
--    content_type = g_content_type_guess (NULL, data, data_size, NULL);
--    image_png = g_content_type_from_mime_type ("image/png");
--    return !!strcmp (content_type, image_png);
--  }
--_ACEOF
--rm -f conftest$ac_exeext
--if { (ac_try="$ac_link"
--case "(($ac_try" in
--  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
--  *) ac_try_echo=$ac_try;;
--esac
--eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
--$as_echo "$ac_try_echo") >&5
--  (eval "$ac_link") 2>&5
--  ac_status=$?
--  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
--  (exit $ac_status); } && { ac_try='./conftest$ac_exeext'
--  { (case "(($ac_try" in
--  *\"* | *\`* | *\\*) ac_try_echo=\$ac_try;;
--  *) ac_try_echo=$ac_try;;
--esac
--eval ac_try_echo="\"\$as_me:$LINENO: $ac_try_echo\""
--$as_echo "$ac_try_echo") >&5
--  (eval "$ac_try") 2>&5
--  ac_status=$?
--  $as_echo "$as_me:$LINENO: \$? = $ac_status" >&5
--  (exit $ac_status); }; }; then
-   gio_can_sniff=yes
-
- cat >>confdefs.h <<\_ACEOF
- #define GDK_PIXBUF_USE_GIO_MIME 1
- _ACEOF
-
--else
--  $as_echo "$as_me: program exited with status $ac_status" >&5
--$as_echo "$as_me: failed program was:" >&5
--sed 's/^/| /' conftest.$ac_ext >&5
--
--( exit $ac_status )
--gio_can_sniff=no
--fi
--rm -rf conftest.dSYM
--rm -f core *.core core.conftest.* gmon.out bb.out conftest$ac_exeext conftest.$ac_objext conftest.$ac_ext
--fi
--
--
-   { $as_echo "$as_me:$LINENO: result: $gio_can_sniff" >&5
- $as_echo "$gio_can_sniff" >&6; }
-   LIBS="$gtk_save_LIBS"
+--- a/configure
++++ b/configure
+@@ -25092,7 +25092,7 @@ fi
+     CUPS_API_MAJOR=`echo $ECHO_N $CUPS_API_VERSION | awk -F. '{print $1}'`
+     CUPS_API_MINOR=`echo $ECHO_N $CUPS_API_VERSION | awk -F. '{print $2}'`
+ 
+-    if test $CUPS_API_MAJOR -gt 1 -o \
++    if test $CUPS_API_MAJOR -lt 1 -o \
+             $CUPS_API_MAJOR -eq 1 -a $CUPS_API_MINOR -lt 2; then
+       as_fn_error $? "CUPS >= 1.2 not found" "$LINENO" 5
+     fi
