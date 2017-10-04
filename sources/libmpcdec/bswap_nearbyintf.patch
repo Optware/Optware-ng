@@ -1,0 +1,101 @@
+--- a/include/mpc/mpcmath.h
++++ b/include/mpc/mpcmath.h
+@@ -39,7 +39,7 @@ static mpc_inline mpc_int32_t mpc_lrintf
+ }
+ 
+ #define mpc_round32		mpc_lrintf
+-#define mpc_nearbyintf	mpc_lrintf
++#define mpc_nearbyint	mpc_lrintf
+ 
+ 
+ #ifndef M_PI
+--- a/libmpcenc/quant.c
++++ b/libmpcenc/quant.c
+@@ -164,19 +164,19 @@ ISNR_Schaetzer ( const float* input, con
+     // Summation of the absolute power and the quadratic error
+ 	do {
+ 		float  err;
+-		err = mpc_nearbyintf(input[0] * fac) * invfac - input[0];
++		err = mpc_nearbyint(input[0] * fac) * invfac - input[0];
+         error += err * err;
+ 		signal += input[0] * input[0];
+ 
+-		err = mpc_nearbyintf(input[1] * fac) * invfac - input[1];
++		err = mpc_nearbyint(input[1] * fac) * invfac - input[1];
+ 		error += err * err;
+ 		signal += input[1] * input[1];
+ 
+-		err = mpc_nearbyintf(input[2] * fac) * invfac - input[2];
++		err = mpc_nearbyint(input[2] * fac) * invfac - input[2];
+ 		error += err * err;
+ 		signal += input[2] * input[2];
+ 
+-		err = mpc_nearbyintf(input[3] * fac) * invfac - input[3];
++		err = mpc_nearbyint(input[3] * fac) * invfac - input[3];
+ 		error += err * err;
+ 		signal += input[3] * input[3];
+ 
+@@ -205,7 +205,7 @@ ISNR_Schaetzer_Trans ( const float* inpu
+ 	signal = error = 1.e-30f;
+     for ( ; k < 12; k++ ) {
+         sig = input[k] * NoiseInjectionCompensation1D [res];
+-		err = mpc_nearbyintf(sig * fac) * invfac - sig;
++		err = mpc_nearbyint(sig * fac) * invfac - sig;
+ 
+         error += err * err;
+         signal += sig * sig;
+@@ -215,7 +215,7 @@ ISNR_Schaetzer_Trans ( const float* inpu
+     signal = error = 1.e-30f;
+     for ( ; k < 24; k++ ) {
+         sig = input[k] * NoiseInjectionCompensation1D [res];
+-		err = mpc_nearbyintf(sig * fac) * invfac - sig;
++		err = mpc_nearbyint(sig * fac) * invfac - sig;
+ 
+         error += err * err;
+         signal += sig * sig;
+@@ -226,7 +226,7 @@ ISNR_Schaetzer_Trans ( const float* inpu
+     signal = error = 1.e-30f;
+     for ( ; k < 36; k++ ) {
+         sig = input[k] * NoiseInjectionCompensation1D [res];
+-		err = mpc_nearbyintf(sig * fac) * invfac - sig;
++		err = mpc_nearbyint(sig * fac) * invfac - sig;
+ 
+         error += err * err;
+         signal += sig * sig;
+--- a/mpcdec/mpcdec.c
++++ b/mpcdec/mpcdec.c
+@@ -76,7 +76,7 @@ t_wav_uint32 mpc_wav_output_seek(void* p
+     return (t_wav_uint32) !fseek(p_handle, p_position, SEEK_SET);
+ }
+ 
+-static short bswap_16(short in)
++static short _bswap_16_(short in)
+ {
+ 	return (in << 8) | ((in >> 8) & 0xFF);
+ }
+@@ -89,7 +89,7 @@ static int raw_output_int16(FILE * file,
+ 	for (i = 0; i < cnt; i++) {
+ 		short out = buff[i];
+ 		if (reverse_endian)
+-			out = bswap_16(out);
++			out = _bswap_16_(out);
+ 		if (fwrite(&out, sizeof(out), 1, file) != 1)
+ 			return -1;
+ 	}
+@@ -102,14 +102,14 @@ static int raw_output_float32(FILE * fil
+ {
+ 	int i;
+ 	for (i = 0; i < cnt; i++) {
+-		int tmp = nearbyintf(buff[i] * (1 << 15));
++		int tmp = nearbyint(buff[i] * (1 << 15));
+ 		short out;
+ 		if (tmp > ((1 << 15) - 1))
+ 			tmp = ((1 << 15) - 1);
+ 		if (tmp < -(1 << 15))
+ 			tmp = -(1 << 15);
+ 		if (reverse_endian)
+-			tmp = bswap_16((short) tmp);
++			tmp = _bswap_16_((short) tmp);
+ 		out = (short)tmp;
+ 		if (fwrite(&out, sizeof(out), 1, file) != 1)
+ 			return -1;

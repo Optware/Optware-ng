@@ -42,7 +42,7 @@ LIBMPCDEC_CONFLICTS=
 #
 # LIBMPCDEC_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBMPCDEC_IPK_VERSION=1
+LIBMPCDEC_IPK_VERSION=2
 
 #
 # LIBMPCDEC_CONFFILES should be a list of user-editable files
@@ -52,7 +52,9 @@ LIBMPCDEC_IPK_VERSION=1
 # LIBMPCDEC_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#LIBMPCDEC_PATCHES=$(LIBMPCDEC_SOURCE_DIR)/configure.patch
+LIBMPCDEC_PATCHES=\
+$(LIBMPCDEC_SOURCE_DIR)/visibility.patch \
+$(LIBMPCDEC_SOURCE_DIR)/bswap_nearbyintf.patch \
 
 #
 # If the compilation of the package requires additional
@@ -130,15 +132,12 @@ $(LIBMPCDEC_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBMPCDEC_SOURCE) $(LIBMPCDEC_PA
 	$(LIBMPCDEC_UNZIP) $(DL_DIR)/$(LIBMPCDEC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBMPCDEC_PATCHES)" ; \
 		then cat $(LIBMPCDEC_PATCHES) | \
-		$(PATCH) -d $(BUILD_DIR)/$(LIBMPCDEC_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBMPCDEC_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBMPCDEC_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBMPCDEC_DIR) $(@D) ; \
 	fi
-	find $(@D) -type f -name '*.[ch]' -exec sed -i -e 's/bswap_16\|bswap_32\|bswap_64/_&_/g' -e 's/nearbyintf/nearbyint/g' {} \;
-	sed -i '/^if HAVE_VISIBILITY/,/endif/s/^/#/'  $(@D)/*/Makefile.am
-	sed -i -e '/^ACLOCAL_AMFLAGS/s/^/dnl /' $(@D)/Makefile.am
-	$(AUTORECONF1.10) -vif $(@D)
+	$(AUTORECONF1.14) -vif $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBMPCDEC_CPPFLAGS)" \
