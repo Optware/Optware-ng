@@ -1,0 +1,11 @@
+--- a/configure
++++ b/configure
+@@ -17732,7 +17732,7 @@ mostlyclean-am: clean-gsettings-schemas
+ gsettings__enum_file = $(addsuffix .enums.xml,$(gsettings_ENUM_NAMESPACE))
+ 
+ %.gschema.valid: %.gschema.xml $(gsettings__enum_file)
+-	$(AM_V_GEN) $(GLIB_COMPILE_SCHEMAS) --strict --dry-run $(addprefix --schema-file=,$(filter-out $<,$^)) --schema-file=$< && mkdir -p $(@D) && touch $@
++	$(AM_V_GEN) $(GLIB_COMPILE_SCHEMAS) --dry-run $(addprefix --schema-file=,$(filter-out $<,$^)) --schema-file=$< && mkdir -p $(@D) && touch $@
+ 
+ ifdef gsettings_ENUMS
+ $(patsubst %.enums.xml,%.gschema.valid,$(gsettings_ENUMS)): %.gschema.valid: %.enums.xml

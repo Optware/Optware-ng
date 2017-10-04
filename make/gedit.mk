@@ -42,7 +42,7 @@ GEDIT_CONFLICTS=
 #
 # GEDIT_IPK_VERSION should be incremented when the ipk changes.
 #
-GEDIT_IPK_VERSION=1
+GEDIT_IPK_VERSION=2
 
 #
 # GEDIT_CONFFILES should be a list of user-editable files
@@ -52,7 +52,8 @@ GEDIT_IPK_VERSION=1
 # GEDIT_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-GEDIT_PATCHES=$(GEDIT_SOURCE_DIR)/libtool.patch
+GEDIT_PATCHES=\
+$(GEDIT_SOURCE_DIR)/glib-compile-schemas_nonstrict.patch \
 
 #
 # If the compilation of the package requires additional
