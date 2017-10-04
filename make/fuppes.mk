@@ -46,7 +46,7 @@ FUPPES_CONFLICTS=
 #
 # FUPPES_IPK_VERSION should be incremented when the ipk changes.
 #
-FUPPES_IPK_VERSION=1
+FUPPES_IPK_VERSION=2
 
 #
 # FUPPES_CONFFILES should be a list of user-editable files
@@ -159,6 +159,7 @@ endif
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="-I$(STAGING_PREFIX)/ffmpeg_old/include $(STAGING_CPPFLAGS) $(FUPPES_CPPFLAGS)" \
+		CXXFLAGS="-std=c++98" \
 		LDFLAGS="-L$(STAGING_PREFIX)/ffmpeg_old/lib $(STAGING_LDFLAGS) $(FUPPES_LDFLAGS)" \
 		PKG_CONFIG_PATH=$(STAGING_LIB_DIR)/pkgconfig \
 		$(FUPPES_WITH_TAGLIB) \
