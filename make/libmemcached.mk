@@ -39,7 +39,7 @@ LIBMEMCACHED_CONFLICTS=
 #
 # LIBMEMCACHED_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBMEMCACHED_IPK_VERSION=3
+LIBMEMCACHED_IPK_VERSION=4
 
 #
 # LIBMEMCACHED_CONFFILES should be a list of user-editable files
@@ -52,6 +52,7 @@ LIBMEMCACHED_IPK_VERSION=3
 LIBMEMCACHED_PATCHES=\
 $(LIBMEMCACHED_SOURCE_DIR)/disable_tests.patch \
 $(LIBMEMCACHED_SOURCE_DIR)/va_list-not-declared.patch \
+$(LIBMEMCACHED_SOURCE_DIR)/comparison_between_pointer_and_integer_error_fix.patch \
 
 #
 # If the compilation of the package requires additional
