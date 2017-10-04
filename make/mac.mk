@@ -36,7 +36,7 @@ MAC_CONFLICTS=
 #
 # MAC_IPK_VERSION should be incremented when the ipk changes.
 #
-MAC_IPK_VERSION=1
+MAC_IPK_VERSION=2
 
 #
 # MAC_CONFFILES should be a list of user-editable files
@@ -46,7 +46,8 @@ MAC_IPK_VERSION=1
 # MAC_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#MAC_PATCHES=$(MAC_SOURCE_DIR)/configure.patch
+MAC_PATCHES=\
+$(MAC_SOURCE_DIR)/max_min.patch \
 
 #
 # If the compilation of the package requires additional
@@ -114,11 +115,15 @@ $(MAC_BUILD_DIR)/.configured: $(DL_DIR)/$(MAC_SOURCE) $(MAC_PATCHES) make/mac.mk
 	$(MAC_UNZIP) $(DL_DIR)/$(MAC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MAC_PATCHES)" ; \
 		then cat $(MAC_PATCHES) | \
-		$(PATCH) -d $(BUILD_DIR)/$(MAC_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(MAC_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(MAC_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(MAC_DIR) $(@D) ; \
 	fi
+	(\
+		echo "#define __MAX(a,b)    (((a) > (b)) ? (a) : (b))"; \
+		echo "#define __MIN(a,b)    (((a) < (b)) ? (a) : (b))"; \
+	) > $(@D)/max_min.h
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MAC_CPPFLAGS)" \
@@ -141,7 +146,7 @@ mac-unpack: $(MAC_BUILD_DIR)/.configured
 #
 $(MAC_BUILD_DIR)/.built: $(MAC_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(@D)
+	$(MAKE) -C $(@D) AM_CPPFLAGS="-include $(@D)/max_min.h"
 	touch $@
 
 #
