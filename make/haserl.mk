@@ -36,7 +36,7 @@ HASERL_CONFLICTS=
 #
 # HASERL_IPK_VERSION should be incremented when the ipk changes.
 #
-HASERL_IPK_VERSION=1
+HASERL_IPK_VERSION=2
 
 #
 # HASERL_CONFFILES should be a list of user-editable files
@@ -46,7 +46,8 @@ HASERL_IPK_VERSION=1
 # HASERL_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#HASERL_PATCHES=$(HASERL_SOURCE_DIR)/configure.patch
+HASERL_PATCHES=\
+$(HASERL_SOURCE_DIR)/src_Makefile.in.patch \
 
 #
 # If the compilation of the package requires additional
@@ -112,7 +113,7 @@ $(HASERL_BUILD_DIR)/.configured: $(DL_DIR)/$(HASERL_SOURCE) $(HASERL_PATCHES) ma
 	$(HASERL_UNZIP) $(DL_DIR)/$(HASERL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(HASERL_PATCHES)" ; \
 		then cat $(HASERL_PATCHES) | \
-		$(PATCH) -d $(BUILD_DIR)/$(HASERL_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(HASERL_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(HASERL_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(HASERL_DIR) $(@D)/with-lua ; \
@@ -135,7 +136,7 @@ $(HASERL_BUILD_DIR)/.configured: $(DL_DIR)/$(HASERL_SOURCE) $(HASERL_PATCHES) ma
 	$(HASERL_UNZIP) $(DL_DIR)/$(HASERL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(HASERL_PATCHES)" ; \
 		then cat $(HASERL_PATCHES) | \
-		$(PATCH) -d $(BUILD_DIR)/$(HASERL_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(HASERL_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(HASERL_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(HASERL_DIR) $(@D)/without-lua ; \
