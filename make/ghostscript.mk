@@ -38,7 +38,7 @@ GHOSTSCRIPT_CONFLICTS=
 #
 # GHOSTSCRIPT_IPK_VERSION should be incremented when the ipk changes.
 #
-GHOSTSCRIPT_IPK_VERSION=2
+GHOSTSCRIPT_IPK_VERSION=3
 
 #
 # GHOSTSCRIPT_CONFFILES should be a list of user-editable files
@@ -169,7 +169,8 @@ endif
 		fi; \
 		PATH=$(STAGING_PREFIX)/bin:$$PATH \
 		$(TARGET_CONFIGURE_OPTS) \
-		CPPFLAGS="$(STAGING_CPPFLAGS) $(ESPGS_CPPFLAGS)" \
+		CPPFLAGS="-I$(@D)/openjpeg/src/lib -I$(@D)/openjpeg/src/lib/openjp2 \
+		$(STAGING_CPPFLAGS) $(ESPGS_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(ESPGS_LDFLAGS)" \
 		PKG_CONFIG_PATH=$(STAGING_LIB_DIR)/pkgconfig \
 		ac_cv_path_CUPSCONFIG=$(STAGING_PREFIX)/bin/cups-config \
