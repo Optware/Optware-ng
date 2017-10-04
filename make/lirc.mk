@@ -25,7 +25,7 @@
 # http://lirc.sourceforge.net/software/snapshots/
 #
 LIRC_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/lirc
-LIRC_VERSION=0.8.1
+LIRC_VERSION=0.10.1
 LIRC_SOURCE=lirc-$(LIRC_VERSION).tar.bz2
 LIRC_DIR=lirc-$(LIRC_VERSION)
 LIRC_UNZIP=bzcat
@@ -40,7 +40,7 @@ LIRC_CONFLICTS=
 #
 # LIRC_IPK_VERSION should be incremented when the ipk changes.
 #
-LIRC_IPK_VERSION=3
+LIRC_IPK_VERSION=1
 
 #
 # LIRC_CONFFILES should be a list of user-editable files
@@ -122,9 +122,6 @@ lirc-source: $(DL_DIR)/$(LIRC_SOURCE) $(LIRC_PATCHES)
 # shown below to make various patches to it.
 # 
 $(LIRC_BUILD_DIR)/.configured: $(DL_DIR)/$(LIRC_SOURCE) $(LIRC_PATCHES) make/lirc.mk
-ifeq ($(OPTWARE_TARGET), oleg)
-	$(MAKE) firmware-oleg-stage
-endif
 	rm -rf $(BUILD_DIR)/$(LIRC_DIR) $(LIRC_BUILD_DIR)
 	$(LIRC_UNZIP) $(DL_DIR)/$(LIRC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIRC_PATCHES)" ; \
@@ -156,9 +153,9 @@ endif
 		--enable-sandboxed \
 	)
 #	add missing headers for module compilation
-	sed -i -e '/#include <linux\/module.h>/a#include <linux/init.h>' \
+#	sed -i -e '/#include <linux\/module.h>/a#include <linux/init.h>' \
 		$(LIRC_BUILD_DIR)/drivers/lirc_igorplugusb/lirc_igorplugusb.c
-	$(PATCH_LIBTOOL) $(LIRC_BUILD_DIR)/libtool
+	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
 lirc-unpack: $(LIRC_BUILD_DIR)/.configured
@@ -172,8 +169,9 @@ lirc-unpack: $(LIRC_BUILD_DIR)/.configured
 # toolchain.
 $(LIRC_BUILD_DIR)/.built: $(LIRC_BUILD_DIR)/.configured
 	rm -f $@
-	PATH=$(TARGET_PREFIX)/brcm/hndtools-mipsel-linux/bin:$$PATH \
-	$(MAKE) -C $(LIRC_BUILD_DIR)
+	for dir in lib daemons configs plugins; do \
+		$(MAKE) -C $(@D)/$$dir; \
+	done
 	touch $@
 
 #
@@ -186,7 +184,7 @@ lirc: $(LIRC_BUILD_DIR)/.built
 #
 $(LIRC_BUILD_DIR)/.staged: $(LIRC_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(LIRC_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D)/lib DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 lirc-stage: $(LIRC_BUILD_DIR)/.staged
@@ -225,9 +223,12 @@ $(LIRC_IPK_DIR)/CONTROL/control:
 # /bin/mknod builds/lirc-0.8.1-ipk/dev/lirc c 61 0
 $(LIRC_IPK): $(LIRC_BUILD_DIR)/.built
 	rm -rf $(LIRC_IPK_DIR) $(BUILD_DIR)/lirc_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(LIRC_BUILD_DIR) DESTDIR=$(LIRC_IPK_DIR) install-strip
+	for dir in lib daemons configs plugins; do \
+		$(MAKE) -C $(LIRC_BUILD_DIR)/$$dir DESTDIR=$(LIRC_IPK_DIR) install-strip; \
+	done
 	rm -rf $(LIRC_IPK_DIR)/dev
-	$(STRIP_COMMAND) $(LIRC_IPK_DIR)$(TARGET_PREFIX)/lib/*.so.*
+	find $(LIRC_IPK_DIR)$(TARGET_PREFIX) -name '*.so' -exec $(STRIP_COMMAND) "{}" \;
+	find $(LIRC_IPK_DIR)$(TARGET_PREFIX) -type f -name '*.la' -exec rm -f "{}" \;
 #	$(INSTALL) -d $(LIRC_IPK_DIR)$(TARGET_PREFIX)/etc/
 #	$(INSTALL) -m 644 $(LIRC_SOURCE_DIR)/lirc.conf $(LIRC_IPK_DIR)$(TARGET_PREFIX)/etc/lirc.conf
 #	$(INSTALL) -d $(LIRC_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
@@ -240,6 +241,7 @@ $(LIRC_IPK): $(LIRC_BUILD_DIR)/.built
 #	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(LIRC_IPK_DIR)/CONTROL/prerm
 	echo $(LIRC_CONFFILES) | sed -e 's/ /\n/g' > $(LIRC_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIRC_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(LIRC_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
