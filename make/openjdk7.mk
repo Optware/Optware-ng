@@ -63,7 +63,7 @@ OPENJDK7_JDK_CONFLICTS=
 #
 # OPENJDK7_IPK_VERSION should be incremented when the ipk changes.
 #
-OPENJDK7_IPK_VERSION=5
+OPENJDK7_IPK_VERSION=6
 
 #
 # OPENJDK7_JRE_HEADLESS_CONFFILES should be a list of user-editable files
@@ -187,6 +187,8 @@ $(OPENJDK7_SOURCE_DIR)/openjdk/rhbz1206656_fix_current_stack_pointer.patch \
 $(OPENJDK7_SOURCE_DIR)/openjdk/os_linux.fix-i386-zero-build.patch \
 $(OPENJDK7_SOURCE_DIR)/openjdk/hotspot-powerpcspe.diff \
 $(OPENJDK7_SOURCE_DIR)/openjdk/hotspot-no-march-i586.diff \
+$(OPENJDK7_SOURCE_DIR)/openjdk/hotspot-c++98-fpermissive.patch \
+$(OPENJDK7_SOURCE_DIR)/openjdk/native_jni_return_null_not_false.patch \
 
 #
 # OpenJDK used for bootstrap. Will check OpenJDK7 Ubuntu standart location
