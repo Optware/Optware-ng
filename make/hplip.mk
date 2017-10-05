@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 HPLIP_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/hplip
-HPLIP_VERSION=3.14.10
+HPLIP_VERSION=3.17.9
 HPLIP_SOURCE=hplip-$(HPLIP_VERSION).tar.gz
 HPLIP_DIR=hplip-$(HPLIP_VERSION)
 HPLIP_UNZIP=zcat
@@ -29,7 +29,7 @@ HPLIP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 HPLIP_DESCRIPTION=HP Linux Imaging and Printing
 HPLIP_SECTION=misc
 HPLIP_PRIORITY=optional
-HPLIP_DEPENDS=sane-backends, python25, libstdc++, libusb1, libcups, libcupsimage
+HPLIP_DEPENDS=sane-backends, python27, libstdc++, libusb1, libcups, libcupsimage
 ifneq (, $(filter net-snmp, $(PACKAGES)))
 HPLIP_DEPENDS +=, net-snmp
 endif
@@ -39,7 +39,7 @@ HPLIP_CONFLICTS=
 #
 # HPLIP_IPK_VERSION should be incremented when the ipk changes.
 #
-HPLIP_IPK_VERSION=3
+HPLIP_IPK_VERSION=1
 
 #
 # HPLIP_CONFFILES should be a list of user-editable files
@@ -52,7 +52,8 @@ HPLIP_CONFFILES=$(TARGET_PREFIX)/etc/hp/hplip.conf \
 # HPLIP_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#HPLIP_PATCHES=$(HPLIP_SOURCE_DIR)/configure.patch
+HPLIP_PATCHES=\
+$(HPLIP_SOURCE_DIR)/configure.in.patch \
 
 #
 # If the compilation of the package requires additional
@@ -115,7 +116,8 @@ hplip-source: $(DL_DIR)/$(HPLIP_SOURCE) $(HPLIP_PATCHES)
 # shown below to make various patches to it.
 #
 $(HPLIP_BUILD_DIR)/.configured: $(DL_DIR)/$(HPLIP_SOURCE) $(HPLIP_PATCHES) make/hplip.mk
-	$(MAKE) cups-stage dbus-stage python25-stage sane-backends-stage libusb1-stage
+	$(MAKE) cups-stage dbus-stage python27-stage python27-host-stage \
+		sane-backends-stage libusb1-stage
 ifneq (, $(filter net-snmp, $(PACKAGES)))
 	$(MAKE) net-snmp-stage
 endif
@@ -123,21 +125,22 @@ endif
 	$(HPLIP_UNZIP) $(DL_DIR)/$(HPLIP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(HPLIP_PATCHES)" ; \
 		then cat $(HPLIP_PATCHES) | \
-		$(PATCH) -d $(BUILD_DIR)/$(HPLIP_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(HPLIP_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(HPLIP_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(HPLIP_DIR) $(@D) ; \
 	fi
 #	sed -i -e 's|/etc/|$(TARGET_PREFIX)&|; /halpredir/s|/usr/share|$(TARGET_PREFIX)/share|' $(@D)/Makefile.am ; \
-#	cd $(@D) ; touch INSTALL NEWS README AUTHORS ChangeLog
-#	$(AUTORECONF1.10) -vif $(@D)
+
+	cd $(@D); touch INSTALL NEWS README AUTHORS ChangeLog
+	$(AUTORECONF1.14) -vif $(@D)
 	sed -e "s|-I/usr/local/include||" -i "$(@D)/configure"
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(HPLIP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(HPLIP_LDFLAGS)" \
-		PYTHON=$(HOST_STAGING_PREFIX)/bin/python2.5 \
-		PYTHONPATH=$(STAGING_LIB_DIR)/python2.5/site-packages \
+		PYTHON=$(HOST_STAGING_PREFIX)/bin/python2.7 \
+		PYTHONPATH=$(STAGING_LIB_DIR)/python2.7/site-packages \
 		PKG_CONFIG_PATH=$(STAGING_LIB_DIR)/pkgconfig \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
@@ -197,9 +200,9 @@ hplip-unpack: $(HPLIP_BUILD_DIR)/.configured
 #
 $(HPLIP_BUILD_DIR)/.built: $(HPLIP_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(@D) PYTHONINCLUDEDIR="$(STAGING_INCLUDE_DIR)/python2.5"
-	### use $(TARGET_PREFIX)/bin/python2.5
-	sed -i -e 's|^#!.*|#!$(TARGET_PREFIX)/bin/python2.5|' `find $(@D) -type f -name "*.py"`
+	$(MAKE) -C $(@D) PYTHONINCLUDEDIR="$(STAGING_INCLUDE_DIR)/python2.7"
+	### use $(TARGET_PREFIX)/bin/python2.7
+	sed -i -e 's|^#!.*|#!$(TARGET_PREFIX)/bin/python2.7|' `find $(@D) -type f -name "*.py"`
 	touch $@
 
 #
