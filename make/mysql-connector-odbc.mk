@@ -36,7 +36,7 @@ MYSQL_CONNECTOR_ODBC_CONFLICTS=
 #
 # MYSQL_CONNECTOR_ODBC_IPK_VERSION should be incremented when the ipk changes.
 #
-MYSQL_CONNECTOR_ODBC_IPK_VERSION=2
+MYSQL_CONNECTOR_ODBC_IPK_VERSION=3
 
 #
 # MYSQL_CONNECTOR_ODBC_CONFFILES should be a list of user-editable files
@@ -53,7 +53,8 @@ $(MYSQL_CONNECTOR_ODBC_SOURCE_DIR)/mysql.5.7.4.api.patch
 
 MYSQL_CONNECTOR_ODBC_PATCHES=$(strip \
 	$(if $(filter $(MYSQL_OLD_TARGETS), $(OPTWARE_TARGET)), $(MYSQL_CONNECTOR_ODBC_PATCHES_OLD), \
-	$(MYSQL_CONNECTOR_ODBC_PATCHES_NEW)))
+	$(MYSQL_CONNECTOR_ODBC_PATCHES_NEW))) \
+$(MYSQL_CONNECTOR_ODBC_SOURCE_DIR)/driver.h.patch
 
 #
 # If the compilation of the package requires additional

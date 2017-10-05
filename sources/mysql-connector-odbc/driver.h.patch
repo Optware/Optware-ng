@@ -1,0 +1,11 @@
+--- a/driver/driver.h
++++ b/driver/driver.h
+@@ -42,6 +42,8 @@
+ /* Needed for offsetof() CPP macro */
+ #include <stddef.h>
+ 
++#include <dlfcn.h>
++
+ #ifdef __cplusplus
+ extern "C"
+ {
