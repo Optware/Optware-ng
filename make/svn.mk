@@ -35,7 +35,7 @@ SVN_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SVN_DESCRIPTION=a compelling replacement for CVS
 SVN_SECTION=net
 SVN_PRIORITY=optional
-SVN_DEPENDS=libserf, apr, apr-util, cyrus-sasl-libs, e2fslibs, expat, file, gdbm, libxml2, sqlite, zlib
+SVN_DEPENDS=libserf, apr, apr-util, cyrus-sasl-libs, e2fslibs, expat, file, gdbm, libxml2, sqlite, zlib, libintl
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
 SVN_DEPENDS +=, openldap-libs
 endif
@@ -63,7 +63,7 @@ SVN-RB_CONFLICTS=
 #
 # SVN_IPK_VERSION should be incremented when the ipk changes.
 #
-SVN_IPK_VERSION=4
+SVN_IPK_VERSION=5
 
 #
 # SVN_CONFFILES should be a list of user-editable files
@@ -80,7 +80,7 @@ SVN_CONFFILES=
 # compilation or linking flags, then list them here.
 #
 SVN_CPPFLAGS=-D_LARGEFILE64_SOURCE
-SVN_LDFLAGS=
+SVN_LDFLAGS=-lintl
 ifeq ($(TARGET_CC), $(HOSTCC))
 SVN_CONFIG_ENV=
 else
@@ -151,7 +151,7 @@ svn-source: $(DL_DIR)/$(SVN_SOURCE) $(SVN_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(SVN_BUILD_DIR)/.configured: $(DL_DIR)/$(SVN_SOURCE) $(SVN_PATCHES) make/svn.mk
-	$(MAKE) apr-stage apr-util-stage apache-stage \
+	$(MAKE) apr-stage apr-util-stage apache-stage gettext-stage \
 		cyrus-sasl-stage expat-stage file-stage libxml2-stage \
 		e2fsprogs-stage gdbm-stage sqlite-stage zlib-stage libserf-stage
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
