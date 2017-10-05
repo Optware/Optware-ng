@@ -37,7 +37,7 @@ MP3BLASTER_CONFLICTS=
 #
 # MP3BLASTER_IPK_VERSION should be incremented when the ipk changes.
 #
-MP3BLASTER_IPK_VERSION=1
+MP3BLASTER_IPK_VERSION=2
 
 #
 # MP3BLASTER_CONFFILES should be a list of user-editable files
@@ -53,7 +53,7 @@ MP3BLASTER_IPK_VERSION=1
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-MP3BLASTER_CPPFLAGS=
+MP3BLASTER_CPPFLAGS=-Wno-error=narrowing
 MP3BLASTER_LDFLAGS=
 
 #
