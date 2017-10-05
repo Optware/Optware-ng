@@ -1,0 +1,13 @@
+--- a/hotspot/make/linux/makefiles/vm.make
++++ b/hotspot/make/linux/makefiles/vm.make
+@@ -99,7 +99,9 @@ CXXFLAGS =           \
+   ${BUILD_TARGET}    \
+   ${BUILD_USER}      \
+   ${HS_LIB_ARCH}     \
+-  ${VM_DISTRO}
++  ${VM_DISTRO}       \
++  -std=c++98         \
++  -fpermissive
+ 
+ # This is VERY important! The version define must only be supplied to vm_version.o
+ # If not, ccache will not re-use the cache at all, since the version string might contain

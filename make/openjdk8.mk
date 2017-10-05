@@ -66,7 +66,7 @@ OPENJDK8_JDK_CONFLICTS=
 #
 # OPENJDK8_IPK_VERSION should be incremented when the ipk changes.
 #
-OPENJDK8_IPK_VERSION=2
+OPENJDK8_IPK_VERSION=3
 
 #
 # OPENJDK8_JRE_HEADLESS_CONFFILES should be a list of user-editable files
@@ -136,6 +136,9 @@ $(OPENJDK8_SOURCE_DIR)/openjdk/zero-architectures.diff \
 $(OPENJDK8_SOURCE_DIR)/openjdk/zero-fpu-control-is-noop.diff \
 $(OPENJDK8_SOURCE_DIR)/openjdk/zero-missing-headers.diff \
 $(OPENJDK8_SOURCE_DIR)/openjdk/fix-ipv6-init.patch \
+$(OPENJDK8_SOURCE_DIR)/openjdk/hotspot-c++98-fpermissive.patch \
+$(OPENJDK8_SOURCE_DIR)/openjdk/core-libraries_compile-launchers_c++98-fpermissive.patch \
+$(OPENJDK8_SOURCE_DIR)/openjdk/native_jni_return_null_not_false.patch \
 
 OPENJDK8_JAMVM_PATCHES=\
 $(OPENJDK8_SOURCE_DIR)/jamvm/jamvm-fix.diff \

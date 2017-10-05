@@ -1,0 +1,22 @@
+--- a/jdk/make/lib/CoreLibraries.gmk
++++ b/jdk/make/lib/CoreLibraries.gmk
+@@ -294,7 +294,7 @@ $(eval $(call SetupNativeCompilation,BUI
+     LANG := C++, \
+     OPTIMIZATION := LOW, \
+     CFLAGS := $(CXXFLAGS_JDKLIB) \
+-        -DNO_ZLIB -DUNPACK_JNI -DFULL, \
++        -DNO_ZLIB -DUNPACK_JNI -DFULL -std=c++98 -fpermissive, \
+     CFLAGS_release := -DPRODUCT, \
+     MAPFILE := $(JDK_TOPDIR)/make/mapfiles/libunpack/mapfile-vers, \
+     LDFLAGS := $(LDFLAGS_JDKLIB) $(LDFLAGS_CXX_JDK) \
+--- a/jdk/make/CompileLaunchers.gmk
++++ b/jdk/make/CompileLaunchers.gmk
+@@ -472,7 +472,7 @@ $(eval $(call SetupNativeCompilation,BUI
+     LANG := $(UNPACKEXE_LANG), \
+     OPTIMIZATION := LOW, \
+     CFLAGS := $(UNPACKEXE_CFLAGS) $(CXXFLAGS_JDKEXE) \
+-        -DFULL, \
++        -DFULL -std=c++98 -fpermissive, \
+     CFLAGS_release := -DPRODUCT, \
+     CFLAGS_linux := -fPIC, \
+     CFLAGS_solaris := -KPIC, \
