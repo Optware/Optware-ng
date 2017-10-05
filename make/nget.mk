@@ -37,7 +37,7 @@ NGET_CONFLICTS=
 #
 # NGET_IPK_VERSION should be incremented when the ipk changes.
 #
-NGET_IPK_VERSION=5
+NGET_IPK_VERSION=6
 
 #
 # NGET_CONFFILES should be a list of user-editable files
@@ -134,6 +134,7 @@ $(NGET_BUILD_DIR)/.configured: $(DL_DIR)/$(NGET_SOURCE) $(NGET_PATCHES) make/nge
 	(cd $(@D)/uulib; \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(NGET_CPPFLAGS)" \
+		CXXFLAGS="-std=c++98" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(NGET_LDFLAGS)" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
@@ -145,6 +146,7 @@ $(NGET_BUILD_DIR)/.configured: $(DL_DIR)/$(NGET_SOURCE) $(NGET_PATCHES) make/nge
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(NGET_CPPFLAGS)" \
+		CXXFLAGS="-std=c++98" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(NGET_LDFLAGS)" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
