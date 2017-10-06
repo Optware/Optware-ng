@@ -33,11 +33,14 @@ XINETD_DESCRIPTION=Highly configurable, modular and secure inetd
 XINETD_SECTION=net
 XINETD_PRIORITY=required
 XINETD_DEPENDS=psmisc
+ifeq (uclibc, $(LIBC_STYLE))
+XINETD_DEPENDS +=, librpc-uclibc
+endif
 
 #
 # XINETD_IPK_VERSION should be incremented when the ipk changes.
 #
-XINETD_IPK_VERSION=1
+XINETD_IPK_VERSION=2
 
 #
 # XINETD_CONFFILES should be a list of user-editable files
@@ -62,6 +65,9 @@ XINETD_PATCHES=$(XINETD_SOURCE_DIR)/xconfig.patch
 #
 XINETD_CPPFLAGS=
 XINETD_LDFLAGS=
+ifeq (uclibc, $(LIBC_STYLE))
+XINETD_LDFLAGS += -lrpc-uclibc
+endif
 
 #
 # XINETD_BUILD_DIR is the directory in which the build is done.
@@ -110,7 +116,9 @@ xinetd-source: $(DL_DIR)/$(XINETD_SOURCE) $(XINETD_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(XINETD_BUILD_DIR)/.configured: $(DL_DIR)/$(XINETD_SOURCE) $(XINETD_PATCHES) make/xinetd.mk
-#	$(MAKE) <bar>-stage <baz>-stage
+ifeq (uclibc, $(LIBC_STYLE))
+	$(MAKE) librpc-uclibc-stage
+endif
 	rm -rf $(BUILD_DIR)/$(XINETD_DIR) $(@D)
 	$(XINETD_UNZIP) $(DL_DIR)/$(XINETD_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(XINETD_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(XINETD_DIR) -p1
