@@ -53,7 +53,7 @@ TRANSMISSION_CONFLICTS=
 #
 # TRANSMISSION_IPK_VERSION should be incremented when the ipk changes.
 #
-TRANSMISSION_IPK_VERSION=3
+TRANSMISSION_IPK_VERSION=4
 
 #
 # TRANSMISSION_CONFFILES should be a list of user-editable files
@@ -62,7 +62,9 @@ $(TARGET_PREFIX)/etc/transmission-daemon/settings.json \
 $(TARGET_PREFIX)/etc/init.d/S95transmission \
 $(TARGET_PREFIX)/share/transmission/web/index.html
 
-TRANSMISSION_PATCHES = $(TRANSMISSION_SOURCE_DIR)/int64_switch.patch \
+TRANSMISSION_PATCHES=\
+$(TRANSMISSION_SOURCE_DIR)/int64_switch.patch \
+$(TRANSMISSION_SOURCE_DIR)/uclibc_system_quota.patch \
 
 TRANSMISSION_CONFIG_ENV ?=
 
