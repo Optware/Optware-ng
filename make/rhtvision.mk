@@ -37,7 +37,7 @@ RHTVISION_CONFLICTS=
 #
 # RHTVISION_IPK_VERSION should be incremented when the ipk changes.
 #
-RHTVISION_IPK_VERSION=2
+RHTVISION_IPK_VERSION=3
 
 #
 # RHTVISION_CONFFILES should be a list of user-editable files
@@ -50,6 +50,7 @@ RHTVISION_IPK_VERSION=2
 RHTVISION_PATCHES=\
 $(RHTVISION_SOURCE_DIR)/conflib.pl-cross.patch \
 $(RHTVISION_SOURCE_DIR)/config.pl-cross.patch \
+$(RHTVISION_SOURCE_DIR)/make_abs_a_macro.patch \
 #$(RHTVISION_SOURCE_DIR)/gcc4.patch \
 
 #
