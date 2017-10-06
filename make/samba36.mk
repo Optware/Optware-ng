@@ -21,7 +21,7 @@
 #
 SAMBA36_SITE=http://www.samba.org/samba/ftp/stable
 SAMBA36_VERSION ?= 3.6.24
-SAMBA36_IPK_VERSION ?= 2
+SAMBA36_IPK_VERSION ?= 3
 SAMBA36_SOURCE=samba-$(SAMBA36_VERSION).tar.gz
 SAMBA36_DIR=samba-$(SAMBA36_VERSION)
 SAMBA36_UNZIP=zcat
@@ -260,6 +260,8 @@ endif
 		$(SAMBA36_CONFIG_ARGS) \
 		--disable-nls \
 	)
+	# opt out from libintl
+	sed -i -e '/^#define HAVE_LIBINTL_H 1/d' $(@D)/source3/include/config.h
 #	Remove Kerberos libs produced by broken configure
 #	sed -i -e 's/KRB5LIBS=.*/KRB5LIBS=/' \
 #	 -e 's/-lgssapi_krb5\|-lkrb5\|-lk5crypto\|-lcom_err\|-lgnutls//g' \
