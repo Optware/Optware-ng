@@ -1,0 +1,11 @@
+--- a/libuncia/input/filter.h
++++ libuncia/input/filter.h
+@@ -62,7 +62,7 @@ namespace libuncia
+         deeper_get(char &c)
+         {
+             if (holding_pen.empty())
+-                return deeper.get(c);
++                return (bool)(deeper.get(c));
+             c = holding_pen.back();
+             holding_pen.pop_back();
+             return true;

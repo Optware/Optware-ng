@@ -40,7 +40,7 @@ UNCIA_CONFLICTS=
 #
 # UNCIA_IPK_VERSION should be incremented when the ipk changes.
 #
-UNCIA_IPK_VERSION=2
+UNCIA_IPK_VERSION=3
 
 #
 # UNCIA_CONFFILES should be a list of user-editable files
@@ -50,7 +50,9 @@ UNCIA_IPK_VERSION=2
 # UNCIA_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-UNCIA_PATCHES=$(UNCIA_SOURCE_DIR)/cstdarg.patch
+UNCIA_PATCHES=\
+$(UNCIA_SOURCE_DIR)/cstdarg.patch \
+$(UNCIA_SOURCE_DIR)/filter_explicit_convert_istream_to_bool.patch \
 
 #
 # If the compilation of the package requires additional
