@@ -1,0 +1,11 @@
+--- a/src/Makefile
++++ b/src/Makefile
+@@ -38,7 +38,7 @@
+ OBJECTS = common.o config.o download.o interface.o main.o
+ 
+ $(OUT) : $(OBJECTS)
+-	$(CC) $(CFLAGS) $(OBJECTS) -o $(OUT) $(LIBS)
++	$(CC) $(CPPFLAGS) $(CFLAGS) $(OBJECTS) -o $(OUT) $(LDFLAGS) $(LIBS)
+ 
+ 	@echo -e "\nBuild complete!"
+ 	@echo -e "\nNow as root type: 'make install'\n"
