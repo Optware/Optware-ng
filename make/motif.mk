@@ -36,13 +36,16 @@ MOTIF_DESCRIPTION=Motif user interface component toolkit.
 MOTIF_SECTION=lib
 MOTIF_PRIORITY=optional
 MOTIF_DEPENDS=x11, xmu, xt, xp, xext, xft, libjpeg, libpng, freetype, fontconfig
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+MOTIF_DEPENDS += , libiconv
+endif
 MOTIF_SUGGESTS=
 MOTIF_CONFLICTS=
 
 #
 # MOTIF_IPK_VERSION should be incremented when the ipk changes.
 #
-MOTIF_IPK_VERSION=2
+MOTIF_IPK_VERSION=3
 
 #
 # MOTIF_CONFFILES should be a list of user-editable files
@@ -60,6 +63,9 @@ MOTIF_PATCHES=$(MOTIF_SOURCE_DIR)/configure.patch $(MOTIF_SOURCE_DIR)/Makefile.p
 #
 MOTIF_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/freetype2
 MOTIF_LDFLAGS=-lfreetype -lXt -lXft -lX11 -lXext
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+MOTIF_LDFLAGS += -liconv
+endif
 
 #
 # MOTIF_BUILD_DIR is the directory in which the build is done.
@@ -113,6 +119,9 @@ motif-source: $(DL_DIR)/$(MOTIF_SOURCE) $(MOTIF_PATCHES)
 $(MOTIF_BUILD_DIR)/.configured: $(DL_DIR)/$(MOTIF_SOURCE) $(MOTIF_PATCHES) make/motif.mk
 	$(MAKE) x11-stage xmu-stage xt-stage xp-stage xft-stage libjpeg-stage libpng-stage \
 	freetype-stage fontconfig-stage xbitmaps-stage xext-stage
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+	$(MAKE) libiconv-stage
+endif
 	rm -rf $(BUILD_DIR)/$(MOTIF_DIR) $(@D)
 	$(MOTIF_UNZIP) $(DL_DIR)/$(MOTIF_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MOTIF_PATCHES)" ; \
