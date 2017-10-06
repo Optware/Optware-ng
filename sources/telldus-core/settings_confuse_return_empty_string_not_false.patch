@@ -1,0 +1,11 @@
+--- a/driver/libtelldus-core/SettingsConfuse.cpp
++++ b/driver/libtelldus-core/SettingsConfuse.cpp
+@@ -197,7 +197,7 @@ int Settings::getDeviceState( int intDev
+ 
+ std::string Settings::getDeviceStateValue( int intDeviceId ) const {
+ 	if (d->var_cfg == 0) {
+-		return false;
++		return "";
+ 	}
+ 	cfg_t *cfg_device;
+ 	for (int i = 0; i < cfg_size(d->var_cfg, "device"); ++i) {
