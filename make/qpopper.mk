@@ -25,6 +25,9 @@ QPOPPER_DESCRIPTION=qpopper is a pop3 server
 QPOPPER_SECTION=mail
 QPOPPER_PRIORITY=optional
 QPOPPER_DEPENDS=openssl, sendmail
+ifeq (uclibc, $(LIBC_STYLE))
+QPOPPER_DEPENDS +=, librpc-uclibc
+endif
 QPOPPER_SUGGESTS=
 QPOPPER_CONFLICTS=
 
@@ -32,7 +35,7 @@ QPOPPER_CONFLICTS=
 #
 # QPOPPER_IPK_VERSION should be incremented when the ipk changes.
 #
-QPOPPER_IPK_VERSION=3
+QPOPPER_IPK_VERSION=4
 
 #
 # QPOPPER_CONFFILES should be a list of user-editable files
@@ -50,6 +53,9 @@ QPOPPER_PATCHES=$(QPOPPER_SOURCE_DIR)/configure.patch
 #
 QPOPPER_CPPFLAGS=
 QPOPPER_LDFLAGS=
+ifeq (uclibc, $(LIBC_STYLE))
+QPOPPER_LDFLAGS += -lrpc-uclibc
+endif
 
 #
 # QPOPPER_BUILD_DIR is the directory in which the build is done.
@@ -96,7 +102,10 @@ qpopper-source: $(DL_DIR)/$(QPOPPER_SOURCE) $(QPOPPER_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(QPOPPER_BUILD_DIR)/.configured: $(DL_DIR)/$(QPOPPER_SOURCE) $(QPOPPER_PATCHES) make/qpopper.mk
-	$(MAKE) openssl-stage 
+	$(MAKE) openssl-stage
+ifeq (uclibc, $(LIBC_STYLE))
+	$(MAKE) librpc-uclibc-stage
+endif
 	rm -rf $(BUILD_DIR)/$(QPOPPER_DIR) $(@D)
 	$(QPOPPER_UNZIP) $(DL_DIR)/$(QPOPPER_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(QPOPPER_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(QPOPPER_DIR) -p0
