@@ -1,0 +1,86 @@
+--- a/mxSetup.py
++++ b/mxSetup.py
+@@ -1080,37 +1080,44 @@ def get_msvc_paths():
+ # compiler and linker for include files and libraries. LIB and INCLUDE
+ # are environment variables used on Windows platforms, other platforms
+ # may have different names.
+-STDLIBPATH = build_path(['/usr/lib', '/opt/lib', '$LIB'])
+-STDINCLPATH = build_path(['/usr/include', '/opt/include', '$INCLUDE'])
++#STDLIBPATH = build_path(['/usr/lib', '/opt/lib', '$LIB'])
++#STDINCLPATH = build_path(['/usr/include', '/opt/include', '$INCLUDE'])
+ 
+ # Add additional dirs from Windows registry if available
+-if sys.platform[:3] == 'win':
+-    libpath, inclpath = get_msvc_paths()
+-    STDLIBPATH.extend(libpath)
+-    STDINCLPATH.extend(inclpath)
++#if sys.platform[:3] == 'win':
++#    libpath, inclpath = get_msvc_paths()
++#    STDLIBPATH.extend(libpath)
++#    STDINCLPATH.extend(inclpath)
+ 
+ # Default paths for additional library and include file search (in
+ # addition to the standard system directories above); these are always
+ # added to the compile and link commands by mxSetup per default.
+-LIBPATH = build_path(['/usr/local/lib',
+-                      '/opt/local/lib',
+-                      os.path.join(sys.prefix, 'lib')])
+-INCLPATH = build_path(['/usr/local/include',
+-                       '/opt/local/include',
+-                       os.path.join(sys.prefix, 'include')])
++#LIBPATH = build_path(['/usr/local/lib',
++#                      '/opt/local/lib',
++#                      os.path.join(sys.prefix, 'lib')])
++#INCLPATH = build_path(['/usr/local/include',
++#                       '/opt/local/include',
++#                       os.path.join(sys.prefix, 'include')])
+ 
+ # Add 32- or 64-bit dirs if needed by the Python version
+-if sys.maxint > 2147483647L:
++#if sys.maxint > 2147483647L:
+     # 64-bit build
+-    STDLIBPATH.extend(['/usr/lib64', '/opt/lib64'])
+-    LIBPATH.extend(['/usr/local/lib64', '/opt/local/lib64'])
+-else:
++#    STDLIBPATH.extend(['/usr/lib64', '/opt/lib64'])
++#    LIBPATH.extend(['/usr/local/lib64', '/opt/local/lib64'])
++#else:
+     # 32-bit build
+-    STDLIBPATH.extend(['/usr/lib32', '/opt/lib32'])
+-    LIBPATH.extend(['/usr/local/lib32', '/opt/local/lib32'])
++#    STDLIBPATH.extend(['/usr/lib32', '/opt/lib32'])
++#    LIBPATH.extend(['/usr/local/lib32', '/opt/local/lib32'])
+ 
+ # Additional paths to scan in order to find third party libs and
+ # headers; these are used by mx_autoconf.find_*_file() APIs.
++
++STDLIBPATH = build_path([])
++STDINCLPATH = build_path([])
++
++LIBPATH = build_path([])
++INCLPATH = build_path([])
++
+ FINDLIBPATH = build_path([])
+ FINDINCLPATH = build_path([])
+ 
+@@ -2361,13 +2368,13 @@ class mx_autoconf(CompilerSupportMixin,
+                     undef.append(macro_name)
+ 
+         # Compiler tests
+-        if not configuration.has_key('BAD_STATIC_FORWARD'):
+-            log.info('checking compiler for bad static forward handling '
+-                     '(errors from this can safely be ignored)')
+-            if self.check_bad_staticforward():
+-                log.info('compiler has problems with static forwards '
+-                         '- enabling work-around')
+-                define.append(('BAD_STATIC_FORWARD', '1'))
++#        if not configuration.has_key('BAD_STATIC_FORWARD'):
++#            log.info('checking compiler for bad static forward handling '
++#                     '(errors from this can safely be ignored)')
++#            if self.check_bad_staticforward():
++#                log.info('compiler has problems with static forwards '
++#                         '- enabling work-around')
++#                define.append(('BAD_STATIC_FORWARD', '1'))
+ 
+         # Enable debugging support
+         if self.enable_debugging:

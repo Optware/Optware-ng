@@ -39,7 +39,7 @@ PY-MX-BASE_CONFLICTS=
 #
 # PY-MX-BASE_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-MX-BASE_IPK_VERSION=1
+PY-MX-BASE_IPK_VERSION=2
 
 #
 # PY-MX-BASE_CONFFILES should be a list of user-editable files
@@ -49,7 +49,9 @@ PY-MX-BASE_IPK_VERSION=1
 # PY-MX-BASE_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#PY-MX-BASE_PATCHES=$(PY-MX-BASE_SOURCE_DIR)/configure.patch
+PY-MX-BASE_PATCHES=\
+$(PY-MX-BASE_SOURCE_DIR)/mxSetup.py.patch \
+$(PY-MX-BASE_SOURCE_DIR)/mxDataTime.c.patch \
 
 #
 # If the compilation of the package requires additional
@@ -123,7 +125,7 @@ $(PY-MX-BASE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MX-BASE_SOURCE) $(PY-MX-BASE
 	# 2.4
 	rm -rf $(BUILD_DIR)/$(PY-MX-BASE_DIR)
 	$(PY-MX-BASE_UNZIP) $(DL_DIR)/$(PY-MX-BASE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	#cat $(PY-MX-BASE_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-MX-BASE_DIR) -p1
+	cat $(PY-MX-BASE_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-MX-BASE_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-MX-BASE_DIR) $(@D)/2.4
 	(cd $(@D)/2.4; \
             ( \
@@ -138,7 +140,7 @@ $(PY-MX-BASE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MX-BASE_SOURCE) $(PY-MX-BASE
 	# 2.5
 	rm -rf $(BUILD_DIR)/$(PY-MX-BASE_DIR)
 	$(PY-MX-BASE_UNZIP) $(DL_DIR)/$(PY-MX-BASE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	#cat $(PY-MX-BASE_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-MX-BASE_DIR) -p1
+	cat $(PY-MX-BASE_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-MX-BASE_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-MX-BASE_DIR) $(@D)/2.5
 	(cd $(@D)/2.5; \
             ( \
@@ -153,7 +155,7 @@ $(PY-MX-BASE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MX-BASE_SOURCE) $(PY-MX-BASE
 	# 2.6
 	rm -rf $(BUILD_DIR)/$(PY-MX-BASE_DIR)
 	$(PY-MX-BASE_UNZIP) $(DL_DIR)/$(PY-MX-BASE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	#cat $(PY-MX-BASE_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-MX-BASE_DIR) -p1
+	cat $(PY-MX-BASE_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-MX-BASE_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-MX-BASE_DIR) $(@D)/2.6
 	(cd $(@D)/2.6; \
             ( \
@@ -168,7 +170,7 @@ $(PY-MX-BASE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MX-BASE_SOURCE) $(PY-MX-BASE
 	# 2.7
 	rm -rf $(BUILD_DIR)/$(PY-MX-BASE_DIR)
 	$(PY-MX-BASE_UNZIP) $(DL_DIR)/$(PY-MX-BASE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	#cat $(PY-MX-BASE_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-MX-BASE_DIR) -p1
+	cat $(PY-MX-BASE_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-MX-BASE_DIR) -p1
 	mv $(BUILD_DIR)/$(PY-MX-BASE_DIR) $(@D)/2.7
 	(cd $(@D)/2.7; \
             ( \
@@ -180,7 +182,7 @@ $(PY-MX-BASE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-MX-BASE_SOURCE) $(PY-MX-BASE
                 echo "executable=$(TARGET_PREFIX)/bin/python2.6" \
             ) >> setup.cfg; \
         )
-	find $(@D) -type f -name *.[ch] -a -not -name mx.h -exec sed -i -e 's/staticforward/statichere/' {} \;
+#	find $(@D) -type f -name *.[ch] -a -not -name mx.h -exec sed -i -e 's/staticforward/statichere/' {} \;
 	touch $@
 
 py-mx-base-unpack: $(PY-MX-BASE_BUILD_DIR)/.configured
@@ -193,12 +195,12 @@ $(PY-MX-BASE_BUILD_DIR)/.built: $(PY-MX-BASE_BUILD_DIR)/.configured
 	rm -f $@
 	(cd $(@D)/2.4; \
 	 CPPFLAG=`echo $(STAGING_CPPFLAGS) $(PY24-MX-BASE_CPPFLAGS)` \
-         CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
+         CC='$(TARGET_CC) -D__GNUC__' LDSHARED='$(TARGET_CC) -shared' \
             $(HOST_STAGING_PREFIX)/bin/python2.4 setup.py build; \
         )
 	(cd $(@D)/2.5; \
 	 CPPFLAG=`echo $(STAGING_CPPFLAGS) $(PY25-MX-BASE_CPPFLAGS)` \
-         CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
+         CC='$(TARGET_CC) -D__GNUC__' LDSHARED='$(TARGET_CC) -shared' \
             $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build; \
         )
 	(cd $(@D)/2.6; \
@@ -208,7 +210,7 @@ $(PY-MX-BASE_BUILD_DIR)/.built: $(PY-MX-BASE_BUILD_DIR)/.configured
         )
 	(cd $(@D)/2.7; \
 	 CPPFLAG=`echo $(STAGING_CPPFLAGS) $(PY27-MX-BASE_CPPFLAGS)` \
-         CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
+         CC='$(TARGET_CC) -D__GNUC__' LDSHARED='$(TARGET_CC) -shared' \
             $(HOST_STAGING_PREFIX)/bin/python2.7 setup.py build; \
         )
 	touch $@
