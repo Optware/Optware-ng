@@ -100,7 +100,7 @@ libol-source: $(DL_DIR)/$(LIBOL_SOURCE) $(LIBOL_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(LIBOL_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBOL_SOURCE) $(LIBOL_PATCHES)
+$(LIBOL_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBOL_SOURCE) $(LIBOL_PATCHES) make/libol.mk
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(LIBOL_DIR) $(LIBOL_BUILD_DIR)
 	$(LIBOL_UNZIP) $(DL_DIR)/$(LIBOL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
