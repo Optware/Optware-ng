@@ -95,7 +95,7 @@ gift-source: $(DL_DIR)/$(GIFT_SOURCE) $(GIFT_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(GIFT_BUILD_DIR)/.configured: $(DL_DIR)/$(GIFT_SOURCE) $(GIFT_PATCHES)
+$(GIFT_BUILD_DIR)/.configured: $(DL_DIR)/$(GIFT_SOURCE) $(GIFT_PATCHES) make/gift.mk
 	$(MAKE) libogg-stage libvorbis-stage libtool-stage
 	rm -rf $(BUILD_DIR)/$(GIFT_DIR) $(GIFT_BUILD_DIR)
 	$(GIFT_UNZIP) $(DL_DIR)/$(GIFT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
