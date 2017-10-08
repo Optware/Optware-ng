@@ -99,31 +99,29 @@ fontconfig-source: $(DL_DIR)/fontconfig-$(FONTCONFIG_VERSION).tar.gz $(FONTCONFI
 #
 $(FONTCONFIG_BUILD_DIR)/.configured: $(DL_DIR)/fontconfig-$(FONTCONFIG_VERSION).tar.gz \
 		$(FONTCONFIG_PATCHES) make/fontconfig.mk
-	$(MAKE) freetype-stage
-	$(MAKE) expat-stage
+	$(MAKE) freetype-stage expat-stage
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
 endif
-	rm -rf $(BUILD_DIR)/$(FONTCONFIG_DIR) $(FONTCONFIG_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(FONTCONFIG_DIR) $(@D)
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/fontconfig-$(FONTCONFIG_VERSION).tar.gz
 	if test -n "$(FONTCONFIG_PATCHES)" ; \
 		then cat $(FONTCONFIG_PATCHES) | \
 		$(PATCH) -d $(BUILD_DIR)/$(FONTCONFIG_DIR) -p1 ; \
 	fi
-	if test "$(BUILD_DIR)/$(FONTCONFIG_DIR)" != "$(FONTCONFIG_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(FONTCONFIG_DIR) $(FONTCONFIG_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(FONTCONFIG_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(FONTCONFIG_DIR) $(@D) ; \
 	fi
 	sed -i -e '/^\(LDFLAGS\|CFLAGS\|CPPFLAGS\) =/s|=.*$$|=|' \
 		$(@D)/fc-case/Makefile.in \
 		$(@D)/fc-glyphname/Makefile.in \
 		$(@D)/fc-lang/Makefile.in \
 		;
-	(cd $(FONTCONFIG_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(FONTCONFIG_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(FONTCONFIG_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
-		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
 		ac_cv_prog_HASDOCBOOK=no \
 		./configure \
 		--with-arch=$(TARGET_ARCH) \
@@ -137,7 +135,9 @@ endif
 		--disable-docs \
 		--disable-static \
 	)
-	$(PATCH_LIBTOOL) $(FONTCONFIG_BUILD_DIR)/libtool
+	$(PATCH_LIBTOOL) $(@D)/libtool
+	sed -i -e 's|$(STAGING_INCLUDE_DIR)|\$${includedir}|g' -e 's|$(STAGING_LIB_DIR)|\$${libdir}|g' \
+		$(@D)/fontconfig.pc
 	touch $@
 
 fontconfig-unpack: $(FONTCONFIG_BUILD_DIR)/.configured
@@ -147,7 +147,7 @@ fontconfig-unpack: $(FONTCONFIG_BUILD_DIR)/.configured
 #
 $(FONTCONFIG_BUILD_DIR)/.built: $(FONTCONFIG_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(FONTCONFIG_BUILD_DIR)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
