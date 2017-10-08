@@ -20,8 +20,8 @@
 # You should change all these variables to suit your package.
 #
 GDB_SITE=http://ftp.gnu.org/gnu/gdb
-GDB_VERSION=7.11
-GDB_IPK_VERSION=2
+GDB_VERSION=8.0.1
+GDB_IPK_VERSION=1
 GDB_SOURCE=gdb-$(GDB_VERSION).tar.xz
 GDB_UNZIP=xzcat
 GDB_DIR=gdb-$(GDB_VERSION)
