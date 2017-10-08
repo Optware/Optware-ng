@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 FREETYPE_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/freetype
-FREETYPE_VERSION=2.5.5
+FREETYPE_VERSION=2.8.1
 FREETYPE_SOURCE=freetype-$(FREETYPE_VERSION).tar.bz2
 FREETYPE_DIR=freetype-$(FREETYPE_VERSION)
 FREETYPE_UNZIP=bzcat
@@ -33,7 +33,7 @@ FREETYPE_DEPENDS=zlib, bzip2, libpng
 #
 # FREETYPE_IPK_VERSION should be incremented when the ipk changes.
 #
-FREETYPE_IPK_VERSION=2
+FREETYPE_IPK_VERSION=1
 
 #
 # FREETYPE_CONFFILES should be a list of user-editable files
