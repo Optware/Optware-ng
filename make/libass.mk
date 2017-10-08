@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBASS_URL=https://github.com/libass/libass/releases/download/$(LIBASS_VERSION)/libass-$(LIBASS_VERSION).tar.gz
-LIBASS_VERSION=0.13.2
+LIBASS_VERSION=0.13.7
 LIBASS_SOURCE=libass-$(LIBASS_VERSION).tar.gz
 LIBASS_DIR=libass-$(LIBASS_VERSION)
 LIBASS_UNZIP=zcat
@@ -52,7 +52,7 @@ LIBASS_IPK_VERSION=1
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-LIBASS_CPPFLAGS=
+LIBASS_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/freetype2
 LIBASS_LDFLAGS=
 
 #
