@@ -42,7 +42,7 @@ XMAIL_CONFLICTS=
 #
 # XMAIL_IPK_VERSION should be incremented when the ipk changes.
 #
-XMAIL_IPK_VERSION=2
+XMAIL_IPK_VERSION=3
 
 #
 # XMAIL_CONFFILES should be a list of user-editable files
@@ -65,10 +65,7 @@ XMAIL_PATCHES=\
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-XMAIL_CPPFLAGS=
-ifeq ($(OPTWARE_TARGET), $(filter gumstix1151 mbwe-bluering, $(OPTWARE_TARGET)))
-XMAIL_CPPFLAGS += -DDISABLE_IPV6
-endif
+XMAIL_CPPFLAGS=-Wno-error=narrowing
 XMAIL_LDFLAGS=
 
 XMAIL_MAKE_ARGS=$(TARGET_CONFIGURE_OPTS) \
