@@ -36,7 +36,7 @@ APCUPSD_CONFLICTS=
 #
 # APCUPSD_IPK_VERSION should be incremented when the ipk changes.
 #
-APCUPSD_IPK_VERSION=2
+APCUPSD_IPK_VERSION=3
 
 #
 # APCUPSD_CONFFILES should be a list of user-editable files

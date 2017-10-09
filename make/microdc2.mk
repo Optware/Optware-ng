@@ -39,7 +39,7 @@ MICRODC2_CONFLICTS=
 #
 # MICRODC2_IPK_VERSION should be incremented when the ipk changes.
 #
-MICRODC2_IPK_VERSION=3
+MICRODC2_IPK_VERSION=4
 
 #
 # MICRODC2_CONFFILES should be a list of user-editable files

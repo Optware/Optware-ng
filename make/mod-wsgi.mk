@@ -37,7 +37,7 @@ MOD_WSGI_CONFLICTS=
 #
 # MOD_WSGI_IPK_VERSION should be incremented when the ipk changes.
 #
-MOD_WSGI_IPK_VERSION=1
+MOD_WSGI_IPK_VERSION=2
 
 #
 # MOD_WSGI_CONFFILES should be a list of user-editable files

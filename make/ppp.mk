@@ -42,7 +42,7 @@ PPP_CONFLICTS=
 #
 # PPP_IPK_VERSION should be incremented when the ipk changes.
 #
-PPP_IPK_VERSION=2
+PPP_IPK_VERSION=3
 
 #
 # PPP_CONFFILES should be a list of user-editable files

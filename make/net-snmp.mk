@@ -34,7 +34,7 @@ NET_SNMP_CONFLICTS=
 #
 # NET_SNMP_IPK_VERSION should be incremented when the ipk changes.
 #
-NET_SNMP_IPK_VERSION=6
+NET_SNMP_IPK_VERSION=7
 
 #
 # NET_SNMP_CONFFILES should be a list of user-editable files

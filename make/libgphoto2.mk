@@ -26,7 +26,7 @@ LIBGPHOTO2_CONFLICTS=
 #
 # LIBGPHOTO2_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBGPHOTO2_IPK_VERSION=1
+LIBGPHOTO2_IPK_VERSION=2
 
 #
 # LIBGPHOTO2_CONFFILES should be a list of user-editable files

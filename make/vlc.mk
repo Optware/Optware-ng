@@ -32,7 +32,7 @@ VLC_VERSION=2.1.5
 VLC_UNZIP=xzcat
 VLC_SOURCE_SUFFIX=tar.xz
 endif
-VLC_IPK_VERSION=3
+VLC_IPK_VERSION=4
 VLC_SITE=http://download.videolan.org/pub/videolan/vlc/$(VLC_VERSION)
 VLC_SOURCE=vlc-$(VLC_VERSION).$(VLC_SOURCE_SUFFIX)
 VLC_DIR=vlc-$(VLC_VERSION)

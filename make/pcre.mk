@@ -43,7 +43,7 @@ endif
 #
 # PCRE_IPK_VERSION should be incremented when the ipk changes.
 #
-PCRE_IPK_VERSION=1
+PCRE_IPK_VERSION=2
 
 #
 # PCRE_PATCHES should list any patches, in the the order in
@@ -166,6 +166,7 @@ $(PCRE_BUILD_DIR)/.staged: $(PCRE_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	rm -f $(STAGING_LIB_DIR)/libpcre.la
+	rm -f $(STAGING_LIB_DIR)/libpcrecpp.la
 	rm -f $(STAGING_LIB_DIR)/libpcreposix.la
 	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' \
 		$(STAGING_PREFIX)/bin/pcre-config \

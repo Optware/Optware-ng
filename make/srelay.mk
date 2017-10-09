@@ -36,7 +36,7 @@ SRELAY_CONFLICTS=
 #
 # SRELAY_IPK_VERSION should be incremented when the ipk changes.
 #
-SRELAY_IPK_VERSION=1
+SRELAY_IPK_VERSION=2
 
 #
 # SRELAY_CONFFILES should be a list of user-editable files

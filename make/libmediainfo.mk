@@ -36,7 +36,7 @@ LIBMEDIAINFO_CONFLICTS=
 #
 # LIBMEDIAINFO_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBMEDIAINFO_IPK_VERSION=1
+LIBMEDIAINFO_IPK_VERSION=2
 
 #
 # LIBMEDIAINFO_CONFFILES should be a list of user-editable files

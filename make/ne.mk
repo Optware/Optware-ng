@@ -22,7 +22,7 @@
 #
 NE_SITE=https://launchpad.net/ubuntu/+archive/primary/+files
 NE_VERSION?=2.5
-NE_IPK_VERSION?=1
+NE_IPK_VERSION?=2
 NE_SOURCE=ne-$(NE_VERSION).tar.gz
 NE_SOURCE_DL=ne_$(NE_VERSION).orig.tar.gz
 NE_DIR=ne-$(NE_VERSION)

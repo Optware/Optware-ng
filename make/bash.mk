@@ -43,7 +43,7 @@ BASH_CONFLICTS=
 #
 # BASH_IPK_VERSION should be incremented when the ipk changes.
 #
-BASH_IPK_VERSION=2
+BASH_IPK_VERSION=3
 #
 # BASH_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.

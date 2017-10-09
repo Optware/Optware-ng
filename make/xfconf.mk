@@ -42,7 +42,7 @@ XFCONF_CONFLICTS=
 #
 # XFCONF_IPK_VERSION should be incremented when the ipk changes.
 #
-XFCONF_IPK_VERSION=1
+XFCONF_IPK_VERSION=2
 
 #
 # XFCONF_CONFFILES should be a list of user-editable files

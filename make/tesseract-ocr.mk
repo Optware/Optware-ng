@@ -36,7 +36,7 @@ TESSERACT-OCR_CONFLICTS=
 #
 # TESSERACT-OCR_IPK_VERSION should be incremented when the ipk changes.
 #
-TESSERACT-OCR_IPK_VERSION=4
+TESSERACT-OCR_IPK_VERSION=5
 
 #
 # TESSERACT-OCR_CONFFILES should be a list of user-editable files

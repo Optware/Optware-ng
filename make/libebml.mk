@@ -36,7 +36,7 @@ LIBEBML_CONFLICTS=
 #
 # LIBEBML_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBEBML_IPK_VERSION=1
+LIBEBML_IPK_VERSION=2
 
 #
 # LIBEBML_CONFFILES should be a list of user-editable files

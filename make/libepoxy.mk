@@ -42,7 +42,7 @@ LIBEPOXY_CONFLICTS=
 #
 # LIBEPOXY_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBEPOXY_IPK_VERSION=1
+LIBEPOXY_IPK_VERSION=2
 
 #
 # LIBEPOXY_CONFFILES should be a list of user-editable files

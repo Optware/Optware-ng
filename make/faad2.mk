@@ -36,7 +36,7 @@ FAAD2_CONFLICTS=
 #
 # FAAD2_IPK_VERSION should be incremented when the ipk changes.
 #
-FAAD2_IPK_VERSION=3
+FAAD2_IPK_VERSION=4
 
 #
 # FAAD2_CONFFILES should be a list of user-editable files

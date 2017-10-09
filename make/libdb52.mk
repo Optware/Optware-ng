@@ -36,7 +36,7 @@ LIBDB52_CONFLICTS=
 #
 # LIBDB52_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBDB52_IPK_VERSION=1
+LIBDB52_IPK_VERSION=2
 
 #
 # LIBDB52_CONFFILES should be a list of user-editable files

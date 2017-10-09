@@ -46,7 +46,7 @@ WIZD_CONFLICTS=
 #
 # WIZD_IPK_VERSION should be incremented when the ipk changes.
 #
-WIZD_IPK_VERSION=3
+WIZD_IPK_VERSION=4
 
 #
 # WIZD_CONFFILES should be a list of user-editable files
@@ -120,7 +120,7 @@ wizd-source: $(DL_DIR)/$(WIZD_SOURCE) $(WIZD_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(WIZD_BUILD_DIR)/.configured: $(DL_DIR)/$(WIZD_SOURCE) $(WIZD_PATCHES)
+$(WIZD_BUILD_DIR)/.configured: $(DL_DIR)/$(WIZD_SOURCE) $(WIZD_PATCHES) make/wizd.mk
 	$(MAKE) libdvdread-stage libjpeg-stage ncurses-stage
 	rm -rf $(BUILD_DIR)/$(WIZD_DIR) $(WIZD_BUILD_DIR)
 	$(WIZD_UNZIP) $(DL_DIR)/$(WIZD_SOURCE) | tar -C $(BUILD_DIR) -xvf -

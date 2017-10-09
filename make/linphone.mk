@@ -36,7 +36,7 @@ LINPHONE_CONFLICTS=
 #
 # LINPHONE_IPK_VERSION should be incremented when the ipk changes.
 #
-LINPHONE_IPK_VERSION=2
+LINPHONE_IPK_VERSION=3
 
 #
 # LINPHONE_CONFFILES should be a list of user-editable files

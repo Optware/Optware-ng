@@ -36,7 +36,7 @@ LIBCDIO_CONFLICTS=
 #
 # LIBCDIO_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBCDIO_IPK_VERSION=1
+LIBCDIO_IPK_VERSION=2
 
 #
 # LIBCDIO_CONFFILES should be a list of user-editable files

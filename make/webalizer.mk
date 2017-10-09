@@ -42,7 +42,7 @@ WEBALIZER_CONFLICTS=
 #
 # WEBALIZER_IPK_VERSION should be incremented when the ipk changes.
 #
-WEBALIZER_IPK_VERSION=3
+WEBALIZER_IPK_VERSION=4
 
 #
 # WEBALIZER_CONFFILES should be a list of user-editable files

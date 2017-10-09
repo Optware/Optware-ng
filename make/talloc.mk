@@ -40,7 +40,7 @@ TALLOC_CONFLICTS=
 #
 # TALLOC_IPK_VERSION should be incremented when the ipk changes.
 #
-TALLOC_IPK_VERSION=3
+TALLOC_IPK_VERSION=4
 
 #
 # TALLOC_CONFFILES should be a list of user-editable files

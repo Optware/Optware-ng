@@ -37,7 +37,7 @@ SSHFS_CONFLICTS=
 #
 # SSHFS_IPK_VERSION should be incremented when the ipk changes.
 #
-SSHFS_IPK_VERSION=1
+SSHFS_IPK_VERSION=2
 
 #
 # SSHFS_CONFFILES should be a list of user-editable files

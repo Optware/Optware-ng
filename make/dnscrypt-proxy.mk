@@ -36,7 +36,7 @@ DNSCRYPT_PROXY_CONFLICTS=
 #
 # DNSCRYPT_PROXY_IPK_VERSION should be incremented when the ipk changes.
 #
-DNSCRYPT_PROXY_IPK_VERSION=1
+DNSCRYPT_PROXY_IPK_VERSION=2
 
 #
 # DNSCRYPT_PROXY_CONFFILES should be a list of user-editable files

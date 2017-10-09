@@ -34,7 +34,7 @@ DISTCC_CONFLICTS=
 #
 # DISTCC_IPK_VERSION should be incremented when the ipk changes.
 #
-DISTCC_IPK_VERSION=2
+DISTCC_IPK_VERSION=3
 
 #
 # DISTCC_PATCHES should list any patches, in the the order in

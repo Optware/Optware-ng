@@ -44,7 +44,7 @@ LIBEXPLAIN_CONFLICTS=
 #
 # LIBEXPLAIN_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBEXPLAIN_IPK_VERSION=1
+LIBEXPLAIN_IPK_VERSION=2
 
 #
 # LIBEXPLAIN_CONFFILES should be a list of user-editable files

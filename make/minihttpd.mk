@@ -37,7 +37,7 @@ MINIHTTPD_CONFLICTS=
 #
 # MINIHTTPD_IPK_VERSION should be incremented when the ipk changes.
 #
-MINIHTTPD_IPK_VERSION=2
+MINIHTTPD_IPK_VERSION=3
 
 #
 # MINIHTTPD_CONFFILES should be a list of user-editable files
@@ -106,7 +106,7 @@ minihttpd-source: $(DL_DIR)/$(MINIHTTPD_SOURCE) $(MINIHTTPD_PATCHES)
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(MINIHTTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(MINIHTTPD_SOURCE) $(MINIHTTPD_PATCHES)
+$(MINIHTTPD_BUILD_DIR)/.configured: $(DL_DIR)/$(MINIHTTPD_SOURCE) $(MINIHTTPD_PATCHES) make/minihttpd.mk
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(MINIHTTPD_DIR) $(MINIHTTPD_BUILD_DIR)
 	$(MINIHTTPD_UNZIP) $(DL_DIR)/$(MINIHTTPD_SOURCE) | tar -C $(BUILD_DIR) -xvf -

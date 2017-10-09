@@ -45,7 +45,7 @@ endif
 #
 # ETTERCAP-NG_IPK_VERSION should be incremented when the ipk changes.
 #
-ETTERCAP-NG_IPK_VERSION=2
+ETTERCAP-NG_IPK_VERSION=3
 
 #
 # ETTERCAP-NG_CONFFILES should be a list of user-editable files

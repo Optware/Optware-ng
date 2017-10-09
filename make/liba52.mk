@@ -36,7 +36,7 @@ LIBA52_CONFLICTS=
 #
 # LIBA52_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBA52_IPK_VERSION=2
+LIBA52_IPK_VERSION=3
 
 #
 # LIBA52_CONFFILES should be a list of user-editable files

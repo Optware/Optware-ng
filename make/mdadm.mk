@@ -39,7 +39,7 @@ MDADM_CONFLICTS=
 #
 # MDADM_IPK_VERSION should be incremented when the ipk changes.
 #
-MDADM_IPK_VERSION=1
+MDADM_IPK_VERSION=2
 
 #
 # MDADM_PATCHES should list any patches, in the the order in

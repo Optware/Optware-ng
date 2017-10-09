@@ -36,7 +36,7 @@ MEGATOOLS_CONFLICTS=
 #
 # MEGATOOLS_IPK_VERSION should be incremented when the ipk changes.
 #
-MEGATOOLS_IPK_VERSION=3
+MEGATOOLS_IPK_VERSION=4
 
 #
 # MEGATOOLS_CONFFILES should be a list of user-editable files

@@ -33,7 +33,7 @@ LIBTORRENT_CONFLICTS=
 #
 # LIBTORRENT_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBTORRENT_IPK_VERSION=2
+LIBTORRENT_IPK_VERSION=3
 
 #
 # LIBTORRENT_CONFFILES should be a list of user-editable files

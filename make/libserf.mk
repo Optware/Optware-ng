@@ -36,7 +36,7 @@ LIBSERF_CONFLICTS=
 #
 # LIBSERF_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBSERF_IPK_VERSION=2
+LIBSERF_IPK_VERSION=3
 
 #
 # LIBSERF_CONFFILES should be a list of user-editable files

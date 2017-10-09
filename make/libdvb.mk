@@ -46,7 +46,7 @@ LIBDVB_HEADERS_DIR=DVB
 #
 # LIBDVB_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBDVB_IPK_VERSION=1
+LIBDVB_IPK_VERSION=2
 
 #
 # LIBDVB_CONFFILES should be a list of user-editable files

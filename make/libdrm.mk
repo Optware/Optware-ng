@@ -42,7 +42,7 @@ LIBDRM_CONFLICTS=
 #
 # LIBDRM_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBDRM_IPK_VERSION=1
+LIBDRM_IPK_VERSION=2
 
 #
 # LIBDRM_CONFFILES should be a list of user-editable files

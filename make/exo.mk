@@ -45,7 +45,7 @@ EXO_CONFLICTS=
 #
 # EXO_IPK_VERSION should be incremented when the ipk changes.
 #
-EXO_IPK_VERSION=1
+EXO_IPK_VERSION=2
 
 #
 # EXO_CONFFILES should be a list of user-editable files

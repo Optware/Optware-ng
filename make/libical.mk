@@ -36,7 +36,7 @@ LIBICAL_CONFLICTS=
 #
 # LIBICAL_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBICAL_IPK_VERSION=1
+LIBICAL_IPK_VERSION=2
 
 #
 # LIBICAL_CONFFILES should be a list of user-editable files

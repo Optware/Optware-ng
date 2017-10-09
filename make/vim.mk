@@ -37,7 +37,7 @@ VIM_CONFLICTS=
 #
 # VIM_IPK_VERSION should be incremented when the ipk changes.
 #
-VIM_IPK_VERSION=5
+VIM_IPK_VERSION=6
 
 #
 # VIM_CONFFILES should be a list of user-editable files

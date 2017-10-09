@@ -26,7 +26,7 @@ NBENCH_BYTE_CONFLICTS=
 #
 # NBENCH_BYTE_IPK_VERSION should be incremented when the ipk changes.
 #
-NBENCH_BYTE_IPK_VERSION=1
+NBENCH_BYTE_IPK_VERSION=2
 
 #
 # NBENCH_BYTE_CONFFILES should be a list of user-editable files

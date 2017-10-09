@@ -37,7 +37,7 @@ SABLEVM_CONFLICTS=classpath
 #
 # SABLEVM_IPK_VERSION should be incremented when the ipk changes.
 #
-SABLEVM_IPK_VERSION=4
+SABLEVM_IPK_VERSION=5
 
 #
 # SABLEVM_CONFFILES should be a list of user-editable files

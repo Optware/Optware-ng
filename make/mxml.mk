@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 MXML_VERSION?=2.9
-MXML_IPK_VERSION?=1
+MXML_IPK_VERSION?=2
 
 MXML_SITE=https://www.msweet.org/files/project3
 MXML_SOURCE=mxml-$(MXML_VERSION).tar.gz

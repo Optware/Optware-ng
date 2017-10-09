@@ -38,7 +38,7 @@ PHONEME_ADVANCED_CONFLICTS=
 #
 # PHONEME_ADVANCED_IPK_VERSION should be incremented when the ipk changes.
 #
-PHONEME_ADVANCED_IPK_VERSION=1
+PHONEME_ADVANCED_IPK_VERSION=2
 
 #
 # PHONEME_ADVANCED_CONFFILES should be a list of user-editable files

@@ -42,7 +42,7 @@ ICU_CONFLICTS=
 #
 # ICU_IPK_VERSION should be incremented when the ipk changes.
 #
-ICU_IPK_VERSION=3
+ICU_IPK_VERSION=4
 
 #
 # ICU_CONFFILES should be a list of user-editable files

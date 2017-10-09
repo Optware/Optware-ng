@@ -15,7 +15,7 @@
 RTORRENT_SITE=https://github.com/rakshasa/rtorrent/archive
 
 RTORRENT_VERSION=0.9.6
-RTORRENT_IPK_VERSION=1
+RTORRENT_IPK_VERSION=2
 
 RTORRENT_SVN=svn://rakshasa.no/libtorrent/trunk/rtorrent
 #RTORRENT_SVN_REV=1037

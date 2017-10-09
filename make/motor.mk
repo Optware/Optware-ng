@@ -45,7 +45,7 @@ MOTOR_CONFLICTS=
 #
 # MOTOR_IPK_VERSION should be incremented when the ipk changes.
 #
-MOTOR_IPK_VERSION=1
+MOTOR_IPK_VERSION=2
 
 #
 # MOTOR_CONFFILES should be a list of user-editable files

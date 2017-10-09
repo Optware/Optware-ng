@@ -36,7 +36,7 @@ ENSCRIPT_CONFLICTS=
 #
 # ENSCRIPT_IPK_VERSION should be incremented when the ipk changes.
 #
-ENSCRIPT_IPK_VERSION=1
+ENSCRIPT_IPK_VERSION=2
 
 #
 # ENSCRIPT_CONFFILES should be a list of user-editable files

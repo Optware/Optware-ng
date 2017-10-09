@@ -36,7 +36,7 @@ NICKLE_CONFLICTS=
 #
 # NICKLE_IPK_VERSION should be incremented when the ipk changes.
 #
-NICKLE_IPK_VERSION=1
+NICKLE_IPK_VERSION=2
 
 #
 # NICKLE_CONFFILES should be a list of user-editable files

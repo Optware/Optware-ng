@@ -36,7 +36,7 @@ LIBSAMPLERATE_CONFLICTS=
 #
 # LIBSAMPLERATE_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBSAMPLERATE_IPK_VERSION=1
+LIBSAMPLERATE_IPK_VERSION=2
 
 #
 # LIBSAMPLERATE_CONFFILES should be a list of user-editable files

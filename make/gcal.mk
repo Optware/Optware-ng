@@ -36,7 +36,7 @@ GCAL_CONFLICTS=
 #
 # GCAL_IPK_VERSION should be incremented when the ipk changes.
 #
-GCAL_IPK_VERSION?=1
+GCAL_IPK_VERSION?=2
 
 #
 # GCAL_CONFFILES should be a list of user-editable files

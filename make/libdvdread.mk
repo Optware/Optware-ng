@@ -35,7 +35,7 @@ LIBDVDREAD_CONFLICTS=
 #
 # LIBDVDREAD_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBDVDREAD_IPK_VERSION=1
+LIBDVDREAD_IPK_VERSION=2
 
 #
 # LIBDVDREAD_CONFFILES should be a list of user-editable files

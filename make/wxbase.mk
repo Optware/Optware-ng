@@ -34,7 +34,7 @@ WXBASE_CONFLICTS=
 #
 # WXBASE_IPK_VERSION should be incremented when the ipk changes.
 #
-WXBASE_IPK_VERSION=1
+WXBASE_IPK_VERSION=2
 
 #
 # WXBASE_CONFFILES should be a list of user-editable files
@@ -102,7 +102,7 @@ wxbase-source: $(DL_DIR)/$(WXBASE_SOURCE) $(WXBASE_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 
-$(WXBASE_BUILD_DIR)/.configured: $(DL_DIR)/$(WXBASE_SOURCE) $(WXBASE_PATCHES)
+$(WXBASE_BUILD_DIR)/.configured: $(DL_DIR)/$(WXBASE_SOURCE) $(WXBASE_PATCHES) make/wxbase.mk
 	make libstdc++-stage expat-stage zlib-stage
 	rm -rf  $(WXBASE_BUILD_DIR) $(BUILD_DIR)/$(WXBASE_DIR)
 	$(WXBASE_UNZIP) $(DL_DIR)/$(WXBASE_SOURCE) | tar -C $(BUILD_DIR) -xvf -

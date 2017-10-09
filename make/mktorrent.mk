@@ -36,7 +36,7 @@ MKTORRENT_CONFLICTS=
 #
 # MKTORRENT_IPK_VERSION should be incremented when the ipk changes.
 #
-MKTORRENT_IPK_VERSION=2
+MKTORRENT_IPK_VERSION=3
 
 #
 # MKTORRENT_CONFFILES should be a list of user-editable files

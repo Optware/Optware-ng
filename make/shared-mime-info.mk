@@ -43,7 +43,7 @@ SHARED-MIME-INFO_CONFLICTS=
 #
 # SHARED-MIME-INFO_IPK_VERSION should be incremented when the ipk changes.
 #
-SHARED-MIME-INFO_IPK_VERSION=2
+SHARED-MIME-INFO_IPK_VERSION=3
 
 #
 # SHARED-MIME-INFO_CONFFILES should be a list of user-editable files

@@ -42,7 +42,7 @@ LIBRSVG_CONFLICTS=
 #
 # LIBRSVG_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBRSVG_IPK_VERSION=1
+LIBRSVG_IPK_VERSION=2
 
 #
 # LIBRSVG_CONFFILES should be a list of user-editable files

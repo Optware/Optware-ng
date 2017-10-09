@@ -42,7 +42,7 @@ ATK-BRIDGE_CONFLICTS=
 #
 # ATK-BRIDGE_IPK_VERSION should be incremented when the ipk changes.
 #
-ATK-BRIDGE_IPK_VERSION=1
+ATK-BRIDGE_IPK_VERSION=2
 
 #
 # ATK-BRIDGE_CONFFILES should be a list of user-editable files

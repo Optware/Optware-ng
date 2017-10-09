@@ -37,7 +37,7 @@ HEYU_CONFLICTS=
 #
 # HEYU_IPK_VERSION should be incremented when the ipk changes.
 #
-HEYU_IPK_VERSION=1
+HEYU_IPK_VERSION=2
 
 #
 # HEYU_CONFFILES should be a list of user-editable files

@@ -43,7 +43,7 @@ IMAP_CONFLICTS=
 #
 # IMAP_IPK_VERSION should be incremented when the ipk changes.
 #
-IMAP_IPK_VERSION=2
+IMAP_IPK_VERSION=3
 
 #
 # IMAP_CONFFILES should be a list of user-editable files
@@ -110,7 +110,7 @@ imap-source: $(DL_DIR)/$(IMAP_SOURCE) $(IMAP_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(IMAP_BUILD_DIR)/.configured: $(DL_DIR)/$(IMAP_SOURCE) $(IMAP_PATCHES)
+$(IMAP_BUILD_DIR)/.configured: $(DL_DIR)/$(IMAP_SOURCE) $(IMAP_PATCHES) make/imap.mk
 	$(MAKE) openssl-stage
 	rm -rf $(BUILD_DIR)/$(IMAP_DIR) $(IMAP_BUILD_DIR)
 	$(IMAP_UNZIP) $(DL_DIR)/$(IMAP_SOURCE) | tar -C $(BUILD_DIR) -xvf -

@@ -35,7 +35,7 @@ MADPLAY_CONFLICTS=
 #
 # MADPLAY_IPK_VERSION should be incremented when the ipk changes.
 #
-MADPLAY_IPK_VERSION=3
+MADPLAY_IPK_VERSION=4
 
 #
 # MADPLAY_CONFFILES should be a list of user-editable files

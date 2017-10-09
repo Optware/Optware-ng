@@ -37,7 +37,7 @@ TSOCKS_CONFLICTS=
 #
 # TSOCKS_IPK_VERSION should be incremented when the ipk changes.
 #
-TSOCKS_IPK_VERSION=4
+TSOCKS_IPK_VERSION=5
 
 #
 # TSOCKS_CONFFILES should be a list of user-editable files
@@ -102,7 +102,7 @@ tsocks-source: $(DL_DIR)/$(TSOCKS_SOURCE) $(TSOCKS_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(TSOCKS_BUILD_DIR)/.configured: $(DL_DIR)/$(TSOCKS_SOURCE) $(TSOCKS_PATCHES)
+$(TSOCKS_BUILD_DIR)/.configured: $(DL_DIR)/$(TSOCKS_SOURCE) $(TSOCKS_PATCHES) make/tsocks.mk
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(TSOCKS_DIR) $(TSOCKS_BUILD_DIR)
 	$(TSOCKS_UNZIP) $(DL_DIR)/$(TSOCKS_SOURCE) | tar -C $(BUILD_DIR) -xvf -

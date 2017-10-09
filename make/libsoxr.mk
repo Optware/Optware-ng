@@ -36,7 +36,7 @@ LIBSOXR_CONFLICTS=
 #
 # LIBSOXR_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBSOXR_IPK_VERSION=2
+LIBSOXR_IPK_VERSION=3
 
 #
 # LIBSOXR_CONFFILES should be a list of user-editable files

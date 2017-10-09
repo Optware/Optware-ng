@@ -34,7 +34,7 @@ XVID_CONFLICTS=
 #
 # XVID_IPK_VERSION should be incremented when the ipk changes.
 #
-XVID_IPK_VERSION=3
+XVID_IPK_VERSION=4
 
 #
 # XVID_PATCHES should list any patches, in the the order in

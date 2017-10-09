@@ -37,7 +37,7 @@ SPLIX_CONFLICTS=
 #
 # SPLIX_IPK_VERSION should be incremented when the ipk changes.
 #
-SPLIX_IPK_VERSION=2
+SPLIX_IPK_VERSION=3
 
 #
 # SPLIX_CONFFILES should be a list of user-editable files

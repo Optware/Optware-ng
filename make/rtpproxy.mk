@@ -37,7 +37,7 @@ RTPPROXY_CONFLICTS=
 #
 # RTPPROXY_IPK_VERSION should be incremented when the ipk changes.
 #
-RTPPROXY_IPK_VERSION=2
+RTPPROXY_IPK_VERSION=3
 
 #
 # RTPPROXY_CONFFILES should be a list of user-editable files

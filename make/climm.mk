@@ -39,7 +39,7 @@ CLIMM_CONFLICTS=
 #
 # CLIMM_IPK_VERSION should be incremented when the ipk changes.
 #
-CLIMM_IPK_VERSION=1
+CLIMM_IPK_VERSION=2
 
 #
 # CLIMM_CONFFILES should be a list of user-editable files

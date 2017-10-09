@@ -37,7 +37,7 @@ FLIP_CONFLICTS=
 #
 # FLIP_IPK_VERSION should be incremented when the ipk changes.
 #
-FLIP_IPK_VERSION=1
+FLIP_IPK_VERSION=2
 
 #
 # FLIP_CONFFILES should be a list of user-editable files

@@ -38,7 +38,7 @@ ANALOG_CONFLICTS=
 #
 # ANALOG_IPK_VERSION should be incremented when the ipk changes.
 #
-ANALOG_IPK_VERSION=2
+ANALOG_IPK_VERSION=3
 
 #
 # ANALOG_CONFFILES should be a list of user-editable files

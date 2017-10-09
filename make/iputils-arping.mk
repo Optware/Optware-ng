@@ -36,7 +36,7 @@ IPUTILS_ARPING_CONFLICTS=
 #
 # IPUTILS_ARPING_IPK_VERSION should be incremented when the ipk changes.
 #
-IPUTILS_ARPING_IPK_VERSION=1
+IPUTILS_ARPING_IPK_VERSION=2
 
 #
 # IPUTILS_ARPING_CONFFILES should be a list of user-editable files

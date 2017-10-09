@@ -36,7 +36,7 @@ DIRCPROXY_CONFLICTS=
 #
 # DIRCPROXY_IPK_VERSION should be incremented when the ipk changes.
 #
-DIRCPROXY_IPK_VERSION=1
+DIRCPROXY_IPK_VERSION=2
 
 #
 # DIRCPROXY_CONFFILES should be a list of user-editable files

@@ -41,7 +41,7 @@ TEXTUTILS_CONFLICTS=
 #
 # TEXTUTILS_IPK_VERSION should be incremented when the ipk changes.
 #
-TEXTUTILS_IPK_VERSION=5
+TEXTUTILS_IPK_VERSION=6
 
 #
 # TEXTUTILS_CONFFILES should be a list of user-editable files

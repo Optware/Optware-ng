@@ -35,7 +35,7 @@ GROFF_CONFLICTS=
 #
 # GROFF_IPK_VERSION should be incremented when the ipk changes.
 #
-GROFF_IPK_VERSION=2
+GROFF_IPK_VERSION=3
 
 #
 # GROFF_PATCHES should list any patches, in the the order in

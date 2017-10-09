@@ -37,7 +37,7 @@ LIBTIFF_CONFLICTS=
 #
 # LIBTIFF_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBTIFF_IPK_VERSION=1
+LIBTIFF_IPK_VERSION=2
 
 #
 # LIBTIFF_PATCHES should list any patches, in the the order in

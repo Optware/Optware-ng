@@ -37,7 +37,7 @@ SHELLINABOX_CONFLICTS=
 #
 # SHELLINABOX_IPK_VERSION should be incremented when the ipk changes.
 #
-SHELLINABOX_IPK_VERSION=1
+SHELLINABOX_IPK_VERSION=2
 
 #
 # SHELLINABOX_CONFFILES should be a list of user-editable files

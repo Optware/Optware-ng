@@ -36,7 +36,7 @@ CATDOC_CONFLICTS=
 #
 # CATDOC_IPK_VERSION should be incremented when the ipk changes.
 #
-CATDOC_IPK_VERSION=2
+CATDOC_IPK_VERSION=3
 
 #
 # CATDOC_CONFFILES should be a list of user-editable files

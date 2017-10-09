@@ -28,7 +28,7 @@ LIBSIGC++_CONFLICTS=
 #
 # LIBSIGC++_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBSIGC++_IPK_VERSION=1
+LIBSIGC++_IPK_VERSION=2
 
 #
 # LIBSIGC++_CONFFILES should be a list of user-editable files

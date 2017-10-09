@@ -26,7 +26,7 @@ GDK-PIXBUF_DEPENDS=glib, gettext, libjpeg, libpng, libtiff, x11, gobject-introsp
 #
 # GDK-PIXBUF_IPK_VERSION should be incremented when the ipk changes.
 #
-GDK-PIXBUF_IPK_VERSION=4
+GDK-PIXBUF_IPK_VERSION=5
 
 #
 # GDK-PIXBUF_LOCALES defines which locales get installed

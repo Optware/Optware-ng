@@ -36,7 +36,7 @@ TAGLIB_CONFLICTS=
 #
 # TAGLIB_IPK_VERSION should be incremented when the ipk changes.
 #
-TAGLIB_IPK_VERSION=2
+TAGLIB_IPK_VERSION=3
 
 #
 # TAGLIB_CONFFILES should be a list of user-editable files

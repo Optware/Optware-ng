@@ -35,7 +35,7 @@ W3CAM_DEPENDS=libjpeg, libpng, zlib
 #
 # W3CAM_IPK_VERSION should be incremented when the ipk changes.
 #
-W3CAM_IPK_VERSION=5
+W3CAM_IPK_VERSION=6
 
 #
 # W3CAM_CONFFILES should be a list of user-editable files
@@ -99,7 +99,7 @@ w3cam-source: $(DL_DIR)/$(W3CAM_SOURCE) $(W3CAM_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(W3CAM_BUILD_DIR)/.configured: $(DL_DIR)/$(W3CAM_SOURCE) $(W3CAM_PATCHES)
+$(W3CAM_BUILD_DIR)/.configured: $(DL_DIR)/$(W3CAM_SOURCE) $(W3CAM_PATCHES) make/w3cam.mk
 	$(MAKE) libjpeg-stage libpng-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(W3CAM_DIR) $(W3CAM_BUILD_DIR)
 	$(W3CAM_UNZIP) $(DL_DIR)/$(W3CAM_SOURCE) | tar -C $(BUILD_DIR) -xvf -

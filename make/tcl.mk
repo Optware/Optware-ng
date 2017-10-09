@@ -32,7 +32,7 @@ TCL_CONFLICTS=
 #
 # TCL_IPK_VERSION should be incremented when the ipk changes.
 #
-TCL_IPK_VERSION=2
+TCL_IPK_VERSION=3
 
 #
 # TCL_CONFFILES should be a list of user-editable files #TCL_CONFFILES=$(TARGET_PREFIX)/etc/tcl.conf $(TARGET_PREFIX)/etc/init.d/SXXtcl
@@ -78,7 +78,7 @@ tcl-source: $(DL_DIR)/$(TCL_SOURCE) $(TCL_PATCHES)
 #
 # This target unpacks the source code in the build directory.
 # If the source archive is not .tar.gz or .tar.bz2, then you will need # to change the commands here.  Patches to the source code are also # applied in this target as required. # # This target also configures the build within the build directory. # Flags such as LDFLAGS and CPPFLAGS should be passed into configure # and NOT $(MAKE) below.  Passing it to configure causes configure to # correctly BUILD the Makefile with the right paths, where passing it # to Make causes it to override the default search paths of the compiler. # # If the compilation of the package requires other packages to be staged # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage"). #
-$(TCL_BUILD_DIR)/.configured: $(DL_DIR)/$(TCL_SOURCE) $(TCL_PATCHES)
+$(TCL_BUILD_DIR)/.configured: $(DL_DIR)/$(TCL_SOURCE) $(TCL_PATCHES) make/tcl.mk
 #       $(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(TCL_DIR) $(TCL_BUILD_DIR)
 	$(TCL_UNZIP) $(DL_DIR)/$(TCL_SOURCE) | tar -C $(BUILD_DIR) -xvf -

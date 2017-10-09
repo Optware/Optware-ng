@@ -26,7 +26,7 @@ PIXMAN_DEPENDS=
 #
 # PIXMAN_IPK_VERSION should be incremented when the ipk changes.
 #
-PIXMAN_IPK_VERSION=1
+PIXMAN_IPK_VERSION=2
 
 #
 # PIXMAN_LOCALES defines which locales get installed

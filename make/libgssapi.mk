@@ -18,7 +18,7 @@ LIBGSSAPI_DEPENDS=
 #
 # LIBGSSAPI_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBGSSAPI_IPK_VERSION=1
+LIBGSSAPI_IPK_VERSION=2
 
 #
 # LIBGSSAPI_PATCHES should list any patches, in the the order in

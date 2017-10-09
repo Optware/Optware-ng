@@ -45,7 +45,7 @@ MESALIB_CONFLICTS=
 #
 # MESALIB_IPK_VERSION should be incremented when the ipk changes.
 #
-MESALIB_IPK_VERSION=1
+MESALIB_IPK_VERSION=2
 
 #
 # MESALIB_CONFFILES should be a list of user-editable files

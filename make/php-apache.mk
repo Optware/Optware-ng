@@ -26,7 +26,7 @@ PHP_APACHE_VERSION:=$(shell sed -n -e 's/^PHP_VERSION *=//p' make/php.mk)
 #
 # PHP_APACHE_IPK_VERSION should be incremented when the ipk changes.
 #
-PHP_APACHE_IPK_VERSION=5
+PHP_APACHE_IPK_VERSION=6
 
 #
 # PHP_APACHE_CONFFILES should be a list of user-editable files

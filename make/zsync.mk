@@ -36,7 +36,7 @@ ZSYNC_CONFLICTS=
 #
 # ZSYNC_IPK_VERSION should be incremented when the ipk changes.
 #
-ZSYNC_IPK_VERSION=1
+ZSYNC_IPK_VERSION=2
 
 #
 # ZSYNC_CONFFILES should be a list of user-editable files

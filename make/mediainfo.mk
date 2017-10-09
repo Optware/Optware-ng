@@ -36,7 +36,7 @@ MEDIAINFO_CONFLICTS=
 #
 # MEDIAINFO_IPK_VERSION should be incremented when the ipk changes.
 #
-MEDIAINFO_IPK_VERSION=1
+MEDIAINFO_IPK_VERSION=2
 
 #
 # MEDIAINFO_CONFFILES should be a list of user-editable files

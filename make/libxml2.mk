@@ -29,7 +29,7 @@ LIBXML2_DEPENDS=zlib (>=1.2.5)
 #
 # LIBXML2_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBXML2_IPK_VERSION=1
+LIBXML2_IPK_VERSION=2
 
 #
 # LIBXML2_CONFFILES should be a list of user-editable files

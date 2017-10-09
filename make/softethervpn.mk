@@ -37,7 +37,7 @@ SOFTETHERVPN_CONFLICTS=
 #
 # SOFTETHERVPN_IPK_VERSION should be incremented when the ipk changes.
 #
-SOFTETHERVPN_IPK_VERSION=2
+SOFTETHERVPN_IPK_VERSION=3
 
 #
 # SOFTETHERVPN_CONFFILES should be a list of user-editable files

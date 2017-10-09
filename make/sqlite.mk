@@ -35,7 +35,7 @@ SQLITE_CONFLICTS=
 #
 # SQLITE_IPK_VERSION should be incremented when the ipk changes.
 #
-SQLITE_IPK_VERSION=2
+SQLITE_IPK_VERSION=3
 
 #
 # SQLITE_CONFFILES should be a list of user-editable files

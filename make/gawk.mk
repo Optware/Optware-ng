@@ -35,7 +35,7 @@ GAWK_CONFLICTS=
 #
 # GAWK_IPK_VERSION should be incremented when the ipk changes.
 #
-GAWK_IPK_VERSION=1
+GAWK_IPK_VERSION=2
 
 #
 # GAWK_PATCHES should list any patches, in the the order in

@@ -36,7 +36,7 @@ SWIG_CONFLICTS=
 #
 # SWIG_IPK_VERSION should be incremented when the ipk changes.
 #
-SWIG_IPK_VERSION=2
+SWIG_IPK_VERSION=3
 
 #
 # SWIG_CONFFILES should be a list of user-editable files

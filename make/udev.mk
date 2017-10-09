@@ -50,7 +50,7 @@ UDEV_LIBONLY=buildroot-armv5eabi-ng-legacy
 #
 # UDEV_IPK_VERSION should be incremented when the ipk changes.
 #
-UDEV_IPK_VERSION=3
+UDEV_IPK_VERSION=4
 
 #
 # UDEV_CONFFILES should be a list of user-editable files

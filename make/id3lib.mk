@@ -44,7 +44,7 @@ ID3LIB_CONFLICTS=
 #
 # ID3LIB_IPK_VERSION should be incremented when the ipk changes.
 #
-ID3LIB_IPK_VERSION=4
+ID3LIB_IPK_VERSION=5
 
 #
 # ID3LIB_CONFFILES should be a list of user-editable files

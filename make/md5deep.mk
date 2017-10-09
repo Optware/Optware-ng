@@ -36,7 +36,7 @@ MD5DEEP_CONFLICTS=
 #
 # MD5DEEP_IPK_VERSION should be incremented when the ipk changes.
 #
-MD5DEEP_IPK_VERSION=1
+MD5DEEP_IPK_VERSION=2
 
 #
 # MD5DEEP_CONFFILES should be a list of user-editable files

@@ -36,7 +36,7 @@ ALSA-LIB_CONFLICTS=
 #
 # ALSA-LIB_IPK_VERSION should be incremented when the ipk changes.
 #
-ALSA-LIB_IPK_VERSION=1
+ALSA-LIB_IPK_VERSION=2
 
 #
 # ALSA-LIB_CONFFILES should be a list of user-editable files

@@ -35,7 +35,7 @@ FLAC_CONFLICTS=
 #
 # FLAC_IPK_VERSION should be incremented when the ipk changes.
 #
-FLAC_IPK_VERSION=1
+FLAC_IPK_VERSION=2
 
 #
 # FLAC_CONFFILES should be a list of user-editable files

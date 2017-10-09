@@ -26,7 +26,7 @@ CAIRO_DEPENDS=freetype, fontconfig, libpng, pixman, xrender, xext
 #
 # CAIRO_IPK_VERSION should be incremented when the ipk changes.
 #
-CAIRO_IPK_VERSION=1
+CAIRO_IPK_VERSION=2
 
 #
 # CAIRO_LOCALES defines which locales get installed

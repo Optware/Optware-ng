@@ -44,7 +44,7 @@ TRANSCODE_CONFLICTS=
 #
 # TRANSCODE_IPK_VERSION should be incremented when the ipk changes.
 #
-TRANSCODE_IPK_VERSION=2
+TRANSCODE_IPK_VERSION=3
 
 #
 # TRANSCODE_CONFFILES should be a list of user-editable files

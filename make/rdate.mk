@@ -36,7 +36,7 @@ RDATE_CONFLICTS=
 #
 # RDATE_IPK_VERSION should be incremented when the ipk changes.
 #
-RDATE_IPK_VERSION=1
+RDATE_IPK_VERSION=2
 
 #
 # RDATE_CONFFILES should be a list of user-editable files

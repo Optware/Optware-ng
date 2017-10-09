@@ -42,7 +42,7 @@ ROX-FILER_CONFLICTS=
 #
 # ROX-FILER_IPK_VERSION should be incremented when the ipk changes.
 #
-ROX-FILER_IPK_VERSION=2
+ROX-FILER_IPK_VERSION=3
 
 #
 # ROX-FILER_CONFFILES should be a list of user-editable files

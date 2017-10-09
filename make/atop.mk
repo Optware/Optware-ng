@@ -26,7 +26,7 @@ ATOP_CONFLICTS=
 #
 # ATOP_IPK_VERSION should be incremented when the ipk changes.
 #
-ATOP_IPK_VERSION=1
+ATOP_IPK_VERSION=2
 
 #
 # ATOP_CONFFILES should be a list of user-editable files
@@ -182,6 +182,7 @@ $(ATOP_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(ATOP_IPK): $(ATOP_BUILD_DIR)/.built
+	rm -rf $(ATOP_IPK_DIR) $(BUILD_DIR)/atop_*_$(TARGET_ARCH).ipk
 	mkdir -p $(ATOP_IPK_DIR)$(TARGET_PREFIX)
 	$(MAKE) -C $(ATOP_BUILD_DIR) install
 	$(TARGET_STRIP) $(ATOP_IPK_DIR)$(TARGET_PREFIX)/bin/atop

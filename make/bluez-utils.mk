@@ -37,7 +37,7 @@ BLUEZ-UTILS_CONFLICTS=
 #
 # BLUEZ-UTILS_IPK_VERSION should be incremented when the ipk changes.
 #
-BLUEZ-UTILS_IPK_VERSION=4
+BLUEZ-UTILS_IPK_VERSION=5
 
 #
 # BLUEZ-UTILS_CONFFILES should be a list of user-editable files

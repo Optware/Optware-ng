@@ -36,7 +36,7 @@ TMUX_CONFLICTS=
 #
 # TMUX_IPK_VERSION should be incremented when the ipk changes.
 #
-TMUX_IPK_VERSION=1
+TMUX_IPK_VERSION=2
 
 #
 # TMUX_CONFFILES should be a list of user-editable files

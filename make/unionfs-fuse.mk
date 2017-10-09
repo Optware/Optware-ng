@@ -38,7 +38,7 @@ UNIONFS_FUSE_CONFLICTS=
 #
 # UNIONFS_FUSE_IPK_VERSION should be incremented when the ipk changes.
 #
-UNIONFS_FUSE_IPK_VERSION=1
+UNIONFS_FUSE_IPK_VERSION=2
 
 #
 # UNIONFS_FUSE_CONFFILES should be a list of user-editable files

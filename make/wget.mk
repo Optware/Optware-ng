@@ -36,7 +36,7 @@ WGET-SSL_CONFLICTS=wget
 #
 # WGET_IPK_VERSION should be incremented when the ipk changes.
 #
-WGET_IPK_VERSION=2
+WGET_IPK_VERSION=3
 
 #
 # WGET_CONFFILES should be a list of user-editable files

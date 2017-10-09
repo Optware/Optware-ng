@@ -36,7 +36,7 @@ MOST_CONFLICTS=
 #
 # MOST_IPK_VERSION should be incremented when the ipk changes.
 #
-MOST_IPK_VERSION=1
+MOST_IPK_VERSION=2
 
 #
 # MOST_CONFFILES should be a list of user-editable files

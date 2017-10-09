@@ -45,7 +45,7 @@ GAMBIT-C_CONFLICTS=
 #
 # GAMBIT-C_IPK_VERSION should be incremented when the ipk changes.
 #
-GAMBIT-C_IPK_VERSION=1
+GAMBIT-C_IPK_VERSION=2
 
 #
 # GAMBIT-C_CONFFILES should be a list of user-editable files

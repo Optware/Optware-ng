@@ -36,7 +36,7 @@ SPEEX_CONFLICTS=
 #
 # SPEEX_IPK_VERSION should be incremented when the ipk changes.
 #
-SPEEX_IPK_VERSION ?= 2
+SPEEX_IPK_VERSION ?= 3
 
 #
 # SPEEX_CONFFILES should be a list of user-editable files

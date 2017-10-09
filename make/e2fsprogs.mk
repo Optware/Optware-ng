@@ -22,7 +22,7 @@
 E2FSPROGS_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/e2fsprogs
 
 E2FSPROGS_VERSION ?= 1.42.12
-E2FSPROGS_IPK_VERSION ?= 1
+E2FSPROGS_IPK_VERSION ?= 2
 
 E2FSPROGS_SOURCE=e2fsprogs-$(E2FSPROGS_VERSION).tar.gz
 E2FSPROGS_DIR=e2fsprogs-$(E2FSPROGS_VERSION)
@@ -225,8 +225,9 @@ $(E2FSLIBS-DEV_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(E2FSPROGS_IPK) $(E2FSLIBS_IPK) $(E2FSLIBS-DEV_IPK): $(E2FSPROGS_BUILD_DIR)/.built
-	rm -rf $(E2FSPROGS_IPK_DIR) $(BUILD_DIR)/e2fsprogs_*_$(TARGET_ARCH).ipk
-	rm -rf $(E2FSLIBS_IPK_DIR) $(BUILD_DIR)/e2fslibs_*_$(TARGET_ARCH).ipk
+	rm -rf $(E2FSPROGS_IPK_DIR) $(BUILD_DIR)/e2fsprogs_*_$(TARGET_ARCH).ipk \
+		$(E2FSLIBS_IPK_DIR) $(BUILD_DIR)/e2fslibs_*_$(TARGET_ARCH).ipk \
+		$(E2FSLIBS-DEV_IPK_DIR) $(BUILD_DIR)/e2fslibs-dev_*_$(TARGET_ARCH).ipk
 	# We place files in $(TARGET_PREFIX)/lib and $(TARGET_PREFIX)/sbin only
 	$(INSTALL) -d $(E2FSPROGS_IPK_DIR)$(TARGET_PREFIX)/etc
 	$(INSTALL) -d $(E2FSPROGS_IPK_DIR)$(TARGET_PREFIX)/lib

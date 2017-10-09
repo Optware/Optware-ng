@@ -36,7 +36,7 @@ RLWRAP_CONFLICTS=
 #
 # RLWRAP_IPK_VERSION should be incremented when the ipk changes.
 #
-RLWRAP_IPK_VERSION=1
+RLWRAP_IPK_VERSION=2
 
 #
 # RLWRAP_CONFFILES should be a list of user-editable files

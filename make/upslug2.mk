@@ -52,7 +52,7 @@ UPSLUG2_VERSION=0.0+svn$(UPSLUG2_SVN_REV)
 #
 # UPSLUG2_IPK_VERSION should be incremented when the ipk changes.
 #
-UPSLUG2_IPK_VERSION=2
+UPSLUG2_IPK_VERSION=3
 
 #
 # UPSLUG2_CONFFILES should be a list of user-editable files
@@ -111,7 +111,7 @@ upslug2-source: $(DL_DIR)/upslug2-$(UPSLUG2_VERSION).tar.gz
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) upslug2-stage <baz>-stage").
 #
-$(UPSLUG2_BUILD_DIR)/.configured: $(DL_DIR)/upslug2-$(UPSLUG2_VERSION).tar.gz
+$(UPSLUG2_BUILD_DIR)/.configured: $(DL_DIR)/upslug2-$(UPSLUG2_VERSION).tar.gz make/upslug2.mk
 ifeq (libstdc++, $(filter libstdc++, $(PACKAGES)))
 	$(MAKE) libstdc++-stage
 endif

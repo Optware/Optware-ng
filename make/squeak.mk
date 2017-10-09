@@ -39,7 +39,7 @@ SQUEAK_CONFLICTS=
 #
 # SQUEAK_IPK_VERSION should be incremented when the ipk changes.
 #
-SQUEAK_IPK_VERSION=1
+SQUEAK_IPK_VERSION=2
 
 #
 # SQUEAK_CONFFILES should be a list of user-editable files

@@ -39,7 +39,7 @@ COLLECTD_CONFLICTS=
 #
 # COLLECTD_IPK_VERSION should be incremented when the ipk changes.
 #
-COLLECTD_IPK_VERSION=3
+COLLECTD_IPK_VERSION=4
 
 #
 # COLLECTD_CONFFILES should be a list of user-editable files

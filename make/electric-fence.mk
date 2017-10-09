@@ -37,7 +37,7 @@ ELECTRIC_FENCE_CONFLICTS=
 #
 # ELECTRIC_FENCE_IPK_VERSION should be incremented when the ipk changes.
 #
-ELECTRIC_FENCE_IPK_VERSION=1
+ELECTRIC_FENCE_IPK_VERSION=2
 
 #
 # ELECTRIC_FENCE_CONFFILES should be a list of user-editable files

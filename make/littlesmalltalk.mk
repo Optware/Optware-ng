@@ -38,7 +38,7 @@ LITTLESMALLTALK_CONFLICTS=
 #
 # LITTLESMALLTALK_IPK_VERSION should be incremented when the ipk changes.
 #
-LITTLESMALLTALK_IPK_VERSION=1
+LITTLESMALLTALK_IPK_VERSION=2
 
 #
 # LITTLESMALLTALK_CONFFILES should be a list of user-editable files

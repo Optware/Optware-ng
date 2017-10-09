@@ -53,7 +53,7 @@ PY2-CAIRO_DEV_CONFLICTS=
 #
 # PY-CAIRO_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-CAIRO_IPK_VERSION=4
+PY-CAIRO_IPK_VERSION=5
 
 #
 # PY-CAIRO_CONFFILES should be a list of user-editable files

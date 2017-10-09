@@ -61,7 +61,7 @@ CUPS_FILTERS_CONFLICTS=
 #
 # CUPS_FILTERS_IPK_VERSION should be incremented when the ipk changes.
 #
-CUPS_FILTERS_IPK_VERSION=4
+CUPS_FILTERS_IPK_VERSION=5
 
 #
 # CUPS_FILTERS_CONFFILES should be a list of user-editable files

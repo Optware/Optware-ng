@@ -20,7 +20,7 @@ CDARGS_CONFLICTS=
 #
 # CDARGS_IPK_VERSION should be incremented when the ipk changes.
 #
-CDARGS_IPK_VERSION=1
+CDARGS_IPK_VERSION=2
 
 #
 # CDARGS_CONFFILES should be a list of user-editable files
@@ -84,7 +84,7 @@ cdargs-source: $(DL_DIR)/$(CDARGS_SOURCE)
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(CDARGS_BUILD_DIR)/.configured: $(DL_DIR)/$(CDARGS_SOURCE) 
+$(CDARGS_BUILD_DIR)/.configured: $(DL_DIR)/$(CDARGS_SOURCE) make/cdargs.mk
 	$(MAKE) ncurses-stage
 	rm -rf $(BUILD_DIR)/$(CDARGS_DIR) $(CDARGS_BUILD_DIR)
 	$(CDARGS_UNZIP) $(DL_DIR)/$(CDARGS_SOURCE) | tar -C $(BUILD_DIR) -xvf -

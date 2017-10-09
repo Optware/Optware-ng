@@ -38,7 +38,7 @@ LIBCONFIG_CONFLICTS=
 #
 # LIBCONFIG_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBCONFIG_IPK_VERSION=1
+LIBCONFIG_IPK_VERSION=2
 
 #
 # LIBCONFIG_PATCHES should list any patches, in the the order in

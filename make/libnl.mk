@@ -42,7 +42,7 @@ LIBNL_CONFLICTS=
 #
 # LIBNL_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBNL_IPK_VERSION=1
+LIBNL_IPK_VERSION=2
 
 #
 # LIBNL_CONFFILES should be a list of user-editable files

@@ -21,7 +21,7 @@
 #
 SAMBA2_SITE=https://download.samba.org/pub/samba/old-versions
 SAMBA2_VERSION=2.2.12
-SAMBA2_IPK_VERSION=4
+SAMBA2_IPK_VERSION=5
 SAMBA2_SOURCE=samba-$(SAMBA2_VERSION).tar.gz
 SAMBA2_DIR=samba-$(SAMBA2_VERSION)
 SAMBA2_UNZIP=zcat
@@ -217,7 +217,7 @@ $(SAMBA2_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(SAMBA2_SOURCE) mak
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(SAMBA2_BUILD_DIR)/.configured: $(DL_DIR)/$(SAMBA2_SOURCE) $(SAMBA2_PATCHES)
+$(SAMBA2_BUILD_DIR)/.configured: $(DL_DIR)/$(SAMBA2_SOURCE) $(SAMBA2_PATCHES) make/samba2.mk
 	rm -rf $(BUILD_DIR)/$(SAMBA2_DIR) $(SAMBA2_BUILD_DIR)
 	$(SAMBA2_UNZIP) $(DL_DIR)/$(SAMBA2_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(SAMBA2_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(SAMBA2_DIR) -p1

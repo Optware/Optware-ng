@@ -36,7 +36,7 @@ BACULA_CONFLICTS=
 #
 # BACULA_IPK_VERSION should be incremented when the ipk changes.
 #
-BACULA_IPK_VERSION=4
+BACULA_IPK_VERSION=5
 
 #
 # BACULA_CONFFILES should be a list of user-editable files

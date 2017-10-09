@@ -38,7 +38,7 @@ RE2C_CONFLICTS=
 #
 # RE2C_IPK_VERSION should be incremented when the ipk changes.
 #
-RE2C_IPK_VERSION=1
+RE2C_IPK_VERSION=2
 
 #
 # RE2C_CONFFILES should be a list of user-editable files

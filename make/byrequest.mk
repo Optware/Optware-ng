@@ -26,7 +26,7 @@ BYREQUEST_BUILD_DIR=$(BUILD_DIR)/byrequest
 BYREQUEST_SOURCE_DIR=$(SOURCE_DIR)/byrequest
 BYREQUEST_IPK_DIR=$(BUILD_DIR)/byrequest-ipk
 BYREQUEST_IPK=$(BUILD_DIR)/byrequest_cvs-$(BYREQUEST_VERSION)-$(BYREQUEST_IPK_VERSION)_$(TARGET_ARCH).ipk
-BYREQUEST_IPK_VERSION=2
+BYREQUEST_IPK_VERSION=3
 
 .PHONY: byrequest-source byrequest-unpack byrequest byrequest-stage byrequest-ipk byrequest-clean byrequest-dirclean byrequest-check
 
@@ -46,7 +46,7 @@ $(DL_DIR)/byrequest-$(BYREQUEST_VERSION).tar.gz:
 
 # Configure
 $(BYREQUEST_BUILD_DIR)/.configured: \
-		$(DL_DIR)/byrequest-$(BYREQUEST_VERSION).tar.gz
+		$(DL_DIR)/byrequest-$(BYREQUEST_VERSION).tar.gz make/byrequest.mk
 	$(MAKE) ncurses-stage
 	rm -rf $(BUILD_DIR)/byRequest $(BUILD_DIR)/byrequest
 	tar -C $(BUILD_DIR) -xzf $(DL_DIR)/byrequest-$(BYREQUEST_VERSION).tar.gz

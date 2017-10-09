@@ -42,7 +42,7 @@ GDCHART_CONFLICTS=
 #
 # GDCHART_IPK_VERSION should be incremented when the ipk changes.
 #
-GDCHART_IPK_VERSION=4
+GDCHART_IPK_VERSION=5
 
 #
 # GDCHART_CONFFILES should be a list of user-editable files

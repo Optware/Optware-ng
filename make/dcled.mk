@@ -36,7 +36,7 @@ DCLED_CONFLICTS=
 #
 # DCLED_IPK_VERSION should be incremented when the ipk changes.
 #
-DCLED_IPK_VERSION=1
+DCLED_IPK_VERSION=2
 
 #
 # DCLED_CONFFILES should be a list of user-editable files

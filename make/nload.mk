@@ -35,7 +35,7 @@ NLOAD_CONFLICTS=
 #
 # NLOAD_IPK_VERSION should be incremented when the ipk changes.
 #
-NLOAD_IPK_VERSION=2
+NLOAD_IPK_VERSION=3
 
 #
 # NLOAD_PATCHES should list any patches, in the the order in
@@ -102,7 +102,7 @@ nload-source: $(DL_DIR)/$(NLOAD_SOURCE) $(NLOAD_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(NLOAD_BUILD_DIR)/.configured: $(DL_DIR)/$(NLOAD_SOURCE) $(NLOAD_PATCHES)
+$(NLOAD_BUILD_DIR)/.configured: $(DL_DIR)/$(NLOAD_SOURCE) $(NLOAD_PATCHES) make/nload.mk
 	$(MAKE) ncurses-stage
 	rm -rf $(BUILD_DIR)/$(NLOAD_DIR) $(NLOAD_BUILD_DIR)
 	$(NLOAD_UNZIP) $(DL_DIR)/$(NLOAD_SOURCE) | tar -C $(BUILD_DIR) -xvf -

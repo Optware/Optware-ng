@@ -36,7 +36,7 @@ TINYSCHEME_CONFLICTS=
 #
 # TINYSCHEME_IPK_VERSION should be incremented when the ipk changes.
 #
-TINYSCHEME_IPK_VERSION=1
+TINYSCHEME_IPK_VERSION=2
 
 #
 # TINYSCHEME_CONFFILES should be a list of user-editable files

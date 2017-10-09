@@ -36,7 +36,7 @@ AGET_CONFLICTS=
 #
 # AGET_IPK_VERSION should be incremented when the ipk changes.
 #
-AGET_IPK_VERSION=1
+AGET_IPK_VERSION=2
 
 #
 # AGET_CONFFILES should be a list of user-editable files

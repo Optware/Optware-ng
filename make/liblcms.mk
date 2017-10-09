@@ -36,7 +36,7 @@ LIBLCMS_CONFLICTS=
 #
 # LIBLCMS_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBLCMS_IPK_VERSION=3
+LIBLCMS_IPK_VERSION=4
 
 #
 # LIBLCMS_CONFFILES should be a list of user-editable files

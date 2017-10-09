@@ -40,7 +40,7 @@ DICT_DEPENDS=libmaa, zlib
 #
 # DICT_IPK_VERSION should be incremented when the ipk changes.
 #
-DICT_IPK_VERSION=1
+DICT_IPK_VERSION=2
 
 #
 # DICT_CONFFILES should be a list of user-editable files

@@ -37,7 +37,7 @@ FREETDS_CONFLICTS=
 #
 # FREETDS_IPK_VERSION should be incremented when the ipk changes.
 #
-FREETDS_IPK_VERSION=4
+FREETDS_IPK_VERSION=5
 
 #
 # FREETDS_CONFFILES should be a list of user-editable files

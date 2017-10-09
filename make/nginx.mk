@@ -36,7 +36,7 @@ NGINX_CONFLICTS=
 #
 # NGINX_IPK_VERSION should be incremented when the ipk changes.
 #
-NGINX_IPK_VERSION?=1
+NGINX_IPK_VERSION?=2
 
 #
 # NGINX_CONFFILES should be a list of user-editable files

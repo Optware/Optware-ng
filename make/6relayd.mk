@@ -38,7 +38,7 @@
 #
 # 6RELAYD_IPK_VERSION should be incremented when the ipk changes.
 #
-6RELAYD_IPK_VERSION=2
+6RELAYD_IPK_VERSION=3
 
 #
 # 6RELAYD_CONFFILES should be a list of user-editable files

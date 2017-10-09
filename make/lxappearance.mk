@@ -42,7 +42,7 @@ LXAPPEARANCE_CONFLICTS=
 #
 # LXAPPEARANCE_IPK_VERSION should be incremented when the ipk changes.
 #
-LXAPPEARANCE_IPK_VERSION=1
+LXAPPEARANCE_IPK_VERSION=2
 
 #
 # LXAPPEARANCE_CONFFILES should be a list of user-editable files

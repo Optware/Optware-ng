@@ -28,7 +28,7 @@
 #
 
 SANE_BACKENDS_RELEASE=1.0.24
-SANE_BACKENDS_IPK_VERSION=3
+SANE_BACKENDS_IPK_VERSION=4
 
 # You should change the next two git variables TOGETHER
 

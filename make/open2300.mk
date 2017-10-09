@@ -36,7 +36,7 @@ OPEN2300_CONFLICTS=
 #
 # OPEN2300_IPK_VERSION should be incremented when the ipk changes.
 #
-OPEN2300_IPK_VERSION=2
+OPEN2300_IPK_VERSION=3
 
 #
 # OPEN2300_CONFFILES should be a list of user-editable files

@@ -37,7 +37,7 @@ XUPNPD_CONFLICTS=
 #
 # XUPNPD_IPK_VERSION should be incremented when the ipk changes.
 #
-XUPNPD_IPK_VERSION=3
+XUPNPD_IPK_VERSION=4
 
 #
 # XUPNPD_CONFFILES should be a list of user-editable files

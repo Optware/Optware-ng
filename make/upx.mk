@@ -39,7 +39,7 @@ UPX_CONFLICTS=
 #
 # UPX_IPK_VERSION should be incremented when the ipk changes.
 #
-UPX_IPK_VERSION=1
+UPX_IPK_VERSION=2
 
 #
 # UPX_CONFFILES should be a list of user-editable files

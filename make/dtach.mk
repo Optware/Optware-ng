@@ -36,7 +36,7 @@ DTACH_CONFLICTS=
 #
 # DTACH_IPK_VERSION should be incremented when the ipk changes.
 #
-DTACH_IPK_VERSION=1
+DTACH_IPK_VERSION=2
 
 #
 # DTACH_CONFFILES should be a list of user-editable files

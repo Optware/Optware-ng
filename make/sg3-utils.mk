@@ -36,7 +36,7 @@ SG3-UTILS_CONFLICTS=
 #
 # SG3-UTILS_IPK_VERSION should be incremented when the ipk changes.
 #
-SG3-UTILS_IPK_VERSION=1
+SG3-UTILS_IPK_VERSION=2
 
 #
 # SG3-UTILS_CONFFILES should be a list of user-editable files

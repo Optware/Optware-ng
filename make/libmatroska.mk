@@ -36,7 +36,7 @@ LIBMATROSKA_CONFLICTS=
 #
 # LIBMATROSKA_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBMATROSKA_IPK_VERSION=1
+LIBMATROSKA_IPK_VERSION=2
 
 #
 # LIBMATROSKA_CONFFILES should be a list of user-editable files

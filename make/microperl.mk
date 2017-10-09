@@ -5,7 +5,7 @@
 ###########################################################
 
 MICROPERL_VERSION=5.22.1
-MICROPERL_IPK_VERSION=1
+MICROPERL_IPK_VERSION=2
 MICROPERL_PATCHES=$(MICROPERL_SOURCE_DIR)/5.22/0001-Fix-build-failure-for-microperl.patch \
 	$(MICROPERL_SOURCE_DIR)/5.22/0002-Makefile.micro-clean-ugenerate_uudmap.o.patch \
 	$(MICROPERL_SOURCE_DIR)/5.22/missing_includes.patch

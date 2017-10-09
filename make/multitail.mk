@@ -36,7 +36,7 @@ MULTITAIL_CONFLICTS=
 #
 # MULTITAIL_IPK_VERSION should be incremented when the ipk changes.
 #
-MULTITAIL_IPK_VERSION=1
+MULTITAIL_IPK_VERSION=2
 
 #
 # MULTITAIL_CONFFILES should be a list of user-editable files

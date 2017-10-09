@@ -34,7 +34,7 @@ STUNNEL_CONFLICTS=
 #
 # STUNNEL_IPK_VERSION should be incremented when the ipk changes.
 #
-STUNNEL_IPK_VERSION=3
+STUNNEL_IPK_VERSION=4
 
 #
 # STUNNEL_CONFFILES should be a list of user-editable files
@@ -103,7 +103,7 @@ stunnel-source: $(DL_DIR)/$(STUNNEL_SOURCE) $(STUNNEL_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(STUNNEL_BUILD_DIR)/.configured: $(DL_DIR)/$(STUNNEL_SOURCE) $(STUNNEL_PATCHES)
+$(STUNNEL_BUILD_DIR)/.configured: $(DL_DIR)/$(STUNNEL_SOURCE) $(STUNNEL_PATCHES) make/stunnel.mk
 	$(MAKE) openssl-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(STUNNEL_DIR) $(@D)
 	$(STUNNEL_UNZIP) $(DL_DIR)/$(STUNNEL_SOURCE) | tar -C $(BUILD_DIR) -xvf -

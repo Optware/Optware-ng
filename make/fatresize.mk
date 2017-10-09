@@ -36,7 +36,7 @@ FATRESIZE_CONFLICTS=
 #
 # FATRESIZE_IPK_VERSION should be incremented when the ipk changes.
 #
-FATRESIZE_IPK_VERSION=2
+FATRESIZE_IPK_VERSION=3
 
 #
 # FATRESIZE_CONFFILES should be a list of user-editable files

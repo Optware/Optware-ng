@@ -29,7 +29,7 @@ JOE_CONFLICTS=
 #
 # JOE_IPK_VERSION should be incremented when the ipk changes.
 #
-JOE_IPK_VERSION=1
+JOE_IPK_VERSION=2
 
 #
 # JOE_CONFFILES should be a list of user-editable files

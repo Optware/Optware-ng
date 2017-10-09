@@ -36,7 +36,7 @@ NODE010_CONFLICTS=node
 #
 # NODE010_IPK_VERSION should be incremented when the ipk changes.
 #
-NODE010_IPK_VERSION=1
+NODE010_IPK_VERSION=2
 
 #
 # NODE010_CONFFILES should be a list of user-editable files

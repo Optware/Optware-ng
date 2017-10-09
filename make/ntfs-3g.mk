@@ -42,7 +42,7 @@ NTFS-3G_CONFLICTS=
 #
 # NTFS-3G_IPK_VERSION should be incremented when the ipk changes.
 #
-NTFS-3G_IPK_VERSION=2
+NTFS-3G_IPK_VERSION=3
 
 #
 # NTFS-3G_CONFFILES should be a list of user-editable files

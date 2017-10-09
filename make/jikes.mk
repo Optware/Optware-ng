@@ -30,7 +30,7 @@ JIKES_CONFLICTS=
 #
 # JIKES_IPK_VERSION should be incremented when the ipk changes.
 #
-JIKES_IPK_VERSION=1
+JIKES_IPK_VERSION=2
 
 #
 # JIKES_CONFFILES should be a list of user-editable files
@@ -92,7 +92,7 @@ jikes-source: $(DL_DIR)/$(JIKES_SOURCE) $(JIKES_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(JIKES_BUILD_DIR)/.configured: $(DL_DIR)/$(JIKES_SOURCE) $(JIKES_PATCHES)
+$(JIKES_BUILD_DIR)/.configured: $(DL_DIR)/$(JIKES_SOURCE) $(JIKES_PATCHES) make/jikes.mk
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(JIKES_DIR) $(JIKES_BUILD_DIR)
 	$(JIKES_UNZIP) $(DL_DIR)/$(JIKES_SOURCE) | tar -C $(BUILD_DIR) -xvf -

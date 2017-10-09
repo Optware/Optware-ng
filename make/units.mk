@@ -40,7 +40,7 @@ UNITS_DEPENDS=readline
 #
 # UNITS_IPK_VERSION should be incremented when the ipk changes.
 #
-UNITS_IPK_VERSION=1
+UNITS_IPK_VERSION=2
 
 #
 # UNITS_CONFFILES should be a list of user-editable files

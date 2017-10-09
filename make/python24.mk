@@ -42,7 +42,7 @@ PYTHON24_SUGGESTS=
 #
 # PYTHON24_IPK_VERSION should be incremented when the ipk changes.
 #
-PYTHON24_IPK_VERSION=6
+PYTHON24_IPK_VERSION=7
 
 #
 # PYTHON24_CONFFILES should be a list of user-editable files

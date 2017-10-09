@@ -34,7 +34,7 @@ SQUID3_SUGGESTS=
 SQUID3_CONFLICTS=squid
 
 # override SQUID3_IPK_VERSION for target specific feeds
-SQUID3_IPK_VERSION=3
+SQUID3_IPK_VERSION=4
 
 #
 ## SQUID3_CONFFILES should be a list of user-editable files
@@ -193,6 +193,7 @@ $(SQUID3_BUILD_DIR)/.configured: $(DL_DIR)/$(SQUID3_SOURCE) $(SQUID3_PATCHES) ma
 		--with-libcap \
 		--with-netfilter-conntrack=$(STAGING_PREFIX) \
 	)
+	sed -i -e 's/-Werror//g' `find $(@D) -type f -name Makefile`
 	touch $@
 
 squid3-unpack: $(SQUID3_BUILD_DIR)/.configured

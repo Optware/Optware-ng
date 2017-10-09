@@ -42,7 +42,7 @@ AT-SPI2-CORE_CONFLICTS=
 #
 # AT-SPI2-CORE_IPK_VERSION should be incremented when the ipk changes.
 #
-AT-SPI2-CORE_IPK_VERSION=1
+AT-SPI2-CORE_IPK_VERSION=2
 
 #
 # AT-SPI2-CORE_CONFFILES should be a list of user-editable files

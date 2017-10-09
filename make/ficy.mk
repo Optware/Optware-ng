@@ -43,7 +43,7 @@ FICY_CONFLICTS=
 #
 # FICY_IPK_VERSION should be incremented when the ipk changes.
 #
-FICY_IPK_VERSION=1
+FICY_IPK_VERSION=2
 
 #
 # FICY_CONFFILES should be a list of user-editable files
@@ -105,7 +105,7 @@ ficy-source: $(DL_DIR)/$(FICY_SOURCE) $(FICY_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(FICY_BUILD_DIR)/.configured: $(DL_DIR)/$(FICY_SOURCE) $(FICY_PATCHES)
+$(FICY_BUILD_DIR)/.configured: $(DL_DIR)/$(FICY_SOURCE) $(FICY_PATCHES) make/ficy.mk
 	rm -rf $(BUILD_DIR)/$(FICY_DIR) $(FICY_BUILD_DIR)
 	$(FICY_UNZIP) $(DL_DIR)/$(FICY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(FICY_PATCHES)" ; \

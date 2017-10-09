@@ -36,7 +36,7 @@ GSNMP_CONFLICTS=
 #
 # GSNMP_IPK_VERSION should be incremented when the ipk changes.
 #
-GSNMP_IPK_VERSION=1
+GSNMP_IPK_VERSION=2
 
 #
 # GSNMP_CONFFILES should be a list of user-editable files

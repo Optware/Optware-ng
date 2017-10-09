@@ -42,7 +42,7 @@ LIBART_CONFLICTS=
 #
 # LIBART_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBART_IPK_VERSION=2
+LIBART_IPK_VERSION=3
 
 #
 # LIBART_CONFFILES should be a list of user-editable files
@@ -104,7 +104,7 @@ libart-source: $(DL_DIR)/$(LIBART_SOURCE) $(LIBART_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(LIBART_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBART_SOURCE) $(LIBART_PATCHES)
+$(LIBART_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBART_SOURCE) $(LIBART_PATCHES) make/libart.mk
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(LIBART_DIR) $(LIBART_BUILD_DIR)
 	$(LIBART_UNZIP) $(DL_DIR)/$(LIBART_SOURCE) | tar -C $(BUILD_DIR) -xvf -

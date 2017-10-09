@@ -37,7 +37,7 @@ TORSOCKS_CONFLICTS=
 #
 # TORSOCKS_IPK_VERSION should be incremented when the ipk changes.
 #
-TORSOCKS_IPK_VERSION=1
+TORSOCKS_IPK_VERSION=2
 
 #
 # TORSOCKS_CONFFILES should be a list of user-editable files

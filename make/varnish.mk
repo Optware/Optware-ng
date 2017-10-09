@@ -36,7 +36,7 @@ VARNISH_CONFLICTS=
 #
 # VARNISH_IPK_VERSION should be incremented when the ipk changes.
 #
-VARNISH_IPK_VERSION=2
+VARNISH_IPK_VERSION=3
 
 #
 # VARNISH_CONFFILES should be a list of user-editable files

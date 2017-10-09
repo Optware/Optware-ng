@@ -36,7 +36,7 @@ ULOGD_CONFLICTS=
 #
 # ULOGD_IPK_VERSION should be incremented when the ipk changes.
 #
-ULOGD_IPK_VERSION=2
+ULOGD_IPK_VERSION=3
 
 #
 # ULOGD_CONFFILES should be a list of user-editable files

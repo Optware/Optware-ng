@@ -38,7 +38,7 @@ XPDF_CONFLICTS=
 #
 # XPDF_IPK_VERSION should be incremented when the ipk changes.
 #
-XPDF_IPK_VERSION=1
+XPDF_IPK_VERSION=2
 
 #
 # XPDF_CONFFILES should be a list of user-editable files

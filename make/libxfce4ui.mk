@@ -53,7 +53,7 @@ LIBXFCE4UI-COMMON_CONFLICTS=
 #
 # LIBXFCE4UI_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBXFCE4UI_IPK_VERSION=2
+LIBXFCE4UI_IPK_VERSION=3
 
 #
 # LIBXFCE4UI_CONFFILES should be a list of user-editable files

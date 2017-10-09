@@ -36,7 +36,7 @@ SCLI_CONFLICTS=
 #
 # SCLI_IPK_VERSION should be incremented when the ipk changes.
 #
-SCLI_IPK_VERSION=3
+SCLI_IPK_VERSION=4
 
 #
 # SCLI_CONFFILES should be a list of user-editable files

@@ -37,7 +37,7 @@ NTP_CONFLICTS=
 #
 # NTP_IPK_VERSION should be incremented when the ipk changes.
 #
-NTP_IPK_VERSION=2
+NTP_IPK_VERSION=3
 
 NTP_CONFFILES=$(TARGET_PREFIX)/etc/ntp/ntp.conf $(TARGET_PREFIX)/etc/init.d/S77ntp
 

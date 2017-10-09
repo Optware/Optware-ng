@@ -38,7 +38,7 @@ GUTENPRINT_CONFLICTS=
 #
 # GUTENPRINT_IPK_VERSION should be incremented when the ipk changes.
 #
-GUTENPRINT_IPK_VERSION=2
+GUTENPRINT_IPK_VERSION=3
 
 #
 # GUTENPRINT_CONFFILES should be a list of user-editable files

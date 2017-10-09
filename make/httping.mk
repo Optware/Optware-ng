@@ -36,7 +36,7 @@ HTTPING_CONFLICTS=
 #
 # HTTPING_IPK_VERSION should be incremented when the ipk changes.
 #
-HTTPING_IPK_VERSION=2
+HTTPING_IPK_VERSION=3
 
 #
 # HTTPING_CONFFILES should be a list of user-editable files

@@ -37,7 +37,7 @@ PY-PSYCOPG_CONFLICTS=
 #
 # PY-PSYCOPG_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-PSYCOPG_IPK_VERSION=8
+PY-PSYCOPG_IPK_VERSION=9
 
 #
 # PY-PSYCOPG_CONFFILES should be a list of user-editable files
@@ -106,7 +106,7 @@ py-psycopg-source: $(DL_DIR)/$(PY-PSYCOPG_SOURCE) $(PY-PSYCOPG_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(PY-PSYCOPG_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PSYCOPG_SOURCE) $(PY-PSYCOPG_PATCHES)
+$(PY-PSYCOPG_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-PSYCOPG_SOURCE) $(PY-PSYCOPG_PATCHES) make/py-psycopg.mk
 	$(MAKE) postgresql-stage python-stage py-mx-base-stage
 	rm -rf $(PY-PSYCOPG_BUILD_DIR)
 	mkdir -p $(PY-PSYCOPG_BUILD_DIR)

@@ -36,7 +36,7 @@ DIALOG_CONFLICTS=
 #
 # DIALOG_IPK_VERSION should be incremented when the ipk changes.
 #
-DIALOG_IPK_VERSION=1
+DIALOG_IPK_VERSION=2
 
 #
 # DIALOG_CONFFILES should be a list of user-editable files

@@ -36,7 +36,7 @@ SLSC_CONFLICTS=
 #
 # SLSC_IPK_VERSION should be incremented when the ipk changes.
 #
-SLSC_IPK_VERSION=1
+SLSC_IPK_VERSION=2
 
 #
 # SLSC_CONFFILES should be a list of user-editable files

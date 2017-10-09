@@ -36,7 +36,7 @@ POCO_CONFLICTS=
 #
 # POCO_IPK_VERSION should be incremented when the ipk changes.
 #
-POCO_IPK_VERSION=3
+POCO_IPK_VERSION=4
 
 #
 # POCO_CONFFILES should be a list of user-editable files

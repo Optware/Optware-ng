@@ -42,7 +42,7 @@ THUNAR_CONFLICTS=
 #
 # THUNAR_IPK_VERSION should be incremented when the ipk changes.
 #
-THUNAR_IPK_VERSION=1
+THUNAR_IPK_VERSION=2
 
 #
 # THUNAR_CONFFILES should be a list of user-editable files

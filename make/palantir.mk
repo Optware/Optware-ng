@@ -36,7 +36,7 @@ PALANTIR_CONFLICTS=
 #
 # PALANTIR_IPK_VERSION should be incremented when the ipk changes.
 #
-PALANTIR_IPK_VERSION=3
+PALANTIR_IPK_VERSION=4
 
 #
 # PALANTIR_CONFFILES should be a list of user-editable files
@@ -102,7 +102,7 @@ palantir-source: $(DL_DIR)/$(PALANTIR_SOURCE) $(PALANTIR_PATCHES)
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(PALANTIR_BUILD_DIR)/.configured: $(DL_DIR)/$(PALANTIR_SOURCE) $(PALANTIR_PATCHES)
+$(PALANTIR_BUILD_DIR)/.configured: $(DL_DIR)/$(PALANTIR_SOURCE) $(PALANTIR_PATCHES) make/palantir.mk
 	$(MAKE) libjpeg-stage
 	rm -rf $(BUILD_DIR)/$(PALANTIR_DIR) $(PALANTIR_BUILD_DIR)
 	$(PALANTIR_UNZIP) $(DL_DIR)/$(PALANTIR_SOURCE) | tar -C $(BUILD_DIR) -xvf -

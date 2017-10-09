@@ -34,7 +34,7 @@ GIFTFASTTRACK_DESCRIPTION=gIFt fasttrack plugin
 #
 # GIFTFASTTRACK_IPK_VERSION should be incremented when the ipk changes.
 #
-GIFTFASTTRACK_IPK_VERSION=1
+GIFTFASTTRACK_IPK_VERSION=2
 
 #
 # GIFTFASTTRACK_CONFFILES should be a list of user-editable files
@@ -96,7 +96,7 @@ gift-fasttrack-source: $(DL_DIR)/$(GIFTFASTTRACK_SOURCE) $(GIFTFASTTRACK_PATCHES
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(GIFTFASTTRACK_BUILD_DIR)/.configured: $(DL_DIR)/$(GIFTFASTTRACK_SOURCE) $(GIFTFASTTRACK_PATCHES)
+$(GIFTFASTTRACK_BUILD_DIR)/.configured: $(DL_DIR)/$(GIFTFASTTRACK_SOURCE) $(GIFTFASTTRACK_PATCHES) make/gift-fasttrack.mk
 	$(MAKE) gift-stage
 	rm -rf $(BUILD_DIR)/$(GIFTFASTTRACK_DIR) $(GIFTFASTTRACK_BUILD_DIR)
 	$(GIFTFASTTRACK_UNZIP) $(DL_DIR)/$(GIFTFASTTRACK_SOURCE) | tar -C $(BUILD_DIR) -xvf -

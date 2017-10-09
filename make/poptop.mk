@@ -42,7 +42,7 @@ POPTOP_CONFLICTS=
 #
 # POPTOP_IPK_VERSION should be incremented when the ipk changes.
 #
-POPTOP_IPK_VERSION=1
+POPTOP_IPK_VERSION=2
 
 #
 # POPTOP_CONFFILES should be a list of user-editable files
@@ -104,7 +104,7 @@ poptop-source: $(DL_DIR)/$(POPTOP_SOURCE) $(POPTOP_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(POPTOP_BUILD_DIR)/.configured: $(DL_DIR)/$(POPTOP_SOURCE)
+$(POPTOP_BUILD_DIR)/.configured: $(DL_DIR)/$(POPTOP_SOURCE) make/poptop.mk
 	rm -rf $(BUILD_DIR)/$(POPTOP_DIR) $(POPTOP_BUILD_DIR)
 	$(POPTOP_UNZIP) $(DL_DIR)/$(POPTOP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(POPTOP_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(POPTOP_DIR) -p1

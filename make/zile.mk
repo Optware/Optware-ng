@@ -36,7 +36,7 @@ ZILE_CONFLICTS=
 #
 # ZILE_IPK_VERSION should be incremented when the ipk changes.
 #
-ZILE_IPK_VERSION=2
+ZILE_IPK_VERSION=3
 
 #
 # ZILE_CONFFILES should be a list of user-editable files

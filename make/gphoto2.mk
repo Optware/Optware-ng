@@ -26,7 +26,7 @@ GPHOTO2_CONFLICTS=
 #
 # GPHOTO2_IPK_VERSION should be incremented when the ipk changes.
 #
-GPHOTO2_IPK_VERSION=1
+GPHOTO2_IPK_VERSION=2
 
 #
 # GPHOTO2_CONFFILES should be a list of user-editable files

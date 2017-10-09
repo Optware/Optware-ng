@@ -42,7 +42,7 @@ ETTERCAP_DEPENDS=libtool, libpcap, ncurses
 #
 # ETTERCAP_IPK_VERSION should be incremented when the ipk changes.
 #
-ETTERCAP_IPK_VERSION=3
+ETTERCAP_IPK_VERSION=4
 
 #
 # ETTERCAP_CONFFILES should be a list of user-editable files

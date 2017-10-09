@@ -36,7 +36,7 @@ P7ZIP_CONFLICTS=
 #
 # P7ZIP_IPK_VERSION should be incremented when the ipk changes.
 #
-P7ZIP_IPK_VERSION=1
+P7ZIP_IPK_VERSION=2
 
 #
 # P7ZIP_CONFFILES should be a list of user-editable files

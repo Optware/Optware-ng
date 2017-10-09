@@ -42,7 +42,7 @@ HARFBUZZ_CONFLICTS=
 #
 # HARFBUZZ_IPK_VERSION should be incremented when the ipk changes.
 #
-HARFBUZZ_IPK_VERSION=1
+HARFBUZZ_IPK_VERSION=2
 
 #
 # HARFBUZZ_CONFFILES should be a list of user-editable files

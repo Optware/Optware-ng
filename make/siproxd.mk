@@ -53,7 +53,7 @@ SIPROXD_CONFLICTS=
 #
 # SIPROXD_IPK_VERSION should be incremented when the ipk changes.
 #
-SIPROXD_IPK_VERSION=2
+SIPROXD_IPK_VERSION=3
 
 #
 # SIPROXD_CONFFILES should be a list of user-editable files

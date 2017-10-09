@@ -46,7 +46,7 @@ FUSE_CONFLICTS=
 #
 # FUSE_IPK_VERSION should be incremented when the ipk changes.
 #
-FUSE_IPK_VERSION=1
+FUSE_IPK_VERSION=2
 
 #
 # FUSE_CONFFILES should be a list of user-editable files

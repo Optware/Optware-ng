@@ -37,7 +37,7 @@ PY-SILVERCITY_CONFLICTS=
 #
 # PY-SILVERCITY_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-SILVERCITY_IPK_VERSION=1
+PY-SILVERCITY_IPK_VERSION=2
 
 #
 # PY-SILVERCITY_CONFFILES should be a list of user-editable files
@@ -105,7 +105,7 @@ py-silvercity-source: $(DL_DIR)/$(PY-SILVERCITY_SOURCE) $(PY-SILVERCITY_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(PY-SILVERCITY_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SILVERCITY_SOURCE) $(PY-SILVERCITY_PATCHES)
+$(PY-SILVERCITY_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SILVERCITY_SOURCE) $(PY-SILVERCITY_PATCHES) make/py-silvercity.mk
 	$(MAKE) py-setuptools-stage
 	rm -rf $(BUILD_DIR)/$(PY-SILVERCITY_DIR) $(PY-SILVERCITY_BUILD_DIR)
 	mkdir -p $(PY-SILVERCITY_BUILD_DIR)

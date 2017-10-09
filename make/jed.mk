@@ -37,7 +37,7 @@ JED_CONFLICTS=
 #
 # JED_IPK_VERSION should be incremented when the ipk changes.
 #
-JED_IPK_VERSION=1
+JED_IPK_VERSION=2
 
 #
 # JED_CONFFILES should be a list of user-editable files

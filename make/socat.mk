@@ -36,7 +36,7 @@ SOCAT_CONFLICTS=
 #
 # SOCAT_IPK_VERSION should be incremented when the ipk changes.
 #
-SOCAT_IPK_VERSION=2
+SOCAT_IPK_VERSION=3
 
 #
 # SOCAT_CONFFILES should be a list of user-editable files

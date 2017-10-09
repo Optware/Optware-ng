@@ -36,7 +36,7 @@ CCRYPT_CONFLICTS=
 #
 # CCRYPT_IPK_VERSION should be incremented when the ipk changes.
 #
-CCRYPT_IPK_VERSION=1
+CCRYPT_IPK_VERSION=2
 
 #
 # CCRYPT_CONFFILES should be a list of user-editable files

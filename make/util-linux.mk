@@ -36,7 +36,7 @@ UTIL_LINUX_CONFLICTS=
 #
 # UTIL_LINUX_IPK_VERSION should be incremented when the ipk changes.
 #
-UTIL_LINUX_IPK_VERSION=4
+UTIL_LINUX_IPK_VERSION=5
 
 #
 # UTIL_LINUX_CONFFILES should be a list of user-editable files

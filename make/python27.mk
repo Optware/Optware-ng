@@ -42,7 +42,7 @@ PYTHON27_SUGGESTS=
 #
 # PYTHON27_IPK_VERSION should be incremented when the ipk changes.
 #
-PYTHON27_IPK_VERSION=3
+PYTHON27_IPK_VERSION=4
 
 #
 # PYTHON27_CONFFILES should be a list of user-editable files

@@ -39,7 +39,7 @@ IMAGEMAGICK_CONFLICTS=
 #
 # IMAGEMAGICK_IPK_VERSION should be incremented when the ipk changes.
 #
-IMAGEMAGICK_IPK_VERSION=2
+IMAGEMAGICK_IPK_VERSION=3
 
 #
 # If the compilation of the package requires additional

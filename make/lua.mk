@@ -43,7 +43,7 @@ LUA_CONFLICTS=
 #
 # LUA_IPK_VERSION should be incremented when the ipk changes.
 #
-LUA_IPK_VERSION=1
+LUA_IPK_VERSION=2
 
 #
 # LUA_CONFFILES should be a list of user-editable files

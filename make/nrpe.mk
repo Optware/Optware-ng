@@ -31,7 +31,7 @@ NRPE_CONFLICTS=
 #
 # NRPE_IPK_VERSION should be incremented when the ipk changes.
 #
-NRPE_IPK_VERSION=3
+NRPE_IPK_VERSION=4
 
 #
 # NRPE_CONFFILES should be a list of user-editable files
@@ -96,7 +96,7 @@ nrpe-source: $(DL_DIR)/$(NRPE_SOURCE) $(NRPE_PATCHES)
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(NRPE_BUILD_DIR)/.configured: $(DL_DIR)/$(NRPE_SOURCE) $(NRPE_PATCHES)
+$(NRPE_BUILD_DIR)/.configured: $(DL_DIR)/$(NRPE_SOURCE) $(NRPE_PATCHES) make/nrpe.mk
 	$(MAKE) openssl-stage tcpwrappers-stage
 	rm -rf $(BUILD_DIR)/$(NRPE_DIR) $(NRPE_BUILD_DIR)
 	$(NRPE_UNZIP) $(DL_DIR)/$(NRPE_SOURCE) | tar -C $(BUILD_DIR) -xvf -

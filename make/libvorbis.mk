@@ -35,7 +35,7 @@ LIBVORBIS_CONFLICTS=
 #
 # LIBVORBIS_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBVORBIS_IPK_VERSION=1
+LIBVORBIS_IPK_VERSION=2
 
 #
 # LIBVORBIS_CONFFILES should be a list of user-editable files

@@ -40,7 +40,7 @@ BITCHX_DEPENDS=ncurses
 #
 # BITCHX_IPK_VERSION should be incremented when the ipk changes.
 #
-BITCHX_IPK_VERSION=3
+BITCHX_IPK_VERSION=4
 
 #
 # BITCHX_CONFFILES should be a list of user-editable files

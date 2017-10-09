@@ -38,7 +38,7 @@ GIFTARES_DESCRIPTION=giFT ares plugin
 #
 # GIFTARES_IPK_VERSION should be incremented when the ipk changes.
 #
-GIFTARES_IPK_VERSION=2
+GIFTARES_IPK_VERSION=3
 
 #
 # GIFTARES_CONFFILES should be a list of user-editable files

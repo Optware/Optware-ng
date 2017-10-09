@@ -39,7 +39,7 @@ LIBOPENZWAVE_CONFLICTS=
 #
 # LIBOPENZWAVE_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBOPENZWAVE_IPK_VERSION=2
+LIBOPENZWAVE_IPK_VERSION=3
 
 #
 # LIBOPENZWAVE_CONFFILES should be a list of user-editable files

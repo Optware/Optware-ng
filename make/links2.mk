@@ -36,7 +36,7 @@ LINKS2_CONFLICTS=
 #
 # LINKS2_IPK_VERSION should be incremented when the ipk changes.
 #
-LINKS2_IPK_VERSION=2
+LINKS2_IPK_VERSION=3
 
 #
 # LINKS2_CONFFILES should be a list of user-editable files

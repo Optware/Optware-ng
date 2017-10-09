@@ -36,7 +36,7 @@ SRECORD_CONFLICTS=
 #
 # SRECORD_IPK_VERSION should be incremented when the ipk changes.
 #
-SRECORD_IPK_VERSION=1
+SRECORD_IPK_VERSION=2
 
 #
 # SRECORD_CONFFILES should be a list of user-editable files

@@ -35,7 +35,7 @@ ALSA-UTILS_CONFLICTS=
 #
 # ALSA-UTILS_IPK_VERSION should be incremented when the ipk changes.
 #
-ALSA-UTILS_IPK_VERSION=1
+ALSA-UTILS_IPK_VERSION=2
 
 #
 # ALSA-UTILS_CONFFILES should be a list of user-editable files

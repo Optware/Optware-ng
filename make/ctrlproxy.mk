@@ -41,7 +41,7 @@ CTRLPROXY_SUGGESTS=readline
 #
 # CTRLPROXY_IPK_VERSION should be incremented when the ipk changes.
 #
-CTRLPROXY_IPK_VERSION=4
+CTRLPROXY_IPK_VERSION=5
 
 #
 # CTRLPROXY_CONFFILES should be a list of user-editable files

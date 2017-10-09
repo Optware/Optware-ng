@@ -38,7 +38,7 @@ MPLAYER_CONFLICTS=
 #
 # MPLAYER_IPK_VERSION should be incremented when the ipk changes.
 #
-MPLAYER_IPK_VERSION=1
+MPLAYER_IPK_VERSION=2
 
 #
 # MPLAYER_CONFFILES should be a list of user-editable files

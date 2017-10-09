@@ -35,7 +35,7 @@ GLIB_CONFLICTS=
 #
 # GLIB_IPK_VERSION should be incremented when the ipk changes.
 #
-GLIB_IPK_VERSION=1
+GLIB_IPK_VERSION=2
 
 #
 # GLIB_LOCALES defines which locales get installed
@@ -114,7 +114,7 @@ $(GLIB_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(GLIB_SOURCE) #make/g
 		--prefix=$(HOST_STAGING_PREFIX) \
 		--disable-shared \
 	)
-	$(MAKE) -C $(@D)
+	$(MAKE) -C $(@D) GLIB_WARN_CFLAGS="-Wall -Wstrict-prototypes"
 	touch $@
 
 glib-host: $(GLIB_HOST_BUILD_DIR)/.built
@@ -199,7 +199,7 @@ glib-unpack: $(GLIB_BUILD_DIR)/.configured
 #
 $(GLIB_BUILD_DIR)/.built: $(GLIB_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(@D)
+	$(MAKE) -C $(@D) GLIB_WARN_CFLAGS="-Wall -Wstrict-prototypes"
 	touch $@
 
 #

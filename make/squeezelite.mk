@@ -37,7 +37,7 @@ SQUEEZELITE_CONFLICTS=
 #
 # SQUEEZELITE_IPK_VERSION should be incremented when the ipk changes.
 #
-SQUEEZELITE_IPK_VERSION=1
+SQUEEZELITE_IPK_VERSION=2
 
 #
 # SQUEEZELITE_CONFFILES should be a list of user-editable files

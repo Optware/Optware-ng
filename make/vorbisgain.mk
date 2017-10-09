@@ -36,7 +36,7 @@ VORBISGAIN_CONFLICTS=
 #
 # VORBISGAIN_IPK_VERSION should be incremented when the ipk changes.
 #
-VORBISGAIN_IPK_VERSION=1
+VORBISGAIN_IPK_VERSION=2
 
 #
 # VORBISGAIN_CONFFILES should be a list of user-editable files

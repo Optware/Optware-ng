@@ -39,7 +39,7 @@ WHOIS_CONFLICTS=
 #
 # WHOIS_IPK_VERSION should be incremented when the ipk changes.
 #
-WHOIS_IPK_VERSION=1
+WHOIS_IPK_VERSION=2
 
 #
 # WHOIS_CONFFILES should be a list of user-editable files

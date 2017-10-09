@@ -42,7 +42,7 @@ STREAMRIPPER_CONFLICTS=
 #
 # STREAMRIPPER_IPK_VERSION should be incremented when the ipk changes.
 #
-STREAMRIPPER_IPK_VERSION=1
+STREAMRIPPER_IPK_VERSION=2
 
 #
 # STREAMRIPPER_CONFFILES should be a list of user-editable files

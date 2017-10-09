@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 HTOP_VERSION ?= 2.0.1
-HTOP_IPK_VERSION ?= 1
+HTOP_IPK_VERSION ?= 2
 ifeq ($(shell echo $(HTOP_VERSION) | cut -d'.' -f1), 2)
 HTOP_URL=https://github.com/hishamhm/htop/archive/$(HTOP_VERSION).tar.gz
 else

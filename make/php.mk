@@ -37,7 +37,7 @@ PHP_HOST_CLI=$(HOST_STAGING_PREFIX)/bin/php
 #
 # PHP_IPK_VERSION should be incremented when the ipk changes.
 #
-PHP_IPK_VERSION=10
+PHP_IPK_VERSION=11
 
 #
 # PHP_CONFFILES should be a list of user-editable files

@@ -42,7 +42,7 @@ LIBPEAS_CONFLICTS=
 #
 # LIBPEAS_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBPEAS_IPK_VERSION=1
+LIBPEAS_IPK_VERSION=2
 
 #
 # LIBPEAS_CONFFILES should be a list of user-editable files

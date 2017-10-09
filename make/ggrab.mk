@@ -31,7 +31,7 @@ GGRAB_CONFLICTS=
 #
 # GGRAB_IPK_VERSION should be incremented when the ipk changes.
 #
-GGRAB_IPK_VERSION=2
+GGRAB_IPK_VERSION=3
 
 #
 # GGRAB_CONFFILES should be a list of user-editable files
@@ -98,7 +98,7 @@ ggrab-source: $(DL_DIR)/$(GGRAB_SOURCE) $(GGRAB_PATCHES)
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(GGRAB_BUILD_DIR)/.configured: $(DL_DIR)/$(GGRAB_SOURCE) $(GGRAB_PATCHES)
+$(GGRAB_BUILD_DIR)/.configured: $(DL_DIR)/$(GGRAB_SOURCE) $(GGRAB_PATCHES) make/ggrab.mk
 	$(MAKE) libstdc++-stage
 	rm -rf $(BUILD_DIR)/$(GGRAB_DIR) $(GGRAB_BUILD_DIR)
 	$(GGRAB_UNZIP) $(DL_DIR)/$(GGRAB_SOURCE) | tar -C $(BUILD_DIR) -xvf -

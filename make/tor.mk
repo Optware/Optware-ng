@@ -36,7 +36,7 @@ TOR_CONFLICTS=
 #
 # TOR_IPK_VERSION should be incremented when the ipk changes.
 #
-TOR_IPK_VERSION=2
+TOR_IPK_VERSION=3
 
 #
 # TOR_CONFFILES should be a list of user-editable files

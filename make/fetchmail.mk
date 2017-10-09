@@ -34,7 +34,7 @@ FETCHMAIL_CONFLICTS=
 #
 # FETCHMAIL_IPK_VERSION should be incremented when the ipk changes.
 #
-FETCHMAIL_IPK_VERSION=2
+FETCHMAIL_IPK_VERSION=3
 
 #
 # FETCHMAIL_CONFFILES should be a list of user-editable files

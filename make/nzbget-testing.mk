@@ -38,7 +38,7 @@ NZBGET-TESTING_CONFLICTS=nzbget
 #
 # NZBGET-TESTING_IPK_VERSION should be incremented when the ipk changes.
 #
-NZBGET-TESTING_IPK_VERSION=2
+NZBGET-TESTING_IPK_VERSION=3
 
 #
 # NZBGET-TESTING_CONFFILES should be a list of user-editable files

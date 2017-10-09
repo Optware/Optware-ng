@@ -82,7 +82,7 @@ ASTERISK18_CONFLICTS=asterisk10,asterisk11
 #
 # ASTERISK18_IPK_VERSION should be incremented when the ipk changes.
 #
-ASTERISK18_IPK_VERSION=3
+ASTERISK18_IPK_VERSION=4
 
 #
 # ASTERISK18_CONFFILES should be a list of user-editable files
@@ -286,7 +286,10 @@ asterisk18-source: $(DL_DIR)/$(ASTERISK18_SOURCE) $(ASTERISK18_PATCHES)
 # shown below to make various patches to it.
 #
 $(ASTERISK18_BUILD_DIR)/.configured: $(DL_DIR)/$(ASTERISK18_SOURCE) $(ASTERISK18_PATCHES) make/asterisk18.mk
-	$(MAKE) ncurses-stage openssl-stage libcurl-stage zlib-stage termcap-stage libstdc++-stage
+	$(MAKE) ncurses-stage openssl-stage libcurl-stage zlib-stage termcap-stage libstdc++-stage \
+		radiusclient-ng-stage unixodbc-stage popt-stage net-snmp-stage \
+		sqlite-stage libogg-stage libxml2-stage \
+		mysql-stage bluez2-libs-stage neon-stage libical-stage
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
 endif
@@ -302,9 +305,6 @@ endif
 ifeq (x11, $(filter x11, $(PACKAGES)))
 	$(MAKE) x11-stage
 endif
-	$(MAKE) radiusclient-ng-stage unixodbc-stage popt-stage net-snmp-stage
-	$(MAKE) sqlite-stage libogg-stage libxml2-stage
-	$(MAKE) mysql-stage bluez2-libs-stage neon-stage libical-stage
 	rm -rf $(BUILD_DIR)/$(ASTERISK18_DIR) $(ASTERISK18_BUILD_DIR)
 	$(ASTERISK18_UNZIP) $(DL_DIR)/$(ASTERISK18_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ASTERISK18_PATCHES)" ; \
@@ -401,7 +401,7 @@ $(ASTERISK18_BUILD_DIR)/.staged: $(ASTERISK18_BUILD_DIR)/.built
 	rm -f $(ASTERISK18_BUILD_DIR)/.staged
 	ASTCFLAGS="$(TARGET_CUSTOM_FLAGS) $(ASTERISK18_CPPFLAGS)" \
 	ASTLDFLAGS="$(STAGING_LDFLAGS) $(ASTERISK18_LDFLAGS)" \
-	$(MAKE) -C $(ASTERISK18_BUILD_DIR) DESTDIR=$(STAGING_DIR) ASTSBINDIR=$(TARGET_PREFIX)/sbin install
+	$(MAKE) -C $(ASTERISK18_BUILD_DIR) DESTDIR=$(STAGING_DIR) ASTSBINDIR=$(TARGET_PREFIX)/sbin install -j1
 	touch $(ASTERISK18_BUILD_DIR)/.staged
 
 asterisk18-stage: $(ASTERISK18_BUILD_DIR)/.staged
@@ -441,7 +441,7 @@ $(ASTERISK18_IPK): $(ASTERISK18_BUILD_DIR)/.built
 	rm -rf $(ASTERISK18_IPK_DIR) $(BUILD_DIR)/asterisk18_*_$(TARGET_ARCH).ipk
 	ASTCFLAGS="$(TARGET_CUSTOM_FLAGS) $(ASTERISK18_CPPFLAGS)" \
 	ASTLDFLAGS="$(STAGING_LDFLAGS) $(ASTERISK18_LDFLAGS)" \
-	$(MAKE) -C $(ASTERISK18_BUILD_DIR) DESTDIR=$(ASTERISK18_IPK_DIR) ASTSBINDIR=$(TARGET_PREFIX)/sbin install
+	$(MAKE) -C $(ASTERISK18_BUILD_DIR) DESTDIR=$(ASTERISK18_IPK_DIR) ASTSBINDIR=$(TARGET_PREFIX)/sbin install -j1
 	ASTCFLAGS="$(TARGET_CUSTOM_FLAGS) $(ASTERISK18_CPPFLAGS)" \
 	ASTLDFLAGS="$(STAGING_LDFLAGS) $(ASTERISK18_LDFLAGS)" \
 	$(MAKE) -C $(ASTERISK18_BUILD_DIR) DESTDIR=$(ASTERISK18_IPK_DIR) samples

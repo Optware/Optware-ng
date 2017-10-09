@@ -36,7 +36,7 @@ LIBDVBPSI_CONFLICTS=
 #
 # LIBDVBPSI_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBDVBPSI_IPK_VERSION=1
+LIBDVBPSI_IPK_VERSION=2
 
 #
 # LIBDVBPSI_CONFFILES should be a list of user-editable files

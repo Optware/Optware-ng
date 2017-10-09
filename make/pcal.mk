@@ -36,7 +36,7 @@ PCAL_CONFLICTS=
 #
 # PCAL_IPK_VERSION should be incremented when the ipk changes.
 #
-PCAL_IPK_VERSION=1
+PCAL_IPK_VERSION=2
 
 #
 # PCAL_CONFFILES should be a list of user-editable files

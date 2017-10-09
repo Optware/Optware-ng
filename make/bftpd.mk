@@ -36,7 +36,7 @@ BFTPD_CONFLICTS=
 #
 # BFTPD_IPK_VERSION should be incremented when the ipk changes.
 #
-BFTPD_IPK_VERSION=1
+BFTPD_IPK_VERSION=2
 
 #
 # BFTPD_CONFFILES should be a list of user-editable files

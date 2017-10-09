@@ -60,7 +60,7 @@ FFMPEG_CONFLICTS=
 #
 # FFMPEG_IPK_VERSION should be incremented when the ipk changes.
 #
-FFMPEG_IPK_VERSION ?= 6
+FFMPEG_IPK_VERSION ?= 7
 
 #
 # FFMPEG_CONFFILES should be a list of user-editable files

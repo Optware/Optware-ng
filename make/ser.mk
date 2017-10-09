@@ -35,7 +35,7 @@ SER_CONFLICTS=
 #
 # SER_IPK_VERSION should be incremented when the ipk changes.
 #
-SER_IPK_VERSION=5
+SER_IPK_VERSION=6
 
 #
 # SER_CONFFILES should be a list of user-editable files

@@ -52,7 +52,7 @@ LIBDB_CONFLICTS=
 #
 # <FOO>_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBDB_IPK_VERSION=1
+LIBDB_IPK_VERSION=2
 
 #
 # <FOO>_PATCHES should list any patches, in the the order in

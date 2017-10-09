@@ -42,7 +42,7 @@ ESOUND_CONFLICTS=
 #
 # ESOUND_IPK_VERSION should be incremented when the ipk changes.
 #
-ESOUND_IPK_VERSION=2
+ESOUND_IPK_VERSION=3
 
 #
 # ESOUND_CONFFILES should be a list of user-editable files

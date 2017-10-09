@@ -40,7 +40,7 @@ WAVPACK_CONFLICTS=
 #
 # WAVPACK_IPK_VERSION should be incremented when the ipk changes.
 #
-WAVPACK_IPK_VERSION=1
+WAVPACK_IPK_VERSION=2
 
 #
 # WAVPACK_CONFFILES should be a list of user-editable files

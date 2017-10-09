@@ -16,7 +16,7 @@ MIAU_PRIORITY=optional
 MIAU_DEPENDS=psmisc
 MIAU_CONFLICTS=
 
-MIAU_IPK_VERSION=2
+MIAU_IPK_VERSION=3
 
 MIAU_CONFFILES= $(TARGET_PREFIX)/etc/miau.conf \
 		$(TARGET_PREFIX)/etc/init.d/S52miau \
@@ -55,7 +55,7 @@ MIAU_CROSS_FLAGS=\
 		ac_cv_func_realloc_0_nonnull=yes
 endif
 
-$(MIAU_BUILD_DIR)/.configured: $(DL_DIR)/$(MIAU_SOURCE)
+$(MIAU_BUILD_DIR)/.configured: $(DL_DIR)/$(MIAU_SOURCE) make/miau.mk
 	$(MIAU_UNZIP) $(DL_DIR)/$(MIAU_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(MIAU_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(MIAU_DIR) -p1
 	mv $(BUILD_DIR)/$(MIAU_DIR) $(MIAU_BUILD_DIR)

@@ -37,7 +37,7 @@ MRTG_CONFLICTS=
 #
 # MRTG_IPK_VERSION should be incremented when the ipk changes.
 #
-MRTG_IPK_VERSION=2
+MRTG_IPK_VERSION=3
 
 #
 # MRTG_CONFFILES should be a list of user-editable files
@@ -103,7 +103,7 @@ mrtg-source: $(DL_DIR)/$(MRTG_SOURCE) $(MRTG_PATCHES)
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(MRTG_BUILD_DIR)/.configured: $(DL_DIR)/$(MRTG_SOURCE) $(MRTG_PATCHES)
+$(MRTG_BUILD_DIR)/.configured: $(DL_DIR)/$(MRTG_SOURCE) $(MRTG_PATCHES) make/mrtg.mk
 	$(MAKE) libgd-stage
 	rm -rf $(BUILD_DIR)/$(MRTG_DIR) $(@D)
 	$(MRTG_UNZIP) $(DL_DIR)/$(MRTG_SOURCE) | tar -C $(BUILD_DIR) -xvf -

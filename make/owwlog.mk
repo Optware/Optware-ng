@@ -43,7 +43,7 @@ OWWLOG_CONFLICTS=
 #
 # OWWLOG_IPK_VERSION should be incremented when the ipk changes.
 #
-OWWLOG_IPK_VERSION=1
+OWWLOG_IPK_VERSION=2
 
 #
 # OWWLOG_CONFFILES should be a list of user-editable files

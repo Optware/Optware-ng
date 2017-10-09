@@ -36,7 +36,7 @@ SCREEN_CONFLICTS=
 #
 # SCREEN_IPK_VERSION should be incremented when the ipk changes.
 #
-SCREEN_IPK_VERSION=2
+SCREEN_IPK_VERSION=3
 
 #
 # SCREEN_PATCHES should list any patches, in the the order in

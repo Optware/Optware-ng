@@ -40,7 +40,7 @@ PCIUTILS_CONFLICTS=
 #
 # PCIUTILS_IPK_VERSION should be incremented when the ipk changes.
 #
-PCIUTILS_IPK_VERSION=1
+PCIUTILS_IPK_VERSION=2
 
 #
 # PCIUTILS_CONFFILES should be a list of user-editable files

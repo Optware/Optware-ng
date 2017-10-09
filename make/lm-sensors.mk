@@ -36,7 +36,7 @@ LM_SENSORS_CONFLICTS=
 #
 # LM_SENSORS_IPK_VERSION should be incremented when the ipk changes.
 #
-LM_SENSORS_IPK_VERSION=1
+LM_SENSORS_IPK_VERSION=2
 
 #
 # LM_SENSORS_CONFFILES should be a list of user-editable files

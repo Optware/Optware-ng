@@ -39,7 +39,7 @@ RTMPDUMP_CONFLICTS=
 #
 # RTMPDUMP_IPK_VERSION should be incremented when the ipk changes.
 #
-RTMPDUMP_IPK_VERSION=2
+RTMPDUMP_IPK_VERSION=3
 
 #
 # RTMPDUMP_CONFFILES should be a list of user-editable files

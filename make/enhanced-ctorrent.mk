@@ -33,7 +33,7 @@ ENHANCED_CTORRENT_CONFLICTS=
 #
 # ENHANCED_CTORRENT_IPK_VERSION should be incremented when the ipk changes.
 #
-ENHANCED_CTORRENT_IPK_VERSION=12
+ENHANCED_CTORRENT_IPK_VERSION=13
 
 #
 # ENHANCED_CTORRENT_PATCHES should list any patches, in the the order in

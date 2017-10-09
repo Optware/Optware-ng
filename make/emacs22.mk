@@ -40,7 +40,7 @@ endif
 #
 # EMACS22_IPK_VERSION should be incremented when the ipk changes.
 #
-EMACS22_IPK_VERSION=1
+EMACS22_IPK_VERSION=2
 
 #
 # EMACS22_CONFFILES should be a list of user-editable files
@@ -144,7 +144,8 @@ $(EMACS22_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(EMACS22_SOURCE) #
 ifeq ($(HOSTCC), $(TARGET_CC))
 $(EMACS22_BUILD_DIR)/.configured: $(DL_DIR)/$(EMACS22_SOURCE) $(EMACS22_PATCHES) make/emacs22.mk
 else
-$(EMACS22_BUILD_DIR)/.configured: $(EMACS22_HOST_BUILD_DIR)/.built
+$(EMACS22_BUILD_DIR)/.configured: $(DL_DIR)/$(EMACS22_SOURCE) $(EMACS22_PATCHES) make/emacs22.mk \
+				$(EMACS22_HOST_BUILD_DIR)/.built
 endif
 	$(MAKE) ncurses-stage
 	rm -rf $(BUILD_DIR)/$(EMACS22_DIR) $(@D)

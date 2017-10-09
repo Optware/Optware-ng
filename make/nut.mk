@@ -42,7 +42,7 @@ NUT_CONFLICTS=
 #
 # NUT_IPK_VERSION should be incremented when the ipk changes.
 #
-NUT_IPK_VERSION=3
+NUT_IPK_VERSION=4
 
 #
 # NUT_CONFFILES should be a list of user-editable files

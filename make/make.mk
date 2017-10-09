@@ -35,7 +35,7 @@ MAKE_CONFLICTS=
 #
 # MAKE_IPK_VERSION should be incremented when the ipk changes.
 #
-MAKE_IPK_VERSION=1
+MAKE_IPK_VERSION=2
 
 #
 # MAKE_PATCHES should list any patches, in the the order in

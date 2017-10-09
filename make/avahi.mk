@@ -62,7 +62,7 @@ AVAHI_CONFLICTS=
 #
 # AVAHI_IPK_VERSION should be incremented when the ipk changes.
 #
-AVAHI_IPK_VERSION=3
+AVAHI_IPK_VERSION=4
 
 #
 # AVAHI_CONFFILES should be a list of user-editable files

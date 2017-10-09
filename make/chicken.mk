@@ -36,7 +36,7 @@ CHICKEN_CONFLICTS=
 #
 # CHICKEN_IPK_VERSION should be incremented when the ipk changes.
 #
-CHICKEN_IPK_VERSION=1
+CHICKEN_IPK_VERSION=2
 
 #
 # CHICKEN_CONFFILES should be a list of user-editable files

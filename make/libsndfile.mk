@@ -36,7 +36,7 @@ LIBSNDFILE_CONFLICTS=
 #
 # LIBSNDFILE_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBSNDFILE_IPK_VERSION=1
+LIBSNDFILE_IPK_VERSION=2
 
 #
 # LIBSNDFILE_CONFFILES should be a list of user-editable files

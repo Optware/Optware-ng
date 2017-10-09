@@ -36,7 +36,7 @@ IVORBIS_TOOLS_CONFLICTS=vorbis-tools
 #
 # IVORBIS-TOOLS_IPK_VERSION should be incremented when the ipk changes.
 #
-IVORBIS_TOOLS_IPK_VERSION=9
+IVORBIS_TOOLS_IPK_VERSION=10
 
 #
 # IVORBIS-TOOLS_CONFFILES should be a list of user-editable files
@@ -103,7 +103,7 @@ ivorbis-tools-source: $(DL_DIR)/$(IVORBIS_TOOLS_SOURCE) $(IVORBIS_TOOLS_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(IVORBIS_TOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(IVORBIS_TOOLS_SOURCE) $(IVORBIS_TOOLS_PATCHES)
+$(IVORBIS_TOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(IVORBIS_TOOLS_SOURCE) $(IVORBIS_TOOLS_PATCHES) make/ivorbis-tools.mk
 	$(MAKE) libogg-stage libvorbis-stage libao-stage libcurl-stage libvorbisidec-stage
 	rm -rf $(BUILD_DIR)/$(IVORBIS_TOOLS_DIR) $(IVORBIS_TOOLS_BUILD_DIR)
 	$(IVORBIS_TOOLS_UNZIP) $(DL_DIR)/$(IVORBIS_TOOLS_SOURCE) | tar -C $(BUILD_DIR) -xvf -

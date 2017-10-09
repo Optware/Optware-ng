@@ -42,7 +42,7 @@ GKRELLMD_CONFLICTS=
 #
 # GKRELLMD_IPK_VERSION should be incremented when the ipk changes.
 #
-GKRELLMD_IPK_VERSION=3
+GKRELLMD_IPK_VERSION=4
 
 #
 # GKRELLMD_CONFFILES should be a list of user-editable files

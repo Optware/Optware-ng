@@ -36,7 +36,7 @@ MCABBER_CONFLICTS=
 #
 # MCABBER_IPK_VERSION should be incremented when the ipk changes.
 #
-MCABBER_IPK_VERSION=1
+MCABBER_IPK_VERSION=2
 
 #
 # MCABBER_CONFFILES should be a list of user-editable files

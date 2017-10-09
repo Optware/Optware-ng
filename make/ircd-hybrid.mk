@@ -42,7 +42,7 @@ IRCD-HYBRID_CONFLICTS=
 #
 # IRCD-HYBRID_IPK_VERSION should be incremented when the ipk changes.
 #
-IRCD-HYBRID_IPK_VERSION=1
+IRCD-HYBRID_IPK_VERSION=2
 
 #
 # IRCD-HYBRID_CONFFILES should be a list of user-editable files

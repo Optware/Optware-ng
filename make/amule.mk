@@ -40,7 +40,7 @@ AMULE_CONFLICTS=
 #
 # AMULE_IPK_VERSION should be incremented when the ipk changes.
 #
-AMULE_IPK_VERSION=1
+AMULE_IPK_VERSION=2
 
 #
 # AMULE_CONFFILES should be a list of user-editable files

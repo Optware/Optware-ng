@@ -36,7 +36,7 @@ LIBSHOUT_CONFLICTS=
 #
 # LIBSHOUT_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBSHOUT_IPK_VERSION=2
+LIBSHOUT_IPK_VERSION=3
 
 #
 # LIBSHOUT_CONFFILES should be a list of user-editable files

@@ -37,7 +37,7 @@ SQSH_CONFLICTS=
 #
 # SQSH_IPK_VERSION should be incremented when the ipk changes.
 #
-SQSH_IPK_VERSION=4
+SQSH_IPK_VERSION=5
 
 #
 # SQSH_CONFFILES should be a list of user-editable files

@@ -36,7 +36,7 @@ GNUGO_CONFLICTS=
 #
 # GNUGO_IPK_VERSION should be incremented when the ipk changes.
 #
-GNUGO_IPK_VERSION=2
+GNUGO_IPK_VERSION=3
 
 #
 # GNUGO_CONFFILES should be a list of user-editable files

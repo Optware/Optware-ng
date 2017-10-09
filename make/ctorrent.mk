@@ -30,7 +30,7 @@ CTORRENT_CONFLICTS=
 #
 # CTORRENT_IPK_VERSION should be incremented when the ipk changes.
 #
-CTORRENT_IPK_VERSION=3
+CTORRENT_IPK_VERSION=4
 
 #
 # CTORRENT_PATCHES should list any patches, in the the order in

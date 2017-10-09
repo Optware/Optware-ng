@@ -43,7 +43,7 @@ LLINK_CONFLICTS=
 #
 # LLINK_IPK_VERSION should be incremented when the ipk changes.
 #
-LLINK_IPK_VERSION=1
+LLINK_IPK_VERSION=2
 
 #
 # LLINK_CONFFILES should be a list of user-editable files

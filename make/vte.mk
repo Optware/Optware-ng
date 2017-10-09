@@ -15,10 +15,10 @@
 VTE_SITE=http://ftp.gnome.org/pub/gnome/sources/vte/$(shell echo $(VTE_VERSION)|cut -d '.' -f 1-2)/
 ifneq ($(OPTWARE_TARGET), $(filter buildroot-armv5eabi-ng-legacy, $(OPTWARE_TARGET)))
 VTE_VERSION=0.36.3
-VTE_IPK_VERSION=1
+VTE_IPK_VERSION=2
 else
 VTE_VERSION=0.28.2
-VTE_IPK_VERSION=1
+VTE_IPK_VERSION=2
 endif
 VTE_SOURCE=vte-$(VTE_VERSION).tar.xz
 VTE_DIR=vte-$(VTE_VERSION)
@@ -36,7 +36,7 @@ endif
 #
 # VTE_IPK_VERSION should be incremented when the ipk changes.
 # defined above
-#VTE_IPK_VERSION=1
+#VTE_IPK_VERSION=2
 
 #
 # VTE_LOCALES defines which locales get installed

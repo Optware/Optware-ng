@@ -42,7 +42,7 @@ SOX_CONFLICTS=
 #
 # SOX_IPK_VERSION should be incremented when the ipk changes.
 #
-SOX_IPK_VERSION=3
+SOX_IPK_VERSION=4
 
 #
 # SOX_CONFFILES should be a list of user-editable files

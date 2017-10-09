@@ -39,7 +39,7 @@ CLIPS_CONFLICTS=
 #
 # CLIPS_IPK_VERSION should be incremented when the ipk changes.
 #
-CLIPS_IPK_VERSION=3
+CLIPS_IPK_VERSION=4
 
 #
 # CLIPS_CONFFILES should be a list of user-editable files
@@ -110,7 +110,7 @@ clips-source: $(DL_DIR)/$(CLIPS_SOURCE) $(DL_DIR)/$(CLIPS_SOURCE2) $(CLIPS_PATCH
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(CLIPS_BUILD_DIR)/.configured: $(DL_DIR)/$(CLIPS_SOURCE) $(DL_DIR)/$(CLIPS_SOURCE2) $(CLIPS_PATCHES)
+$(CLIPS_BUILD_DIR)/.configured: $(DL_DIR)/$(CLIPS_SOURCE) $(DL_DIR)/$(CLIPS_SOURCE2) $(CLIPS_PATCHES) make/clips.mk
 	$(MAKE) termcap-stage
 	rm -rf $(BUILD_DIR)/$(CLIPS_DIR) $(CLIPS_BUILD_DIR)
 	$(CLIPS_UNZIP) $(DL_DIR)/$(CLIPS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -198,7 +198,8 @@ $(CLIPS-DEV_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(CLIPS_IPK) $(CLIPS-DEV_IPK): $(CLIPS_BUILD_DIR)/.built
-	rm -rf $(CLIPS_IPK_DIR) $(BUILD_DIR)/clips_*_$(TARGET_ARCH).ipk
+	rm -rf $(CLIPS_IPK_DIR) $(BUILD_DIR)/clips_*_$(TARGET_ARCH).ipk \
+		$(CLIPS-DEV_IPK_DIR) $(BUILD_DIR)/clips-dev_*_$(TARGET_ARCH).ipk
 	$(TARGET_CONFIGURE_OPTS) \
 	$(MAKE) -C $(CLIPS_BUILD_DIR)/clipssrc DESTDIR=$(CLIPS_IPK_DIR) install
 	cd $(CLIPS_IPK_DIR)$(TARGET_PREFIX)/lib && \

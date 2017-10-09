@@ -36,7 +36,7 @@ IFTOP_CONFLICTS=
 #
 # IFTOP_IPK_VERSION should be incremented when the ipk changes.
 #
-IFTOP_IPK_VERSION=4
+IFTOP_IPK_VERSION=5
 
 #
 # IFTOP_CONFFILES should be a list of user-editable files

@@ -33,7 +33,7 @@ GTK2_PRINT_DEPENDS=gtk2, cups
 #
 # GTK2_IPK_VERSION should be incremented when the ipk changes.
 #
-GTK2_IPK_VERSION=5
+GTK2_IPK_VERSION=6
 
 #
 # GTK2_LOCALES defines which locales get installed

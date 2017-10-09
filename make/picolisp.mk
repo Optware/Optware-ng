@@ -36,7 +36,7 @@ PICOLISP_CONFLICTS=
 #
 # PICOLISP_IPK_VERSION should be incremented when the ipk changes.
 #
-PICOLISP_IPK_VERSION=1
+PICOLISP_IPK_VERSION=2
 
 #
 # PICOLISP_CONFFILES should be a list of user-editable files

@@ -36,7 +36,7 @@ QUICKIE_CONFLICTS=
 #
 # QUICKIE_IPK_VERSION should be incremented when the ipk changes.
 #
-QUICKIE_IPK_VERSION=4
+QUICKIE_IPK_VERSION=5
 
 #
 # QUICKIE_CONFFILES should be a list of user-editable files

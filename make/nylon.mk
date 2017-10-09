@@ -41,7 +41,7 @@ NYLON_CONFLICTS=
 #
 # NYLON_IPK_VERSION should be incremented when the ipk changes.
 #
-NYLON_IPK_VERSION=5
+NYLON_IPK_VERSION=6
 
 #
 # NYLON_CONFFILES should be a list of user-editable files
@@ -106,7 +106,7 @@ nylon-source: $(DL_DIR)/$(NYLON_SOURCE)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(NYLON_BUILD_DIR)/.configured: $(DL_DIR)/$(NYLON_SOURCE)
+$(NYLON_BUILD_DIR)/.configured: $(DL_DIR)/$(NYLON_SOURCE) make/nylon.mk
 	$(MAKE) libevent-stage
 	rm -rf $(BUILD_DIR)/$(NYLON_DIR) $(@D)
 	$(NYLON_UNZIP) $(DL_DIR)/$(NYLON_SOURCE) | tar -C $(BUILD_DIR) -xvf -

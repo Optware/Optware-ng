@@ -42,7 +42,7 @@ LIBGC_CONFLICTS=
 #
 # LIBGC_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBGC_IPK_VERSION=1
+LIBGC_IPK_VERSION=2
 
 #
 # LIBGC_CONFFILES should be a list of user-editable files

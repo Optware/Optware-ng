@@ -21,7 +21,7 @@
 #
 JAMVM_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/jamvm
 JAMVM_VERSION ?= 1.5.4
-JAMVM_IPK_VERSION ?= 1
+JAMVM_IPK_VERSION ?= 2
 JAMVM_SOURCE=jamvm-$(JAMVM_VERSION).tar.gz
 JAMVM_DIR=jamvm-$(JAMVM_VERSION)
 JAMVM_UNZIP=zcat
@@ -97,7 +97,7 @@ jamvm-source: $(DL_DIR)/$(JAMVM_SOURCE) $(JAMVM_PATCHES)
 # If the compilation of the package requires other packages to be staged
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
-$(JAMVM_BUILD_DIR)/.configured: $(DL_DIR)/$(JAMVM_SOURCE) $(JAMVM_PATCHES)
+$(JAMVM_BUILD_DIR)/.configured: $(DL_DIR)/$(JAMVM_SOURCE) $(JAMVM_PATCHES) make/jamvm.mk
 	$(MAKE) zlib-stage
 	rm -rf $(BUILD_DIR)/$(JAMVM_DIR) $(JAMVM_BUILD_DIR)
 	$(JAMVM_UNZIP) $(DL_DIR)/$(JAMVM_SOURCE) | tar -C $(BUILD_DIR) -xvf -
