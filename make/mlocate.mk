@@ -130,7 +130,9 @@ endif
 	if test "$(BUILD_DIR)/$(MLOCATE_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(MLOCATE_DIR) $(@D) ; \
 	fi
+ifeq ($(LIBC_STYLE), uclibc)
 	$(AUTORECONF1.10) -vif $(@D)
+endif
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MLOCATE_CPPFLAGS)" \
