@@ -42,7 +42,7 @@ CLAMAV_CONFLICTS=
 #
 # CLAMAV_IPK_VERSION should be incremented when the ipk changes.
 #
-CLAMAV_IPK_VERSION=3
+CLAMAV_IPK_VERSION=4
 
 #
 # CLAMAV_CONFFILES should be a list of user-editable files
@@ -123,6 +123,7 @@ $(CLAMAV_BUILD_DIR)/.configured: $(DL_DIR)/$(CLAMAV_SOURCE) $(CLAMAV_PATCHES) ma
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(CLAMAV_CPPFLAGS)" \
+		CXXFLAGS="-std=c++98" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(CLAMAV_LDFLAGS)" \
 		ac_cv_func_setpgrp_void=yes \
 		ac_cv_have_accrights_in_msghdr=no \
