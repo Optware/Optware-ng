@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 TCSH_SITE=ftp://ftp.astron.com/pub/tcsh
-TCSH_VERSION=6.17.00
+TCSH_VERSION=6.20.00
 TCSH_SOURCE=tcsh-$(TCSH_VERSION).tar.gz
 TCSH_DIR=tcsh-$(TCSH_VERSION)
 TCSH_UNZIP=zcat
