@@ -24,7 +24,7 @@ X11_DEPENDS=xau, xdmcp, xcb
 #
 # X11_IPK_VERSION should be incremented when the ipk changes.
 #
-X11_IPK_VERSION=2
+X11_IPK_VERSION=3
 
 #
 # X11_CONFFILES should be a list of user-editable files
