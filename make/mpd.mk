@@ -78,7 +78,9 @@ ifeq (, $(filter buildroot-armv5eabi-ng buildroot-armv5eabi-ng-legacy, $(OPTWARE
 MPD_PATCHES=$(MPD_SOURCE_DIR)/fix_build_with_no_ioprio_set_syscall.patch
 else
 # ARMv5
-MPD_PATCHES=$(MPD_SOURCE_DIR)/0.19.13.fix_build_with_no_ioprio_set_syscall.patch
+MPD_PATCHES=\
+$(MPD_SOURCE_DIR)/0.19.13.fix_build_with_no_ioprio_set_syscall.patch \
+$(MPD_SOURCE_DIR)/0.19.13.DecodeBuffer.hxx.patch
 endif
 
 #

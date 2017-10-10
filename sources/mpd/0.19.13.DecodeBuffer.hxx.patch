@@ -1,0 +1,11 @@
+--- a/src/decoder/DecoderBuffer.hxx
++++ b/src/decoder/DecoderBuffer.hxx
+@@ -38,7 +38,7 @@ class DecoderBuffer {
+ 	Decoder *const decoder;
+ 	InputStream &is;
+ 
+-	DynamicFifoBuffer<uint8_t> buffer;
++	DynamicFifoBuffer<u_int8_t> buffer;
+ 
+ public:
+ 	/**
