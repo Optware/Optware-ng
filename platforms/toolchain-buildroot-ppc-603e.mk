@@ -1,4 +1,4 @@
-# This toolchain is gcc 7.2.0 on glibc 2.25
+# This toolchain is gcc 6.4.0 on glibc 2.25
 
 GNU_TARGET_NAME = powerpc-603e-linux
 EXACT_TARGET_NAME = powerpc-buildroot-linux-gnu
@@ -18,10 +18,10 @@ GETTEXT_NLS=enable
 #NO_BUILTIN_MATH=true
 IPV6=yes
 
-CROSS_CONFIGURATION_GCC_VERSION=7.2.0
+CROSS_CONFIGURATION_GCC_VERSION=6.4.0
 CROSS_CONFIGURATION_GLIBC_VERSION=2.25
 
-NATIVE_GCC_VERSION=7.2.0
+NATIVE_GCC_VERSION=6.4.0
 GCC_SOURCE=gcc-$(NATIVE_GCC_VERSION).tar.xz
 GCC_UNZIP=xzcat
 
@@ -121,7 +121,7 @@ $(TARGET_CROSS_TOP)/.built: $(TARGET_CROSS_TOP)/.configured
 	ln -sf powerpc-buildroot-linux-gnu-gccgo $(TARGET_CROSS_TOP)/bin/gccgo
 	install -m 644 $(BUILDROOT-PPC_603E_SOURCE_DIR)/videodev.h $(TARGET_CROSS_TOP)/powerpc-buildroot-linux-gnu/sysroot/usr/include/linux
 	cp -af  $(TARGET_CROSS_TOP)/powerpc-buildroot-linux-gnu/sysroot/lib/* \
-		$(TARGET_CROSS_TOP)/lib/gcc/powerpc-buildroot-linux-gnu/7.2.0/*.a $(GLIBC-OPT_LIBS_SOURCE_DIR)/
+		$(TARGET_CROSS_TOP)/lib/gcc/powerpc-buildroot-linux-gnu/6.4.0/*.a $(GLIBC-OPT_LIBS_SOURCE_DIR)/
 	touch $@
 
 GCC_TARGET_NAME := powerpc-buildroot-linux-gnu
@@ -130,7 +130,7 @@ GCC_CPPFLAGS := -D_LARGEFILE_SOURCE -D_LARGEFILE64_SOURCE -D_FILE_OFFSET_BITS=64
 
 GCC_EXTRA_CONF_ENV := ac_cv_lbl_unaligned_fail=yes ac_cv_func_mmap_fixed_mapped=yes ac_cv_func_memcmp_working=yes ac_cv_have_decl_malloc=yes gl_cv_func_malloc_0_nonnull=yes ac_cv_func_malloc_0_nonnull=yes ac_cv_func_calloc_0_nonnull=yes ac_cv_func_realloc_0_nonnull=yes lt_cv_sys_lib_search_path_spec="" ac_cv_c_bigendian=yes
 
-NATIVE_GCC_EXTRA_CONFIG_ARGS=--with-gxx-include-dir=$(TARGET_PREFIX)/include/c++/7.2.0 --disable-__cxa_atexit --with-gnu-ld --disable-libssp --disable-libquadmath --enable-tls --disable-libmudflap --enable-threads --without-isl --without-cloog --disable-decimal-float --with-cpu=603e --enable-shared --disable-libgomp --with-gmp=$(STAGING_PREFIX) --with-mpfr=$(STAGING_PREFIX) --with-mpc=$(STAGING_PREFIX) --with-default-libstdcxx-abi=gcc4-compatible --with-system-zlib
+NATIVE_GCC_EXTRA_CONFIG_ARGS=--with-gxx-include-dir=$(TARGET_PREFIX)/include/c++/6.4.0 --disable-__cxa_atexit --with-gnu-ld --disable-libssp --disable-libquadmath --enable-tls --disable-libmudflap --enable-threads --without-isl --without-cloog --disable-decimal-float --with-cpu=603e --enable-shared --disable-libgomp --with-gmp=$(STAGING_PREFIX) --with-mpfr=$(STAGING_PREFIX) --with-mpc=$(STAGING_PREFIX) --with-default-libstdcxx-abi=gcc4-compatible --with-system-zlib
 
 NATIVE_GCC_ADDITIONAL_DEPS=zlib
 
