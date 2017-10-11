@@ -215,7 +215,7 @@ hplip: $(HPLIP_BUILD_DIR)/.built
 #
 $(HPLIP_BUILD_DIR)/.staged: $(HPLIP_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install -j1
 	touch $@
 
 hplip-stage: $(HPLIP_BUILD_DIR)/.staged
@@ -253,7 +253,7 @@ $(HPLIP_IPK_DIR)/CONTROL/control:
 #
 $(HPLIP_IPK): $(HPLIP_BUILD_DIR)/.built
 	rm -rf $(HPLIP_IPK_DIR) $(BUILD_DIR)/hplip_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(HPLIP_BUILD_DIR) DESTDIR=$(HPLIP_IPK_DIR) install-strip
+	$(MAKE) -C $(HPLIP_BUILD_DIR) DESTDIR=$(HPLIP_IPK_DIR) install-strip -j1
 	rm -rf $(HPLIP_IPK_DIR)$(TARGET_PREFIX)/lib/*.la $(HPLIP_IPK_DIR)$(TARGET_PREFIX)/lib/*/*.la
 	chmod 755 $(HPLIP_IPK_DIR)$(TARGET_PREFIX)/lib/cups/*
 #	$(INSTALL) -d $(HPLIP_IPK_DIR)$(TARGET_PREFIX)/etc/
