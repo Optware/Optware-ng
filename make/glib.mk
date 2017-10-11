@@ -56,7 +56,7 @@ GLIB_PATCHES=$(GLIB_SOURCE_DIR)/eventfd_detection.patch
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-GLIB_CPPFLAGS=
+GLIB_CPPFLAGS=-Wno-error=format-nonliteral
 GLIB_LDFLAGS=-Wl,-rpath-link,$(GLIB_BUILD_DIR)/gio/.libs -Wl,-rpath-link,$(GLIB_BUILD_DIR)/glib/.libs \
 	-Wl,-rpath-link,$(GLIB_BUILD_DIR)/gmodule/.libs -Wl,-rpath-link,$(GLIB_BUILD_DIR)/gobject/.libs \
 	-Wl,-rpath-link,$(GLIB_BUILD_DIR)/gthread/.libs -L$(GLIB_BUILD_DIR)/gio/.libs \
