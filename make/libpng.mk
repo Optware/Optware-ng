@@ -181,7 +181,7 @@ $(LIBPNG_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(LIBPNG_IPK): $(LIBPNG_BUILD_DIR)/.built
-	rm -rf $(LIBPNG_IPK_DIR) $(LIBPNG_IPK)
+	rm -rf $(LIBPNG_IPK_DIR) $(BUILD_DIR)/libpng_*_$(TARGET_ARCH).ipk
 	$(INSTALL) -d $(LIBPNG_IPK_DIR)$(TARGET_PREFIX)
 	$(MAKE) -C $(LIBPNG_BUILD_DIR) prefix=$(LIBPNG_IPK_DIR)$(TARGET_PREFIX) install-strip
 	rm -f $(LIBPNG_IPK_DIR)$(TARGET_PREFIX)/lib/*.la
