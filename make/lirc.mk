@@ -50,7 +50,8 @@ LIRC_IPK_VERSION=1
 # LIRC_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#LIRC_PATCHES=$(LIRC_SOURCE_DIR)/configure.patch
+LIRC_PATCHES=\
+$(LIRC_SOURCE_DIR)/zotac.c.patch \
 
 #
 # If the compilation of the package requires additional
@@ -126,7 +127,7 @@ $(LIRC_BUILD_DIR)/.configured: $(DL_DIR)/$(LIRC_SOURCE) $(LIRC_PATCHES) make/lir
 	$(LIRC_UNZIP) $(DL_DIR)/$(LIRC_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIRC_PATCHES)" ; \
 		then cat $(LIRC_PATCHES) | \
-		$(PATCH) -d $(BUILD_DIR)/$(LIRC_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIRC_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIRC_DIR)" != "$(LIRC_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(LIRC_DIR) $(LIRC_BUILD_DIR) ; \
