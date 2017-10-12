@@ -36,19 +36,13 @@ RRDTOOL_DESCRIPTION=Round-Robin Database tool. Database collator and plotter
 RRDTOOL_SECTION=misc
 RRDTOOL_PRIORITY=optional
 RRDTOOL_DEPENDS=zlib, libpng, freetype, libart
-RRDTOOL_SUGGESTS=
-ifneq (,$(filter perl, $(PACKAGES)))
-RRDTOOL_PERL=--enable-perl --enable-perl-site-install
-else
-RRDTOOL_PERL=--disable-perl
-endif
-RRDTOOL_SUGGESTS=
+RRDTOOL_SUGGESTS=perl
 RRDTOOL_CONFLICTS=
 
 #
 # RRDTOOL_IPK_VERSION should be incremented when the ipk changes.
 #
-RRDTOOL_IPK_VERSION=1
+RRDTOOL_IPK_VERSION=2
 
 #
 # RRDTOOL_CONFFILES should be a list of user-editable files
@@ -119,10 +113,7 @@ rrdtool-source: $(DL_DIR)/$(RRDTOOL_SOURCE) $(RRDTOOL_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(RRDTOOL_BUILD_DIR)/.configured: $(DL_DIR)/$(RRDTOOL_SOURCE) $(RRDTOOL_PATCHES) make/rrdtool.mk
-	$(MAKE) zlib-stage libpng-stage freetype-stage libart-stage
-ifneq (,$(filter perl, $(PACKAGES)))
-	$(MAKE) perl-extutils-parsexs-stage
-endif
+	$(MAKE) zlib-stage libpng-stage freetype-stage libart-stage perl-hostperl
 	rm -rf $(BUILD_DIR)/$(RRDTOOL_DIR) $(RRDTOOL_BUILD_DIR)
 	$(RRDTOOL_UNZIP) $(DL_DIR)/$(RRDTOOL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(RRDTOOL_PATCHES)" ; \
@@ -150,7 +141,7 @@ endif
 		--disable-nls \
 		--disable-tcl \
 		--disable-ruby \
-		$(RRDTOOL_PERL) \
+		--disable-perl \
 		--disable-python \
 		--program-prefix="" \
 		--disable-rpath \
@@ -161,7 +152,6 @@ endif
 		--disable-mmap \
 		--disable-x \
 	)
-ifneq (,$(filter perl, $(PACKAGES)))
 	for m in perl-piped perl-shared; do \
 	    cd $(@D)/bindings/$$m; \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
@@ -177,9 +167,8 @@ ifneq (,$(filter perl, $(PACKAGES)))
 		; \
 	    sed -i -e '/^PERLRUN *=/s|$$| -I$(STAGING_LIB_DIR)/perl5/site_perl/$(PERL_VERSION)|' \
 	           -e '/^LDDLFLAGS *=/s|=.*|= -shared -Wl,-rpath -Wl,$(TARGET_PREFIX)/lib -L$(STAGING_LIB_DIR) $(PERL_LDFLAGS_EXTRA)|' \
-	    	Makefile; \
+		Makefile; \
 	done
-endif   
 	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
@@ -190,10 +179,9 @@ rrdtool-unpack: $(RRDTOOL_BUILD_DIR)/.configured
 #
 $(RRDTOOL_BUILD_DIR)/.built: $(RRDTOOL_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(@D)/src librrd.la
+	$(MAKE) -C $(@D)
 	$(MAKE) -C $(@D)/bindings/perl-piped -j1
 	$(MAKE) -C $(@D)/bindings/perl-shared -j1
-	$(MAKE) -C $(@D) PERL="echo > /dev/null"
 	touch $@
 
 #
@@ -206,7 +194,7 @@ rrdtool: $(RRDTOOL_BUILD_DIR)/.built
 #
 $(RRDTOOL_BUILD_DIR)/.staged: $(RRDTOOL_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install PERL="echo > /dev/null"
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	rm -f $(STAGING_LIB_DIR)/librrd.la
 	rm -f $(STAGING_LIB_DIR)/librrd_th.la
 	touch $@
@@ -246,17 +234,15 @@ $(RRDTOOL_IPK_DIR)/CONTROL/control:
 #
 $(RRDTOOL_IPK): $(RRDTOOL_BUILD_DIR)/.built
 	rm -rf $(RRDTOOL_IPK_DIR) $(BUILD_DIR)/rrdtool_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(RRDTOOL_BUILD_DIR) DESTDIR=$(RRDTOOL_IPK_DIR) install-strip PERL="echo > /dev/null"
+	$(MAKE) -C $(RRDTOOL_BUILD_DIR) DESTDIR=$(RRDTOOL_IPK_DIR) install-strip
 	$(MAKE) -C $(RRDTOOL_BUILD_DIR)/bindings/perl-piped DESTDIR=$(RRDTOOL_IPK_DIR) install -j1
 	$(MAKE) -C $(RRDTOOL_BUILD_DIR)/bindings/perl-shared DESTDIR=$(RRDTOOL_IPK_DIR) install -j1
 	rm -f $(RRDTOOL_IPK_DIR)$(TARGET_PREFIX)/lib/librrd.la $(RRDTOOL_IPK_DIR)$(TARGET_PREFIX)/lib/librrd_th.la
 	rm -f $(RRDTOOL_IPK_DIR)$(TARGET_PREFIX)/lib/librrd.a $(RRDTOOL_IPK_DIR)$(TARGET_PREFIX)/lib/librrd_th.a
-ifneq (,$(filter perl, $(PACKAGES)))
 	cd $(RRDTOOL_IPK_DIR)$(TARGET_PREFIX)/lib/perl5; \
 		find . -name '*.so' -exec chmod +w {} \; ; \
 		find . -name '*.so' -exec $(STRIP_COMMAND) {} \; ; \
 		find . -name '*.so' -exec chmod -w {} \;
-endif
 #	$(INSTALL) -d $(RRDTOOL_IPK_DIR)$(TARGET_PREFIX)/etc/
 #	$(INSTALL) -m 644 $(RRDTOOL_SOURCE_DIR)/rrdtool.conf $(RRDTOOL_IPK_DIR)$(TARGET_PREFIX)/etc/rrdtool.conf
 #	$(INSTALL) -d $(RRDTOOL_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
@@ -266,6 +252,7 @@ endif
 #	$(INSTALL) -m 755 $(RRDTOOL_SOURCE_DIR)/prerm $(RRDTOOL_IPK_DIR)/CONTROL/prerm
 	echo $(RRDTOOL_CONFFILES) | sed -e 's/ /\n/g' > $(RRDTOOL_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(RRDTOOL_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(RRDTOOL_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
