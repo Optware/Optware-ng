@@ -14,7 +14,7 @@ PYTHON_DEPENDS=python27
 PYTHON_SUGGESTS=
 PYTHON_CONFLICTS=
 
-PYTHON_IPK_VERSION=1
+PYTHON_IPK_VERSION=2
 
 PYTHON_IPK_DIR=$(BUILD_DIR)/python-$(PYTHON_VERSION)-ipk
 PYTHON_IPK=$(BUILD_DIR)/python_$(PYTHON_VERSION)-$(PYTHON_IPK_VERSION)_$(TARGET_ARCH).ipk
@@ -51,9 +51,9 @@ $(PYTHON_IPK): make/python.mk
 	$(INSTALL) -d $(PYTHON_IPK_DIR)$(TARGET_PREFIX)/bin
 	(cd $(PYTHON_IPK_DIR)$(TARGET_PREFIX)/bin; \
 		ln -s python2.7 python; \
-		ln -s idle2.7 idle; \
-		ln -s pydoc2.7 pydoc; \
-		ln -s smtpd2.7.py smtpd.py; \
+		ln -s idle-2.7 idle; \
+		ln -s pydoc-2.7 pydoc; \
+		ln -s smtpd-2.7.py smtpd.py; \
 	)
 ifeq ($(OPTWARE_WRITE_OUTSIDE_OPT_ALLOWED),true)
 	$(INSTALL) -d $(PYTHON_IPK_DIR)/usr/bin
