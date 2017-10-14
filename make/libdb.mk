@@ -186,7 +186,7 @@ $(LIBDB_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(LIBDB_IPK): $(LIBDB_BUILD_DIR)/build_unix/.libs/libdb-$(LIBDB_LIB_VERSION).a
-	rm -rf $(LIBDB_IPK_DIR) $(LIBDB_IPK)
+	rm -rf $(LIBDB_IPK_DIR) $(BUILD_DIR)/libdb_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBDB_BUILD_DIR)/build_unix DESTDIR=$(LIBDB_IPK_DIR) install_setup install_include install_lib
 	-$(STRIP_COMMAND) $(LIBDB_IPK_DIR)$(TARGET_PREFIX)/lib/*.so
 	rm -f $(LIBDB_IPK_DIR)$(TARGET_PREFIX)/lib/*.{la,a}
