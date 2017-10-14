@@ -161,6 +161,7 @@ $(LIBC-DEV_IPK): make/libc-dev.mk
 	rm -rf $(LIBC-DEV_IPK_DIR)$(TARGET_PREFIX)/include/zlib.h \
 		$(LIBC-DEV_IPK_DIR)$(TARGET_PREFIX)/include/zconf.h \
 		$(LIBC-DEV_IPK_DIR)$(TARGET_PREFIX)/include/iconv.h \
+		$(LIBC-DEV_IPK_DIR)$(TARGET_PREFIX)/include/libintl.h \
 		$(LIBC-DEV_IPK_DIR)$(TARGET_PREFIX)/include/openssl
 	$(INSTALL) -d $(LIBC-DEV_IPK_DIR)/$(LIBC-DEV_CRT_DIR)
 	rsync -l $(LIBC-DEV_USRLIBDIR)/*crt*.o $(LIBC-DEV_IPK_DIR)/$(LIBC-DEV_CRT_DIR)
