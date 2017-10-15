@@ -30,7 +30,7 @@ SED_CONFLICTS=
 #
 # SED_IPK_VERSION should be incremented when the ipk changes.
 #
-SED_IPK_VERSION=1
+SED_IPK_VERSION=2
 
 #
 # SED_CONFFILES should be a list of user-editable files
@@ -111,6 +111,7 @@ $(SED_BUILD_DIR)/.configured: $(DL_DIR)/$(SED_SOURCE) $(SED_PATCHES) make/sed.mk
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
+		--disable-acl \
 	)
 	touch $@
 
