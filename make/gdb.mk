@@ -21,7 +21,7 @@
 #
 GDB_SITE=http://ftp.gnu.org/gnu/gdb
 GDB_VERSION=8.0.1
-GDB_IPK_VERSION=1
+GDB_IPK_VERSION=2
 GDB_SOURCE=gdb-$(GDB_VERSION).tar.xz
 GDB_UNZIP=xzcat
 GDB_DIR=gdb-$(GDB_VERSION)
@@ -226,7 +226,8 @@ $(GDB_IPK): $(GDB_BUILD_DIR)/.built
 	ls -la $(GDB_BUILD_DIR)/.built
 	rm -rf $(GDB_IPK_DIR) $(BUILD_DIR)/gdb_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GDB_BUILD_DIR) prefix=$(GDB_IPK_DIR)$(TARGET_PREFIX) install
-	rm -f $(GDB_IPK_DIR)$(TARGET_PREFIX)/info/standards.info
+	rm -f $(GDB_IPK_DIR)$(TARGET_PREFIX)/info/standards.info \
+		$(GDB_IPK_DIR)$(TARGET_PREFIX)/include/plugin-api.h
 	-$(STRIP_COMMAND) $(GDB_IPK_DIR)$(TARGET_PREFIX)/bin/run
 	# rm the following files to avoid conflict with binutils
 	for f in \
