@@ -316,7 +316,7 @@ COMMON_PACKAGES = \
 	ircd-hybrid irssi ivorbis-tools \
 	jabberd jamvm jed jfsutils jikes jove joe \
 	kamailio kbproto keychain kismet kissdx knock \
-	lame launchtool lcd4linux ldconfig ldd leafnode less lftp lha \
+	lame launchtool lcd4linux ldconfig ldd lddtree leafnode less lftp lha \
 	liba52 libacl libao libart libass libassuan libatomic-ops libbt libcap \
 	libcapi20 libcdio libconfig libcroco libcurl \
 	libdaemon libdb libdb52 libdlna \

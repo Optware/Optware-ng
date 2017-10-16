@@ -1,0 +1,96 @@
+--- a/lddtree.sh
++++ b/lddtree.sh
+@@ -1,8 +1,11 @@
+-#!/bin/sh
++#!%OPTWARE_TARGET_PREFIX%/bin/bash
+ # Copyright 2007-2013 Gentoo Foundation
+ # Copyright 2007-2013 Mike Frysinger <vapier@gentoo.org>
+ # Copyright 2014-2015 Natanael Copa <ncopa@alpinelinux.org>
+ # Distributed under the terms of the GNU General Public License v2
++SED=%OPTWARE_TARGET_PREFIX%/bin/gnu-sed
++OBJDUMP=%OPTWARE_TARGET_PREFIX%/bin/objdump
++READELF=%OPTWARE_TARGET_PREFIX%/bin/readelf
+ 
+ argv0=${0##*/}
+ version=1.26
+@@ -63,33 +66,33 @@ elf_specs_scanelf() {
+ 	# LINUX and GNU are the same thing, as are NONE and SYSV, so normalize
+ 	# GNU & LINUX to NONE. #442024 #464380
+ 	scanelf -BF '#F%a %M %D %I' "$1" | \
+-		sed -r 's: (LINUX|GNU)$: NONE:'
++		$SED -r 's: (LINUX|GNU)$: NONE:'
+ }
+ 
+ # functions for binutils backend
+ elf_rpath_binutils() {
+-	objdump -x "$@" | awk '$1 == "RUNPATH" { if($2!="") {runpath=$2;} }  $1 == "RPATH" { if($2!="") {rpath=$2;} } END { if(runpath!="") {print runpath;} else {print rpath;} }'
++	$OBJDUMP -x "$@" | awk '$1 == "RUNPATH" { if($2!="") {runpath=$2;} }  $1 == "RPATH" { if($2!="") {rpath=$2;} } END { if(runpath!="") {print runpath;} else {print rpath;} }'
+ }
+ 
+ elf_interp_binutils() {
+-	# readelf -p .interp ouputs:
++	# $READELF -p .interp ouputs:
+ 	#
+ 	# String dump of section '.interp':
+ 	#  [     0]  /lib/ld-musl-x86_64.so.1
+ 	#
+-	readelf  -p .interp "$1" | sed -E -n '/\[\s*[0-9]\]/s/^\s*\[.*\]\s*(.*)/\1/p'
++	$READELF  -p .interp "$1" | $SED -E -n '/\[\s*[0-9]\]/s/^\s*\[.*\]\s*(.*)/\1/p'
+ }
+ 
+ elf_needed_binutils() {
+-	objdump -x "$@" | awk '$1 == "NEEDED" { line=line sep $2 ; sep="," } END { print line }'
++	$OBJDUMP -x "$@" | awk '$1 == "NEEDED" { line=line sep $2 ; sep="," } END { print line }'
+ }
+ 
+ elf_specs_binutils() {
+ 	# get Class, Data, Machine and OS/ABI.
+ 	# the OS/ABI 'GNU', 'System V' and 'Linux' are compatible so normalize
+-	readelf -h "$1" \
++	$READELF -h "$1" \
+ 		| awk -F: '$1 ~ /Class|Data|Machine|OS.ABI/ {gsub(/^ +/, "", $2); print $2}' \
+-		| sed -E -e 's/UNIX - (System V|Linux|GNU)/UNIX/' \
++		| $SED -E -e 's/UNIX - (System V|Linux|GNU)/UNIX/' \
+ 		| tr '\n' ' '
+ }
+ 
+@@ -138,7 +141,7 @@ find_elf() {
+ 		if [ "${c_last_needed_by}" != "${needed_by}" ] ; then
+ 			c_last_needed_by="${needed_by}"
+ 			c_last_needed_by_rpaths=$(elf_rpath "${needed_by}" | \
+-				sed -e "s:[$]ORIGIN:${needed_by%/*}:")
++				$SED -e "s:[$]ORIGIN:${needed_by%/*}:")
+ 		fi
+ 		if [ -n "${c_last_needed_by_rpaths}" ]; then
+ 			check_paths "${elf}" "${c_last_needed_by_rpaths}" && return 0
+@@ -253,7 +256,7 @@ show_elf() {
+ 			# Extract the default lib paths out of the ldso.
+ 			lib_paths_ldso=$(
+ 				strings "${interp}" | \
+-				sed -nr -e "/^\/.*lib/{s|^/?|${ROOT}|;s|/$||;s|/?:/?|:${ROOT}|g;p}" | \
++				$SED -nr -e "/^\/.*lib/{s|^/?|${ROOT}|;s|/$||;s|/?:/?|:${ROOT}|g;p}" | \
+ 				tr '\n' ':'
+ 			)
+ 		fi
+@@ -314,14 +317,14 @@ shift $(( $OPTIND - 1))
+ 
+ ${SET_X} && set -x
+ 
+-if which scanelf >/dev/null 2>&1; then
+-	BACKEND=scanelf
+-elif which objdump >/dev/null 2>&1 && which readelf >/dev/null 2>&1; then
++#if which scanelf >/dev/null 2>&1; then
++#	BACKEND=scanelf
++#elif which $OBJDUMP >/dev/null 2>&1 && which $READELF >/dev/null 2>&1; then
+ 	BACKEND=binutils
+-else
+-	error "This tool needs either scanelf or binutils (objdump and readelf)"
+-	exit 1
+-fi
++#else
++#	error "This tool needs either scanelf or binutils (objdump and readelf)"
++#	exit 1
++#fi
+ 
+ ret=0
+ for elf ; do
