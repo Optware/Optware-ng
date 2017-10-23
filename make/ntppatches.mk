@@ -37,7 +37,7 @@ $(NTPPATCHES_BUILD_DIR)/.built: $(NTPPATCHES_BUILD_DIR)/.configured
 ntppatches: $(NTPPATCHES_BUILD_DIR)/.built
 
 $(NTPPATCHES_IPK): $(NTPPATCHES_BUILD_DIR)/.built
-	rm -rf $(NTPPATCHES_IPK_DIR) $(NTPPATCHES_IPK)
+	rm -rf $(NTPPATCHES_IPK_DIR) $(BUILD_DIR)/ntppatches_*_$(TARGET_ARCH).ipk
 	mkdir -p $(NTPPATCHES_IPK_DIR)
 	$(INSTALL) -d $(NTPPATCHES_IPK_DIR)/unslung
 	$(INSTALL) -m 755 $(NTPPATCHES_SOURCE_DIR)/rc.crond $(NTPPATCHES_IPK_DIR)/unslung/rc.crond

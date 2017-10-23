@@ -85,7 +85,7 @@ $(GDBM_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(GDBM_CONFLICTS)" >>$@
 
 $(GDBM_IPK): $(GDBM_BUILD_DIR)/.built
-	rm -rf $(GDBM_IPK_DIR) $(GDBM_IPK)
+	rm -rf $(GDBM_IPK_DIR) $(BUILD_DIR)/gdbm_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(GDBM_BUILD_DIR) INSTALL_ROOT=$(GDBM_IPK_DIR) install install-compat -j1
 	$(STRIP_COMMAND) $(GDBM_IPK_DIR)$(TARGET_PREFIX)/lib/*.so.*
 	rm -rf $(GDBM_IPK_DIR)$(TARGET_PREFIX)/{man,info}

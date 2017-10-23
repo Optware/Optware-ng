@@ -169,7 +169,7 @@ $(LIBUSB_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(LIBUSB_IPK): $(LIBUSB_BUILD_DIR)/.built
-	rm -rf $(LIBUSB_IPK_DIR) $(LIBUSB_IPK)
+	rm -rf $(LIBUSB_IPK_DIR) $(BUILD_DIR)/libusb_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBUSB_BUILD_DIR) DESTDIR=$(LIBUSB_IPK_DIR) \
 		SUBDIRS=. lib_LTLIBRARIES=libusb.la install-strip
 	( cd $(LIBUSB_BUILD_DIR)/tests ; \

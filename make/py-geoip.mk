@@ -310,7 +310,6 @@ $(PY3-GEOIP_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(PY25-GEOIP_IPK) $(PY26-GEOIP_IPK) $(PY27-GEOIP_IPK) $(PY3-GEOIP_IPK): $(PY-GEOIP_BUILD_DIR)/.built
-	rm -rf $(BUILD_DIR)/py*-openssl_*_$(TARGET_ARCH).ipk
 	# 2.5
 	rm -rf $(PY25-GEOIP_IPK_DIR) $(BUILD_DIR)/py25-geoip_*_$(TARGET_ARCH).ipk
 	(cd $(PY-GEOIP_BUILD_DIR)/2.5; \

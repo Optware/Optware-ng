@@ -167,7 +167,7 @@ $(CTORRENT_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(CTORRENT_IPK): $(CTORRENT_BUILD_DIR)/.built
-	rm -rf $(CTORRENT_IPK_DIR) $(CTORRENT_IPK)
+	rm -rf $(CTORRENT_IPK_DIR) $(BUILD_DIR)/ctorrent_*_$(TARGET_ARCH).ipk
 	$(INSTALL) -d $(CTORRENT_IPK_DIR)$(TARGET_PREFIX)/bin
 	$(STRIP_COMMAND) $(CTORRENT_BUILD_DIR)/ctorrent -o $(CTORRENT_IPK_DIR)$(TARGET_PREFIX)/bin/ctorrent
 #	$(INSTALL) -d $(CTORRENT_IPK_DIR)$(TARGET_PREFIX)/etc/init.d

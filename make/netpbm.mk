@@ -155,7 +155,7 @@ netpbm-stage: $(STAGING_LIB_DIR)/libnetpbm.so.$(NETPBM_VERSION)
 # You may need to patch your application to make it use these locations.
 #
 $(NETPBM_IPK): $(NETPBM_BUILD_DIR)/.built
-	rm -rf $(NETPBM_IPK_DIR) $(NETPBM_IPK)
+	rm -rf $(NETPBM_IPK_DIR) $(BUILD_DIR)/netpbm_*_$(TARGET_ARCH).ipk
 	$(INSTALL) -d $(NETPBM_IPK_DIR)$(TARGET_PREFIX)/bin
 	$(STRIP_COMMAND) $(NETPBM_BUILD_DIR)/netpbm -o $(NETPBM_IPK_DIR)$(TARGET_PREFIX)/bin/netpbm
 	$(INSTALL) -d $(NETPBM_IPK_DIR)$(TARGET_PREFIX)/etc/init.d

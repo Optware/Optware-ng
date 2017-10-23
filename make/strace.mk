@@ -171,7 +171,7 @@ $(STRACE_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(STRACE_IPK): $(STRACE_BUILD_DIR)/.built
-	rm -rf $(STRACE_IPK_DIR) $(STRACE_IPK)
+	rm -rf $(STRACE_IPK_DIR) $(BUILD_DIR)/strace_*_$(TARGET_ARCH).ipk
 	$(INSTALL) -d $(STRACE_IPK_DIR)$(TARGET_PREFIX)/bin
 	$(STRIP_COMMAND) $(STRACE_BUILD_DIR)/strace -o $(STRACE_IPK_DIR)$(TARGET_PREFIX)/bin/strace
 #	$(INSTALL) -d $(STRACE_IPK_DIR)/CONTROL

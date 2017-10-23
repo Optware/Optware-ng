@@ -165,7 +165,7 @@ $(NFS_SERVER_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(NFS_SERVER_IPK): $(NFS_SERVER_BUILD_DIR)/rpc.nfsd
-	rm -rf $(NFS_SERVER_IPK_DIR) $(NFS_SERVER_IPK)
+	rm -rf $(NFS_SERVER_IPK_DIR) $(BUILD_DIR)/nfs-server_*_$(TARGET_ARCH).ipk
 	$(INSTALL) -d $(NFS_SERVER_IPK_DIR)$(TARGET_PREFIX)/sbin
 	$(STRIP_COMMAND) $(NFS_SERVER_BUILD_DIR)/rpc.nfsd -o $(NFS_SERVER_IPK_DIR)$(TARGET_PREFIX)/sbin/rpc.nfsd
 	$(STRIP_COMMAND) $(NFS_SERVER_BUILD_DIR)/rpc.mountd -o $(NFS_SERVER_IPK_DIR)$(TARGET_PREFIX)/sbin/rpc.mountd

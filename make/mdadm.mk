@@ -166,7 +166,7 @@ $(MDADM_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(MDADM_IPK): $(MDADM_BUILD_DIR)/.built
-	rm -rf $(MDADM_IPK_DIR) $(MDADM_IPK)
+	rm -rf $(MDADM_IPK_DIR) $(BUILD_DIR)/mdadm_*_$(TARGET_ARCH).ipk
 	$(INSTALL) -d $(MDADM_IPK_DIR)$(TARGET_PREFIX)/sbin
 	$(INSTALL) -d $(MDADM_IPK_DIR)$(TARGET_PREFIX)/share/man/man8
 	$(INSTALL) -d $(MDADM_IPK_DIR)$(TARGET_PREFIX)/share/man/man4

@@ -183,7 +183,7 @@ $(LIBUSB1_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(LIBUSB1_IPK): $(LIBUSB1_BUILD_DIR)/.built
-	rm -rf $(LIBUSB1_IPK_DIR) $(LIBUSB1_IPK)
+	rm -rf $(LIBUSB1_IPK_DIR) $(BUILD_DIR)/libusb1_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(LIBUSB1_BUILD_DIR) DESTDIR=$(LIBUSB1_IPK_DIR) install-strip
 	rm -rf $(LIBUSB1_IPK_DIR)$(TARGET_PREFIX)/lib/*.la $(LIBUSB1_IPK_DIR)$(TARGET_PREFIX)/lib/*.a
 	$(MAKE) $(LIBUSB1_IPK_DIR)/CONTROL/control

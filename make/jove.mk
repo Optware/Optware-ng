@@ -138,7 +138,7 @@ $(JOVE_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(JOVE_IPK): $(JOVE_BUILD_DIR)/.built
-	rm -rf $(JOVE_IPK_DIR) $(JOVE_IPK)
+	rm -rf $(JOVE_IPK_DIR) $(BUILD_DIR)/jove_*_$(TARGET_ARCH).ipk
 	$(INSTALL) -d $(JOVE_IPK_DIR)$(TARGET_PREFIX)/bin
 	$(STRIP_COMMAND) $(JOVE_BUILD_DIR)/jjove -o $(JOVE_IPK_DIR)$(TARGET_PREFIX)/bin/jove
 	$(MAKE) $(JOVE_IPK_DIR)/CONTROL/control

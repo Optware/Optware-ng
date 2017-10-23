@@ -180,7 +180,7 @@ $(LIBCAPI20_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(LIBCAPI20_IPK): $(LIBCAPI20_BUILD_DIR)/.built
-	rm -rf $(LIBCAPI20_IPK_DIR) $(LIBCAPI20_IPK)
+	rm -rf $(LIBCAPI20_IPK_DIR) $(BUILD_DIR)/libcapi20_*_$(TARGET_ARCH).ipk
 	$(INSTALL) -d $(LIBCAPI20_IPK_DIR)$(TARGET_PREFIX)
 	$(MAKE) -C $(LIBCAPI20_BUILD_DIR) prefix=$(LIBCAPI20_IPK_DIR)$(TARGET_PREFIX) install-strip
 	rm -f $(LIBCAPI20_IPK_DIR)$(TARGET_PREFIX)/lib/*.la

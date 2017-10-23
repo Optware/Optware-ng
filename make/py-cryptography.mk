@@ -315,7 +315,6 @@ $(PY3-CRYPTOGRAPHY_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(PY26-CRYPTOGRAPHY_IPK) $(PY27-CRYPTOGRAPHY_IPK) $(PY3-CRYPTOGRAPHY_IPK): $(PY-CRYPTOGRAPHY_BUILD_DIR)/.built
-	rm -rf $(BUILD_DIR)/py*-openssl_*_$(TARGET_ARCH).ipk
 	# 2.6
 	rm -rf $(PY26-CRYPTOGRAPHY_IPK_DIR) $(BUILD_DIR)/py26-cryptography_*_$(TARGET_ARCH).ipk
 	(cd $(PY-CRYPTOGRAPHY_BUILD_DIR)/2.6; \

@@ -134,7 +134,7 @@ $(CCXSTREAM_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(CCXSTREAM_IPK): $(CCXSTREAM_BUILD_DIR)/.built
-	rm -rf $(CCXSTREAM_IPK_DIR) $(CCXSTREAM_IPK)
+	rm -rf $(CCXSTREAM_IPK_DIR) $(BUILD_DIR)/ccxstream_*_$(TARGET_ARCH).ipk
 	$(INSTALL) -d $(CCXSTREAM_IPK_DIR)$(TARGET_PREFIX)/doc/ccxstream
 	$(INSTALL) -m 644 $(CCXSTREAM_BUILD_DIR)/README $(CCXSTREAM_IPK_DIR)$(TARGET_PREFIX)/doc/ccxstream
 	$(INSTALL) -d $(CCXSTREAM_IPK_DIR)$(TARGET_PREFIX)/sbin

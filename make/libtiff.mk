@@ -192,7 +192,7 @@ $(LIBTIFF_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(LIBTIFF_IPK): $(LIBTIFF_BUILD_DIR)/.built
-	rm -rf $(LIBTIFF_IPK_DIR) $(LIBTIFF_IPK)
+	rm -rf $(LIBTIFF_IPK_DIR) $(BUILD_DIR)/libtiff_*_$(TARGET_ARCH).ipk
 	$(INSTALL) -d $(LIBTIFF_IPK_DIR)$(TARGET_PREFIX)/bin
 	$(MAKE) -C $(LIBTIFF_BUILD_DIR) DESTDIR=$(LIBTIFF_IPK_DIR) install-exec transform=''
 	$(STRIP_COMMAND) $(LIBTIFF_IPK_DIR)$(TARGET_PREFIX)/bin/*
