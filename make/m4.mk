@@ -196,7 +196,7 @@ $(M4_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(M4_IPK): $(M4_BUILD_DIR)/.built
-	rm -rf $(M4_IPK_DIR) $(M4_IPK)
+	rm -rf $(M4_IPK_DIR) $(BUILD_DIR)/m4_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(M4_BUILD_DIR) DESTDIR=$(M4_IPK_DIR) install-strip
 #	$(INSTALL) -d $(M4_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
 #	$(INSTALL) -m 755 $(M4_SOURCE_DIR)/rc.m4 $(M4_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXm4
