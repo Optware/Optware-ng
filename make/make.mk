@@ -177,7 +177,7 @@ $(MAKE_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(MAKE_IPK): $(MAKE_BUILD_DIR)/.built
-	rm -rf $(MAKE_IPK_DIR) $(MAKE_IPK)
+	rm -rf $(MAKE_IPK_DIR) $(BUILD_DIR)/make_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(MAKE_BUILD_DIR) DESTDIR=$(MAKE_IPK_DIR) install-strip
 	rm -f $(MAKE_IPK_DIR)$(TARGET_PREFIX)/share/info/dir
 #	$(INSTALL) -d $(MAKE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
