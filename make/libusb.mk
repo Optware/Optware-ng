@@ -36,7 +36,9 @@ LIBUSB_IPK_VERSION=2
 # LIBUSB_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-LIBUSB_PATCHES=$(LIBUSB_SOURCE_DIR)/digitemp.patch
+LIBUSB_PATCHES=\
+$(LIBUSB_SOURCE_DIR)/digitemp.patch \
+$(LIBUSB_SOURCE_DIR)/no-werror.patch \
 
 #
 # If the compilation of the package requires additional
