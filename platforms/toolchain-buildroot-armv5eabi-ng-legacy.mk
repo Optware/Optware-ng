@@ -67,7 +67,7 @@ TOOLCHAIN_SITE=http://buildroot.uclibc.org/downloads
 TOOLCHAIN_SOURCE=buildroot-2017.08.tar.bz2
 
 UCLIBC-OPT_VERSION = $(UCLIBC_VERSION)
-UCLIBC-OPT_IPK_VERSION = 1
+UCLIBC-OPT_IPK_VERSION = 2
 UCLIBC-OPT_LIBS_SOURCE_DIR = $(TARGET_CROSS_TOP)/arm-buildroot-linux-uclibcgnueabi/sysroot/lib
 
 BUILDROOT-ARMv5EABI-NG-LEGACY_SOURCE_DIR=$(SOURCE_DIR)/buildroot-armv5eabi-ng-legacy

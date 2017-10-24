@@ -1,0 +1,11 @@
+--- ./libc/inet/getaddrinfo.c.orig	2017-07-29 01:55:29.000000000 +0000
++++ ./libc/inet/getaddrinfo.c	2017-10-24 07:31:22.333580359 +0000
+@@ -849,7 +849,7 @@ static void __gai_conf_parse(void)
+ 	parser_t *parser;
+ 	char **tok = NULL;
+ 
+-	parser = config_open("/etc/gai.conf");
++	parser = config_open("%OPTWARE_TARGET_PREFIX%t/etc/gai.conf");
+ 	if (!parser)
+ 		return;
+ 

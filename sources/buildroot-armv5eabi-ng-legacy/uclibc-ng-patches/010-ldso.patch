@@ -1,0 +1,36 @@
+--- a/ldso/include/dl-defs.h
++++ b/ldso/include/dl-defs.h
+@@ -35,7 +35,7 @@
+ #ifndef __LDSO_BASE_FILENAME__
+ #define __LDSO_BASE_FILENAME__ "ld.so"
+ #endif
+-#define LDSO_BASE_PATH UCLIBC_RUNTIME_PREFIX "etc/" __LDSO_BASE_FILENAME__
++#define LDSO_BASE_PATH UCLIBC_RUNTIME_PREFIX "opt/etc/" __LDSO_BASE_FILENAME__
+ 
+ #ifdef __LDSO_PRELOAD_FILE_SUPPORT__
+ #define LDSO_PRELOAD LDSO_BASE_PATH ".preload"
+--- a/ldso/ldso/dl-elf.c
++++ b/ldso/ldso/dl-elf.c
+@@ -312,8 +312,7 @@ struct elf_resolve *_dl_load_shared_libr
+ 	   standard lib directories. */
+ 	_dl_if_debug_dprint("\tsearching multilib lib path list\n");
+ 	tpnt1 = search_for_named_library(libname, rflags,
+-					UCLIBC_RUNTIME_PREFIX LDSO_MULTILIB_DIR ":"
+-					UCLIBC_RUNTIME_PREFIX "usr" LDSO_MULTILIB_DIR,
++					"%OPTWARE_TARGET_PREFIX%/" LDSO_MULTILIB_DIR ":",
+ 					rpnt, NULL);
+ 	if (tpnt1 != NULL)
+ 		return tpnt1;
+@@ -332,10 +331,9 @@ struct elf_resolve *_dl_load_shared_libr
+ 	   This list must exactly match the list in uClibc/ldso/util/ldd.c */
+ 	_dl_if_debug_dprint("\tsearching full lib path list\n");
+ 	tpnt1 = search_for_named_library(libname, rflags,
+-					UCLIBC_RUNTIME_PREFIX "lib:"
+-					UCLIBC_RUNTIME_PREFIX "usr/lib"
++					"%OPTWARE_TARGET_PREFIX%/lib:"
+ #ifndef __LDSO_CACHE_SUPPORT__
+-					":" UCLIBC_RUNTIME_PREFIX "usr/X11R6/lib"
++					":%OPTWARE_TARGET_PREFIX%/X11R6/lib"
+ #endif
+ 					, rpnt, NULL);
+ 	if (tpnt1 != NULL)
