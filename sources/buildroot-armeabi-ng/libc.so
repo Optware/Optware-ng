@@ -2,4 +2,4 @@
  * Use the shared library, but some functions are only in
  * the static library, so try that secondarily. */
 OUTPUT_FORMAT("elf32-littlearm")
-GROUP ( /lib/uclibc_nonshared.a /lib/libc.so.1 AS_NEEDED ( /lib/ld-uClibc.so.1 ) )
+GROUP ( uclibc_nonshared.a libpthread_nonshared.a libc.so.1 AS_NEEDED ( ld-uClibc.so.1 ) )

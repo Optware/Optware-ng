@@ -62,7 +62,7 @@ LIBC-DEV_NONSHARED_LIB_DIR ?= $(LIBC-DEV_LIBC_SO_DIR)
 LIBC-DEV_UCLIBC_STATIC_LIBS ?= libc.a libc_pic.a libcrypt.a libcrypt_pic.a libdl.a \
 libdl_pic.a libm.a libm_pic.a libnsl.a libnsl_pic.a libpthread.a libpthread_pic.a libresolv.a \
 libresolv_pic.a librt.a librt_pic.a libstdc++.a libthread_db.a libthread_db_pic.a libutil.a \
-libutil_pic.a uclibc_nonshared.a
+libutil_pic.a uclibc_nonshared.a libpthread_nonshared.a
 
 LIBC-DEV_GLIBC_STATIC_LIBS ?= libc.a libg.a libm.a libdl.a librt.a libanl.a libnsl.a \
 libieee.a libutil.a libcrypt.a libmcheck.a libresolv.a librpcsvc.a libstdc++*.a libpthread.a \
