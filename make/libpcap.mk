@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 LIBPCAP_SITE=http://www.tcpdump.org/release
-LIBPCAP_VERSION=1.3.0
+LIBPCAP_VERSION=1.8.1
 LIBPCAP_SOURCE=libpcap-$(LIBPCAP_VERSION).tar.gz
 LIBPCAP_DIR=libpcap-$(LIBPCAP_VERSION)
 LIBPCAP_UNZIP=zcat
@@ -35,7 +35,7 @@ LIBPCAP_CONFLICTS=
 #
 # LIBPCAP_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBPCAP_IPK_VERSION=2
+LIBPCAP_IPK_VERSION=1
 
 LIBPCAP_BUILD_DIR=$(BUILD_DIR)/libpcap
 LIBPCAP_SOURCE_DIR=$(SOURCE_DIR)/libpcap
@@ -51,12 +51,21 @@ LIBPCAP-DEV_IPK=$(BUILD_DIR)/libpcap-dev_$(LIBPCAP_VERSION)-$(LIBPCAP_IPK_VERSIO
 # which they should be applied to the source code.
 #
 LIBPCAP_PATCHES=\
+$(LIBPCAP_SOURCE_DIR)/001-Fix-compiler_state_t.ai-usage-when-INET6-is-not-defi.patch \
+$(LIBPCAP_SOURCE_DIR)/002-Add-missing-compiler_state_t-parameter.patch \
+$(LIBPCAP_SOURCE_DIR)/100-debian_shared_lib.patch \
+$(LIBPCAP_SOURCE_DIR)/102-makefile_disable_manpages.patch \
+$(LIBPCAP_SOURCE_DIR)/103-makefile_flex_workaround.patch \
+$(LIBPCAP_SOURCE_DIR)/201-space_optimization.patch \
+$(LIBPCAP_SOURCE_DIR)/202-protocol_api.patch \
+$(LIBPCAP_SOURCE_DIR)/203-undef_iw_mode_monitor.patch \
+$(LIBPCAP_SOURCE_DIR)/204-usb-bus-path.patch \
 
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-LIBPCAP_CPPFLAGS=
+LIBPCAP_CPPFLAGS=-ffunction-sections -fdata-sections
 LIBPCAP_LDFLAGS=
 ifneq (no, $(IPV6))
 LIBPCAP_CONFIGURE_OPTS=--enable-ipv6
@@ -111,7 +120,7 @@ $(LIBPCAP_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBPCAP_SOURCE) $(LIBPCAP_PATCHES)
 	rm -rf $(BUILD_DIR)/$(LIBPCAP_DIR) $(@D)
 	$(LIBPCAP_UNZIP) $(DL_DIR)/$(LIBPCAP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBPCAP_PATCHES)"; then \
-	cat $(LIBPCAP_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(LIBPCAP_DIR) -p1; \
+		cat $(LIBPCAP_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(LIBPCAP_DIR) -p1; \
 	fi
 	mv $(BUILD_DIR)/$(LIBPCAP_DIR) $(@D)
 	(cd $(@D); \
@@ -125,9 +134,18 @@ $(LIBPCAP_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBPCAP_SOURCE) $(LIBPCAP_PATCHES)
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--enable-shared \
-		--with-pcap=linux \
 		--prefix=$(TARGET_PREFIX) \
 		--with-build-cc="$(HOSTCC)" \
+		--disable-yydebug \
+		--with-pcap=linux \
+		--without-septel \
+		--without-dag \
+		--without-libnl \
+		--without-snf \
+		--disable-can \
+		--disable-canusb \
+		--disable-dbus \
+		--disable-bluetooth \
 		$(LIBPCAP_CONFIGURE_OPTS) \
 	)
 	touch $@
@@ -140,10 +158,7 @@ libpcap-unpack: $(LIBPCAP_BUILD_DIR)/.configured
 #
 $(LIBPCAP_BUILD_DIR)/.built: $(LIBPCAP_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(@D) \
-		LDFLAGS="$(STAGING_LDFLAGS) $(LIBPCAP_LDFLAGS)" \
-		CFLAGS="$(STAGING_CPPFLAGS) $(LIBPCAP_CPPFLAGS)" \
-		;
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -215,17 +230,18 @@ $(LIBPCAP_IPK) $(LIBPCAP-DEV_IPK): $(LIBPCAP_BUILD_DIR)/.built
 	rm -rf $(LIBPCAP-DEV_IPK_DIR) $(BUILD_DIR)/libpcap-dev_*_$(TARGET_ARCH).ipk
 	$(INSTALL) -d $(LIBPCAP_IPK_DIR)$(TARGET_PREFIX)/bin
 	$(MAKE) -C $(LIBPCAP_BUILD_DIR) DESTDIR=$(LIBPCAP_IPK_DIR) install
-	$(STRIP_COMMAND) $(LIBPCAP_IPK_DIR)$(TARGET_PREFIX)/lib/libpcap.so.[0-9]*.[0-9]*.[0-9]*
+	$(STRIP_COMMAND) $(LIBPCAP_IPK_DIR)$(TARGET_PREFIX)/lib/libpcap.so.1
 	rm -f $(LIBPCAP_IPK_DIR)$(TARGET_PREFIX)/lib/libpcap.a
 	$(MAKE) $(LIBPCAP_IPK_DIR)/CONTROL/control
 	$(MAKE) $(LIBPCAP-DEV_IPK_DIR)/CONTROL/control
 	$(INSTALL) -d $(LIBPCAP-DEV_IPK_DIR)$(TARGET_PREFIX)/
 	mv $(LIBPCAP_IPK_DIR)$(TARGET_PREFIX)/bin $(LIBPCAP-DEV_IPK_DIR)$(TARGET_PREFIX)/
 	mv $(LIBPCAP_IPK_DIR)$(TARGET_PREFIX)/include $(LIBPCAP-DEV_IPK_DIR)$(TARGET_PREFIX)/
-	mv $(LIBPCAP_IPK_DIR)$(TARGET_PREFIX)/share $(LIBPCAP-DEV_IPK_DIR)$(TARGET_PREFIX)/
 #	echo $(LIBPCAP_CONFFILES) | sed -e 's/ /\n/g' > $(LIBPCAP_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBPCAP_IPK_DIR)
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LIBPCAP-DEV_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(LIBPCAP_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(LIBPCAP-DEV_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
