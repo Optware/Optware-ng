@@ -136,8 +136,6 @@ $(OPENJDK8_SOURCE_DIR)/openjdk/zero-architectures.diff \
 $(OPENJDK8_SOURCE_DIR)/openjdk/zero-fpu-control-is-noop.diff \
 $(OPENJDK8_SOURCE_DIR)/openjdk/zero-missing-headers.diff \
 $(OPENJDK8_SOURCE_DIR)/openjdk/fix-ipv6-init.patch \
-$(OPENJDK8_SOURCE_DIR)/openjdk/hotspot-c++98-fpermissive.patch \
-$(OPENJDK8_SOURCE_DIR)/openjdk/core-libraries_compile-launchers_c++98-fpermissive.patch \
 $(OPENJDK8_SOURCE_DIR)/openjdk/native_jni_return_null_not_false.patch \
 
 OPENJDK8_JAMVM_PATCHES=\
@@ -169,6 +167,7 @@ endif
 
 OPENJDK8_MAKE_ARGS=\
 		$(TARGET_CONFIGURE_OPTS) \
+		CXX="$(TARGET_CXX) -std=c++98" \
 		LD=$(TARGET_CC) \
 		BUILD_CC=$(HOSTCC) \
 		BUILD_LD=$(HOSTCC) \
@@ -353,6 +352,7 @@ endif
 	(cd $(@D)/openjdk; \
 		chmod +x configure; \
 		$(TARGET_CONFIGURE_OPTS) \
+		CXX="$(TARGET_CXX) -std=c++98" \
 		OBJDUMP=$(TARGET_CROSS)objdump \
 		OBJCOPY=$(TARGET_CROSS)objcopy \
 		LD=$(TARGET_CC) \
