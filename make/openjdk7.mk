@@ -187,7 +187,6 @@ $(OPENJDK7_SOURCE_DIR)/openjdk/rhbz1206656_fix_current_stack_pointer.patch \
 $(OPENJDK7_SOURCE_DIR)/openjdk/os_linux.fix-i386-zero-build.patch \
 $(OPENJDK7_SOURCE_DIR)/openjdk/hotspot-powerpcspe.diff \
 $(OPENJDK7_SOURCE_DIR)/openjdk/hotspot-no-march-i586.diff \
-$(OPENJDK7_SOURCE_DIR)/openjdk/hotspot-c++98-fpermissive.patch \
 $(OPENJDK7_SOURCE_DIR)/openjdk/native_jni_return_null_not_false.patch \
 
 #
@@ -226,6 +225,7 @@ endif
 
 OPENJDK7_MAKE_ARGS=\
 		$(TARGET_CONFIGURE_OPTS) \
+		CXX="$(TARGET_CXX) -std=c++98" \
 		LD=$(TARGET_CC) \
 		OBJCOPY=$(TARGET_CROSS)objcopy \
 		NIO_CC=$(HOSTCC) \
@@ -367,6 +367,7 @@ endif
 	$(AUTORECONF1.14) -vif $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
+		CXX="$(TARGET_CXX) -std=c++98" \
 		CPPFLAGS='$(OPENJDK7_CPPFLAGS)' \
 		LDFLAGS="$(OPENJDK7_LDFLAGS)" \
 		ZLIB_CFLAGS='$(OPENJDK7_CPPFLAGS)' \
