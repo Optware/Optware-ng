@@ -10,19 +10,11 @@
 # questions. But feel free to update or change this package
 # if there are reasons.
 #
-ifeq ($(LIBC_STYLE), uclibc)
-MLOCATE_SITE=http://people.redhat.com/mitr/mlocate
-MLOCATE_VERSION=0.15
-MLOCATE_IPK_VERSION=2
-MLOCATE_SOURCE=mlocate-$(MLOCATE_VERSION).tar.gz
-MLOCATE_UNZIP=zcat
-else
 MLOCATE_SITE=https://fedorahosted.org/releases/m/l/mlocate
 MLOCATE_VERSION=0.26
 MLOCATE_IPK_VERSION=1
 MLOCATE_SOURCE=mlocate-$(MLOCATE_VERSION).tar.xz
-MLOCATE_UNZIP=$(HOST_STAGING_PREFIX)/bin/xzcat
-endif
+MLOCATE_UNZIP=xzcat
 MLOCATE_DIR=mlocate-$(MLOCATE_VERSION)
 MLOCATE_MAINTAINER=Marcel Nijenhof <nslu2@pion.xs4all.nl>
 MLOCATE_DESCRIPTION=A merginging locate program to find files fast
@@ -45,11 +37,7 @@ MLOCATE_CONFFILES=$(TARGET_PREFIX)/etc/cron.d/updatedb-mlocate
 # MLOCATE_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-ifeq ($(LIBC_STYLE), glibc)
 MLOCATE_PATCHES=$(MLOCATE_SOURCE_DIR)/mlocate-0.26-include-order-fix.patch
-else
-MLOCATE_PATCHES=$(MLOCATE_SOURCE_DIR)/obstack.patch
-endif
 
 #
 # If the compilation of the package requires additional
@@ -115,9 +103,6 @@ mlocate-source: $(DL_DIR)/$(MLOCATE_SOURCE) $(MLOCATE_PATCHES)
 # shown below to make various patches to it.
 #
 $(MLOCATE_BUILD_DIR)/.configured: $(DL_DIR)/$(MLOCATE_SOURCE) $(MLOCATE_PATCHES) make/mlocate.mk
-ifneq ($(LIBC_STYLE), uclibc)
-	$(MAKE) xz-utils-host-stage
-endif
 ifeq ($(GETTEXT_NLS), enable)
 	$(MAKE) gettext-stage
 endif
@@ -130,9 +115,6 @@ endif
 	if test "$(BUILD_DIR)/$(MLOCATE_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(MLOCATE_DIR) $(@D) ; \
 	fi
-ifeq ($(LIBC_STYLE), uclibc)
-	$(AUTORECONF1.10) -vif $(@D)
-endif
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MLOCATE_CPPFLAGS)" \
@@ -146,9 +128,9 @@ endif
 		--disable-nls \
 		--disable-static \
 	)
-ifeq ($(OPTWARE_TARGET), $(filter buildroot-i686 buildroot-armeabihf buildroot-ppc-603e ct-ng-ppc-e500v2, $(OPTWARE_TARGET)))
+#ifeq ($(OPTWARE_TARGET), $(filter buildroot-i686 buildroot-armeabihf buildroot-ppc-603e ct-ng-ppc-e500v2, $(OPTWARE_TARGET)))
 	sed -i -e '/#define mbstate_t int/s|^|//|' $(@D)/src/config.h
-endif
+#endif
 #	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
