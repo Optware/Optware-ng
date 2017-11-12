@@ -35,7 +35,7 @@ LIBTOOL_CONFLICTS=
 #
 # LIBTOOL_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBTOOL_IPK_VERSION=4
+LIBTOOL_IPK_VERSION=5
 
 #
 # LIBTOOL_PATCHES should list any patches, in the the order in
