@@ -66,17 +66,18 @@ TOOLCHAIN_SITE=http://buildroot.uclibc.org/downloads
 TOOLCHAIN_SOURCE=buildroot-2017.08.tar.bz2
 
 GLIBC-OPT_VERSION = 2.25
-GLIBC-OPT_IPK_VERSION = 1
+GLIBC-OPT_IPK_VERSION = 2
 GLIBC-OPT_LIBS_SOURCE_DIR = $(TARGET_CROSS_TOP)/powerpc-buildroot-linux-gnu/sysroot/usr/lib
 LIBNSL_SO_DIR = $(TARGET_CROSS_TOP)/powerpc-buildroot-linux-gnu/sysroot/usr/lib
 
 LIBNSL_VERSION = 2.25
-LIBNSL_IPK_VERSION = 1
+LIBNSL_IPK_VERSION = 2
 
 BUILDROOT-PPC_603E_SOURCE_DIR=$(SOURCE_DIR)/buildroot-ppc-603e
 
 BUILDROOT-PPC_603E_PATCHES=\
 $(BUILDROOT-PPC_603E_SOURCE_DIR)/glibc-prefix.patch \
+$(BUILDROOT-PPC_603E_SOURCE_DIR)/glibc-enable-kernel.patch \
 $(BUILDROOT-PPC_603E_SOURCE_DIR)/toolchain-gccgo.patch \
 
 BUILDROOT-PPC_603E_GCC_PATCHES=\
