@@ -213,7 +213,7 @@ glib: $(GLIB_BUILD_DIR)/.built
 #
 $(GLIB_BUILD_DIR)/.staged: $(GLIB_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(@D) install-strip prefix=$(STAGING_PREFIX)
+	$(MAKE) -C $(@D) install-strip prefix=$(STAGING_PREFIX) GLIB_WARN_CFLAGS="-Wall -Wstrict-prototypes"
 	$(INSTALL) $(@D)/glib/glibconfig.h $(STAGING_INCLUDE_DIR)/glib-2.0/
 	rm -rf $(STAGING_LIB_DIR)/libgio-2.0.la
 	rm -rf $(STAGING_LIB_DIR)/libglib-2.0.la
@@ -264,7 +264,7 @@ $(GLIB_IPK_DIR)/CONTROL/control:
 #
 $(GLIB_IPK): $(GLIB_BUILD_DIR)/.built
 	rm -rf $(GLIB_IPK_DIR) $(BUILD_DIR)/glib_*_$(TARGET_ARCH).ipk
-	$(MAKE) -C $(GLIB_BUILD_DIR) install-strip prefix=$(GLIB_IPK_DIR)$(TARGET_PREFIX)
+	$(MAKE) -C $(GLIB_BUILD_DIR) install-strip prefix=$(GLIB_IPK_DIR)$(TARGET_PREFIX) GLIB_WARN_CFLAGS="-Wall -Wstrict-prototypes"
 	rm -rf $(GLIB_IPK_DIR)$(TARGET_PREFIX)/share/gtk-doc
 	rm -rf $(GLIB_IPK_DIR)$(TARGET_PREFIX)/man
 	$(MAKE) $(GLIB_IPK_DIR)/CONTROL/control
