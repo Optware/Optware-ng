@@ -31,8 +31,9 @@ PYLOAD_REPOSITORY=https://github.com/pyload/pyload.git
 ifndef PYLOAD_REPOSITORY
 PYLOAD_VERSION=0.4.9
 else
-PYLOAD_GIT_DATE=20151031
-PYLOAD_TREEISH=`git rev-list --max-count=1 --until=2015-10-31 HEAD`
+PYLOAD_GIT_DATE=20171028
+PYLOAD_TREEISH=6c78aca56fd7af0953ab968eeadb075fceda5115
+#`git rev-list --max-count=1 --until=2015-10-31 HEAD`
 PYLOAD_VERSION=0.4.9+git$(PYLOAD_GIT_DATE)
 endif
 PYLOAD_SOURCE=pyload-src-v$(PYLOAD_VERSION).zip
