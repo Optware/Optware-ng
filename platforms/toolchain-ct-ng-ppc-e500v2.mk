@@ -127,10 +127,14 @@ $(TARGET_CROSS_BUILD_DIR)/.configured: $(DL_DIR)/$(TOOLCHAIN_SOURCE) \
 ifneq ($(CT-NG-PPC_E500v2_GLIBC_PATCHES), )
 	mkdir -p $(@D)/packages/glibc/$(CROSS_CONFIGURATION_GLIBC_VERSION)
 	$(INSTALL) -m 644 $(CT-NG-PPC_E500v2_GLIBC_PATCHES) $(@D)/packages/glibc/$(CROSS_CONFIGURATION_GLIBC_VERSION)
+	cd $(@D)/packages/glibc/$(CROSS_CONFIGURATION_GLIBC_VERSION); \
+		sed -i -e "s|%OPTWARE_TARGET_PREFIX%|$(TARGET_PREFIX)|g" *.patch
 endif
 ifneq ($(CT-NG-PPC_E500v2_GCC_PATCHES), )
 	mkdir -p $(@D)/packages/gcc/$(CROSS_CONFIGURATION_GCC_VERSION)
 	$(INSTALL) -m 644 $(CT-NG-PPC_E500v2_GCC_PATCHES) $(@D)/packages/gcc/$(CROSS_CONFIGURATION_GCC_VERSION)
+	cd $(@D)/packages/gcc/$(CROSS_CONFIGURATION_GCC_VERSION); \
+		sed -i -e "s|%OPTWARE_TARGET_PREFIX%|$(TARGET_PREFIX)|g" *.patch
 endif
 	cd $(@D); \
 		LIBTOOL=$(HOST_STAGING_PREFIX)/bin/libtool \
