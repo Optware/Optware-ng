@@ -1,0 +1,17 @@
+--- a/package/glibc/glibc.hash
++++ b/package/glibc/glibc.hash
+@@ -1,2 +1,2 @@
+ # Locally calculated after checking pgp signature (glibc)
+-sha256	067bd9bb3390e79aa45911537d13c3721f1d9d3769931a30c2681bfee66f23a0	glibc-2.25.tar.xz
++sha256	94efeb00e4603c8546209cefb3e1a50a5315c86fa9b078b6fad758e187ce13e9	glibc-2.23.tar.xz
+--- a/package/glibc/glibc.mk
++++ b/package/glibc/glibc.mk
+@@ -4,7 +4,7 @@
+ #
+ ################################################################################
+ 
+-GLIBC_VERSION = 2.25
++GLIBC_VERSION = 2.23
+ GLIBC_SITE = $(BR2_GNU_MIRROR)/libc
+ GLIBC_SOURCE = glibc-$(GLIBC_VERSION).tar.xz
+ GLIBC_SRC_SUBDIR = .
