@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PYTHON27_VERSION=2.7.12
+PYTHON27_VERSION=2.7.14
 PYTHON27_VERSION_MAJOR=2.7
 PYTHON27_SITE=http://python.org/ftp/python/$(PYTHON27_VERSION)
 PYTHON27_DIR=Python-$(PYTHON27_VERSION)
@@ -42,7 +42,7 @@ PYTHON27_SUGGESTS=
 #
 # PYTHON27_IPK_VERSION should be incremented when the ipk changes.
 #
-PYTHON27_IPK_VERSION=4
+PYTHON27_IPK_VERSION=1
 
 #
 # PYTHON27_CONFFILES should be a list of user-editable files

@@ -1,6 +1,6 @@
 --- a/Makefile.pre.in
 +++ b/Makefile.pre.in
-@@ -50,6 +50,8 @@
+@@ -49,6 +49,8 @@ LLVM_PROF_ERR=@LLVM_PROF_ERR@
  
  GNULD=          @GNULD@
  
@@ -9,7 +9,7 @@
  # Shell used by make (some versions default to the login shell, which is bad)
  SHELL=		/bin/sh
  
-@@ -122,7 +124,7 @@
+@@ -121,7 +123,7 @@ LIBP=		$(LIBDIR)/python$(VERSION)
  
  # Symbols used for using shared libraries
  SO=		@SO@
@@ -18,7 +18,7 @@
  BLDSHARED=	@BLDSHARED@ $(LDFLAGS)
  LDCXXSHARED=	@LDCXXSHARED@
  DESTSHARED=	$(BINLIBDEST)/lib-dynload
-@@ -147,7 +149,7 @@
+@@ -146,7 +148,7 @@ MACOSX_DEPLOYMENT_TARGET=@CONFIGURE_MACO
  OTHER_LIBTOOL_OPT=@OTHER_LIBTOOL_OPT@
  
  # Environment to run shared python without installed libraries
@@ -27,7 +27,7 @@
  
  # ensurepip options
  ENSUREPIP=      @ENSUREPIP@
-@@ -198,10 +200,11 @@
+@@ -197,10 +199,11 @@ LIBOBJS=	@LIBOBJS@
  UNICODE_OBJS=   @UNICODE_OBJS@
  
  PYTHON=		python$(EXE)
@@ -35,13 +35,13 @@
 +HOSTPYTHON=    python$(BUILDEXE)
 +BUILDPYTHON=   @BUILDPYTHON@
  
- cross_compiling=@cross_compiling@
+ PYTHON_FOR_REGEN=@PYTHON_FOR_REGEN@
 -PYTHON_FOR_BUILD=@PYTHON_FOR_BUILD@
 +PYTHON_FOR_BUILD=./@BUILDPYTHON@
  _PYTHON_HOST_PLATFORM=@_PYTHON_HOST_PLATFORM@
  HOST_GNU_TYPE=  @host@
  
-@@ -245,7 +248,8 @@
+@@ -239,7 +242,8 @@ LIBFFI_INCLUDEDIR=	@LIBFFI_INCLUDEDIR@
  
  ##########################################################################
  # Parser
@@ -51,16 +51,16 @@
  
  PSRCS=		\
  		Parser/acceler.c \
-@@ -430,7 +434,7 @@
+@@ -401,7 +405,7 @@ LIBRARY_OBJS=	\
  
  # Default target
- all:		build_all
+ all:		@DEF_MAKE_ALL_RULE@
 -build_all:	$(BUILDPYTHON) oldsharedmods sharedmods gdbhooks
 +build_all:	$(HOSTPYTHON) oldsharedmods sharedmods gdbhooks
  
  # Compile a binary with profile guided optimization.
  profile-opt:
-@@ -457,7 +461,7 @@
+@@ -428,7 +432,7 @@ build_all_generate_profile:
  
  run_profile_task:
  	: # FIXME: can't run for a cross build
@@ -69,7 +69,7 @@
  
  build_all_merge_profile:
  	$(LLVM_PROF_MERGER)
-@@ -507,12 +511,12 @@
+@@ -477,12 +481,12 @@ coverage-report: regen-grammar
  
  
  # Build the interpreter
@@ -84,7 +84,7 @@
  	$(RUNSHARED) $(PYTHON_FOR_BUILD) -c 'import sys ; from sysconfig import get_platform ; print get_platform()+"-"+sys.version[0:3]' >platform
  
  # Create build directory and generate the sysconfig build-time data there.
-@@ -522,7 +526,7 @@
+@@ -492,7 +496,7 @@ platform: $(BUILDPYTHON) pybuilddir.txt
  # problems by creating a dummy pybuilddir.txt just to allow interpreter
  # initialization to succeed.  It will be overwritten by generate-posix-vars
  # or removed in case of failure.
@@ -93,7 +93,7 @@
  	@echo "none" > ./pybuilddir.txt
  	$(RUNSHARED) $(PYTHON_FOR_BUILD) -S -m sysconfig --generate-posix-vars ;\
  	if test $$? -ne 0 ; then \
-@@ -539,7 +543,7 @@
+@@ -509,7 +513,7 @@ Modules/_math.o: Modules/_math.c Modules
  # Under GNU make, MAKEFLAGS are sorted and normalized; the 's' for
  # -s, --silent or --quiet is always the first char.
  # Under BSD make, MAKEFLAGS might be " -s -v x=y".
@@ -102,7 +102,7 @@
  	@case "$$MAKEFLAGS" in \
  	    *\ -s*|s*) quiet="-q";; \
  	    *) quiet="";; \
-@@ -580,11 +584,11 @@
+@@ -550,11 +554,11 @@ libpython$(VERSION).sl: $(LIBRARY_OBJS)
  #
  # Distributors are likely to want to install this somewhere else e.g. relative
  # to the stripped DWARF data for the shared library.
@@ -117,40 +117,28 @@
  
  # This rule is here for OPENSTEP/Rhapsody/MacOSX. It builds a temporary
  # minimal framework (not including the Lib directory and such) in the current
-@@ -680,25 +684,16 @@
+@@ -655,15 +659,16 @@ Modules/grpmodule.o: $(srcdir)/Modules/g
  
  Modules/pwdmodule.o: $(srcdir)/Modules/pwdmodule.c $(srcdir)/Modules/posixmodule.h
  
--$(GRAMMAR_H): $(GRAMMAR_INPUT) $(PGEN)
-+$(GRAMMAR_H): $(GRAMMAR_INPUT) $(PGENSRCS)
- 	@$(MKDIR_P) Include
--	# Avoid copying the file onto itself for an in-tree build
--	if test "$(cross_compiling)" != "yes"; then \
--		$(PGEN) $(GRAMMAR_INPUT) $(GRAMMAR_H) $(GRAMMAR_C); \
--	else \
--		cp $(srcdir)/Include/graminit.h $(GRAMMAR_H).tmp; \
--		mv $(GRAMMAR_H).tmp $(GRAMMAR_H); \
--	fi
-+	$(MAKE) $(BUILDPGEN)
-+	$(BUILDPGEN) $(GRAMMAR_INPUT) $(GRAMMAR_H) $(GRAMMAR_C)
- $(GRAMMAR_C): $(GRAMMAR_H)
--	if test "$(cross_compiling)" != "yes"; then \
--		touch $(GRAMMAR_C); \
--	else \
--		cp $(srcdir)/Python/graminit.c $(GRAMMAR_C).tmp; \
--		mv $(GRAMMAR_C).tmp $(GRAMMAR_C); \
--	fi
-+	$(MAKE) $(GRAMMAR_H)
-+	touch $(GRAMMAR_C)
- 
 -$(PGEN):	$(PGENOBJS)
 -		$(CC) $(OPT) $(LDFLAGS) $(PGENOBJS) $(LIBS) -o $(PGEN)
-+$(HOSTPGEN): $(PGENOBJS)
-+	$(CC) $(OPT) $(PY_LDFLAGS) $(PGENOBJS) $(LIBS) -o $@
++$(HOSTPGEN):	$(PGENOBJS)
++		$(CC) $(OPT) $(PY_LDFLAGS) $(PGENOBJS) $(LIBS) -o $(PGEN)
  
- Parser/grammar.o:	$(srcdir)/Parser/grammar.c \
- 				$(srcdir)/Include/token.h \
-@@ -763,6 +758,16 @@
+ .PHONY: regen-grammar
+-regen-grammar: $(PGEN)
++regen-grammar: $(PGENSRCS)
+ 	# Regenerate Include/graminit.h and Python/graminit.c
+ 	# from Grammar/Grammar using pgen
+ 	@$(MKDIR_P) Include
+-	$(PGEN) $(srcdir)/Grammar/Grammar \
++	$(MAKE) $(BUILDPGEN)
++	$(BUILDPGEN) $(srcdir)/Grammar/Grammar \
+ 		$(srcdir)/Include/graminit.h \
+ 		$(srcdir)/Python/graminit.c
+ 
+@@ -739,6 +744,16 @@ Python/formatter_unicode.o: $(srcdir)/Py
  Python/formatter_string.o: $(srcdir)/Python/formatter_string.c \
  				$(STRINGLIB_HEADERS)
  
@@ -167,16 +155,16 @@
  ############################################################################
  # Header files
  
-@@ -867,7 +872,7 @@
+@@ -845,7 +860,7 @@ $(LIBRARY_OBJS) $(MODOBJS) Modules/pytho
  
  TESTOPTS=	-l $(EXTRATESTOPTS)
  TESTPROG=	$(srcdir)/Lib/test/regrtest.py
 -TESTPYTHON=	$(RUNSHARED) ./$(BUILDPYTHON) -Wd -3 -E -tt $(TESTPYTHONOPTS)
 +TESTPYTHON=	$(RUNSHARED) $(PYTHON_FOR_BUILD) -Wd -3 -E -tt $(TESTPYTHONOPTS)
- test:		all platform
+ test:		@DEF_MAKE_RULE@ platform
  		-find $(srcdir)/Lib -name '*.py[co]' -print | xargs rm -f
  		-$(TESTPYTHON) $(TESTPROG) $(TESTOPTS)
-@@ -890,7 +895,7 @@
+@@ -868,7 +883,7 @@ testuniversal:	@DEF_MAKE_RULE@ platform
  		-find $(srcdir)/Lib -name '*.py[co]' -print | xargs rm -f
  		-$(TESTPYTHON) $(TESTPROG) -uall $(TESTOPTS)
  		$(TESTPYTHON) $(TESTPROG) -uall $(TESTOPTS)
@@ -185,7 +173,7 @@
  
  
  # Like testall, but with a single pass only
-@@ -993,7 +998,7 @@
+@@ -974,7 +989,7 @@ bininstall:	altbininstall
  
  # Install the interpreter with $(VERSION) affixed
  # This goes into $(exec_prefix)
@@ -194,7 +182,7 @@
  	@for i in $(BINDIR) $(LIBDIR); \
  	do \
  		if test ! -d $(DESTDIR)$$i; then \
-@@ -1002,7 +1007,7 @@
+@@ -983,7 +998,7 @@ altbininstall:	$(BUILDPYTHON)
  		else	true; \
  		fi; \
  	done
@@ -203,7 +191,7 @@
  	if test -f $(LDLIBRARY); then \
  		if test -n "$(DLLLIBRARY)" ; then \
  			$(INSTALL_SHARED) $(DLLLIBRARY) $(DESTDIR)$(BINDIR); \
-@@ -1166,7 +1171,7 @@
+@@ -1148,7 +1163,7 @@ $(srcdir)/Lib/$(PLATDIR):
  	if [ -n "$(MULTIARCH)" ]; then export MULTIARCH; MULTIARCH=$(MULTIARCH); fi; \
  	export PYTHON_FOR_BUILD; \
  	if [ "$(build)" = "$(host)" ]; then \
@@ -212,7 +200,7 @@
  	else \
  	  PYTHON_FOR_BUILD="$(PYTHON_FOR_BUILD)"; \
  	fi; \
-@@ -1265,6 +1270,7 @@
+@@ -1247,6 +1262,7 @@ libainstall:	@DEF_MAKE_RULE@ python-conf
  # Install the dynamically loadable modules
  # This goes into $(exec_prefix)
  sharedinstall: sharedmods
@@ -220,7 +208,7 @@
  	$(RUNSHARED) $(PYTHON_FOR_BUILD) $(srcdir)/setup.py install \
  	   	--prefix=$(prefix) \
  		--install-scripts=$(BINDIR) \
-@@ -1304,7 +1310,7 @@
+@@ -1286,7 +1302,7 @@ frameworkinstallstructure:	$(LDLIBRARY)
  		fi; \
  	done
  	$(LN) -fsn include/python$(VERSION) $(DESTDIR)$(prefix)/Headers
@@ -229,7 +217,7 @@
  	$(LN) -fsn $(VERSION) $(DESTDIR)$(PYTHONFRAMEWORKINSTALLDIR)/Versions/Current
  	$(LN) -fsn Versions/Current/$(PYTHONFRAMEWORK) $(DESTDIR)$(PYTHONFRAMEWORKINSTALLDIR)/$(PYTHONFRAMEWORK)
  	$(LN) -fsn Versions/Current/Headers $(DESTDIR)$(PYTHONFRAMEWORKINSTALLDIR)/Headers
-@@ -1353,7 +1359,7 @@
+@@ -1335,7 +1351,7 @@ Makefile.pre: Makefile.pre.in config.sta
  config.status:	$(srcdir)/configure
  	$(SHELL) $(srcdir)/configure $(CONFIG_ARGS)
  
@@ -238,7 +226,7 @@
  
  # Some make's put the object file in the current directory
  .c.o:
-@@ -1361,7 +1367,7 @@
+@@ -1343,7 +1359,7 @@ config.status:	$(srcdir)/configure
  
  # Run reindent on the library
  reindent:
@@ -247,7 +235,7 @@
  
  # Rerun configure with the same options as it was run last time,
  # provided the config.status script exists
-@@ -1413,11 +1419,12 @@
+@@ -1393,11 +1409,12 @@ profile-removal:
  	find . -name '*.dyn' -exec rm -f {} ';'
  
  clobber: clean profile-removal
@@ -261,7 +249,7 @@
  
  # Make things extra clean, before making a distribution:
  # remove all generated files, even Makefile[.pre]
-@@ -1473,7 +1480,7 @@
+@@ -1457,7 +1474,7 @@ funny:
  
  # Perform some verification checks on any modified files.
  patchcheck:
