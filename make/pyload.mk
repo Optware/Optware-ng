@@ -31,9 +31,8 @@ PYLOAD_REPOSITORY=https://github.com/pyload/pyload.git
 ifndef PYLOAD_REPOSITORY
 PYLOAD_VERSION=0.4.9
 else
-PYLOAD_GIT_DATE=20171028
-PYLOAD_TREEISH=6c78aca56fd7af0953ab968eeadb075fceda5115
-#`git rev-list --max-count=1 --until=2015-10-31 HEAD`
+PYLOAD_GIT_DATE=20151031
+PYLOAD_TREEISH=`git rev-list --max-count=1 --until=2015-10-31 HEAD`
 PYLOAD_VERSION=0.4.9+git$(PYLOAD_GIT_DATE)
 endif
 PYLOAD_SOURCE=pyload-src-v$(PYLOAD_VERSION).zip
@@ -51,7 +50,7 @@ PYLOAD_CONFLICTS=
 #
 # PYLOAD_IPK_VERSION should be incremented when the ipk changes.
 #
-PYLOAD_IPK_VERSION=1
+PYLOAD_IPK_VERSION=2
 
 #
 # PYLOAD_CONFFILES should be a list of user-editable files
@@ -61,7 +60,8 @@ PYLOAD_CONFFILES=$(TARGET_PREFIX)/etc/init.d/S98Pyload
 # PYLOAD_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#PYLOAD_PATCHES=$(PYLOAD_SOURCE_DIR)/configure.patch
+PYLOAD_PATCHES=\
+$(PYLOAD_SOURCE_DIR)/UpdateManager.py.patch \
 
 #
 # If the compilation of the package requires additional
@@ -135,7 +135,7 @@ $(PYLOAD_BUILD_DIR)/.configured: $(DL_DIR)/$(PYLOAD_SOURCE) $(PYLOAD_PATCHES) ma
 	cd $(BUILD_DIR); $(PYLOAD_UNZIP) $(DL_DIR)/$(PYLOAD_SOURCE)
 	if test -n "$(PYLOAD_PATCHES)" ; \
 		then cat $(PYLOAD_PATCHES) | \
-		$(PATCH) -d $(BUILD_DIR)/$(PYLOAD_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(PYLOAD_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(PYLOAD_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(PYLOAD_DIR) $(@D) ; \
