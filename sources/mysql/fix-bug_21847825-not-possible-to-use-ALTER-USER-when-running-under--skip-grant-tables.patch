@@ -1,0 +1,161 @@
+From be8ed41ef59bd3f35ce3896190b6cf63bc058ad7 Mon Sep 17 00:00:00 2001
+From: Georgi Kodinov <georgi.kodinov@oracle.com>
+Date: Thu, 15 Oct 2015 13:52:08 +0300
+Subject: [PATCH] Bug #21847825: NOT POSSIBLE TO USE ALTER USER WHEN RUNNING  
+ UNDER --SKIP-GRANT-TABLES
+
+ When running in --skip-grant-tables the effective user for the
+ session was set to ''@'' by Security_context::skip_grants().
+
+ When you run FLUSH PRIVILEGES in one such session it starts
+ accepting normal ACL commands, but since the session stays as
+ as initialized during the --skip-grant-tables mode.
+
+ ''@'' collides with the restriction that proxy users
+ (user name '') cannot be setting passwords.
+
+ Fixed by setting the effective user to
+ "skip-grants user"@"skip-grants host" instead of ''@''.
+
+ Added a test case.
+ Fixed existing tests that were relying on the old value.
+---
+ mysql-test/r/skip_grants_flush.result     | 11 +++++++++++
+ mysql-test/suite/rpl/r/rpl_trigger.result |  4 ++--
+ mysql-test/t/change_user.test             | 14 +++++++-------
+ mysql-test/t/skip_grants_flush-master.opt |  1 +
+ mysql-test/t/skip_grants_flush.test       | 21 +++++++++++++++++++++
+ sql/auth/sql_security_ctx.cc              |  4 ++--
+ 6 files changed, 44 insertions(+), 11 deletions(-)
+ create mode 100644 mysql-test/r/skip_grants_flush.result
+ create mode 100644 mysql-test/t/skip_grants_flush-master.opt
+ create mode 100644 mysql-test/t/skip_grants_flush.test
+
+diff --git a/mysql-test/r/skip_grants_flush.result b/mysql-test/r/skip_grants_flush.result
+new file mode 100644
+index 00000000000..6e30925ee0f
+--- /dev/null
++++ b/mysql-test/r/skip_grants_flush.result
+@@ -0,0 +1,11 @@
++FLUSH PRIVILEGES;
++SELECT USER(),CURRENT_USER();
++USER()	CURRENT_USER()
++root@	skip-grants user@skip-grants host
++CREATE USER u1@localhost;
++ALTER USER u1@localhost IDENTIFIED BY 'pass1';
++SET PASSWORD FOR u1@localhost = 'pass2';
++SET PASSWORD = 'cant have';
++ERROR 42000: Can't find any matching row in the user table
++DROP USER u1@localhost;
++End of 5.7 tests
+diff --git a/mysql-test/suite/rpl/r/rpl_trigger.result b/mysql-test/suite/rpl/r/rpl_trigger.result
+index 9058a03c7d6..0d3b7dcf83a 100644
+--- a/mysql-test/suite/rpl/r/rpl_trigger.result
++++ b/mysql-test/suite/rpl/r/rpl_trigger.result
+@@ -914,7 +914,7 @@ c
+ 1
+ SELECT * FROM t2;
+ s
+-@
++skip-grants user@skip-grants host
+ INSERT INTO t1 VALUES(2);
+ SELECT * FROM t1;
+ c
+@@ -922,7 +922,7 @@ c
+ 2
+ SELECT * FROM t2;
+ s
+-@
++skip-grants user@skip-grants host
+ root@localhost
+ DROP TRIGGER trg1;
+ DROP TABLE t1;
+diff --git a/mysql-test/t/change_user.test b/mysql-test/t/change_user.test
+index 2466f54cb83..26efd153062 100644
+--- a/mysql-test/t/change_user.test
++++ b/mysql-test/t/change_user.test
+@@ -13,28 +13,28 @@ select user(), current_user(), database();
+ # that has authentication completely disabled.
+ #
+ 
+---replace_result <@> <test_nopw@%> @> @localhost>
++--replace_result "<skip-grants user@skip-grants host>" <test_nopw@%> @> @localhost>
+ select concat('<', user(), '>'), concat('<', current_user(), '>'), database();
+    
+ 
+ change_user test_nopw;
+---replace_result <@> <test_nopw@%> @> @localhost>
++--replace_result "<skip-grants user@skip-grants host>" <test_nopw@%> @> @localhost>
+ select concat('<', user(), '>'), concat('<', current_user(), '>'), database();
+ change_user test_newpw, newpw;
+---replace_result <@> <test_newpw@%> @> @localhost>
++--replace_result "<skip-grants user@skip-grants host>" <test_newpw@%> @> @localhost>
+ select concat('<', user(), '>'), concat('<', current_user(), '>'), database();
+ change_user root;
+---replace_result <@> <root@localhost> @> @localhost>
++--replace_result "<skip-grants user@skip-grants host>" <root@localhost> @> @localhost>
+ select concat('<', user(), '>'), concat('<', current_user(), '>'), database();
+ 
+ change_user test_nopw,,test;
+---replace_result <@> <test_nopw@%> @> @localhost>
++--replace_result "<skip-grants user@skip-grants host>" <test_nopw@%> @> @localhost>
+ select concat('<', user(), '>'), concat('<', current_user(), '>'), database();
+ change_user test_newpw,newpw,test;
+---replace_result <@> <test_newpw@%> @> @localhost>
++--replace_result "<skip-grants user@skip-grants host>" <test_newpw@%> @> @localhost>
+ select concat('<', user(), '>'), concat('<', current_user(), '>'), database();
+ change_user root,,test;
+---replace_result <@> <root@localhost> @> @localhost>
++--replace_result "<skip-grants user@skip-grants host>" <root@localhost> @> @localhost>
+ select concat('<', user(), '>'), concat('<', current_user(), '>'), database();
+ 
+ drop user test_nopw;
+diff --git a/mysql-test/t/skip_grants_flush-master.opt b/mysql-test/t/skip_grants_flush-master.opt
+new file mode 100644
+index 00000000000..5699a3387b8
+--- /dev/null
++++ b/mysql-test/t/skip_grants_flush-master.opt
+@@ -0,0 +1 @@
++--skip-grant-tables
+diff --git a/mysql-test/t/skip_grants_flush.test b/mysql-test/t/skip_grants_flush.test
+new file mode 100644
+index 00000000000..80863726853
+--- /dev/null
++++ b/mysql-test/t/skip_grants_flush.test
+@@ -0,0 +1,21 @@
++
++# This tests not performed with embedded server
++-- source include/not_embedded.inc
++
++FLUSH PRIVILEGES;
++
++#
++# Bug #21847825: NOT POSSIBLE TO USE ALTER USER WHEN RUNNING UNDER --SKIP-GRANT-TABLES
++#
++
++SELECT USER(),CURRENT_USER();
++
++CREATE USER u1@localhost;
++ALTER USER u1@localhost IDENTIFIED BY 'pass1';
++SET PASSWORD FOR u1@localhost = 'pass2';
++--error ER_PASSWORD_NO_MATCH
++SET PASSWORD = 'cant have';
++
++DROP USER u1@localhost;
++
++--echo End of 5.7 tests
+diff --git a/sql/auth/sql_security_ctx.cc b/sql/auth/sql_security_ctx.cc
+index be17a6846ab..8adb16783b2 100644
+--- a/sql/auth/sql_security_ctx.cc
++++ b/sql/auth/sql_security_ctx.cc
+@@ -72,8 +72,8 @@ void Security_context::skip_grants()
+ 
+   /* privileges for the user are unknown everything is allowed */
+   set_host_or_ip_ptr("", 0);
+-  assign_priv_user("", 0);
+-  assign_priv_host("", 0);
++  assign_priv_user(C_STRING_WITH_LEN("skip-grants user"));
++  assign_priv_host(C_STRING_WITH_LEN("skip-grants host"));
+   m_master_access= ~NO_ACCESS;
+ 
+   DBUG_VOID_RETURN;
