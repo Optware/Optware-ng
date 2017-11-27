@@ -63,7 +63,7 @@ OPENJDK7_JDK_CONFLICTS=
 #
 # OPENJDK7_IPK_VERSION should be incremented when the ipk changes.
 #
-OPENJDK7_IPK_VERSION=6
+OPENJDK7_IPK_VERSION=7
 
 #
 # OPENJDK7_JRE_HEADLESS_CONFFILES should be a list of user-editable files
@@ -225,7 +225,8 @@ endif
 
 OPENJDK7_MAKE_ARGS=\
 		$(TARGET_CONFIGURE_OPTS) \
-		CXX="$(TARGET_CXX) -std=c++98" \
+		CXX="$(TARGET_CXX) -std=c++98 -fno-delete-null-pointer-checks -fno-lifetime-dse" \
+		CC="$(TARGET_CC) -fno-delete-null-pointer-checks -fno-lifetime-dse" \
 		LD=$(TARGET_CC) \
 		OBJCOPY=$(TARGET_CROSS)objcopy \
 		NIO_CC=$(HOSTCC) \
@@ -367,7 +368,8 @@ endif
 	$(AUTORECONF1.14) -vif $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
-		CXX="$(TARGET_CXX) -std=c++98" \
+		CXX="$(TARGET_CXX) -std=c++98 -fno-delete-null-pointer-checks -fno-lifetime-dse" \
+		CC="$(TARGET_CC) -fno-delete-null-pointer-checks -fno-lifetime-dse" \
 		CPPFLAGS='$(OPENJDK7_CPPFLAGS)' \
 		LDFLAGS="$(OPENJDK7_LDFLAGS)" \
 		ZLIB_CFLAGS='$(OPENJDK7_CPPFLAGS)' \

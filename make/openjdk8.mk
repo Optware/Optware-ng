@@ -66,7 +66,7 @@ OPENJDK8_JDK_CONFLICTS=
 #
 # OPENJDK8_IPK_VERSION should be incremented when the ipk changes.
 #
-OPENJDK8_IPK_VERSION=3
+OPENJDK8_IPK_VERSION=4
 
 #
 # OPENJDK8_JRE_HEADLESS_CONFFILES should be a list of user-editable files
@@ -167,7 +167,8 @@ endif
 
 OPENJDK8_MAKE_ARGS=\
 		$(TARGET_CONFIGURE_OPTS) \
-		CXX="$(TARGET_CXX) -std=c++98" \
+		CXX="$(TARGET_CXX) -std=c++98 -fno-delete-null-pointer-checks -fno-lifetime-dse" \
+		CC="$(TARGET_CC) -fno-delete-null-pointer-checks -fno-lifetime-dse" \
 		LD=$(TARGET_CC) \
 		BUILD_CC=$(HOSTCC) \
 		BUILD_LD=$(HOSTCC) \
@@ -352,7 +353,8 @@ endif
 	(cd $(@D)/openjdk; \
 		chmod +x configure; \
 		$(TARGET_CONFIGURE_OPTS) \
-		CXX="$(TARGET_CXX) -std=c++98" \
+		CXX="$(TARGET_CXX) -std=c++98 -fno-delete-null-pointer-checks -fno-lifetime-dse" \
+		CC="$(TARGET_CC) -fno-delete-null-pointer-checks -fno-lifetime-dse" \
 		OBJDUMP=$(TARGET_CROSS)objdump \
 		OBJCOPY=$(TARGET_CROSS)objcopy \
 		LD=$(TARGET_CC) \
