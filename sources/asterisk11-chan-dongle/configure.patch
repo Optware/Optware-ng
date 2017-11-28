@@ -1,0 +1,38 @@
+--- a/configure
++++ b/configure
+@@ -4214,35 +4214,6 @@ $as_echo "no" >&6; }
+ 
+ 
+ 
+-    file=iconv.h
+-    for path in /usr/include /usr/local/include /opt/local/include ; do
+-	{ $as_echo "$as_me:${as_lineno-$LINENO}: checking whether $file in $path" >&5
+-$as_echo_n "checking whether $file in $path... " >&6; }
+-	if test -f $path/$file ; then
+-	    found="yes"
+-	    CPPFLAGS="$CPPFLAGS -I${path}"
+-	    { $as_echo "$as_me:${as_lineno-$LINENO}: result: yes" >&5
+-$as_echo "yes" >&6; }
+-	    as_ac_Header=`$as_echo "ac_cv_header_$file" | $as_tr_sh`
+-ac_fn_c_check_header_mongrel "$LINENO" "$file" "$as_ac_Header" "$ac_includes_default"
+-eval as_val=\$$as_ac_Header
+-   if test "x$as_val" = x""yes; then :
+-
+-fi
+-
+-
+-	    break;
+-	else
+-	    { $as_echo "$as_me:${as_lineno-$LINENO}: result: no" >&5
+-$as_echo "no" >&6; }
+-	fi
+-    done
+-    if test -z "$found" ; then
+-	as_fn_error "Can't find \"$file\"" "$LINENO" 5
+-    fi
+-
+-
+-
+ 
+ $as_echo "#define ICONV_CONST /**/" >>confdefs.h
+ 
