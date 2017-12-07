@@ -20,15 +20,9 @@
 # You should change all these variables to suit your package.
 #
 #TRANSCODE_REPOSITORY=:pserver:cvs@cvs.exit1.org:/cvstc
-ifeq ($(FFMPEG_OLD), yes)
-TRANSCODE_SITE=http://fromani.exit1.org
-TRANSCODE_VERSION=1.1.0
-TRANSCODE_SOURCE=transcode-$(TRANSCODE_VERSION).tar.bz2
-else
 TRANSCODE_SITE=https://launchpad.net/ubuntu/+archive/primary/+files
 TRANSCODE_VERSION=1.1.7
 TRANSCODE_SOURCE=transcode_$(TRANSCODE_VERSION).orig.tar.bz2
-endif
 #TRANSCODE_TAG=-D 2005-02-13
 #TRANSCODE_MODULE=transcode
 TRANSCODE_DIR=transcode-$(TRANSCODE_VERSION)
@@ -44,7 +38,7 @@ TRANSCODE_CONFLICTS=
 #
 # TRANSCODE_IPK_VERSION should be incremented when the ipk changes.
 #
-TRANSCODE_IPK_VERSION=3
+TRANSCODE_IPK_VERSION=4
 
 #
 # TRANSCODE_CONFFILES should be a list of user-editable files
@@ -54,10 +48,6 @@ TRANSCODE_CONFFILES=$(TARGET_PREFIX)/etc/transcode.conf $(TARGET_PREFIX)/etc/ini
 ## TRANSCODE_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-ifneq ($(HOSTCC), $(TARGET_CC))
-ifeq ($(FFMPEG_OLD), yes)
-TRANSCODE_PATCHES=$(TRANSCODE_SOURCE_DIR)/configure.cross.patch
-else
 TRANSCODE_PATCHES=$(TRANSCODE_SOURCE_DIR)/01_filter_pv.c.diff \
 $(TRANSCODE_SOURCE_DIR)/03_libav-api-fixes.diff \
 $(TRANSCODE_SOURCE_DIR)/04_ffmpeg_options.patch \
@@ -72,9 +62,8 @@ $(TRANSCODE_SOURCE_DIR)/11_libav10.patch \
 $(TRANSCODE_SOURCE_DIR)/12_underlinkage.patch \
 $(TRANSCODE_SOURCE_DIR)/13-fix-cross-configure.in.patch \
 $(TRANSCODE_SOURCE_DIR)/14-libavresample-conditional.patch \
-$(TRANSCODE_SOURCE_DIR)/transcode_h_include_time_h.patch
-endif
-endif
+$(TRANSCODE_SOURCE_DIR)/ffmpeg29.patch \
+$(TRANSCODE_SOURCE_DIR)/transcode_h_include_time_h.patch \
 
 #
 # If the compilation of the package requires additional
@@ -161,11 +150,7 @@ $(TRANSCODE_BUILD_DIR)/.configured: $(DL_DIR)/$(TRANSCODE_SOURCE) $(TRANSCODE_PA
 #	sed -ie '/extern int verbose/d' $(TRANSCODE_BUILD_DIR)/src/transcode.h
 #	sed -ie '/static int verbose/d' $(TRANSCODE_BUILD_DIR)/import/dvd_reader.c
 #	sed -ie 's/static int verbose/extern int verbose/' $(TRANSCODE_BUILD_DIR)/import/tcextract.c
-ifneq ($(HOSTCC), $(TARGET_CC))
-ifneq ($(FFMPEG_OLD), yes)
 	$(AUTORECONF1.10) -vif $(@D)
-endif
-endif
 	sed -ie 's|="-I/usr/include"|=""|g' $(TRANSCODE_BUILD_DIR)/configure
 	(cd $(TRANSCODE_BUILD_DIR); \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig";export PKG_CONFIG_PATH; \

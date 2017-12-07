@@ -1,0 +1,379 @@
+Description: Remove dependency on deprecated definitions
+Author: Manoj Iyer <manoj.iyer@canonical.com>
+
+---
+--- libdlna-0.2.4.orig/src/audio_aac.c
++++ libdlna-0.2.4/src/audio_aac.c
+@@ -311,7 +311,7 @@ audio_profile_guess_aac_priv (AVCodecCon
+     return AUDIO_PROFILE_INVALID;
+ 
+   /* check for AAC variants codec */
+-  if (ac->codec_id != CODEC_ID_AAC)
++  if (ac->codec_id != AV_CODEC_ID_AAC)
+     return AUDIO_PROFILE_INVALID;
+   
+   switch (type)
+--- libdlna-0.2.4.orig/src/audio_ac3.c
++++ libdlna-0.2.4/src/audio_ac3.c
+@@ -39,7 +39,7 @@ audio_profile_guess_ac3 (AVCodecContext
+     return AUDIO_PROFILE_INVALID;
+ 
+   /* check for AC3 codec */
+-  if (ac->codec_id != CODEC_ID_AC3)
++  if (ac->codec_id != AV_CODEC_ID_AC3)
+     return AUDIO_PROFILE_INVALID;
+   
+   /* supported channels: 1/0, 2/0, 3/0, 2/1, 3/1, 2/2, 3/2 */
+--- libdlna-0.2.4.orig/src/audio_amr.c
++++ libdlna-0.2.4/src/audio_amr.c
+@@ -53,7 +53,7 @@ audio_is_valid_amr (AVCodecContext *ac)
+   if (!ac)
+     return 0;
+ 
+-  if (ac->codec_id != CODEC_ID_AMR_NB)
++  if (ac->codec_id != AV_CODEC_ID_AMR_NB)
+     return 0;
+   
+   /* only mono is supported */
+@@ -89,7 +89,7 @@ audio_is_valid_amr_wb (AVCodecContext *a
+   if (!ac)
+     return 0;
+ 
+-  if (ac->codec_id != CODEC_ID_AMR_WB)
++  if (ac->codec_id != AV_CODEC_ID_AMR_WB)
+     return 0;
+   
+   /* valid sampling rates: 8, 16, 24, 32 and 48 kHz */
+--- libdlna-0.2.4.orig/src/audio_atrac3.c
++++ libdlna-0.2.4/src/audio_atrac3.c
+@@ -39,7 +39,7 @@ audio_profile_guess_atrac (AVCodecContex
+     return AUDIO_PROFILE_INVALID;
+ 
+ #if LIBAVCODEC_VERSION_INT >= ((51<<16)+(40<<8)+4)
+-  if (ac->codec_id == CODEC_ID_ATRAC3)
++  if (ac->codec_id == AV_CODEC_ID_ATRAC3)
+     return AUDIO_PROFILE_ATRAC;
+ #endif
+ 
+--- libdlna-0.2.4.orig/src/audio_g726.c
++++ libdlna-0.2.4/src/audio_g726.c
+@@ -31,7 +31,7 @@ audio_profile_guess_g726 (AVCodecContext
+   if (!ac)
+     return AUDIO_PROFILE_INVALID;
+ 
+-  if (ac->codec_id != CODEC_ID_ADPCM_G726)
++  if (ac->codec_id != AV_CODEC_ID_ADPCM_G726)
+     return AUDIO_PROFILE_INVALID;
+   
+   if (ac->channels != 1)
+--- libdlna-0.2.4.orig/src/audio_lpcm.c
++++ libdlna-0.2.4/src/audio_lpcm.c
+@@ -45,8 +45,8 @@ audio_profile_guess_lpcm (AVCodecContext
+     return AUDIO_PROFILE_INVALID;
+ 
+   /* check for 16-bit signed network-endian PCM codec  */
+-  if (ac->codec_id != CODEC_ID_PCM_S16BE &&
+-      ac->codec_id != CODEC_ID_PCM_S16LE)
++  if (ac->codec_id != AV_CODEC_ID_PCM_S16BE &&
++      ac->codec_id != AV_CODEC_ID_PCM_S16LE)
+     return AUDIO_PROFILE_INVALID;
+ 
+   /* supported channels: mono or stereo */
+--- libdlna-0.2.4.orig/src/audio_mp2.c
++++ libdlna-0.2.4/src/audio_mp2.c
+@@ -31,7 +31,7 @@ audio_profile_guess_mp2 (AVCodecContext
+   if (!ac)
+     return AUDIO_PROFILE_INVALID;
+ 
+-  if (ac->codec_id != CODEC_ID_MP2)
++  if (ac->codec_id != AV_CODEC_ID_MP2)
+     return AUDIO_PROFILE_INVALID;
+   
+   if (ac->channels > 5)
+--- libdlna-0.2.4.orig/src/audio_mp3.c
++++ libdlna-0.2.4/src/audio_mp3.c
+@@ -47,7 +47,7 @@ audio_is_valid_mp3_common (AVCodecContex
+     return 0;
+ 
+   /* check for MP3 codec */
+-  if (ac->codec_id != CODEC_ID_MP3)
++  if (ac->codec_id != AV_CODEC_ID_MP3)
+     return 0;
+   
+   /* only mono and stereo are supported */
+--- libdlna-0.2.4.orig/src/audio_wma.c
++++ libdlna-0.2.4/src/audio_wma.c
+@@ -55,7 +55,7 @@ audio_profile_guess_wma (AVCodecContext
+     return ap;
+ 
+   /* check for WMA codec */
+-  if (ac->codec_id != CODEC_ID_WMAV1 && ac->codec_id != CODEC_ID_WMAV2)
++  if (ac->codec_id != AV_CODEC_ID_WMAV1 && ac->codec_id != AV_CODEC_ID_WMAV2)
+     return ap;
+ 
+   if (ac->sample_rate <= 48000)
+--- libdlna-0.2.4.orig/src/av_mpeg1.c
++++ libdlna-0.2.4/src/av_mpeg1.c
+@@ -42,7 +42,7 @@ probe_mpeg1 (AVFormatContext *ctx dlna_u
+     return NULL;
+   
+   /* check for MPEG-1 video codec */
+-  if (codecs->vc->codec_id != CODEC_ID_MPEG1VIDEO)
++  if (codecs->vc->codec_id != AV_CODEC_ID_MPEG1VIDEO)
+     return NULL;
+ 
+   /* video bitrate must be CBR at 1,151,929.1 bps */
+@@ -56,23 +56,23 @@ probe_mpeg1 (AVFormatContext *ctx dlna_u
+   */
+   if (codecs->vc->width == 352 && codecs->vc->height == 288)
+   {
+-    if (codecs->vs->r_frame_rate.num != 25 &&
+-        codecs->vs->r_frame_rate.den != 1)
++    if (codecs->vs->avg_frame_rate.num != 25 &&
++        codecs->vs->avg_frame_rate.den != 1)
+           return NULL;
+   }
+   else if (codecs->vc->width == 352 && codecs->vc->height == 240)
+   {
+-    if ((codecs->vs->r_frame_rate.num != 30000 &&
+-         codecs->vs->r_frame_rate.den != 1001) ||
+-        (codecs->vs->r_frame_rate.num != 24000 &&
+-         codecs->vs->r_frame_rate.den != 1001))
++    if ((codecs->vs->avg_frame_rate.num != 30000 &&
++         codecs->vs->avg_frame_rate.den != 1001) ||
++        (codecs->vs->avg_frame_rate.num != 24000 &&
++         codecs->vs->avg_frame_rate.den != 1001))
+           return NULL;
+   }
+   else
+     return NULL;
+ 
+   /* check for MPEG-1 Layer-2 audio codec */
+-  if (codecs->ac->codec_id != CODEC_ID_MP2)
++  if (codecs->ac->codec_id != AV_CODEC_ID_MP2)
+     return NULL;
+   
+   /* supported channels: stereo only */
+--- libdlna-0.2.4.orig/src/av_mpeg2.c
++++ libdlna-0.2.4/src/av_mpeg2.c
+@@ -379,8 +379,8 @@ probe_mpeg_ps_es (AVFormatContext *ctx,
+   int i;
+ 
+   /* determine region through frame rate */
+-  if ((codecs->vs->r_frame_rate.num == 30000 &&
+-       codecs->vs->r_frame_rate.den == 1001)) /* NTSC */
++  if ((codecs->vs->avg_frame_rate.num == 30000 &&
++       codecs->vs->avg_frame_rate.den == 1001)) /* NTSC */
+   {
+     for (i = 0; i < (int) (sizeof (mpeg_ps_es_valid_streams_ntsc)
+                            / sizeof (mpeg_ps_es_stream_t)); i++)
+@@ -402,8 +402,8 @@ probe_mpeg_ps_es (AVFormatContext *ctx,
+     /* invalid resolution */
+     return NULL;
+   }
+-  else if (codecs->vs->r_frame_rate.num == 25 &&
+-           codecs->vs->r_frame_rate.den == 1) /* PAL */
++  else if (codecs->vs->avg_frame_rate.num == 25 &&
++           codecs->vs->avg_frame_rate.den == 1) /* PAL */
+   {
+     for (i = 0; i < (int) (sizeof (mpeg_ps_es_valid_streams_pal)
+                            / sizeof (mpeg_ps_es_stream_t)); i++)
+@@ -453,15 +453,15 @@ probe_mpeg_ts (AVFormatContext *ctx,
+   int i;
+   
+   /* check for MPEG-2 MP@LL profile */
+-  if (codecs->ac->codec_id == CODEC_ID_AAC)
++  if (codecs->ac->codec_id == AV_CODEC_ID_AAC)
+   {
+     /* 352x288 only */
+     if (codecs->vc->width != 352 && codecs->vc->height != 288)
+       return NULL;
+ 
+     /* 30 fps */
+-    if (codecs->vs->r_frame_rate.num != 30 &&
+-        codecs->vs->r_frame_rate.den != 1)
++    if (codecs->vs->avg_frame_rate.num != 30 &&
++        codecs->vs->avg_frame_rate.den != 1)
+       return NULL;
+ 
+     /* video bitrate is less or equal to 4 Mbps */
+@@ -486,8 +486,8 @@ probe_mpeg_ts (AVFormatContext *ctx,
+   }
+ 
+   /* check for Region: only Europe supports 25 fps (50i) */
+-  if (codecs->vs->r_frame_rate.num == 25 &&
+-      codecs->vs->r_frame_rate.den == 1)
++  if (codecs->vs->avg_frame_rate.num == 25 &&
++      codecs->vs->avg_frame_rate.den == 1)
+   {
+     for (i = 0; i < (int) (sizeof (mpeg_ts_valid_streams_eu_sd)
+                            / sizeof (mpeg_ts_stream_t)); i++)
+@@ -535,7 +535,7 @@ probe_mpeg_ts (AVFormatContext *ctx,
+   if (ctx->bit_rate > 19392700)
+     return NULL;
+ 
+-  if (codecs->ac->codec_id != CODEC_ID_AC3)
++  if (codecs->ac->codec_id != AV_CODEC_ID_AC3)
+     return NULL;
+ 
+   /* 48 KHz only */
+@@ -559,9 +559,9 @@ probe_mpeg_ts (AVFormatContext *ctx,
+     if (mpeg_ts_valid_streams_na_sd[i].width == codecs->vc->width &&
+         mpeg_ts_valid_streams_na_sd[i].height == codecs->vc->height &&
+         mpeg_ts_valid_streams_na_sd[i].fps_num
+-        == codecs->vs->r_frame_rate.num &&
++        == codecs->vs->avg_frame_rate.num &&
+         mpeg_ts_valid_streams_na_sd[i].fps_den
+-        == codecs->vs->r_frame_rate.num)
++        == codecs->vs->avg_frame_rate.num)
+     {
+       switch (st)
+       {
+@@ -584,9 +584,9 @@ probe_mpeg_ts (AVFormatContext *ctx,
+     if (mpeg_ts_valid_streams_na_hd[i].width == codecs->vc->width &&
+         mpeg_ts_valid_streams_na_hd[i].height == codecs->vc->height &&
+         mpeg_ts_valid_streams_na_hd[i].fps_num
+-        == codecs->vs->r_frame_rate.num &&
++        == codecs->vs->avg_frame_rate.num &&
+         mpeg_ts_valid_streams_na_hd[i].fps_den
+-        == codecs->vs->r_frame_rate.num)
++        == codecs->vs->avg_frame_rate.num)
+     {
+       switch (st)
+       {
+@@ -615,7 +615,7 @@ probe_mpeg2 (AVFormatContext *ctx,
+     return NULL;
+   
+   /* check for MPEG-2 video codec */
+-  if (codecs->vc->codec_id != CODEC_ID_MPEG2VIDEO)
++  if (codecs->vc->codec_id != AV_CODEC_ID_MPEG2VIDEO)
+     return NULL;
+ 
+   switch (st)
+--- libdlna-0.2.4.orig/src/av_mpeg4_part10.c
++++ libdlna-0.2.4/src/av_mpeg4_part10.c
+@@ -1151,7 +1151,7 @@ avc_video_get_profile (AVFormatContext *
+     /* QCIF */
+     if (vc->bit_rate <= 128000 && ctx->bit_rate <= 256000)
+     {
+-      if (vs->r_frame_rate.num == 15 && vs->r_frame_rate.num == 1)
++      if (vs->avg_frame_rate.num == 15 && vs->avg_frame_rate.num == 1)
+         return AVC_VIDEO_PROFILE_BL_QCIF15;
+       else
+         return AVC_VIDEO_PROFILE_BL_L1B_QCIF;
+@@ -1221,7 +1221,7 @@ probe_avc (AVFormatContext *ctx,
+     return NULL;
+ 
+   /* check for H.264/AVC codec */
+-  if (codecs->vc->codec_id != CODEC_ID_H264)
++  if (codecs->vc->codec_id != AV_CODEC_ID_H264)
+     return NULL;
+ 
+   /* check for a supported container */
+--- libdlna-0.2.4.orig/src/av_mpeg4_part2.c
++++ libdlna-0.2.4/src/av_mpeg4_part2.c
+@@ -42,13 +42,13 @@ static const struct {
+   int codec_id;
+   mpeg4_vcodec_type_t type;
+ } avf_vcodec_mapping[] = {
+-  { CODEC_ID_H263,                      MPEG4_VCODEC_H263 },
+-  { CODEC_ID_H263I,                     MPEG4_VCODEC_H263 },
+-  { CODEC_ID_H263P,                     MPEG4_VCODEC_H263 },
+-  { CODEC_ID_MPEG4,                     MPEG4_VCODEC_P2 },
+-  { CODEC_ID_MSMPEG4V1,                 MPEG4_VCODEC_P2 },
+-  { CODEC_ID_MSMPEG4V2,                 MPEG4_VCODEC_P2 },
+-  { CODEC_ID_MSMPEG4V3,                 MPEG4_VCODEC_P2 },
++  { AV_CODEC_ID_H263,                      MPEG4_VCODEC_H263 },
++  { AV_CODEC_ID_H263I,                     MPEG4_VCODEC_H263 },
++  { AV_CODEC_ID_H263P,                     MPEG4_VCODEC_H263 },
++  { AV_CODEC_ID_MPEG4,                     MPEG4_VCODEC_P2 },
++  { AV_CODEC_ID_MSMPEG4V1,                 MPEG4_VCODEC_P2 },
++  { AV_CODEC_ID_MSMPEG4V2,                 MPEG4_VCODEC_P2 },
++  { AV_CODEC_ID_MSMPEG4V3,                 MPEG4_VCODEC_P2 },
+   { -1, 0 }
+ };
+    
+@@ -780,7 +780,7 @@ is_valid_video_profile (video_properties
+   {
+     if (res[i].width == vc->width &&
+         res[i].height == vc->height &&
+-        (vs->r_frame_rate.num / vs->r_frame_rate.num)
++        (vs->avg_frame_rate.num / vs->avg_frame_rate.num)
+         <= (res[i].fps_num / res[i].fps_den))
+       return 1;
+   }
+--- libdlna-0.2.4.orig/src/av_wmv9.c
++++ libdlna-0.2.4/src/av_wmv9.c
+@@ -193,8 +193,8 @@ is_valid_wmv9_video_profile (wmv9_profil
+   for (i = 0; i < size / (int) sizeof (wmv9_profile_t); i++)
+     if (vc->width <= profile[i].max_width &&
+         vc->height <= profile[i].max_height &&
+-        vs->r_frame_rate.num == profile[i].fps_num &&
+-        vs->r_frame_rate.den == profile[i].fps_den &&
++        vs->avg_frame_rate.num == profile[i].fps_num &&
++        vs->avg_frame_rate.den == profile[i].fps_den &&
+         vc->bit_rate <= profile[i].max_bitrate)
+       return 1;
+ 
+@@ -245,7 +245,7 @@ probe_wmv9 (AVFormatContext *ctx dlna_un
+     return NULL;
+ 
+   /* check for WMV3 (Simple and Main profiles) video codec */
+-  if (codecs->vc->codec_id != CODEC_ID_WMV3)
++  if (codecs->vc->codec_id != AV_CODEC_ID_WMV3)
+     return NULL;
+ 
+   /* get video profile */
+--- libdlna-0.2.4.orig/src/image_jpeg.c
++++ libdlna-0.2.4/src/image_jpeg.c
+@@ -92,10 +92,10 @@ probe_jpeg (AVFormatContext *ctx,
+     return NULL;
+ 
+   /* check for JPEG compliant codec */
+-  if (codecs->vc->codec_id != CODEC_ID_MJPEG &&
+-      codecs->vc->codec_id != CODEC_ID_MJPEGB &&
+-      codecs->vc->codec_id != CODEC_ID_LJPEG &&
+-      codecs->vc->codec_id != CODEC_ID_JPEGLS)
++  if (codecs->vc->codec_id != AV_CODEC_ID_MJPEG &&
++      codecs->vc->codec_id != AV_CODEC_ID_MJPEGB &&
++      codecs->vc->codec_id != AV_CODEC_ID_LJPEG &&
++      codecs->vc->codec_id != AV_CODEC_ID_JPEGLS)
+     return NULL;
+ 
+   for (i = 0; jpeg_profiles_mapping[i].profile; i++)
+--- libdlna-0.2.4.orig/src/image_png.c
++++ libdlna-0.2.4/src/image_png.c
+@@ -76,7 +76,7 @@ probe_png (AVFormatContext *ctx,
+     return NULL;
+   
+   /* check for PNG compliant codec */
+-  if (codecs->vc->codec_id != CODEC_ID_PNG)
++  if (codecs->vc->codec_id != AV_CODEC_ID_PNG)
+     return NULL;
+ 
+   for (i = 0; png_profiles_mapping[i].profile; i++)
+--- libdlna-0.2.4.orig/src/profiles.c
++++ libdlna-0.2.4/src/profiles.c
+@@ -334,7 +334,7 @@ dlna_guess_media_profile (dlna_t *dlna,
+     p = p->next;
+   }
+ 
+-  av_close_input_file (ctx);
++  avformat_close_input (ctx);
+   free (codecs);
+   return profile;
+ }
+--- /dev/null
++++ libdlna-0.2.4/src/profiles.c.rej
+@@ -0,0 +1,11 @@
++--- src/profiles.c	2014-06-20 14:56:28.145658900 -0500
+++++ src/profiles.c	2014-06-20 15:11:40.000000000 -0500
++@@ -334,7 +334,7 @@
++     p = p->next;
++   }
++ 
++-  avformat_close_input (ctx);
+++  av_close_input_file (ctx);
++   free (codecs);
++   return profile;
++ }

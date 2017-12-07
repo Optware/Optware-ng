@@ -31,9 +31,6 @@ with optional on-the-fly audio transcondig from ogg/vorbis, mpc/musepack and FLA
 FUPPES_SECTION=audio
 FUPPES_PRIORITY=optional
 FUPPES_DEPENDS=e2fslibs, libxml2, pcre, sqlite
-ifeq ($(FFMPEG_OLD), yes)
-TRANSCODE_DEPENDS+=, ffmpeg
-endif
 ifeq (taglib, $(filter taglib, $(PACKAGES)))
 FUPPES_DEPENDS+=, taglib
 endif
@@ -57,9 +54,7 @@ FUPPES_IPK_VERSION=2
 # which they should be applied to the source code.
 #
 FUPPES_PATCHES=$(FUPPES_SOURCE_DIR)/missing-includes.patch
-ifneq ($(FFMPEG_OLD), yes)
 FUPPES_PATCHES+=$(FUPPES_SOURCE_DIR)/metadata_libavformat.patch
-endif
 
 #
 # If the compilation of the package requires additional
@@ -133,14 +128,7 @@ fuppes-source: $(DL_DIR)/$(FUPPES_SOURCE) $(FUPPES_PATCHES)
 # shown below to make various patches to it.
 #
 $(FUPPES_BUILD_DIR)/.configured: $(DL_DIR)/$(FUPPES_SOURCE) $(FUPPES_PATCHES) make/fuppes.mk
-	$(MAKE) e2fsprogs-stage libxml2-stage pcre-stage sqlite-stage
-ifeq ($(FFMPEG_OLD), yes)
-	$(MAKE) ffmpeg-stage
-else
-#	fuppes needs old ffmpeg
-#	Following command builds and stages headers and static ffmpeg libs to $(STAGING_PREFIX)/ffmpeg_old
-	$(MAKE) ffmpeg-old-stage
-endif
+	$(MAKE) e2fsprogs-stage libxml2-stage pcre-stage sqlite-stage ffmpeg-old-stage
 ifeq (taglib, $(filter taglib, $(PACKAGES)))
 	$(MAKE) taglib-stage
 endif

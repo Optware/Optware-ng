@@ -1,0 +1,3310 @@
+Description: rename log defines to avoid clashes with syslog.h implementations
+Note: the patch has been forwarded to a github fork, because upstream is dead on
+google-code
+
+Author: Gianfranco Costamagna <locutusofborg@debian.org>
+
+Forwarded: https://github.com/ralph-irving/squeezelite/pull/16
+
+--- squeezelite-1.8.orig/decode.c
++++ squeezelite-1.8/decode.c
+@@ -71,7 +71,7 @@ static void *decode_thread() {
+ 
+ 		if (decode.state == DECODE_RUNNING && codec) {
+ 		
+-			LOG_SDEBUG("streambuf bytes: %u outputbuf space: %u", bytes, space);
++			LOG_SQ_SDEBUG("streambuf bytes: %u outputbuf space: %u", bytes, space);
+ 
+ 			IF_DIRECT(
+ 				min_space = codec->min_space;
+@@ -96,7 +96,7 @@ static void *decode_thread() {
+ 
+ 				if (decode.state != DECODE_RUNNING) {
+ 
+-					LOG_INFO("decode %s", decode.state == DECODE_COMPLETE ? "complete" : "error");
++					LOG_SQ_INFO("decode %s", decode.state == DECODE_COMPLETE ? "complete" : "error");
+ 
+ 					LOCK_O;
+ 					if (output.fade_mode) _checkfade(false);
+@@ -126,7 +126,7 @@ void decode_init(log_level level, const
+ 
+ 	loglevel = level;
+ 
+-	LOG_INFO("init decode, include codecs: %s exclude codecs: %s", include_codecs ? include_codecs : "", exclude_codecs);
++	LOG_SQ_INFO("init decode, include codecs: %s exclude codecs: %s", include_codecs ? include_codecs : "", exclude_codecs);
+ 
+ 	// register codecs
+ 	// dsf,dff,alc,wma,wmap,wmal,aac,spt,ogg,ogf,flc,aif,pcm,mp3
+@@ -172,7 +172,7 @@ void decode_init(log_level level, const
+ }
+ 
+ void decode_close(void) {
+-	LOG_INFO("close decode");
++	LOG_SQ_INFO("close decode");
+ 	LOCK_D;
+ 	if (codec) {
+ 		codec->close();
+@@ -187,7 +187,7 @@ void decode_close(void) {
+ }
+ 
+ void decode_flush(void) {
+-	LOG_INFO("decode flush");
++	LOG_SQ_INFO("decode flush");
+ 	LOCK_D;
+ 	decode.state = DECODE_STOPPED;
+ 	IF_PROCESS(
+@@ -215,7 +215,7 @@ unsigned decode_newstream(unsigned sampl
+ void codec_open(u8_t format, u8_t sample_size, u8_t sample_rate, u8_t channels, u8_t endianness) {
+ 	int i;
+ 
+-	LOG_INFO("codec open: '%c'", format);
++	LOG_SQ_INFO("codec open: '%c'", format);
+ 
+ 	LOCK_D;
+ 
+@@ -232,7 +232,7 @@ void codec_open(u8_t format, u8_t sample
+ 		if (codecs[i] && codecs[i]->id == format) {
+ 
+ 			if (codec && codec != codecs[i]) {
+-				LOG_INFO("closing codec: '%c'", codec->id);
++				LOG_SQ_INFO("closing codec: '%c'", codec->id);
+ 				codec->close();
+ 			}
+ 			
+@@ -249,6 +249,6 @@ void codec_open(u8_t format, u8_t sample
+ 
+ 	UNLOCK_D;
+ 
+-	LOG_ERROR("codec not found");
++	LOG_SQ_ERROR("codec not found");
+ }
+ 
+--- squeezelite-1.8.orig/dsd.c
++++ squeezelite-1.8/dsd.c
+@@ -105,7 +105,7 @@ static int _read_header(void) {
+ 		} else if (!memcmp(streambuf->readp, "DSD ", 4)) {
+ 			d->type = DSF;
+ 		} else {
+-			LOG_WARN("bad type");
++			LOG_SQ_WARN("bad type");
+ 			return -1;
+ 		}
+ 	}
+@@ -122,7 +122,7 @@ static int _read_header(void) {
+ 				if (!memcmp(streambuf->readp + 12, "DSD ", 4)) {
+ 					consume = 16; // read into
+ 				} else {
+-					LOG_WARN("bad dsdiff FRM8");
++					LOG_SQ_WARN("bad dsdiff FRM8");
+ 					return -1;
+ 				}
+ 			}
+@@ -130,19 +130,19 @@ static int _read_header(void) {
+ 				consume = 16; // read into
+ 			}
+ 			if (!strcmp(id, "FVER")) {
+-				LOG_INFO("DSDIFF version: %u.%u.%u.%u", *(streambuf->readp + 12), *(streambuf->readp + 13),
++				LOG_SQ_INFO("DSDIFF version: %u.%u.%u.%u", *(streambuf->readp + 12), *(streambuf->readp + 13),
+ 					 *(streambuf->readp + 14), *(streambuf->readp + 15));
+ 			}
+ 			if (!strcmp(id, "FS  ")) {
+ 				d->sample_rate = unpackN((void *)(streambuf->readp + 12));
+-				LOG_INFO("sample rate: %u", d->sample_rate);
++				LOG_SQ_INFO("sample rate: %u", d->sample_rate);
+ 			}
+ 			if (!strcmp(id, "CHNL")) {
+ 				d->channels = unpackn((void *)(streambuf->readp + 12));
+-				LOG_INFO("channels: %u", d->channels);
++				LOG_SQ_INFO("channels: %u", d->channels);
+ 			}
+ 			if (!strcmp(id, "DSD ")) {
+-				LOG_INFO("found dsd len: " FMT_u64, len);
++				LOG_SQ_INFO("found dsd len: " FMT_u64, len);
+ 				d->sample_bytes = len;
+ 				_buf_inc_readp(streambuf, 12);
+ 				bytes  -= 12;
+@@ -155,9 +155,9 @@ static int _read_header(void) {
+ 				if (bytes >= len && bytes >= 52) {
+ 					u32_t version = unpack32le((void *)(streambuf->readp + 12));
+ 					u32_t format  = unpack32le((void *)(streambuf->readp + 16));
+-					LOG_INFO("DSF version: %u format: %u", version, format);
++					LOG_SQ_INFO("DSF version: %u format: %u", version, format);
+ 					if (format != 0) {
+-						LOG_WARN("only support DSD raw format");
++						LOG_SQ_WARN("only support DSD raw format");
+ 						return -1;
+ 					}
+ 					d->channels = unpack32le((void *)(streambuf->readp + 24));
+@@ -165,17 +165,17 @@ static int _read_header(void) {
+ 					d->lsb_first = (unpack32le((void *)(streambuf->readp + 32)) == 1);
+ 					d->sample_bytes = unpack64le((void *)(streambuf->readp + 36)) / 8;
+ 					d->block_size = unpack32le((void *)(streambuf->readp + 44));
+-					LOG_INFO("channels: %u", d->channels);
+-					LOG_INFO("sample rate: %u", d->sample_rate);
+-					LOG_INFO("lsb first: %u", d->lsb_first);
+-					LOG_INFO("sample bytes: " FMT_u64, d->sample_bytes);
+-					LOG_INFO("block size: %u", d->block_size);
++					LOG_SQ_INFO("channels: %u", d->channels);
++					LOG_SQ_INFO("sample rate: %u", d->sample_rate);
++					LOG_SQ_INFO("lsb first: %u", d->lsb_first);
++					LOG_SQ_INFO("sample bytes: " FMT_u64, d->sample_bytes);
++					LOG_SQ_INFO("block size: %u", d->block_size);
+ 				} else {
+ 					consume = -1; // come back later
+ 				}
+ 			}
+ 			if (!strcmp(id, "data")) {
+-				LOG_INFO("found dsd len: " FMT_u64, len);
++				LOG_SQ_INFO("found dsd len: " FMT_u64, len);
+ 				_buf_inc_readp(streambuf, 12);
+ 				bytes  -= 12;
+ 				return 1; // got to the audio
+@@ -188,11 +188,11 @@ static int _read_header(void) {
+ 		}
+ 
+ 		if (bytes >= consume) {
+-			LOG_DEBUG("id: %s len: " FMT_u64 " consume: %d", id, len, consume);
++			LOG_SQ_DEBUG("id: %s len: " FMT_u64 " consume: %d", id, len, consume);
+ 			_buf_inc_readp(streambuf, consume);
+ 			bytes  -= consume;
+ 		} else if (consume > 0) {
+-			LOG_DEBUG("id: %s len: " FMT_u64 " consume: %d - partial consume: %u", id, len, consume, bytes);
++			LOG_SQ_DEBUG("id: %s len: " FMT_u64 " consume: %d - partial consume: %u", id, len, consume, bytes);
+ 			_buf_inc_readp(streambuf, bytes);
+ 			d->consume = consume - bytes;
+ 			break;
+@@ -215,7 +215,7 @@ static decode_state _decode_dsf(void) {
+ 	unsigned bytes_per_frame = dop ? 2 : 1;
+ 	
+ 	if (bytes < d->block_size * d->channels) {
+-		LOG_INFO("stream too short"); // this can occur when scanning the track
++		LOG_SQ_INFO("stream too short"); // this can occur when scanning the track
+ 		return DECODE_COMPLETE;
+ 	}
+ 	
+@@ -255,7 +255,7 @@ static decode_state _decode_dsf(void) {
+ 				frames = 1;
+ 			} else {
+ 				// should not get here due to wrapping m/2 for dop should never result in 0 as header len is always even
+-				LOG_INFO("frames got to zero");
++				LOG_SQ_INFO("frames got to zero");
+ 				return DECODE_COMPLETE;
+ 			}
+ 		}
+@@ -338,7 +338,7 @@ static decode_state _decode_dsf(void) {
+ 		if (d->sample_bytes > bytes_read) {
+ 			d->sample_bytes -= bytes_read;
+ 		} else {
+-			LOG_INFO("end of track samples");
++			LOG_SQ_INFO("end of track samples");
+ 			block_left = 0;
+ 			d->sample_bytes = 0;
+ 		}
+@@ -350,7 +350,7 @@ static decode_state _decode_dsf(void) {
+ 			process.in_frames += frames;
+ 		);
+ 
+-		LOG_SDEBUG("write %u frames", frames);
++		LOG_SQ_SDEBUG("write %u frames", frames);
+ 	}
+ 	
+ 	// skip the other channel blocks
+@@ -472,7 +472,7 @@ static decode_state _decode_dsdiff(void)
+ 	if (d->sample_bytes > bytes_read) {
+ 		d->sample_bytes -= bytes_read;
+ 	} else {
+-		LOG_INFO("end of track samples");
++		LOG_SQ_INFO("end of track samples");
+ 		d->sample_bytes = 0;
+ 	}
+ 	
+@@ -483,7 +483,7 @@ static decode_state _decode_dsdiff(void)
+ 		process.in_frames = frames;
+ 	);
+ 	
+-	LOG_SDEBUG("write %u frames", frames);
++	LOG_SQ_SDEBUG("write %u frames", frames);
+ 
+ 	return DECODE_RUNNING;
+ }
+@@ -501,7 +501,7 @@ static decode_state dsd_decode(void) {
+ 
+ 	if (d->consume) {
+ 		unsigned consume = min(d->consume, min(_buf_used(streambuf), _buf_cont_read(streambuf)));
+-		LOG_DEBUG("consume: %u of %u", consume, d->consume);
++		LOG_SQ_DEBUG("consume: %u of %u", consume, d->consume);
+ 		_buf_inc_readp(streambuf, consume);
+ 		d->consume -= consume;
+ 		if (d->consume) {
+@@ -524,23 +524,23 @@ static decode_state dsd_decode(void) {
+ 
+ 		LOCK_O;
+ 
+-		LOG_INFO("setting track_start");
++		LOG_SQ_INFO("setting track_start");
+ 		output.track_start = outputbuf->writep;
+ 
+ 		dop = output.has_dop;
+ 
+ 		if (dop && d->sample_rate / 16 > output.supported_rates[0]) {
+-			LOG_INFO("DOP sample rate too high for device - converting to PCM");
++			LOG_SQ_INFO("DOP sample rate too high for device - converting to PCM");
+ 			dop = false;
+ 		}
+ 
+ 		if (dop) {
+-			LOG_INFO("DOP output");
++			LOG_SQ_INFO("DOP output");
+ 			output.next_dop = true;
+ 			output.next_sample_rate = d->sample_rate / 16;
+ 			output.fade = FADE_INACTIVE;
+ 		} else {
+-			LOG_INFO("DSD to PCM output");
++			LOG_SQ_INFO("DSD to PCM output");
+ 			output.next_dop = false;
+ 			output.next_sample_rate = decode_newstream(d->sample_rate / 8, output.supported_rates);
+ 			if (output.fade_mode) _checkfade(true);
+@@ -621,7 +621,7 @@ struct codec *register_dsd(void) {
+ 
+ 	dsd2pcm_precalc();
+ 
+-	LOG_INFO("using dsd to decode dsf,dff");
++	LOG_SQ_INFO("using dsd to decode dsf,dff");
+ 	return &ret;
+ }
+ 
+--- squeezelite-1.8.orig/faad.c
++++ squeezelite-1.8/faad.c
+@@ -142,12 +142,12 @@ static int read_mp4_header(unsigned long
+ 			mp4_desc_length(&ptr);
+ 			ptr += 13;
+ 			if (*ptr++ != 0x05) {
+-				LOG_WARN("error parsing esds");
++				LOG_SQ_WARN("error parsing esds");
+ 				return -1;
+ 			}
+ 			config_len = mp4_desc_length(&ptr);
+ 			if (NEAAC(a, Init2, a->hAac, ptr, config_len, samplerate_p, channels_p) == 0) {
+-				LOG_DEBUG("playable aac track: %u", trak);
++				LOG_SQ_DEBUG("playable aac track: %u", trak);
+ 				play = trak;
+ 			}
+ 		}
+@@ -164,14 +164,14 @@ static int read_mp4_header(unsigned long
+ 				a->sttssamples += count * size;
+ 				ptr += 8;
+ 			}
+-			LOG_DEBUG("total number of samples contained in stts: " FMT_u64, a->sttssamples);
++			LOG_SQ_DEBUG("total number of samples contained in stts: " FMT_u64, a->sttssamples);
+ 		}
+ 
+ 		// stash sample to chunk info, assume it comes before stco
+ 		if (!strcmp(type, "stsc") && bytes > len && !a->chunkinfo) {
+ 			a->stsc = malloc(len - 12);
+ 			if (a->stsc == NULL) {
+-				LOG_WARN("malloc fail");
++				LOG_SQ_WARN("malloc fail");
+ 				return -1;
+ 			}
+ 			memcpy(a->stsc, streambuf->readp + 12, len - 12);
+@@ -186,7 +186,7 @@ static int read_mp4_header(unsigned long
+ 			ptr += 4;
+ 			a->chunkinfo = malloc(sizeof(struct chunk_table) * (entries + 1));
+ 			if (a->chunkinfo == NULL) {
+-				LOG_WARN("malloc fail");
++				LOG_SQ_WARN("malloc fail");
+ 				return -1;
+ 			}
+ 			for (i = 0; i < entries; ++i) {
+@@ -232,10 +232,10 @@ static int read_mp4_header(unsigned long
+ 			a->pos += 8;
+ 			bytes  -= 8;
+ 			if (play) {
+-				LOG_DEBUG("type: mdat len: %u pos: %u", len, a->pos);
++				LOG_SQ_DEBUG("type: mdat len: %u pos: %u", len, a->pos);
+ 				if (a->chunkinfo && a->chunkinfo[0].offset > a->pos) {
+ 					u32_t skip = a->chunkinfo[0].offset - a->pos; 	
+-					LOG_DEBUG("skipping: %u", skip);
++					LOG_SQ_DEBUG("skipping: %u", skip);
+ 					if (skip <= bytes) {
+ 						_buf_inc_readp(streambuf, skip);
+ 						a->pos += skip;
+@@ -246,7 +246,7 @@ static int read_mp4_header(unsigned long
+ 				a->sample = a->nextchunk = 1;
+ 				return 1;
+ 			} else {
+-				LOG_DEBUG("type: mdat len: %u, no playable track found", len);
++				LOG_SQ_DEBUG("type: mdat len: %u, no playable track found", len);
+ 				return -1;
+ 			}
+ 		}
+@@ -265,9 +265,9 @@ static int read_mp4_header(unsigned long
+ 				// data is stored as hex strings: 0 start end samples
+ 				u32_t b, c; u64_t d;
+ 				if (sscanf((const char *)(ptr + 16), "%x %x %x " FMT_x64, &b, &b, &c, &d) == 4) {
+-					LOG_DEBUG("iTunSMPB start: %u end: %u samples: " FMT_u64, b, c, d);
++					LOG_SQ_DEBUG("iTunSMPB start: %u end: %u samples: " FMT_u64, b, c, d);
+ 					if (a->sttssamples && a->sttssamples < b + c + d) {
+-						LOG_DEBUG("reducing samples as stts count is less");
++						LOG_SQ_DEBUG("reducing samples as stts count is less");
+ 						d = a->sttssamples - (b + c);
+ 					}
+ 					a->skip = b;
+@@ -291,13 +291,13 @@ static int read_mp4_header(unsigned long
+ 
+ 		// consume rest of box if it has been parsed (all in the buffer) or is not one we want to parse
+ 		if (bytes >= consume) {
+-			LOG_DEBUG("type: %s len: %u consume: %u", type, len, consume);
++			LOG_SQ_DEBUG("type: %s len: %u consume: %u", type, len, consume);
+ 			_buf_inc_readp(streambuf, consume);
+ 			a->pos += consume;
+ 			bytes -= consume;
+ 		} else if ( !(!strcmp(type, "esds") || !strcmp(type, "stts") || !strcmp(type, "stsc") || 
+ 					 !strcmp(type, "stco") || !strcmp(type, "----")) ) {
+-			LOG_DEBUG("type: %s len: %u consume: %u - partial consume: %u", type, len, consume, bytes);
++			LOG_SQ_DEBUG("type: %s len: %u consume: %u - partial consume: %u", type, len, consume, bytes);
+ 			_buf_inc_readp(streambuf, bytes);
+ 			a->pos += bytes;
+ 			a->consume = consume - bytes;
+@@ -329,7 +329,7 @@ static decode_state faad_decode(void) {
+ 
+ 	if (a->consume) {
+ 		u32_t consume = min(a->consume, bytes_wrap);
+-		LOG_DEBUG("consume: %u of %u", consume, a->consume);
++		LOG_SQ_DEBUG("consume: %u of %u", consume, a->consume);
+ 		_buf_inc_readp(streambuf, consume);
+ 		a->pos += consume;
+ 		a->consume -= consume;
+@@ -369,12 +369,12 @@ static decode_state faad_decode(void) {
+ 
+ 		if (found == 1) {
+ 
+-			LOG_INFO("samplerate: %u channels: %u", samplerate, channels);
++			LOG_SQ_INFO("samplerate: %u channels: %u", samplerate, channels);
+ 			bytes_total = _buf_used(streambuf);
+ 			bytes_wrap  = min(bytes_total, _buf_cont_read(streambuf));
+ 
+ 			LOCK_O;
+-			LOG_INFO("setting track_start");
++			LOG_SQ_INFO("setting track_start");
+ 			output.next_sample_rate = decode_newstream(samplerate, output.supported_rates);
+ 			IF_DSD( output.next_dop = false; )
+ 			output.track_start = outputbuf->writep;
+@@ -384,7 +384,7 @@ static decode_state faad_decode(void) {
+ 
+ 		} else if (found == -1) {
+ 
+-			LOG_WARN("error reading stream header");
++			LOG_SQ_WARN("error reading stream header");
+ 			UNLOCK_S;
+ 			return DECODE_ERROR;
+ 
+@@ -411,7 +411,7 @@ static decode_state faad_decode(void) {
+ 	}
+ 
+ 	if (info.error) {
+-		LOG_WARN("error: %u %s", info.error, NEAAC(a, GetErrorMessage, info.error));
++		LOG_SQ_WARN("error: %u %s", info.error, NEAAC(a, GetErrorMessage, info.error));
+ 	}
+ 
+ 	endstream = false;
+@@ -422,7 +422,7 @@ static decode_state faad_decode(void) {
+ 		if (a->chunkinfo[a->nextchunk].offset > a->pos) {
+ 			u32_t skip = a->chunkinfo[a->nextchunk].offset - a->pos;
+ 			if (skip != info.bytesconsumed) {
+-				LOG_DEBUG("skipping to next chunk pos: %u consumed: %u != skip: %u", a->pos, info.bytesconsumed, skip);
++				LOG_SQ_DEBUG("skipping to next chunk pos: %u consumed: %u != skip: %u", a->pos, info.bytesconsumed, skip);
+ 			}
+ 			if (bytes_total >= skip) {
+ 				_buf_inc_readp(streambuf, skip);
+@@ -432,7 +432,7 @@ static decode_state faad_decode(void) {
+ 			}
+ 			a->nextchunk++;
+ 		} else {
+-			LOG_ERROR("error: need to skip backwards!");
++			LOG_SQ_ERROR("error: need to skip backwards!");
+ 			endstream = true;
+ 		}
+ 
+@@ -450,7 +450,7 @@ static decode_state faad_decode(void) {
+ 	UNLOCK_S;
+ 
+ 	if (endstream) {
+-		LOG_WARN("unable to decode further");
++		LOG_SQ_WARN("unable to decode further");
+ 		return DECODE_ERROR;
+ 	}
+ 
+@@ -466,10 +466,10 @@ static decode_state faad_decode(void) {
+ 		if (a->empty) {
+ 			a->empty = false;
+ 			a->skip -= frames;
+-			LOG_DEBUG("gapless: first frame empty, skipped %u frames at start", frames);
++			LOG_SQ_DEBUG("gapless: first frame empty, skipped %u frames at start", frames);
+ 		}
+ 		skip = min(frames, a->skip);
+-		LOG_DEBUG("gapless: skipping %u frames at start", skip);
++		LOG_SQ_DEBUG("gapless: skipping %u frames at start", skip);
+ 		frames -= skip;
+ 		a->skip -= skip;
+ 		iptr += skip * info.channels;
+@@ -477,13 +477,13 @@ static decode_state faad_decode(void) {
+ 
+ 	if (a->samples) {
+ 		if (a->samples < frames) {
+-			LOG_DEBUG("gapless: trimming %u frames from end", frames - a->samples);
++			LOG_SQ_DEBUG("gapless: trimming %u frames from end", frames - a->samples);
+ 			frames = (frames_t)a->samples;
+ 		}
+ 		a->samples -= frames;
+ 	}
+ 
+-	LOG_SDEBUG("write %u frames", frames);
++	LOG_SQ_SDEBUG("write %u frames", frames);
+ 
+ 	LOCK_O_direct;
+ 
+@@ -515,7 +515,7 @@ static decode_state faad_decode(void) {
+ 				*optr++ = *iptr++ << 8;
+ 			}
+ 		} else {
+-			LOG_WARN("unsupported number of channels");
++			LOG_SQ_WARN("unsupported number of channels");
+ 		}
+ 
+ 		frames -= f;
+@@ -525,7 +525,7 @@ static decode_state faad_decode(void) {
+ 		);
+ 		IF_PROCESS(
+ 			process.in_frames = f;
+-			if (frames) LOG_ERROR("unhandled case");
++			if (frames) LOG_SQ_ERROR("unhandled case");
+ 		);
+ 	}
+ 
+@@ -537,7 +537,7 @@ static decode_state faad_decode(void) {
+ static void faad_open(u8_t size, u8_t rate, u8_t chan, u8_t endianness) {
+ 	NeAACDecConfigurationPtr conf;
+ 
+-	LOG_INFO("opening %s stream", size == '2' ? "adts" : "mp4");
++	LOG_SQ_INFO("opening %s stream", size == '2' ? "adts" : "mp4");
+ 
+ 	a->type = size;
+ 	a->pos = a->consume = a->sample = a->nextchunk = 0;
+@@ -566,7 +566,7 @@ static void faad_open(u8_t size, u8_t ra
+ 	conf->downMatrix = 1;
+ 
+ 	if (!NEAAC(a, SetConfiguration, a->hAac, conf)) {
+-		LOG_WARN("error setting config");
++		LOG_SQ_WARN("error setting config");
+ 	};
+ }
+ 
+@@ -589,7 +589,7 @@ static bool load_faad() {
+ 	char *err;
+ 
+ 	if (!handle) {
+-		LOG_INFO("dlerror: %s", dlerror());
++		LOG_SQ_INFO("dlerror: %s", dlerror());
+ 		return false;
+ 	}
+ 
+@@ -603,11 +603,11 @@ static bool load_faad() {
+ 	a->NeAACDecGetErrorMessage = dlsym(handle, "NeAACDecGetErrorMessage");
+ 
+ 	if ((err = dlerror()) != NULL) {
+-		LOG_INFO("dlerror: %s", err);		
++		LOG_SQ_INFO("dlerror: %s", err);		
+ 		return false;
+ 	}
+ 
+-	LOG_INFO("loaded "LIBFAAD"");
++	LOG_SQ_INFO("loaded "LIBFAAD"");
+ #endif
+ 
+ 	return true;
+@@ -637,6 +637,6 @@ struct codec *register_faad(void) {
+ 		return NULL;
+ 	}
+ 
+-	LOG_INFO("using faad to decode aac");
++	LOG_SQ_INFO("using faad to decode aac");
+ 	return &ret;
+ }
+--- squeezelite-1.8.orig/ffmpeg.c
++++ squeezelite-1.8/ffmpeg.c
+@@ -144,7 +144,7 @@ static int _parse_packlen(void) {
+ 		}
+ 		if (!memcmp(ptr, file_props_guid, 16) && len == 104) {
+ 			u32_t packlen = *(ptr+92) | *(ptr+93) << 8 | *(ptr+94) << 16 | *(ptr+95) << 24;
+-			LOG_INFO("asf packet len: %u", packlen);
++			LOG_SQ_INFO("asf packet len: %u", packlen);
+ 			return packlen;
+ 		}
+ 		ptr    += len;
+@@ -152,7 +152,7 @@ static int _parse_packlen(void) {
+ 		remain -= len;
+ 	}
+ 
+-	LOG_WARN("could not parse packet length");
++	LOG_SQ_WARN("could not parse packet length");
+ 	return 0;
+ }
+ 
+@@ -204,7 +204,7 @@ static int _read_data(void *opaque, u8_t
+ 			bytes = min(bytes, buf_size);
+ 		} else {
+ 			// should not get here...
+-			LOG_ERROR("chunk parser stalled bytes: %u %u", bytes, _buf_used(streambuf));
++			LOG_SQ_ERROR("chunk parser stalled bytes: %u %u", bytes, _buf_used(streambuf));
+ 			UNLOCK_S;
+ 			return 0;
+ 		}
+@@ -218,7 +218,7 @@ static int _read_data(void *opaque, u8_t
+ 				// asf data packet - add padding
+ 				ff->mmsh_bytes_pad = ff->mmsh_packet_len - chunk_len + 8;
+ 			} else {
+-				LOG_INFO("unknown chunk: %04x", chunk_type);
++				LOG_SQ_INFO("unknown chunk: %04x", chunk_type);
+ 				// other packet - no padding
+ 				ff->mmsh_bytes_pad = 0;
+ 			}
+@@ -272,7 +272,7 @@ static decode_state ff_decode(void) {
+ 
+ 		ff->formatC = AVFORMAT(ff, alloc_context);
+ 		if (ff->formatC == NULL) {
+-			LOG_ERROR("null context");
++			LOG_SQ_ERROR("null context");
+ 			return DECODE_ERROR;
+ 		}
+ 
+@@ -281,21 +281,21 @@ static decode_state ff_decode(void) {
+ 
+ 		o = AVFORMAT(ff, open_input, &ff->formatC, "", ff->input_format, NULL);
+ 		if (o < 0) {
+-			LOG_WARN("avformat_open_input: %d %s", o, av__err2str(o));
++			LOG_SQ_WARN("avformat_open_input: %d %s", o, av__err2str(o));
+ 			return DECODE_ERROR;
+ 		}
+ 
+-		LOG_INFO("format: name:%s lname:%s", ff->formatC->iformat->name, ff->formatC->iformat->long_name);
++		LOG_SQ_INFO("format: name:%s lname:%s", ff->formatC->iformat->name, ff->formatC->iformat->long_name);
+ 	
+ 		o = AVFORMAT(ff, find_stream_info, ff->formatC, NULL);
+ 		if (o < 0) {
+-			LOG_WARN("avformat_find_stream_info: %d %s", o, av__err2str(o));
++			LOG_SQ_WARN("avformat_find_stream_info: %d %s", o, av__err2str(o));
+ 			return DECODE_ERROR;
+ 		}
+ 		
+ 		if (ff->wma && ff->wma_playstream < ff->formatC->nb_streams) {
+ 			if (ff->formatC->streams[ff->wma_playstream]->codec->codec_type == AVMEDIA_TYPE_AUDIO) {
+-				LOG_INFO("using wma stream sent from server: %i", ff->wma_playstream);
++				LOG_SQ_INFO("using wma stream sent from server: %i", ff->wma_playstream);
+ 				audio_stream = ff->wma_playstream;
+ 			}
+ 		}
+@@ -305,14 +305,14 @@ static decode_state ff_decode(void) {
+ 			for (i = 0; i < ff->formatC->nb_streams; ++i) {
+ 				if (ff->formatC->streams[i]->codec->codec_type == AVMEDIA_TYPE_AUDIO) {
+ 					audio_stream = i;
+-					LOG_INFO("found stream: %i", i);
++					LOG_SQ_INFO("found stream: %i", i);
+ 					break;
+ 				}
+ 			}
+ 		}
+ 
+ 		if (audio_stream == -1) {
+-			LOG_WARN("no audio stream found");
++			LOG_SQ_WARN("no audio stream found");
+ 			return DECODE_ERROR;
+ 		}
+ 
+@@ -328,7 +328,7 @@ static decode_state ff_decode(void) {
+ 
+ 		ff->avpkt = AV(ff, malloc, sizeof(AVPacket));
+ 		if (ff->avpkt == NULL) {
+-			LOG_ERROR("can't allocate avpkt");
++			LOG_SQ_ERROR("can't allocate avpkt");
+ 			return DECODE_ERROR;
+ 		}
+ 
+@@ -337,7 +337,7 @@ static decode_state ff_decode(void) {
+ 		ff->avpkt->size = 0;
+ 
+ 		LOCK_O;
+-		LOG_INFO("setting track_start");
++		LOG_SQ_INFO("setting track_start");
+ 		output.next_sample_rate = decode_newstream(ff->codecC->sample_rate, output.supported_rates);
+ 		IF_DSD(	output.next_dop = false; )
+ 		output.track_start = outputbuf->writep;
+@@ -351,13 +351,13 @@ static decode_state ff_decode(void) {
+ 	if ((r = AV(ff, read_frame, ff->formatC, ff->avpkt)) < 0) {
+ 		if (r == AVERROR_EOF) {
+ 			if (ff->end_of_stream) {
+-				LOG_INFO("decode complete");
++				LOG_SQ_INFO("decode complete");
+ 				return DECODE_COMPLETE;
+ 			} else {
+-				LOG_INFO("codec end of file");
++				LOG_SQ_INFO("codec end of file");
+ 			}
+ 		} else {
+-			LOG_ERROR("av_read_frame error: %i %s", r, av__err2str(r));
++			LOG_SQ_ERROR("av_read_frame error: %i %s", r, av__err2str(r));
+ 		}
+ 		return DECODE_RUNNING;
+ 	}
+@@ -374,7 +374,7 @@ static decode_state ff_decode(void) {
+ 
+ 		len = AVCODEC(ff, decode_audio4, ff->codecC, ff->frame, &got_frame, &pkt_c);
+ 		if (len < 0) {
+-			LOG_ERROR("avcodec_decode_audio4 error: %i %s", len, av__err2str(len));
++			LOG_SQ_ERROR("avcodec_decode_audio4 error: %i %s", len, av__err2str(len));
+ 			return DECODE_RUNNING;
+ 		}
+ 
+@@ -394,7 +394,7 @@ static decode_state ff_decode(void) {
+ 
+ 			frames_t frames = ff->frame->nb_samples;
+ 
+-			LOG_SDEBUG("got audio channels: %u samples: %u format: %u", ff->codecC->channels, ff->frame->nb_samples,
++			LOG_SQ_SDEBUG("got audio channels: %u samples: %u format: %u", ff->codecC->channels, ff->frame->nb_samples,
+ 					   ff->codecC->sample_fmt);
+ 			
+ 			LOCK_O_direct;
+@@ -411,7 +411,7 @@ static decode_state ff_decode(void) {
+ 
+ 				IF_PROCESS(
+ 					if (process.in_frames + frames > process.max_in_frames) {
+-						LOG_WARN("exceeded process buffer size - dropping frames");
++						LOG_SQ_WARN("exceeded process buffer size - dropping frames");
+ 						break;
+ 					}
+ 					f = frames;	   
+@@ -452,7 +452,7 @@ static decode_state ff_decode(void) {
+ 							*optr++ = (s32_t)scaledr;
+ 						}
+ 					} else {
+-						LOG_WARN("unsupported sample format: %u", ff->codecC->sample_fmt);
++						LOG_SQ_WARN("unsupported sample format: %u", ff->codecC->sample_fmt);
+ 					}
+ 				} else if (ff->codecC->channels == 1) {
+ 					if (ff->codecC->sample_fmt == AV_SAMPLE_FMT_S16) {
+@@ -484,10 +484,10 @@ static decode_state ff_decode(void) {
+ 							*optr++ = (s32_t)scaled;
+ 						}
+ 					} else {
+-						LOG_WARN("unsupported sample format: %u", ff->codecC->sample_fmt);
++						LOG_SQ_WARN("unsupported sample format: %u", ff->codecC->sample_fmt);
+ 					}
+ 				} else {
+-					LOG_WARN("unsupported number of channels");
++					LOG_SQ_WARN("unsupported number of channels");
+ 				}
+ 				
+ 				frames -= f;
+@@ -541,7 +541,7 @@ static void ff_open_wma(u8_t size, u8_t
+ 
+ 	ff->input_format = AV(ff, find_input_format, "asf");
+ 	if (ff->input_format == NULL) {
+-		LOG_ERROR("asf format not supported by ffmpeg library");
++		LOG_SQ_ERROR("asf format not supported by ffmpeg library");
+ 	}
+ 
+ 	ff->wma = true;
+@@ -549,7 +549,7 @@ static void ff_open_wma(u8_t size, u8_t
+ 	ff->wma_playstream = rate - 1;
+ 	ff->wma_metadatastream = chan != '?' ? chan : 0;
+ 
+-	LOG_INFO("open wma chunking: %u playstream: %u metadatastream: %u", ff->wma_mmsh, ff->wma_playstream, ff->wma_metadatastream);
++	LOG_SQ_INFO("open wma chunking: %u playstream: %u metadatastream: %u", ff->wma_mmsh, ff->wma_playstream, ff->wma_metadatastream);
+ }
+ 
+ static void ff_open_alac(u8_t size, u8_t rate, u8_t chan, u8_t endianness) {
+@@ -557,13 +557,13 @@ static void ff_open_alac(u8_t size, u8_t
+ 
+ 	ff->input_format = AV(ff, find_input_format, "mp4");
+ 	if (ff->input_format == NULL) {
+-		LOG_ERROR("mp4 format not supported by ffmpeg library");
++		LOG_SQ_ERROR("mp4 format not supported by ffmpeg library");
+ 	}
+ 
+ 	ff->wma = false;
+ 	ff->wma_mmsh = 0;
+ 
+-	LOG_INFO("open alac");
++	LOG_SQ_INFO("open alac");
+ }
+ 
+ static void ff_close(void) {
+@@ -586,21 +586,21 @@ static bool load_ff() {
+ 	sprintf(name, LIBAVCODEC, LIBAVCODEC_VERSION_MAJOR);
+ 	handle_codec = dlopen(name, RTLD_NOW);
+ 	if (!handle_codec) {
+-		LOG_INFO("dlerror: %s", dlerror());
++		LOG_SQ_INFO("dlerror: %s", dlerror());
+ 		return false;
+ 	}
+ 
+ 	sprintf(name, LIBAVFORMAT, LIBAVFORMAT_VERSION_MAJOR);
+ 	handle_format = dlopen(name, RTLD_NOW);
+ 	if (!handle_format) {
+-		LOG_INFO("dlerror: %s", dlerror());
++		LOG_SQ_INFO("dlerror: %s", dlerror());
+ 		return false;
+ 	}
+ 
+ 	sprintf(name, LIBAVUTIL, LIBAVUTIL_VERSION_MAJOR);
+ 	handle_util = dlopen(name, RTLD_NOW);
+ 	if (!handle_util) {
+-		LOG_INFO("dlerror: %s", dlerror());
++		LOG_SQ_INFO("dlerror: %s", dlerror());
+ 		return false;
+ 	}
+ 
+@@ -614,11 +614,11 @@ static bool load_ff() {
+ 	ff->av_free_packet = dlsym(handle_codec, "av_free_packet");
+ 
+ 	if ((err = dlerror()) != NULL) {
+-		LOG_INFO("dlerror: %s", err);		
++		LOG_SQ_INFO("dlerror: %s", err);		
+ 		return false;
+ 	}
+ 	
+-	LOG_INFO("loaded "LIBAVCODEC" (%u.%u.%u)", LIBAVCODEC_VERSION_MAJOR, ff->avcodec_version() >> 16, (ff->avcodec_version() >> 8) & 0xff, ff->avcodec_version() & 0xff);
++	LOG_SQ_INFO("loaded "LIBAVCODEC" (%u.%u.%u)", LIBAVCODEC_VERSION_MAJOR, ff->avcodec_version() >> 16, (ff->avcodec_version() >> 8) & 0xff, ff->avcodec_version() & 0xff);
+ 
+ 	ff->avformat_version = dlsym(handle_format, "avformat_version");
+ 	ff->avformat_alloc_context = dlsym(handle_format, "avformat_alloc_context");
+@@ -631,11 +631,11 @@ static bool load_ff() {
+ 	ff->av_register_all = dlsym(handle_format, "av_register_all");
+ 
+ 	if ((err = dlerror()) != NULL) {
+-		LOG_INFO("dlerror: %s", err);		
++		LOG_SQ_INFO("dlerror: %s", err);		
+ 		return false;
+ 	}
+ 
+-	LOG_INFO("loaded "LIBAVFORMAT" (%u.%u.%u)", LIBAVFORMAT_VERSION_MAJOR, ff->avformat_version() >> 16, (ff->avformat_version() >> 8) & 0xff, ff->avformat_version() & 0xff);
++	LOG_SQ_INFO("loaded "LIBAVFORMAT" (%u.%u.%u)", LIBAVFORMAT_VERSION_MAJOR, ff->avformat_version() >> 16, (ff->avformat_version() >> 8) & 0xff, ff->avformat_version() & 0xff);
+ 
+ 	ff->avutil_version = dlsym(handle_util, "avutil_version");
+ 	ff->av_log_set_callback = dlsym(handle_util, "av_log_set_callback");
+@@ -645,11 +645,11 @@ static bool load_ff() {
+ 	ff->av_freep = dlsym(handle_util, "av_freep");
+ 
+ 	if ((err = dlerror()) != NULL) {
+-		LOG_INFO("dlerror: %s", err);		
++		LOG_SQ_INFO("dlerror: %s", err);		
+ 		return false;
+ 	}
+ 
+-	LOG_INFO("loaded "LIBAVUTIL" (%u.%u.%u)", LIBAVUTIL_VERSION_MAJOR, ff->avutil_version() >> 16, (ff->avutil_version() >> 8) & 0xff, ff->avutil_version() & 0xff);
++	LOG_SQ_INFO("loaded "LIBAVUTIL" (%u.%u.%u)", LIBAVUTIL_VERSION_MAJOR, ff->avutil_version() >> 16, (ff->avutil_version() >> 8) & 0xff, ff->avutil_version() & 0xff);
+ 
+ #endif
+ 
+@@ -712,7 +712,7 @@ struct codec *register_ff(const char *co
+ 			ff_decode,   // decode
+ 		};
+ 		
+-		LOG_INFO("using ffmpeg to decode wma,wmap,wmal");
++		LOG_SQ_INFO("using ffmpeg to decode wma,wmap,wmal");
+ 		return &ret;
+ 	}
+ 
+@@ -728,7 +728,7 @@ struct codec *register_ff(const char *co
+ 			ff_decode,   // decode
+ 		};
+ 		
+-		LOG_INFO("using ffmpeg to decode alc");		
++		LOG_SQ_INFO("using ffmpeg to decode alc");		
+ 		return &ret;
+ 	}
+ 
+--- squeezelite-1.8.orig/flac.c
++++ squeezelite-1.8/flac.c
+@@ -113,13 +113,13 @@ static FLAC__StreamDecoderWriteStatus wr
+ 	
+ 	if (decode.new_stream) {
+ 		LOCK_O;
+-		LOG_INFO("setting track_start");
++		LOG_SQ_INFO("setting track_start");
+ 		output.track_start = outputbuf->writep;
+ 		decode.new_stream = false;
+ 
+ #if DSD
+ 		if (output.has_dop && bits_per_sample == 24 && is_flac_dop((u32_t *)lptr, (u32_t *)rptr, frames)) {
+-			LOG_INFO("file contains DOP");
++			LOG_SQ_INFO("file contains DOP");
+ 			output.next_dop = true;
+ 			output.next_sample_rate = frame->header.sample_rate;
+ 			output.fade = FADE_INACTIVE;
+@@ -177,7 +177,7 @@ static FLAC__StreamDecoderWriteStatus wr
+ 				*optr++ = *rptr++;
+ 			}
+ 		} else {
+-			LOG_ERROR("unsupported bits per sample: %u", bits_per_sample);
++			LOG_SQ_ERROR("unsupported bits per sample: %u", bits_per_sample);
+ 		}
+ 
+ 		frames -= f;
+@@ -187,7 +187,7 @@ static FLAC__StreamDecoderWriteStatus wr
+ 		);
+ 		IF_PROCESS(
+ 			process.in_frames = f;
+-			if (frames) LOG_ERROR("unhandled case");
++			if (frames) LOG_SQ_ERROR("unhandled case");
+ 		);
+ 	}
+ 
+@@ -197,7 +197,7 @@ static FLAC__StreamDecoderWriteStatus wr
+ }
+ 
+ static void error_cb(const FLAC__StreamDecoder *decoder, FLAC__StreamDecoderErrorStatus status, void *client_data) {
+-	LOG_INFO("flac error: %s", FLAC_A(f, StreamDecoderErrorStatusString)[status]);
++	LOG_SQ_INFO("flac error: %s", FLAC_A(f, StreamDecoderErrorStatusString)[status]);
+ }
+ 
+ static void flac_open(u8_t sample_size, u8_t sample_rate, u8_t channels, u8_t endianness) {
+@@ -219,7 +219,7 @@ static decode_state flac_decode(void) {
+ 	FLAC__StreamDecoderState state = FLAC(f, stream_decoder_get_state, f->decoder);
+ 	
+ 	if (!ok && state != FLAC__STREAM_DECODER_END_OF_STREAM) {
+-		LOG_INFO("flac error: %s", FLAC_A(f, StreamDecoderStateString)[state]);
++		LOG_SQ_INFO("flac error: %s", FLAC_A(f, StreamDecoderStateString)[state]);
+ 	};
+ 	
+ 	if (state == FLAC__STREAM_DECODER_END_OF_STREAM) {
+@@ -237,7 +237,7 @@ static bool load_flac() {
+ 	char *err;
+ 
+ 	if (!handle) {
+-		LOG_INFO("dlerror: %s", dlerror());
++		LOG_SQ_INFO("dlerror: %s", dlerror());
+ 		return false;
+ 	}
+ 
+@@ -251,11 +251,11 @@ static bool load_flac() {
+ 	f->FLAC__stream_decoder_get_state = dlsym(handle, "FLAC__stream_decoder_get_state");
+ 
+ 	if ((err = dlerror()) != NULL) {
+-		LOG_INFO("dlerror: %s", err);		
++		LOG_SQ_INFO("dlerror: %s", err);		
+ 		return false;
+ 	}
+ 
+-	LOG_INFO("loaded "LIBFLAC);
++	LOG_SQ_INFO("loaded "LIBFLAC);
+ #endif
+ 
+ 	return true;
+@@ -283,6 +283,6 @@ struct codec *register_flac(void) {
+ 		return NULL;
+ 	}
+ 
+-	LOG_INFO("using flac to decode flc");
++	LOG_SQ_INFO("using flac to decode flc");
+ 	return &ret;
+ }
+--- squeezelite-1.8.orig/ir.c
++++ squeezelite-1.8/ir.c
+@@ -115,7 +115,7 @@ static u32_t ir_key_map(const char *c, c
+ 			if (keymap[i].repeat || !strcmp(r, "00")) {
+ 				return keymap[i].code;
+ 			}
+-			LOG_DEBUG("repeat suppressed");
++			LOG_SQ_DEBUG("repeat suppressed");
+ 			break;
+ 		}
+ 	}
+@@ -139,7 +139,7 @@ static void *ir_thread() {
+ 			while (LIRC(i, code2char, config, code, &c) == 0 && c != NULL) {
+ 				ir_code = ir_cmd_map(c);
+ 				if (ir_code) {
+-					LOG_DEBUG("ir cmd: %s -> %x", c, ir_code);
++					LOG_SQ_DEBUG("ir cmd: %s -> %x", c, ir_code);
+ 				}
+ 			}
+ 		}
+@@ -153,14 +153,14 @@ static void *ir_thread() {
+ 			b = strtok(NULL, " \n"); // key name
+ 			if (r && b) {
+ 				ir_code = ir_key_map(b, r);
+-				LOG_DEBUG("ir lirc: %s [%s] -> %x", b, r, ir_code);
++				LOG_SQ_DEBUG("ir lirc: %s [%s] -> %x", b, r, ir_code);
+ 			}
+ 		}
+ 
+ 		if (ir_code) {
+ 			LOCK_I;
+ 			if (ir.code) {
+-				LOG_DEBUG("code dropped");
++				LOG_SQ_DEBUG("code dropped");
+ 			}
+ 			ir.code = ir_code;
+ 			ir.ts = now;
+@@ -180,7 +180,7 @@ static bool load_lirc() {
+ 	char *err;
+ 
+ 	if (!handle) {
+-		LOG_INFO("dlerror: %s", dlerror());
++		LOG_SQ_INFO("dlerror: %s", dlerror());
+ 		return false;
+ 	}
+ 
+@@ -192,11 +192,11 @@ static bool load_lirc() {
+ 	i->lirc_code2char = dlsym(handle, "lirc_code2char");
+ 
+ 	if ((err = dlerror()) != NULL) {
+-		LOG_INFO("dlerror: %s", err);
++		LOG_SQ_INFO("dlerror: %s", err);
+ 		return false;
+ 	}
+ 
+-	LOG_INFO("loaded "LIBLIRC);
++	LOG_SQ_INFO("loaded "LIBLIRC);
+ 	return true;
+ }
+ #endif
+@@ -215,7 +215,7 @@ void ir_init(log_level level, char *lirc
+ 
+ 	if (fd > 0) {
+ 		if (LIRC(i, readconfig,lircrc, &config, NULL) != 0) {
+-			LOG_WARN("error reading config: %s", lircrc);
++			LOG_SQ_WARN("error reading config: %s", lircrc);
+ 		}
+ 
+ 		mutex_create(ir.mutex);
+@@ -227,7 +227,7 @@ void ir_init(log_level level, char *lirc
+ 		pthread_attr_destroy(&attr);
+ 
+ 	} else {
+-		LOG_WARN("failed to connect to lircd - ir processing disabled");
++		LOG_SQ_WARN("failed to connect to lircd - ir processing disabled");
+ 	}
+ }
+ 
+--- squeezelite-1.8.orig/mad.c
++++ squeezelite-1.8/mad.c
+@@ -107,7 +107,7 @@ static unsigned _check_id3_tag(size_t by
+ 		// size is encoded as syncsafe integer, add 10 if footer present
+ 		if (*(ptr+6) < 0x80 && *(ptr+7) < 0x80 && *(ptr+8) < 0x80 && *(ptr+9) < 0x80) {
+ 			size = 10 + (*(ptr+6) << 21) + (*(ptr+7) << 14) + (*(ptr+8) << 7) + *(ptr+9) + ((*(ptr+5) & 0x10) ? 10 : 0);
+-			LOG_DEBUG("id3.2 tag len: %u", size);
++			LOG_SQ_DEBUG("id3.2 tag len: %u", size);
+ 		}
+ 	}
+ 
+@@ -156,7 +156,7 @@ static void _check_lame_header(size_t by
+ 		m->samples = frame_count * 1152 - enc_delay - enc_padding;
+ 		m->padding = enc_padding;
+ 		
+-		LOG_INFO("gapless: skip: %u samples: " FMT_u64 " delay: %u padding: %u", m->skip, m->samples, enc_delay, enc_padding);
++		LOG_SQ_INFO("gapless: skip: %u samples: " FMT_u64 " delay: %u padding: %u", m->skip, m->samples, enc_delay, enc_padding);
+ 	}
+ }
+ 
+@@ -174,7 +174,7 @@ static decode_state mad_decode(void) {
+ 		}
+ 		if (m->consume) {
+ 			u32_t consume = min(m->consume, bytes);
+-			LOG_DEBUG("consume: %u of %u", consume, m->consume);
++			LOG_SQ_DEBUG("consume: %u of %u", consume, m->consume);
+ 			_buf_inc_readp(streambuf, consume);
+ 			m->consume -= consume;
+ 			UNLOCK_S;
+@@ -200,7 +200,7 @@ static decode_state mad_decode(void) {
+ 
+ 	if (stream.state <= DISCONNECT && _buf_used(streambuf) == 0) {
+ 		eos = true;
+-		LOG_DEBUG("end of stream");
++		LOG_SQ_DEBUG("end of stream");
+ 		memset(m->readbuf + m->readbuf_len, 0, MAD_BUFFER_GUARD);
+ 		m->readbuf_len += MAD_BUFFER_GUARD;
+ 	}
+@@ -222,12 +222,12 @@ static decode_state mad_decode(void) {
+ 			} else if (eos && (m->stream.error == MAD_ERROR_BUFLEN || m->stream.error == MAD_ERROR_LOSTSYNC)) {
+ 				ret = DECODE_COMPLETE;
+ 			} else if (!MAD_RECOVERABLE(m->stream.error)) {
+-				LOG_INFO("mad_frame_decode error: %s - stopping decoder", MAD(m, stream_errorstr, &m->stream));
++				LOG_SQ_INFO("mad_frame_decode error: %s - stopping decoder", MAD(m, stream_errorstr, &m->stream));
+ 				ret = DECODE_COMPLETE;
+ 			} else {
+ 				if (m->stream.error != m->last_error) {
+ 					// suppress repeat error messages
+-					LOG_DEBUG("mad_frame_decode error: %s", MAD(m, stream_errorstr, &m->stream));
++					LOG_SQ_DEBUG("mad_frame_decode error: %s", MAD(m, stream_errorstr, &m->stream));
+ 				}
+ 				ret = DECODE_RUNNING;
+ 			}
+@@ -239,7 +239,7 @@ static decode_state mad_decode(void) {
+ 
+ 		if (decode.new_stream) {
+ 			LOCK_O;
+-			LOG_INFO("setting track_start");
++			LOG_SQ_INFO("setting track_start");
+ 			output.next_sample_rate = decode_newstream(m->synth.pcm.samplerate, output.supported_rates);
+ 			IF_DSD(	output.next_dop = false; )
+ 			output.track_start = outputbuf->writep;
+@@ -258,7 +258,7 @@ static decode_state mad_decode(void) {
+ 		);
+ 		
+ 		if (m->synth.pcm.length > max_frames) {
+-			LOG_WARN("too many samples - dropping samples");
++			LOG_SQ_WARN("too many samples - dropping samples");
+ 			m->synth.pcm.length = max_frames;
+ 		}
+ 		
+@@ -268,7 +268,7 @@ static decode_state mad_decode(void) {
+ 
+ 		if (m->skip) {
+ 			u32_t skip = min(m->skip, frames);
+-			LOG_DEBUG("gapless: skipping %u frames at start", skip);
++			LOG_SQ_DEBUG("gapless: skipping %u frames at start", skip);
+ 			frames -= skip;
+ 			m->skip -= skip;
+ 			iptrl += skip;
+@@ -277,14 +277,14 @@ static decode_state mad_decode(void) {
+ 
+ 		if (m->samples) {
+ 			if (m->samples < frames) {
+-				LOG_DEBUG("gapless: trimming %u frames from end", frames - m->samples);
++				LOG_SQ_DEBUG("gapless: trimming %u frames from end", frames - m->samples);
+ 				frames = (size_t)m->samples;
+ 			}
+ 			m->samples -= frames;
+ 			if (m->samples > 0 && eos && !(m->stream.next_frame[0] == 0xff && (m->stream.next_frame[1] & 0xf0) == 0xf0)) {
+ 				// this is the last frame to be decoded, but more samples expected so we must have skipped, remove padding
+ 				// note this only works if the padding is less than one frame of 1152 bytes otherswise some gap will remain
+-				LOG_DEBUG("gapless: early end - trimming padding from end");
++				LOG_SQ_DEBUG("gapless: early end - trimming padding from end");
+ 				if (frames >= m->padding) {
+ 					frames -= m->padding;
+ 				} else {
+@@ -294,7 +294,7 @@ static decode_state mad_decode(void) {
+ 			}
+ 		}
+ 
+-		LOG_SDEBUG("write %u frames", frames);
++		LOG_SQ_SDEBUG("write %u frames", frames);
+ 
+ 		while (frames > 0) {
+ 			size_t f, count;
+@@ -361,7 +361,7 @@ static bool load_mad() {
+ 	char *err;
+ 
+ 	if (!handle) {
+-		LOG_INFO("dlerror: %s", dlerror());
++		LOG_SQ_INFO("dlerror: %s", dlerror());
+ 		return false;
+ 	}
+ 	
+@@ -376,11 +376,11 @@ static bool load_mad() {
+ 	m->mad_stream_errorstr = dlsym(handle, "mad_stream_errorstr");
+ 
+ 	if ((err = dlerror()) != NULL) {
+-		LOG_INFO("dlerror: %s", err);		
++		LOG_SQ_INFO("dlerror: %s", err);		
+ 		return false;
+ 	}
+ 
+-	LOG_INFO("loaded "LIBMAD);
++	LOG_SQ_INFO("loaded "LIBMAD);
+ #endif
+ 
+ 	return true;
+@@ -409,6 +409,6 @@ struct codec *register_mad(void) {
+ 		return NULL;
+ 	}
+ 
+-	LOG_INFO("using mad to decode mp3");
++	LOG_SQ_INFO("using mad to decode mp3");
+ 	return &ret;
+ }
+--- squeezelite-1.8.orig/main.c
++++ squeezelite-1.8/main.c
+@@ -339,7 +339,7 @@ int main(int argc, char **argv) {
+ 				int byte = 0;
+ 				char *tmp;
+ 				if (!strncmp(optarg, "00:04:20", 8)) {
+-					LOG_ERROR("ignoring mac address from hardware player range 00:04:20:**:**:**");
++					LOG_SQ_ERROR("ignoring mac address from hardware player range 00:04:20:**:**:**");
+ 				} else {
+ 					char *t = strtok(optarg, ":");
+ 					while (t && byte < 6) {
+--- squeezelite-1.8.orig/mpg.c
++++ squeezelite-1.8/mpg.c
+@@ -121,7 +121,7 @@ static decode_state mpg_decode(void) {
+ 			
+ 			MPG123(m, getformat, m->h, &rate, &channels, &enc);
+ 			
+-			LOG_INFO("setting track_start");
++			LOG_SQ_INFO("setting track_start");
+ 			LOCK_O_not_direct;
+ 			output.next_sample_rate = decode_newstream(rate, output.supported_rates);
+ 			IF_DSD( output.next_dop = false; )
+@@ -131,7 +131,7 @@ static decode_state mpg_decode(void) {
+ 			UNLOCK_O_not_direct;
+ 
+ 		} else {
+-			LOG_WARN("format change mid stream - not supported");
++			LOG_SQ_WARN("format change mid stream - not supported");
+ 		}
+ 	}
+ 
+@@ -159,18 +159,18 @@ static decode_state mpg_decode(void) {
+ 
+ 	UNLOCK_O_direct;
+ 
+-	LOG_SDEBUG("write %u frames", size / BYTES_PER_FRAME);
++	LOG_SQ_SDEBUG("write %u frames", size / BYTES_PER_FRAME);
+ 
+ 	if (ret == MPG123_DONE || (bytes == 0 && size == 0 && stream.state <= DISCONNECT)) {
+ 		UNLOCK_S;
+-		LOG_INFO("stream complete");
++		LOG_SQ_INFO("stream complete");
+ 		return DECODE_COMPLETE;
+ 	}
+ 
+ 	UNLOCK_S;
+ 
+ 	if (ret == MPG123_ERR) {
+-		LOG_WARN("Error");
++		LOG_SQ_WARN("Error");
+ 		return DECODE_COMPLETE;
+ 	}
+ 
+@@ -190,7 +190,7 @@ static void mpg_open(u8_t size, u8_t rat
+ 	m->h = MPG123(m, new, NULL, &err);
+ 
+ 	if (m->h == NULL) {
+-		LOG_WARN("new error: %s", MPG123(m, plain_strerror, err));
++		LOG_SQ_WARN("new error: %s", MPG123(m, plain_strerror, err));
+ 	}
+ 
+ 	// restrict output to 32bit or 16bit signed 2 channel based on library capability
+@@ -203,7 +203,7 @@ static void mpg_open(u8_t size, u8_t rat
+ 	err = MPG123(m, open_feed, m->h);
+ 
+ 	if (err) {
+-		LOG_WARN("open feed error: %s", MPG123(m, plain_strerror, err));
++		LOG_SQ_WARN("open feed error: %s", MPG123(m, plain_strerror, err));
+ 	}
+ }
+ 
+@@ -218,7 +218,7 @@ static bool load_mpg() {
+ 	char *err;
+ 
+ 	if (!handle) {
+-		LOG_INFO("dlerror: %s", dlerror());
++		LOG_SQ_INFO("dlerror: %s", dlerror());
+ 		return false;
+ 	}
+ 	
+@@ -235,11 +235,11 @@ static bool load_mpg() {
+ 	m->mpg123_plain_strerror = dlsym(handle, "mpg123_plain_strerror");
+ 
+ 	if ((err = dlerror()) != NULL) {
+-		LOG_INFO("dlerror: %s", err);		
++		LOG_SQ_INFO("dlerror: %s", err);		
+ 		return false;
+ 	}
+ 
+-	LOG_INFO("loaded "LIBMPG);
++	LOG_SQ_INFO("loaded "LIBMPG);
+ #endif
+ 
+ 	return true;
+@@ -271,6 +271,6 @@ struct codec *register_mpg(void) {
+ 
+ 	m->use16bit = MPG123(m, feature, MPG123_FEATURE_OUTPUT_32BIT);
+ 
+-	LOG_INFO("using mpg to decode mp3");
++	LOG_SQ_INFO("using mpg to decode mp3");
+ 	return &ret;
+ }
+--- squeezelite-1.8.orig/output.c
++++ squeezelite-1.8/output.c
+@@ -58,7 +58,7 @@ frames_t _output_frames(frames_t avail)
+ 	// start when threshold met
+ 	if (output.state == OUTPUT_BUFFER && frames > output.threshold * output.next_sample_rate / 100 && frames > output.start_frames) {
+ 		output.state = OUTPUT_RUNNING;
+-		LOG_INFO("start buffer frames: %u", frames);
++		LOG_SQ_INFO("start buffer frames: %u", frames);
+ 		wake_controller();
+ 	}
+ 	
+@@ -66,7 +66,7 @@ frames_t _output_frames(frames_t avail)
+ 	if (output.state == OUTPUT_SKIP_FRAMES) {
+ 		if (frames > 0) {
+ 			frames_t skip = min(frames, output.skip_frames);
+-			LOG_INFO("skip %u of %u frames", skip, output.skip_frames);
++			LOG_SQ_INFO("skip %u of %u frames", skip, output.skip_frames);
+ 			frames -= skip;
+ 			output.frames_played += skip;
+ 			while (skip > 0) {
+@@ -80,7 +80,7 @@ frames_t _output_frames(frames_t avail)
+ 	
+ 	// pause frames - play silence for required frames
+ 	if (output.state == OUTPUT_PAUSE_FRAMES) {
+-		LOG_INFO("pause %u frames", output.pause_frames);
++		LOG_SQ_INFO("pause %u frames", output.pause_frames);
+ 		if (output.pause_frames == 0) {
+ 			output.state = OUTPUT_RUNNING;
+ 		} else {
+@@ -110,7 +110,7 @@ frames_t _output_frames(frames_t avail)
+ 		frames = min(avail, MAX_SILENCE_FRAMES);
+ 	}
+ 
+-	LOG_SDEBUG("avail: %d frames: %d silence: %d", avail, frames, silence);
++	LOG_SQ_SDEBUG("avail: %d frames: %d silence: %d", avail, frames, silence);
+ 	frames = min(frames, avail);
+ 	size = frames;
+ 	
+@@ -143,7 +143,7 @@ frames_t _output_frames(frames_t avail)
+ 						output.delay_active = false; // second delay - process track start
+ 					}
+ 				}
+-				LOG_INFO("track start sample rate: %u replay_gain: %u", output.next_sample_rate, output.next_replay_gain);
++				LOG_SQ_INFO("track start sample rate: %u replay_gain: %u", output.next_sample_rate, output.next_replay_gain);
+ 				output.frames_played = 0;
+ 				output.track_started = true;
+ 				output.track_start_time = gettime_ms();
+@@ -171,7 +171,7 @@ frames_t _output_frames(frames_t avail)
+ 		if (output.fade && !silence) {
+ 			if (output.fade == FADE_DUE) {
+ 				if (output.fade_start == outputbuf->readp) {
+-					LOG_INFO("fade start reached");
++					LOG_SQ_INFO("fade start reached");
+ 					output.fade = FADE_ACTIVE;
+ 				} else if (output.fade_start > outputbuf->readp) {
+ 					cont_frames = min(cont_frames, (output.fade_start - outputbuf->readp) / BYTES_PER_FRAME);
+@@ -185,7 +185,7 @@ frames_t _output_frames(frames_t avail)
+ 					(output.fade_end + outputbuf->size - output.fade_start) / BYTES_PER_FRAME;
+ 				if (cur_f >= dur_f) {
+ 					if (output.fade_mode == FADE_INOUT && output.fade_dir == FADE_DOWN) {
+-						LOG_INFO("fade down complete, starting fade up");
++						LOG_SQ_INFO("fade down complete, starting fade up");
+ 						output.fade_dir = FADE_UP;
+ 						output.fade_start = outputbuf->readp;
+ 						output.fade_end = outputbuf->readp + dur_f * BYTES_PER_FRAME;
+@@ -194,17 +194,17 @@ frames_t _output_frames(frames_t avail)
+ 						}
+ 						cur_f = 0;
+ 					} else if (output.fade_mode == FADE_CROSSFADE) {
+-						LOG_INFO("crossfade complete");
++						LOG_SQ_INFO("crossfade complete");
+ 						if (_buf_used(outputbuf) >= dur_f * BYTES_PER_FRAME) {
+ 							_buf_inc_readp(outputbuf, dur_f * BYTES_PER_FRAME);
+-							LOG_INFO("skipped crossfaded start");
++							LOG_SQ_INFO("skipped crossfaded start");
+ 						} else {
+-							LOG_WARN("unable to skip crossfaded start");
++							LOG_SQ_WARN("unable to skip crossfaded start");
+ 						}
+ 						output.fade = FADE_INACTIVE;
+ 						output.current_replay_gain = output.next_replay_gain;
+ 					} else {
+-						LOG_INFO("fade complete");
++						LOG_SQ_INFO("fade complete");
+ 						output.fade = FADE_INACTIVE;
+ 					}
+ 				}
+@@ -241,7 +241,7 @@ frames_t _output_frames(frames_t avail)
+ 							if (output.invert) { gainL = -gainL; gainR = -gainR; }
+ 							cross_ptr = (s32_t *)(output.fade_end + cur_f * BYTES_PER_FRAME);
+ 						} else {
+-							LOG_INFO("unable to continue crossfade - too few samples");
++							LOG_SQ_INFO("unable to continue crossfade - too few samples");
+ 							output.fade = FADE_INACTIVE;
+ 						}
+ 					}
+@@ -270,7 +270,7 @@ frames_t _output_frames(frames_t avail)
+ 		}
+ 	}
+ 			
+-	LOG_SDEBUG("wrote %u frames", frames);
++	LOG_SQ_SDEBUG("wrote %u frames", frames);
+ 
+ 	return frames;
+ }
+@@ -278,7 +278,7 @@ frames_t _output_frames(frames_t avail)
+ void _checkfade(bool start) {
+ 	frames_t bytes;
+ 
+-	LOG_INFO("fade mode: %u duration: %u %s", output.fade_mode, output.fade_secs, start ? "track-start" : "track-end");
++	LOG_SQ_INFO("fade mode: %u duration: %u %s", output.fade_mode, output.fade_secs, start ? "track-start" : "track-end");
+ 
+ 	bytes = output.next_sample_rate * BYTES_PER_FRAME * output.fade_secs;
+ 	if (output.fade_mode == FADE_INOUT) {
+@@ -287,7 +287,7 @@ void _checkfade(bool start) {
+ 
+ 	if (start && (output.fade_mode == FADE_IN || (output.fade_mode == FADE_INOUT && _buf_used(outputbuf) == 0))) {
+ 		bytes = min(bytes, outputbuf->size - BYTES_PER_FRAME); // shorter than full buffer otherwise start and end align
+-		LOG_INFO("fade IN: %u frames", bytes / BYTES_PER_FRAME);
++		LOG_SQ_INFO("fade IN: %u frames", bytes / BYTES_PER_FRAME);
+ 		output.fade = FADE_DUE;
+ 		output.fade_dir = FADE_UP;
+ 		output.fade_start = outputbuf->writep;
+@@ -299,7 +299,7 @@ void _checkfade(bool start) {
+ 
+ 	if (!start && (output.fade_mode == FADE_OUT || output.fade_mode == FADE_INOUT)) {
+ 		bytes = min(_buf_used(outputbuf), bytes);
+-		LOG_INFO("fade %s: %u frames", output.fade_mode == FADE_INOUT ? "IN-OUT" : "OUT", bytes / BYTES_PER_FRAME);
++		LOG_SQ_INFO("fade %s: %u frames", output.fade_mode == FADE_INOUT ? "IN-OUT" : "OUT", bytes / BYTES_PER_FRAME);
+ 		output.fade = FADE_DUE;
+ 		output.fade_dir = FADE_DOWN;
+ 		output.fade_start = outputbuf->writep - bytes;
+@@ -312,12 +312,12 @@ void _checkfade(bool start) {
+ 	if (start && output.fade_mode == FADE_CROSSFADE) {
+ 		if (_buf_used(outputbuf) != 0) {
+ 			if (output.next_sample_rate != output.current_sample_rate) {
+-				LOG_INFO("crossfade disabled as sample rates differ");
++				LOG_SQ_INFO("crossfade disabled as sample rates differ");
+ 				return;
+ 			}
+ 			bytes = min(bytes, _buf_used(outputbuf));               // max of current remaining samples from previous track
+ 			bytes = min(bytes, (frames_t)(outputbuf->size * 0.9));  // max of 90% of outputbuf as we consume additional buffer during crossfade
+-			LOG_INFO("CROSSFADE: %u frames", bytes / BYTES_PER_FRAME);
++			LOG_SQ_INFO("CROSSFADE: %u frames", bytes / BYTES_PER_FRAME);
+ 			output.fade = FADE_DUE;
+ 			output.fade_dir = FADE_CROSS;
+ 			output.fade_start = outputbuf->writep - bytes;
+@@ -328,7 +328,7 @@ void _checkfade(bool start) {
+ 			output.track_start = output.fade_start;
+ 		} else if (outputbuf->size == OUTPUTBUF_SIZE && outputbuf->readp == outputbuf->buf) {
+ 			// if default setting used and nothing in buffer attempt to resize to provide full crossfade support
+-			LOG_INFO("resize outputbuf for crossfade");
++			LOG_SQ_INFO("resize outputbuf for crossfade");
+ 			_buf_resize(outputbuf, OUTPUTBUF_SIZE_CROSSFADE);
+ #if LINUX || FREEBSD
+ 			touch_memory(outputbuf->buf, outputbuf->size);
+@@ -343,17 +343,17 @@ void output_init_common(log_level level,
+ 	loglevel = level;
+ 
+ 	output_buf_size = output_buf_size - (output_buf_size % BYTES_PER_FRAME);
+-	LOG_DEBUG("outputbuf size: %u", output_buf_size);
++	LOG_SQ_DEBUG("outputbuf size: %u", output_buf_size);
+ 
+ 	buf_init(outputbuf, output_buf_size);
+ 	if (!outputbuf->buf) {
+-		LOG_ERROR("unable to malloc output buffer");
++		LOG_SQ_ERROR("unable to malloc output buffer");
+ 		exit(0);
+ 	}
+ 
+ 	silencebuf = malloc(MAX_SILENCE_FRAMES * BYTES_PER_FRAME);
+ 	if (!silencebuf) {
+-		LOG_ERROR("unable to malloc silence buffer");
++		LOG_SQ_ERROR("unable to malloc silence buffer");
+ 		exit(0);
+ 	}
+ 	memset(silencebuf, 0, MAX_SILENCE_FRAMES * BYTES_PER_FRAME);
+@@ -361,13 +361,13 @@ void output_init_common(log_level level,
+ 	IF_DSD(
+ 		silencebuf_dop = malloc(MAX_SILENCE_FRAMES * BYTES_PER_FRAME);
+ 		if (!silencebuf_dop) {
+-			LOG_ERROR("unable to malloc silence dop buffer");
++			LOG_SQ_ERROR("unable to malloc silence dop buffer");
+ 			exit(0);
+ 		}
+ 		dop_silence_frames((u32_t *)silencebuf_dop, MAX_SILENCE_FRAMES);
+ 	)
+ 
+-	LOG_DEBUG("idle timeout: %u", idle);
++	LOG_SQ_DEBUG("idle timeout: %u", idle);
+ 
+ 	output.state = idle ? OUTPUT_OFF: OUTPUT_STOPPED;
+ 	output.device = device;
+@@ -378,7 +378,7 @@ void output_init_common(log_level level,
+ 
+ 	if (!rates[0]) {
+ 		if (!test_open(output.device, output.supported_rates)) {
+-			LOG_ERROR("unable to open output device");
++			LOG_SQ_ERROR("unable to open output device");
+ 			exit(0);
+ 		}
+ 	} else {
+@@ -407,7 +407,7 @@ void output_init_common(log_level level,
+ 			sprintf(s, "%d ", output.supported_rates[i]);
+ 			strcat(rates_buf, s);
+ 		}
+-		LOG_INFO("supported rates: %s", rates_buf);
++		LOG_SQ_INFO("supported rates: %s", rates_buf);
+ 	}
+ }
+ 
+@@ -420,7 +420,7 @@ void output_close_common(void) {
+ }
+ 
+ void output_flush(void) {
+-	LOG_INFO("flush output buffer");
++	LOG_SQ_INFO("flush output buffer");
+ 	buf_flush(outputbuf);
+ 	LOCK;
+ 	output.fade = FADE_INACTIVE;
+--- squeezelite-1.8.orig/output_alsa.c
++++ squeezelite-1.8/output_alsa.c
+@@ -103,24 +103,24 @@ void list_mixers(const char *output_devi
+ 	snd_mixer_elem_t *elem;
+ 	snd_mixer_selem_id_alloca(&sid);
+ 
+-	LOG_INFO("listing mixers for: %s", output_device);
++	LOG_SQ_INFO("listing mixers for: %s", output_device);
+ 
+ 	if ((err = snd_mixer_open(&handle, 0)) < 0) {
+-		LOG_ERROR("open error: %s", snd_strerror(err));
++		LOG_SQ_ERROR("open error: %s", snd_strerror(err));
+ 		return;
+ 	}
+ 	if ((err = snd_mixer_attach(handle, output_device)) < 0) {
+-		LOG_ERROR("attach error: %s", snd_strerror(err));
++		LOG_SQ_ERROR("attach error: %s", snd_strerror(err));
+ 		snd_mixer_close(handle);
+ 		return;
+ 	}
+ 	if ((err = snd_mixer_selem_register(handle, NULL, NULL)) < 0) {
+-		LOG_ERROR("register error: %s", snd_strerror(err));
++		LOG_SQ_ERROR("register error: %s", snd_strerror(err));
+ 		snd_mixer_close(handle);
+ 		return;
+ 	}
+ 	if ((err = snd_mixer_load(handle)) < 0) {
+-		LOG_ERROR("load error: %s", snd_strerror(err));
++		LOG_SQ_ERROR("load error: %s", snd_strerror(err));
+ 		snd_mixer_close(handle);
+ 		return;
+ 	}
+@@ -152,21 +152,21 @@ static void set_mixer(const char *device
+ 	snd_mixer_elem_t* elem;
+ 
+ 	if ((err = snd_mixer_open(&handle, 0)) < 0) {
+-		LOG_ERROR("open error: %s", snd_strerror(err));
++		LOG_SQ_ERROR("open error: %s", snd_strerror(err));
+ 		return;
+ 	}
+ 	if ((err = snd_mixer_attach(handle, device)) < 0) {
+-		LOG_ERROR("attach error: %s", snd_strerror(err));
++		LOG_SQ_ERROR("attach error: %s", snd_strerror(err));
+ 		snd_mixer_close(handle);
+ 		return;
+ 	}
+ 	if ((err = snd_mixer_selem_register(handle, NULL, NULL)) < 0) {
+-		LOG_ERROR("register error: %s", snd_strerror(err));
++		LOG_SQ_ERROR("register error: %s", snd_strerror(err));
+ 		snd_mixer_close(handle);
+ 		return;
+ 	}
+ 	if ((err = snd_mixer_load(handle)) < 0) {
+-		LOG_ERROR("load error: %s", snd_strerror(err));
++		LOG_SQ_ERROR("load error: %s", snd_strerror(err));
+ 		snd_mixer_close(handle);
+ 		return;
+ 	}
+@@ -177,7 +177,7 @@ static void set_mixer(const char *device
+ 	snd_mixer_selem_id_set_name(sid, mixer);
+ 
+ 	if ((elem = snd_mixer_find_selem(handle, sid)) == NULL) {
+-		LOG_ERROR("error find selem %s", mixer);
++		LOG_SQ_ERROR("error find selem %s", mixer);
+ 		snd_mixer_close(handle);
+ 		return;
+ 	}
+@@ -191,7 +191,7 @@ static void set_mixer(const char *device
+ 	if (err < 0 || max - min < 1000) {
+ 		// unable to get db range or range is less than 10dB - ignore and set using raw values
+ 		if ((err = snd_mixer_selem_get_playback_volume_range(elem, &min, &max)) < 0) {
+-			LOG_ERROR("unable to get volume raw range");
++			LOG_SQ_ERROR("unable to get volume raw range");
+ 		} else {
+ 			long lraw, rraw;
+ 			if (setmax) {
+@@ -200,17 +200,17 @@ static void set_mixer(const char *device
+ 				lraw = ((ldB > -MINVOL_DB ? MINVOL_DB + floor(ldB) : 0) / MINVOL_DB * (max-min)) + min;
+ 				rraw = ((rdB > -MINVOL_DB ? MINVOL_DB + floor(rdB) : 0) / MINVOL_DB * (max-min)) + min;
+ 			}
+-			LOG_DEBUG("setting vol raw [%ld..%ld]", min, max);
++			LOG_SQ_DEBUG("setting vol raw [%ld..%ld]", min, max);
+ 			if ((err = snd_mixer_selem_set_playback_volume(elem, SND_MIXER_SCHN_FRONT_LEFT, lraw)) < 0) {
+-				LOG_ERROR("error setting left volume: %s", snd_strerror(err));
++				LOG_SQ_ERROR("error setting left volume: %s", snd_strerror(err));
+ 			}
+ 			if ((err = snd_mixer_selem_set_playback_volume(elem, SND_MIXER_SCHN_FRONT_RIGHT, rraw)) < 0) {
+-				LOG_ERROR("error setting right volume: %s", snd_strerror(err));
++				LOG_SQ_ERROR("error setting right volume: %s", snd_strerror(err));
+ 			}
+ 		}
+ 	} else {
+ 		// set db directly
+-		LOG_DEBUG("setting vol dB [%ld..%ld]", min, max);
++		LOG_SQ_DEBUG("setting vol dB [%ld..%ld]", min, max);
+ 		if (setmax) {
+ 			// set to 0dB if available as this should be max volume for music recored at max pcm values
+ 			if (max >= 0 && min <= 0) {
+@@ -220,21 +220,21 @@ static void set_mixer(const char *device
+ 			}
+ 		}
+ 		if ((err = snd_mixer_selem_set_playback_dB(elem, SND_MIXER_SCHN_FRONT_LEFT, 100 * ldB, 1)) < 0) {
+-			LOG_ERROR("error setting left volume: %s", snd_strerror(err));
++			LOG_SQ_ERROR("error setting left volume: %s", snd_strerror(err));
+ 		}
+ 		if ((err = snd_mixer_selem_set_playback_dB(elem, SND_MIXER_SCHN_FRONT_RIGHT, 100 * rdB, 1)) < 0) {
+-			LOG_ERROR("error setting right volume: %s", snd_strerror(err));
++			LOG_SQ_ERROR("error setting right volume: %s", snd_strerror(err));
+ 		}
+ 	}
+ 
+ 	if ((err = snd_mixer_selem_get_playback_volume(elem, SND_MIXER_SCHN_FRONT_LEFT, &nleft)) < 0) {
+-		LOG_ERROR("error getting left vol: %s", snd_strerror(err));
++		LOG_SQ_ERROR("error getting left vol: %s", snd_strerror(err));
+ 	}
+ 	if ((err = snd_mixer_selem_get_playback_volume(elem, SND_MIXER_SCHN_FRONT_RIGHT, &nright)) < 0) {
+-		LOG_ERROR("error getting right vol: %s", snd_strerror(err));
++		LOG_SQ_ERROR("error getting right vol: %s", snd_strerror(err));
+ 	}
+ 
+-	LOG_DEBUG("%s left: %3.1fdB -> %ld right: %3.1fdB -> %ld", mixer, ldB, nleft, rdB, nright);
++	LOG_SQ_DEBUG("%s left: %3.1fdB -> %ld right: %3.1fdB -> %ld", mixer, ldB, nleft, rdB, nright);
+ 
+ 	snd_mixer_close(handle);
+ }
+@@ -243,7 +243,7 @@ void set_volume(unsigned left, unsigned
+ 	float ldB, rdB;
+ 
+ 	if (!alsa.volume_mixer_name) {
+-		LOG_DEBUG("setting internal gain left: %u right: %u", left, right);
++		LOG_SQ_DEBUG("setting internal gain left: %u right: %u", left, right);
+ 		LOCK;
+ 		output.gainL = left;
+ 		output.gainR = right;
+@@ -278,7 +278,7 @@ static void *alsa_error_handler(const ch
+ static void alsa_close(void) {
+ 	int err;
+ 	if ((err = snd_pcm_close(pcmp)) < 0) {
+-		LOG_INFO("snd_pcm_close error: %s", snd_strerror(err));
++		LOG_SQ_INFO("snd_pcm_close error: %s", snd_strerror(err));
+ 	}
+ }
+ 
+@@ -291,13 +291,13 @@ bool test_open(const char *device, unsig
+ 
+ 	// open device
+ 	if ((err = snd_pcm_open(&pcm, device, SND_PCM_STREAM_PLAYBACK, 0)) < 0) {
+-		LOG_ERROR("playback open error: %s", snd_strerror(err));
++		LOG_SQ_ERROR("playback open error: %s", snd_strerror(err));
+ 		return false;
+ 	}
+ 
+ 	// get max params
+ 	if ((err = snd_pcm_hw_params_any(pcm, hw_params)) < 0) {
+-		LOG_ERROR("hwparam init error: %s", snd_strerror(err));
++		LOG_SQ_ERROR("hwparam init error: %s", snd_strerror(err));
+ 		return false;
+ 	}
+ 
+@@ -312,7 +312,7 @@ bool test_open(const char *device, unsig
+ 	}
+ 
+ 	if ((err = snd_pcm_close(pcm)) < 0) {
+-		LOG_ERROR("snd_pcm_close error: %s", snd_strerror(err));
++		LOG_SQ_ERROR("snd_pcm_close error: %s", snd_strerror(err));
+ 		return false;
+ 	}
+ 
+@@ -328,7 +328,7 @@ static bool pcm_probe(const char *device
+ 	}
+ 
+ 	if ((err = snd_pcm_close(pcm)) < 0) {
+-		LOG_ERROR("snd_pcm_close error: %s", snd_strerror(err));
++		LOG_SQ_ERROR("snd_pcm_close error: %s", snd_strerror(err));
+ 	}
+ 
+ 	return true;
+@@ -348,24 +348,24 @@ static int alsa_open(const char *device,
+ 	strcpy(alsa.device, device);
+ 
+ 	if (strlen(device) > MAX_DEVICE_LEN - 4 - 1) {
+-		LOG_ERROR("device name too long: %s", device);
++		LOG_SQ_ERROR("device name too long: %s", device);
+ 		return -1;
+ 	}
+ 
+-	LOG_INFO("opening device at: %u", sample_rate);
++	LOG_SQ_INFO("opening device at: %u", sample_rate);
+ 
+ 	bool retry;
+ 	do {
+ 		// open device
+ 		if ((err = snd_pcm_open(&pcmp, alsa.device, SND_PCM_STREAM_PLAYBACK, 0)) < 0) {
+-			LOG_ERROR("playback open error: %s", snd_strerror(err));
++			LOG_SQ_ERROR("playback open error: %s", snd_strerror(err));
+ 			return err;
+ 		}
+ 
+ 		// init params
+ 		memset(hw_params, 0, snd_pcm_hw_params_sizeof());
+ 		if ((err = snd_pcm_hw_params_any(pcmp, hw_params)) < 0) {
+-			LOG_ERROR("hwparam init error: %s", snd_strerror(err));
++			LOG_SQ_ERROR("hwparam init error: %s", snd_strerror(err));
+ 			return err;
+ 		}
+ 
+@@ -374,7 +374,7 @@ static int alsa_open(const char *device,
+ 		retry = false;
+ 
+ 		if ((err = snd_pcm_hw_params_set_rate_resample(pcmp, hw_params, !hw)) < 0) {
+-			LOG_ERROR("resampling setup failed: %s", snd_strerror(err));
++			LOG_SQ_ERROR("resampling setup failed: %s", snd_strerror(err));
+ 			return err;
+ 		}
+ 
+@@ -382,7 +382,7 @@ static int alsa_open(const char *device,
+ 			if (hw) {
+ 				strcpy(alsa.device + 4, device);
+ 				memcpy(alsa.device, "plug", 4);
+-				LOG_INFO("reopening device %s in plug mode as %s for resampling", device, alsa.device);
++				LOG_SQ_INFO("reopening device %s in plug mode as %s for resampling", device, alsa.device);
+ 				snd_pcm_close(pcmp);
+ 				retry = true;
+ 			}
+@@ -393,7 +393,7 @@ static int alsa_open(const char *device,
+ 	// set access 
+ 	if (!alsa.mmap || snd_pcm_hw_params_set_access(pcmp, hw_params, SND_PCM_ACCESS_MMAP_INTERLEAVED) < 0) {
+ 		if ((err = snd_pcm_hw_params_set_access(pcmp, hw_params, SND_PCM_ACCESS_RW_INTERLEAVED)) < 0) {
+-			LOG_ERROR("access type not available: %s", snd_strerror(err));
++			LOG_SQ_ERROR("access type not available: %s", snd_strerror(err));
+ 			return err;
+ 		}
+ 		alsa.mmap = false;
+@@ -403,17 +403,17 @@ static int alsa_open(const char *device,
+ 	snd_pcm_format_t *fmt = alsa.format ? &alsa.format : (snd_pcm_format_t *)fmts;
+ 	do {
+ 		if (snd_pcm_hw_params_set_format(pcmp, hw_params, *fmt) >= 0) {
+-			LOG_INFO("opened device %s using format: %s sample rate: %u mmap: %u", alsa.device, snd_pcm_format_name(*fmt), sample_rate, alsa.mmap);
++			LOG_SQ_INFO("opened device %s using format: %s sample rate: %u mmap: %u", alsa.device, snd_pcm_format_name(*fmt), sample_rate, alsa.mmap);
+ 			alsa.format = *fmt;
+ 			break;
+ 		}
+ 		if (alsa.format) {
+-			LOG_ERROR("unable to open audio device requested format: %s", snd_pcm_format_name(alsa.format));
++			LOG_SQ_ERROR("unable to open audio device requested format: %s", snd_pcm_format_name(alsa.format));
+ 			return -1;
+ 		}
+ 		++fmt; 
+ 		if (*fmt == SND_PCM_FORMAT_UNKNOWN) {
+-			LOG_ERROR("unable to open audio device with any supported format");
++			LOG_SQ_ERROR("unable to open audio device with any supported format");
+ 			return -1;
+ 		}
+ 	} while (*fmt != SND_PCM_FORMAT_UNKNOWN);
+@@ -434,7 +434,7 @@ static int alsa_open(const char *device,
+ 
+ 	// set channels
+ 	if ((err = snd_pcm_hw_params_set_channels (pcmp, hw_params, 2)) < 0) {
+-		LOG_ERROR("channel count not available: %s", snd_strerror(err));
++		LOG_SQ_ERROR("channel count not available: %s", snd_strerror(err));
+ 		return err;
+ 	}
+ 
+@@ -442,14 +442,14 @@ static int alsa_open(const char *device,
+ 	if (alsa_period < 50) {
+ 		unsigned count = alsa_period;
+ 		if ((err = snd_pcm_hw_params_set_periods_near(pcmp, hw_params, &count, 0)) < 0) {
+-			LOG_ERROR("unable to set period count %s", snd_strerror(err));
++			LOG_SQ_ERROR("unable to set period count %s", snd_strerror(err));
+ 			return err;
+ 		}
+ 	} else {
+ 		snd_pcm_uframes_t size = alsa_period;
+ 		int dir = 0;
+ 		if ((err = snd_pcm_hw_params_set_period_size_near(pcmp, hw_params, &size, &dir)) < 0) {
+-			LOG_ERROR("unable to set period size %s", snd_strerror(err));
++			LOG_SQ_ERROR("unable to set period size %s", snd_strerror(err));
+ 			return err;
+ 		}
+ 	}
+@@ -459,30 +459,30 @@ static int alsa_open(const char *device,
+ 		unsigned time = alsa_buffer * 1000;
+ 		int dir = 0;
+ 		if ((err = snd_pcm_hw_params_set_buffer_time_near(pcmp, hw_params, &time, &dir)) < 0) {
+-			LOG_ERROR("unable to set buffer time %s", snd_strerror(err));
++			LOG_SQ_ERROR("unable to set buffer time %s", snd_strerror(err));
+ 			return err;
+ 		}
+ 	} else {
+ 		snd_pcm_uframes_t size = alsa_buffer;
+ 		if ((err = snd_pcm_hw_params_set_buffer_size_near(pcmp, hw_params, &size)) < 0) {
+-			LOG_ERROR("unable to set buffer size %s", snd_strerror(err));
++			LOG_SQ_ERROR("unable to set buffer size %s", snd_strerror(err));
+ 			return err;
+ 		}
+ 	}
+ 
+ 	// get period_size
+ 	if ((err = snd_pcm_hw_params_get_period_size(hw_params, &alsa.period_size, 0)) < 0) {
+-		LOG_ERROR("unable to get period size: %s", snd_strerror(err));
++		LOG_SQ_ERROR("unable to get period size: %s", snd_strerror(err));
+ 		return err;
+ 	}
+ 
+ 	// get buffer_size
+ 	if ((err = snd_pcm_hw_params_get_buffer_size(hw_params, &alsa.buffer_size)) < 0) {
+-		LOG_ERROR("unable to get buffer size: %s", snd_strerror(err));
++		LOG_SQ_ERROR("unable to get buffer size: %s", snd_strerror(err));
+ 		return err;
+ 	}
+ 
+-	LOG_INFO("buffer: %u period: %u -> buffer size: %u period size: %u", alsa_buffer, alsa_period, alsa.buffer_size, alsa.period_size);
++	LOG_SQ_INFO("buffer: %u period: %u -> buffer size: %u period size: %u", alsa_buffer, alsa_period, alsa.buffer_size, alsa.period_size);
+ 
+ 	// ensure we have two buffer sizes of samples before starting output
+ 	output.start_frames = alsa.buffer_size * 2;
+@@ -492,14 +492,14 @@ static int alsa_open(const char *device,
+ 	if (!alsa.mmap && !alsa.write_buf && alsa.format != NATIVE_FORMAT) {
+ 		alsa.write_buf = malloc(alsa.buffer_size * BYTES_PER_FRAME);
+ 		if (!alsa.write_buf) {
+-			LOG_ERROR("unable to malloc write_buf");
++			LOG_SQ_ERROR("unable to malloc write_buf");
+ 			return -1;
+ 		}
+ 	}
+ 
+ 	// set params
+ 	if ((err = snd_pcm_hw_params(pcmp, hw_params)) < 0) {
+-		LOG_ERROR("unable to set hw params: %s", snd_strerror(err));
++		LOG_SQ_ERROR("unable to set hw params: %s", snd_strerror(err));
+ 		return err;
+ 	}
+ 
+@@ -531,7 +531,7 @@ static int _write_frames(frames_t out_fr
+ 		snd_pcm_avail_update(pcmp);
+ 		
+ 		if ((err = snd_pcm_mmap_begin(pcmp, &areas, &offset, &alsa_frames)) < 0) {
+-			LOG_WARN("error from mmap_begin: %s", snd_strerror(err));
++			LOG_SQ_WARN("error from mmap_begin: %s", snd_strerror(err));
+ 			return -1;
+ 		}
+ 		
+@@ -578,7 +578,7 @@ static int _write_frames(frames_t out_fr
+ 
+ 		snd_pcm_sframes_t w = snd_pcm_mmap_commit(pcmp, offset, out_frames);
+ 		if (w < 0 || w != out_frames) {
+-			LOG_WARN("mmap_commit error");
++			LOG_SQ_WARN("mmap_commit error");
+ 			return -1;
+ 		}
+ 
+@@ -589,7 +589,7 @@ static int _write_frames(frames_t out_fr
+ 			//if (w != -EAGAIN && ((err = snd_pcm_recover(pcmp, w, 1)) < 0)) {
+ 			if (((err = snd_pcm_recover(pcmp, w, 1)) < 0)) {
+ 				static unsigned recover_count = 0;
+-				LOG_WARN("recover failed: %s [%u]", snd_strerror(err), ++recover_count);
++				LOG_SQ_WARN("recover failed: %s [%u]", snd_strerror(err), ++recover_count);
+ 				if (recover_count >= 10) {				
+ 					recover_count = 0;
+ 					alsa_close();
+@@ -599,7 +599,7 @@ static int _write_frames(frames_t out_fr
+ 			return -1;
+ 		} else {
+ 			if (w != out_frames) {
+-				LOG_WARN("writei only wrote %u of %u", w, out_frames);
++				LOG_SQ_WARN("writei only wrote %u of %u", w, out_frames);
+ 			}						
+ 			out_frames = w;
+ 		}
+@@ -628,14 +628,14 @@ static void *output_thread(void *arg) {
+ 		// wait until device returns - to allow usb audio devices to be turned off
+ 		if (probe_device) {
+ 			while (!pcm_probe(output.device)) {
+-				LOG_DEBUG("waiting for device %s to return", output.device);
++				LOG_SQ_DEBUG("waiting for device %s to return", output.device);
+ 				sleep(5);
+ 			}
+ 			probe_device = false;
+ 		}
+ 
+ 		if (!pcmp || alsa.rate != output.current_sample_rate) {
+-			LOG_INFO("open output device: %s", output.device);
++			LOG_SQ_INFO("open output device: %s", output.device);
+ 			LOCK;
+ 
+ 			// FIXME - some alsa hardware requires opening twice for a new sample rate to work
+@@ -658,18 +658,18 @@ static void *output_thread(void *arg) {
+ 		snd_pcm_state_t state = snd_pcm_state(pcmp);
+ 
+ 		if (state == SND_PCM_STATE_XRUN) {
+-			LOG_INFO("XRUN");
++			LOG_SQ_INFO("XRUN");
+ 			if ((err = snd_pcm_recover(pcmp, -EPIPE, 1)) < 0) {
+-				LOG_INFO("XRUN recover failed: %s", snd_strerror(err));
++				LOG_SQ_INFO("XRUN recover failed: %s", snd_strerror(err));
+ 			}
+ 			start = true;
+ 			continue;
+ 		} else if (state == SND_PCM_STATE_SUSPENDED) {
+ 			if ((err = snd_pcm_recover(pcmp, -ESTRPIPE, 1)) < 0) {
+-				LOG_INFO("SUSPEND recover failed: %s", snd_strerror(err));
++				LOG_SQ_INFO("SUSPEND recover failed: %s", snd_strerror(err));
+ 			}
+ 		} else if (state == SND_PCM_STATE_DISCONNECTED) {
+-			LOG_INFO("Device %s no longer available", output.device);
++			LOG_SQ_INFO("Device %s no longer available", output.device);
+ 			alsa_close();
+ 			pcmp = NULL;
+ 			probe_device = true;
+@@ -681,13 +681,13 @@ static void *output_thread(void *arg) {
+ 		if (avail < 0) {
+ 			if ((err = snd_pcm_recover(pcmp, avail, 1)) < 0) {
+ 				if (err == -ENODEV) {
+-					LOG_INFO("Device %s no longer available", output.device);
++					LOG_SQ_INFO("Device %s no longer available", output.device);
+ 					alsa_close();
+ 					pcmp = NULL;
+ 					probe_device = true;
+ 					continue;
+ 				}
+-				LOG_WARN("recover failed: %s", snd_strerror(err));
++				LOG_SQ_WARN("recover failed: %s", snd_strerror(err));
+ 			}
+ 			start = true;
+ 			continue;
+@@ -698,13 +698,13 @@ static void *output_thread(void *arg) {
+ 				if (alsa.mmap && ((err = snd_pcm_start(pcmp)) < 0)) {
+ 					if ((err = snd_pcm_recover(pcmp, err, 1)) < 0) {
+ 						if (err == -ENODEV) {
+-							LOG_INFO("Device %s no longer available", output.device);
++							LOG_SQ_INFO("Device %s no longer available", output.device);
+ 							alsa_close();
+ 							pcmp = NULL;
+ 							probe_device = true;
+ 							continue;
+ 						}
+-						LOG_INFO("start error: %s", snd_strerror(err));
++						LOG_SQ_INFO("start error: %s", snd_strerror(err));
+ 						usleep(10000);
+ 					}
+ 				} else {
+@@ -713,7 +713,7 @@ static void *output_thread(void *arg) {
+ 			} else {
+ 				if ((err = snd_pcm_wait(pcmp, 1000)) < 0) {
+ 					if ((err = snd_pcm_recover(pcmp, err, 1)) < 0) {
+-						LOG_INFO("pcm wait error: %s", snd_strerror(err));
++						LOG_SQ_INFO("pcm wait error: %s", snd_strerror(err));
+ 					}
+ 					start = true;
+ 				}
+@@ -731,7 +731,7 @@ static void *output_thread(void *arg) {
+ 
+ 		// avoid spinning in cases where wait returns but no bytes available (seen with pulse audio)
+ 		if (avail == 0) {
+-			LOG_SDEBUG("avail 0 - sleeping");
++			LOG_SQ_SDEBUG("avail 0 - sleeping");
+ 			usleep(10000);
+ 			continue;
+ 		}
+@@ -741,7 +741,7 @@ static void *output_thread(void *arg) {
+ 		// turn off if requested
+ 		if (output.state == OUTPUT_OFF) {
+ 			UNLOCK;
+-			LOG_INFO("disabling output");
++			LOG_SQ_INFO("disabling output");
+ 			alsa_close();
+ 			pcmp = NULL;
+ 			output_off = true;
+@@ -759,11 +759,11 @@ static void *output_thread(void *arg) {
+ 			} else if (err == -EIO) {
+ 				// EIO can occur with non existant pulse server
+ 				UNLOCK;
+-				LOG_SDEBUG("snd_pcm_delay returns: EIO - sleeping");
++				LOG_SQ_SDEBUG("snd_pcm_delay returns: EIO - sleeping");
+ 				usleep(100000);
+ 				continue;
+ 			} else {
+-				LOG_DEBUG("snd_pcm_delay returns: %d", err);
++				LOG_SQ_DEBUG("snd_pcm_delay returns: %d", err);
+ 			}
+ 		} else {
+ 			output.device_frames = delay;
+@@ -778,7 +778,7 @@ static void *output_thread(void *arg) {
+ 
+ 		// some output devices such as alsa null refuse any data, avoid spinning
+ 		if (!wrote) {
+-			LOG_SDEBUG("wrote 0 - sleeping");
++			LOG_SQ_SDEBUG("wrote 0 - sleeping");
+ 			usleep(10000);
+ 		}
+ 	}
+@@ -814,7 +814,7 @@ void output_init_alsa(log_level level, c
+ 
+ 	loglevel = level;
+ 
+-	LOG_INFO("init output");
++	LOG_SQ_INFO("init output");
+ 
+ 	memset(&output, 0, sizeof(output));
+ 
+@@ -842,7 +842,7 @@ void output_init_alsa(log_level level, c
+ 		if (!strcmp(alsa_sample_fmt, "16")) alsa.format = SND_PCM_FORMAT_S16_LE;
+ 	}
+ 
+-	LOG_INFO("requested alsa_buffer: %u alsa_period: %u format: %s mmap: %u", output.buffer, output.period, 
++	LOG_SQ_INFO("requested alsa_buffer: %u alsa_period: %u format: %s mmap: %u", output.buffer, output.period, 
+ 			 alsa_sample_fmt ? alsa_sample_fmt : "any", alsa.mmap);
+ 
+ 	snd_lib_error_set_handler((snd_lib_error_handler_t)alsa_error_handler);
+@@ -857,9 +857,9 @@ void output_init_alsa(log_level level, c
+ 	// RT linux - aim to avoid pagefaults by locking memory: 
+ 	// https://rt.wiki.kernel.org/index.php/Threaded_RT-application_with_memory_locking_and_stack_handling_example
+ 	if (mlockall(MCL_CURRENT | MCL_FUTURE) == -1) {
+-		LOG_INFO("unable to lock memory: %s", strerror(errno));
++		LOG_SQ_INFO("unable to lock memory: %s", strerror(errno));
+ 	} else {
+-		LOG_INFO("memory locked");
++		LOG_SQ_INFO("memory locked");
+ 	}
+ 
+ 	mallopt(M_TRIM_THRESHOLD, -1);
+@@ -880,14 +880,14 @@ void output_init_alsa(log_level level, c
+ 	struct sched_param param;
+ 	param.sched_priority = rt_priority;
+ 	if (pthread_setschedparam(thread, SCHED_FIFO, &param) != 0) {
+-		LOG_DEBUG("unable to set output sched fifo: %s", strerror(errno));
++		LOG_SQ_DEBUG("unable to set output sched fifo: %s", strerror(errno));
+ 	} else {
+-		LOG_DEBUG("set output sched fifo rt: %u", param.sched_priority);
++		LOG_SQ_DEBUG("set output sched fifo rt: %u", param.sched_priority);
+ 	}
+ }
+ 
+ void output_close_alsa(void) {
+-	LOG_INFO("close output");
++	LOG_SQ_INFO("close output");
+ 
+ 	LOCK;
+ 	running = false;
+--- squeezelite-1.8.orig/output_pa.c
++++ squeezelite-1.8/output_pa.c
+@@ -55,7 +55,7 @@ void list_devices(void) {
+ 	int i;
+ 
+ 	if ((err = Pa_Initialize()) != paNoError) {
+-		LOG_WARN("error initialising port audio: %s", Pa_GetErrorText(err));
++		LOG_SQ_WARN("error initialising port audio: %s", Pa_GetErrorText(err));
+ 		return;
+ 	}
+ 	
+@@ -68,12 +68,12 @@ void list_devices(void) {
+ 	printf("\n");
+ 	
+ 	if ((err = Pa_Terminate()) != paNoError) {
+-		LOG_WARN("error closing port audio: %s", Pa_GetErrorText(err));
++		LOG_SQ_WARN("error closing port audio: %s", Pa_GetErrorText(err));
+ 	}
+ }
+ 
+ void set_volume(unsigned left, unsigned right) {
+-	LOG_DEBUG("setting internal gain left: %u right: %u", left, right);
++	LOG_SQ_DEBUG("setting internal gain left: %u right: %u", left, right);
+ 	LOCK;
+ 	output.gainL = left;
+ 	output.gainR = right;
+@@ -113,7 +113,7 @@ bool test_open(const char *device, unsig
+ 	int device_id, i, ind;
+ 
+ 	if ((device_id = pa_device_id(device)) == -1) {
+-		LOG_INFO("device %s not found", device);
++		LOG_SQ_INFO("device %s not found", device);
+ 		return false;
+ 	}
+ 
+@@ -136,7 +136,7 @@ bool test_open(const char *device, unsig
+ 	}
+ 
+ 	if (!rates[0]) {
+-		LOG_WARN("no available rate found");
++		LOG_SQ_WARN("no available rate found");
+ 		return false;
+ 	}
+ 
+@@ -146,7 +146,7 @@ bool test_open(const char *device, unsig
+ 
+ static void pa_stream_finished(void *userdata) {
+ 	if (running) {
+-		LOG_INFO("stream finished");
++		LOG_SQ_INFO("stream finished");
+ 		LOCK;
+ 		output.pa_reopen = true;
+ 		wake_controller();
+@@ -163,12 +163,12 @@ static void *pa_monitor() {
+ 	LOCK;
+ 
+ 	if (monitor_thread_running) {
+-		LOG_DEBUG("monitor thread already running");
++		LOG_SQ_DEBUG("monitor thread already running");
+ 		UNLOCK;
+ 		return 0;
+ 	}
+ 
+-	LOG_DEBUG("start monitor thread");
++	LOG_SQ_DEBUG("start monitor thread");
+ 
+ 	monitor_thread_running = true;
+ 	output_off = (output.state == OUTPUT_OFF);
+@@ -176,18 +176,18 @@ static void *pa_monitor() {
+ 	while (monitor_thread_running) {
+ 		if (output_off) {
+ 			if (output.state != OUTPUT_OFF) {
+-				LOG_INFO("output on");
++				LOG_SQ_INFO("output on");
+ 				break;
+ 			}
+ 		} else {
+ 			// this is a hack to partially support hot plugging of devices
+ 			// we rely on terminating and reinitalising PA to get an updated list of devices and use name for output.device
+-			LOG_INFO("probing device %s", output.device);
++			LOG_SQ_INFO("probing device %s", output.device);
+ 			Pa_Terminate();
+ 			Pa_Initialize();
+ 			pa.stream = NULL;
+ 			if (pa_device_id(output.device) != -1) {
+-				LOG_INFO("device reopen");
++				LOG_SQ_INFO("device reopen");
+ 				break;
+ 			}
+ 		}
+@@ -197,7 +197,7 @@ static void *pa_monitor() {
+ 		LOCK;
+ 	}
+ 
+-	LOG_DEBUG("end monitor thread");
++	LOG_SQ_DEBUG("end monitor thread");
+ 
+ 	monitor_thread_running = false;
+ 	pa.stream = NULL;
+@@ -216,7 +216,7 @@ void _pa_open(void) {
+ 
+ 	if (pa.stream) {
+ 		if ((err = Pa_CloseStream(pa.stream)) != paNoError) {
+-			LOG_WARN("error closing stream: %s", Pa_GetErrorText(err));
++			LOG_SQ_WARN("error closing stream: %s", Pa_GetErrorText(err));
+ 		}
+ 	}
+ 
+@@ -226,7 +226,7 @@ void _pa_open(void) {
+ 		err = 1;
+ 
+ 	} else if ((device_id = pa_device_id(output.device)) == -1) {
+-		LOG_INFO("device %s not found", output.device);
++		LOG_SQ_INFO("device %s not found", output.device);
+ 		err = 1;
+ 
+ 	} else {
+@@ -245,10 +245,10 @@ void _pa_open(void) {
+ 		PaMacCoreStreamInfo macInfo;
+ 		unsigned long streamInfoFlags;
+ 	 	if (output.osx_playnice) {
+-			LOG_INFO("opening device in PlayNice mode");
++			LOG_SQ_INFO("opening device in PlayNice mode");
+ 			streamInfoFlags = paMacCorePlayNice;
+ 		} else {
+-			LOG_INFO("opening device in Pro mode");
++			LOG_SQ_INFO("opening device in Pro mode");
+ 			streamInfoFlags = paMacCorePro;
+ 		}
+ 		PaMacCore_SetupStreamInfo(&macInfo, streamInfoFlags);
+@@ -259,24 +259,24 @@ void _pa_open(void) {
+ 	if (!err &&
+ 		(err = Pa_OpenStream(&pa.stream, NULL, &outputParameters, (double)output.current_sample_rate, paFramesPerBufferUnspecified,
+ 							 paPrimeOutputBuffersUsingStreamCallback | paDitherOff, pa_callback, NULL)) != paNoError) {
+-		LOG_WARN("error opening device %i - %s : %s", outputParameters.device, Pa_GetDeviceInfo(outputParameters.device)->name, 
++		LOG_SQ_WARN("error opening device %i - %s : %s", outputParameters.device, Pa_GetDeviceInfo(outputParameters.device)->name, 
+ 				 Pa_GetErrorText(err));
+ 	}
+ 
+ 	if (!err) {
+-		LOG_INFO("opened device %i - %s at %u latency %u ms", outputParameters.device, Pa_GetDeviceInfo(outputParameters.device)->name,
++		LOG_SQ_INFO("opened device %i - %s at %u latency %u ms", outputParameters.device, Pa_GetDeviceInfo(outputParameters.device)->name,
+ 				 (unsigned int)Pa_GetStreamInfo(pa.stream)->sampleRate, (unsigned int)(Pa_GetStreamInfo(pa.stream)->outputLatency * 1000));
+ 
+ 		pa.rate = output.current_sample_rate;
+ 
+ 		if ((err = Pa_SetStreamFinishedCallback(pa.stream, pa_stream_finished)) != paNoError) {
+-			LOG_WARN("error setting finish callback: %s", Pa_GetErrorText(err));
++			LOG_SQ_WARN("error setting finish callback: %s", Pa_GetErrorText(err));
+ 		}
+ 	
+ 		UNLOCK; // StartStream can call pa_callback in a sychronised thread on freebsd, remove lock while it is called
+ 
+ 		if ((err = Pa_StartStream(pa.stream)) != paNoError) {
+-			LOG_WARN("error starting stream: %s", Pa_GetErrorText(err));
++			LOG_SQ_WARN("error starting stream: %s", Pa_GetErrorText(err));
+ 		}
+ 
+ 		LOCK;
+@@ -367,12 +367,12 @@ static int pa_callback(const void *pa_in
+ 	} while (pa_frames_wanted > 0 && frames != 0);
+ 
+ 	if (pa_frames_wanted > 0) {
+-		LOG_DEBUG("pad with silence");
++		LOG_SQ_DEBUG("pad with silence");
+ 		memset(optr, 0, pa_frames_wanted * BYTES_PER_FRAME);
+ 	}
+ 
+ 	if (output.state == OUTPUT_OFF) {
+-		LOG_INFO("output off");
++		LOG_SQ_INFO("output off");
+ 		ret = paComplete;
+ 	} else if (pa.rate != output.current_sample_rate) {
+ 		ret = paComplete;
+@@ -399,7 +399,7 @@ void output_init_pa(log_level level, con
+ 
+ 	loglevel = level;
+ 
+-	LOG_INFO("init output");
++	LOG_SQ_INFO("init output");
+ 
+ 	memset(&output, 0, sizeof(output));
+ 
+@@ -411,10 +411,10 @@ void output_init_pa(log_level level, con
+ 	output.rate_delay = rate_delay;
+ 	pa.stream = NULL;
+ 
+-	LOG_INFO("requested latency: %u", output.latency);
++	LOG_SQ_INFO("requested latency: %u", output.latency);
+ 
+ 	if ((err = Pa_Initialize()) != paNoError) {
+-		LOG_WARN("error initialising port audio: %s", Pa_GetErrorText(err));
++		LOG_SQ_WARN("error initialising port audio: %s", Pa_GetErrorText(err));
+ 		exit(0);
+ 	}
+ 
+@@ -430,7 +430,7 @@ void output_init_pa(log_level level, con
+ void output_close_pa(void) {
+ 	PaError err;
+ 
+-	LOG_INFO("close output");
++	LOG_SQ_INFO("close output");
+ 
+ 	LOCK;
+ 
+@@ -439,12 +439,12 @@ void output_close_pa(void) {
+ 
+ 	if (pa.stream) {
+ 		if ((err = Pa_AbortStream(pa.stream)) != paNoError) {
+-			LOG_WARN("error closing stream: %s", Pa_GetErrorText(err));
++			LOG_SQ_WARN("error closing stream: %s", Pa_GetErrorText(err));
+ 		}
+ 	}
+ 
+ 	if ((err = Pa_Terminate()) != paNoError) {
+-		LOG_WARN("error closing port audio: %s", Pa_GetErrorText(err));
++		LOG_SQ_WARN("error closing port audio: %s", Pa_GetErrorText(err));
+ 	}
+ 
+ 	UNLOCK;
+--- squeezelite-1.8.orig/output_stdout.c
++++ squeezelite-1.8/output_stdout.c
+@@ -123,11 +123,11 @@ static thread_type thread;
+ void output_init_stdout(log_level level, unsigned output_buf_size, char *params, unsigned rates[], unsigned rate_delay) {
+ 	loglevel = level;
+ 
+-	LOG_INFO("init output stdout");
++	LOG_SQ_INFO("init output stdout");
+ 
+ 	buf = malloc(FRAME_BLOCK * BYTES_PER_FRAME);
+ 	if (!buf) {
+-		LOG_ERROR("unable to malloc buf");
++		LOG_SQ_ERROR("unable to malloc buf");
+ 		return;
+ 	}
+ 	buffill = 0;
+@@ -165,7 +165,7 @@ void output_init_stdout(log_level level,
+ }
+ 
+ void output_close_stdout(void) {
+-	LOG_INFO("close output");
++	LOG_SQ_INFO("close output");
+ 
+ 	LOCK;
+ 	running = false;
+--- squeezelite-1.8.orig/output_vis.c
++++ squeezelite-1.8/output_vis.c
+@@ -65,7 +65,7 @@ void _vis_export(struct buffer *outputbu
+ 		}
+ 		
+ 		if (err) {
+-			LOG_DEBUG("failed to get wrlock - skipping visulizer export");
++			LOG_SQ_DEBUG("failed to get wrlock - skipping visulizer export");
+ 			
+ 		} else {
+ 			
+@@ -132,9 +132,9 @@ void output_vis_init(log_level level, u8
+ 		vis_mmap->running = false;
+ 		vis_mmap->rate = 44100;
+ 		pthread_rwlockattr_destroy(&attr);
+-		LOG_INFO("opened visulizer shared memory as %s", vis_shm_path);
++		LOG_SQ_INFO("opened visulizer shared memory as %s", vis_shm_path);
+ 	} else {
+-		LOG_WARN("unable to open visualizer shared memory");
++		LOG_SQ_WARN("unable to open visualizer shared memory");
+ 		vis_mmap = NULL;
+ 	}
+ 
+--- squeezelite-1.8.orig/pcm.c
++++ squeezelite-1.8/pcm.c
+@@ -74,10 +74,10 @@ static void _check_header(void) {
+ 
+ 	if (bytes > 12) {
+ 		if (!memcmp(ptr, "RIFF", 4) && !memcmp(ptr+8, "WAVE", 4)) {
+-			LOG_INFO("WAVE");
++			LOG_SQ_INFO("WAVE");
+ 			format = WAVE;
+ 		} else if (!memcmp(ptr, "FORM", 4) && (!memcmp(ptr+8, "AIFF", 4) || !memcmp(ptr+8, "AIFC", 4))) {
+-			LOG_INFO("AIFF");
++			LOG_SQ_INFO("AIFF");
+ 			format = AIFF;
+ 		}
+ 	}
+@@ -98,13 +98,13 @@ static void _check_header(void) {
+ 				len = *(ptr+4) << 24 | *(ptr+5) << 16 | *(ptr+6) << 8 | *(ptr+7);
+ 			}
+ 				
+-			LOG_INFO("header: %s len: %d", id, len);
++			LOG_SQ_INFO("header: %s len: %d", id, len);
+ 
+ 			if (format == WAVE && !memcmp(ptr, "data", 4)) {
+ 				ptr += 8;
+ 				_buf_inc_readp(streambuf, ptr - streambuf->readp);
+ 				audio_left = len;
+-				LOG_INFO("audio size: %u", audio_left);
++				LOG_SQ_INFO("audio size: %u", audio_left);
+ 				limit = true;
+ 				return;
+ 			}
+@@ -115,7 +115,7 @@ static void _check_header(void) {
+ 				ptr += 8 + 8;
+ 				_buf_inc_readp(streambuf, ptr + offset - streambuf->readp);
+ 				audio_left = len - 8 - offset;
+-				LOG_INFO("audio size: %u", audio_left);
++				LOG_SQ_INFO("audio size: %u", audio_left);
+ 				limit = true;
+ 				return;
+ 			}
+@@ -126,7 +126,7 @@ static void _check_header(void) {
+ 				sample_rate = *(ptr+12) | *(ptr+13) << 8 | *(ptr+14) << 16 | *(ptr+15) << 24;
+ 				sample_size = (*(ptr+22) | *(ptr+23) << 8) / 8;
+ 				bigendian   = 0;
+-				LOG_INFO("pcm size: %u rate: %u chan: %u bigendian: %u", sample_size, sample_rate, channels, bigendian);
++				LOG_SQ_INFO("pcm size: %u rate: %u chan: %u bigendian: %u", sample_size, sample_rate, channels, bigendian);
+ 			}
+ 
+ 			if (format == AIFF && !memcmp(ptr, "COMM", 4) && bytes >= 26) {
+@@ -141,20 +141,20 @@ static void _check_header(void) {
+ 				sample_rate  = *(ptr+18) << 24 | *(ptr+19) << 16 | *(ptr+20) << 8 | *(ptr+21);
+ 				while (exponent < 0) { sample_rate >>= 1; ++exponent; }
+ 				while (exponent > 0) { sample_rate <<= 1; --exponent; }
+-				LOG_INFO("pcm size: %u rate: %u chan: %u bigendian: %u", sample_size, sample_rate, channels, bigendian);
++				LOG_SQ_INFO("pcm size: %u rate: %u chan: %u bigendian: %u", sample_size, sample_rate, channels, bigendian);
+ 			}
+ 
+ 			if (bytes >= len + 8) {
+ 				ptr   += len + 8;
+ 				bytes -= (len + 8);
+ 			} else {
+-				LOG_WARN("run out of data");
++				LOG_SQ_WARN("run out of data");
+ 				return;
+ 			}
+ 		}
+ 
+ 	} else {
+-		LOG_WARN("unknown format - can't parse header");
++		LOG_SQ_WARN("unknown format - can't parse header");
+ 	}
+ }
+ 
+@@ -189,7 +189,7 @@ static decode_state pcm_decode(void) {
+ 	}
+ 
+ 	if (decode.new_stream) {
+-		LOG_INFO("setting track_start");
++		LOG_SQ_INFO("setting track_start");
+ 		LOCK_O_not_direct;
+ 		output.next_sample_rate = decode_newstream(sample_rate, output.supported_rates);
+ 		output.track_start = outputbuf->writep;
+@@ -226,7 +226,7 @@ static decode_state pcm_decode(void) {
+ 	frames = min(frames, MAX_DECODE_FRAMES);
+ 
+ 	if (limit && frames * bytes_per_frame > audio_left) {
+-		LOG_INFO("reached end of audio");
++		LOG_SQ_INFO("reached end of audio");
+ 		frames = audio_left / bytes_per_frame;
+ 	}
+ 
+@@ -331,10 +331,10 @@ static decode_state pcm_decode(void) {
+ 			}
+ 		}
+ 	} else {
+-		LOG_ERROR("unsupported channels");
++		LOG_SQ_ERROR("unsupported channels");
+ 	}
+ 
+-	LOG_SDEBUG("decoded %u frames", frames);
++	LOG_SQ_SDEBUG("decoded %u frames", frames);
+ 
+ 	_buf_inc_readp(streambuf, frames * bytes_per_frame);
+ 
+@@ -362,7 +362,7 @@ static void pcm_open(u8_t size, u8_t rat
+ 	bigendian   = (endianness == '0');
+ 	limit       = false;
+ 
+-	LOG_INFO("pcm size: %u rate: %u chan: %u bigendian: %u", sample_size, sample_rate, channels, bigendian);
++	LOG_SQ_INFO("pcm size: %u rate: %u chan: %u bigendian: %u", sample_size, sample_rate, channels, bigendian);
+ 	buf_adjust(streambuf, sample_size * channels);
+ }
+ 
+@@ -381,6 +381,6 @@ struct codec *register_pcm(void) {
+ 		pcm_decode,  // decode
+ 	};
+ 
+-	LOG_INFO("using pcm to decode aif,pcm");
++	LOG_SQ_INFO("using pcm to decode aif,pcm");
+ 	return &ret;
+ }
+--- squeezelite-1.8.orig/process.c
++++ squeezelite-1.8/process.c
+@@ -81,7 +81,7 @@ static void _write_samples(void) {
+ 		} else {
+ 
+ 			// bail out if no space found after 100ms to avoid locking
+-			LOG_ERROR("unable to get space in output buffer");
++			LOG_SQ_ERROR("unable to get space in output buffer");
+ 			UNLOCK_O;
+ 			return;
+ 		}
+@@ -112,7 +112,7 @@ void process_drain(void) {
+ 
+ 	} while (!done);
+ 
+-	LOG_DEBUG("processing track complete - frames in: %lu out: %lu", process.total_in, process.total_out);
++	LOG_SQ_DEBUG("processing track complete - frames in: %lu out: %lu", process.total_in, process.total_out);
+ }	
+ 
+ // new stream - called with decode mutex set
+@@ -120,7 +120,7 @@ unsigned process_newstream(bool *direct,
+ 
+ 	bool active = NEWSTREAM_FUNC(&process, raw_sample_rate, supported_rates);
+ 
+-	LOG_INFO("processing: %s", active ? "active" : "inactive");
++	LOG_SQ_INFO("processing: %s", active ? "active" : "inactive");
+ 
+ 	*direct = !active;
+ 
+@@ -141,21 +141,21 @@ unsigned process_newstream(bool *direct,
+ 		}
+ 
+ 		if (process.max_in_frames != max_in_frames) {
+-			LOG_DEBUG("creating process buf in frames: %u", max_in_frames);
++			LOG_SQ_DEBUG("creating process buf in frames: %u", max_in_frames);
+ 			if (process.inbuf) free(process.inbuf);
+ 			process.inbuf = malloc(max_in_frames * BYTES_PER_FRAME);
+ 			process.max_in_frames = max_in_frames;
+ 		}
+ 		
+ 		if (process.max_out_frames != max_out_frames) {
+-			LOG_DEBUG("creating process buf out frames: %u", max_out_frames);
++			LOG_SQ_DEBUG("creating process buf out frames: %u", max_out_frames);
+ 			if (process.outbuf) free(process.outbuf);
+ 			process.outbuf = malloc(max_out_frames * BYTES_PER_FRAME);
+ 			process.max_out_frames = max_out_frames;
+ 		}
+ 		
+ 		if (!process.inbuf || !process.outbuf) {
+-			LOG_ERROR("malloc fail creating process buffers");
++			LOG_SQ_ERROR("malloc fail creating process buffers");
+ 			*direct = true;
+ 			return raw_sample_rate;
+ 		}
+@@ -169,7 +169,7 @@ unsigned process_newstream(bool *direct,
+ // process flush - called with decode mutex set
+ void process_flush(void) {
+ 
+-	LOG_INFO("process flush");
++	LOG_SQ_INFO("process flush");
+ 
+ 	FLUSH_FUNC();
+ 
+--- squeezelite-1.8.orig/resample.c
++++ squeezelite-1.8/resample.c
+@@ -73,13 +73,13 @@ void resample_samples(struct processstat
+ 	soxr_error_t error =
+ 		SOXR(r, process, r->resampler, process->inbuf, process->in_frames, &idone, process->outbuf, process->max_out_frames, &odone);
+ 	if (error) {
+-		LOG_INFO("soxr_process error: %s", soxr_strerror(error));
++		LOG_SQ_INFO("soxr_process error: %s", soxr_strerror(error));
+ 		return;
+ 	}
+ 	
+ 	if (idone != process->in_frames) {
+ 		// should not get here if buffers are big enough...
+-		LOG_ERROR("should not get here - partial sox process: %u of %u processed %u of %u out",
++		LOG_SQ_ERROR("should not get here - partial sox process: %u of %u processed %u of %u out",
+ 				  (unsigned)idone, process->in_frames, (unsigned)odone, process->max_out_frames);
+ 	}
+ 	
+@@ -89,7 +89,7 @@ void resample_samples(struct processstat
+ 	
+ 	clip_cnt = *(SOXR(r, num_clips, r->resampler));
+ 	if (clip_cnt - r->old_clips) {
+-		LOG_SDEBUG("resampling clips: %u", (unsigned)(clip_cnt - r->old_clips));
++		LOG_SQ_SDEBUG("resampling clips: %u", (unsigned)(clip_cnt - r->old_clips));
+ 		r->old_clips = clip_cnt;
+ 	}
+ }
+@@ -100,7 +100,7 @@ bool resample_drain(struct processstate
+ 		
+ 	soxr_error_t error = SOXR(r, process, r->resampler, NULL, 0, NULL, process->outbuf, process->max_out_frames, &odone);
+ 	if (error) {
+-		LOG_INFO("soxr_process error: %s", soxr_strerror(error));
++		LOG_SQ_INFO("soxr_process error: %s", soxr_strerror(error));
+ 		return true;
+ 	}
+ 	
+@@ -109,13 +109,13 @@ bool resample_drain(struct processstate
+ 	
+ 	clip_cnt = *(SOXR(r, num_clips, r->resampler));
+ 	if (clip_cnt - r->old_clips) {
+-		LOG_DEBUG("resampling clips: %u", (unsigned)(clip_cnt - r->old_clips));
++		LOG_SQ_DEBUG("resampling clips: %u", (unsigned)(clip_cnt - r->old_clips));
+ 		r->old_clips = clip_cnt;
+ 	}
+ 	
+ 	if (odone == 0) {
+ 
+-		LOG_INFO("resample track complete - total track clips: %u", r->old_clips);
++		LOG_SQ_INFO("resample track complete - total track clips: %u", r->old_clips);
+ 
+ 		SOXR(r, delete, r->resampler);
+ 		r->resampler = NULL;
+@@ -185,7 +185,7 @@ bool resample_newstream(struct processst
+ 		soxr_runtime_spec_t r_spec;
+ #endif
+ 
+-		LOG_INFO("resampling from %u -> %u", raw_sample_rate, outrate);
++		LOG_SQ_INFO("resampling from %u -> %u", raw_sample_rate, outrate);
+ 
+ 		io_spec = SOXR(r, io_spec, SOXR_INT32_I, SOXR_INT32_I);
+ 		io_spec.scale = r->scale;
+@@ -208,7 +208,7 @@ bool resample_newstream(struct processst
+ 		r_spec = SOXR(r, runtime_spec, 0); // make use of libsoxr OpenMP support allowing parallel execution if multiple cores
+ #endif		   
+ 
+-		LOG_DEBUG("resampling with soxr_quality_spec_t[precision: %03.1f, passband_end: %03.6f, stopband_begin: %03.6f, "
++		LOG_SQ_DEBUG("resampling with soxr_quality_spec_t[precision: %03.1f, passband_end: %03.6f, stopband_begin: %03.6f, "
+ 				  "phase_response: %03.1f, flags: 0x%02x], soxr_io_spec_t[scale: %03.2f]", q_spec.precision,
+ 				  q_spec.passband_end, q_spec.stopband_begin, q_spec.phase_response, q_spec.flags, io_spec.scale);
+ 
+@@ -219,7 +219,7 @@ bool resample_newstream(struct processst
+ #endif
+ 
+ 		if (error) {
+-			LOG_INFO("soxr_create error: %s", soxr_strerror(error));
++			LOG_SQ_INFO("soxr_create error: %s", soxr_strerror(error));
+ 			return false;
+ 		}
+ 
+@@ -228,7 +228,7 @@ bool resample_newstream(struct processst
+ 
+ 	} else {
+ 
+-		LOG_INFO("disable resampling - rates match");
++		LOG_SQ_INFO("disable resampling - rates match");
+ 		return false;
+ 	}
+ }
+@@ -246,7 +246,7 @@ static bool load_soxr(void) {
+ 	char *err;
+ 
+ 	if (!handle) {
+-		LOG_INFO("dlerror: %s", dlerror());
++		LOG_SQ_INFO("dlerror: %s", dlerror());
+ 		return false;
+ 	}
+ 
+@@ -261,11 +261,11 @@ static bool load_soxr(void) {
+ #endif
+ 
+ 	if ((err = dlerror()) != NULL) {
+-		LOG_INFO("dlerror: %s", err);		
++		LOG_SQ_INFO("dlerror: %s", err);		
+ 		return false;
+ 	}
+ 
+-	LOG_INFO("loaded "LIBSOXR);
++	LOG_SQ_INFO("loaded "LIBSOXR);
+ #endif
+ 
+ 	return true;
+@@ -278,7 +278,7 @@ bool resample_init(char *opt) {
+ 
+ 	r = malloc(sizeof(struct soxr));
+ 	if (!r) {
+-		LOG_WARN("resampling disabled");
++		LOG_SQ_WARN("resampling disabled");
+ 		return false;
+ 	}
+ 
+@@ -288,7 +288,7 @@ bool resample_init(char *opt) {
+ 	r->exception = false;
+ 
+ 	if (!load_soxr()) {
+-		LOG_WARN("resampling disabled");
++		LOG_SQ_WARN("resampling disabled");
+ 		return false;
+ 	}
+ 
+@@ -356,7 +356,7 @@ bool resample_init(char *opt) {
+ 		r->q_phase_response = atof(phase_response);
+ 	}
+ 
+-	LOG_INFO("resampling %s recipe: 0x%02x, flags: 0x%02x, scale: %03.2f, precision: %03.1f, passband_end: %03.5f, stopband_begin: %03.5f, phase_response: %03.1f",
++	LOG_SQ_INFO("resampling %s recipe: 0x%02x, flags: 0x%02x, scale: %03.2f, precision: %03.1f, passband_end: %03.5f, stopband_begin: %03.5f, phase_response: %03.1f",
+ 			r->max_rate ? "async" : "sync",
+ 			r->q_recipe, r->q_flags, r->scale, r->q_precision, r->q_passband_end, r->q_stopband_begin, r->q_phase_response);
+ 
+--- squeezelite-1.8.orig/slimproto.c
++++ squeezelite-1.8/slimproto.c
+@@ -95,11 +95,11 @@ void send_packet(u8_t *packet, size_t le
+ 		n = send(sock, ptr, len, MSG_NOSIGNAL);
+ 		if (n <= 0) {
+ 			if (n < 0 && last_error() == ERROR_WOULDBLOCK && try < 10) {
+-				LOG_DEBUG("retrying (%d) writing to socket", ++try);
++				LOG_SQ_DEBUG("retrying (%d) writing to socket", ++try);
+ 				usleep(1000);
+ 				continue;
+ 			}
+-			LOG_INFO("failed writing to socket: %s", strerror(last_error()));
++			LOG_SQ_INFO("failed writing to socket: %s", strerror(last_error()));
+ 			return;
+ 		}
+ 		ptr += n;
+@@ -121,9 +121,9 @@ static void sendHELO(bool reconnect, con
+ 	packN(&pkt.bytes_received_L, (u64_t)status.stream_bytes & 0xffffffff);
+ 	memcpy(pkt.mac, mac, 6);
+ 
+-	LOG_INFO("mac: %02x:%02x:%02x:%02x:%02x:%02x", pkt.mac[0], pkt.mac[1], pkt.mac[2], pkt.mac[3], pkt.mac[4], pkt.mac[5]);
++	LOG_SQ_INFO("mac: %02x:%02x:%02x:%02x:%02x:%02x", pkt.mac[0], pkt.mac[1], pkt.mac[2], pkt.mac[3], pkt.mac[4], pkt.mac[5]);
+ 
+-	LOG_INFO("cap: %s%s%s", base_cap, fixed_cap, var_cap);
++	LOG_SQ_INFO("cap: %s%s%s", base_cap, fixed_cap, var_cap);
+ 
+ 	send_packet((u8_t *)&pkt, sizeof(pkt));
+ 	send_packet((u8_t *)base_cap, strlen(base_cap));
+@@ -139,12 +139,12 @@ static void sendSTAT(const char *event,
+ 	if (status.current_sample_rate && status.frames_played && status.frames_played > status.device_frames) {
+ 		ms_played = (u32_t)(((u64_t)(status.frames_played - status.device_frames) * (u64_t)1000) / (u64_t)status.current_sample_rate);
+ 		if (now > status.updated) ms_played += (now - status.updated);
+-		LOG_SDEBUG("ms_played: %u (frames_played: %u device_frames: %u)", ms_played, status.frames_played, status.device_frames);
++		LOG_SQ_SDEBUG("ms_played: %u (frames_played: %u device_frames: %u)", ms_played, status.frames_played, status.device_frames);
+ 	} else if (status.frames_played && now > status.stream_start) {
+ 		ms_played = now - status.stream_start;
+-		LOG_SDEBUG("ms_played: %u using elapsed time (frames_played: %u device_frames: %u)", ms_played, status.frames_played, status.device_frames);
++		LOG_SQ_SDEBUG("ms_played: %u using elapsed time (frames_played: %u device_frames: %u)", ms_played, status.frames_played, status.device_frames);
+ 	} else {
+-		LOG_SDEBUG("ms_played: 0");
++		LOG_SQ_SDEBUG("ms_played: 0");
+ 		ms_played = 0;
+ 	}
+ 	
+@@ -168,10 +168,10 @@ static void sendSTAT(const char *event,
+ 	pkt.server_timestamp = server_timestamp; // keep this is server format - don't unpack/pack
+ 	// error_code;
+ 
+-	LOG_DEBUG("STAT: %s", event);
++	LOG_SQ_DEBUG("STAT: %s", event);
+ 
+ 	if (loglevel == lSDEBUG) {
+-		LOG_SDEBUG("received bytesL: %u streambuf: %u outputbuf: %u calc elapsed: %u real elapsed: %u (diff: %d) device: %u delay: %d",
++		LOG_SQ_SDEBUG("received bytesL: %u streambuf: %u outputbuf: %u calc elapsed: %u real elapsed: %u (diff: %d) device: %u delay: %d",
+ 				   (u32_t)status.stream_bytes, status.stream_full, status.output_full, ms_played, now - status.stream_start,
+ 				   ms_played - now + status.stream_start, status.device_frames * 1000 / status.current_sample_rate, now - status.updated);
+ 	}
+@@ -187,7 +187,7 @@ static void sendDSCO(disconnect_code dis
+ 	pkt.length = htonl(sizeof(pkt) - 8);
+ 	pkt.reason = disconnect & 0xFF;
+ 
+-	LOG_DEBUG("DSCO: %d", disconnect);
++	LOG_SQ_DEBUG("DSCO: %d", disconnect);
+ 
+ 	send_packet((u8_t *)&pkt, sizeof(pkt));
+ }
+@@ -199,7 +199,7 @@ static void sendRESP(const char *header,
+ 	memcpy(&pkt_header.opcode, "RESP", 4);
+ 	pkt_header.length = htonl(sizeof(pkt_header) + len - 8);
+ 
+-	LOG_DEBUG("RESP");
++	LOG_SQ_DEBUG("RESP");
+ 
+ 	send_packet((u8_t *)&pkt_header, sizeof(pkt_header));
+ 	send_packet((u8_t *)header, len);
+@@ -212,7 +212,7 @@ static void sendMETA(const char *meta, s
+ 	memcpy(&pkt_header.opcode, "META", 4);
+ 	pkt_header.length = htonl(sizeof(pkt_header) + len - 8);
+ 
+-	LOG_DEBUG("META");
++	LOG_SQ_DEBUG("META");
+ 
+ 	send_packet((u8_t *)&pkt_header, sizeof(pkt_header));
+ 	send_packet((u8_t *)meta, len);
+@@ -227,7 +227,7 @@ static void sendSETDName(const char *nam
+ 	pkt_header.id = 0; // id 0 is playername S:P:Squeezebox2
+ 	pkt_header.length = htonl(sizeof(pkt_header) + strlen(name) + 1 - 8);
+ 
+-	LOG_DEBUG("set playername: %s", name);
++	LOG_SQ_DEBUG("set playername: %s", name);
+ 
+ 	send_packet((u8_t *)&pkt_header, sizeof(pkt_header));
+ 	send_packet((u8_t *)name, strlen(name) + 1);
+@@ -244,7 +244,7 @@ void sendIR(u32_t code, u32_t ts) {
+ 	packN(&pkt.jiffies, ts);
+ 	pkt.ir_code = htonl(code);
+ 
+-	LOG_DEBUG("IR: ir code: 0x%x ts: %u", code, ts);
++	LOG_SQ_DEBUG("IR: ir code: 0x%x ts: %u", code, ts);
+ 
+ 	send_packet((u8_t *)&pkt, sizeof(pkt));
+ }
+@@ -253,7 +253,7 @@ void sendIR(u32_t code, u32_t ts) {
+ static void process_strm(u8_t *pkt, int len) {
+ 	struct strm_packet *strm = (struct strm_packet *)pkt;
+ 
+-	LOG_DEBUG("strm command %c", strm->command);
++	LOG_SQ_DEBUG("strm command %c", strm->command);
+ 
+ 	switch(strm->command) {
+ 	case 't':
+@@ -289,7 +289,7 @@ static void process_strm(u8_t *pkt, int
+ 			}
+ 			UNLOCK_O;
+ 			if (!interval) sendSTAT("STMp", 0);
+-			LOG_DEBUG("pause interval: %u", interval);
++			LOG_SQ_DEBUG("pause interval: %u", interval);
+ 		}
+ 		break;
+ 	case 'a':
+@@ -299,7 +299,7 @@ static void process_strm(u8_t *pkt, int
+ 			output.skip_frames = interval * status.current_sample_rate / 1000;
+ 			output.state = OUTPUT_SKIP_FRAMES;				
+ 			UNLOCK_O;
+-			LOG_DEBUG("skip ahead interval: %u", interval);
++			LOG_SQ_DEBUG("skip ahead interval: %u", interval);
+ 		}
+ 		break;
+ 	case 'u':
+@@ -309,7 +309,7 @@ static void process_strm(u8_t *pkt, int
+ 			output.state = jiffies ? OUTPUT_START_AT : OUTPUT_RUNNING;
+ 			output.start_at = jiffies;
+ 			UNLOCK_O;
+-			LOG_DEBUG("unpause at: %u now: %u", jiffies, gettime_ms());
++			LOG_SQ_DEBUG("unpause at: %u now: %u", jiffies, gettime_ms());
+ 			sendSTAT("STMr", 0);
+ 		}
+ 		break;
+@@ -321,22 +321,22 @@ static void process_strm(u8_t *pkt, int
+ 			u16_t port = strm->server_port; // keep in network byte order
+ 			if (ip == 0) ip = slimproto_ip; 
+ 
+-			LOG_DEBUG("strm s autostart: %c transition period: %u transition type: %u codec: %c", 
++			LOG_SQ_DEBUG("strm s autostart: %c transition period: %u transition type: %u codec: %c", 
+ 					  strm->autostart, strm->transition_period, strm->transition_type - '0', strm->format);
+ 			
+ 			autostart = strm->autostart - '0';
+ 			sendSTAT("STMf", 0);
+ 			if (header_len > MAX_HEADER -1) {
+-				LOG_WARN("header too long: %u", header_len);
++				LOG_SQ_WARN("header too long: %u", header_len);
+ 				break;
+ 			}
+ 			if (strm->format != '?') {
+ 				codec_open(strm->format, strm->pcm_sample_size, strm->pcm_sample_rate, strm->pcm_channels, strm->pcm_endianness);
+ 			} else if (autostart >= 2) {
+ 				// extension to slimproto to allow server to detect codec from response header and send back in codc message
+-				LOG_DEBUG("streaming unknown codec");
++				LOG_SQ_DEBUG("streaming unknown codec");
+ 			} else {
+-				LOG_WARN("unknown codec requires autostart >= 2");
++				LOG_SQ_WARN("unknown codec requires autostart >= 2");
+ 				break;
+ 			}
+ 			if (ip == LOCAL_PLAYER_IP && port == LOCAL_PLAYER_PORT) {
+@@ -354,12 +354,12 @@ static void process_strm(u8_t *pkt, int
+ 			output.fade_mode = strm->transition_type - '0';
+ 			output.fade_secs = strm->transition_period;
+ 			output.invert    = (strm->flags & 0x03) == 0x03;
+-			LOG_DEBUG("set fade mode: %u", output.fade_mode);
++			LOG_SQ_DEBUG("set fade mode: %u", output.fade_mode);
+ 			UNLOCK_O;
+ 		}
+ 		break;
+ 	default:
+-		LOG_WARN("unhandled strm %c", strm->command);
++		LOG_SQ_WARN("unhandled strm %c", strm->command);
+ 		break;
+ 	}
+ }
+@@ -368,7 +368,7 @@ static void process_cont(u8_t *pkt, int
+ 	struct cont_packet *cont = (struct cont_packet *)pkt;
+ 	cont->metaint = unpackN(&cont->metaint);
+ 
+-	LOG_DEBUG("cont metaint: %u loop: %u", cont->metaint, cont->loop);
++	LOG_SQ_DEBUG("cont metaint: %u loop: %u", cont->metaint, cont->loop);
+ 
+ 	if (autostart > 1) {
+ 		autostart -= 2;
+@@ -385,14 +385,14 @@ static void process_cont(u8_t *pkt, int
+ static void process_codc(u8_t *pkt, int len) {
+ 	struct codc_packet *codc = (struct codc_packet *)pkt;
+ 
+-	LOG_DEBUG("codc: %c", codc->format);
++	LOG_SQ_DEBUG("codc: %c", codc->format);
+ 	codec_open(codc->format, codc->pcm_sample_size, codc->pcm_sample_rate, codc->pcm_channels, codc->pcm_endianness);
+ }
+ 
+ static void process_aude(u8_t *pkt, int len) {
+ 	struct aude_packet *aude = (struct aude_packet *)pkt;
+ 
+-	LOG_DEBUG("enable spdif: %d dac: %d", aude->enable_spdif, aude->enable_dac);
++	LOG_SQ_DEBUG("enable spdif: %d dac: %d", aude->enable_spdif, aude->enable_dac);
+ 
+ 	LOCK_O;
+ 	if (!aude->enable_spdif && output.state != OUTPUT_OFF) {
+@@ -410,7 +410,7 @@ static void process_audg(u8_t *pkt, int
+ 	audg->gainL = unpackN(&audg->gainL);
+ 	audg->gainR = unpackN(&audg->gainR);
+ 
+-	LOG_DEBUG("audg gainL: %u gainR: %u adjust: %u", audg->gainL, audg->gainR, audg->adjust);
++	LOG_SQ_DEBUG("audg gainL: %u gainR: %u adjust: %u", audg->gainL, audg->gainR, audg->adjust);
+ 
+ 	set_volume(audg->adjust ? audg->gainL : FIXED_ONE, audg->adjust ? audg->gainR : FIXED_ONE);
+ }
+@@ -427,18 +427,18 @@ static void process_setd(u8_t *pkt, int
+ 		} else if (len > 5) {
+ 			strncpy(player_name, setd->data, PLAYER_NAME_LEN);
+ 			player_name[PLAYER_NAME_LEN] = '\0';
+-			LOG_INFO("set name: %s", setd->data);
++			LOG_SQ_INFO("set name: %s", setd->data);
+ 			// confirm change to server
+ 			sendSETDName(setd->data);
+ 			// write name to name_file if -N option set
+ 			if (name_file) {
+ 				FILE *fp = fopen(name_file, "w");
+ 				if (fp) {
+-					LOG_INFO("storing name in %s", name_file);
++					LOG_SQ_INFO("storing name in %s", name_file);
+ 					fputs(player_name, fp);
+ 					fclose(fp);
+ 				} else {
+-					LOG_WARN("unable to store new name in %s", name_file);
++					LOG_SQ_WARN("unable to store new name in %s", name_file);
+ 				}
+ 			}
+ 		}
+@@ -451,7 +451,7 @@ static void process_setd(u8_t *pkt, int
+ static void process_serv(u8_t *pkt, int len) {
+ 	struct serv_packet *serv = (struct serv_packet *)pkt;
+ 
+-	LOG_INFO("switch server");
++	LOG_SQ_INFO("switch server");
+ 
+ 	new_server = serv->server_ip;
+ 
+@@ -491,11 +491,11 @@ static void process(u8_t *pack, int len)
+ 	while (h->handler && strncmp((char *)pack, h->opcode, 4)) { h++; }
+ 
+ 	if (h->handler) {
+-		LOG_DEBUG("%s", h->opcode);
++		LOG_SQ_DEBUG("%s", h->opcode);
+ 		h->handler(pack, len);
+ 	} else {
+ 		pack[4] = '\0';
+-		LOG_WARN("unhandled %s", (char *)pack);
++		LOG_SQ_WARN("unhandled %s", (char *)pack);
+ 	}
+ }
+ 
+@@ -527,7 +527,7 @@ static void slimproto_run() {
+ 						if (n < 0 && last_error() == ERROR_WOULDBLOCK) {
+ 							continue;
+ 						}
+-						LOG_INFO("error reading from socket: %s", n ? strerror(last_error()) : "closed");
++						LOG_SQ_INFO("error reading from socket: %s", n ? strerror(last_error()) : "closed");
+ 						return;
+ 					}
+ 					expect -= n;
+@@ -542,7 +542,7 @@ static void slimproto_run() {
+ 						if (n < 0 && last_error() == ERROR_WOULDBLOCK) {
+ 							continue;
+ 						}
+-						LOG_INFO("error reading from socket: %s", n ? strerror(last_error()) : "closed");
++						LOG_SQ_INFO("error reading from socket: %s", n ? strerror(last_error()) : "closed");
+ 						return;
+ 					}
+ 					got += n;
+@@ -550,12 +550,12 @@ static void slimproto_run() {
+ 						expect = buffer[0] << 8 | buffer[1]; // length pack 'n'
+ 						got = 0;
+ 						if (expect > MAXBUF) {
+-							LOG_ERROR("FATAL: slimproto packet too big: %d > %d", expect, MAXBUF);
++							LOG_SQ_ERROR("FATAL: slimproto packet too big: %d > %d", expect, MAXBUF);
+ 							return;
+ 						}
+ 					}
+ 				} else {
+-					LOG_ERROR("FATAL: negative expect");
++					LOG_SQ_ERROR("FATAL: negative expect");
+ 					return;
+ 				}
+ 
+@@ -570,7 +570,7 @@ static void slimproto_run() {
+ 		} else if (++timeouts > 35) {
+ 
+ 			// expect message from server every 5 seconds, but 30 seconds on mysb.com so timeout after 35 seconds
+-			LOG_INFO("No messages from server - connection dead");
++			LOG_SQ_INFO("No messages from server - connection dead");
+ 			return;
+ 		}
+ 
+@@ -676,7 +676,7 @@ static void slimproto_run() {
+ 				_decode_state == DECODE_STOPPED) {
+ 				_sendSTMu = true;
+ 				sentSTMu = true;
+-				LOG_DEBUG("output underrun");
++				LOG_SQ_DEBUG("output underrun");
+ 				output.state = OUTPUT_STOPPED;
+ 				output.stop_time = now;
+ 			}
+@@ -686,7 +686,7 @@ static void slimproto_run() {
+ 			}
+ 			if (output.state == OUTPUT_STOPPED && output.idle_to && (now - output.stop_time > output.idle_to)) {
+ 				output.state = OUTPUT_OFF;
+-				LOG_DEBUG("output timeout");
++				LOG_SQ_DEBUG("output timeout");
+ 			}
+ 			if (output.state == OUTPUT_RUNNING && now - status.last > 1000) {
+ 				_sendSTMt = true;
+@@ -753,18 +753,18 @@ in_addr_t discover_server(void) {
+ 
+ 	do {
+ 
+-		LOG_INFO("sending discovery");
++		LOG_SQ_INFO("sending discovery");
+ 		memset(&s, 0, sizeof(s));
+ 
+ 		if (sendto(disc_sock, buf, 1, 0, (struct sockaddr *)&d, sizeof(d)) < 0) {
+-			LOG_INFO("error sending disovery");
++			LOG_SQ_INFO("error sending disovery");
+ 		}
+ 
+ 		if (poll(&pollinfo, 1, 5000) == 1) {
+ 			char readbuf[10];
+ 			socklen_t slen = sizeof(s);
+ 			recvfrom(disc_sock, readbuf, 10, 0, (struct sockaddr *)&s, &slen);
+-			LOG_INFO("got response from: %s:%d", inet_ntoa(s.sin_addr), ntohs(s.sin_port));
++			LOG_SQ_INFO("got response from: %s:%d", inet_ntoa(s.sin_addr), ntohs(s.sin_port));
+ 		}
+ 
+ 	} while (s.sin_addr.s_addr == 0 && running);
+@@ -820,7 +820,7 @@ void slimproto(log_level level, char *se
+ 				if (len > 0 && player_name[len - 1] == '\n') {
+ 					player_name[len - 1] = '\0';
+ 				}
+-				LOG_INFO("retrieved name %s from %s", player_name, name_file);
++				LOG_SQ_INFO("retrieved name %s from %s", player_name, name_file);
+ 			}
+ 			fclose(fp);
+ 		}
+@@ -845,7 +845,7 @@ void slimproto(log_level level, char *se
+ 	serv_addr.sin_addr.s_addr = slimproto_ip;
+ 	serv_addr.sin_port = htons(slimproto_port);
+ 
+-	LOG_INFO("connecting to %s:%d", inet_ntoa(serv_addr.sin_addr), ntohs(serv_addr.sin_port));
++	LOG_SQ_INFO("connecting to %s:%d", inet_ntoa(serv_addr.sin_addr), ntohs(serv_addr.sin_port));
+ 
+ 	new_server = 0;
+ 
+@@ -853,7 +853,7 @@ void slimproto(log_level level, char *se
+ 
+ 		if (new_server) {
+ 			slimproto_ip = serv_addr.sin_addr.s_addr = new_server;
+-			LOG_INFO("switching server to %s:%d", inet_ntoa(serv_addr.sin_addr), ntohs(serv_addr.sin_port));
++			LOG_SQ_INFO("switching server to %s:%d", inet_ntoa(serv_addr.sin_addr), ntohs(serv_addr.sin_port));
+ 			new_server = 0;
+ 			reconnect = false;
+ 		}
+@@ -865,7 +865,7 @@ void slimproto(log_level level, char *se
+ 
+ 		if (connect_timeout(sock, (struct sockaddr *) &serv_addr, sizeof(serv_addr), 5) != 0) {
+ 
+-			LOG_INFO("unable to connect to server %u", failed_connect);
++			LOG_SQ_INFO("unable to connect to server %u", failed_connect);
+ 			sleep(5);
+ 
+ 			// rediscover server if it was not set at startup
+@@ -878,7 +878,7 @@ void slimproto(log_level level, char *se
+ 			struct sockaddr_in our_addr;
+ 			socklen_t len;
+ 
+-			LOG_INFO("connected");
++			LOG_SQ_INFO("connected");
+ 
+ 			var_cap[0] = '\0';
+ 			failed_connect = 0;
+@@ -889,7 +889,7 @@ void slimproto(log_level level, char *se
+ 			getsockname(sock, (struct sockaddr *) &our_addr, &len);
+ 
+ 			if (our_addr.sin_addr.s_addr == serv_addr.sin_addr.s_addr) {
+-				LOG_INFO("local player");
++				LOG_SQ_INFO("local player");
+ 				strcat(var_cap, ",loc");
+ 			}
+ 
+@@ -916,6 +916,6 @@ void slimproto(log_level level, char *se
+ }
+ 
+ void slimproto_stop(void) {
+-	LOG_INFO("slimproto stop");
++	LOG_SQ_INFO("slimproto stop");
+ 	running = false;
+ }
+--- squeezelite-1.8.orig/squeezelite.h
++++ squeezelite-1.8/squeezelite.h
+@@ -363,11 +363,11 @@ typedef enum { lERROR = 0, lWARN, lINFO,
+ const char *logtime(void);
+ void logprint(const char *fmt, ...);
+ 
+-#define LOG_ERROR(fmt, ...) logprint("%s %s:%d " fmt "\n", logtime(), __FUNCTION__, __LINE__, ##__VA_ARGS__)
+-#define LOG_WARN(fmt, ...)  if (loglevel >= lWARN)  logprint("%s %s:%d " fmt "\n", logtime(), __FUNCTION__, __LINE__, ##__VA_ARGS__)
+-#define LOG_INFO(fmt, ...)  if (loglevel >= lINFO)  logprint("%s %s:%d " fmt "\n", logtime(), __FUNCTION__, __LINE__, ##__VA_ARGS__)
+-#define LOG_DEBUG(fmt, ...) if (loglevel >= lDEBUG) logprint("%s %s:%d " fmt "\n", logtime(), __FUNCTION__, __LINE__, ##__VA_ARGS__)
+-#define LOG_SDEBUG(fmt, ...) if (loglevel >= lSDEBUG) logprint("%s %s:%d " fmt "\n", logtime(), __FUNCTION__, __LINE__, ##__VA_ARGS__)
++#define LOG_SQ_ERROR(fmt, ...) logprint("%s %s:%d " fmt "\n", logtime(), __FUNCTION__, __LINE__, ##__VA_ARGS__)
++#define LOG_SQ_WARN(fmt, ...)  if (loglevel >= lWARN)  logprint("%s %s:%d " fmt "\n", logtime(), __FUNCTION__, __LINE__, ##__VA_ARGS__)
++#define LOG_SQ_INFO(fmt, ...)  if (loglevel >= lINFO)  logprint("%s %s:%d " fmt "\n", logtime(), __FUNCTION__, __LINE__, ##__VA_ARGS__)
++#define LOG_SQ_DEBUG(fmt, ...) if (loglevel >= lDEBUG) logprint("%s %s:%d " fmt "\n", logtime(), __FUNCTION__, __LINE__, ##__VA_ARGS__)
++#define LOG_SQ_SDEBUG(fmt, ...) if (loglevel >= lSDEBUG) logprint("%s %s:%d " fmt "\n", logtime(), __FUNCTION__, __LINE__, ##__VA_ARGS__)
+ 
+ // utils.c (non logging)
+ typedef enum { EVENT_TIMEOUT = 0, EVENT_READ, EVENT_WAKE } event_type;
+--- squeezelite-1.8.orig/stream.c
++++ squeezelite-1.8/stream.c
+@@ -47,21 +47,21 @@ static void send_header(void) {
+ 		n = send(fd, ptr, len, MSG_NOSIGNAL);
+ 		if (n <= 0) {
+ 			if (n < 0 && last_error() == ERROR_WOULDBLOCK && try < 10) {
+-				LOG_SDEBUG("retrying (%d) writing to socket", ++try);
++				LOG_SQ_SDEBUG("retrying (%d) writing to socket", ++try);
+ 				usleep(1000);
+ 				continue;
+ 			}
+-			LOG_INFO("failed writing to socket: %s", strerror(last_error()));
++			LOG_SQ_INFO("failed writing to socket: %s", strerror(last_error()));
+ 			stream.disconnect = LOCAL_DISCONNECT;
+ 			stream.state = DISCONNECT;
+ 			wake_controller();
+ 			return;
+ 		}
+-		LOG_SDEBUG("wrote %d bytes to socket", n);
++		LOG_SQ_SDEBUG("wrote %d bytes to socket", n);
+ 		ptr += n;
+ 		len -= n;
+ 	}
+-	LOG_SDEBUG("wrote header");
++	LOG_SQ_SDEBUG("wrote header");
+ }
+ 
+ static bool running = true;
+@@ -95,16 +95,16 @@ static void *stream_thread() {
+ 
+ 			int n = read(fd, streambuf->writep, space);
+ 			if (n == 0) {
+-				LOG_INFO("end of stream");
++				LOG_SQ_INFO("end of stream");
+ 				_disconnect(DISCONNECT, DISCONNECT_OK);
+ 			}
+ 			if (n > 0) {
+ 				_buf_inc_writep(streambuf, n);
+ 				stream.bytes += n;
+-				LOG_SDEBUG("streambuf read %d bytes", n);
++				LOG_SQ_SDEBUG("streambuf read %d bytes", n);
+ 			}
+ 			if (n < 0) {
+-				LOG_WARN("error reading: %s", strerror(last_error()));
++				LOG_SQ_WARN("error reading: %s", strerror(last_error()));
+ 				_disconnect(DISCONNECT, REMOTE_DISCONNECT);
+ 			}
+ 
+@@ -155,7 +155,7 @@ static void *stream_thread() {
+ 							UNLOCK;
+ 							continue;
+ 						}
+-						LOG_INFO("error reading headers: %s", n ? strerror(last_error()) : "closed");
++						LOG_SQ_INFO("error reading headers: %s", n ? strerror(last_error()) : "closed");
+ 						_disconnect(STOPPED, LOCAL_DISCONNECT);
+ 						UNLOCK;
+ 						continue;
+@@ -165,7 +165,7 @@ static void *stream_thread() {
+ 					stream.header_len++;
+ 
+ 					if (stream.header_len > MAX_HEADER - 1) {
+-						LOG_ERROR("received headers too long: %u", stream.header_len);
++						LOG_SQ_ERROR("received headers too long: %u", stream.header_len);
+ 						_disconnect(DISCONNECT, LOCAL_DISCONNECT);
+ 					}
+ 
+@@ -173,7 +173,7 @@ static void *stream_thread() {
+ 						endtok++;
+ 						if (endtok == 4) {
+ 							*(stream.header + stream.header_len) = '\0';
+-							LOG_INFO("headers: len: %d\n%s", stream.header_len, stream.header);
++							LOG_SQ_INFO("headers: len: %d\n%s", stream.header_len, stream.header);
+ 							stream.state = stream.cont_wait ? STREAMING_WAIT : STREAMING_BUFFERING;
+ 							wake_controller();
+ 						}
+@@ -197,7 +197,7 @@ static void *stream_thread() {
+ 								UNLOCK;
+ 								continue;
+ 							}
+-							LOG_INFO("error reading icy meta: %s", n ? strerror(last_error()) : "closed");
++							LOG_SQ_INFO("error reading icy meta: %s", n ? strerror(last_error()) : "closed");
+ 							_disconnect(STOPPED, LOCAL_DISCONNECT);
+ 							UNLOCK;
+ 							continue;
+@@ -214,7 +214,7 @@ static void *stream_thread() {
+ 								UNLOCK;
+ 								continue;
+ 							}
+-							LOG_INFO("error reading icy meta: %s", n ? strerror(last_error()) : "closed");
++							LOG_SQ_INFO("error reading icy meta: %s", n ? strerror(last_error()) : "closed");
+ 							_disconnect(STOPPED, LOCAL_DISCONNECT);
+ 							UNLOCK;
+ 							continue;
+@@ -226,7 +226,7 @@ static void *stream_thread() {
+ 					if (stream.meta_left == 0) {
+ 						if (stream.header_len) {
+ 							*(stream.header + stream.header_len) = '\0';
+-							LOG_INFO("icy meta: len: %u\n%s", stream.header_len, stream.header);
++							LOG_SQ_INFO("icy meta: len: %u\n%s", stream.header_len, stream.header);
+ 							stream.meta_send = true;
+ 							wake_controller();
+ 						}
+@@ -246,11 +246,11 @@ static void *stream_thread() {
+ 					
+ 					n = recv(fd, streambuf->writep, space, 0);
+ 					if (n == 0) {
+-						LOG_INFO("end of stream");
++						LOG_SQ_INFO("end of stream");
+ 						_disconnect(DISCONNECT, DISCONNECT_OK);
+ 					}
+ 					if (n < 0 && last_error() != ERROR_WOULDBLOCK) {
+-						LOG_INFO("error reading: %s", strerror(last_error()));
++						LOG_SQ_INFO("error reading: %s", strerror(last_error()));
+ 						_disconnect(DISCONNECT, REMOTE_DISCONNECT);
+ 					}
+ 					
+@@ -267,7 +267,7 @@ static void *stream_thread() {
+ 						wake_controller();
+ 					}
+ 				
+-					LOG_SDEBUG("streambuf read %d bytes", n);
++					LOG_SQ_SDEBUG("streambuf read %d bytes", n);
+ 				}
+ 			}
+ 
+@@ -275,7 +275,7 @@ static void *stream_thread() {
+ 			
+ 		} else {
+ 			
+-			LOG_SDEBUG("poll timeout");
++			LOG_SQ_SDEBUG("poll timeout");
+ 		}
+ 	}
+ 
+@@ -287,12 +287,12 @@ static thread_type thread;
+ void stream_init(log_level level, unsigned stream_buf_size) {
+ 	loglevel = level;
+ 
+-	LOG_INFO("init stream");
+-	LOG_DEBUG("streambuf size: %u", stream_buf_size);
++	LOG_SQ_INFO("init stream");
++	LOG_SQ_DEBUG("streambuf size: %u", stream_buf_size);
+ 
+ 	buf_init(streambuf, stream_buf_size);
+ 	if (streambuf->buf == NULL) {
+-		LOG_ERROR("unable to malloc buffer");
++		LOG_SQ_ERROR("unable to malloc buffer");
+ 		exit(0);
+ 	}
+ 	
+@@ -319,7 +319,7 @@ void stream_init(log_level level, unsign
+ }
+ 
+ void stream_close(void) {
+-	LOG_INFO("close stream");
++	LOG_SQ_INFO("close stream");
+ 	LOCK;
+ 	running = false;
+ 	UNLOCK;
+@@ -339,7 +339,7 @@ void stream_file(const char *header, siz
+ 	memcpy(stream.header, header, header_len);
+ 	*(stream.header+header_len) = '\0';
+ 
+-	LOG_INFO("opening local file: %s", stream.header);
++	LOG_SQ_INFO("opening local file: %s", stream.header);
+ 
+ #if WIN
+ 	fd = open(stream.header, O_RDONLY | O_BINARY);
+@@ -349,7 +349,7 @@ void stream_file(const char *header, siz
+ 
+ 	stream.state = STREAMING_FILE;
+ 	if (fd < 0) {
+-		LOG_INFO("can't open file: %s", stream.header);
++		LOG_SQ_INFO("can't open file: %s", stream.header);
+ 		stream.state = DISCONNECT;
+ 	}
+ 	wake_controller();
+@@ -372,7 +372,7 @@ void stream_sock(u32_t ip, u16_t port, c
+ 	int sock = socket(AF_INET, SOCK_STREAM, 0);
+ 
+ 	if (sock < 0) {
+-		LOG_ERROR("failed to create socket");
++		LOG_SQ_ERROR("failed to create socket");
+ 		return;
+ 	}
+ 
+@@ -381,13 +381,13 @@ void stream_sock(u32_t ip, u16_t port, c
+ 	addr.sin_addr.s_addr = ip;
+ 	addr.sin_port = port;
+ 
+-	LOG_INFO("connecting to %s:%d", inet_ntoa(addr.sin_addr), ntohs(addr.sin_port));
++	LOG_SQ_INFO("connecting to %s:%d", inet_ntoa(addr.sin_addr), ntohs(addr.sin_port));
+ 
+ 	set_nonblock(sock);
+ 	set_nosigpipe(sock);
+ 
+ 	if (connect_timeout(sock, (struct sockaddr *) &addr, sizeof(addr), 10) < 0) {
+-		LOG_INFO("unable to connect to server");
++		LOG_SQ_INFO("unable to connect to server");
+ 		LOCK;
+ 		stream.state = DISCONNECT;
+ 		stream.disconnect = UNREACHABLE;
+@@ -410,7 +410,7 @@ void stream_sock(u32_t ip, u16_t port, c
+ 	memcpy(stream.header, header, header_len);
+ 	*(stream.header+header_len) = '\0';
+ 
+-	LOG_INFO("header: %s", stream.header);
++	LOG_SQ_INFO("header: %s", stream.header);
+ 
+ 	stream.sent_headers = false;
+ 	stream.bytes = 0;
+--- squeezelite-1.8.orig/utils.c
++++ squeezelite-1.8/utils.c
+@@ -320,7 +320,7 @@ void winsock_init(void) {
+ 	WORD wVersionRequested = MAKEWORD(2, 2);
+ 	int WSerr = WSAStartup(wVersionRequested, &wsaData);
+ 	if (WSerr != 0) {
+-		LOG_ERROR("Bad winsock version");
++		LOG_SQ_ERROR("Bad winsock version");
+ 		exit(1);
+ 	}
+ }
+--- squeezelite-1.8.orig/vorbis.c
++++ squeezelite-1.8/vorbis.c
+@@ -138,7 +138,7 @@ static decode_state vorbis_decode(void)
+ 		}
+ 
+ 		if ((err = OV(v, open_callbacks, streambuf, v->vf, NULL, 0, cbs)) < 0) {
+-			LOG_WARN("open_callbacks error: %d", err);
++			LOG_SQ_WARN("open_callbacks error: %d", err);
+ 			UNLOCK_O_direct;
+ 			UNLOCK_S;
+ 			return DECODE_COMPLETE;
+@@ -147,7 +147,7 @@ static decode_state vorbis_decode(void)
+ 
+ 		info = OV(v, info, v->vf, -1);
+ 
+-		LOG_INFO("setting track_start");
++		LOG_SQ_INFO("setting track_start");
+ 		LOCK_O_not_direct;
+ 		output.next_sample_rate = decode_newstream(info->rate, output.supported_rates); 
+ 		IF_DSD(	output.next_dop = false; )
+@@ -163,7 +163,7 @@ static decode_state vorbis_decode(void)
+ 		channels = info->channels;
+ 
+ 		if (channels > 2) {
+-			LOG_WARN("too many channels: %d", channels);
++			LOG_SQ_WARN("too many channels: %d", channels);
+ 			UNLOCK_O_direct;
+ 			UNLOCK_S;
+ 			return DECODE_ERROR;
+@@ -221,11 +221,11 @@ static decode_state vorbis_decode(void)
+ 			process.in_frames = frames;
+ 		);
+ 
+-		LOG_SDEBUG("wrote %u frames", frames);
++		LOG_SQ_SDEBUG("wrote %u frames", frames);
+ 
+ 	} else if (n == 0) {
+ 
+-		LOG_INFO("end of stream");
++		LOG_SQ_INFO("end of stream");
+ 		UNLOCK_O_direct;
+ 		UNLOCK_S;
+ 		return DECODE_COMPLETE;
+@@ -233,11 +233,11 @@ static decode_state vorbis_decode(void)
+ 	} else if (n == OV_HOLE) {
+ 
+ 		// recoverable hole in stream, seen when skipping
+-		LOG_DEBUG("hole in stream");
++		LOG_SQ_DEBUG("hole in stream");
+ 	
+ 	} else {
+ 
+-		LOG_INFO("ov_read error: %d", n);
++		LOG_SQ_INFO("ov_read error: %d", n);
+ 		UNLOCK_O_direct;
+ 		UNLOCK_S;
+ 		return DECODE_COMPLETE;
+@@ -281,7 +281,7 @@ static bool load_vorbis() {
+ 		if (handle) {
+ 			tremor = true;
+ 		} else {
+-			LOG_INFO("dlerror: %s", dlerror());
++			LOG_SQ_INFO("dlerror: %s", dlerror());
+ 			return false;
+ 		}
+ 	}
+@@ -293,11 +293,11 @@ static bool load_vorbis() {
+ 	v->ov_open_callbacks = dlsym(handle, "ov_open_callbacks");
+ 	
+ 	if ((err = dlerror()) != NULL) {
+-		LOG_INFO("dlerror: %s", err);		
++		LOG_SQ_INFO("dlerror: %s", err);		
+ 		return false;
+ 	}
+ 	
+-	LOG_INFO("loaded %s", tremor ? LIBTREMOR : LIBVORBIS);
++	LOG_SQ_INFO("loaded %s", tremor ? LIBTREMOR : LIBVORBIS);
+ #endif
+ 
+ 	return true;
+@@ -326,6 +326,6 @@ struct codec *register_vorbis(void) {
+ 		return NULL;
+ 	}
+ 
+-	LOG_INFO("using vorbis to decode ogg");
++	LOG_SQ_INFO("using vorbis to decode ogg");
+ 	return &ret;
+ }

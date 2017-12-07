@@ -38,7 +38,7 @@ CHROMAPRINT_CONFLICTS=
 #
 # CHROMAPRINT_IPK_VERSION should be incremented when the ipk changes.
 #
-CHROMAPRINT_IPK_VERSION=2
+CHROMAPRINT_IPK_VERSION=3
 
 #
 # CHROMAPRINT_CONFFILES should be a list of user-editable files

@@ -21,28 +21,23 @@
 #
 # Check http://svn.mplayerhq.hu/ffmpeg/trunk/
 # Take care when upgrading for multiple targets
-FFMPEG_SVN=https://github.com/FFmpeg/FFmpeg.git/trunk
-ifneq ($(OPTWARE_TARGET), $(filter mbwe-bluering, $(OPTWARE_TARGET)))
-FFMPEG_SVN_DATE=20150217
-FFMPEG_SVN_REVISION=075178
-FFMPEG_VERSION=2.5.4+git$(FFMPEG_SVN_DATE)-rev$(FFMPEG_SVN_REVISION)
+FFMPEG_GIT=https://github.com/FFmpeg/FFmpeg.git
+FFMPEG_GIT_COMMIT=01e291a592452f27b3a4e811536aaaf94096e244
+#FFMPEG_GIT_DATE=20171015
+ifdef FFMPEG_GIT_DATE
+FFMPEG_VERSION=3.4+git$(FFMPEG_GIT_DATE)
+else
+FFMPEG_VERSION=3.4
+endif
 
 ### version for old packages that need old ffmpeg
+FFMPEG_SVN=https://github.com/FFmpeg/FFmpeg.git/trunk
 FFMPEG_SVN_DATE_OLD=20120308
 FFMPEG_SVN_REVISION_OLD=040000
 FFMPEG_VERSION_OLD=0.svn$(FFMPEG_SVN_DATE_OLD)-git-rev$(FFMPEG_SVN_REVISION_OLD)
 FFMPEG_DIR_OLD=ffmpeg-$(FFMPEG_VERSION_OLD)
 FFMPEG_SOURCE_OLD=$(FFMPEG_DIR_OLD).tar.bz2
 FFMPEG_BUILD_DIR_OLD=$(BUILD_DIR)/ffmpeg_old
-else
-# resent revisions fail to compile due to old assambler
-# if other old arm targets fail to build with some assembler errors,
-# they should be added to the list
-FFMPEG_OLD=yes
-FFMPEG_SVN_DATE=20081123
-FFMPEG_SVN_REVISION=016576
-FFMPEG_VERSION=0.svn$(FFMPEG_SVN_DATE)-git-rev$(FFMPEG_SVN_REVISION)
-endif
 FFMPEG_DIR=ffmpeg-$(FFMPEG_VERSION)
 FFMPEG_SOURCE=$(FFMPEG_DIR).tar.bz2
 FFMPEG_UNZIP=bzcat
@@ -60,7 +55,7 @@ FFMPEG_CONFLICTS=
 #
 # FFMPEG_IPK_VERSION should be incremented when the ipk changes.
 #
-FFMPEG_IPK_VERSION ?= 8
+FFMPEG_IPK_VERSION ?= 1
 
 #
 # FFMPEG_CONFFILES should be a list of user-editable files
@@ -108,15 +103,14 @@ FFMPEG_IPK=$(BUILD_DIR)/ffmpeg_$(FFMPEG_VERSION)-$(FFMPEG_IPK_VERSION)_$(TARGET_
 #	$(WGET) -P $(DL_DIR) $(FFMPEG_SITE)/$(FFMPEG_SOURCE)
 
 $(DL_DIR)/$(FFMPEG_SOURCE):
-	( cd $(BUILD_DIR) ; \
-		rm -rf $(FFMPEG_DIR) && \
-		svn co -r $(FFMPEG_SVN_REVISION) $(FFMPEG_SVN) $(FFMPEG_DIR) && \
-		rm -f $(FFMPEG_DIR)/.gitattributes $(FFMPEG_DIR)/.gitignore && \
-		tar -cjf $@ $(FFMPEG_DIR) --exclude .svn && \
-		rm -rf $(FFMPEG_DIR) \
+	(cd $(BUILD_DIR) ; \
+		rm -rf ffmpeg && \
+		git clone --bare $(FFMPEG_GIT) ffmpeg && \
+		(cd ffmpeg && \
+		git archive --format=tar --prefix=$(FFMPEG_DIR)/ $(FFMPEG_GIT_COMMIT) | bzip2 > $@) && \
+		rm -rf ffmpeg ; \
 	)
 
-ifneq ($(FFMPEG_OLD), yes)
 $(DL_DIR)/$(FFMPEG_SOURCE_OLD):
 	( cd $(BUILD_DIR) ; \
 		rm -rf $(FFMPEG_DIR_OLD) && \
@@ -125,7 +119,6 @@ $(DL_DIR)/$(FFMPEG_SOURCE_OLD):
 		tar -cjf $@ $(FFMPEG_DIR_OLD) --exclude .svn && \
 		rm -rf $(FFMPEG_DIR_OLD) \
 	)
-endif
 
 
 #
@@ -155,8 +148,6 @@ FFMPEG_ARCH=$(strip \
 	$(if $(filter armeb, $(TARGET_ARCH)), arm, \
 	$(TARGET_ARCH)))
 
-# Snow is know to create build problems on ds101 
-
 $(FFMPEG_BUILD_DIR)/.configured: $(DL_DIR)/$(FFMPEG_SOURCE) $(FFMPEG_PATCHES) make/ffmpeg.mk
 	$(MAKE) xz-utils-stage bzip2-stage zlib-stage openssl-stage libsoxr-stage libass-stage \
 		alsa-lib-stage lame-stage libvorbis-stage x264-stage libfdk-aac-stage
@@ -172,16 +163,13 @@ endif
 	if test "$(BUILD_DIR)/$(FFMPEG_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(FFMPEG_DIR) $(@D) ; \
 	fi
-ifeq ($(FFMPEG_OLD), yes)
-	sed -i -e 's/pop/ldmfd sp!,/' -e 's/push/stmfd sp!,/' -e '/preserve8/s/^/@/' $(@D)/libavcodec/armv4l/dsputil_arm_s.S
-endif
 	sed -i -e 's/cpuflags=".*"/cpuflags=""/' $(@D)/configure
 ifdef NO_BUILTIN_MATH
 	find $(@D) -type f -name '*.[hc]' -exec sed -i -e 's/powf/pow/g' {} \;
 endif
-	sed -i -e '/require_pkg_config libass/s/^/#/' $(@D)/configure
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
+		PKG_CONFIG_PATH=$(STAGING_LIB_DIR)/pkgconfig \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(FFMPEG_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(FFMPEG_LDFLAGS)" \
 		./configure \
@@ -189,10 +177,9 @@ endif
 		--cross-prefix=$(TARGET_CROSS) \
 		--arch=$(FFMPEG_ARCH) \
 		--target-os=linux \
+		--pkg-config=$(OPTWARE_TOP)/scripts/pkg-config.sh \
 		$(FFMPEG_CONFIG_OPTS) \
 		--enable-openssl \
-		--disable-encoder=snow \
-		--disable-decoder=snow \
 		--enable-libmp3lame \
 		--enable-libvorbis \
 		--enable-libx264 \
@@ -206,16 +193,11 @@ endif
 		--enable-postproc \
 		--prefix=$(TARGET_PREFIX) \
 	)
-ifneq (, $(filter glibc shibby-tomato-arm, $(LIBC_STYLE) $(OPTWARE_TARGET)))
-	for lib in CBRT CBRTF RINT LRINT LRINTF ROUND ROUNDF TRUNC TRUNCF ISINF ISNAN; do \
-		sed -i -e "s/^#define HAVE_$${lib} .*/#define HAVE_$${lib} 1/" $(@D)/config.h; \
-	done
+ifeq ($(OPTWARE_TARGET), $(filter buildroot-armv5eabi-ng-legacy, $(OPTWARE_TARGET)))
+	sed -i -e 's/#define CONFIG_LINUX_PERF 1/#define CONFIG_LINUX_PERF 0/' $(@D)/config.h
+	sed -i -e 's/CONFIG_LINUX_PERF=yes/CONFIG_LINUX_PERF=no/' $(@D)/ffbuild/config.mak
 endif
-ifeq ($(LIBC_STYLE), uclibc)
-#	No lrintf() support in uClibc 0.9.28
-	sed -i -e 's/-D_ISOC9X_SOURCE//g' $(@D)/common.mak $(@D)/Makefile $(@D)/lib*/Makefile
-endif
-	sed -i -e '/^OPTFLAGS/s| -O3| $(TARGET_CUSTOM_FLAGS) $(FFMPEG_CPPFLAGS) $$(OPTLEVEL)|' $(@D)/config.mak
+	sed -i -e '/^OPTFLAGS/s| -O3| $(TARGET_CUSTOM_FLAGS) $(FFMPEG_CPPFLAGS) $$(OPTLEVEL)|' $(@D)/ffbuild/config.mak
 	touch $@
 
 ffmpeg-unpack: $(FFMPEG_BUILD_DIR)/.configured
@@ -225,9 +207,6 @@ ffmpeg-unpack: $(FFMPEG_BUILD_DIR)/.configured
 #
 $(FFMPEG_BUILD_DIR)/.built: $(FFMPEG_BUILD_DIR)/.configured
 	rm -f $@
-ifeq ($(OPTWARE_TARGET), $(filter cs05q1armel cs05q3armel fsg3v4, $(OPTWARE_TARGET)))
-	$(MAKE) -C $(@D) OPTLEVEL=-O2 ffmpeg.o
-endif
 	$(MAKE) -C $(@D) OPTLEVEL=-O3
 	touch $@
 
@@ -271,7 +250,6 @@ $(FFMPEG_BUILD_DIR)/.staged: $(FFMPEG_BUILD_DIR)/.built
 
 ffmpeg-stage: $(FFMPEG_BUILD_DIR)/.staged
 
-ifneq ($(FFMPEG_OLD), yes)
 $(FFMPEG_BUILD_DIR_OLD)/.staged: $(DL_DIR)/$(FFMPEG_SOURCE_OLD)
 	rm -rf $(BUILD_DIR)/$(FFMPEG_DIR) $(@D) $(STAGING_PREFIX)/ffmpeg_old
 	$(FFMPEG_UNZIP) $(DL_DIR)/$(FFMPEG_SOURCE_OLD) | tar -C $(BUILD_DIR) -xvf -
@@ -327,7 +305,6 @@ endif
 	touch $@
 
 ffmpeg-old-stage: $(FFMPEG_BUILD_DIR_OLD)/.staged
-endif
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -342,7 +319,7 @@ $(FFMPEG_IPK_DIR)/CONTROL/control:
 	@echo "Section: $(FFMPEG_SECTION)" >>$@
 	@echo "Version: $(FFMPEG_VERSION)-$(FFMPEG_IPK_VERSION)" >>$@
 	@echo "Maintainer: $(FFMPEG_MAINTAINER)" >>$@
-	@echo "Source: $(FFMPEG_SVN)" >>$@
+	@echo "Source: $(FFMPEG_GIT)" >>$@
 	@echo "Description: $(FFMPEG_DESCRIPTION)" >>$@
 	@echo "Depends: $(FFMPEG_DEPENDS)" >>$@
 	@echo "Suggests: $(FFMPEG_SUGGESTS)" >>$@

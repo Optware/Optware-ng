@@ -42,7 +42,7 @@ MINIDLNA_RESCAN_THUMBNAIL_CONFLICTS=minidlna-rescan, minidlna, minidlna-thumbnai
 #
 # MINIDLNA_RESCAN_IPK_VERSION should be incremented when the ipk changes.
 #
-MINIDLNA_RESCAN_IPK_VERSION=4
+MINIDLNA_RESCAN_IPK_VERSION=5
 
 #
 # MINIDLNA_RESCAN_CONFFILES should be a list of user-editable files

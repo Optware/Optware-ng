@@ -49,10 +49,10 @@ X264_SOURCE=x264-$(X264_VERSION).tar.gz
 X264_DIR=x264
 else
 X264_SITE=ftp://ftp.videolan.org/pub/videolan/x264/snapshots
-X264_UPSTREAM_VERSION ?= snapshot-20141218-2245
+X264_UPSTREAM_VERSION ?= snapshot-20171206-2245
 X264_DIR=x264-$(X264_UPSTREAM_VERSION)
 X264_SOURCE=x264-$(X264_UPSTREAM_VERSION).tar.bz2
-X264_VERSION ?= 0.0.20090220-svn2245
+X264_VERSION ?= 0.0.20171206-svn2245
 X264_UNZIP=bzcat
 endif
 #X264_SVN_OPTS=-r $(X264_SVN_TAG)
@@ -61,7 +61,7 @@ endif
 #
 # X264_IPK_VERSION should be incremented when the ipk changes.
 #
-X264_IPK_VERSION=3
+X264_IPK_VERSION=4
 
 #
 # X264_CONFFILES should be a list of user-editable files

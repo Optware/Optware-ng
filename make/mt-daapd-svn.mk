@@ -14,13 +14,10 @@ MT-DAAPD-SVN_DESCRIPTION=A multi-threaded DAAP server for Linux and other POSIX 
 MT-DAAPD-SVN_SECTION=net
 MT-DAAPD-SVN_PRIORITY=optional
 MT-DAAPD-SVN_DEPENDS=flac, libid3tag, libogg, libvorbis, sqlite, zlib
-ifneq ($(FFMPEG_OLD), yes)
-MT-DAAPD-SVN_DEPENDS+=, ffmpeg 
-endif
 MT-DAAPD-SVN_SUGGESTS=ivorbis-tools
 MT-DAAPD-SVN_CONFLICTS=mt-daapd
 
-MT-DAAPD-SVN_IPK_VERSION=4
+MT-DAAPD-SVN_IPK_VERSION=5
 
 MT-DAAPD-SVN_CPPFLAGS=
 MT-DAAPD-SVN_LDFLAGS=
@@ -38,7 +35,6 @@ $(TARGET_PREFIX)/etc/mt-daapd/mt-daapd.conf \
 $(TARGET_PREFIX)/etc/init.d/S60mt-daapd \
 
 #MT-DAAPD-SVN_PATCHES=$(MT-DAAPD-SVN_SOURCE_DIR)/itunes5.patch
-ifneq ($(FFMPEG_OLD), yes)
 MT-DAAPD-SVN_PATCHES=$(MT-DAAPD-SVN_SOURCE_DIR)/02_CVE-2008-1771.dpatch \
 $(MT-DAAPD-SVN_SOURCE_DIR)/03_ws_addarg_retval_fix.dpatch \
 $(MT-DAAPD-SVN_SOURCE_DIR)/04_taglib_api_calls.dpatch \
@@ -56,7 +52,6 @@ $(MT-DAAPD-SVN_SOURCE_DIR)/15_compiler_warnings.dpatch \
 $(MT-DAAPD-SVN_SOURCE_DIR)/16_enable_mpc_transcode_ffmpeg.dpatch \
 $(MT-DAAPD-SVN_SOURCE_DIR)/17_fix_ffmpeg_buffer.dpatch \
 $(MT-DAAPD-SVN_SOURCE_DIR)/18_ffmpeg_API_2.patch
-endif
 
 .PHONY: mt-daapd-svn-source mt-daapd-svn-unpack mt-daapd-svn mt-daapd-svn-stage mt-daapd-svn-ipk mt-daapd-svn-clean mt-daapd-svn-dirclean mt-daapd-svn-check
 
@@ -65,20 +60,8 @@ $(DL_DIR)/$(MT-DAAPD-SVN_SOURCE):
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 mt-daapd-svn-source: $(DL_DIR)/$(MT-DAAPD-SVN_SOURCE)
-ifneq ($(FFMPEG_OLD), yes)
 $(MT-DAAPD-SVN_BUILD_DIR)/.configured: $(DL_DIR)/$(MT-DAAPD-SVN_SOURCE) $(DL_DIR)/$(FFMPEG_SOURCE_OLD) make/mt-daapd-svn.mk
-else
-$(MT-DAAPD-SVN_BUILD_DIR)/.configured: $(DL_DIR)/$(MT-DAAPD-SVN_SOURCE) make/mt-daapd-svn.mk
-endif
-	$(MAKE) sqlite-stage libid3tag-stage zlib-stage
-ifeq ($(FFMPEG_OLD), yes)
-	$(MAKE) ffmpeg-stage
-else
-#	mt-daapd-svn needs old ffmpeg
-#	Following command builds and stages headers and static ffmpeg libs to $(STAGING_PREFIX)/ffmpeg_old
-	$(MAKE) ffmpeg-old-stage
-endif
-	$(MAKE) flac-stage libogg-stage libvorbis-stage
+	$(MAKE) sqlite-stage libid3tag-stage zlib-stage ffmpeg-old-stage flac-stage libogg-stage libvorbis-stage
 	rm -rf $(BUILD_DIR)/$(MT-DAAPD-SVN_DIR) $(@D)
 	$(MT-DAAPD-SVN_UNZIP) $(DL_DIR)/$(MT-DAAPD-SVN_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MT-DAAPD-SVN_PATCHES)"; then \

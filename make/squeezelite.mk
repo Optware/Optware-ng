@@ -37,7 +37,7 @@ SQUEEZELITE_CONFLICTS=
 #
 # SQUEEZELITE_IPK_VERSION should be incremented when the ipk changes.
 #
-SQUEEZELITE_IPK_VERSION=2
+SQUEEZELITE_IPK_VERSION=3
 
 #
 # SQUEEZELITE_CONFFILES should be a list of user-editable files
@@ -50,6 +50,10 @@ SQUEEZELITE_IPK_VERSION=2
 SQUEEZELITE_PATCHES=\
 $(SQUEEZELITE_SOURCE_DIR)/clear_dynlink_errors.patch \
 $(SQUEEZELITE_SOURCE_DIR)/wait_for_nonzero_mac.patch \
+$(SQUEEZELITE_SOURCE_DIR)/Makefile-tweaks.patch \
+$(SQUEEZELITE_SOURCE_DIR)/ffmpeg_2.9.patch \
+$(SQUEEZELITE_SOURCE_DIR)/rename-logs.patch \
+$(SQUEEZELITE_SOURCE_DIR)/rename-FF_INPUT_BUFFER_PADDING_SIZE-to-AV_INPUT_BUFFER_PADDING_SIZE.patch \
 
 #
 # If the compilation of the package requires additional
@@ -141,8 +145,8 @@ squeezelite-unpack: $(SQUEEZELITE_BUILD_DIR)/.configured
 $(SQUEEZELITE_BUILD_DIR)/.built: $(SQUEEZELITE_BUILD_DIR)/.configured
 	rm -f $@
 	$(TARGET_CONFIGURE_OPTS) \
-		CFLAGS="$(STAGING_CPPFLAGS) $(SQUEEZELITE_CPPFLAGS)" \
-		LDFLAGS="$(STAGING_LDFLAGS) $(SQUEEZELITE_LDFLAGS)" \
+		OPTS="$(STAGING_CPPFLAGS) $(SQUEEZELITE_CPPFLAGS)" \
+		LDADD="$(STAGING_LDFLAGS) $(SQUEEZELITE_LDFLAGS)" \
 			$(MAKE) -C $(@D)
 	touch $@
 

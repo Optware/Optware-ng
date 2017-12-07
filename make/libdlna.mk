@@ -36,7 +36,7 @@ LIBDLNA_CONFLICTS=
 #
 # LIBDLNA_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBDLNA_IPK_VERSION=1
+LIBDLNA_IPK_VERSION=2
 
 #
 # LIBDLNA_CONFFILES should be a list of user-editable files
@@ -46,7 +46,9 @@ LIBDLNA_IPK_VERSION=1
 # LIBDLNA_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#LIBDLNA_PATCHES=$(LIBDLNA_SOURCE_DIR)/configure.patch
+LIBDLNA_PATCHES=\
+$(LIBDLNA_SOURCE_DIR)/port-to-libav9.patch \
+$(LIBDLNA_SOURCE_DIR)/remove_dependency_on_deprecated_definitions.patch \
 
 #
 # If the compilation of the package requires additional
@@ -111,7 +113,7 @@ $(LIBDLNA_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBDLNA_SOURCE) $(LIBDLNA_PATCHES)
 	$(LIBDLNA_UNZIP) $(DL_DIR)/$(LIBDLNA_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBDLNA_PATCHES)" ; \
 		then cat $(LIBDLNA_PATCHES) | \
-		$(PATCH) -d $(BUILD_DIR)/$(LIBDLNA_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LIBDLNA_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LIBDLNA_DIR)" != "$(LIBDLNA_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(LIBDLNA_DIR) $(@D) ; \
@@ -122,10 +124,6 @@ $(LIBDLNA_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBDLNA_SOURCE) $(LIBDLNA_PATCHES)
 		--disable-nls \
 		--disable-static \
 		;
-ifneq ($(FFMPEG_OLD), yes)
-	sed -i -e 's/av_close_input_file (ctx);/avformat_close_input (\&ctx);/' \
-		-e 's/av_find_stream_info (ctx)/avformat_find_stream_info (ctx, NULL)/' $(@D)/src/profiles.c
-endif
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBDLNA_CPPFLAGS)" \
@@ -149,8 +147,8 @@ $(LIBDLNA_BUILD_DIR)/.built: $(LIBDLNA_BUILD_DIR)/.configured
 		$(TARGET_CONFIGURE_OPTS) \
 		CFLAGS="$(STAGING_CPPFLAGS) $(LIBDLNA_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBDLNA_LDFLAGS)" \
-	$(MAKE) -C $(@D)/src lib_shared lib_static && \
-	$(MAKE) -C $(@D)
+	$(MAKE) -C $(@D) lib && \
+	$(MAKE) -C $(@D) test
 	touch $@
 
 #
