@@ -156,7 +156,7 @@ x264-source: $(DL_DIR)/$(X264_SOURCE)
 $(X264_BUILD_DIR)/.configured: $(DL_DIR)/$(X264_SOURCE) make/x264.mk
 	$(MAKE) bzip2-stage zlib-stage
 ifeq ($(TARGET_ARCH), $(filter i686 x86_64, $(TARGET_ARCH)))
-	$(MAKE) yasm-host-stage
+	$(MAKE) nasm-host
 endif
 	rm -rf $(BUILD_DIR)/$(X264_DIR) $(@D)
 	$(X264_UNZIP) $(DL_DIR)/$(X264_SOURCE) | tar -C $(BUILD_DIR) -xf -
@@ -173,9 +173,11 @@ ifeq ($(TARGET_ARCH), $(filter i686 x86_64, $(TARGET_ARCH)))
 endif
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
-		AS="$(TARGET_CC)" \
 		CFLAGS="-I. $(STAGING_CPPFLAGS) $(X264_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(X264_LDFLAGS)" \
+		AS=$(strip $(if $(filter i686 x86_64, $(TARGET_ARCH)), \
+			$(NASM_HOST_BIN_DIR)/nasm, \
+			$(TARGET_CC))) \
 		./configure \
 		--host=$(GNU_TARGET_NAME) \
 		--prefix=$(TARGET_PREFIX) \
@@ -225,7 +227,7 @@ x264-stage: $(X264_BUILD_DIR)/.staged
 $(X264_BIN_BUILD_DIR)/.configured: $(DL_DIR)/$(X264_SOURCE) make/x264.mk
 	$(MAKE) ffmpeg-stage bzip2-stage zlib-stage
 ifeq ($(TARGET_ARCH), $(filter i686 x86_64, $(TARGET_ARCH)))
-	$(MAKE) yasm-host-stage
+	$(MAKE) nasm-host
 endif
 	rm -rf $(BUILD_DIR)/$(X264_DIR) $(@D)
 	$(X264_UNZIP) $(DL_DIR)/$(X264_SOURCE) | tar -C $(BUILD_DIR) -xf -
@@ -242,9 +244,11 @@ ifeq ($(TARGET_ARCH), $(filter i686 x86_64, $(TARGET_ARCH)))
 endif
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
-		AS="$(TARGET_CC)" \
 		CFLAGS="-I. $(STAGING_CPPFLAGS) $(X264_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(X264_LDFLAGS)" \
+		AS=$(strip $(if $(filter i686 x86_64, $(TARGET_ARCH)), \
+			$(NASM_HOST_BIN_DIR)/nasm, \
+			$(TARGET_CC))) \
 		./configure \
 		--host=$(GNU_TARGET_NAME) \
 		--prefix=$(TARGET_PREFIX) \
