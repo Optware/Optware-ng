@@ -36,7 +36,10 @@ FFMPEG_MAINTAINER=Keith Garry Boyce <nslu2-linux@yahoogroups.com>
 FFMPEG_DESCRIPTION=FFmpeg is an audio/video conversion tool.
 FFMPEG_SECTION=tool
 FFMPEG_PRIORITY=optional
-FFMPEG_DEPENDS=liblzma0, bzip2, zlib, openssl, alsa-lib, lame, libvorbis, x264, libfdk-aac, libsoxr, libass, libopus
+FFMPEG_DEPENDS=liblzma0, bzip2, zlib, openssl, alsa-lib, lame, \
+		libvorbis, x264, libfdk-aac, libsoxr, libass, libopus, \
+		fontconfig, freetype, openjpeg, libtheora, wavpack, \
+		libxml2, zlib, libgmp
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 FFMPEG_DEPENDS+=, libiconv
 endif
@@ -55,7 +58,7 @@ FFMPEG_BUILD_DIR_OLD=$(BUILD_DIR)/ffmpeg_old
 #
 # FFMPEG_IPK_VERSION should be incremented when the ipk changes.
 #
-FFMPEG_IPK_VERSION ?= 2
+FFMPEG_IPK_VERSION ?= 3
 
 #
 # FFMPEG_CONFFILES should be a list of user-editable files
@@ -155,7 +158,8 @@ FFMPEG_ARCH=$(strip \
 $(FFMPEG_BUILD_DIR)/.configured: $(DL_DIR)/$(FFMPEG_SOURCE) $(FFMPEG_PATCHES) make/ffmpeg.mk
 	$(MAKE) xz-utils-stage bzip2-stage zlib-stage openssl-stage libsoxr-stage libass-stage \
 		alsa-lib-stage lame-stage libvorbis-stage x264-stage libfdk-aac-stage \
-		libopus-stage
+		libopus-stage fontconfig-stage freetype-stage openjpeg-stage libtheora-stage \
+		wavpack-stage libxml2-stage zlib-stage libgmp-stage
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
 endif
@@ -188,6 +192,10 @@ endif
 		--enable-version3 \
 		--enable-gpl \
 		--enable-nonfree \
+		--disable-libxcb \
+		--disable-libxcb-shm \
+		--disable-libxcb-xfixes \
+		--disable-libxcb-shape \
 		--enable-openssl \
 		--enable-libmp3lame \
 		--enable-libopus \
@@ -196,6 +204,16 @@ endif
 		--enable-libfdk-aac \
 		--enable-libsoxr \
 		--enable-libass \
+		--enable-fontconfig \
+		--enable-iconv \
+		--enable-libfreetype \
+		--enable-libopenjpeg \
+		--enable-libtheora \
+		--enable-libwavpack \
+		--enable-libxml2 \
+		--enable-lzma \
+		--enable-zlib \
+		--enable-gmp \
 		--enable-shared \
 		--disable-static \
 		--enable-postproc \
