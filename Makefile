@@ -333,7 +333,7 @@ COMMON_PACKAGES = \
 	libmcrypt libmm $(strip $(if $(filter true, $(NO_LIBNSL)), , libnsl)) \
 	libmms libmnl libmpc libmpcdec libmpdclient libmpeg2 libmpfr libmrss libmtp \
 	libnetfilter-acct libnetfilter-conntrack libnetfilter-log libnetfilter-queue libnfnetlink libnettle libnl libnxml \
-	libol libogg libosip2 libopensync libopenzwave libotr libpam \
+	libol libogg libosip2 libopensync libopenzwave libopus libotr libpam \
 	libpar2 libpcap libpeas libpng libpth librsync librsvg \
 	libsamplerate libserf libshout libsigc++ libsoup libsndfile libsodium libsoxr libstdc++ \
 	libtasn1 libtheora libtiff libtool libtorrent \
