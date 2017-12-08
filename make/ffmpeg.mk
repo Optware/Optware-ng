@@ -38,8 +38,11 @@ FFMPEG_SECTION=tool
 FFMPEG_PRIORITY=optional
 FFMPEG_DEPENDS=liblzma0, bzip2, zlib, openssl, alsa-lib, lame, \
 		libvorbis, x264, libfdk-aac, libsoxr, libass, libopus, \
-		fontconfig, freetype, openjpeg, libtheora, wavpack, \
-		libxml2, zlib, libgmp
+		fontconfig, openjpeg, libtheora, wavpack, libxml2, zlib, \
+		libgmp
+ifneq (uclibc, $(LIBC_STYLE))
+FFMPEG_DEPENDS+=, freetype
+endif
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 FFMPEG_DEPENDS+=, libiconv
 endif
@@ -158,10 +161,13 @@ FFMPEG_ARCH=$(strip \
 $(FFMPEG_BUILD_DIR)/.configured: $(DL_DIR)/$(FFMPEG_SOURCE) $(FFMPEG_PATCHES) make/ffmpeg.mk
 	$(MAKE) xz-utils-stage bzip2-stage zlib-stage openssl-stage libsoxr-stage libass-stage \
 		alsa-lib-stage lame-stage libvorbis-stage x264-stage libfdk-aac-stage \
-		libopus-stage fontconfig-stage freetype-stage openjpeg-stage libtheora-stage \
+		libopus-stage fontconfig-stage openjpeg-stage libtheora-stage \
 		wavpack-stage libxml2-stage zlib-stage libgmp-stage
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
+endif
+ifneq (uclibc, $(LIBC_STYLE))
+	$(MAKE) freetype-stage
 endif
 	rm -rf $(BUILD_DIR)/$(FFMPEG_DIR) $(@D)
 	$(FFMPEG_UNZIP) $(DL_DIR)/$(FFMPEG_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -206,7 +212,9 @@ endif
 		--enable-libass \
 		--enable-fontconfig \
 		--enable-iconv \
-		--enable-libfreetype \
+		$(strip $(if $(filter uclibc, $(LIBC_STYLE)), \
+			--disable-libfreetype, \
+			--enable-libfreetype)) \
 		--enable-libopenjpeg \
 		--enable-libtheora \
 		--enable-libwavpack \
