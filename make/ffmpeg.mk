@@ -19,8 +19,7 @@
 #
 # You should change all these variables to suit your package.
 #
-# Check http://svn.mplayerhq.hu/ffmpeg/trunk/
-# Take care when upgrading for multiple targets
+FFMPEG_URL=http://ffmpeg.org/releases/$(FFMPEG_SOURCE)
 FFMPEG_GIT=https://github.com/FFmpeg/FFmpeg.git
 FFMPEG_GIT_COMMIT=01e291a592452f27b3a4e811536aaaf94096e244
 #FFMPEG_GIT_DATE=20171015
@@ -30,14 +29,6 @@ else
 FFMPEG_VERSION=3.4
 endif
 
-### version for old packages that need old ffmpeg
-FFMPEG_SVN=https://github.com/FFmpeg/FFmpeg.git/trunk
-FFMPEG_SVN_DATE_OLD=20120308
-FFMPEG_SVN_REVISION_OLD=040000
-FFMPEG_VERSION_OLD=0.svn$(FFMPEG_SVN_DATE_OLD)-git-rev$(FFMPEG_SVN_REVISION_OLD)
-FFMPEG_DIR_OLD=ffmpeg-$(FFMPEG_VERSION_OLD)
-FFMPEG_SOURCE_OLD=$(FFMPEG_DIR_OLD).tar.bz2
-FFMPEG_BUILD_DIR_OLD=$(BUILD_DIR)/ffmpeg_old
 FFMPEG_DIR=ffmpeg-$(FFMPEG_VERSION)
 FFMPEG_SOURCE=$(FFMPEG_DIR).tar.bz2
 FFMPEG_UNZIP=bzcat
@@ -52,10 +43,19 @@ endif
 FFMPEG_SUGGESTS=
 FFMPEG_CONFLICTS=
 
+### version for old packages that need old ffmpeg
+FFMPEG_SVN=https://github.com/FFmpeg/FFmpeg.git/trunk
+FFMPEG_SVN_DATE_OLD=20120308
+FFMPEG_SVN_REVISION_OLD=040000
+FFMPEG_VERSION_OLD=0.svn$(FFMPEG_SVN_DATE_OLD)-git-rev$(FFMPEG_SVN_REVISION_OLD)
+FFMPEG_DIR_OLD=ffmpeg-$(FFMPEG_VERSION_OLD)
+FFMPEG_SOURCE_OLD=$(FFMPEG_DIR_OLD).tar.bz2
+FFMPEG_BUILD_DIR_OLD=$(BUILD_DIR)/ffmpeg_old
+
 #
 # FFMPEG_IPK_VERSION should be incremented when the ipk changes.
 #
-FFMPEG_IPK_VERSION ?= 1
+FFMPEG_IPK_VERSION ?= 2
 
 #
 # FFMPEG_CONFFILES should be a list of user-editable files
@@ -77,7 +77,7 @@ ifdef NO_BUILTIN_MATH
 FFMPEG_CPPFLAGS += -fno-builtin-cos -fno-builtin-sin -fno-builtin-lrint -fno-builtin-rint
 #FFMPEG_PATCHES += $(FFMPEG_SOURCE_DIR)/powf-to-pow.patch
 endif
-FFMPEG_LDFLAGS=-lass
+FFMPEG_LDFLAGS=
 
 FFMPEG_CONFIG_OPTS ?=
 
@@ -99,9 +99,8 @@ FFMPEG_IPK=$(BUILD_DIR)/ffmpeg_$(FFMPEG_VERSION)-$(FFMPEG_IPK_VERSION)_$(TARGET_
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
 #
-#$(DL_DIR)/$(FFMPEG_SOURCE):
-#	$(WGET) -P $(DL_DIR) $(FFMPEG_SITE)/$(FFMPEG_SOURCE)
 
+ifdef FFMPEG_GIT_DATE
 $(DL_DIR)/$(FFMPEG_SOURCE):
 	(cd $(BUILD_DIR) ; \
 		rm -rf ffmpeg && \
@@ -110,6 +109,11 @@ $(DL_DIR)/$(FFMPEG_SOURCE):
 		git archive --format=tar --prefix=$(FFMPEG_DIR)/ $(FFMPEG_GIT_COMMIT) | bzip2 > $@) && \
 		rm -rf ffmpeg ; \
 	)
+else
+$(DL_DIR)/$(FFMPEG_SOURCE):
+	$(WGET) -O $@ $(FFMPEG_URL) || \
+	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
+endif
 
 $(DL_DIR)/$(FFMPEG_SOURCE_OLD):
 	( cd $(BUILD_DIR) ; \
@@ -167,6 +171,7 @@ endif
 ifdef NO_BUILTIN_MATH
 	find $(@D) -type f -name '*.[hc]' -exec sed -i -e 's/powf/pow/g' {} \;
 endif
+	sed -i -e 's|/etc/ffserver\.conf|$(TARGET_PREFIX)/etc/ffserver.conf|' $(@D)/fftools/ffserver.c
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		PKG_CONFIG_PATH=$(STAGING_LIB_DIR)/pkgconfig \
@@ -319,7 +324,11 @@ $(FFMPEG_IPK_DIR)/CONTROL/control:
 	@echo "Section: $(FFMPEG_SECTION)" >>$@
 	@echo "Version: $(FFMPEG_VERSION)-$(FFMPEG_IPK_VERSION)" >>$@
 	@echo "Maintainer: $(FFMPEG_MAINTAINER)" >>$@
+ifdef FFMPEG_GIT_DATE
 	@echo "Source: $(FFMPEG_GIT)" >>$@
+else
+	@echo "Source: $(FFMPEG_URL)" >>$@
+endif
 	@echo "Description: $(FFMPEG_DESCRIPTION)" >>$@
 	@echo "Depends: $(FFMPEG_DEPENDS)" >>$@
 	@echo "Suggests: $(FFMPEG_SUGGESTS)" >>$@
