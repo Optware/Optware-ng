@@ -36,7 +36,7 @@ FFMPEG_MAINTAINER=Keith Garry Boyce <nslu2-linux@yahoogroups.com>
 FFMPEG_DESCRIPTION=FFmpeg is an audio/video conversion tool.
 FFMPEG_SECTION=tool
 FFMPEG_PRIORITY=optional
-FFMPEG_DEPENDS=liblzma0, bzip2, zlib, openssl, alsa-lib, lame, libvorbis, x264, libfdk-aac, libsoxr, libass
+FFMPEG_DEPENDS=liblzma0, bzip2, zlib, openssl, alsa-lib, lame, libvorbis, x264, libfdk-aac, libsoxr, libass, libopus
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 FFMPEG_DEPENDS+=, libiconv
 endif
@@ -154,7 +154,8 @@ FFMPEG_ARCH=$(strip \
 
 $(FFMPEG_BUILD_DIR)/.configured: $(DL_DIR)/$(FFMPEG_SOURCE) $(FFMPEG_PATCHES) make/ffmpeg.mk
 	$(MAKE) xz-utils-stage bzip2-stage zlib-stage openssl-stage libsoxr-stage libass-stage \
-		alsa-lib-stage lame-stage libvorbis-stage x264-stage libfdk-aac-stage
+		alsa-lib-stage lame-stage libvorbis-stage x264-stage libfdk-aac-stage \
+		libopus-stage
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
 endif
@@ -186,6 +187,7 @@ endif
 		$(FFMPEG_CONFIG_OPTS) \
 		--enable-openssl \
 		--enable-libmp3lame \
+		--enable-libopus \
 		--enable-libvorbis \
 		--enable-libx264 \
 		--enable-libfdk-aac \
