@@ -79,6 +79,7 @@ BUILDROOT-PPC_603E_PATCHES=\
 $(BUILDROOT-PPC_603E_SOURCE_DIR)/glibc-prefix.patch \
 $(BUILDROOT-PPC_603E_SOURCE_DIR)/glibc-enable-kernel.patch \
 $(BUILDROOT-PPC_603E_SOURCE_DIR)/glibc-version.patch \
+$(BUILDROOT-PPC_603E_SOURCE_DIR)/old-headers.patch \
 $(BUILDROOT-PPC_603E_SOURCE_DIR)/toolchain-gccgo.patch \
 
 BUILDROOT-PPC_603E_GCC_PATCHES=\

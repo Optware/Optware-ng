@@ -1,6 +1,6 @@
 #
 # Automatically generated file; DO NOT EDIT.
-# Buildroot 2017.08-gbae6f6e-dirty Configuration
+# Buildroot 2017.08-gc81b14d-dirty Configuration
 #
 BR2_HAVE_DOT_CONFIG=y
 BR2_HOST_GCC_AT_LEAST_4_5=y
@@ -182,7 +182,7 @@ BR2_TOOLCHAIN_BUILDROOT_LIBC="glibc"
 # BR2_KERNEL_HEADERS_4_11 is not set
 # BR2_KERNEL_HEADERS_4_12 is not set
 BR2_KERNEL_HEADERS_VERSION=y
-BR2_DEFAULT_KERNEL_VERSION="3.2.66"
+BR2_DEFAULT_KERNEL_VERSION="2.6.32"
 # BR2_PACKAGE_HOST_LINUX_HEADERS_CUSTOM_4_12 is not set
 # BR2_PACKAGE_HOST_LINUX_HEADERS_CUSTOM_4_11 is not set
 # BR2_PACKAGE_HOST_LINUX_HEADERS_CUSTOM_4_10 is not set
@@ -213,11 +213,11 @@ BR2_DEFAULT_KERNEL_VERSION="3.2.66"
 # BR2_PACKAGE_HOST_LINUX_HEADERS_CUSTOM_3_5 is not set
 # BR2_PACKAGE_HOST_LINUX_HEADERS_CUSTOM_3_4 is not set
 # BR2_PACKAGE_HOST_LINUX_HEADERS_CUSTOM_3_3 is not set
-BR2_PACKAGE_HOST_LINUX_HEADERS_CUSTOM_3_2=y
+# BR2_PACKAGE_HOST_LINUX_HEADERS_CUSTOM_3_2 is not set
 # BR2_PACKAGE_HOST_LINUX_HEADERS_CUSTOM_3_1 is not set
 # BR2_PACKAGE_HOST_LINUX_HEADERS_CUSTOM_3_0 is not set
-# BR2_PACKAGE_HOST_LINUX_HEADERS_CUSTOM_REALLY_OLD is not set
-BR2_DEFAULT_KERNEL_HEADERS="3.2.66"
+BR2_PACKAGE_HOST_LINUX_HEADERS_CUSTOM_REALLY_OLD=y
+BR2_DEFAULT_KERNEL_HEADERS="2.6.32"
 BR2_PACKAGE_LINUX_HEADERS=y
 BR2_PACKAGE_GLIBC=y
 
@@ -271,10 +271,7 @@ BR2_USE_MMU=y
 BR2_TARGET_OPTIMIZATION="-pipe"
 BR2_TARGET_LDFLAGS=""
 # BR2_ECLIPSE_REGISTER is not set
-BR2_TOOLCHAIN_HEADERS_AT_LEAST_3_0=y
-BR2_TOOLCHAIN_HEADERS_AT_LEAST_3_1=y
-BR2_TOOLCHAIN_HEADERS_AT_LEAST_3_2=y
-BR2_TOOLCHAIN_HEADERS_AT_LEAST="3.2"
+BR2_TOOLCHAIN_HEADERS_AT_LEAST="2.6"
 BR2_TOOLCHAIN_GCC_AT_LEAST_4_3=y
 BR2_TOOLCHAIN_GCC_AT_LEAST_4_4=y
 BR2_TOOLCHAIN_GCC_AT_LEAST_4_5=y
@@ -425,7 +422,10 @@ BR2_PACKAGE_MPLAYER_ARCH_SUPPORTS=y
 # BR2_PACKAGE_TWOLAME is not set
 # BR2_PACKAGE_UDPXY is not set
 # BR2_PACKAGE_UPMPDCLI is not set
-# BR2_PACKAGE_V4L2GRAB is not set
+
+#
+# v4l2grab needs a toolchain w/ threads, dynamic library, C++ and headers >= 3.0
+#
 
 #
 # v4l2loopback needs a Linux kernel to be built
@@ -492,7 +492,10 @@ BR2_PACKAGE_LTP_TESTSUITE_ARCH_SUPPORTS=y
 # BR2_PACKAGE_LTTNG_TOOLS is not set
 # BR2_PACKAGE_MEMSTAT is not set
 # BR2_PACKAGE_NETPERF is not set
-# BR2_PACKAGE_NETSNIFF_NG is not set
+
+#
+# netsniff-ng needs a glibc or musl toolchain w/ threads, headers >= 3.0
+#
 # BR2_PACKAGE_NMON is not set
 BR2_PACKAGE_OPROFILE_ARCH_SUPPORTS=y
 BR2_PACKAGE_OPROFILE_NEEDS_LIBPFM4=y
@@ -585,7 +588,10 @@ BR2_PACKAGE_CMAKE_ARCH_SUPPORTS=y
 # BR2_PACKAGE_GENEXT2FS is not set
 # BR2_PACKAGE_GENPART is not set
 # BR2_PACKAGE_GENROMFS is not set
-# BR2_PACKAGE_MMC_UTILS is not set
+
+#
+# mmc-utils needs a toolchain w/ headers >= 3.0
+#
 # BR2_PACKAGE_MTD is not set
 # BR2_PACKAGE_MTOOLS is not set
 # BR2_PACKAGE_NFS_UTILS is not set
@@ -1144,7 +1150,10 @@ BR2_PACKAGE_LIBGPG_ERROR_SYSCFG="powerpc-unknown-linux-gnu"
 # BR2_PACKAGE_TIFF is not set
 # BR2_PACKAGE_WAYLAND is not set
 # BR2_PACKAGE_WEBP is not set
-# BR2_PACKAGE_ZBAR is not set
+
+#
+# zbar needs a toolchain w/ threads, dynamic library, C++ and headers >= 3.0
+#
 # BR2_PACKAGE_ZXING_CPP is not set
 
 #
@@ -1205,7 +1214,10 @@ BR2_PACKAGE_LIBAIO_ARCH_SUPPORTS=y
 # BR2_PACKAGE_LIBSOC is not set
 # BR2_PACKAGE_LIBUSB is not set
 # BR2_PACKAGE_LIBUSBGX is not set
-# BR2_PACKAGE_LIBV4L is not set
+
+#
+# libv4l needs a toolchain w/ threads, C++ and headers >= 3.0
+#
 # BR2_PACKAGE_LIBXKBCOMMON is not set
 # BR2_PACKAGE_MTDEV is not set
 # BR2_PACKAGE_NEARDAL is not set
@@ -1637,7 +1649,10 @@ BR2_PACKAGE_PROTOBUF_ARCH_SUPPORTS=y
 # BR2_PACKAGE_DANTE is not set
 # BR2_PACKAGE_DARKHTTPD is not set
 # BR2_PACKAGE_DHCP is not set
-# BR2_PACKAGE_DHCPCD is not set
+
+#
+# dhcpcd needs a toolchain w/ headers >= 3.1
+#
 # BR2_PACKAGE_DHCPDUMP is not set
 # BR2_PACKAGE_DNSMASQ is not set
 # BR2_PACKAGE_DRBD_UTILS is not set
@@ -1720,7 +1735,10 @@ BR2_PACKAGE_IFUPDOWN_SCRIPTS=y
 # BR2_PACKAGE_MII_DIAG is not set
 # BR2_PACKAGE_MINIDLNA is not set
 # BR2_PACKAGE_MINISSDPD is not set
-# BR2_PACKAGE_MJPG_STREAMER is not set
+
+#
+# mjpg-streamer needs a toolchain w/ threads, headers >= 3.0, dynamic library
+#
 
 #
 # modemmanager needs udev /dev management and a toolchain w/ wchar, threads
@@ -1829,7 +1847,10 @@ BR2_PACKAGE_MONGREL2_LIBC_SUPPORTS=y
 # BR2_PACKAGE_TOR is not set
 # BR2_PACKAGE_TRANSMISSION is not set
 # BR2_PACKAGE_TUNCTL is not set
-# BR2_PACKAGE_TVHEADEND is not set
+
+#
+# tvheadend needs a toolchain w/ NPTL, headers >= 3.2, dynamic library
+#
 # BR2_PACKAGE_UDPCAST is not set
 # BR2_PACKAGE_UHTTPD is not set
 # BR2_PACKAGE_ULOGD is not set
@@ -2000,7 +2021,10 @@ BR2_PACKAGE_AUDIT_ARCH_SUPPORTS=y
 # BR2_PACKAGE_IRQBALANCE is not set
 # BR2_PACKAGE_KEYUTILS is not set
 # BR2_PACKAGE_KMOD is not set
-# BR2_PACKAGE_LXC is not set
+
+#
+# lxc needs a toolchain w/ threads, headers >= 3.0, dynamic library
+#
 # BR2_PACKAGE_MONIT is not set
 # BR2_PACKAGE_NCDU is not set
 # BR2_PACKAGE_NUMACTL is not set
@@ -2021,7 +2045,10 @@ BR2_PACKAGE_AUDIT_ARCH_SUPPORTS=y
 # BR2_PACKAGE_S6_RC is not set
 # BR2_PACKAGE_SCRUB is not set
 # BR2_PACKAGE_SCRYPT is not set
-# BR2_PACKAGE_SMACK is not set
+
+#
+# smack needs a toolchain w/ dynamic library, threads, headers >= 3.0
+#
 # BR2_PACKAGE_START_STOP_DAEMON is not set
 
 #
