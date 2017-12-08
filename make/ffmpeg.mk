@@ -185,18 +185,19 @@ endif
 		--target-os=linux \
 		--pkg-config=$(OPTWARE_TOP)/scripts/pkg-config.sh \
 		$(FFMPEG_CONFIG_OPTS) \
+		--enable-version3 \
+		--enable-gpl \
+		--enable-nonfree \
 		--enable-openssl \
 		--enable-libmp3lame \
 		--enable-libopus \
 		--enable-libvorbis \
 		--enable-libx264 \
 		--enable-libfdk-aac \
-		--enable-nonfree \
 		--enable-libsoxr \
 		--enable-libass \
 		--enable-shared \
 		--disable-static \
-		--enable-gpl \
 		--enable-postproc \
 		--prefix=$(TARGET_PREFIX) \
 	)
