@@ -20,7 +20,7 @@ DELEGATE_CONFLICTS=
 #
 # DELEGATE_IPK_VERSION should be incremented when the ipk changes.
 #
-DELEGATE_IPK_VERSION=1
+DELEGATE_IPK_VERSION=2
 
 #
 # DELEGATE_CONFFILES should be a list of user-editable files
@@ -36,7 +36,7 @@ DELEGATE_IPK_VERSION=1
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-DELEGATE_CPPFLAGS=
+DELEGATE_CPPFLAGS=-Wno-narrowing
 DELEGATE_LDFLAGS=
 
 #
@@ -135,6 +135,9 @@ delegate-unpack: $(DELEGATE_BUILD_DIR)/.configured
 $(DELEGATE_BUILD_DIR)/.built: $(DELEGATE_BUILD_DIR)/.configured
 	rm -f $@
 	$(MAKE) -C $(@D) CC=$(TARGET_CC) \
+		CFLAGS="$(STAGING_CPPFLAGS) $(DELEGATE_CPPFLAGS)" \
+		LIBDIRS="-L../lib $(STAGING_LDFLAGS) $(DELEGATE_LDFLAGS)" \
+		PLIBDIRS="-Llib $(STAGING_LDFLAGS) $(DELEGATE_LDFLAGS)" \
 		XEMBED=$(DELEGATE_HOST_BUILD_DIR)/src/embed \
 		XDG=$(DELEGATE_HOST_BUILD_DIR)/src/dg.exe \
 		ADMIN=support@webos-internals.org
