@@ -116,7 +116,6 @@ $(XFT_BUILD_DIR)/.configured: $(DL_DIR)/$(XFT_SOURCE) $(XFT_PATCHES) make/xft.mk
 	if test "$(BUILD_DIR)/$(XFT_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(XFT_DIR) $(@D) ; \
 	fi
-	sed -i -e 's|freetype/ftoutln.h|freetype2/ftoutln.h|' $(@D)/xftglyphs.c
 	$(AUTORECONF1.10) -vif $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
