@@ -37,7 +37,7 @@ IKSEMEL_CONFLICTS=
 #
 # IKSEMEL_IPK_VERSION should be incremented when the ipk changes.
 #
-IKSEMEL_IPK_VERSION=1
+IKSEMEL_IPK_VERSION=2
 
 #
 # IKSEMEL_CONFFILES should be a list of user-editable files
@@ -47,7 +47,8 @@ IKSEMEL_IPK_VERSION=1
 # IKSEMEL_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#IKSEMEL_PATCHES=$(IKSEMEL_SOURCE_DIR)/configure.patch
+IKSEMEL_PATCHES=\
+$(IKSEMEL_SOURCE_DIR)/secure_gnutls_options.patch \
 
 #
 # If the compilation of the package requires additional
@@ -111,7 +112,7 @@ $(IKSEMEL_BUILD_DIR)/.configured: $(DL_DIR)/$(IKSEMEL_SOURCE) $(IKSEMEL_PATCHES)
 	$(IKSEMEL_UNZIP) $(DL_DIR)/$(IKSEMEL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(IKSEMEL_PATCHES)" ; \
 		then cat $(IKSEMEL_PATCHES) | \
-		$(PATCH) -d $(BUILD_DIR)/$(IKSEMEL_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(IKSEMEL_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(IKSEMEL_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(IKSEMEL_DIR) $(@D) ; \
