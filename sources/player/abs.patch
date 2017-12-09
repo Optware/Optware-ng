@@ -1,0 +1,66 @@
+--- a/server/drivers/mixed/p2os/p2os.cc
++++ server/drivers/mixed/p2os/p2os.cc
+@@ -273,6 +273,8 @@ driver
+ 
+ #include "p2os.h"
+ 
++#define ABS(x) ((x)<0 ? -(x) : (x))
++
+ Driver*
+ P2OS_Init(ConfigFile* cf, int section)
+ {
+@@ -1003,8 +1005,8 @@ int P2OS::Setup()
+   {
+     accel_command[0] = SETA;
+     accel_command[1] = ARGNINT;
+-    accel_command[2] = abs(this->motor_max_trans_decel) & 0x00FF;
+-    accel_command[3] = (abs(this->motor_max_trans_decel) & 0xFF00) >> 8;
++    accel_command[2] = ABS(this->motor_max_trans_decel) & 0x00FF;
++    accel_command[3] = (ABS(this->motor_max_trans_decel) & 0xFF00) >> 8;
+     accel_packet.Build(accel_command, 4);
+     this->SendReceive(&accel_packet,false);
+   }
+@@ -1021,8 +1023,8 @@ int P2OS::Setup()
+   {
+     accel_command[0] = SETRA;
+     accel_command[1] = ARGNINT;
+-    accel_command[2] = abs(this->motor_max_rot_decel) & 0x00FF;
+-    accel_command[3] = (abs(this->motor_max_rot_decel) & 0xFF00) >> 8;
++    accel_command[2] = ABS(this->motor_max_rot_decel) & 0x00FF;
++    accel_command[3] = (ABS(this->motor_max_rot_decel) & 0xFF00) >> 8;
+     accel_packet.Build(accel_command, 4);
+     this->SendReceive(&accel_packet,false);
+   }
+--- a/server/drivers/mixed/erratic/erratic.cc
++++ server/drivers/mixed/erratic/erratic.cc
+@@ -184,6 +184,8 @@ driver
+ #include "config.h"
+ #endif
+ 
++#define ABS(x) ((x)<0 ? -(x) : (x))
++
+ bool debug_mode = FALSE;
+ 
+ 
+@@ -555,8 +557,8 @@ int Erratic::Connect()
+       accel_packet = new ErraticPacket();
+       accel_command[0] = (command_e)set_max_trans_acc;
+       accel_command[1] = (argtype_e)argnint;
+-      accel_command[2] = abs(this->motor_max_trans_decel) & 0x00FF;
+-      accel_command[3] = (abs(this->motor_max_trans_decel) & 0xFF00) >> 8;
++      accel_command[2] = ABS(this->motor_max_trans_decel) & 0x00FF;
++      accel_command[3] = (ABS(this->motor_max_trans_decel) & 0xFF00) >> 8;
+       accel_packet->Build(accel_command, 4);
+       this->Send(accel_packet);
+     } else if(this->motor_max_trans_accel != 0) {
+@@ -582,8 +584,8 @@ int Erratic::Connect()
+       accel_packet = new ErraticPacket();
+       accel_command[0] = (command_e)set_max_rot_acc;
+       accel_command[1] = (argtype_e)argnint;
+-      accel_command[2] = abs(this->motor_max_rot_decel) & 0x00FF;
+-      accel_command[3] = (abs(this->motor_max_rot_decel) & 0xFF00) >> 8;
++      accel_command[2] = ABS(this->motor_max_rot_decel) & 0x00FF;
++      accel_command[3] = (ABS(this->motor_max_rot_decel) & 0xFF00) >> 8;
+       accel_packet->Build(accel_command, 4);
+       this->Send(accel_packet);
+     } else if(this->motor_max_rot_accel != 0) {
