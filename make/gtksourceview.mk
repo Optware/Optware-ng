@@ -58,7 +58,7 @@ GTKSOURCEVIEW_IPK_VERSION=1
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-GTKSOURCEVIEW_CPPFLAGS=
+GTKSOURCEVIEW_CPPFLAGS=-Wno-error=format-nonliteral
 GTKSOURCEVIEW_LDFLAGS=
 
 #
