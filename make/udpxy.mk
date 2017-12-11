@@ -56,7 +56,8 @@ UDPXY_CONFFILES=$(TARGET_PREFIX)/etc/init.d/S29udpxy
 # UDPXY_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#UDPXY_PATCHES=$(UDPXY_SOURCE_DIR)/configure.patch
+UDPXY_PATCHES=\
+$(UDPXY_SOURCE_DIR)/Makefile.patch \
 
 #
 # If the compilation of the package requires additional
@@ -125,7 +126,7 @@ $(UDPXY_BUILD_DIR)/.configured: $(DL_DIR)/$(UDPXY_SOURCE) $(UDPXY_PATCHES) make/
 	$(UDPXY_UNZIP) $(DL_DIR)/$(UDPXY_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(UDPXY_PATCHES)" ; \
 		then cat $(UDPXY_PATCHES) | \
-		$(PATCH) -d $(BUILD_DIR)/$(UDPXY_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(UDPXY_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(UDPXY_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(UDPXY_DIR) $(@D) ; \
