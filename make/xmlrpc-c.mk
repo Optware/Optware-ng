@@ -143,7 +143,7 @@ endif
 		--disable-nls \
 		--disable-static \
 	)
-	$(PATCH_LIBTOOL) \
+	-$(PATCH_LIBTOOL) \
 	-e 's|CC -shared|& $(STAGING_LDFLAGS) $(XMLRPC-C_LDFLAGS)|' \
 	$(XMLRPC-C_BUILD_DIR)/libtool
 	touch $@
