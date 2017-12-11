@@ -49,6 +49,7 @@ $(PERL-LIBXML_LIBXML_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-LIBXML_LIBXML_SOUR
 		$(PERL_HOSTPERL) Makefile.PL \
 		PREFIX=$(TARGET_PREFIX) \
 	)
+	sed -i -e 's|-I/usr/include|-I$(STAGING_INCLUDE_DIR)|g' $(@D)/Makefile
 	touch $@
 
 perl-libxml-libxml-unpack: $(PERL-LIBXML_LIBXML_BUILD_DIR)/.configured
