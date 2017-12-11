@@ -48,7 +48,7 @@ endif
 #
 # NTOP_IPK_VERSION should be incremented when the ipk changes.
 #
-NTOP_IPK_VERSION=10
+NTOP_IPK_VERSION=11
 
 #
 # NTOP_CONFFILES should be a list of user-editable files
@@ -59,7 +59,8 @@ NTOP_CONFFILES=
 # NTOP_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-NTOP_PATCHES=
+NTOP_PATCHES=\
+$(NTOP_SOURCE_DIR)/librrd_instead_of_librrd_th.patch \
 #      $(NTOP_SOURCE_DIR)/ltconfig.patch
 
 
