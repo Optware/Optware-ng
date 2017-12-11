@@ -4,7 +4,7 @@
 #
 ###########################################################
 #
-# NGREP_VERSION, NGREP_SITE and NGREP_SOURCE define
+# NGREP_VERSION_UPSTREAM and NGREP_URL define
 # the upstream location of the source code for the package.
 # NGREP_DIR is the directory which is created when the source
 # archive is unpacked.
@@ -20,23 +20,24 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-NGREP_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/ngrep
-NGREP_VERSION=1.45
-NGREP_SOURCE=ngrep-$(NGREP_VERSION).tar.bz2
-NGREP_DIR=ngrep-$(NGREP_VERSION)
-NGREP_UNZIP=bzcat
+NGREP_URL=https://github.com/jpr5/ngrep/archive/V$(NGREP_VERSION_UPSTREAM).tar.gz
+NGREP_VERSION=1.47
+NGREP_VERSION_UPSTREAM=1_47
+NGREP_SOURCE=ngrep-$(NGREP_VERSION_UPSTREAM).tar.gz
+NGREP_DIR=ngrep-$(NGREP_VERSION_UPSTREAM)
+NGREP_UNZIP=zcat
 NGREP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 NGREP_DESCRIPTION=network grep.
 NGREP_SECTION=net
 NGREP_PRIORITY=optional
-NGREP_DEPENDS=libpcap
+NGREP_DEPENDS=libpcap, pcre
 NGREP_SUGGESTS=
 NGREP_CONFLICTS=
 
 #
 # NGREP_IPK_VERSION should be incremented when the ipk changes.
 #
-NGREP_IPK_VERSION=4
+NGREP_IPK_VERSION=1
 
 #
 # NGREP_CONFFILES should be a list of user-editable files
@@ -79,7 +80,7 @@ NGREP_IPK=$(BUILD_DIR)/ngrep_$(NGREP_VERSION)-$(NGREP_IPK_VERSION)_$(TARGET_ARCH
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(NGREP_SOURCE):
-	$(WGET) -P $(@D) $(NGREP_SITE)/$(@F) || \
+	$(WGET) -O $@ $(NGREP_URL) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 #
@@ -108,7 +109,7 @@ ngrep-source: $(DL_DIR)/$(NGREP_SOURCE) $(NGREP_PATCHES)
 # shown below to make various patches to it.
 #
 $(NGREP_BUILD_DIR)/.configured: $(DL_DIR)/$(NGREP_SOURCE) $(NGREP_PATCHES) make/ngrep.mk
-	$(MAKE) libpcap-stage
+	$(MAKE) libpcap-stage pcre-stage
 	rm -rf $(BUILD_DIR)/$(NGREP_DIR) $(@D)
 	$(NGREP_UNZIP) $(DL_DIR)/$(NGREP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NGREP_PATCHES)" ; \
@@ -129,6 +130,8 @@ $(NGREP_BUILD_DIR)/.configured: $(DL_DIR)/$(NGREP_SOURCE) $(NGREP_PATCHES) make/
 		--prefix=$(TARGET_PREFIX) \
 		--with-pcap-includes=$(STAGING_INCLUDE_DIR) \
 		$(NGREP_IPV6) \
+		--enable-pcre \
+		--disable-pcap-restart \
 		--disable-nls \
 		--disable-static \
 	)
@@ -173,7 +176,7 @@ $(NGREP_IPK_DIR)/CONTROL/control:
 	@echo "Section: $(NGREP_SECTION)" >>$@
 	@echo "Version: $(NGREP_VERSION)-$(NGREP_IPK_VERSION)" >>$@
 	@echo "Maintainer: $(NGREP_MAINTAINER)" >>$@
-	@echo "Source: $(NGREP_SITE)/$(NGREP_SOURCE)" >>$@
+	@echo "Source: $(NGREP_URL)" >>$@
 	@echo "Description: $(NGREP_DESCRIPTION)" >>$@
 	@echo "Depends: $(NGREP_DEPENDS)" >>$@
 	@echo "Suggests: $(NGREP_SUGGESTS)" >>$@
