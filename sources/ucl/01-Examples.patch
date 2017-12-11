@@ -1,0 +1,50 @@
+From: Robert Luberda <robert@debian.org>
+Date: Mon, 26 Jul 2004 20:44:00 +0200
+Subject: 01 Examples.
+
+Fix examples.
+---
+ examples/portab.h  | 2 +-
+ examples/simple.c  | 2 +-
+ examples/uclpack.c | 2 +-
+ 3 files changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/examples/portab.h b/examples/portab.h
+index 6cf0752..719839c 100644
+--- a/examples/portab.h
++++ b/examples/portab.h
+@@ -28,7 +28,7 @@
+ 
+ #include <ucl/uclconf.h>
+ 
+-#if 1
++#if 0
+ 
+ #include "examples/portab_a.h"
+ 
+diff --git a/examples/simple.c b/examples/simple.c
+index 5fd54be..faecf60 100644
+--- a/examples/simple.c
++++ b/examples/simple.c
+@@ -32,7 +32,7 @@
+ 
+ /* portability layer */
+ #define WANT_UCL_MALLOC 1
+-#include "examples/portab.h"
++#include "portab.h"
+ 
+ 
+ /*************************************************************************
+diff --git a/examples/uclpack.c b/examples/uclpack.c
+index a340c24..a104876 100644
+--- a/examples/uclpack.c
++++ b/examples/uclpack.c
+@@ -60,7 +60,7 @@
+ #define WANT_UCL_UCLOCK 1
+ #endif
+ #define WANT_UCL_WILDARGV 1
+-#include "examples/portab.h"
++#include "portab.h"
+ 
+ 
+ static const char *progname = NULL;

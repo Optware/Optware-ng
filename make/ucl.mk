@@ -36,7 +36,7 @@ UCL_CONFLICTS=
 #
 # UCL_IPK_VERSION should be incremented when the ipk changes.
 #
-UCL_IPK_VERSION=1
+UCL_IPK_VERSION=2
 
 #
 # UCL_CONFFILES should be a list of user-editable files
@@ -46,7 +46,11 @@ UCL_IPK_VERSION=1
 # UCL_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#UCL_PATCHES=$(UCL_SOURCE_DIR)/configure.patch
+UCL_PATCHES=\
+$(UCL_SOURCE_DIR)/01-Examples.patch \
+$(UCL_SOURCE_DIR)/02-Autoreconf.patch \
+$(UCL_SOURCE_DIR)/03-Reproducible-build.patch \
+$(UCL_SOURCE_DIR)/04-Static-assert.patch \
 
 #
 # If the compilation of the package requires additional
@@ -91,7 +95,7 @@ $(UCL_BUILD_DIR)/.unpacked: $(DL_DIR)/$(UCL_SOURCE) $(UCL_PATCHES) make/ucl.mk
 	$(UCL_UNZIP) $(DL_DIR)/$(UCL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(UCL_PATCHES)" ; \
 		then cat $(UCL_PATCHES) | \
-		$(PATCH) -d $(BUILD_DIR)/$(UCL_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(UCL_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(UCL_DIR)" != "$(UCL_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(UCL_DIR) $(UCL_BUILD_DIR) ; \

@@ -1,0 +1,27 @@
+From: Robert Luberda <robert@debian.org>
+Date: Sun, 31 May 2015 13:09:15 +0200
+Subject: 03 Reproducible build
+
+Introduced BUILD_DATETIME pre-processor variable to
+be used instead of __DATE__ __TIME__ to make build
+reproducible.
+---
+ src/ucl_util.c | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/src/ucl_util.c b/src/ucl_util.c
+index 7e49a2a..58aa0ea 100644
+--- a/src/ucl_util.c
++++ b/src/ucl_util.c
+@@ -55,7 +55,11 @@ static const char __ucl_copyright[] =
+     "<markus@oberhumer.com>\n"
+     "http://www.oberhumer.com $\n\n"
+     "$Id: UCL version: v" UCL_VERSION_STRING ", " UCL_VERSION_DATE " $\n"
++#if defined (BUILD_DATETIME)
++    "$Built: " BUILD_DATETIME " $\n"
++#else
+     "$Built: " __DATE__ " " __TIME__ " $\n"
++#endif
+     "$Info: " ACC_INFO_OS
+ #if defined(ACC_INFO_OS_POSIX)
+     "/" ACC_INFO_OS_POSIX
