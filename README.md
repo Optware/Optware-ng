@@ -106,6 +106,10 @@ Currently, the project is missing writers who would contribute by creating how-t
 
 # News
 
+## 2017-12-11
+
+buildroot-ppc-603e feed rebuilt with 2.6.32 kernel headers to support WD My Book Live NASes
+
 ## 2016-04-25
 
 ct-ng-ppc-e500v2 feed rebuilt with 2.6.32 kernel headers to support Synology PowerPC e500v2 NASes
