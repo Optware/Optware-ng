@@ -5,7 +5,7 @@
  DEBUG_ON := -g
  
 -ALL_CFLAGS = -W -Wall -Werror --pedantic $(CFLAGS)
-+ALL_CFLAGS = -W -Wall -Werror -Wno-error=unused-const-variable --pedantic $(CFLAGS)
++ALL_CFLAGS = -W -Wall $(CFLAGS)
  
  SYSTEM=$(shell uname 2>/dev/null)
  ifeq ($(SYSTEM), FreeBSD)
