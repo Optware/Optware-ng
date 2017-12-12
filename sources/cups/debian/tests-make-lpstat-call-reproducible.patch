@@ -1,0 +1,43 @@
+From 43132343431bdd8e7c8d9e6bad3dd501d4d270da Mon Sep 17 00:00:00 2001
+From: Didier Raboud <odyx@debian.org>
+Date: Tue, 9 Aug 2016 18:11:22 +0200
+Subject: Force LC_ALL=C environment variable when grepping the output of
+ lpstat.
+
+ Permits testing in non-"C" environments.
+Origin: vendor
+Last-Update: 2016-07-11
+Patch-Name: tests-make-lpstat-call-reproducible.patch
+---
+ test/run-stp-tests.sh | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/test/run-stp-tests.sh b/test/run-stp-tests.sh
+index a2c6cc6a9..a4ea13143 100755
+--- a/test/run-stp-tests.sh
++++ b/test/run-stp-tests.sh
+@@ -725,7 +725,7 @@ fi
+ IPP_PORT=$port; export IPP_PORT
+ 
+ while true; do
+-	running=`../systemv/lpstat -r 2>/dev/null`
++	running=`LC_ALL=C ../systemv/lpstat -r 2>/dev/null`
+ 	if test "x$running" = "xscheduler is running"; then
+ 		break
+ 	fi
+@@ -838,13 +838,13 @@ kill -HUP $cupsd
+ while true; do
+ 	sleep 10
+ 
+-	running=`../systemv/lpstat -r 2>/dev/null`
++	running=`LC_ALL=C ../systemv/lpstat -r 2>/dev/null`
+ 	if test "x$running" = "xscheduler is running"; then
+ 		break
+ 	fi
+ done
+ 
+-description="`../systemv/lpstat -l -p Test1 | grep Description | sed -e '1,$s/^[^:]*: //g'`"
++description="`LC_ALL=C ../systemv/lpstat -l -p Test1 | grep Description | sed -e '1,$s/^[^:]*: //g'`"
+ if test "x$description" != "xTest Printer 1"; then
+ 	echo "Failed, printer-info for Test1 is '$description', expected 'Test Printer 1'." >>$strfile
+ 	echo "FAIL (got '$description', expected 'Test Printer 1')"

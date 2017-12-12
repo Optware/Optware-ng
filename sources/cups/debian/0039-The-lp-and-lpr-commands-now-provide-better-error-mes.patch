@@ -1,0 +1,199 @@
+From 6149d430b8b82e87544d2ff84a050c6ecf932c98 Mon Sep 17 00:00:00 2001
+From: Michael R Sweet <michaelrsweet@gmail.com>
+Date: Wed, 1 Nov 2017 15:45:50 -0400
+Subject: =?UTF-8?q?The=20`lp`=20and=20`lpr`=20commands=20now=20provide=20b?=
+ =?UTF-8?q?etter=20error=20messages=20when=20the=20default=0Aprinter=20can?=
+ =?UTF-8?q?not=20be=20found=20(Issue=20#5096)?=
+
+- berkeley/lpr.c: Use cupsLastErrorMessage() for not-found errors.
+- cups/dest.c: Set the last error message in cupsGetNamedDest().
+- systemv/lp.c: Use cupsLastErrorMessage() for not-found errors.
+
+Bug-Debian: #870463
+---
+ berkeley/lpr.c | 34 +++++-----------------------------
+ cups/dest.c    | 38 +++++++++++++++++++++++++++++++++++++-
+ systemv/lp.c   | 31 ++++---------------------------
+ 3 files changed, 46 insertions(+), 57 deletions(-)
+
+diff --git a/berkeley/lpr.c b/berkeley/lpr.c
+index e83f52e0b..0081b795d 100644
+--- a/berkeley/lpr.c
++++ b/berkeley/lpr.c
+@@ -1,7 +1,7 @@
+ /*
+  * "lpr" command for CUPS.
+  *
+- * Copyright 2007-2016 by Apple Inc.
++ * Copyright 2007-2017 by Apple Inc.
+  * Copyright 1997-2007 by Easy Software Products.
+  *
+  * These coded instructions, statements, and computer programs are the
+@@ -32,8 +32,7 @@ main(int  argc,				/* I - Number of command-line arguments */
+   char		*printer,		/* Destination printer or class */
+ 		*instance,		/* Instance */
+ 		*opt;			/* Option pointer */
+-  const char	*title,			/* Job title */
+-		*val;			/* Environment variable name */
++  const char	*title;			/* Job title */
+   int		num_copies;		/* Number of copies per file */
+   int		num_files;		/* Number of files to print */
+   const char	*files[1000];		/* Files to print */
+@@ -345,33 +344,10 @@ main(int  argc,				/* I - Number of command-line arguments */
+ 
+   if (printer == NULL)
+   {
+-    val = NULL;
+-
+-    if ((printer = getenv("LPDEST")) == NULL)
+-    {
+-      if ((printer = getenv("PRINTER")) != NULL)
+-      {
+-        if (!strcmp(printer, "lp"))
+-          printer = NULL;
+-	else
+-	  val = "PRINTER";
+-      }
+-    }
+-    else
+-      val = "LPDEST";
+-
+-    if (printer && !cupsGetNamedDest(NULL, printer, NULL))
+-      _cupsLangPrintf(stderr,
+-                      _("%s: Error - %s environment variable names "
+-		        "non-existent destination \"%s\"."), argv[0], val,
+-		      printer);
+-    else if (cupsLastError() == IPP_NOT_FOUND)
+-      _cupsLangPrintf(stderr,
+-                      _("%s: Error - no default destination available."),
+-		      argv[0]);
++    if (!cupsGetNamedDest(NULL, NULL, NULL) && cupsLastError() == IPP_STATUS_ERROR_NOT_FOUND)
++      _cupsLangPrintf(stderr, _("%s: Error - %s"), argv[0], cupsLastErrorString());
+     else
+-      _cupsLangPrintf(stderr, _("%s: Error - scheduler not responding."),
+-		      argv[0]);
++      _cupsLangPrintf(stderr, _("%s: Error - scheduler not responding."), argv[0]);
+ 
+     return (1);
+   }
+diff --git a/cups/dest.c b/cups/dest.c
+index 57a8dc95c..e91917ed2 100644
+--- a/cups/dest.c
++++ b/cups/dest.c
+@@ -1883,6 +1883,9 @@ cupsGetNamedDest(http_t     *http,	/* I - Connection to server or @code CUPS_HTT
+       snprintf(filename, sizeof(filename), "%s/.cups/lpoptions", home);
+ 
+       dest_name = cups_get_default(filename, defname, sizeof(defname), &instance);
++
++      if (dest_name)
++        set_as_default = 2;
+     }
+ 
+     if (!dest_name)
+@@ -1893,6 +1896,9 @@ cupsGetNamedDest(http_t     *http,	/* I - Connection to server or @code CUPS_HTT
+ 
+       snprintf(filename, sizeof(filename), "%s/lpoptions", cg->cups_serverroot);
+       dest_name = cups_get_default(filename, defname, sizeof(defname), &instance);
++
++      if (dest_name)
++        set_as_default = 3;
+     }
+ 
+     if (!dest_name)
+@@ -1901,7 +1907,8 @@ cupsGetNamedDest(http_t     *http,	/* I - Connection to server or @code CUPS_HTT
+       * No locally-set default destination, ask the server...
+       */
+ 
+-      op = IPP_OP_CUPS_GET_DEFAULT;
++      op             = IPP_OP_CUPS_GET_DEFAULT;
++      set_as_default = 4;
+ 
+       DEBUG_puts("1cupsGetNamedDest: Asking server for default printer...");
+     }
+@@ -1932,7 +1939,36 @@ cupsGetNamedDest(http_t     *http,	/* I - Connection to server or @code CUPS_HTT
+       dest = data.dest;
+     }
+     else
++    {
++      switch (set_as_default)
++      {
++        default :
++            break;
++
++        case 1 : /* Set from env vars */
++            if (getenv("LPDEST"))
++              _cupsSetError(IPP_STATUS_ERROR_NOT_FOUND, _("LPDEST environment variable names default destination that does not exist."), 1);
++	    else if (getenv("PRINTER"))
++              _cupsSetError(IPP_STATUS_ERROR_NOT_FOUND, _("PRINTER environment variable names default destination that does not exist."), 1);
++	    else
++              _cupsSetError(IPP_STATUS_ERROR_NOT_FOUND, _("No default destination."), 1);
++            break;
++
++        case 2 : /* Set from ~/.cups/lpoptions */
++	    _cupsSetError(IPP_STATUS_ERROR_NOT_FOUND, _("~/.cups/lpoptions file names default destination that does not exist."), 1);
++            break;
++
++        case 3 : /* Set from /etc/cups/lpoptions */
++	    _cupsSetError(IPP_STATUS_ERROR_NOT_FOUND, _("/etc/cups/lpoptions file names default destination that does not exist."), 1);
++            break;
++
++        case 4 : /* Set from server */
++	    _cupsSetError(IPP_STATUS_ERROR_NOT_FOUND, _("No default destination."), 1);
++            break;
++      }
++
+       return (NULL);
++    }
+   }
+ 
+   DEBUG_printf(("1cupsGetNamedDest: Got dest=%p", (void *)dest));
+diff --git a/systemv/lp.c b/systemv/lp.c
+index 9672b080a..5033459d0 100644
+--- a/systemv/lp.c
++++ b/systemv/lp.c
+@@ -1,7 +1,7 @@
+ /*
+  * "lp" command for CUPS.
+  *
+- * Copyright 2007-2016 by Apple Inc.
++ * Copyright 2007-2017 by Apple Inc.
+  * Copyright 1997-2007 by Easy Software Products.
+  *
+  * These coded instructions, statements, and computer programs are the
+@@ -586,33 +586,10 @@ main(int  argc,				/* I - Number of command-line arguments */
+ 
+   if (printer == NULL)
+   {
+-    val = NULL;
+-
+-    if ((printer = getenv("LPDEST")) == NULL)
+-    {
+-      if ((printer = getenv("PRINTER")) != NULL)
+-      {
+-        if (!strcmp(printer, "lp"))
+-          printer = NULL;
+-	else
+-	  val = "PRINTER";
+-      }
+-    }
+-    else
+-      val = "LPDEST";
+-
+-    if (printer && !cupsGetNamedDest(NULL, printer, NULL))
+-      _cupsLangPrintf(stderr,
+-		      _("%s: Error - %s environment variable names "
+-		        "non-existent destination \"%s\"."), argv[0], val,
+-		      printer);
+-    else if (cupsLastError() == IPP_NOT_FOUND)
+-      _cupsLangPrintf(stderr,
+-		      _("%s: Error - no default destination available."),
+-		      argv[0]);
++    if (!cupsGetNamedDest(NULL, NULL, NULL) && cupsLastError() == IPP_STATUS_ERROR_NOT_FOUND)
++      _cupsLangPrintf(stderr, _("%s: Error - %s"), argv[0], cupsLastErrorString());
+     else
+-      _cupsLangPrintf(stderr, _("%s: Error - scheduler not responding."),
+-		      argv[0]);
++      _cupsLangPrintf(stderr, _("%s: Error - scheduler not responding."), argv[0]);
+ 
+     return (1);
+   }

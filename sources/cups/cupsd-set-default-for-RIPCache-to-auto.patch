@@ -1,6 +1,28 @@
+--- a/doc/help/man-cupsd.conf.html
++++ b/doc/help/man-cupsd.conf.html
+@@ -569,7 +569,7 @@ The default is the empty string, which disables page logging.
+ The string "%p %u %j %T %P %C %{job-billing} %{job-originating-host-name} %{job-name} %{media} %{sides}" creates a page log with the standard items.
+ <dt><a name="RIPCache"></a><b>RIPCache </b><i>size</i>
+ <dd style="margin-left: 5.0em">Specifies the maximum amount of memory to use when converting documents into bitmaps for a printer.
+-The default is "128m".
++The default is "auto".
+ </dl>
+ <h2 class="title"><a name="CONFORMING_TO">Conforming To</a></h2>
+ The <b>cupsd.conf</b> file format is based on the Apache HTTP Server configuration file format.
+--- a/man/cupsd.conf.man.in
++++ b/man/cupsd.conf.man.in
+@@ -851,7 +851,7 @@ The string "%p %u %j %T %P %C %{job-billing} %{job-originating-host-name} %{job-
+ .TP 5
+ \fBRIPCache \fIsize\fR
+ Specifies the maximum amount of memory to use when converting documents into bitmaps for a printer.
+-The default is "128m".
++The default is "auto".
+ .SH CONFORMING TO
+ The \fBcupsd.conf\fR file format is based on the Apache HTTP Server configuration file format.
+ .SH EXAMPLES
 --- a/scheduler/conf.c
 +++ b/scheduler/conf.c
-@@ -666,7 +666,7 @@
+@@ -629,7 +629,7 @@ cupsdReadConfiguration(void)
  
    cupsdClearString(&DefaultPaperSize);
  
@@ -11,7 +33,7 @@
  
 --- a/scheduler/cupsfilter.c
 +++ b/scheduler/cupsfilter.c
-@@ -1388,7 +1388,7 @@
+@@ -1386,7 +1386,7 @@ read_cups_files_conf(
    else
      set_string(&FontPath, CUPS_FONTPATH);
  
@@ -20,25 +42,3 @@
  
    if ((temp = getenv("CUPS_SERVERBIN")) != NULL)
      set_string(&ServerBin, temp);
---- a/doc/help/man-cupsd.conf.html
-+++ b/doc/help/man-cupsd.conf.html
-@@ -266,7 +266,7 @@
- The default is "30".
- <dt><a name="RIPCache"></a><b>RIPCache </b><i>size</i>
- <dd style="margin-left: 5.0em">Specifies the maximum amount of memory to use when converting documents into bitmaps for a printer.
--The default is "128m".
-+The default is "auto".
- <dt><a name="ServerAdmin"></a><b>ServerAdmin </b><i>email-address</i>
- <dd style="margin-left: 5.0em">Specifies the email address of the server administrator.
- The default value is "root@ServerName".
---- a/man/cupsd.conf.man.in
-+++ b/man/cupsd.conf.man.in
-@@ -413,7 +413,7 @@
- .TP 5
- \fBRIPCache \fIsize\fR
- Specifies the maximum amount of memory to use when converting documents into bitmaps for a printer.
--The default is "128m".
-+The default is "auto".
- .\"#ServerAdmin
- .TP 5
- \fBServerAdmin \fIemail-address\fR

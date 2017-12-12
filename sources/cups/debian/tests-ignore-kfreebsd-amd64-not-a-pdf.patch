@@ -1,0 +1,27 @@
+From fa7beb65f80d2270de493213c07b38627684bf5f Mon Sep 17 00:00:00 2001
+From: Didier Raboud <odyx@debian.org>
+Date: Tue, 9 Aug 2016 18:30:48 +0200
+Subject: Tests: ignore loadFile failures
+
+Ignore the 'loadFile failed: temp file: not a PDF file' error that sometimes
+breaks the errorlines counting on kfreebsd-amd64 for some reason
+Origin: vendor
+Last-Update: 2015-02-10
+Patch-Name: tests-ignore-kfreebsd-amd64-not-a-pdf.patch
+---
+ test/run-stp-tests.sh | 2 ++
+ 1 file changed, 2 insertions(+)
+
+diff --git a/test/run-stp-tests.sh b/test/run-stp-tests.sh
+index 2187f5890..26374cc14 100755
+--- a/test/run-stp-tests.sh
++++ b/test/run-stp-tests.sh
+@@ -999,6 +999,8 @@ fi
+ count=`$GREP '^E ' $BASE/log/error_log | $GREP -v 'Unknown default SystemGroup' | \
+        $GREP -v '(usb) crashed on signal 11' | \
+        $GREP -v '(dnssd) stopped with status 1' | \
++       $GREP -v 'loadFile failed: temp file: not a PDF file' | \
++       $GREP -v 'Failed to connect to system bus' | \
+        wc -l | awk '{print $1}'`
+ if test $count != 33; then
+ 	echo "FAIL: $count error messages, expected 33."

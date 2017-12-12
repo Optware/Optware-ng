@@ -1,0 +1,28 @@
+From 9e5568b7a79b85332ed0308d346650b9e4b9503d Mon Sep 17 00:00:00 2001
+From: Didier Raboud <odyx@debian.org>
+Date: Tue, 9 Aug 2016 18:11:40 +0200
+Subject: Deactivate CUPS' own log rotating as the system already provides a
+ more sophisticated log rotating
+
+Last-Update: 2015-02-10
+
+Patch-Name: default_log_settings.patch
+---
+ conf/cupsd.conf.in | 4 ++++
+ 1 file changed, 4 insertions(+)
+
+diff --git a/conf/cupsd.conf.in b/conf/cupsd.conf.in
+index ab37ca68c..78189e535 100644
+--- a/conf/cupsd.conf.in
++++ b/conf/cupsd.conf.in
+@@ -8,6 +8,10 @@
+ LogLevel @CUPS_LOG_LEVEL@
+ @CUPS_PAGE_LOG_FORMAT@
+ 
++# Deactivate CUPS' internal logrotating, as we provide a better one, especially
++# LogLevel debug2 gets usable now
++MaxLogSize 0
++
+ # Only listen for connections from the local machine.
+ Listen localhost:@DEFAULT_IPP_PORT@
+ @CUPS_LISTEN_DOMAINSOCKET@

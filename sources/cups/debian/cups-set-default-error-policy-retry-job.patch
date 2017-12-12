@@ -1,4 +1,4 @@
-From c2df8b6c63b576980b2610c8f30cceb9393e62e4 Mon Sep 17 00:00:00 2001
+From 7bcaea43a42e208ef0ab117248d9d1c92bf5dd2e Mon Sep 17 00:00:00 2001
 From: Martin Pitt <martin.pitt@ubuntu.com>
 Date: Tue, 9 Aug 2016 18:11:47 +0200
 Subject: Set default job error policy to "retry-job", since it is less
@@ -18,10 +18,10 @@ Patch-Name: cups-set-default-error-policy-retry-job.patch
  3 files changed, 7 insertions(+), 7 deletions(-)
 
 diff --git a/doc/help/man-cupsd.conf.html b/doc/help/man-cupsd.conf.html
-index 85e601edf..943059efc 100644
+index 908234855..7d22aaa82 100644
 --- a/doc/help/man-cupsd.conf.html
 +++ b/doc/help/man-cupsd.conf.html
-@@ -99,11 +99,11 @@ The default value is "30".
+@@ -89,11 +89,11 @@ The default value is "30".
  <dt><a name="ErrorPolicy"></a><b>ErrorPolicy abort-job</b>
  <dd style="margin-left: 5.0em">Specifies that a failed print job should be aborted (discarded) unless otherwise specified for the printer.
  <dt><b>ErrorPolicy retry-job</b>
@@ -36,10 +36,10 @@ index 85e601edf..943059efc 100644
  <dd style="margin-left: 5.0em">Specifies the maximum cost of filters that are run concurrently, which can be used to minimize disk, memory, and CPU resource problems.
  A limit of 0 disables filter limiting.
 diff --git a/man/cupsd.conf.man.in b/man/cupsd.conf.man.in
-index 40fea92e3..d2cf3495a 100644
+index a313f4b02..6971b8b33 100644
 --- a/man/cupsd.conf.man.in
 +++ b/man/cupsd.conf.man.in
-@@ -148,13 +148,13 @@ The default value is "30".
+@@ -133,13 +133,13 @@ The default value is "30".
  Specifies that a failed print job should be aborted (discarded) unless otherwise specified for the printer.
  .TP 5
  \fBErrorPolicy retry-job\fR
@@ -56,10 +56,10 @@ index 40fea92e3..d2cf3495a 100644
  .TP 5
  \fBFilterLimit \fIlimit\fR
 diff --git a/scheduler/conf.c b/scheduler/conf.c
-index 57912fd40..908fc56af 100644
+index bd1bac436..727a2230c 100644
 --- a/scheduler/conf.c
 +++ b/scheduler/conf.c
-@@ -753,7 +753,7 @@ cupsdReadConfiguration(void)
+@@ -751,7 +751,7 @@ cupsdReadConfiguration(void)
    cupsdSetString(&LPDConfigFile, CUPS_DEFAULT_LPD_CONFIG_FILE);
    cupsdSetString(&SMBConfigFile, CUPS_DEFAULT_SMB_CONFIG_FILE);
  
@@ -68,7 +68,7 @@ index 57912fd40..908fc56af 100644
  
    JobHistory          = DEFAULT_HISTORY;
    JobFiles            = DEFAULT_FILES;
-@@ -1233,8 +1233,8 @@ cupsdReadConfiguration(void)
+@@ -1232,8 +1232,8 @@ cupsdReadConfiguration(void)
        strcmp(ErrorPolicy, "retry-job") &&
        strcmp(ErrorPolicy, "stop-printer"))
    {

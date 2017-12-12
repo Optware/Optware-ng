@@ -1,0 +1,62 @@
+From 3814f6fdb9f4edcdd841a38fcea18c223f155dea Mon Sep 17 00:00:00 2001
+From: Didier Raboud <odyx@debian.org>
+Date: Tue, 9 Aug 2016 18:11:49 +0200
+Subject: Use dpkg-architecture in cups-config to make it
+ architecture-independant
+
+ Also filter -L/usr/lib/(triplet) out of LDFLAGS.
+ Also strip unnecessary libs from --libs.
+ Also launch krb5-config at runtime to avoid getting usr/lib/(triplet) from krb5-config
+Bug-Debian: https://bugs.debian.org/741519
+Bug-Debian: https://bugs.debian.org/727058
+Bug-Debian: https://bugs.debian.org/730838
+Bug-Debian: https://bugs.debian.org/751157
+Last-Update: 2014-06-11
+Patch-Name: debianize_cups-config.patch
+---
+ cups-config.in | 11 ++++++-----
+ 1 file changed, 6 insertions(+), 5 deletions(-)
+
+diff --git a/cups-config.in b/cups-config.in
+index f0951d0e1..f37f4dfd3 100755
+--- a/cups-config.in
++++ b/cups-config.in
+@@ -20,8 +20,8 @@ prefix=@prefix@
+ exec_prefix=@exec_prefix@
+ bindir=@bindir@
+ includedir=@includedir@
+-libdir=@libdir@
+-imagelibdir=@libdir@
++libdir=${prefix}/lib/$(dpkg-architecture -qDEB_HOST_MULTIARCH)
++imagelibdir=${prefix}/lib/$(dpkg-architecture -qDEB_HOST_MULTIARCH)
+ datarootdir=@datadir@
+ datadir=@datadir@
+ sysconfdir=@sysconfdir@
+@@ -33,7 +33,8 @@ INSTALLSTATIC=@INSTALLSTATIC@
+ # flags for C++ compiler:
+ CFLAGS=""
+ LDFLAGS="@EXPORT_LDFLAGS@"
+-LIBS="@LIBGSSAPI@ @EXPORT_SSLLIBS@ @LIBZ@ @LIBS@"
++LIBGSSAPI=`[ ! -x /usr/bin/krb5-config ] || /usr/bin/krb5-config --libs`
++LIBS="$LIBGSSAPI @EXPORT_SSLLIBS@ @LIBZ@ @LIBS@"
+ 
+ # Check for local invocation...
+ selfdir=`dirname $0`
+@@ -48,7 +49,7 @@ else
+ 	CFLAGS="$CFLAGS -I$includedir"
+     fi
+ 
+-    if test $libdir != /usr/lib -a $libdir != /usr/lib32 -a $libdir != /usr/lib64; then
++    if test $libdir != /usr/lib -a $libdir != /usr/lib32 -a $libdir != /usr/lib64 -a $libdir != /usr/lib/$(dpkg-architecture -qDEB_HOST_MULTIARCH); then
+ 	LDFLAGS="$LDFLAGS -L$libdir"
+     fi
+ fi
+@@ -103,7 +104,7 @@ while test $# -gt 0; do
+ 	    ;;
+ 	--libs)
+ 	    if test $static = no; then
+-	        libs="@EXTLINKCUPS@ $LIBS";
++	        libs="@EXTLINKCUPS@";
+  	        if test $image = yes; then
+  	            libs="@EXTLINKCUPSIMAGE@ $libs"
+ 		fi

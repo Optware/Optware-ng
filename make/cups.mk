@@ -19,7 +19,7 @@
 #
 # You should change all these variables to suit your package.
 #
-CUPS_VERSION=2.2.4
+CUPS_VERSION=2.2.6
 CUPS_SITE=https://github.com/apple/cups/releases/download/v$(CUPS_VERSION)
 CUPS_SOURCE=cups-$(CUPS_VERSION)-source.tar.gz
 CUPS_DIR=cups-$(CUPS_VERSION)
@@ -44,7 +44,7 @@ LIBCUPSCGI_DEPENDS=libcups
 LIBCUPSIMAGE_DEPENDS=libcups
 LIBCUPSMIME_DEPENDS=libcups
 LIBCUPSPPDC_DEPENDS=libcups, libstdc++
-CUPS_DEPENDS=libcups, libcupscgi, libcupsimage, libcupsmime, libcupsppdc, libjpeg, libpng, libpam, libtiff, openssl, psmisc, libusb1, dbus, avahi, libacl, start-stop-daemon
+CUPS_DEPENDS=libcups, libcupscgi, libcupsimage, libcupsmime, libcupsppdc, libjpeg, libpng, libtiff, openssl, psmisc, libusb1, dbus, avahi, libacl, start-stop-daemon
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
 CUPS_DEPENDS+=, openldap-libs
 endif
@@ -55,7 +55,7 @@ CUPS_CONFLICTS=
 #
 # CUPS_IPK_VERSION should be incremented when the ipk changes.
 #
-CUPS_IPK_VERSION=3
+CUPS_IPK_VERSION=1
 
 CUPS_DOC_DESCRIPTION=Common Unix Printing System documentation.
 CUPS-DEV_DESCRIPTION=Development files for CUPS
@@ -76,7 +76,19 @@ CUPS_CONFFILES=$(TARGET_PREFIX)/etc/cups/cupsd.conf $(TARGET_PREFIX)/etc/cups/pr
 CUPS_PATCHES=\
 $(CUPS_SOURCE_DIR)/debian/pwg-raster-attributes.patch \
 $(CUPS_SOURCE_DIR)/debian/manpage-hyphen-minus.patch \
+$(CUPS_SOURCE_DIR)/debian/rootbackends-worldreadable.patch \
 $(CUPS_SOURCE_DIR)/debian/fixes-for-jobs-with-multiple-files-and-multiple-formats.patch \
+$(CUPS_SOURCE_DIR)/debian/tests-ignore-warnings.patch \
+$(CUPS_SOURCE_DIR)/debian/tests-ignore-usb-crash.patch \
+$(CUPS_SOURCE_DIR)/debian/tests-ignore-kfreebsd-amd64-not-a-pdf.patch \
+$(CUPS_SOURCE_DIR)/debian/tests-ignore-ipv6-address-family-not-supported.patch \
+$(CUPS_SOURCE_DIR)/debian/tests-ignore-kfreebsd-unable-to-write-uncompressed-print-data.patch \
+$(CUPS_SOURCE_DIR)/debian/test-i18n-nonlinux.patch \
+$(CUPS_SOURCE_DIR)/debian/tests-wait-on-unfinished-jobs-everytime.patch \
+$(CUPS_SOURCE_DIR)/debian/tests-fix-ppdLocalize-on-unclean-env.patch \
+$(CUPS_SOURCE_DIR)/debian/tests-use-ipv4-lo-address.patch \
+$(CUPS_SOURCE_DIR)/debian/tests-make-lpstat-call-reproducible.patch \
+$(CUPS_SOURCE_DIR)/debian/tests-no-pdftourf.patch \
 $(CUPS_SOURCE_DIR)/debian/move-cupsd-conf-default-to-share.patch \
 $(CUPS_SOURCE_DIR)/debian/drop_unnecessary_dependencies.patch \
 $(CUPS_SOURCE_DIR)/debian/read-embedded-options-from-incoming-postscript-and-add-to-ipp-attrs.patch \
@@ -84,18 +96,26 @@ $(CUPS_SOURCE_DIR)/debian/cups-deviced-allow-device-ids-with-newline.patch \
 $(CUPS_SOURCE_DIR)/debian/airprint-support.patch \
 $(CUPS_SOURCE_DIR)/debian/cups-snmp-oids-device-id-hp-ricoh.patch \
 $(CUPS_SOURCE_DIR)/debian/no-conffile-timestamp.patch \
-$(CUPS_SOURCE_DIR)/debian/pidfile.patch \
 $(CUPS_SOURCE_DIR)/debian/removecvstag.patch \
+$(CUPS_SOURCE_DIR)/debian/rename-systemd-units.patch \
 $(CUPS_SOURCE_DIR)/debian/do-not-broadcast-with-hostnames.patch \
 $(CUPS_SOURCE_DIR)/debian/reactivate_recommended_driver.patch \
-$(CUPS_SOURCE_DIR)/debian/add-ipp-backend-of-cups-1.4.patch \
+$(CUPS_SOURCE_DIR)/debian/logfiles_adm_readable.patch \
+$(CUPS_SOURCE_DIR)/debian/default_log_settings.patch \
+$(CUPS_SOURCE_DIR)/debian/confdirperms.patch \
+$(CUPS_SOURCE_DIR)/debian/printer-filtering.patch \
 $(CUPS_SOURCE_DIR)/debian/show-compile-command-lines.patch \
 $(CUPS_SOURCE_DIR)/debian/log-debug-history-nearly-unlimited.patch \
 $(CUPS_SOURCE_DIR)/debian/cupsd-set-default-for-SyncOnClose-to-Yes.patch \
 $(CUPS_SOURCE_DIR)/debian/cups-set-default-error-policy-retry-job.patch \
 $(CUPS_SOURCE_DIR)/debian/man-cups-lpd-drop-dangling-references.patch \
+$(CUPS_SOURCE_DIR)/debian/debianize_cups-config.patch \
+$(CUPS_SOURCE_DIR)/debian/0037-Build-mantohtml-with-the-build-architecture-compiler.patch \
+$(CUPS_SOURCE_DIR)/debian/manpage-translations.patch \
+$(CUPS_SOURCE_DIR)/debian/0039-The-lp-and-lpr-commands-now-provide-better-error-mes.patch \
+$(CUPS_SOURCE_DIR)/manpage-po4a.patch \
 $(CUPS_SOURCE_DIR)/cupsd-set-default-for-RIPCache-to-auto.patch \
-$(CUPS_SOURCE_DIR)/optware_pidfile.patch \
+#$(CUPS_SOURCE_DIR)/optware_pidfile.patch \
 #$(CUPS_SOURCE_DIR)/build_without_gnutls.patch
 
 CUPS_HOST_PATCHES=\
@@ -137,9 +157,6 @@ ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 CUPS_LDFLAGS+= -liconv
 endif
 
-ifeq ($(OPTWARE_TARGET), $(filter syno-e500, $(OPTWARE_TARGET)))
-CUPS_CONFIG_OPTS=--disable-pam
-endif
 ifeq (gnutls, $(filter gnutls, $(PACKAGES)))
 CUPS_CONFIG_OPTS+= --enable-gnutls
 else
@@ -241,7 +258,7 @@ $(CUPS_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(CUPS_SOURCE) $(CUPS_
 	)
 	sed -i -e "s/-Wno-tautological-compare//" $(@D)/Makedefs
 	sed -i -e "s/^DIRS\t=.*/DIRS\t=\tcups \$$(BUILDDIRS)/" $(@D)/Makefile
-	$(MAKE) -C $(@D)
+	$(MAKE) -C $(@D) CC_FOR_BUILD=$(HOSTCC)
 	touch $@
 
 $(CUPS_HOST_BUILD_DIR)/.staged: $(CUPS_HOST_BUILD_DIR)/.built
@@ -253,7 +270,7 @@ cups-host-stage: $(CUPS_HOST_BUILD_DIR)/.staged
 
 $(CUPS_BUILD_DIR)/.configured: $(CUPS_HOST_BUILD_DIR)/.built $(DL_DIR)/$(CUPS_SOURCE) $(CUPS_TARGET_PATCHES) make/cups.mk
 	$(MAKE) openssl-stage zlib-stage libpng-stage \
-		libjpeg-stage libtiff-stage libpam-stage \
+		libjpeg-stage libtiff-stage \
 		libusb1-stage dbus-stage libstdc++-stage avahi-stage libacl-stage
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
 	$(MAKE) openldap-stage
@@ -297,6 +314,9 @@ endif
 		--with-local-protocols="dnssd" \
 		--disable-nls \
 		--disable-dbus \
+		--disable-pam \
+		--with-rundir=$(TARGET_PREFIX)/var/run/cups \
+		--with-logdir=$(TARGET_PREFIX)/var/log/cups \
 		$(CUPS_CONFIG_OPTS) \
 		--with-openssl-libs=$(STAGING_LIB_DIR) \
 		--with-openssl-includes=$(STAGING_INCLUDE_DIR) \
@@ -334,7 +354,7 @@ cups-unpack: $(CUPS_BUILD_DIR)/.configured
 #
 $(CUPS_BUILD_DIR)/.built: $(CUPS_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(@D)
+	$(MAKE) -C $(@D) CC_FOR_BUILD=$(HOSTCC)
 	$(MAKE) install -C $(@D) \
 		BUILDROOT=$(CUPS_BUILD_DIR)/install/ \
 		datarootdir='$${prefix}' \

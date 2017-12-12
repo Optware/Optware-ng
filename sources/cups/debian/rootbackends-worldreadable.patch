@@ -1,0 +1,69 @@
+From a85937dfd2c14b467f48340c6fff62e68b625897 Mon Sep 17 00:00:00 2001
+From: Martin Pitt <mpitt@debian.org>
+Date: Tue, 9 Aug 2016 18:11:06 +0200
+Subject: Install root backends world-readable.
+
+This is needed:
+ - to comply with Debian Policy
+ - because it is both nonsensical to to not do so
+ - it also breaks system checkers, bug reporting, etc
+
+Bug: http://www.cups.org/str.php?L2935
+Bug-Debian: http://bugs.debian.org/410171
+Last-Update: 2015-02-10
+
+Patch-Name: rootbackends-worldreadable.patch
+---
+ backend/Makefile         | 4 ++--
+ scheduler/cups-deviced.c | 2 +-
+ scheduler/job.c          | 2 +-
+ 3 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/backend/Makefile b/backend/Makefile
+index aeb33d846..cfea19178 100644
+--- a/backend/Makefile
++++ b/backend/Makefile
+@@ -19,7 +19,7 @@ include ../Makedefs
+ # Object files...
+ #
+ 
+-# RBACKENDS are installed mode 0700 so cupsd will run them as root...
++# RBACKENDS are installed mode 0744 so cupsd will run them as root...
+ #
+ # UBACKENDS and ULBACKENDS are installed mode 0755 so cupsd will run them as
+ # an unprivileged user...
+@@ -124,7 +124,7 @@ install-exec:	$(INSTALLXPC)
+ 	echo Installing backends in $(SERVERBIN)/backend
+ 	$(INSTALL_DIR) -m 755 $(SERVERBIN)/backend
+ 	for file in $(RBACKENDS); do \
+-		$(LIBTOOL) $(INSTALL_BIN) -m 700 $$file $(SERVERBIN)/backend; \
++		$(LIBTOOL) $(INSTALL_BIN) -m 744 $$file $(SERVERBIN)/backend; \
+ 	done
+ 	for file in $(UBACKENDS); do \
+ 		$(INSTALL_BIN) $$file $(SERVERBIN)/backend; \
+diff --git a/scheduler/cups-deviced.c b/scheduler/cups-deviced.c
+index 13efa54ff..9a1b8d3e1 100644
+--- a/scheduler/cups-deviced.c
++++ b/scheduler/cups-deviced.c
+@@ -268,7 +268,7 @@ main(int  argc,				/* I - Number of command-line args */
+     * all others run as the unprivileged user...
+     */
+ 
+-    start_backend(dent->filename, !(dent->fileinfo.st_mode & (S_IWGRP | S_IRWXO)));
++    start_backend(dent->filename, !(dent->fileinfo.st_mode & (S_IWGRP | S_IWOTH | S_IXOTH)));
+   }
+ 
+   cupsDirClose(dir);
+diff --git a/scheduler/job.c b/scheduler/job.c
+index 86e75e65c..fb599bf8f 100644
+--- a/scheduler/job.c
++++ b/scheduler/job.c
+@@ -1250,7 +1250,7 @@ cupsdContinueJob(cupsd_job_t *job)	/* I - Job */
+       else if (stat(command, &backinfo))
+ 	backroot = 0;
+       else
+-        backroot = !(backinfo.st_mode & (S_IWGRP | S_IRWXO));
++        backroot = !(backinfo.st_mode & (S_IWGRP | S_IWOTH | S_IXOTH));
+ 
+       argv[0] = job->printer->sanitized_device_uri;
+ 

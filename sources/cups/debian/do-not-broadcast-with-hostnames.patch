@@ -1,4 +1,4 @@
-From 00d6081f998f9d3a76c9297f505187f2f6affa3c Mon Sep 17 00:00:00 2001
+From 9044c9f05f07a2cf464efaade5c99aa07d7621ca Mon Sep 17 00:00:00 2001
 From: Till Kampetter <till.kampetter@gmail.com>
 Date: Tue, 9 Aug 2016 18:11:35 +0200
 Subject: Do not use host names for broadcasting print queues and
@@ -13,10 +13,10 @@ Patch-Name: do-not-broadcast-with-hostnames.patch
  1 file changed, 1 insertion(+), 1 deletion(-)
 
 diff --git a/scheduler/conf.c b/scheduler/conf.c
-index ea6d22372..fbe017fe5 100644
+index ea3175217..ab98e1c7d 100644
 --- a/scheduler/conf.c
 +++ b/scheduler/conf.c
-@@ -899,7 +899,7 @@ cupsdReadConfiguration(void)
+@@ -898,7 +898,7 @@ cupsdReadConfiguration(void)
      cupsdAddAlias(ServerAlias, temp);
      cupsdLogMessage(CUPSD_LOG_DEBUG, "Added auto ServerAlias %s", temp);
  

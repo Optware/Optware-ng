@@ -1,4 +1,4 @@
-From 72e89fdc96fd4b3b34b7382fdade80bdf6a521b6 Mon Sep 17 00:00:00 2001
+From 5c2fc4302d18dd1dd7b15d177c65ee04a2292ad1 Mon Sep 17 00:00:00 2001
 From: Till Kamppeter <till.kamppeter@gmail.com>
 Date: Tue, 9 Aug 2016 18:11:29 +0200
 Subject: Patch to support Apple AirPrint (printing from iPhone, iPad, iPod
@@ -48,7 +48,7 @@ index fa5371486..84cb0fffe 100644
  #
  # Text files...
 diff --git a/scheduler/conf.c b/scheduler/conf.c
-index 3897073e4..0e06044a7 100644
+index bc52d2add..ea3175217 100644
 --- a/scheduler/conf.c
 +++ b/scheduler/conf.c
 @@ -745,7 +745,7 @@ cupsdReadConfiguration(void)
@@ -61,10 +61,10 @@ index 3897073e4..0e06044a7 100644
  
    cupsdSetString(&LPDConfigFile, CUPS_DEFAULT_LPD_CONFIG_FILE);
 diff --git a/scheduler/dirsvc.c b/scheduler/dirsvc.c
-index fdbd7f1b3..2612d4d2f 100644
+index 2308e0538..6a1da9810 100644
 --- a/scheduler/dirsvc.c
 +++ b/scheduler/dirsvc.c
-@@ -414,6 +414,12 @@ dnssdBuildTxtRecord(
+@@ -443,6 +443,12 @@ dnssdBuildTxtRecord(
      keyvalue[count  ][0] = "pdl";
      keyvalue[count++][1] = p->pdl ? p->pdl : "application/postscript";
  
@@ -78,10 +78,10 @@ index fdbd7f1b3..2612d4d2f 100644
      {
        keyvalue[count  ][0] = "air";
 diff --git a/scheduler/printers.c b/scheduler/printers.c
-index 460147190..fc10ad33a 100644
+index a0ebcbd3e..b5fe9e031 100644
 --- a/scheduler/printers.c
 +++ b/scheduler/printers.c
-@@ -3764,7 +3764,9 @@ add_printer_formats(cupsd_printer_t *p)	/* I - Printer */
+@@ -3765,7 +3765,9 @@ add_printer_formats(cupsd_printer_t *p)	/* I - Printer */
        }
        else if (!_cups_strcasecmp(type->super, "image"))
        {

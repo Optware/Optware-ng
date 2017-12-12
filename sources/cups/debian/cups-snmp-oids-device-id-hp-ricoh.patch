@@ -1,4 +1,4 @@
-From 692c0c15c362d0cc7d14de58a646edab905438b7 Mon Sep 17 00:00:00 2001
+From a18a6066bfb38873a40ec5013877130b62a6519c Mon Sep 17 00:00:00 2001
 From: Tim Waugh <twaugh@redhat.com>
 Date: Tue, 9 Aug 2016 18:11:30 +0200
 Subject: Let the "snmp" backend also use the manufacturer-specific
@@ -30,13 +30,14 @@ index e66edc980..a13562680 100644
  static const int	XeroxProductOID[] = { 1,3,6,1,4,1,128,2,1,3,1,2,0,-1 };
  static cups_array_t	*DeviceURIs = NULL;
  static int		HostNameLookups = 0;
-@@ -975,8 +977,14 @@ read_snmp_response(int fd)		/* I - SNMP socket file descriptor */
+@@ -974,9 +976,15 @@ read_snmp_response(int fd)		/* I - SNMP socket file descriptor */
+ 	_cupsSNMPWrite(fd, &(packet.address), CUPS_SNMP_VERSION_1,
  	               packet.community, CUPS_ASN1_GET_REQUEST,
  		       DEVICE_ID, LexmarkDeviceIdOID);
- 	_cupsSNMPWrite(fd, &(packet.address), CUPS_SNMP_VERSION_1,
++	_cupsSNMPWrite(fd, &(packet.address), CUPS_SNMP_VERSION_1,
 +		       packet.community, CUPS_ASN1_GET_REQUEST,
 +		       DEVICE_ID, RicohDeviceIdOID);
-+	_cupsSNMPWrite(fd, &(packet.address), CUPS_SNMP_VERSION_1,
+ 	_cupsSNMPWrite(fd, &(packet.address), CUPS_SNMP_VERSION_1,
  	               packet.community, CUPS_ASN1_GET_REQUEST,
  		       DEVICE_PRODUCT, XeroxProductOID);
 +	_cupsSNMPWrite(fd, &(packet.address), CUPS_SNMP_VERSION_1,

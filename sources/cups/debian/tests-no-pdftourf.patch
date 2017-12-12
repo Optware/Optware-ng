@@ -1,0 +1,68 @@
+From 3709234bb3e7513a1fd7c9b04994bf0b7d4d6985 Mon Sep 17 00:00:00 2001
+From: Michael Sweet <michael.r.sweet@gmail.com>
+Date: Tue, 9 Aug 2016 18:11:23 +0200
+Subject: revert commit 830cfed95a5349b008999eebd34f5233bc35829c
+
+ "Update "make test" to include alternate filter."
+ .
+ This fixes the error lines counting in the test, and is unneeded as pdftourf
+ is not shipped in Debian.
+Origin: upstream
+
+Patch-Name: tests-no-pdftourf.patch
+---
+ test/run-stp-tests.sh | 4 +---
+ test/test.convs       | 1 -
+ test/test.types       | 2 --
+ 3 files changed, 1 insertion(+), 6 deletions(-)
+ delete mode 100644 test/test.types
+
+diff --git a/test/run-stp-tests.sh b/test/run-stp-tests.sh
+index a4ea13143..ebb76b966 100755
+--- a/test/run-stp-tests.sh
++++ b/test/run-stp-tests.sh
+@@ -276,7 +276,7 @@ case "$usedebugprintfs" in
+ 		echo "Enabling debug printfs (level $usedebugprintfs); log files can be found in $BASE/log..."
+ 		CUPS_DEBUG_LOG="$BASE/log/debug_printfs.%d"; export CUPS_DEBUG_LOG
+ 		CUPS_DEBUG_LEVEL="$usedebugprintfs"; export CUPS_DEBUG_LEVEL
+-		CUPS_DEBUG_FILTER='^(http|_http|ipp|_ipp|cups.*Request|cupsGetResponse|cupsSend|mime).*$'; export CUPS_DEBUG_FILTER
++		CUPS_DEBUG_FILTER='^(http|_http|ipp|_ipp|cups.*Request|cupsGetResponse|cupsSend).*$'; export CUPS_DEBUG_FILTER
+ 		;;
+ 
+ 	*)
+@@ -449,14 +449,12 @@ EOF
+ }
+ 
+ ln -s $root/test/test.convs $BASE/share/mime
+-ln -s $root/test/test.types $BASE/share/mime
+ 
+ if test `uname` = Darwin; then
+ 	instfilter cgimagetopdf imagetopdf pdf
+ 	instfilter cgpdftopdf pdftopdf passthru
+ 	instfilter cgpdftops pdftops ps
+ 	instfilter cgpdftoraster pdftoraster raster
+-	instfilter cgpdftoraster pdftourf raster
+ 	instfilter cgtexttopdf texttopdf pdf
+ 	instfilter pstocupsraster pstoraster raster
+ else
+diff --git a/test/test.convs b/test/test.convs
+index 77a9ce01e..57540aac4 100644
+--- a/test/test.convs
++++ b/test/test.convs
+@@ -2,7 +2,6 @@
+ application/pdf application/vnd.cups-pdf 100 pdftopdf
+ application/pdf application/postscript 100 pdftops
+ application/pdf application/vnd.cups-raster 100 pdftoraster
+-application/pdf image/urf 100 pdftourf
+ application/postscript application/vnd.cups-raster 100 pstoraster
+ image/jpeg application/pdf 100 imagetopdf
+ text/plain application/pdf 100 texttopdf
+diff --git a/test/test.types b/test/test.types
+deleted file mode 100644
+index 914081c7f..000000000
+--- a/test/test.types
++++ /dev/null
+@@ -1,2 +0,0 @@
+-# Test file listing potential MIME media types that are not in the standard mime.types file
+-image/urf
+\ No newline at end of file

@@ -1,4 +1,4 @@
-From e4e9820740f714f6aaa8826aef77e80b4c35fa33 Mon Sep 17 00:00:00 2001
+From a8dc3c87df295322e7d1184f94652d84256577cb Mon Sep 17 00:00:00 2001
 From: Till Kamppeter <till.kamppeter@gmail.com>
 Date: Tue, 9 Aug 2016 18:11:27 +0200
 Subject: Make CUPS reading all option settings in PostScript print
@@ -19,10 +19,10 @@ Patch-Name: read-embedded-options-from-incoming-postscript-and-add-to-ipp-attrs.
  1 file changed, 84 insertions(+)
 
 diff --git a/scheduler/ipp.c b/scheduler/ipp.c
-index 49a05a407..813df320e 100644
+index 5cf980ab3..37889371d 100644
 --- a/scheduler/ipp.c
 +++ b/scheduler/ipp.c
-@@ -8661,6 +8661,11 @@ read_job_ticket(cupsd_client_t *con)	/* I - Client connection */
+@@ -8696,6 +8696,11 @@ read_job_ticket(cupsd_client_t *con)	/* I - Client connection */
    ipp_attribute_t	*attr,		/* Current attribute */
  			*attr2,		/* Job attribute */
  			*prev2;		/* Previous job attribute */
@@ -34,10 +34,11 @@ index 49a05a407..813df320e 100644
  
  
   /*
-@@ -8722,6 +8727,85 @@ read_job_ticket(cupsd_client_t *con)	/* I - Client connection */
+@@ -8756,6 +8761,85 @@ read_job_ticket(cupsd_client_t *con)	/* I - Client connection */
+     num_options = cupsParseOptions(line + 15, num_options, &options);
    }
  
-  /*
++ /*
 +  * Read option settings embedded in the file...
 +  */
 +
@@ -116,7 +117,6 @@ index 49a05a407..813df320e 100644
 +    }
 +  }
 +
-+ /*
+  /*
    * Done with the file; see if we have any options...
    */
- 

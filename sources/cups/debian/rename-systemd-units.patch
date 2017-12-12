@@ -1,0 +1,60 @@
+From fe2bda0d1beb7462b28c3042dc341230e7df4b49 Mon Sep 17 00:00:00 2001
+From: Didier Raboud <odyx@debian.org>
+Date: Tue, 9 Aug 2016 18:11:34 +0200
+Subject: Rename the systemd service file from org.cups.cups.* to cups.*
+
+Patch-Name: rename-systemd-units.patch
+---
+ scheduler/org.cups.cups-lpd.socket  | 2 +-
+ scheduler/org.cups.cupsd.path.in    | 2 +-
+ scheduler/org.cups.cupsd.service.in | 2 +-
+ scheduler/org.cups.cupsd.socket.in  | 2 +-
+ 4 files changed, 4 insertions(+), 4 deletions(-)
+
+diff --git a/scheduler/org.cups.cups-lpd.socket b/scheduler/org.cups.cups-lpd.socket
+index ed23f9dfd..eb8445905 100644
+--- a/scheduler/org.cups.cups-lpd.socket
++++ b/scheduler/org.cups.cups-lpd.socket
+@@ -1,6 +1,6 @@
+ [Unit]
+ Description=CUPS LPD Server Socket
+-PartOf=org.cups.cups-lpd.service
++PartOf=cups-lpd.service
+ 
+ [Socket]
+ ListenStream=515
+diff --git a/scheduler/org.cups.cupsd.path.in b/scheduler/org.cups.cupsd.path.in
+index 0f1cc46f2..7c8509fa6 100644
+--- a/scheduler/org.cups.cupsd.path.in
++++ b/scheduler/org.cups.cupsd.path.in
+@@ -1,6 +1,6 @@
+ [Unit]
+ Description=CUPS Scheduler
+-PartOf=org.cups.cupsd.service
++PartOf=cups.service
+ 
+ [Path]
+ PathExists=@CUPS_CACHEDIR@/org.cups.cupsd
+diff --git a/scheduler/org.cups.cupsd.service.in b/scheduler/org.cups.cupsd.service.in
+index 0a27c769f..7a042481f 100644
+--- a/scheduler/org.cups.cupsd.service.in
++++ b/scheduler/org.cups.cupsd.service.in
+@@ -7,5 +7,5 @@ ExecStart=@sbindir@/cupsd -l
+ Type=simple
+ 
+ [Install]
+-Also=org.cups.cupsd.socket org.cups.cupsd.path
++Also=cups.socket cups.path
+ WantedBy=printer.target
+diff --git a/scheduler/org.cups.cupsd.socket.in b/scheduler/org.cups.cupsd.socket.in
+index 613b977a6..3c37d7213 100644
+--- a/scheduler/org.cups.cupsd.socket.in
++++ b/scheduler/org.cups.cupsd.socket.in
+@@ -1,6 +1,6 @@
+ [Unit]
+ Description=CUPS Scheduler
+-PartOf=org.cups.cupsd.service
++PartOf=cups.service
+ 
+ [Socket]
+ ListenStream=@CUPS_DEFAULT_DOMAINSOCKET@

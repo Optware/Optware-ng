@@ -1,0 +1,33 @@
+From 97002687dc0eb330cc250b938d913c7b9e5c8bf2 Mon Sep 17 00:00:00 2001
+From: Didier Raboud <odyx@debian.org>
+Date: Tue, 9 Aug 2016 18:11:18 +0200
+Subject: Tests: Force LC_* environment variables when testing (non)
+ l10n'isation.
+
+ Permits building in non-"C" environments.
+Origin: vendor
+Last-Update: 2015-02-10
+Patch-Name: tests-fix-ppdLocalize-on-unclean-env.patch
+---
+ cups/testppd.c | 8 ++++++++
+ 1 file changed, 8 insertions(+)
+
+diff --git a/cups/testppd.c b/cups/testppd.c
+index e1b51564f..d00035f71 100644
+--- a/cups/testppd.c
++++ b/cups/testppd.c
+@@ -503,6 +503,14 @@ main(int  argc,				/* I - Number of command-line arguments */
+     * Test localization...
+     */
+ 
++   /*
++    * Enforce void localization
++    */
++    putenv("LANG=C");
++    putenv("LC_ALL=C");
++    putenv("LC_CTYPE=C");
++    putenv("LC_MESSAGES=C");
++
+     fputs("ppdLocalizeIPPReason(text): ", stdout);
+     if (ppdLocalizeIPPReason(ppd, "foo", NULL, buffer, sizeof(buffer)) &&
+         !strcmp(buffer, "Foo Reason"))

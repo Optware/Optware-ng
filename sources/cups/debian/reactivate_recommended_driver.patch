@@ -1,4 +1,4 @@
-From 23cfa0a588b3e96c0d9068114a468d98d1ca6f93 Mon Sep 17 00:00:00 2001
+From 1fb937acceeaef8719f188e26d254ad01a5c78a1 Mon Sep 17 00:00:00 2001
 From: Till Kampetter <till.kampetter@gmail.com>
 Date: Tue, 9 Aug 2016 18:11:36 +0200
 Subject: CUPS removes the "(recommended)" comments of the NickNames of
@@ -24,10 +24,11 @@ index 903091129..5d3ddb6d4 100644
  
  
   /*
-@@ -285,15 +284,6 @@ add_ppd(const char *filename,		/* I - PPD filename */
+@@ -284,15 +283,6 @@ add_ppd(const char *filename,		/* I - PPD filename */
+   strlcpy(ppd->record.device_id, device_id, sizeof(ppd->record.device_id));
    strlcpy(ppd->record.scheme, scheme, sizeof(ppd->record.scheme));
  
-  /*
+- /*
 -  * Strip confusing (and often wrong) "recommended" suffix added by
 -  * Foomatic drivers...
 -  */
@@ -36,7 +37,6 @@ index 903091129..5d3ddb6d4 100644
 -                            " (recommended)")) != NULL)
 -    *recommended = '\0';
 -
-- /*
+  /*
    * Add the PPD to the PPD arrays...
    */
- 

@@ -1,4 +1,4 @@
-From 9afc3ff4cf05955f01daf8611e9e93c25034bdcc Mon Sep 17 00:00:00 2001
+From 8da9d340e2b2c5f2ae85099c77ae5fc484a3da9e Mon Sep 17 00:00:00 2001
 From: Joey Hess <joeyh@debian.org>
 Date: Tue, 9 Aug 2016 18:11:31 +0200
 Subject: Disable time stamps in conffiles, to avoid ever-changing files in
@@ -30,7 +30,7 @@ index 57f9a8f44..74036fd46 100644
  
   /*
 diff --git a/scheduler/job.c b/scheduler/job.c
-index 4d07a1097..ff9a3a700 100644
+index fb599bf8f..b26f5f04b 100644
 --- a/scheduler/job.c
 +++ b/scheduler/job.c
 @@ -2203,7 +2203,7 @@ cupsdSaveAllJobs(void)
@@ -43,7 +43,7 @@ index 4d07a1097..ff9a3a700 100644
  
   /*
 diff --git a/scheduler/printers.c b/scheduler/printers.c
-index fc10ad33a..7934de0ef 100644
+index b5fe9e031..46ec0e836 100644
 --- a/scheduler/printers.c
 +++ b/scheduler/printers.c
 @@ -1458,7 +1458,7 @@ cupsdSaveAllPrinters(void)

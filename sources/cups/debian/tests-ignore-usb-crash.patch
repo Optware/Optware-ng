@@ -1,0 +1,34 @@
+From 9e26500dd5240c90a352b1562e2f994eb6f7f6d5 Mon Sep 17 00:00:00 2001
+From: Didier Raboud <odyx@debian.org>
+Date: Tue, 9 Aug 2016 18:11:10 +0200
+Subject: Tests: ignore usb & dnssd backend unexpected exits
+
+Ignore the following errors:
+ "[cups-deviced] PID * (usb) crashed on signal 11!" and
+ "[cups-deviced] PID * (dnssd) stopped with status 1"
+
+ They seem to regularly happen on Debian/Ubuntu buildds and break error lines
+ counting.
+Last-Update: 2015-02-10
+
+Patch-Name: tests-ignore-usb-crash.patch
+---
+ test/run-stp-tests.sh | 5 ++++-
+ 1 file changed, 4 insertions(+), 1 deletion(-)
+
+diff --git a/test/run-stp-tests.sh b/test/run-stp-tests.sh
+index ab16a10e9..2187f5890 100755
+--- a/test/run-stp-tests.sh
++++ b/test/run-stp-tests.sh
+@@ -996,7 +996,10 @@ else
+ fi
+ 
+ # Error log messages
+-count=`$GREP '^E ' $BASE/log/error_log | $GREP -v 'Unknown default SystemGroup' | wc -l | awk '{print $1}'`
++count=`$GREP '^E ' $BASE/log/error_log | $GREP -v 'Unknown default SystemGroup' | \
++       $GREP -v '(usb) crashed on signal 11' | \
++       $GREP -v '(dnssd) stopped with status 1' | \
++       wc -l | awk '{print $1}'`
+ if test $count != 33; then
+ 	echo "FAIL: $count error messages, expected 33."
+ 	$GREP '^E ' $BASE/log/error_log

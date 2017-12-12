@@ -1,4 +1,4 @@
-From d0e97209bb5dfa675db433cb06a141c1115d0325 Mon Sep 17 00:00:00 2001
+From 4c0177328e8ec1223fea45c8f37000af4eb2178b Mon Sep 17 00:00:00 2001
 From: Tim Waugh <twaugh@redhat.com>
 Date: Tue, 9 Aug 2016 18:11:46 +0200
 Subject: Set the default for SyncOnClose to Yes
@@ -27,10 +27,10 @@ index 4a78ba615..a3d088da5 100644
  # Default user and group for filters/backends/helper programs; this cannot be
  # any user or group that resolves to ID 0 for security reasons...
 diff --git a/doc/help/man-cups-files.conf.html b/doc/help/man-cups-files.conf.html
-index 046a642ea..b59c63562 100644
+index 42dae48b3..92812db5a 100644
 --- a/doc/help/man-cups-files.conf.html
 +++ b/doc/help/man-cups-files.conf.html
-@@ -142,7 +142,7 @@ The default is "/etc/cups".
+@@ -148,7 +148,7 @@ The default is "/var/run/cups" or "/etc/cups" depending on the platform.
  <dd style="margin-left: 5.0em">Specifies whether the scheduler calls
  <b>fsync</b>(2)
  after writing configuration or state files.
@@ -40,10 +40,10 @@ index 046a642ea..b59c63562 100644
  <dd style="margin-left: 5.0em">Specifies the group(s) to use for <i>@SYSTEM</i> group authentication.
  The default contains "admin", "lpadmin", "root", "sys", and/or "system".
 diff --git a/man/cups-files.conf.man.in b/man/cups-files.conf.man.in
-index 179e119de..fb6d2d3e8 100644
+index 2ed468661..07446abd6 100644
 --- a/man/cups-files.conf.man.in
 +++ b/man/cups-files.conf.man.in
-@@ -201,7 +201,7 @@ The default is "/etc/cups".
+@@ -204,7 +204,7 @@ The default is "/var/run/cups" or "/etc/cups" depending on the platform.
  Specifies whether the scheduler calls
  .BR fsync (2)
  after writing configuration or state files.
@@ -53,10 +53,10 @@ index 179e119de..fb6d2d3e8 100644
  .TP 5
  \fBSystemGroup \fIgroup-name \fR[ ... \fIgroup-name\fR ]
 diff --git a/scheduler/conf.c b/scheduler/conf.c
-index d7fda25f8..57912fd40 100644
+index ae65d134f..bd1bac436 100644
 --- a/scheduler/conf.c
 +++ b/scheduler/conf.c
-@@ -737,7 +737,7 @@ cupsdReadConfiguration(void)
+@@ -735,7 +735,7 @@ cupsdReadConfiguration(void)
    RootCertDuration         = 300;
    Sandboxing               = CUPSD_SANDBOXING_STRICT;
    StrictConformance        = FALSE;

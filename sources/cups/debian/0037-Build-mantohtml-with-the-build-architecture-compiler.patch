@@ -1,0 +1,112 @@
+From 9a50979b3c769a1be582b33969172b24b3acdb3e Mon Sep 17 00:00:00 2001
+From: Helmut Grohne <helmut@subdivi.de>
+Date: Tue, 9 Aug 2016 18:11:49 +0200
+Subject: Build mantohtml with the build architecture compiler
+
+mantohtml is run during build. Thus it needs to be built with the build
+architecture compiler (or execution fails). The obvious part is switching to
+CC_FOR_BUILD. That also depends on it not requiring any other cups components.
+In particular, removing uses of strlcpy and replacing host architecture-
+specific includes is thus needed.
+
+Bug-Debian: https://bugs.debian.org/837936
+---
+ Makedefs.in     |  1 +
+ configure.ac    |  9 +++++++++
+ man/Makefile    |  6 ++----
+ man/mantohtml.c | 15 ++++++++++-----
+ 4 files changed, 22 insertions(+), 9 deletions(-)
+
+diff --git a/Makedefs.in b/Makedefs.in
+index 94428658f..2bf41df5d 100644
+--- a/Makedefs.in
++++ b/Makedefs.in
+@@ -25,6 +25,7 @@ CUPS_VERSION    =       @CUPS_VERSION@
+ AR		=	@AR@
+ AWK		=	@AWK@
+ CC		=	@LIBTOOL_CC@ @CC@
++CC_FOR_BUILD	=	@CC_FOR_BUILD@
+ CHMOD		=	@CHMOD@
+ CXX		=	@LIBTOOL_CXX@ @CXX@
+ DSO		=	@DSO@
+diff --git a/configure.ac b/configure.ac
+index ac78c48ad..4cc463d86 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -22,6 +22,15 @@ sinclude(config-scripts/cups-common.m4)
+ sinclude(config-scripts/cups-directories.m4)
+ sinclude(config-scripts/cups-manpages.m4)
+ 
++AC_MSG_CHECKING([for build system compiler])
++if test "$cross_compiling" = yes; then
++	CC_FOR_BUILD=${CC_FOR_BUILD-cc}
++else
++	CC_FOR_BUILD=${CC}
++fi
++AC_MSG_RESULT(${CC_FOR_BUILD})
++AC_SUBST(CC_FOR_BUILD)
++
+ sinclude(config-scripts/cups-sharedlibs.m4)
+ sinclude(config-scripts/cups-libtool.m4)
+ sinclude(config-scripts/cups-compiler.m4)
+diff --git a/man/Makefile b/man/Makefile
+index 4b10dffc5..3c3270ade 100644
+--- a/man/Makefile
++++ b/man/Makefile
+@@ -226,7 +226,5 @@ html:	$(MAN1) $(MAN5) $(MAN7) $(MAN8) mantohtml
+ 		./mantohtml `basename $$file .$(MAN8EXT)`.man >../doc/help/man-`basename $$file .$(MAN8EXT)`.html; \
+ 	done
+ 
+-mantohtml:	mantohtml.o ../cups/$(LIBCUPSSTATIC)
+-	$(LD_CC) $(ARCHFLAGS) $(LDFLAGS) -o $@ mantohtml.o \
+-		../cups/$(LIBCUPSSTATIC) $(LIBGSSAPI) $(SSLLIBS) \
+-		$(DNSSDLIBS) $(COMMONLIBS) $(LIBZ)
++mantohtml:	mantohtml.c
++	$(CC_FOR_BUILD) -o $@ $<
+diff --git a/man/mantohtml.c b/man/mantohtml.c
+index bf7ba5fe8..80acf5512 100644
+--- a/man/mantohtml.c
++++ b/man/mantohtml.c
+@@ -15,8 +15,10 @@
+  * Include necessary headers.
+  */
+ 
+-#include <cups/string-private.h>
+-#include <cups/array-private.h>
++#include <ctype.h>
++#include <stdio.h>
++#include <stdlib.h>
++#include <string.h>
+ #include <unistd.h>
+ 
+ 
+@@ -815,7 +817,8 @@ main(int  argc,				/* I - Number of command-line args */
+         * Anchor for HTML output...
+         */
+ 
+-        strlcpy(anchor, line + 4, sizeof(anchor));
++        strncpy(anchor, line + 4, sizeof(anchor) - 1);
++        anchor[sizeof(anchor) - 1] = '\0';
+       }
+       else if (strncmp(line, ".\\\"", 3))
+       {
+@@ -944,7 +947,8 @@ html_alternate(const char *s,		/* I - String */
+ 		manfile[1024],		/* Man page filename */
+ 		manurl[1024];		/* Man page URL */
+ 
+-        strlcpy(name, s, sizeof(name));
++        strncpy(name, s, sizeof(name) - 1);
++        name[sizeof(name) - 1] = '\0';
+         if ((size_t)(end - s) < sizeof(name))
+           name[end - s] = '\0';
+ 
+@@ -1177,7 +1181,8 @@ html_fputs(const char *s,		/* I  - String */
+       if (end[-1] == ',' || end[-1] == '.' || end[-1] == ')')
+         end --;
+ 
+-      strlcpy(temp, s, sizeof(temp));
++      strncpy(temp, s, sizeof(temp) - 1);
++      temp[sizeof(temp) - 1] = '\0';
+       if ((size_t)(end -s) < sizeof(temp))
+         temp[end - s] = '\0';
+ 

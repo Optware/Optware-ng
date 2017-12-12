@@ -1,0 +1,66 @@
+From 1cd86d5f28eed97782685d59c522a1c4e6153b6c Mon Sep 17 00:00:00 2001
+From: Didier Raboud <odyx@debian.org>
+Date: Tue, 9 Aug 2016 18:11:21 +0200
+Subject: Use 127.0.0.1 instead of localhost in the test-suite. This should
+
+ make the test-suite work in pbuilder. It apparently also fixes an ipp backend
+ problem in the test-suite.
+Origin: vendor
+Last-Update: 2016-08-05
+
+Patch-Name: tests-use-ipv4-lo-address.patch
+---
+ test/5.1-lpadmin.sh   | 4 ++--
+ test/run-stp-tests.sh | 8 ++++----
+ 2 files changed, 6 insertions(+), 6 deletions(-)
+
+diff --git a/test/5.1-lpadmin.sh b/test/5.1-lpadmin.sh
+index 07f1d5aa0..d715f330e 100644
+--- a/test/5.1-lpadmin.sh
++++ b/test/5.1-lpadmin.sh
+@@ -55,8 +55,8 @@ echo ""
+ 
+ echo "Add Shared Printer Test"
+ echo ""
+-echo "    lpadmin -p Test3 -E -v ipp://localhost:$IPP_PORT/printers/Test2 -m raw"
+-$VALGRIND ../systemv/lpadmin -p Test3 -E -v ipp://localhost:$IPP_PORT/printers/Test2 -m raw 2>&1
++echo "    lpadmin -p Test3 -E -v ipp://127.0.0.1:$IPP_PORT/printers/Test2 -m raw"
++$VALGRIND ../systemv/lpadmin -p Test3 -E -v ipp://127.0.0.1:$IPP_PORT/printers/Test2 -m raw 2>&1
+ if test $? != 0; then
+ 	echo "    FAILED"
+ 	exit 1
+diff --git a/test/run-stp-tests.sh b/test/run-stp-tests.sh
+index 2f67c4a5d..a2c6cc6a9 100755
+--- a/test/run-stp-tests.sh
++++ b/test/run-stp-tests.sh
+@@ -488,7 +488,7 @@ fi
+ cat >$BASE/cupsd.conf <<EOF
+ StrictConformance Yes
+ Browsing Off
+-Listen localhost:$port
++Listen 127.0.0.1:$port
+ Listen $BASE/sock
+ PassEnv DYLD_LIBRARY_PATH
+ PassEnv LD_LIBRARY_PATH
+@@ -630,7 +630,7 @@ fi
+ export SHLIB_PATH
+ 
+ CUPS_DISABLE_APPLE_DEFAULT=yes; export CUPS_DISABLE_APPLE_DEFAULT
+-CUPS_SERVER=localhost:$port; export CUPS_SERVER
++CUPS_SERVER=127.0.0.1:$port; export CUPS_SERVER
+ CUPS_SERVERROOT=$BASE; export CUPS_SERVERROOT
+ CUPS_STATEDIR=$BASE; export CUPS_STATEDIR
+ CUPS_DATADIR=$BASE/share; export CUPS_DATADIR
+@@ -764,10 +764,10 @@ for file in 4*.test ipp-2.1.test; do
+ 	echo "" >>$strfile
+ 
+ 	if test $file = ipp-2.1.test; then
+-		uri="ipp://localhost:$port/printers/Test1"
++		uri="ipp://127.0.0.1:$port/printers/Test1"
+ 		options="-V 2.1 -d NOPRINT=1 -f testfile.ps"
+ 	else
+-		uri="ipp://localhost:$port/printers"
++		uri="ipp://127.0.0.1:$port/printers"
+ 		options=""
+ 	fi
+ 	$VALGRIND ./ipptool -tI $options $uri $file >> $strfile

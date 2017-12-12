@@ -1,0 +1,27 @@
+From 9f82d7732ceac6f6a392b2e91d2a82c7d7920796 Mon Sep 17 00:00:00 2001
+From: Didier Raboud <odyx@debian.org>
+Date: Tue, 9 Aug 2016 18:11:16 +0200
+Subject: Tests: Do not run the CUPS_EUC_JP test case on BSD/Hurd either, as
+ glibc's iconv behavior is different than what the test expects.
+
+Bug-Debian: http://bugs.debian.org/662996
+
+Last-Update: 2015-10-02
+Patch-Name: test-i18n-nonlinux.patch
+---
+ cups/testi18n.c | 2 +-
+ 1 file changed, 1 insertion(+), 1 deletion(-)
+
+diff --git a/cups/testi18n.c b/cups/testi18n.c
+index beaf23679..926b294ce 100644
+--- a/cups/testi18n.c
++++ b/cups/testi18n.c
+@@ -416,7 +416,7 @@ main(int  argc,				/* I - Argument Count */
+       puts("PASS");
+   }
+ 
+-#ifndef __linux
++#if !defined(__linux__) && !defined(__GLIBC__)
+   fputs("cupsCharsetToUTF8(CUPS_EUC_JP): ", stdout);
+ 
+   strlcpy(legsrc, legdest, sizeof(legsrc));
