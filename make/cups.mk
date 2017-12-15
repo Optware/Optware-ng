@@ -55,7 +55,7 @@ CUPS_CONFLICTS=
 #
 # CUPS_IPK_VERSION should be incremented when the ipk changes.
 #
-CUPS_IPK_VERSION=1
+CUPS_IPK_VERSION=2
 
 CUPS_DOC_DESCRIPTION=Common Unix Printing System documentation.
 CUPS-DEV_DESCRIPTION=Development files for CUPS
@@ -115,6 +115,7 @@ $(CUPS_SOURCE_DIR)/debian/manpage-translations.patch \
 $(CUPS_SOURCE_DIR)/debian/0039-The-lp-and-lpr-commands-now-provide-better-error-mes.patch \
 $(CUPS_SOURCE_DIR)/manpage-po4a.patch \
 $(CUPS_SOURCE_DIR)/cupsd-set-default-for-RIPCache-to-auto.patch \
+$(CUPS_SOURCE_DIR)/uclibc_posix_spawn.patch \
 #$(CUPS_SOURCE_DIR)/optware_pidfile.patch \
 #$(CUPS_SOURCE_DIR)/build_without_gnutls.patch
 

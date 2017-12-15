@@ -1,0 +1,11 @@
+--- a/scheduler/process.c
++++ b/scheduler/process.c
+@@ -25,7 +25,7 @@
+ extern char **environ;
+ #endif /* HAVE_POSIX_SPAWN */
+ #ifdef HAVE_POSIX_SPAWN
+-#  if !defined(__OpenBSD__) || OpenBSD >= 201505
++#  if (!defined(__OpenBSD__) || OpenBSD >= 201505) && !defined(__UCLIBC__)
+ #    define USE_POSIX_SPAWN 1
+ #  else
+ #    define USE_POSIX_SPAWN 0
