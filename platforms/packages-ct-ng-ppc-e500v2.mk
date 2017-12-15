@@ -14,6 +14,7 @@ BROKEN_PACKAGES = \
 	lm-sensors \
 	ldconfig modutils samba2 node010
 
+FFMPEG_CONFIG_OPTS := --disable-altivec
 FFMPEG_OLD_CONFIG_OPTS := --disable-altivec
 
 BOOST_ADDITIONAL_LIBS:= atomic \
