@@ -1,9 +1,9 @@
-# This toolchain is gcc 7.2.0 on uClibc-ng 1.0.26
+# This toolchain is gcc 7.2.0 on uClibc-ng 1.0.27
 
 GNU_TARGET_NAME = mipsel-linux
 EXACT_TARGET_NAME = mipsel-buildroot-linux-uclibc
 
-UCLIBC_VERSION=1.0.26
+UCLIBC_VERSION=1.0.27
 
 DEFAULT_TARGET_PREFIX=/opt
 TARGET_PREFIX ?= /opt
@@ -14,7 +14,7 @@ TARGET_OS=linux-uclibc
 
 LIBSTDC++_VERSION=6.0.24
 
-LIBC-DEV_IPK_VERSION=3
+LIBC-DEV_IPK_VERSION=1
 
 GETTEXT_NLS=enable
 #NO_BUILTIN_MATH=true
@@ -72,7 +72,7 @@ TOOLCHAIN_KERNEL_HASH=4164297511fb63af279cdade148f340f7947eedd
 TOOLCHAIN_KERNEL_SOURCE=linux-$(TOOLCHAIN_KERNEL_VERSION).tar.xz
 
 UCLIBC-OPT_VERSION = $(UCLIBC_VERSION)
-UCLIBC-OPT_IPK_VERSION = 2
+UCLIBC-OPT_IPK_VERSION = 1
 UCLIBC-OPT_LIBS_SOURCE_DIR = $(TARGET_CROSS_TOP)/mipsel-buildroot-linux-uclibc/sysroot/lib
 
 BUILDROOT-MIPSEL-NG_SOURCE_DIR=$(SOURCE_DIR)/buildroot-mipsel-ng
@@ -80,6 +80,7 @@ BUILDROOT-MIPSEL-NG_SOURCE_DIR=$(SOURCE_DIR)/buildroot-mipsel-ng
 BUILDROOT-MIPSEL-NG_PATCHES=\
 $(BUILDROOT-MIPSEL-NG_SOURCE_DIR)/uclibc-ng-config.patch \
 $(BUILDROOT-MIPSEL-NG_SOURCE_DIR)/toolchain-gccgo.patch \
+$(BUILDROOT-MIPSEL-NG_SOURCE_DIR)/uclibc-ng-bump.patch \
 
 BUILDROOT-MIPSEL-NG_UCLIBC-NG_PATCHES=\
 $(wildcard $(BUILDROOT-MIPSEL-NG_SOURCE_DIR)/uclibc-ng-patches/*.patch)
@@ -131,6 +132,8 @@ ifneq ($(BUILDROOT-MIPSEL-NG_GCC_PATCHES), )
 	$(INSTALL) -m 644 $(BUILDROOT-MIPSEL-NG_GCC_PATCHES) \
 		$(TARGET_CROSS_BUILD_DIR)/package/gcc/$(CROSS_CONFIGURATION_GCC_VERSION)
 endif
+	cd $(TARGET_CROSS_BUILD_DIR)/package/uclibc; \
+		rm -f 0001-fix-issues-with-gdb-8.0.patch 0002-microblaze-handle-R_MICROBLAZE_NONE-for-ld.so-bootst.patch
 	(echo "DO_XSI_MATH=y"; echo "COMPAT_ATEXIT=y"; echo "# UCLIBC_USE_MIPS_PREFETCH is not set") >> $(TARGET_CROSS_BUILD_DIR)/package/uclibc/uClibc-ng.config
 	sed -e 's|^BR2_DL_DIR=.*|BR2_DL_DIR="$(DL_DIR)"|' -e 's|@KERNEL_VERSION@|$(TOOLCHAIN_KERNEL_VERSION)|' \
 		$(BUILDROOT-MIPSEL-NG_SOURCE_DIR)/config > $(TARGET_CROSS_BUILD_DIR)/.config

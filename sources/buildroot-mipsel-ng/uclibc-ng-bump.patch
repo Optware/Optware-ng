@@ -1,17 +1,17 @@
---- a/package/uclibc/uclibc.hash
-+++ b/package/uclibc/uclibc.hash
+---  a/package/uclibc/uclibc.hash
++++  b/package/uclibc/uclibc.hash
 @@ -1,2 +1,2 @@
- # From http://www.uclibc-ng.org/
--sha256  c238b300356b2638432e023076293f29935094108a2714ad1762b76015fae729        uClibc-ng-1.0.12.tar.xz
-+sha256  0f62f35217d9a0b5eb3810dd6de16ab3dd4323f3224c6b95423250ac1e19ee49        uClibc-ng-1.0.15.tar.xz
---- a/package/uclibc/uclibc.mk
-+++ b/package/uclibc/uclibc.mk
+ # From https://uclibc-ng.org/
+-sha256  d88470775192b01d278633953ccc9fecacd090e52f401d506a71add3e47d4694        uClibc-ng-1.0.26.tar.xz
++sha256  9452b0e92f76db19d8ff30b2d6d10a80e1ed01e4c504a36fef34cfc9de490b24        uClibc-ng-1.0.27.tar.xz
+---  a/package/uclibc/uclibc.mk
++++  b/package/uclibc/uclibc.mk
 @@ -4,7 +4,7 @@
  #
  ################################################################################
  
--UCLIBC_VERSION = 1.0.12
-+UCLIBC_VERSION = 1.0.15
+-UCLIBC_VERSION = 1.0.26
++UCLIBC_VERSION = 1.0.27
  UCLIBC_SOURCE = uClibc-ng-$(UCLIBC_VERSION).tar.xz
  UCLIBC_SITE = http://downloads.uclibc-ng.org/releases/$(UCLIBC_VERSION)
- UCLIBC_LICENSE = LGPLv2.1+
+ UCLIBC_LICENSE = LGPL-2.1+

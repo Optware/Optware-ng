@@ -5,7 +5,7 @@
  	char **tok = NULL;
  
 -	parser = config_open("/etc/gai.conf");
-+	parser = config_open("%OPTWARE_TARGET_PREFIX%t/etc/gai.conf");
++	parser = config_open("%OPTWARE_TARGET_PREFIX%/etc/gai.conf");
  	if (!parser)
  		return;
  
