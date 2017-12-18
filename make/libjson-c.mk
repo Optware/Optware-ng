@@ -124,6 +124,8 @@ $(LIBJSON_C_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBJSON_C_SOURCE) $(LIBJSON_C_PA
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBJSON_C_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LIBJSON_C_LDFLAGS)" \
+		ac_cv_func_malloc_0_nonnull=yes \
+		ac_cv_func_realloc_0_nonnull=yes \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
