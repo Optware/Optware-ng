@@ -328,7 +328,7 @@ COMMON_PACKAGES = \
 	libgc libgcrypt libgd libghttp libgmp libgpg-error libgssapi \
 	libglade libhid \
 	libical \
-	libid3tag libidn libieee1284 libijs libinklevel libjansson libjbigkit libjpeg \
+	libid3tag libidn libieee1284 libijs libinklevel libjansson libjbigkit libjpeg libjson-c \
 	libksba liblcms liblcms2 libmaa libmad libmatroska libmediainfo libmemcache libmemcached libmicrohttpd \
 	libmcrypt libmm $(strip $(if $(filter true, $(NO_LIBNSL)), , libnsl)) \
 	libmms libmnl libmpc libmpcdec libmpdclient libmpeg2 libmpfr libmrss libmtp \
