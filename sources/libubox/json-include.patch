@@ -1,0 +1,39 @@
+diff --git a/blobmsg_json.c b/blobmsg_json.c
+index ca9dd1a..05397af 100644
+--- a/blobmsg_json.c
++++ b/blobmsg_json.c
+@@ -20,7 +20,7 @@
+ #ifdef JSONC
+ 	#include <json.h>
+ #else
+-	#include <json/json.h>
++	#include <json-c/json.h>
+ #endif
+ 
+ bool blobmsg_add_object(struct blob_buf *b, json_object *obj)
+diff --git a/jshn.c b/jshn.c
+index 4989099..611194d 100644
+--- a/jshn.c
++++ b/jshn.c
+@@ -16,7 +16,7 @@
+ #ifdef JSONC
+         #include <json.h>
+ #else
+-        #include <json/json.h>
++        #include <json-c/json.h>
+ #endif
+ 
+ #include <string.h>
+diff --git a/examples/json_script-example.c b/examples/json_script-example.c
+index 4d252a9..5c81e4c 100644
+--- a/examples/json_script-example.c
++++ b/examples/json_script-example.c
+@@ -1,7 +1,7 @@
+ #include <stdio.h>
+ #include <stdlib.h>
+ 
+-#include <json.h>
++#include <json-c/json.h>
+ #include "blobmsg.h"
+ #include "blobmsg_json.h"
+ #include "json_script.h"

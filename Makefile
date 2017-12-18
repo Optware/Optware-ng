@@ -337,7 +337,7 @@ COMMON_PACKAGES = \
 	libpar2 libpcap libpeas libpng libpth librsync librsvg \
 	libsamplerate libserf libshout libsigc++ libsoup libsndfile libsodium libsoxr libstdc++ \
 	libtasn1 libtheora libtiff libtool libtorrent \
-	libunistring libupnp libusb libusb1 libuv libvncserver \
+	libubox libunistring libupnp libusb libusb1 libuv libvncserver \
 	libvorbis libvorbisidec libwebsockets libxfce4ui libxfce4util libxkbcommon libxml2 libxslt libzen libzip \
 	lighttpd lirc links2 linksys-tftp linphone littlesmalltalk llink \
 	logrotate lookat loudmouth lrzsz lsof ltrace \
