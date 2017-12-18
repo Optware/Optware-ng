@@ -411,7 +411,7 @@ COMMON_PACKAGES = \
 	ucl udev udns udpxy uemacs ulogd unarj uncia unfs3 unionfs-fuse units unixodbc \
 	unrar unrtf \
 	unzip up-imapproxy updatedd upslug2 \
-	upx usbutils ushare utelnetd utf8proc util-linux \
+	upx usb-modeswitch usbutils ushare utelnetd utf8proc util-linux \
 	vblade vdr-mediamvp vim vitetris vlc \
 	vnstat vorbis-tools vorbisgain vpnc vsftpd vte vtun \
 	w3cam w3m wayland wakelan wavpack webalizer weechat werc wget \
