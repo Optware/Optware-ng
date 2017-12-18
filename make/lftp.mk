@@ -20,9 +20,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-LFTP_SITE=ftp://ftp.cs.tu-berlin.de/pub/net/ftp/lftp
-LFTP_SITE2=ftp://ftp.tuwien.ac.at/infosys/browsers/ftp/lftp
-SFR_SITE=http://www.sfr-fresh.com/unix/misc
+LFTP_SITE=http://lftp.tech/ftp
+LFTP_SITE_SFR=http://www.sfr-fresh.com/unix/misc
 LFTP_VERSION=4.6.4
 LFTP_SOURCE=lftp-$(LFTP_VERSION).tar.xz
 LFTP_DIR=lftp-$(LFTP_VERSION)
@@ -41,7 +40,7 @@ LFTP_CONFLICTS=
 #
 # LFTP_IPK_VERSION should be incremented when the ipk changes.
 #
-LFTP_IPK_VERSION=2
+LFTP_IPK_VERSION=3
 
 #
 # LFTP_CONFFILES should be a list of user-editable files
@@ -100,9 +99,8 @@ LFTP_IPK=$(BUILD_DIR)/lftp_$(LFTP_VERSION)-$(LFTP_IPK_VERSION)_$(TARGET_ARCH).ip
 #
 $(DL_DIR)/$(LFTP_SOURCE):
 	$(WGET) -P $(@D) $(LFTP_SITE)/$(@F) || \
-	$(WGET) -P $(@D) $(LFTP_SITE2)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F) || \
-	$(WGET) -P $(@D) $(SFR_SITE)/$(@F)
+	$(WGET) -P $(@D) $(LFTP_SITE_SFR)/$(@F)
 
 #
 # The source code depends on it existing within the download directory.
