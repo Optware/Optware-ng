@@ -22,7 +22,7 @@
 #
 LFTP_SITE=http://lftp.tech/ftp
 LFTP_SITE_SFR=http://www.sfr-fresh.com/unix/misc
-LFTP_VERSION=4.6.4
+LFTP_VERSION=4.7.5
 LFTP_SOURCE=lftp-$(LFTP_VERSION).tar.xz
 LFTP_DIR=lftp-$(LFTP_VERSION)
 LFTP_UNZIP=xzcat
@@ -40,7 +40,7 @@ LFTP_CONFLICTS=
 #
 # LFTP_IPK_VERSION should be incremented when the ipk changes.
 #
-LFTP_IPK_VERSION=3
+LFTP_IPK_VERSION=1
 
 #
 # LFTP_CONFFILES should be a list of user-editable files
@@ -51,8 +51,7 @@ LFTP_IPK_VERSION=3
 # which they should be applied to the source code.
 #
 LFTP_PATCHES=\
-$(LFTP_SOURCE_DIR)/IPV6_V6ONLY.patch \
-$(LFTP_SOURCE_DIR)/signbit.patch \
+$(LFTP_SOURCE_DIR)/500-glibc_2.25_compat.patch \
 
 #
 # If the compilation of the package requires additional
