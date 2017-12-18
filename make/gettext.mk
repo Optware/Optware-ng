@@ -29,10 +29,10 @@ GETTEXT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 GETTEXT_DESCRIPTION=Set of tools for producing multi-lingual messages
 LIBINTL_DESCRIPTION=gettext libintl
 ifneq (libiconv, $(filter libiconv, $(PACKAGES)))
-GETTEXT_DEPENDS=libintl, libunistring, libcroco
+GETTEXT_DEPENDS=libintl, libunistring, libacl, ncurses
 LIBINTL_DEPENDS=
 else
-GETTEXT_DEPENDS=libintl, libunistring, libcroco, libiconv
+GETTEXT_DEPENDS=libintl, libunistring, libacl, ncurses, libiconv
 LIBINTL_DEPENDS=libiconv
 endif
 GETTEXT_SUGGESTS=
@@ -41,7 +41,7 @@ GETTEXT_CONFLICTS=
 #
 # GETTEXT_IPK_VERSION should be incremented when the ipk changes.
 #
-GETTEXT_IPK_VERSION=3
+GETTEXT_IPK_VERSION=4
 
 #
 # GETTEXT_CONFFILES should be a list of user-editable files
@@ -152,7 +152,7 @@ $(GETTEXT_BUILD_DIR)/.configured: $(DL_DIR)/$(GETTEXT_SOURCE) $(GETTEXT_PATCHES)
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
 endif
-	$(MAKE) libunistring-stage libcroco-stage
+	$(MAKE) libunistring-stage libacl-stage ncurses-stage
 	rm -rf $(BUILD_DIR)/$(GETTEXT_DIR) $(@D)
 	$(GETTEXT_UNZIP) $(DL_DIR)/$(GETTEXT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(GETTEXT_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(GETTEXT_DIR) -p1
@@ -170,6 +170,8 @@ endif
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=$(TARGET_PREFIX) \
 		--$(GETTEXT_NLS)-nls \
+		--with-included-libcroco \
+		--with-included-glib \
 		--disable-static \
 		--disable-rpath \
 		--disable-native-java \
