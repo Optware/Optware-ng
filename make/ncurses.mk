@@ -9,7 +9,7 @@ NCURSES_SOURCE_DIR=$(SOURCE_DIR)/ncurses
 
 NCURSES_VERSION=5.7
 NCURSES=ncurses-$(NCURSES_VERSION)
-NCURSES_SITE=ftp://invisible-island.net/ncurses
+NCURSES_SITE=ftp://ftp.invisible-island.net/ncurses
 NCURSES_SOURCE=$(NCURSES).tar.gz
 NCURSES_UNZIP=zcat
 NCURSES_MAINTAINER=Christopher Blunck <christopher.blunck@gmail.com>
@@ -29,7 +29,7 @@ else
 NCURSES_FOR_OPTWARE_TARGET=ncurses
 endif
 
-NCURSES_IPK_VERSION=6
+NCURSES_IPK_VERSION=7
 
 NCURSES_PATCHES=$(NCURSES_SOURCE_DIR)/MKlib_gen_sh.patch
 
