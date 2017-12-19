@@ -39,8 +39,7 @@ PERL_ARCH = $(strip \
     $(if $(filter buildroot-armeabi-ng buildroot-armeabihf, $(OPTWARE_TARGET)), armv7l-linux, \
     $(if $(filter buildroot-mipsel-ng, $(OPTWARE_TARGET)), mips-linux, \
     $(if $(filter armeb, $(TARGET_ARCH)), armv5b-linux, \
-    $(if $(filter powerpc, $(TARGET_ARCH)), ppc-linux, \
-    $(TARGET_ARCH)-linux)))))
+    $(TARGET_ARCH)-linux))))
 PERL_LIB_CORE_DIR=perl5/$(PERL_VERSION)/$(PERL_ARCH)/CORE
 PERL_LDFLAGS=-pthread -Wl,-rpath,$(TARGET_PREFIX)/lib/$(PERL_LIB_CORE_DIR)
 
