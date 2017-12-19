@@ -127,7 +127,7 @@ $(PERL_BUILD_DIR)/.configured: $(PERL_PATCHES) $(DL_DIR)/$(PERL_CROSS_SOURCE) $(
 	fi
 	(cd $(@D); \
 		./configure \
-		--target=$(GNU_TARGET_NAME) \
+		--target=$(PERL_ARCH) \
 		--mode=cross \
 		--target-tools-prefix=$(TARGET_CROSS) \
 		--prefix=$(TARGET_PREFIX) \
