@@ -202,6 +202,8 @@ $(PERL_IPK) $(PERL-DOC_IPK): $(PERL_BUILD_DIR)/.built
 		rm -f perl; \
 		ln -s perl$(PERL_VERSION) perl; \
 	)
+	sed -i -e 's|$(TARGET_CROSS)|$(TARGET_PREFIX)/bin/|' \
+		$(PERL_IPK_DIR)$(TARGET_PREFIX)/lib/perl5/$(PERL_VERSION)/$(PERL_ARCH)/Config_heavy.pl
 ifeq ($(OPTWARE_WRITE_OUTSIDE_OPT_ALLOWED),true)
 	$(INSTALL) -d $(PERL_IPK_DIR)/usr/bin
 	ln -s $(TARGET_PREFIX)/bin/perl $(PERL_IPK_DIR)/usr/bin/perl
