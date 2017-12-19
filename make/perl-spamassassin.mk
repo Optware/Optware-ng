@@ -16,7 +16,7 @@ PERL-SPAMASSASSIN_SECTION=util
 PERL-SPAMASSASSIN_PRIORITY=optional
 PERL-SPAMASSASSIN_DEPENDS=perl, perl-digest-sha1, perl-html-parser, perl-net-dns, perl-db-file, psmisc
 
-PERL-SPAMASSASSIN_IPK_VERSION=3
+PERL-SPAMASSASSIN_IPK_VERSION=4
 
 #PERL-SPAMASSASSIN_CONFFILES=$(TARGET_PREFIX)/etc/perl-spamassassin.conf $(TARGET_PREFIX)/etc/init.d/SXXperl-spamassassin
 PERL-SPAMASSASSIN_CONFFILES=$(TARGET_PREFIX)/etc/spamassassin/init.pre $(TARGET_PREFIX)/etc/spamassassin/local.cf $(TARGET_PREFIX)/etc/init.d/S62spamd
