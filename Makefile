@@ -179,7 +179,7 @@ PYTHON_PACKAGES = \
 	py-idna py-imaplib2 py-ipaddress py-jinja2 \
 	py-hgsubversion py-hgsvn py-jsmin py-kid py-lepl py-lxml \
 	py-mako py-markdown py-mercurial \
-	py-moin py-mssql py-mx-base py-mysql \
+	py-moin py-mssql py-mutagen py-mx-base py-mysql \
 	py-myghty \
 	py-nose \
 	py-openssl py-openzwave py-paramiko \
