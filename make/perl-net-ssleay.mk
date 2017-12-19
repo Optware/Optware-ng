@@ -43,7 +43,7 @@ $(PERL-NET-SSLEAY_BUILD_DIR)/.configured: $(DL_DIR)/$(PERL-NET-SSLEAY_SOURCE) $(
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS)" \
-		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl" \
+		PERL5LIB="$(STAGING_LIB_DIR)/perl5/site_perl:$(@D)" \
 		$(PERL_HOSTPERL) Makefile.PL \
                 $(STAGING_PREFIX) -- \
 		PREFIX=$(TARGET_PREFIX) \
