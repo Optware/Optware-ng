@@ -150,6 +150,7 @@ PYTHON_PACKAGES = \
 	bzr bzr-rewrite bzr-svn bzrtools \
 	cherokee-pyscgi \
 	deluge deluge-develop \
+	dir2ogg \
 	dstat \
 	getmail \
 	gitosis \
