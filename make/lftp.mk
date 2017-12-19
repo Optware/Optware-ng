@@ -141,25 +141,7 @@ endif
 	if test "$(BUILD_DIR)/$(LFTP_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LFTP_DIR) $(@D) ; \
 	fi
-	sed -i.orig -e '/gets is a security hole - use fgets instead/s|^|//|' $(@D)/lib/stdio.in.h
 	(cd $(@D); \
-	if test `$(TARGET_CC) -dumpversion | cut -c1` = 3; then \
-		$(TARGET_CONFIGURE_OPTS) \
-		CPPFLAGS="$(STAGING_CPPFLAGS) $(LFTP_CPPFLAGS)" \
-		LDFLAGS="$(STAGING_LDFLAGS) $(LFTP_LDFLAGS)" \
-		LIBGNUTLS_CONFIG=$(STAGING_PREFIX)/bin/libgnutls-config \
-		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
-		$(LFTP_CONFIG_ENV) \
-		$(LFTP_CROSS_CONFIGURE_SIGNBIT_GCC3) \
-		./configure \
-		--build=$(GNU_HOST_NAME) \
-		--host=$(GNU_TARGET_NAME) \
-		--target=$(GNU_TARGET_NAME) \
-		--prefix=$(TARGET_PREFIX) \
-		--disable-nls \
-		--disable-static \
-		; \
-	else \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LFTP_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LFTP_LDFLAGS)" \
@@ -173,8 +155,13 @@ endif
 		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
 		--disable-static \
-		; \
-	fi \
+		--with-readline=$(STAGING_PREFIX) \
+		--with-readline-inc=$(STAGING_INCLUDE_DIR) \
+		--with-readline-lib="$(STAGING_LDFLAGS) -lreadline" \
+		--with-expat=$(STAGING_PREFIX) \
+		--with-expat-inc=$(STAGING_INCLUDE_DIR) \
+		--with-expat-lib="$(STAGING_LDFLAGS) -lexpat" \
+		--with-zlib=$(STAGING_PREFIX) \
 	)
 	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
