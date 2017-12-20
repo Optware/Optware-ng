@@ -43,6 +43,9 @@ PERL_ARCH = $(strip \
 PERL_LIB_CORE_DIR=perl5/$(PERL_VERSION)/$(PERL_ARCH)/CORE
 PERL_LDFLAGS=-pthread -Wl,-rpath,$(TARGET_PREFIX)/lib/$(PERL_LIB_CORE_DIR)
 
+PERL_MODULES_CFLAGS = -pthread -fwrapv -fno-strict-aliasing -fstack-protector-strong -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64
+PERL_MODULES_LDFLAGS = -pthread -fstack-protector-strong
+
 PERL_LIBS=-lm
 
 #
