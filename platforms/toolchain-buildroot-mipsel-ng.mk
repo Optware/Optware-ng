@@ -13,6 +13,7 @@ TARGET_ARCH=mipsel
 TARGET_OS=linux-uclibc
 
 LIBSTDC++_VERSION=6.0.24
+LIBGO_VERSION=11.0.0
 
 LIBC-DEV_IPK_VERSION=1
 
@@ -28,21 +29,6 @@ NATIVE_GCC_VERSION=7.2.0
 GCC_SOURCE=gcc-$(NATIVE_GCC_VERSION).tar.xz
 GCC_UNZIP=xzcat
 
-ifeq ($(HOST_MACHINE),mips)
-
-HOSTCC = $(TARGET_CC)
-GNU_HOST_NAME = $(GNU_TARGET_NAME)
-TARGET_CROSS = $(TARGET_PREFIX)/bin/
-TARGET_LIBDIR = $(TARGET_PREFIX)/lib
-TARGET_INCDIR = $(TARGET_PREFIX)/include
-TARGET_LDFLAGS =
-TARGET_CUSTOM_FLAGS=
-TARGET_CFLAGS= $(TARGET_OPTIMIZATION) $(TARGET_DEBUGGING) $(TARGET_CUSTOM_FLAGS)
-
-toolchain:
-
-else
-
 HOSTCC = gcc
 GNU_HOST_NAME = $(HOST_MACHINE)-pc-linux-gnu
 CROSS_CONFIGURATION_GCC=gcc-$(CROSS_CONFIGURATION_GCC_VERSION)
@@ -53,6 +39,7 @@ TARGET_CROSS_TOP = $(TARGET_CROSS_BUILD_DIR)/output/host
 TARGET_CROSS = $(TARGET_CROSS_TOP)/bin/mipsel-buildroot-linux-uclibc-
 TARGET_LIBDIR = $(TARGET_CROSS_TOP)/mipsel-buildroot-linux-uclibc/sysroot/usr/lib
 TARGET_INCDIR = $(TARGET_CROSS_TOP)/mipsel-buildroot-linux-uclibc/sysroot/usr/include
+LIBGO_TARGET_LIBDIR = $(TARGET_CROSS_TOP)/mipsel-buildroot-linux-uclibc/lib
 
 #	to make feed firmware-independent, we make
 #	all packages dependent on uclibc-opt by hacking ipkg-build from ipkg-utils,
@@ -158,5 +145,3 @@ NATIVE_GCC_EXTRA_CONFIG_ARGS=--with-gxx-include-dir=$(TARGET_PREFIX)/include/c++
 NATIVE_GCC_ADDITIONAL_DEPS=zlib
 
 NATIVE_GCC_ADDITIONAL_STAGE=zlib-stage
-
-endif

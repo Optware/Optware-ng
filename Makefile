@@ -336,7 +336,7 @@ COMMON_PACKAGES = \
 	libnetfilter-acct libnetfilter-conntrack libnetfilter-log libnetfilter-queue libnfnetlink libnettle libnl libnxml \
 	libol libogg libosip2 libopensync libopenzwave libopus libotr libpam \
 	libpar2 libpcap libpeas libpng libpth librsync librsvg \
-	libsamplerate libserf libshout libsigc++ libsoup libsndfile libsodium libsoxr libstdc++ \
+	libsamplerate libserf libshout libsigc++ libsoup libsndfile libsodium libsoxr libstdc++ libgo \
 	libtasn1 libtheora libtiff libtool libtorrent \
 	libubox libunistring libupnp libusb libusb1 libuv libvncserver \
 	libvorbis libvorbisidec libwebsockets libxfce4ui libxfce4util libxkbcommon libxml2 libxslt libzen libzip \

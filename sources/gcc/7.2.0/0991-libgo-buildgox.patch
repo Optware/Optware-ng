@@ -1,0 +1,22 @@
+--- a/libgo/Makefile.am
++++ b/libgo/Makefile.am
+@@ -924,7 +924,7 @@ BUILDPACKAGE = \
+ 
+ # How to build a .gox file from a .lo file.
+ BUILDGOX = \
+-	f=`echo $< | sed -e 's/.lo$$/.o/'`; \
++	f=`echo $< | sed -e 's/.lo$$/.o/' -e 's|\([^/]*\)$$|.libs/\1|'`; \
+ 	$(OBJCOPY) -j .go_export $$f $@.tmp; \
+ 	$(SHELL) $(srcdir)/mvifdiff.sh $@.tmp `echo $@ | sed -e 's/s-gox/gox/'`
+ 
+--- a/libgo/Makefile.in
++++ b/libgo/Makefile.in
+@@ -1080,7 +1080,7 @@ BUILDPACKAGE = \
+ 
+ # How to build a .gox file from a .lo file.
+ BUILDGOX = \
+-	f=`echo $< | sed -e 's/.lo$$/.o/'`; \
++	f=`echo $< | sed -e 's/.lo$$/.o/' -e 's|\([^/]*\)$$|.libs/\1|'`; \
+ 	$(OBJCOPY) -j .go_export $$f $@.tmp; \
+ 	$(SHELL) $(srcdir)/mvifdiff.sh $@.tmp `echo $@ | sed -e 's/s-gox/gox/'`
+ 

@@ -39,7 +39,7 @@ GCC_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 GCC_DESCRIPTION=The GNU Compiler Collection.
 GCC_SECTION=base
 GCC_PRIORITY=optional
-GCC_DEPENDS=binutils, libc-dev
+GCC_DEPENDS=binutils, libc-dev, libgo
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 GCC_DEPENDS+=, libiconv
 endif
@@ -63,7 +63,7 @@ endif
 #
 # GCC_IPK_VERSION should be incremented when the ipk changes.
 #
-GCC_IPK_VERSION ?= 1
+GCC_IPK_VERSION ?= 2
 
 #
 # GCC_CONFFILES should be a list of user-editable files
@@ -211,7 +211,7 @@ endif
 		--disable-static \
 		--with-as=$(TARGET_PREFIX)/bin/as \
 		--with-ld=$(TARGET_PREFIX)/bin/ld \
-		--enable-languages=c,c++ \
+		--enable-languages=c,c++,go \
 		--disable-multilib \
 		$(NATIVE_GCC_EXTRA_CONFIG_ARGS) \
 	)
@@ -284,7 +284,7 @@ $(GCC_IPK): $(GCC_BUILD_DIR)/.built
 	$(GCC_BUILD_EXTRA_ENV) \
 		$(MAKE) -C $(GCC_BUILD_DIR) DESTDIR=$(GCC_IPK_DIR) install
 	rm -f $(GCC_IPK_DIR)$(TARGET_PREFIX)/lib/libiberty.a $(GCC_IPK_DIR)$(TARGET_PREFIX)/info/dir $(GCC_IPK_DIR)$(TARGET_PREFIX)/info/dir.old
-	rm -f $(GCC_IPK_DIR)$(TARGET_PREFIX)/lib/libstdc++.so*
+	rm -f $(GCC_IPK_DIR)$(TARGET_PREFIX)/lib/lib{stdc++,go}.so*
 ifeq (wdtv, $(OPTWARE_TARGET))
 	rm -f $(GCC_IPK_DIR)$(TARGET_PREFIX)/lib/lib*.so* $(GCC_IPK_DIR)$(TARGET_PREFIX)/include/*.h
 endif
@@ -299,6 +299,7 @@ endif
 	$(MAKE) $(GCC_IPK_DIR)/CONTROL/control
 	echo $(GCC_CONFFILES) | sed -e 's/ /\n/g' > $(GCC_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GCC_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(GCC_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.

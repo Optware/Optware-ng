@@ -1,0 +1,22 @@
+--- a/libgo/Makefile.am
++++ b/libgo/Makefile.am
+@@ -3826,7 +3826,7 @@ syscall/check: $(CHECK_DEPS)
+ 
+ # How to build a .gox file from a .lo file.
+ BUILDGOX = \
+-	f=`echo $< | sed -e 's/.lo$$/.o/'`; \
++	f=`echo $< | sed -e 's/.lo$$/.o/' -e 's|\([^/]*\)$$|.libs/\1|'`; \
+ 	$(OBJCOPY) -j .go_export $$f $@.tmp && mv -f $@.tmp $@
+ 
+ bufio.gox: bufio.lo
+--- a/libgo/Makefile.in
++++ b/libgo/Makefile.in
+@@ -2433,7 +2433,7 @@ runtime_pprof_check_GOCFLAGS = -static-libgo -fno-inline
+ 
+ # How to build a .gox file from a .lo file.
+ BUILDGOX = \
+-	f=`echo $< | sed -e 's/.lo$$/.o/'`; \
++	f=`echo $< | sed -e 's/.lo$$/.o/' -e 's|\([^/]*\)$$|.libs/\1|'`; \
+ 	$(OBJCOPY) -j .go_export $$f $@.tmp && mv -f $@.tmp $@
+ 
+ TEST_PACKAGES = \
