@@ -1,0 +1,15 @@
+diff --git a/libgo/go/syscall/libcall_linux.go b/libgo/go/syscall/libcall_linux.go
+index b58b2dd..0497cbb 100644
+--- a/libgo/go/syscall/libcall_linux.go
++++ b/libgo/go/syscall/libcall_linux.go
+@@ -199,8 +199,8 @@ func Accept4(fd int, flags int) (nfd int, sa Sockaddr, err error) {
+ //sys	Faccessat(dirfd int, path string, mode uint32, flags int) (err error)
+ //faccessat(dirfd _C_int, pathname *byte, mode _C_int, flags _C_int) _C_int
+ 
+-//sys	Fallocate(fd int, mode uint32, off int64, len int64) (err error)
+-//fallocate(fd _C_int, mode _C_int, offset Offset_t, len Offset_t) _C_int
++// //sys	Fallocate(fd int, mode uint32, off int64, len int64) (err error)
++// //fallocate(fd _C_int, mode _C_int, offset Offset_t, len Offset_t) _C_int
+ 
+ //sys	Fchmodat(dirfd int, path string, mode uint32, flags int) (err error)
+ //fchmodat(dirfd _C_int, pathname *byte, mode Mode_t, flags _C_int) _C_int

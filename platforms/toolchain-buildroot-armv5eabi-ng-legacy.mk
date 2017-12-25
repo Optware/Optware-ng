@@ -130,3 +130,5 @@ NATIVE_GCC_EXTRA_CONFIG_ARGS=--with-gxx-include-dir=$(TARGET_PREFIX)/include/c++
 NATIVE_GCC_ADDITIONAL_DEPS=zlib
 
 NATIVE_GCC_ADDITIONAL_STAGE=zlib-stage
+
+NATIVE_GCC_EXTRA_PATCHES=$(GCC_SOURCE_DIR)/$(GCC_VERSION)/0994-libgo-no-fallocate.patch.conditional
