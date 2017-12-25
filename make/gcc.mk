@@ -63,7 +63,7 @@ endif
 #
 # GCC_IPK_VERSION should be incremented when the ipk changes.
 #
-GCC_IPK_VERSION ?= 2
+GCC_IPK_VERSION ?= 3
 
 #
 # GCC_CONFFILES should be a list of user-editable files
@@ -294,7 +294,7 @@ ifneq (, $(filter glibc-opt uclibc-opt, $(PACKAGES)))
 endif
 	-cd $(GCC_IPK_DIR)$(TARGET_PREFIX)/libexec/gcc/`$(TARGET_CC) -dumpmachine`/$(GCC_VERSION); \
 		$(STRIP_COMMAND) c* install-tools/fixincl
-	-cd $(GCC_IPK_DIR)$(TARGET_PREFIX)/bin; $(STRIP_COMMAND) cpp c++ gcc g++ gcov
+	-cd $(GCC_IPK_DIR)$(TARGET_PREFIX)/bin; $(STRIP_COMMAND) cpp c++ gcc g++ gcov gccgo
 	-ln -s gcc $(GCC_IPK_DIR)$(TARGET_PREFIX)/bin/cc
 	rm -f $(GCC_IPK_DIR)$(TARGET_PREFIX)/share/info/dir
 	$(MAKE) $(GCC_IPK_DIR)/CONTROL/control
