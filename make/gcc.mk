@@ -213,6 +213,7 @@ endif
 		--with-ld=$(TARGET_PREFIX)/bin/ld \
 		--enable-languages=c,c++,go \
 		--disable-multilib \
+		--disable-werror \
 		$(NATIVE_GCC_EXTRA_CONFIG_ARGS) \
 	)
 #	$(PATCH_LIBTOOL) $(@D)/libtool
