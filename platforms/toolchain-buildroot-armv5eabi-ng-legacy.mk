@@ -54,7 +54,7 @@ TOOLCHAIN_SITE=http://buildroot.uclibc.org/downloads
 TOOLCHAIN_SOURCE=buildroot-2017.08.tar.bz2
 
 UCLIBC-OPT_VERSION = $(UCLIBC_VERSION)
-UCLIBC-OPT_IPK_VERSION = 1
+UCLIBC-OPT_IPK_VERSION = 2
 UCLIBC-OPT_LIBS_SOURCE_DIR = $(TARGET_CROSS_TOP)/arm-buildroot-linux-uclibcgnueabi/sysroot/lib
 
 BUILDROOT-ARMv5EABI-NG-LEGACY_SOURCE_DIR=$(SOURCE_DIR)/buildroot-armv5eabi-ng-legacy
@@ -106,7 +106,8 @@ ifneq ($(BUILDROOT-ARMv5EABI-NG-LEGACY_GCC_PATCHES), )
 endif
 	cd $(TARGET_CROSS_BUILD_DIR)/package/uclibc; \
 		rm -f 0001-fix-issues-with-gdb-8.0.patch 0002-microblaze-handle-R_MICROBLAZE_NONE-for-ld.so-bootst.patch
-	(echo "DO_XSI_MATH=y"; echo "COMPAT_ATEXIT=y") >> $(TARGET_CROSS_BUILD_DIR)/package/uclibc/uClibc-ng.config
+	(echo "DO_XSI_MATH=y"; echo "COMPAT_ATEXIT=y"; echo "UCLIBC_SV4_DEPRECATED=y") >> \
+				$(TARGET_CROSS_BUILD_DIR)/package/uclibc/uClibc-ng.config
 	sed 's|^BR2_DL_DIR=.*|BR2_DL_DIR="$(DL_DIR)"|' $(BUILDROOT-ARMv5EABI-NG-LEGACY_SOURCE_DIR)/config > $(TARGET_CROSS_BUILD_DIR)/.config
 	touch $@
 

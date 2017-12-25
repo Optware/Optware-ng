@@ -59,7 +59,7 @@ TOOLCHAIN_KERNEL_HASH=4164297511fb63af279cdade148f340f7947eedd
 TOOLCHAIN_KERNEL_SOURCE=linux-$(TOOLCHAIN_KERNEL_VERSION).tar.xz
 
 UCLIBC-OPT_VERSION = $(UCLIBC_VERSION)
-UCLIBC-OPT_IPK_VERSION = 1
+UCLIBC-OPT_IPK_VERSION = 2
 UCLIBC-OPT_LIBS_SOURCE_DIR = $(TARGET_CROSS_TOP)/mipsel-buildroot-linux-uclibc/sysroot/lib
 
 BUILDROOT-MIPSEL-NG_SOURCE_DIR=$(SOURCE_DIR)/buildroot-mipsel-ng
@@ -122,6 +122,8 @@ endif
 	cd $(TARGET_CROSS_BUILD_DIR)/package/uclibc; \
 		rm -f 0001-fix-issues-with-gdb-8.0.patch 0002-microblaze-handle-R_MICROBLAZE_NONE-for-ld.so-bootst.patch
 	(echo "DO_XSI_MATH=y"; echo "COMPAT_ATEXIT=y"; echo "# UCLIBC_USE_MIPS_PREFETCH is not set") >> $(TARGET_CROSS_BUILD_DIR)/package/uclibc/uClibc-ng.config
+	(echo "DO_XSI_MATH=y"; echo "COMPAT_ATEXIT=y"; echo "UCLIBC_SV4_DEPRECATED=y"; \
+		echo "# UCLIBC_USE_MIPS_PREFETCH is not set") >> $(TARGET_CROSS_BUILD_DIR)/package/uclibc/uClibc-ng.config
 	sed -e 's|^BR2_DL_DIR=.*|BR2_DL_DIR="$(DL_DIR)"|' -e 's|@KERNEL_VERSION@|$(TOOLCHAIN_KERNEL_VERSION)|' \
 		$(BUILDROOT-MIPSEL-NG_SOURCE_DIR)/config > $(TARGET_CROSS_BUILD_DIR)/.config
 	touch $@
