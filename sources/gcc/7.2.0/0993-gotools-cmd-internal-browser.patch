@@ -1,0 +1,20 @@
+--- a/gotools/Makefile.am
++++ b/gotools/Makefile.am
+@@ -116,6 +116,7 @@ noinst_PROGRAMS = cgo$(EXEEXT)
+ man_MANS = go.1 gofmt.1
+ 
+ go$(EXEEXT): $(go_cmd_go_files) zdefaultcc.go $(LIBGODEP)
++	cp -af $(libgodir)/cmd/internal/.libs/browser.o $(libgodir)/cmd/internal
+ 	$(GOLINK) $(go_cmd_go_files) zdefaultcc.go $(LIBS) $(NET_LIBS)
+ gofmt$(EXEEXT): $(go_cmd_gofmt_files) $(LIBGODEP)
+ 	$(GOLINK) $(go_cmd_gofmt_files) $(LIBS) $(NET_LIBS)
+--- a/gotools/Makefile.in
++++ b/gotools/Makefile.in
+@@ -670,6 +670,7 @@ s-zdefaultcc: Makefile
+ 	$(STAMP) $@ 
+ 
+ @NATIVE_TRUE@go$(EXEEXT): $(go_cmd_go_files) zdefaultcc.go $(LIBGODEP)
++@NATIVE_TRUE@	cp -af $(libgodir)/cmd/internal/.libs/browser.o $(libgodir)/cmd/internal
+ @NATIVE_TRUE@	$(GOLINK) $(go_cmd_go_files) zdefaultcc.go $(LIBS) $(NET_LIBS)
+ @NATIVE_TRUE@gofmt$(EXEEXT): $(go_cmd_gofmt_files) $(LIBGODEP)
+ @NATIVE_TRUE@	$(GOLINK) $(go_cmd_gofmt_files) $(LIBS) $(NET_LIBS)
