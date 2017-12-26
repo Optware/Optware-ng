@@ -19,7 +19,7 @@ LIBGO_CONFLICTS=
 LIBGO_LIBNAME_FULL=libgo.so.$(LIBGO_VERSION)
 LIBGO_LIBNAME_MAJOR=libgo.so.$(LIBGO_MAJOR)
 
-LIBGO_IPK_VERSION=2
+LIBGO_IPK_VERSION=3
 
 LIBGO_TARGET_LIBDIR ?= $(TARGET_LIBDIR)
 
@@ -30,16 +30,18 @@ LIBGO_IPK=$(BUILD_DIR)/libgo_$(LIBGO_VERSION)-$(LIBGO_IPK_VERSION)_$(TARGET_ARCH
 
 .PHONY: libgo-unpack libgo libgo-stage libgo-ipk libgo-clean libgo-dirclean
 
-$(LIBGO_BUILD_DIR)/.configured: $(LIBGO_PATCHES)
+$(LIBGO_BUILD_DIR)/.configured: $(LIBGO_PATCHES) make/libgo.mk
+	# we take libgo from gcc
+	$(MAKE) gcc
 	rm -rf $(BUILD_DIR)/$(LIBGO_DIR) $(@D)
 	mkdir -p $(@D)
+	cp -af $(GCC_BUILD_DIR)/$(GCC_TARGET_NAME)/libgo/.libs/$(LIBGO_LIBNAME_FULL) $(@D)/
 	touch $@
 
 libgo-unpack: $(LIBGO_BUILD_DIR)/.configured
 
-$(LIBGO_BUILD_DIR)/.built: $(LIBGO_BUILD_DIR)/.configured make/libgo.mk
+$(LIBGO_BUILD_DIR)/.built: $(LIBGO_BUILD_DIR)/.configured
 	rm -f $@
-	cp -af $(LIBGO_TARGET_LIBDIR)/$(LIBGO_LIBNAME_FULL) $(@D)/
 	touch $@
 
 libgo: $(LIBGO_BUILD_DIR)/.built

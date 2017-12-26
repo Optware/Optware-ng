@@ -35,7 +35,6 @@ TARGET_CROSS_TOP = $(TARGET_CROSS_BUILD_DIR)/output/host
 TARGET_CROSS = $(TARGET_CROSS_TOP)/bin/i686-buildroot-linux-gnu-
 TARGET_LIBDIR = $(TARGET_CROSS_TOP)/i686-buildroot-linux-gnu/sysroot/usr/lib
 TARGET_INCDIR = $(TARGET_CROSS_TOP)/i686-buildroot-linux-gnu/sysroot/usr/include
-LIBGO_TARGET_LIBDIR = $(TARGET_CROSS_TOP)/i686-buildroot-linux-gnu/lib
 
 #	to make feed firmware-independent, we make
 #	all packages dependent on glibc-opt by hacking ipkg-build from ipkg-utils,

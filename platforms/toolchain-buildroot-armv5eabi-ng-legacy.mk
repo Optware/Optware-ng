@@ -39,7 +39,6 @@ TARGET_CROSS_TOP = $(TARGET_CROSS_BUILD_DIR)/output/host
 TARGET_CROSS = $(TARGET_CROSS_TOP)/bin/arm-buildroot-linux-uclibcgnueabi-
 TARGET_LIBDIR = $(TARGET_CROSS_TOP)/arm-buildroot-linux-uclibcgnueabi/sysroot/usr/lib
 TARGET_INCDIR = $(TARGET_CROSS_TOP)/arm-buildroot-linux-uclibcgnueabi/sysroot/usr/include
-LIBGO_TARGET_LIBDIR = $(TARGET_CROSS_TOP)/arm-buildroot-linux-uclibcgnueabi/lib
 
 #	to make feed firmware-independent, we make
 #	all packages dependent on uclibc-opt by hacking ipkg-build from ipkg-utils,

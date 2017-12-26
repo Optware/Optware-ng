@@ -36,7 +36,6 @@ TARGET_CROSS_TOP = $(TARGET_CROSS_BUILD_DIR)/output/host
 TARGET_CROSS = $(TARGET_CROSS_TOP)/bin/arm-buildroot-linux-gnueabihf-
 TARGET_LIBDIR = $(TARGET_CROSS_TOP)/arm-buildroot-linux-gnueabihf/sysroot/usr/lib
 TARGET_INCDIR = $(TARGET_CROSS_TOP)/arm-buildroot-linux-gnueabihf/sysroot/usr/include
-LIBGO_TARGET_LIBDIR =  $(TARGET_CROSS_TOP)/arm-buildroot-linux-gnueabihf/lib
 
 #	to make feed firmware-independent, we make
 #	all packages dependent on glibc-opt by hacking ipkg-build from ipkg-utils,
