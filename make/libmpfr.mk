@@ -66,11 +66,12 @@ LIBMPFR_LDFLAGS=
 # You should not change any of these variables.
 #
 LIBMPFR_BUILD_DIR=$(BUILD_DIR)/libmpfr
+LIBMPFR_HOST_BUILD_DIR=$(HOST_BUILD_DIR)/libmpfr
 LIBMPFR_SOURCE_DIR=$(SOURCE_DIR)/libmpfr
 LIBMPFR_IPK_DIR=$(BUILD_DIR)/libmpfr-$(LIBMPFR_VERSION)-ipk
 LIBMPFR_IPK=$(BUILD_DIR)/libmpfr_$(LIBMPFR_VERSION)-$(LIBMPFR_IPK_VERSION)_$(TARGET_ARCH).ipk
 
-.PHONY: libmpfr-source libmpfr-unpack libmpfr libmpfr-stage libmpfr-ipk libmpfr-clean libmpfr-dirclean libmpfr-check
+.PHONY: libmpfr-source libmpfr-unpack libmpfr libmpfr-stage libmpfr-ipk libmpfr-clean libmpfr-dirclean libmpfr-check libmpfr-host-stage
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -157,6 +158,27 @@ $(LIBMPFR_BUILD_DIR)/.staged: $(LIBMPFR_BUILD_DIR)/.built
 	touch $@
 
 libmpfr-stage: $(LIBMPFR_BUILD_DIR)/.staged
+
+$(LIBMPFR_HOST_BUILD_DIR)/.staged: $(DL_DIR)/$(LIBMPFR_SOURCE) $(LIBMPFR_PATCHES) make/libmpfr.mk
+	$(MAKE) libgmp-host-stage
+	rm -rf $(HOST_BUILD_DIR)/$(LIBMPFR_DIR) $(@D)
+	$(LIBMPFR_UNZIP) $(DL_DIR)/$(LIBMPFR_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
+	if test "$(HOST_BUILD_DIR)/$(LIBMPFR_DIR)" != "$(@D)" ; \
+		then mv $(HOST_BUILD_DIR)/$(LIBMPFR_DIR) $(@D) ; \
+	fi
+	(cd $(@D); \
+		CFLAGS="-fPIC" \
+		./configure \
+		--disable-shared \
+		--enable-static\
+		--prefix=$(HOST_STAGING_PREFIX) \
+		--with-gmp=$(HOST_STAGING_PREFIX) \
+	)
+	$(MAKE) -C $(@D)
+	$(MAKE) install -C $(@D)
+	touch $@
+
+libmpfr-host-stage: $(LIBMPFR_HOST_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer

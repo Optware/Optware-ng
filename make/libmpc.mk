@@ -66,11 +66,12 @@ LIBMPC_LDFLAGS=
 # You should not change any of these variables.
 #
 LIBMPC_BUILD_DIR=$(BUILD_DIR)/libmpc
+LIBMPC_HOST_BUILD_DIR=$(HOST_BUILD_DIR)/libmpc
 LIBMPC_SOURCE_DIR=$(SOURCE_DIR)/libmpc
 LIBMPC_IPK_DIR=$(BUILD_DIR)/libmpc-$(LIBMPC_VERSION)-ipk
 LIBMPC_IPK=$(BUILD_DIR)/libmpc_$(LIBMPC_VERSION)-$(LIBMPC_IPK_VERSION)_$(TARGET_ARCH).ipk
 
-.PHONY: libmpc-source libmpc-unpack libmpc libmpc-stage libmpc-ipk libmpc-clean libmpc-dirclean libmpc-check
+.PHONY: libmpc-source libmpc-unpack libmpc libmpc-stage libmpc-ipk libmpc-clean libmpc-dirclean libmpc-check libmpc-host-stage
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -157,6 +158,28 @@ $(LIBMPC_BUILD_DIR)/.staged: $(LIBMPC_BUILD_DIR)/.built
 	touch $@
 
 libmpc-stage: $(LIBMPC_BUILD_DIR)/.staged
+
+$(LIBMPC_HOST_BUILD_DIR)/.staged: $(DL_DIR)/$(LIBMPC_SOURCE) $(LIBMPC_PATCHES) make/libmpc.mk
+	$(MAKE) libgmp-host-stage libmpfr-host-stage
+	rm -rf $(HOST_BUILD_DIR)/$(LIBMPC_DIR) $(@D)
+	$(LIBMPC_UNZIP) $(DL_DIR)/$(LIBMPC_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
+	if test "$(HOST_BUILD_DIR)/$(LIBMPC_DIR)" != "$(@D)" ; \
+		then mv $(HOST_BUILD_DIR)/$(LIBMPC_DIR) $(@D) ; \
+	fi
+	(cd $(@D); \
+		CFLAGS="-fPIC" \
+		./configure \
+		--disable-shared \
+		--enable-static\
+		--prefix=$(HOST_STAGING_PREFIX) \
+		--with-gmp=$(HOST_STAGING_PREFIX) \
+		--with-mpfr=$(HOST_STAGING_PREFIX) \
+	)
+	$(MAKE) -C $(@D)
+	$(MAKE) install -C $(@D)
+	touch $@
+
+libmpc-host-stage: $(LIBMPC_HOST_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer

@@ -1,0 +1,20 @@
+--- a/gotools/Makefile.in
++++ b/gotools/Makefile.in
+@@ -169,7 +169,7 @@ INSTALL_SCRIPT = @INSTALL_SCRIPT@
+ INSTALL_STRIP_PROGRAM = @INSTALL_STRIP_PROGRAM@
+ LDFLAGS = @LDFLAGS@
+ LIBOBJS = @LIBOBJS@
+-LIBS = @LIBS@
++LIBS = @LIBS@ -lpthread
+ LTLIBOBJS = @LTLIBOBJS@
+ MAINT = @MAINT@
+ MAKEINFO = @MAKEINFO@
+@@ -251,7 +251,7 @@ libexecsubdir = $(libexecdir)/gcc/$(target_noncanonical)/$(gcc_version)
+ mkinstalldirs = $(SHELL) $(toplevel_srcdir)/mkinstalldirs
+ PWD_COMMAND = $${PWDCMD-pwd}
+ STAMP = echo timestamp >
+-libgodir = ../$(target_noncanonical)/libgo
++libgodir = ../../$(target_noncanonical)/libgo
+ LIBGODEP = $(libgodir)/libgo.la
+ @NATIVE_FALSE@GOCOMPILER = $(GOC)
+ 

@@ -65,11 +65,12 @@ LIBELF_LDFLAGS=
 # You should not change any of these variables.
 #
 LIBELF_BUILD_DIR=$(BUILD_DIR)/libelf
+LIBELF_HOST_BUILD_DIR=$(HOST_BUILD_DIR)/libelf
 LIBELF_SOURCE_DIR=$(SOURCE_DIR)/libelf
 LIBELF_IPK_DIR=$(BUILD_DIR)/libelf-$(LIBELF_VERSION)-ipk
 LIBELF_IPK=$(BUILD_DIR)/libelf_$(LIBELF_VERSION)-$(LIBELF_IPK_VERSION)_$(TARGET_ARCH).ipk
 
-.PHONY: libelf-source libelf-unpack libelf libelf-stage libelf-ipk libelf-clean libelf-dirclean libelf-check
+.PHONY: libelf-source libelf-unpack libelf libelf-stage libelf-ipk libelf-clean libelf-dirclean libelf-check libelf-host-stage
 
 #
 # This is the dependency on the source code.  If the source is missing,
@@ -158,6 +159,25 @@ $(LIBELF_BUILD_DIR)/.staged: $(LIBELF_BUILD_DIR)/.built
 	touch $@
 
 libelf-stage: $(LIBELF_BUILD_DIR)/.staged
+
+$(LIBELF_HOST_BUILD_DIR)/.staged: $(DL_DIR)/$(LIBELF_SOURCE) $(LIBELF_PATCHES) make/libelf.mk
+	rm -rf $(HOST_BUILD_DIR)/$(LIBELF_DIR) $(@D)
+	$(LIBELF_UNZIP) $(DL_DIR)/$(LIBELF_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
+	if test "$(HOST_BUILD_DIR)/$(LIBELF_DIR)" != "$(@D)" ; \
+		then mv $(HOST_BUILD_DIR)/$(LIBELF_DIR) $(@D) ; \
+	fi
+	(cd $(@D); \
+		CFLAGS="-fPIC" \
+		./configure \
+		--disable-shared \
+		--enable-static\
+		--prefix=$(HOST_STAGING_PREFIX) \
+	)
+	$(MAKE) -C $(@D)
+	$(MAKE) install -C $(@D)
+	touch $@
+
+libelf-host-stage: $(LIBELF_HOST_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
