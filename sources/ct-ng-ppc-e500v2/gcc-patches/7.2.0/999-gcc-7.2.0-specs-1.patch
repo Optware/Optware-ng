@@ -1,0 +1,452 @@
+--- a/gcc/config/aarch64/aarch64-linux.h
++++ b/gcc/config/aarch64/aarch64-linux.h
+@@ -24,14 +24,14 @@
+ #ifndef RUNTIME_ROOT_PREFIX
+ #define RUNTIME_ROOT_PREFIX ""
+ #endif
+-#define GLIBC_DYNAMIC_LINKER RUNTIME_ROOT_PREFIX "/lib/ld-linux-aarch64%{mbig-endian:_be}%{mabi=ilp32:_ilp32}.so.1"
++#define GLIBC_DYNAMIC_LINKER "%OPTWARE_TARGET_PREFIX%/lib/ld-linux-aarch64%{mbig-endian:_be}%{mabi=ilp32:_ilp32}.so.1"
+ #ifdef BIONIC_DYNAMIC_LINKER
+ #undef BIONIC_DYNAMIC_LINKER
+ #endif
+ #define BIONIC_DYNAMIC_LINKER RUNTIME_ROOT_PREFIX "/system/bin/linker64"
+ 
+ #undef MUSL_DYNAMIC_LINKER
+-#define MUSL_DYNAMIC_LINKER "/lib/ld-musl-aarch64%{mbig-endian:_be}%{mabi=ilp32:_ilp32}.so.1"
++#define MUSL_DYNAMIC_LINKER "%OPTWARE_TARGET_PREFIX%/lib/ld-musl-aarch64%{mbig-endian:_be}%{mabi=ilp32:_ilp32}.so.1"
+ 
+ #undef  ASAN_CC1_SPEC
+ #define ASAN_CC1_SPEC "%{%:sanitize(address):-funwind-tables}"
+--- a/gcc/config/alpha/linux-elf.h
++++ b/gcc/config/alpha/linux-elf.h
+@@ -23,8 +23,8 @@ along with GCC; see the file COPYING3.  If not see
+ #define EXTRA_SPECS \
+ { "elf_dynamic_linker", ELF_DYNAMIC_LINKER },
+ 
+-#define GLIBC_DYNAMIC_LINKER	"/lib/ld-linux.so.2"
+-#define UCLIBC_DYNAMIC_LINKER "/lib/ld-uClibc.so.0"
++#define GLIBC_DYNAMIC_LINKER	"%OPTWARE_TARGET_PREFIX%/lib/ld-linux.so.2"
++#define UCLIBC_DYNAMIC_LINKER "%OPTWARE_TARGET_PREFIX%/lib/ld-uClibc.so.0"
+ #if DEFAULT_LIBC == LIBC_UCLIBC
+ #define CHOOSE_DYNAMIC_LINKER(G, U) "%{mglibc:" G ";:" U "}"
+ #elif DEFAULT_LIBC == LIBC_GLIBC
+--- a/gcc/config/arc/linux.h
++++ b/gcc/config/arc/linux.h
+@@ -29,8 +29,8 @@ along with GCC; see the file COPYING3.  If not see
+     }						\
+   while (0)
+ 
+-#define GLIBC_DYNAMIC_LINKER   "/lib/ld-linux.so.2"
+-#define UCLIBC_DYNAMIC_LINKER  "/lib/ld-uClibc.so.0"
++#define GLIBC_DYNAMIC_LINKER   "%OPTWARE_TARGET_PREFIX%/lib/ld-linux.so.2"
++#define UCLIBC_DYNAMIC_LINKER  "%OPTWARE_TARGET_PREFIX%/lib/ld-uClibc.so.0"
+ 
+ /* Note that the default is to link against dynamic libraries, if they are
+    available.  Override with -static.  */
+--- a/gcc/config/arm/linux-eabi.h
++++ b/gcc/config/arm/linux-eabi.h
+@@ -62,8 +62,8 @@
+    GLIBC_DYNAMIC_LINKER_DEFAULT and TARGET_DEFAULT_FLOAT_ABI.  */
+ 
+ #undef  GLIBC_DYNAMIC_LINKER
+-#define GLIBC_DYNAMIC_LINKER_SOFT_FLOAT "/lib/ld-linux.so.3"
+-#define GLIBC_DYNAMIC_LINKER_HARD_FLOAT "/lib/ld-linux-armhf.so.3"
++#define GLIBC_DYNAMIC_LINKER_SOFT_FLOAT "%OPTWARE_TARGET_PREFIX%/lib/ld-linux.so.3"
++#define GLIBC_DYNAMIC_LINKER_HARD_FLOAT "%OPTWARE_TARGET_PREFIX%/lib/ld-linux-armhf.so.3"
+ #define GLIBC_DYNAMIC_LINKER_DEFAULT GLIBC_DYNAMIC_LINKER_SOFT_FLOAT
+ 
+ #define GLIBC_DYNAMIC_LINKER \
+@@ -86,7 +86,7 @@
+ #define MUSL_DYNAMIC_LINKER_E "%{mbig-endian:eb}"
+ #endif
+ #define MUSL_DYNAMIC_LINKER \
+-  "/lib/ld-musl-arm" MUSL_DYNAMIC_LINKER_E "%{mfloat-abi=hard:hf}.so.1"
++  "%OPTWARE_TARGET_PREFIX%/lib/ld-musl-arm" MUSL_DYNAMIC_LINKER_E "%{mfloat-abi=hard:hf}.so.1"
+ 
+ /* At this point, bpabi.h will have clobbered LINK_SPEC.  We want to
+    use the GNU/Linux version, not the generic BPABI version.  */
+--- a/gcc/config/arm/linux-elf.h
++++ b/gcc/config/arm/linux-elf.h
+@@ -60,7 +60,7 @@
+ 
+ #define LIBGCC_SPEC "-lgcc"
+ 
+-#define GLIBC_DYNAMIC_LINKER "/lib/ld-linux.so.2"
++#define GLIBC_DYNAMIC_LINKER "%OPTWARE_TARGET_PREFIX%/lib/ld-linux.so.2"
+ 
+ #define LINUX_TARGET_LINK_SPEC  "%{h*} \
+    %{static:-Bstatic} \
+--- a/gcc/config/c6x/uclinux-elf.h
++++ b/gcc/config/c6x/uclinux-elf.h
+@@ -36,7 +36,7 @@
+ #define STARTFILE_SPEC \
+   "%{!shared:crt1%O%s} crti%O%s %{shared|pie:crtbeginS.o%s;:crtbegin.o%s}"
+ 
+-#define UCLIBC_DYNAMIC_LINKER "/lib/ld-uClibc.so.0"
++#define UCLIBC_DYNAMIC_LINKER "%OPTWARE_TARGET_PREFIX%/lib/ld-uClibc.so.0"
+ 
+ #undef LINK_SPEC
+ #define LINK_SPEC ENDIAN_LINK_SPEC \
+--- a/gcc/config/cris/linux.h
++++ b/gcc/config/cris/linux.h
+@@ -102,7 +102,7 @@ along with GCC; see the file COPYING3.  If not see
+ #undef CRIS_DEFAULT_CPU_VERSION
+ #define CRIS_DEFAULT_CPU_VERSION CRIS_CPU_NG
+ 
+-#define GLIBC_DYNAMIC_LINKER "/lib/ld.so.1"
++#define GLIBC_DYNAMIC_LINKER "%OPTWARE_TARGET_PREFIX%/lib/ld.so.1"
+ 
+ #undef CRIS_LINK_SUBTARGET_SPEC
+ #define CRIS_LINK_SUBTARGET_SPEC \
+--- a/gcc/config/frv/linux.h
++++ b/gcc/config/frv/linux.h
+@@ -34,7 +34,7 @@
+ #define ENDFILE_SPEC \
+   "%{shared|pie:crtendS.o%s;:crtend.o%s} crtn.o%s"
+ 
+-#define GLIBC_DYNAMIC_LINKER "/lib/ld.so.1"
++#define GLIBC_DYNAMIC_LINKER "%OPTWARE_TARGET_PREFIX%/lib/ld.so.1"
+ 
+ #undef LINK_SPEC
+ #define LINK_SPEC "\
+--- a/gcc/config/i386/gnu.h
++++ b/gcc/config/i386/gnu.h
+@@ -22,7 +22,7 @@ along with GCC.  If not, see <http://www.gnu.org/licenses/>.
+ #define GNU_USER_LINK_EMULATION "elf_i386"
+ 
+ #undef GNU_USER_DYNAMIC_LINKER
+-#define GNU_USER_DYNAMIC_LINKER "/lib/ld.so"
++#define GNU_USER_DYNAMIC_LINKER "%OPTWARE_TARGET_PREFIX%/lib/ld.so"
+ 
+ #undef	STARTFILE_SPEC
+ #if defined HAVE_LD_PIE
+--- a/gcc/config/i386/kfreebsd-gnu.h
++++ b/gcc/config/i386/kfreebsd-gnu.h
+@@ -19,4 +19,4 @@ along with GCC; see the file COPYING3.  If not see
+ <http://www.gnu.org/licenses/>.  */
+ 
+ #define GNU_USER_LINK_EMULATION "elf_i386_fbsd"
+-#define GLIBC_DYNAMIC_LINKER "/lib/ld.so.1"
++#define GLIBC_DYNAMIC_LINKER "%OPTWARE_TARGET_PREFIX%/lib/ld.so.1"
+--- a/gcc/config/i386/kfreebsd-gnu64.h
++++ b/gcc/config/i386/kfreebsd-gnu64.h
+@@ -22,6 +22,6 @@ along with GCC; see the file COPYING3.  If not see
+ #define GNU_USER_LINK_EMULATION64 "elf_x86_64_fbsd"
+ #define GNU_USER_LINK_EMULATIONX32 "elf32_x86_64_fbsd"
+ 
+-#define GLIBC_DYNAMIC_LINKER32 "/lib/ld.so.1"
+-#define GLIBC_DYNAMIC_LINKER64 "/lib/ld-kfreebsd-x86-64.so.1"
+-#define GLIBC_DYNAMIC_LINKERX32 "/lib/ld-kfreebsd-x32.so.1"
++#define GLIBC_DYNAMIC_LINKER32 "%OPTWARE_TARGET_PREFIX%/lib/ld.so.1"
++#define GLIBC_DYNAMIC_LINKER64 "%OPTWARE_TARGET_PREFIX%/lib/ld-kfreebsd-x86-64.so.1"
++#define GLIBC_DYNAMIC_LINKERX32 "%OPTWARE_TARGET_PREFIX%/lib/ld-kfreebsd-x32.so.1"
+--- a/gcc/config/i386/linux.h
++++ b/gcc/config/i386/linux.h
+@@ -20,7 +20,7 @@ along with GCC; see the file COPYING3.  If not see
+ <http://www.gnu.org/licenses/>.  */
+ 
+ #define GNU_USER_LINK_EMULATION "elf_i386"
+-#define GLIBC_DYNAMIC_LINKER "/lib/ld-linux.so.2"
++#define GLIBC_DYNAMIC_LINKER "%OPTWARE_TARGET_PREFIX%/lib/ld-linux.so.2"
+ 
+ #undef MUSL_DYNAMIC_LINKER
+-#define MUSL_DYNAMIC_LINKER "/lib/ld-musl-i386.so.1"
++#define MUSL_DYNAMIC_LINKER "%OPTWARE_TARGET_PREFIX%/lib/ld-musl-i386.so.1"
+--- a/gcc/config/i386/linux64.h
++++ b/gcc/config/i386/linux64.h
+@@ -27,13 +27,13 @@ see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see
+ #define GNU_USER_LINK_EMULATION64 "elf_x86_64"
+ #define GNU_USER_LINK_EMULATIONX32 "elf32_x86_64"
+ 
+-#define GLIBC_DYNAMIC_LINKER32 "/lib/ld-linux.so.2"
+-#define GLIBC_DYNAMIC_LINKER64 "/lib64/ld-linux-x86-64.so.2"
+-#define GLIBC_DYNAMIC_LINKERX32 "/libx32/ld-linux-x32.so.2"
++#define GLIBC_DYNAMIC_LINKER32 "%OPTWARE_TARGET_PREFIX%/lib/ld-linux.so.2"
++#define GLIBC_DYNAMIC_LINKER64 "%OPTWARE_TARGET_PREFIX%/lib64/ld-linux-x86-64.so.2"
++#define GLIBC_DYNAMIC_LINKERX32 "%OPTWARE_TARGET_PREFIX%/libx32/ld-linux-x32.so.2"
+ 
+ #undef MUSL_DYNAMIC_LINKER32
+-#define MUSL_DYNAMIC_LINKER32 "/lib/ld-musl-i386.so.1"
++#define MUSL_DYNAMIC_LINKER32 "%OPTWARE_TARGET_PREFIX%/lib/ld-musl-i386.so.1"
+ #undef MUSL_DYNAMIC_LINKER64
+-#define MUSL_DYNAMIC_LINKER64 "/lib/ld-musl-x86_64.so.1"
++#define MUSL_DYNAMIC_LINKER64 "%OPTWARE_TARGET_PREFIX%/lib/ld-musl-x86_64.so.1"
+ #undef MUSL_DYNAMIC_LINKERX32
+-#define MUSL_DYNAMIC_LINKERX32 "/lib/ld-musl-x32.so.1"
++#define MUSL_DYNAMIC_LINKERX32 "%OPTWARE_TARGET_PREFIX%/lib/ld-musl-x32.so.1"
+--- a/gcc/config/ia64/linux.h
++++ b/gcc/config/ia64/linux.h
+@@ -55,7 +55,7 @@ do {						\
+ /* Define this for shared library support because it isn't in the main
+    linux.h file.  */
+ 
+-#define GLIBC_DYNAMIC_LINKER "/lib/ld-linux-ia64.so.2"
++#define GLIBC_DYNAMIC_LINKER "%OPTWARE_TARGET_PREFIX%/lib/ld-linux-ia64.so.2"
+ 
+ #undef LINK_SPEC
+ #define LINK_SPEC "\
+--- a/gcc/config/kopensolaris-gnu.h
++++ b/gcc/config/kopensolaris-gnu.h
+@@ -31,4 +31,4 @@ along with GCC; see the file COPYING3.  If not see
+   while (0)
+ 
+ #undef GNU_USER_DYNAMIC_LINKER
+-#define GNU_USER_DYNAMIC_LINKER "/lib/ld.so.1"
++#define GNU_USER_DYNAMIC_LINKER "%OPTWARE_TARGET_PREFIX%/lib/ld.so.1"
+--- a/gcc/config/linux.h
++++ b/gcc/config/linux.h
+@@ -81,10 +81,10 @@ see the files COPYING3 and COPYING.RUNTIME respectively.  If not, see
+    GLIBC_DYNAMIC_LINKER must be defined for each target using them, or
+    GLIBC_DYNAMIC_LINKER32 and GLIBC_DYNAMIC_LINKER64 for targets
+    supporting both 32-bit and 64-bit compilation.  */
+-#define UCLIBC_DYNAMIC_LINKER "/lib/ld-uClibc.so.0"
+-#define UCLIBC_DYNAMIC_LINKER32 "/lib/ld-uClibc.so.0"
+-#define UCLIBC_DYNAMIC_LINKER64 "/lib/ld64-uClibc.so.0"
+-#define UCLIBC_DYNAMIC_LINKERX32 "/lib/ldx32-uClibc.so.0"
++#define UCLIBC_DYNAMIC_LINKER "%OPTWARE_TARGET_PREFIX%/lib/ld-uClibc.so.0"
++#define UCLIBC_DYNAMIC_LINKER32 "%OPTWARE_TARGET_PREFIX%/lib/ld-uClibc.so.0"
++#define UCLIBC_DYNAMIC_LINKER64 "%OPTWARE_TARGET_PREFIX%/lib/ld64-uClibc.so.0"
++#define UCLIBC_DYNAMIC_LINKERX32 "%OPTWARE_TARGET_PREFIX%/lib/ldx32-uClibc.so.0"
+ #define BIONIC_DYNAMIC_LINKER "/system/bin/linker"
+ #define BIONIC_DYNAMIC_LINKER32 "/system/bin/linker"
+ #define BIONIC_DYNAMIC_LINKER64 "/system/bin/linker64"
+--- a/gcc/config/m32r/linux.h
++++ b/gcc/config/m32r/linux.h
+@@ -37,7 +37,7 @@
+    When the -shared link option is used a final link is not being
+    done.  */
+ 
+-#define GLIBC_DYNAMIC_LINKER "/lib/ld-linux.so.2"
++#define GLIBC_DYNAMIC_LINKER "%OPTWARE_TARGET_PREFIX%/lib/ld-linux.so.2"
+ 
+ #undef	LINK_SPEC
+ #if TARGET_LITTLE_ENDIAN
+--- a/gcc/config/m68k/linux.h
++++ b/gcc/config/m68k/linux.h
+@@ -71,7 +71,7 @@ along with GCC; see the file COPYING3.  If not see
+    When the -shared link option is used a final link is not being
+    done.  */
+ 
+-#define GLIBC_DYNAMIC_LINKER "/lib/ld.so.1"
++#define GLIBC_DYNAMIC_LINKER "%OPTWARE_TARGET_PREFIX%/lib/ld.so.1"
+ 
+ #undef LINK_SPEC
+ #define LINK_SPEC "-m m68kelf %{shared} \
+--- a/gcc/config/microblaze/linux.h
++++ b/gcc/config/microblaze/linux.h
+@@ -28,8 +28,8 @@
+ #undef TLS_NEEDS_GOT
+ #define TLS_NEEDS_GOT 1
+ 
+-#define GLIBC_DYNAMIC_LINKER "/lib/ld.so.1"
+-#define UCLIBC_DYNAMIC_LINKER "/lib/ld-uClibc.so.0"
++#define GLIBC_DYNAMIC_LINKER "%OPTWARE_TARGET_PREFIX%/lib/ld.so.1"
++#define UCLIBC_DYNAMIC_LINKER "%OPTWARE_TARGET_PREFIX%/lib/ld-uClibc.so.0"
+ 
+ #if TARGET_BIG_ENDIAN_DEFAULT == 0 /* LE */
+ #define MUSL_DYNAMIC_LINKER_E "%{mbig-endian:;:el}"
+@@ -38,7 +38,7 @@
+ #endif
+ 
+ #undef MUSL_DYNAMIC_LINKER
+-#define MUSL_DYNAMIC_LINKER "/lib/ld-musl-microblaze" MUSL_DYNAMIC_LINKER_E ".so.1"
++#define MUSL_DYNAMIC_LINKER "%OPTWARE_TARGET_PREFIX%/lib/ld-musl-microblaze" MUSL_DYNAMIC_LINKER_E ".so.1"
+ 
+ #undef  SUBTARGET_EXTRA_SPECS
+ #define SUBTARGET_EXTRA_SPECS \
+--- a/gcc/config/mips/linux.h
++++ b/gcc/config/mips/linux.h
+@@ -22,29 +22,29 @@ along with GCC; see the file COPYING3.  If not see
+ #define GNU_USER_LINK_EMULATIONN32 "elf32%{EB:b}%{EL:l}tsmipn32"
+ 
+ #define GLIBC_DYNAMIC_LINKER32 \
+-  "%{mnan=2008:/lib/ld-linux-mipsn8.so.1;:/lib/ld.so.1}"
++  "%{mnan=2008:%OPTWARE_TARGET_PREFIX%/lib/ld-linux-mipsn8.so.1;:%OPTWARE_TARGET_PREFIX%/lib/ld.so.1}"
+ #define GLIBC_DYNAMIC_LINKER64 \
+-  "%{mnan=2008:/lib64/ld-linux-mipsn8.so.1;:/lib64/ld.so.1}"
++  "%{mnan=2008:%OPTWARE_TARGET_PREFIX%/lib64/ld-linux-mipsn8.so.1;:%OPTWARE_TARGET_PREFIX%/lib64/ld.so.1}"
+ #define GLIBC_DYNAMIC_LINKERN32 \
+-  "%{mnan=2008:/lib32/ld-linux-mipsn8.so.1;:/lib32/ld.so.1}"
++  "%{mnan=2008:%OPTWARE_TARGET_PREFIX%/lib32/ld-linux-mipsn8.so.1;:%OPTWARE_TARGET_PREFIX%/lib32/ld.so.1}"
+ 
+ #undef UCLIBC_DYNAMIC_LINKER32
+ #define UCLIBC_DYNAMIC_LINKER32 \
+-  "%{mnan=2008:/lib/ld-uClibc-mipsn8.so.0;:/lib/ld-uClibc.so.0}"
++  "%{mnan=2008:%OPTWARE_TARGET_PREFIX%/lib/ld-uClibc-mipsn8.so.0;:%OPTWARE_TARGET_PREFIX%/lib/ld-uClibc.so.0}"
+ #undef UCLIBC_DYNAMIC_LINKER64
+ #define UCLIBC_DYNAMIC_LINKER64 \
+-  "%{mnan=2008:/lib/ld64-uClibc-mipsn8.so.0;:/lib/ld64-uClibc.so.0}"
++  "%{mnan=2008:%OPTWARE_TARGET_PREFIX%/lib/ld64-uClibc-mipsn8.so.0;:%OPTWARE_TARGET_PREFIX%/lib/ld64-uClibc.so.0}"
+ #define UCLIBC_DYNAMIC_LINKERN32 \
+-  "%{mnan=2008:/lib32/ld-uClibc-mipsn8.so.0;:/lib32/ld-uClibc.so.0}"
++  "%{mnan=2008:%OPTWARE_TARGET_PREFIX%/lib32/ld-uClibc-mipsn8.so.0;:%OPTWARE_TARGET_PREFIX%/lib32/ld-uClibc.so.0}"
+ 
+ #undef MUSL_DYNAMIC_LINKER32
+ #define MUSL_DYNAMIC_LINKER32 \
+-  "/lib/ld-musl-mips%{mips32r6|mips64r6:r6}%{EL:el}%{msoft-float:-sf}.so.1"
++  "%OPTWARE_TARGET_PREFIX%/lib/ld-musl-mips%{mips32r6|mips64r6:r6}%{EL:el}%{msoft-float:-sf}.so.1"
+ #undef MUSL_DYNAMIC_LINKER64
+ #define MUSL_DYNAMIC_LINKER64 \
+-  "/lib/ld-musl-mips64%{mips64r6:r6}%{EL:el}%{msoft-float:-sf}.so.1"
++  "%OPTWARE_TARGET_PREFIX%/lib/ld-musl-mips64%{mips64r6:r6}%{EL:el}%{msoft-float:-sf}.so.1"
+ #define MUSL_DYNAMIC_LINKERN32 \
+-  "/lib/ld-musl-mipsn32%{mips64r6:r6}%{EL:el}%{msoft-float:-sf}.so.1"
++  "%OPTWARE_TARGET_PREFIX%/lib/ld-musl-mipsn32%{mips64r6:r6}%{EL:el}%{msoft-float:-sf}.so.1"
+ 
+ #define BIONIC_DYNAMIC_LINKERN32 "/system/bin/linker32"
+ #define GNU_USER_DYNAMIC_LINKERN32 \
+--- a/gcc/config/mn10300/linux.h
++++ b/gcc/config/mn10300/linux.h
+@@ -32,7 +32,7 @@
+ #undef  ASM_SPEC
+ #define ASM_SPEC ""
+ 
+-#define GLIBC_DYNAMIC_LINKER "/lib/ld.so.1"
++#define GLIBC_DYNAMIC_LINKER "%OPTWARE_TARGET_PREFIX%/lib/ld.so.1"
+ 
+ #undef  LINK_SPEC
+ #define LINK_SPEC "%{mrelax:--relax} %{shared:-shared} \
+--- a/gcc/config/nios2/linux.h
++++ b/gcc/config/nios2/linux.h
+@@ -29,7 +29,7 @@
+ #undef CPP_SPEC
+ #define CPP_SPEC "%{posix:-D_POSIX_SOURCE} %{pthread:-D_REENTRANT}"
+ 
+-#define GLIBC_DYNAMIC_LINKER "/lib/ld-linux-nios2.so.1"
++#define GLIBC_DYNAMIC_LINKER "%OPTWARE_TARGET_PREFIX%/lib/ld-linux-nios2.so.1"
+ 
+ #undef LINK_SPEC
+ #define LINK_SPEC LINK_SPEC_ENDIAN \
+--- a/gcc/config/pa/pa-linux.h
++++ b/gcc/config/pa/pa-linux.h
+@@ -37,7 +37,7 @@ along with GCC; see the file COPYING3.  If not see
+ /* Define this for shared library support because it isn't in the main
+    linux.h file.  */
+ 
+-#define GLIBC_DYNAMIC_LINKER "/lib/ld.so.1"
++#define GLIBC_DYNAMIC_LINKER "%OPTWARE_TARGET_PREFIX%/lib/ld.so.1"
+ 
+ #undef LINK_SPEC
+ #define LINK_SPEC "\
+--- a/gcc/config/riscv/linux.h
++++ b/gcc/config/riscv/linux.h
+@@ -22,7 +22,7 @@ along with GCC; see the file COPYING3.  If not see
+     GNU_USER_TARGET_OS_CPP_BUILTINS();				\
+   } while (0)
+ 
+-#define GLIBC_DYNAMIC_LINKER "/lib/ld-linux-riscv" XLEN_SPEC "-" ABI_SPEC ".so.1"
++#define GLIBC_DYNAMIC_LINKER "%OPTWARE_TARGET_PREFIX%/lib/ld-linux-riscv" XLEN_SPEC "-" ABI_SPEC ".so.1"
+ 
+ /* Because RISC-V only has word-sized atomics, it requries libatomic where
+    others do not.  So link libatomic by default, as needed.  */
+--- a/gcc/config/rs6000/linux64.h
++++ b/gcc/config/rs6000/linux64.h
+@@ -416,21 +416,21 @@ extern int dot_symbols;
+ 
+ #ifdef LINUX64_DEFAULT_ABI_ELFv2
+ #define GLIBC_DYNAMIC_LINKER64 \
+-"%{mabi=elfv1:%(dynamic_linker_prefix)/lib64/ld64.so.1;" \
+-":%(dynamic_linker_prefix)/lib64/ld64.so.2}"
++"%{mabi=elfv1:%OPTWARE_TARGET_PREFIX%/%(dynamic_linker_prefix)/lib64/ld64.so.1;" \
++":%OPTWARE_TARGET_PREFIX%/%(dynamic_linker_prefix)/lib64/ld64.so.2}"
+ #else
+ #define GLIBC_DYNAMIC_LINKER64 \
+-"%{mabi=elfv2:%(dynamic_linker_prefix)/lib64/ld64.so.2;" \
+-":%(dynamic_linker_prefix)/lib64/ld64.so.1}"
++"%{mabi=elfv2:%OPTWARE_TARGET_PREFIX%/%(dynamic_linker_prefix)/lib64/ld64.so.2;" \
++":%OPTWARE_TARGET_PREFIX%/%(dynamic_linker_prefix)/lib64/ld64.so.1}"
+ #endif
+ 
+ #define MUSL_DYNAMIC_LINKER32 \
+-  "/lib/ld-musl-powerpc" MUSL_DYNAMIC_LINKER_E "%{msoft-float:-sf}.so.1"
++  "%OPTWARE_TARGET_PREFIX%/lib/ld-musl-powerpc" MUSL_DYNAMIC_LINKER_E "%{msoft-float:-sf}.so.1"
+ #define MUSL_DYNAMIC_LINKER64 \
+-  "/lib/ld-musl-powerpc64" MUSL_DYNAMIC_LINKER_E "%{msoft-float:-sf}.so.1"
++  "%OPTWARE_TARGET_PREFIX%/lib/ld-musl-powerpc64" MUSL_DYNAMIC_LINKER_E "%{msoft-float:-sf}.so.1"
+ 
+-#define UCLIBC_DYNAMIC_LINKER32 "/lib/ld-uClibc.so.0"
+-#define UCLIBC_DYNAMIC_LINKER64 "/lib/ld64-uClibc.so.0"
++#define UCLIBC_DYNAMIC_LINKER32 "%OPTWARE_TARGET_PREFIX%/lib/ld-uClibc.so.0"
++#define UCLIBC_DYNAMIC_LINKER64 "%OPTWARE_TARGET_PREFIX%/lib/ld64-uClibc.so.0"
+ #if DEFAULT_LIBC == LIBC_UCLIBC
+ #define CHOOSE_DYNAMIC_LINKER(G, U, M) \
+   "%{mglibc:" G ";:%{mmusl:" M ";:" U "}}"
+--- a/gcc/config/rs6000/sysv4.h
++++ b/gcc/config/rs6000/sysv4.h
+@@ -780,10 +780,10 @@ ENDIAN_SELECT(" -mbig", " -mlittle", DEFAULT_ASM_ENDIAN)
+ 
+ #define MUSL_DYNAMIC_LINKER_E ENDIAN_SELECT("","le","")
+ 
+-#define GLIBC_DYNAMIC_LINKER "/lib/ld.so.1"
+-#define UCLIBC_DYNAMIC_LINKER "/lib/ld-uClibc.so.0"
++#define GLIBC_DYNAMIC_LINKER "%OPTWARE_TARGET_PREFIX%/lib/ld.so.1"
++#define UCLIBC_DYNAMIC_LINKER "%OPTWARE_TARGET_PREFIX%/lib/ld-uClibc.so.0"
+ #define MUSL_DYNAMIC_LINKER \
+-  "/lib/ld-musl-powerpc" MUSL_DYNAMIC_LINKER_E "%{msoft-float:-sf}.so.1"
++  "%OPTWARE_TARGET_PREFIX%/lib/ld-musl-powerpc" MUSL_DYNAMIC_LINKER_E "%{msoft-float:-sf}.so.1"
+ #if DEFAULT_LIBC == LIBC_UCLIBC
+ #define CHOOSE_DYNAMIC_LINKER(G, U, M) \
+   "%{mglibc:" G ";:%{mmusl:" M ";:" U "}}"
+--- a/gcc/config/s390/linux.h
++++ b/gcc/config/s390/linux.h
+@@ -73,8 +73,8 @@ along with GCC; see the file COPYING3.  If not see
+ #define MULTILIB_DEFAULTS { "m31" }
+ #endif
+ 
+-#define GLIBC_DYNAMIC_LINKER32 "/lib/ld.so.1"
+-#define GLIBC_DYNAMIC_LINKER64 "/lib/ld64.so.1"
++#define GLIBC_DYNAMIC_LINKER32 "%OPTWARE_TARGET_PREFIX%/lib/ld.so.1"
++#define GLIBC_DYNAMIC_LINKER64 "%OPTWARE_TARGET_PREFIX%/lib/ld64.so.1"
+ 
+ #undef  LINK_SPEC
+ #define LINK_SPEC \
+--- a/gcc/config/sh/linux.h
++++ b/gcc/config/sh/linux.h
+@@ -61,10 +61,10 @@ along with GCC; see the file COPYING3.  If not see
+ 
+ #undef MUSL_DYNAMIC_LINKER
+ #define MUSL_DYNAMIC_LINKER \
+-  "/lib/ld-musl-sh" MUSL_DYNAMIC_LINKER_E MUSL_DYNAMIC_LINKER_FP \
++  "%OPTWARE_TARGET_PREFIX%/lib/ld-musl-sh" MUSL_DYNAMIC_LINKER_E MUSL_DYNAMIC_LINKER_FP \
+   "%{mfdpic:-fdpic}.so.1"
+ 
+-#define GLIBC_DYNAMIC_LINKER "/lib/ld-linux.so.2"
++#define GLIBC_DYNAMIC_LINKER "%OPTWARE_TARGET_PREFIX%/lib/ld-linux.so.2"
+ 
+ #undef SUBTARGET_LINK_EMUL_SUFFIX
+ #define SUBTARGET_LINK_EMUL_SUFFIX "%{mfdpic:_fd;:_linux}"
+--- a/gcc/config/sparc/linux.h
++++ b/gcc/config/sparc/linux.h
+@@ -83,7 +83,7 @@ extern const char *host_detect_local_cpu (int argc, const char **argv);
+    When the -shared link option is used a final link is not being
+    done.  */
+ 
+-#define GLIBC_DYNAMIC_LINKER "/lib/ld-linux.so.2"
++#define GLIBC_DYNAMIC_LINKER "%OPTWARE_TARGET_PREFIX%/lib/ld-linux.so.2"
+ 
+ #undef  LINK_SPEC
+ #define LINK_SPEC "-m elf32_sparc %{shared:-shared} \
+--- a/gcc/config/sparc/linux64.h
++++ b/gcc/config/sparc/linux64.h
+@@ -84,8 +84,8 @@ along with GCC; see the file COPYING3.  If not see
+    When the -shared link option is used a final link is not being
+    done.  */
+ 
+-#define GLIBC_DYNAMIC_LINKER32 "/lib/ld-linux.so.2"
+-#define GLIBC_DYNAMIC_LINKER64 "/lib64/ld-linux.so.2"
++#define GLIBC_DYNAMIC_LINKER32 "%OPTWARE_TARGET_PREFIX%/lib/ld-linux.so.2"
++#define GLIBC_DYNAMIC_LINKER64 "%OPTWARE_TARGET_PREFIX%/lib64/ld-linux.so.2"
+ 
+ #ifdef SPARC_BI_ARCH
+ 
+--- a/gcc/config/xtensa/linux.h
++++ b/gcc/config/xtensa/linux.h
+@@ -46,7 +46,7 @@ along with GCC; see the file COPYING3.  If not see
+   %{mauto-litpools:--auto-litpools} \
+   %{mno-auto-litpools:--no-auto-litpools}"
+ 
+-#define GLIBC_DYNAMIC_LINKER "/lib/ld.so.1"
++#define GLIBC_DYNAMIC_LINKER "%OPTWARE_TARGET_PREFIX%/lib/ld.so.1"
+ 
+ #undef LINK_SPEC
+ #define LINK_SPEC \

@@ -97,6 +97,7 @@ ifneq ($(BUILDROOT-PPC_603E_GCC_PATCHES), )
 	$(INSTALL) -m 644 $(BUILDROOT-PPC_603E_GCC_PATCHES) \
 		$(TARGET_CROSS_BUILD_DIR)/package/gcc/$(CROSS_CONFIGURATION_GCC_VERSION)
 endif
+	rm -f $(TARGET_CROSS_BUILD_DIR)/package/gcc/6.4.0/941-mips-Add-support-for-mips-r6-musl.patch
 	rm -f $(TARGET_CROSS_BUILD_DIR)/package/glibc/0006-sh4-trap.patch
 ifneq ($(BUILDROOT-PPC_603E_GLIBC_PATCHES), )
 	$(INSTALL) -m 644 $(BUILDROOT-PPC_603E_GLIBC_PATCHES) \
