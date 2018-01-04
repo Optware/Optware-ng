@@ -16,9 +16,9 @@ BIND_MAINTAINER=Louis Lagendijk <louis.lagendijk@gmail.com>
 BIND_DESCRIPTION=Bind provides a full name server package, including zone masters, slaves, zone transfers, security multiple views.  This is THE reference implementation from ISC, which has roots all the way back to the TOPS-20 original.  It is over-kill, unless you have a complex environment.  Other utilities (for debugging, remote management) are also included.  Full documentation and developers' files are included in this kit, though you may wish they weren't.
 BIND_SECTION=net
 BIND_PRIORITY=optional
-BIND_DEPENDS=openssl, psmisc
+BIND_DEPENDS=openssl, libcap, busybox-base
 
-BIND_IPK_VERSION=2
+BIND_IPK_VERSION=3
 
 BIND_PATCHES=$(BIND_SOURCE_DIR)/libtool.patch
 
@@ -45,7 +45,7 @@ $(DL_DIR)/$(BIND_SOURCE):
 bind-source: $(DL_DIR)/$(BIND_SOURCE) $(BIND_PATCHES)
 
 $(BIND_BUILD_DIR)/.configured: $(DL_DIR)/$(BIND_SOURCE) make/bind.mk
-	$(MAKE) openssl-stage
+	$(MAKE) openssl-stage libcap-stage
 	rm -rf $(BUILD_DIR)/$(BIND_DIR) $(@D)
 	$(BIND_UNZIP) $(DL_DIR)/$(BIND_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(BIND_PATCHES)"; then \
