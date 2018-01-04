@@ -6,7 +6,7 @@ OPENSSL_SITE=http://www.openssl.org/source
 
 OPENSSL_VERSION := 1.0.2h
 OPENSSL_LIB_VERSION := 1.0.0
-OPENSSL_IPK_VERSION := 2
+OPENSSL_IPK_VERSION := 3
 
 OPENSSL_SOURCE=openssl-$(OPENSSL_VERSION).tar.gz
 OPENSSL_DIR=openssl-$(OPENSSL_VERSION)
@@ -82,7 +82,7 @@ OPENSSL_HOST_ARCH=linux-$(strip \
 	generic32)))
 endif
 
-$(OPENSSL_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(OPENSSL_SOURCE) $(OPENSSL_PATCHES) make/openssl.mk
+$(OPENSSL_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(OPENSSL_SOURCE) $(OPENSSL_PATCHES) #make/openssl.mk
 	rm -rf $(HOST_BUILD_DIR)/$(OPENSSL_DIR) $(@D)
 	rm -f $(HOST_STAGING_LIB_DIR)/libssl.* $(HOST_STAGING_LIB_DIR)/libcrypto.*
 	$(OPENSSL_UNZIP) $(DL_DIR)/$(OPENSSL_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf - 
@@ -120,13 +120,13 @@ $(OPENSSL_BUILD_DIR)/.configured: $(DL_DIR)/$(OPENSSL_SOURCE) $(OPENSSL_PATCHES)
 		$(TARGET_CONFIGURE_OPTS) \
 		./Configure \
 			shared zlib-dynamic \
-			enable-md2 \
+			enable-md2 enable-rfc3779 \
 			$(STAGING_CPPFLAGS) \
 			--openssldir=$(TARGET_PREFIX)/etc/ssl \
 			--prefix=$(TARGET_PREFIX) \
 			$(OPENSSL_ARCH) \
 	)
-	sed -i -e 's|LIBDEPS=.|&$(STAGING_LDFLAGS) |' $(@D)/Makefile
+	sed -i -e "s|LIBDEPS=['\"]|&$(STAGING_LDFLAGS) |" $(@D)/Makefile
 	sed -i -e 's|$$(PERL) tools/c_rehash certs||' $(@D)/apps/Makefile
 	touch $@
 
@@ -142,7 +142,7 @@ $(OPENSSL_BUILD_DIR)/.built: $(OPENSSL_BUILD_DIR)/.configured
 		$(OPENSSL_ASFLAG) \
 		MANDIR=$(TARGET_PREFIX)/man \
 		EX_LIBS="$(STAGING_LDFLAGS) -ldl" \
-		DIRS="crypto ssl apps"
+		DIRS="crypto ssl apps engines"
 	touch $@
 
 openssl: $(OPENSSL_BUILD_DIR)/.built
@@ -209,25 +209,30 @@ $(OPENSSL_DEV_IPK_DIR)/CONTROL/control:
 	@echo "Conflicts: $(OPENSSL_CONFLICTS)" >>$@
 
 $(OPENSSL_IPK) $(OPENSSL_DEV_IPK): $(OPENSSL_BUILD_DIR)/.built
-	rm -rf $(OPENSSL_IPK_DIR) $(BUILD_DIR)/openssl_*_$(TARGET_ARCH).ipk
+	rm -rf $(OPENSSL_IPK_DIR) $(BUILD_DIR)/openssl_*_$(TARGET_ARCH).ipk \
+		$(OPENSSL_DEV_IPK_DIR) $(BUILD_DIR)/openssl-dev_*_$(TARGET_ARCH).ipk
+	# openssl
 	$(INSTALL) -d $(OPENSSL_IPK_DIR)$(TARGET_PREFIX)/bin
 	$(INSTALL) -m 755 $(OPENSSL_BUILD_DIR)/apps/openssl $(OPENSSL_IPK_DIR)$(TARGET_PREFIX)/bin/openssl
 	$(STRIP_COMMAND) $(OPENSSL_IPK_DIR)$(TARGET_PREFIX)/bin/openssl
 	$(INSTALL) -d $(OPENSSL_IPK_DIR)$(TARGET_PREFIX)/etc/ssl
 	$(INSTALL) -m 755 $(OPENSSL_BUILD_DIR)/apps/openssl.cnf $(OPENSSL_IPK_DIR)$(TARGET_PREFIX)/etc/ssl/openssl.cnf
-	$(INSTALL) -d $(OPENSSL_IPK_DIR)$(TARGET_PREFIX)/lib
-	$(INSTALL) -m 644 $(OPENSSL_BUILD_DIR)/libcrypto.so.$(OPENSSL_LIB_VERSION) $(OPENSSL_IPK_DIR)$(TARGET_PREFIX)/lib
-	$(INSTALL) -m 644 $(OPENSSL_BUILD_DIR)/libssl.so.$(OPENSSL_LIB_VERSION) $(OPENSSL_IPK_DIR)$(TARGET_PREFIX)/lib
+	$(INSTALL) -d $(OPENSSL_IPK_DIR)$(TARGET_PREFIX)/lib/engines
+	$(INSTALL) -m 755 $(OPENSSL_BUILD_DIR)/libcrypto.so.$(OPENSSL_LIB_VERSION) $(OPENSSL_IPK_DIR)$(TARGET_PREFIX)/lib
+	$(INSTALL) -m 755 $(OPENSSL_BUILD_DIR)/libssl.so.$(OPENSSL_LIB_VERSION) $(OPENSSL_IPK_DIR)$(TARGET_PREFIX)/lib
 	$(STRIP_COMMAND) $(OPENSSL_IPK_DIR)$(TARGET_PREFIX)/lib/libcrypto.so*
 	$(STRIP_COMMAND) $(OPENSSL_IPK_DIR)$(TARGET_PREFIX)/lib/libssl.so*
 	cd $(OPENSSL_IPK_DIR)$(TARGET_PREFIX)/lib && ln -fs libcrypto.so.$(OPENSSL_LIB_VERSION) libcrypto.so.0
 	cd $(OPENSSL_IPK_DIR)$(TARGET_PREFIX)/lib && ln -fs libcrypto.so.$(OPENSSL_LIB_VERSION) libcrypto.so
 	cd $(OPENSSL_IPK_DIR)$(TARGET_PREFIX)/lib && ln -fs libssl.so.$(OPENSSL_LIB_VERSION) libssl.so.0
 	cd $(OPENSSL_IPK_DIR)$(TARGET_PREFIX)/lib && ln -fs libssl.so.$(OPENSSL_LIB_VERSION) libssl.so
+	$(INSTALL) -m 755 $(OPENSSL_BUILD_DIR)/engines/lib*.so $(OPENSSL_BUILD_DIR)/engines/ccgost/libgost.so \
+		$(OPENSSL_IPK_DIR)$(TARGET_PREFIX)/lib/engines
 	$(MAKE) $(OPENSSL_IPK_DIR)/CONTROL/control
 	echo $(OPENSSL_CONFFILES) | sed -e 's/ /\n/g' > $(OPENSSL_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(OPENSSL_IPK_DIR)
-	rm -rf $(OPENSSL_DEV_IPK_DIR) $(BUILD_DIR)/openssl-dev_*_$(TARGET_ARCH).ipk
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(OPENSSL_IPK_DIR)
+	# openssl-dev
 	$(INSTALL) -d $(OPENSSL_DEV_IPK_DIR)$(TARGET_PREFIX)/include/openssl
 	$(INSTALL) -m 644 $(OPENSSL_BUILD_DIR)/include/openssl/*.h $(OPENSSL_DEV_IPK_DIR)$(TARGET_PREFIX)/include/openssl
 	$(INSTALL) -d $(OPENSSL_DEV_IPK_DIR)$(TARGET_PREFIX)/lib/pkgconfig
@@ -235,6 +240,7 @@ $(OPENSSL_IPK) $(OPENSSL_DEV_IPK): $(OPENSSL_BUILD_DIR)/.built
 	sed -i '/^Libs:/s|-lcrypto .* -ldl|-lcrypto -ldl|' $(OPENSSL_DEV_IPK_DIR)$(TARGET_PREFIX)/lib/pkgconfig/openssl.pc
 	$(MAKE) $(OPENSSL_DEV_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(OPENSSL_DEV_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(OPENSSL_DEV_IPK_DIR)
 
 $(OPENSSL_BUILD_DIR)/.ipk: $(OPENSSL_IPK) $(OPENSSL_DEV_IPK)
 	touch $@
