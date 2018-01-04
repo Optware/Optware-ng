@@ -20,19 +20,10 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-GOLANG_HG_REPO=https://go.googlecode.com/hg
-GOLANG_HG_DATE=20100315
-#GOLANG_HG_REV=194d473264c1
-GOLANG_SITE=https://storage.googleapis.com/golang
-ifdef GOLANG_HG_REV
-GOLANG_VERSION=0.hg$(GOLANG_HG_DATE)
-GOLANG_SOURCE=golang-$(GOLANG_VERSION).tar.gz
-GOLANG_DIR=golang-$(GOLANG_VERSION)
-else
-GOLANG_VERSION=1.4.1
+GOLANG_SITE=https://redirector.gvt1.com/edgedl/go
+GOLANG_VERSION=1.9.2
 GOLANG_SOURCE=go$(GOLANG_VERSION).src.tar.gz
 GOLANG_DIR=go
-endif
 
 GOLANG_UNZIP=zcat
 GOLANG_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
@@ -45,103 +36,59 @@ GOLANG_CONFLICTS=
 
 GOLANG_IPK_VERSION=1
 
-#GOLANG_CONFFILES=
-
-#GOLANG_HOST_PATCHES=
+GOLANG_CONFFILES=
 
 GOLANG_ARCH=$(strip \
-$(if $(filter arm armel, $(TARGET_ARCH)), arm, \
-$(if $(filter i686 i386, $(TARGET_ARCH)), 386, \
-$(if $(filter x86_64 amd64, $(TARGET_ARCH)), amd64, \
-$(TARGET_ARCH)))))
+$(if $(filter buildroot-armeabi-ng buildroot-armeabihf buildroot-armv5eabi-ng buildroot-armv5eabi-ng-legacy, $(OPTWARE_TARGET)), arm, \
+$(if $(filter buildroot-i686, $(OPTWARE_TARGET)), 386, \
+$(if $(filter buildroot-mipsel-ng, $(OPTWARE_TARGET)), mipsle, \
+$(error unsupported arch)))))
 
-GOLANG_BUILD_CMD=$(strip \
-$(if $(filter arm, $(GOLANG_ARCH)), GOARCH=arm GOARM=5 ./make.bash, \
-$(if $(filter 386, $(GOLANG_ARCH)), GOARCH=386 ./make.bash, \
-$(if $(filter amd64, $(GOLANG_ARCH)), GOARCH=amd64 ./make.bash, \
-echo $(GOLANG_ARCH) not supported))))
+GOLANG_GOARM=$(strip \
+$(if $(filter buildroot-armeabi-ng buildroot-armv5eabi-ng buildroot-armv5eabi-ng-legacy, $(OPTWARE_TARGET)), 5, \
+$(if $(filter buildroot-armeabihf, $(OPTWARE_TARGET)), 7, \
+)))
 
-#GOLANG_PATCHES=$(GOLANG_SOURCE_DIR)/$(GOLANG_ARCH)-g.patch
+# Support fir this will be in go1.10,
+# no golang for buildroot-mipsel-ng yet
+# (as of go1.9.2)
+GOLANG_GOMIPS=$(strip \
+$(if $(filter buildroot-mipsel-ng, $(OPTWARE_TARGET)), softfloat, \
+))
 
-#GOLANG_CPPFLAGS=
+GOLANG_PATCHES=\
+$(GOLANG_SOURCE_DIR)/default-target-cc-cxx-pkgconfig.patch
 
-ifeq (uclibc, $(LIBC_STYLE))
-GOLANG_LDFLAGS=-lm
-endif
+GOLANG_CPPFLAGS=
+
+GOLANG_LDFLAGS=
 
 GOLANG_SOURCE_DIR=$(SOURCE_DIR)/golang
 
 GOLANG_BUILD_DIR=$(BUILD_DIR)/golang
-GOLANG_HOST_BUILD_DIR=$(HOST_BUILD_DIR)/golang
-
 GOLANG_IPK_DIR=$(BUILD_DIR)/golang-$(GOLANG_VERSION)-ipk
 GOLANG_IPK=$(BUILD_DIR)/golang_$(GOLANG_VERSION)-$(GOLANG_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 .PHONY: golang-source golang-unpack golang golang-stage golang-ipk golang-clean golang-dirclean golang-check
 
 $(DL_DIR)/$(GOLANG_SOURCE):
-ifdef GOLANG_HG_REV
-	(cd $(BUILD_DIR); \
-		rm -rf $(GOLANG_DIR) && \
-		hg clone -r$(GOLANG_HG_REV) $(GOLANG_HG_REPO) $(GOLANG_DIR) && \
-		tar -czf $@ \
-			--exclude .hg \
-			$(GOLANG_DIR) && \
-		rm -rf $(GOLANG_DIR) \
-	)
-else
 	$(WGET) -P $(@D) $(GOLANG_SITE)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
-endif
 
 golang-source: $(DL_DIR)/$(GOLANG_SOURCE) $(GOLANG_PATCHES)
 
-$(GOLANG_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(GOLANG_SOURCE) $(GOLANG_HOST_PATCHES) # make/golang.mk
-	rm -rf $(HOST_BUILD_DIR)/golang
-	$(GOLANG_UNZIP) $(DL_DIR)/$(GOLANG_SOURCE) | tar -C $(HOST_BUILD_DIR) -xf -
-	if test -n "$(GOLANG_HOST_PATCHES)" ; \
-		then cat $(GOLANG_HOST_PATCHES) | \
-		$(PATCH) -d $(HOST_BUILD_DIR)/$(GOLANG_DIR) -p0 ; \
-	fi
-	if test "$(HOST_BUILD_DIR)/$(GOLANG_DIR)" != "$(@D)" ; \
-		then mv $(HOST_BUILD_DIR)/$(GOLANG_DIR) $(@D) ; \
-	fi
-	mkdir -p $(@D)/bin
-	sed -i -e '/^for i in/s| pkg.*||' $(@D)/src/make*.bash
-	(cd $(@D)/src; \
-		GOROOT=$(@D) GOBIN=$(@D)/bin \
-		PATH=$(@D)/bin:$$PATH \
-		GOOS=linux GOARCH=arm GOARM=5 ./make.bash; \
-	)
-	(cd $(@D)/src; \
-		GOROOT=$(@D) GOBIN=$(@D)/bin \
-		PATH=$(@D)/bin:$$PATH \
-		GOOS=linux GOARCH=386 ./make.bash; \
-	)
-	touch $@
-
-golang-host: $(GOLANG_HOST_BUILD_DIR)/.built
-
-$(GOLANG_BUILD_DIR)/.configured: $(DL_DIR)/$(GOLANG_SOURCE) $(GOLANG_PATCHES) make/golang.mk #$(GOLANG_HOST_BUILD_DIR)/.built
+$(GOLANG_BUILD_DIR)/.configured: $(DL_DIR)/$(GOLANG_SOURCE) $(GOLANG_PATCHES) make/golang.mk
+	# build bootstrap gccgo-go:
+	$(MAKE) gcc-host
 	rm -rf $(BUILD_DIR)/$(GOLANG_DIR) $(@D)
 	$(GOLANG_UNZIP) $(DL_DIR)/$(GOLANG_SOURCE) | tar -C $(BUILD_DIR) -xf -
 	if test -n "$(GOLANG_PATCHES)" ; \
 		then cat $(GOLANG_PATCHES) | \
-		$(PATCH) -bd $(BUILD_DIR)/$(GOLANG_DIR) -p0 ; \
+		$(PATCH) -bd $(BUILD_DIR)/$(GOLANG_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(GOLANG_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(GOLANG_DIR) $(@D) ; \
 	fi
-#	sed -i -e 's|@CC@|$(TARGET_CC)|' $(@D)/src/quietgcc.bash
-ifneq ($(GOLANG_ARCH), amd64)
-#	sed -i -e 's| -m64||' $(@D)/src/quietgcc.bash
-endif
-#	sed -i -e '/^CC=/s|=.*quietgcc$$|=$(@D)/bin/quietgcc|' \
-	       -e '/^LD=/s|=.*quietgcc$$|=$(@D)/bin/quietgcc $(STAGING_LDFLAGS) $(GOLANG_LDFLAGS)|' \
-		$(@D)/src/Make.conf
-#	sed -i -e '/^QUOTED_GOBIN=/s|=.*|=$(GOLANG_HOST_BUILD_DIR)/bin|g' \
-		$(@D)/src/Make.cmd $(@D)/src/Make.pkg
-#	rm -f $(@D)/pkg/~place-holder~
 	touch $@
 
 golang-unpack: $(GOLANG_BUILD_DIR)/.configured
@@ -151,14 +98,12 @@ golang-unpack: $(GOLANG_BUILD_DIR)/.configured
 #
 $(GOLANG_BUILD_DIR)/.built: $(GOLANG_BUILD_DIR)/.configured
 	rm -f $@
-#	mkdir -p $(@D)/bin
-#		PATH=$(GOLANG_HOST_BUILD_DIR)/bin:$$PATH \
-		GOBIN=$(@D)/bin
 	(cd $(@D)/src; \
 		CC_FOR_TARGET="$(TARGET_CC) $(TARGET_CFLAGS) $(STAGING_LDFLAGS) $(GOLANG_LDFLAGS)" \
 		CXX_FOR_TARGET="$(TARGET_CXX)  $(TARGET_CFLAGS) $(STAGING_LDFLAGS) $(GOLANG_LDFLAGS)" \
-		GOROOT=$(@D) GOROOT_FINAL=$(TARGET_PREFIX)/lib/go GOOS=linux \
-		$(GOLANG_BUILD_CMD); \
+		GOROOT_FINAL=$(TARGET_PREFIX)/lib/golang GOOS=linux GOARCH=$(GOLANG_ARCH) \
+		GOARM=$(GOLANG_GOARM) GOMIPS=$(GOLANG_GOMIPS) CGO_ENABLED=1 \
+		GOROOT_BOOTSTRAP=$(GCC_HOST_BIN_DIR)/.. ./make.bash \
 	)
 	touch $@
 
@@ -166,16 +111,6 @@ $(GOLANG_BUILD_DIR)/.built: $(GOLANG_BUILD_DIR)/.configured
 # This is the build convenience target.
 #
 golang: $(GOLANG_BUILD_DIR)/.built
-
-#
-# If you are building a library, then you need to stage it too.
-#
-#$(GOLANG_BUILD_DIR)/.staged: $(GOLANG_BUILD_DIR)/.built
-#	rm -f $@
-#	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
-#	touch $@
-#
-#golang-stage: $(GOLANG_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
@@ -210,18 +145,20 @@ $(GOLANG_IPK_DIR)/CONTROL/control:
 #
 $(GOLANG_IPK): $(GOLANG_BUILD_DIR)/.built
 	rm -rf $(BUILD_DIR)/golang*_*_$(TARGET_ARCH).ipk $(BUILD_DIR)/golang*-ipk
-	# golang
-#	$(INSTALL) -d $(GOLANG_IPK_DIR)$(TARGET_PREFIX)/share/go
-	# $(STRIP_COMMAND) $(GOLANG_IPK_DIR)$(TARGET_PREFIX)/bin/*
-#	rsync -av $(<D)/bin $(<D)/pkg $(<D)/[ACLR]* $(GOLANG_IPK_DIR)$(TARGET_PREFIX)/share/go/
-	$(INSTALL) -d $(GOLANG_IPK_DIR)$(TARGET_PREFIX)/bin
-	$(INSTALL) -d $(GOLANG_IPK_DIR)$(TARGET_PREFIX)/lib/go/pkg/tool
-	cp -af $(GOLANG_BUILD_DIR)/bin/linux_$(GOLANG_ARCH)/* $(GOLANG_IPK_DIR)$(TARGET_PREFIX)/bin
-	cp -af $(GOLANG_BUILD_DIR)/pkg/linux_$(GOLANG_ARCH) $(GOLANG_IPK_DIR)$(TARGET_PREFIX)/lib/go/pkg
-	cp -af $(GOLANG_BUILD_DIR)/pkg/tool/linux_$(GOLANG_ARCH) $(GOLANG_IPK_DIR)$(TARGET_PREFIX)/lib/go/pkg/tool
-	$(STRIP_COMMAND) $(GOLANG_IPK_DIR)$(TARGET_PREFIX)/bin/* $(GOLANG_IPK_DIR)$(TARGET_PREFIX)/lib/go/pkg/tool/linux_$(GOLANG_ARCH)/*
+	$(INSTALL) -d $(GOLANG_IPK_DIR)$(TARGET_PREFIX)/lib/golang/pkg/tool \
+		$(GOLANG_IPK_DIR)$(TARGET_PREFIX)/lib/golang/bin
+	cp -af $(GOLANG_BUILD_DIR)/bin/linux_$(GOLANG_ARCH)/* \
+		$(GOLANG_IPK_DIR)$(TARGET_PREFIX)/lib/golang/bin
+	cp -af $(GOLANG_BUILD_DIR)/pkg/linux_$(GOLANG_ARCH) \
+		$(GOLANG_BUILD_DIR)/pkg/include \
+		$(GOLANG_IPK_DIR)$(TARGET_PREFIX)/lib/golang/pkg
+	cp -af $(GOLANG_BUILD_DIR)/pkg/tool/linux_$(GOLANG_ARCH) \
+		$(GOLANG_IPK_DIR)$(TARGET_PREFIX)/lib/golang/pkg/tool
+	cp -af $(GOLANG_BUILD_DIR)/src \
+		$(GOLANG_IPK_DIR)$(TARGET_PREFIX)/lib/golang
 	$(MAKE) $(GOLANG_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GOLANG_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(GOLANG_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.

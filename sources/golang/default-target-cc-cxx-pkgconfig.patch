@@ -1,0 +1,22 @@
+Make proper Optware native gcc/g++/pkg-config paths
+hardcoded into go and cgo binaries
+--- a/src/cmd/dist/buildgo.go
++++ b/src/cmd/dist/buildgo.go
+@@ -33,7 +33,7 @@ func mkzdefaultcc(dir, file string) {
+ 			"const DefaultCC = `%s`\n"+
+ 			"const DefaultCXX = `%s`\n"+
+ 			"const DefaultPkgConfig = `%s`\n",
+-		defaultcctarget, defaultcxxtarget, defaultpkgconfigtarget)
++		"%OPTWARE_TARGET_PREFIX%/bin/gcc", "%OPTWARE_TARGET_PREFIX%/bin/g++", "%OPTWARE_TARGET_PREFIX%/bin/pkg-config")
+ 
+ 	writefile(outGo, file, writeSkipSame)
+ 
+@@ -46,7 +46,7 @@ func mkzdefaultcc(dir, file string) {
+ 			"const defaultCC = `%s`\n"+
+ 			"const defaultCXX = `%s`\n"+
+ 			"const defaultPkgConfig = `%s`\n",
+-		defaultcctarget, defaultcxxtarget, defaultpkgconfigtarget)
++		"%OPTWARE_TARGET_PREFIX%/bin/gcc", "%OPTWARE_TARGET_PREFIX%/bin/g++", "%OPTWARE_TARGET_PREFIX%/bin/pkg-config")
+ 
+ 	i := len(file) - len("go/internal/cfg/zdefaultcc.go")
+ 	file = file[:i] + "cgo/zdefaultcc.go"
