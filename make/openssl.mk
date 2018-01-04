@@ -6,7 +6,7 @@ OPENSSL_SITE=http://www.openssl.org/source
 
 OPENSSL_VERSION := 1.0.2h
 OPENSSL_LIB_VERSION := 1.0.0
-OPENSSL_IPK_VERSION := 3
+OPENSSL_IPK_VERSION := 4
 
 OPENSSL_SOURCE=openssl-$(OPENSSL_VERSION).tar.gz
 OPENSSL_DIR=openssl-$(OPENSSL_VERSION)
@@ -228,6 +228,7 @@ $(OPENSSL_IPK) $(OPENSSL_DEV_IPK): $(OPENSSL_BUILD_DIR)/.built
 	cd $(OPENSSL_IPK_DIR)$(TARGET_PREFIX)/lib && ln -fs libssl.so.$(OPENSSL_LIB_VERSION) libssl.so
 	$(INSTALL) -m 755 $(OPENSSL_BUILD_DIR)/engines/lib*.so $(OPENSSL_BUILD_DIR)/engines/ccgost/libgost.so \
 		$(OPENSSL_IPK_DIR)$(TARGET_PREFIX)/lib/engines
+	$(STRIP_COMMAND)  $(OPENSSL_IPK_DIR)$(TARGET_PREFIX)/lib/engines/lib*.so
 	$(MAKE) $(OPENSSL_IPK_DIR)/CONTROL/control
 	echo $(OPENSSL_CONFFILES) | sed -e 's/ /\n/g' > $(OPENSSL_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(OPENSSL_IPK_DIR)
