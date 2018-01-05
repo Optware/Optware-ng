@@ -47,10 +47,10 @@ GOLANG_DESCRIPTION=A systems programming language - expressive, concurrent, garb
 GOLANG_SECTION=lang
 GOLANG_PRIORITY=optional
 GOLANG_DEPENDS=
-GOLANG_SUGGESTS=gcc
+GOLANG_SUGGESTS=gcc, pkgconfig
 GOLANG_CONFLICTS=
 
-GOLANG_IPK_VERSION=1
+GOLANG_IPK_VERSION=2
 
 GOLANG_CONFFILES=
 
@@ -149,7 +149,11 @@ $(GOLANG_IPK_DIR)/CONTROL/control:
 	@echo "Section: $(GOLANG_SECTION)" >>$@
 	@echo "Version: $(GOLANG_VERSION)-$(GOLANG_IPK_VERSION)" >>$@
 	@echo "Maintainer: $(GOLANG_MAINTAINER)" >>$@
+ifdef GOLANG_GIT_TREEISH
+	@echo "Source: $(GOLANG_GIT)" >>$@
+else
 	@echo "Source: $(GOLANG_SITE)/$(GOLANG_SOURCE)" >>$@
+endif
 	@echo "Description: $(GOLANG_DESCRIPTION)" >>$@
 	@echo "Depends: $(GOLANG_DEPENDS)" >>$@
 	@echo "Suggests: $(GOLANG_SUGGESTS)" >>$@
