@@ -54,7 +54,7 @@ GOLANG_IPK_VERSION=2
 
 GOLANG_CONFFILES=
 
-GOLANG_ARCH:=$(strip \
+GOLANG_ARCH=$(strip \
 $(if $(filter buildroot-armeabi-ng buildroot-armeabihf buildroot-armv5eabi-ng buildroot-armv5eabi-ng-legacy, $(OPTWARE_TARGET)), arm, \
 $(if $(filter buildroot-i686, $(OPTWARE_TARGET)), 386, \
 $(if $(filter buildroot-mipsel-ng, $(OPTWARE_TARGET)), mipsle, \
