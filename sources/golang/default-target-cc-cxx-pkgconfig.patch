@@ -1,22 +1,42 @@
-Make proper Optware native gcc/g++/pkg-config paths
-hardcoded into go and cgo binaries
 --- a/src/cmd/dist/buildgo.go
 +++ b/src/cmd/dist/buildgo.go
-@@ -33,7 +33,7 @@ func mkzdefaultcc(dir, file string) {
- 			"const DefaultCC = `%s`\n"+
- 			"const DefaultCXX = `%s`\n"+
- 			"const DefaultPkgConfig = `%s`\n",
--		defaultcctarget, defaultcxxtarget, defaultpkgconfigtarget)
-+		"%OPTWARE_TARGET_PREFIX%/bin/gcc", "%OPTWARE_TARGET_PREFIX%/bin/g++", "%OPTWARE_TARGET_PREFIX%/bin/pkg-config")
+@@ -33,9 +33,9 @@ func mkzdefaultcc(dir, file string) {
+ 		fmt.Fprintln(&buf)
+ 		fmt.Fprintf(&buf, "package cfg\n")
+ 		fmt.Fprintln(&buf)
+-		fmt.Fprintf(&buf, "const DefaultPkgConfig = `%s`\n", defaultpkgconfig)
+-		buf.WriteString(defaultCCFunc("DefaultCC", defaultcc))
+-		buf.WriteString(defaultCCFunc("DefaultCXX", defaultcxx))
++		fmt.Fprintf(&buf, "const DefaultPkgConfig = `%s`\n", "%OPTWARE_TARGET_PREFIX%/bin/pkg-config")
++		buf.WriteString(defaultCCFunc("DefaultCC", defaultcc, "%OPTWARE_TARGET_PREFIX%/bin/gcc"))
++		buf.WriteString(defaultCCFunc("DefaultCXX", defaultcxx, "%OPTWARE_TARGET_PREFIX%/bin/g++"))
+ 		writefile(buf.String(), file, writeSkipSame)
+ 		return
+ 	}
+@@ -45,13 +45,13 @@ func mkzdefaultcc(dir, file string) {
+ 	fmt.Fprintln(&buf)
+ 	fmt.Fprintf(&buf, "package main\n")
+ 	fmt.Fprintln(&buf)
+-	fmt.Fprintf(&buf, "const defaultPkgConfig = `%s`\n", defaultpkgconfig)
+-	buf.WriteString(defaultCCFunc("defaultCC", defaultcc))
+-	buf.WriteString(defaultCCFunc("defaultCXX", defaultcxx))
++	fmt.Fprintf(&buf, "const defaultPkgConfig = `%s`\n", "%OPTWARE_TARGET_PREFIX%/bin/pkg-config")
++	buf.WriteString(defaultCCFunc("defaultCC", defaultcc, "%OPTWARE_TARGET_PREFIX%/bin/gcc"))
++	buf.WriteString(defaultCCFunc("defaultCXX", defaultcxx, "%OPTWARE_TARGET_PREFIX%/bin/g++"))
+ 	writefile(buf.String(), file, writeSkipSame)
+ }
  
- 	writefile(outGo, file, writeSkipSame)
+-func defaultCCFunc(name string, defaultcc map[string]string) string {
++func defaultCCFunc(name string, defaultcc map[string]string, thecc string) string {
+ 	var buf bytes.Buffer
  
-@@ -46,7 +46,7 @@ func mkzdefaultcc(dir, file string) {
- 			"const defaultCC = `%s`\n"+
- 			"const defaultCXX = `%s`\n"+
- 			"const defaultPkgConfig = `%s`\n",
--		defaultcctarget, defaultcxxtarget, defaultpkgconfigtarget)
-+		"%OPTWARE_TARGET_PREFIX%/bin/gcc", "%OPTWARE_TARGET_PREFIX%/bin/g++", "%OPTWARE_TARGET_PREFIX%/bin/pkg-config")
+ 	fmt.Fprintf(&buf, "func %s(goos, goarch string) string {\n", name)
+@@ -67,7 +67,7 @@ func defaultCCFunc(name string, defaultcc map[string]string) string {
+ 		fmt.Fprintf(&buf, "\tcase %q:\n\t\treturn %q\n", k, defaultcc[k])
+ 	}
+ 	fmt.Fprintf(&buf, "\t}\n")
+-	fmt.Fprintf(&buf, "\treturn %q\n", defaultcc[""])
++	fmt.Fprintf(&buf, "\treturn %q\n", thecc)
+ 	fmt.Fprintf(&buf, "}\n")
  
- 	i := len(file) - len("go/internal/cfg/zdefaultcc.go")
- 	file = file[:i] + "cgo/zdefaultcc.go"
+ 	return buf.String()

@@ -20,10 +20,26 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
+
 GOLANG_SITE=https://redirector.gvt1.com/edgedl/go
-GOLANG_VERSION=1.9.2
+GOLANG_VERSION:=1.9.2
 GOLANG_SOURCE=go$(GOLANG_VERSION).src.tar.gz
 GOLANG_DIR=go
+
+GOLANG_GIT=https://github.com/golang/go.git
+GOLANG_GIT_TAG=go1.10beta1
+#GOLANG_GIT_DATE=20171207
+
+ifdef GOLANG_GIT_TAG
+  GOLANG_VERSION:=$(GOLANG_VERSION)+git-$(GOLANG_GIT_TAG)
+  GOLANG_GIT_TREEISH=$(GOLANG_GIT_TAG)
+else
+  ifdef GOLANG_GIT_DATE
+    GOLANG_VERSION:=$(GOLANG_VERSION)+git$(GOLANG_GIT_DATE)
+    # This should be updated when GOLANG_GIT_DATE changes
+    GOLANG_GIT_TREEISH=9ce6b5c2ed5d3d5251b9a6a0c548d5fb2c8567e8
+  endif
+endif
 
 GOLANG_UNZIP=zcat
 GOLANG_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
@@ -31,28 +47,25 @@ GOLANG_DESCRIPTION=A systems programming language - expressive, concurrent, garb
 GOLANG_SECTION=lang
 GOLANG_PRIORITY=optional
 GOLANG_DEPENDS=
-GOLANG_SUGGESTS=
+GOLANG_SUGGESTS=gcc
 GOLANG_CONFLICTS=
 
 GOLANG_IPK_VERSION=1
 
 GOLANG_CONFFILES=
 
-GOLANG_ARCH=$(strip \
+GOLANG_ARCH:=$(strip \
 $(if $(filter buildroot-armeabi-ng buildroot-armeabihf buildroot-armv5eabi-ng buildroot-armv5eabi-ng-legacy, $(OPTWARE_TARGET)), arm, \
 $(if $(filter buildroot-i686, $(OPTWARE_TARGET)), 386, \
 $(if $(filter buildroot-mipsel-ng, $(OPTWARE_TARGET)), mipsle, \
 $(error unsupported arch)))))
 
-GOLANG_GOARM=$(strip \
+GOLANG_GOARM:=$(strip \
 $(if $(filter buildroot-armeabi-ng buildroot-armv5eabi-ng buildroot-armv5eabi-ng-legacy, $(OPTWARE_TARGET)), 5, \
 $(if $(filter buildroot-armeabihf, $(OPTWARE_TARGET)), 7, \
 )))
 
-# Support fir this will be in go1.10,
-# no golang for buildroot-mipsel-ng yet
-# (as of go1.9.2)
-GOLANG_GOMIPS=$(strip \
+GOLANG_GOMIPS:=$(strip \
 $(if $(filter buildroot-mipsel-ng, $(OPTWARE_TARGET)), softfloat, \
 ))
 
@@ -71,9 +84,20 @@ GOLANG_IPK=$(BUILD_DIR)/golang_$(GOLANG_VERSION)-$(GOLANG_IPK_VERSION)_$(TARGET_
 
 .PHONY: golang-source golang-unpack golang golang-stage golang-ipk golang-clean golang-dirclean golang-check
 
+ifdef GOLANG_GIT_TREEISH
+$(DL_DIR)/$(GOLANG_SOURCE):
+	(cd $(BUILD_DIR) ; \
+		rm -rf golang && \
+		git clone --bare $(GOLANG_GIT) golang && \
+		(cd golang && \
+		git archive --format=tar --prefix=$(GOLANG_DIR)/ $(GOLANG_GIT_TREEISH) | gzip > $@) && \
+		rm -rf golang ; \
+	)
+else
 $(DL_DIR)/$(GOLANG_SOURCE):
 	$(WGET) -P $(@D) $(GOLANG_SITE)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
+endif
 
 golang-source: $(DL_DIR)/$(GOLANG_SOURCE) $(GOLANG_PATCHES)
 
@@ -99,8 +123,8 @@ golang-unpack: $(GOLANG_BUILD_DIR)/.configured
 $(GOLANG_BUILD_DIR)/.built: $(GOLANG_BUILD_DIR)/.configured
 	rm -f $@
 	(cd $(@D)/src; \
-		CC_FOR_TARGET="$(TARGET_CC) $(TARGET_CFLAGS) $(STAGING_LDFLAGS) $(GOLANG_LDFLAGS)" \
-		CXX_FOR_TARGET="$(TARGET_CXX)  $(TARGET_CFLAGS) $(STAGING_LDFLAGS) $(GOLANG_LDFLAGS)" \
+		CC_FOR_TARGET=$(TARGET_CC) \
+		CXX_FOR_TARGET=$(TARGET_CXX) \
 		GOROOT_FINAL=$(TARGET_PREFIX)/lib/golang GOOS=linux GOARCH=$(GOLANG_ARCH) \
 		GOARM=$(GOLANG_GOARM) GOMIPS=$(GOLANG_GOMIPS) CGO_ENABLED=1 \
 		GOROOT_BOOTSTRAP=$(GCC_HOST_BIN_DIR)/.. ./make.bash \

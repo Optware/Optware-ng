@@ -7,7 +7,6 @@ SPECIFIC_PACKAGES = \
 BROKEN_PACKAGES = \
 	buildroot \
 	clamav \
-	golang \
 	inferno \
 	phoneme-advanced \
 	rssh \
