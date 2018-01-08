@@ -15,7 +15,7 @@ BROKEN_PACKAGES += \
 	launchtool ldconfig \
 	moe mtr \
 	newsbeuter \
-	nfs-server nfs-utils \
+	nfs-server \
 	nmon \
 	qemu qemu-libc-i386 \
 	syx \

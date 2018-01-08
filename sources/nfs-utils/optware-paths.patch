@@ -1,0 +1,22 @@
+--- a/support/include/nfslib.h
++++ b/support/include/nfslib.h
+@@ -24,16 +24,16 @@
+ #include "xlog.h"
+ 
+ #ifndef _PATH_EXPORTS
+-#define _PATH_EXPORTS		"/etc/exports"
++#define _PATH_EXPORTS		"%OPTWARE_TARGET_PREFIX%/etc/exports"
+ #endif
+ #ifndef _PATH_EXPORTS_D
+-#define _PATH_EXPORTS_D         "/etc/exports.d"
++#define _PATH_EXPORTS_D         "%OPTWARE_TARGET_PREFIX%/etc/exports.d"
+ #endif
+ #ifndef _EXT_EXPORT
+ #define _EXT_EXPORT             ".exports"
+ #endif
+ #ifndef _PATH_IDMAPDCONF
+-#define _PATH_IDMAPDCONF	"/etc/idmapd.conf"
++#define _PATH_IDMAPDCONF	"%OPTWARE_TARGET_PREFIX%/etc/idmapd.conf"
+ #endif
+ #ifndef _PATH_PROC_EXPORTS
+ #define	_PATH_PROC_EXPORTS	"/proc/fs/nfs/exports"

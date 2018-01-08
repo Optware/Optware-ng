@@ -1,7 +1,6 @@
 #!/bin/sh
 
-%OPTWARE_TARGET_PREFIX%/bin/killall mountd
-%OPTWARE_TARGET_PREFIX%/bin/killall statd
+%OPTWARE_TARGET_PREFIX%/etc/init.d/S56nfs-utils stop
 
 # TODO: check if the %OPTWARE_TARGET_PREFIX%/etc/exports file is unmodified, and delete it if that is the case.
 

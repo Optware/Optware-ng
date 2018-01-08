@@ -1,19 +1,10 @@
 #!/bin/sh
 
-if [ ! -d /var/lib ] ;  then
-    mkdir /var/lib
-fi
-
-if [ ! -d /var/lib/nfs ] ;  then
-    mkdir /var/lib/nfs
-fi
-
 if [ ! -f %OPTWARE_TARGET_PREFIX%/etc/exports ] ;  then
-    cp %OPTWARE_TARGET_PREFIX%/doc/nfs-utils/exports %OPTWARE_TARGET_PREFIX%/etc/exports
+    cp %OPTWARE_TARGET_PREFIX%/share/doc/nfs-utils/exports %OPTWARE_TARGET_PREFIX%/etc/exports
     echo ; echo
     echo "To complete the installation, you must edit %OPTWARE_TARGET_PREFIX%/etc/exports,"
-    echo "and then run %OPTWARE_TARGET_PREFIX%/etc/init.d/S56nfs-utils to start the nfs server."
+    echo "and then run \"%OPTWARE_TARGET_PREFIX%/etc/init.d/S56nfs-utils start\" to start the nfs server."
+    echo "%OPTWARE_TARGET_PREFIX%/etc/init.d/S56nfs-utils depends on rpcbind running (%OPTWARE_TARGET_PREFIX%/etc/init.d/S22rpcbind start)"
     echo
-else
-    %OPTWARE_TARGET_PREFIX%/etc/init.d/S56nfs-utils
 fi
