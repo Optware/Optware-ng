@@ -386,7 +386,7 @@ COMMON_PACKAGES = \
 	radiusclient-ng rc rc5pipe rcs rdate \
 	readline re2c recode recordext recordprotos \
 	redir renderext renderproto rhtvision rkhunter \
-	rlfe rlwrap rox-filer rrdcollect rrdtool \
+	rlfe rlwrap rox-filer rpcbind rrdcollect rrdtool \
 	rssh rsstail rsync rtmpdump rtorrent rtpproxy ruby rubygems rxtx \
 	sablevm samba samba2 samba34 samba35 samba36 sane-backends \
 	scli scponly screen scrobby scsi-idle sd-idle sdl sdparm \
