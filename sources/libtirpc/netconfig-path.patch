@@ -1,0 +1,11 @@
+--- a/tirpc/netconfig.h
++++ b/tirpc/netconfig.h
+@@ -5,7 +5,7 @@
+ #include <features.h>
+ #endif
+ 
+-#define NETCONFIG "/etc/netconfig"
++#define NETCONFIG "%OPTWARE_TARGET_PREFIX%/etc/netconfig"
+ #define NETPATH	  "NETPATH"
+ 
+ struct netconfig {

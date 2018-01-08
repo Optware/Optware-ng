@@ -36,11 +36,11 @@ LIBTIRPC_CONFLICTS=
 #
 # LIBTIRPC_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBTIRPC_IPK_VERSION=1
+LIBTIRPC_IPK_VERSION=2
 
 #
 # LIBTIRPC_CONFFILES should be a list of user-editable files
-#LIBTIRPC_CONFFILES=$(TARGET_PREFIX)/etc/libtirpc.conf $(TARGET_PREFIX)/etc/init.d/SXXlibtirpc
+LIBTIRPC_CONFFILES=$(TARGET_PREFIX)/etc/netconfig #$(TARGET_PREFIX)/etc/init.d/SXXlibtirpc
 
 #
 # LIBTIRPC_PATCHES should list any patches, in the the order in
@@ -48,6 +48,7 @@ LIBTIRPC_IPK_VERSION=1
 #
 LIBTIRPC_PATCHES=\
 $(LIBTIRPC_SOURCE_DIR)/bzero.patch \
+$(LIBTIRPC_SOURCE_DIR)/netconfig-path.patch \
 
 #
 # If the compilation of the package requires additional
