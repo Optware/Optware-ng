@@ -48,6 +48,7 @@ NFS_UTILS_CONFFILES=$(TARGET_PREFIX)/etc/init.d/S56nfs-utils
 #
 NFS_UTILS_PATCHES=\
 $(NFS_UTILS_SOURCE_DIR)/optware-paths.patch \
+$(NFS_UTILS_SOURCE_DIR)/network.c.patch \
 
 #
 # If the compilation of the package requires additional
@@ -154,6 +155,8 @@ nfs-utils-unpack: $(NFS_UTILS_BUILD_DIR)/.configured
 #
 $(NFS_UTILS_BUILD_DIR)/.built: $(NFS_UTILS_BUILD_DIR)/.configured
 	rm -f $@
+	$(MAKE) -C $(@D)/tools/locktest \
+		CPPFLAGS=""
 	$(MAKE) -C $(@D) \
 		startstatd=$(TARGET_PREFIX)/sbin/start-statd
 	touch $@
