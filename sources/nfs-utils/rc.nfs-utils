@@ -10,25 +10,29 @@ mountd_args=""
 case "$1" in
   start)
         for NAME in statd nfsd mountd; do
-            if [ -n "`%OPTWARE_TARGET_PREFIX%/bin/busybox pidof rpc.$NAME`" ]; then
+            if [ "$NAME" = "nfsd" ]; then
+              PROGNAME="nfsd"
+            else
+              PROGNAME="rpc.$NAME"
+            fi
+            if [ -n "`%OPTWARE_TARGET_PREFIX%/bin/busybox pidof $PROGNAME`" ]; then
                 echo "rpc.$NAME is already running"
                 continue
             fi
+            echo -n "Starting $PROGNAME: "
               case "$NAME" in
                 statd)
-                  ARGS="$statd_args"
+                  %OPTWARE_TARGET_PREFIX%/sbin/rpc.$NAME $statd_args
                   ;;
                 nfsd)
-                  ARGS="$nfsd_args"
+                  %OPTWARE_TARGET_PREFIX%/sbin/rpc.$NAME $nfsd_args
                   ;;
                 mountd)
-                  ARGS="$mountd_args"
+                  %OPTWARE_TARGET_PREFIX%/sbin/rpc.$NAME $mountd_args
                   ;;
                 *)
                   :
               esac
-            echo -n "Starting rpc.$NAME: "
-            %OPTWARE_TARGET_PREFIX%/sbin/rpc.$NAME $ARGS
             echo "Done"
         done
 
@@ -39,12 +43,17 @@ case "$1" in
         ;;
   stop)
         for NAME in mountd nfsd statd; do
-            if [ -z "`%OPTWARE_TARGET_PREFIX%/bin/busybox pidof rpc.$NAME`" ]; then
-                echo "rpc.$NAME is not running"
+            if [ "$NAME" = "nfsd" ]; then
+              PROGNAME="nfsd"
+            else
+              PROGNAME="rpc.$NAME"
+            fi
+            if [ -z "`%OPTWARE_TARGET_PREFIX%/bin/busybox pidof $PROGNAME`" ]; then
+                echo "$PROGNAME is not running"
                 continue
             fi
-            echo -n "Stopping rpc.$NAME: "
-            %OPTWARE_TARGET_PREFIX%/bin/busybox killall rpc.$NAME
+            echo -n "Stopping $PROGNAME: "
+            %OPTWARE_TARGET_PREFIX%/bin/busybox killall -9 $PROGNAME
             echo "Done"
         done
         exit 0
@@ -56,10 +65,15 @@ case "$1" in
         ;;
   check)
         for NAME in statd nfsd mountd; do
-            if [ -n "`%OPTWARE_TARGET_PREFIX%/bin/busybox pidof rpc.$NAME`" ]; then
-                echo "rpc.$NAME is running"
+            if [ "$NAME" = "nfsd" ]; then
+              PROGNAME="nfsd"
             else
-                echo "rpc.$NAME is not running"
+              PROGNAME="rpc.$NAME"
+            fi
+            if [ -n "`%OPTWARE_TARGET_PREFIX%/bin/busybox pidof $PROGNAME`" ]; then
+                echo "$PROGNAME is running"
+            else
+                echo "$PROGNAME is not running"
             fi
         done
         ;;

@@ -36,7 +36,7 @@ NFS_UTILS_CONFLICTS=
 #
 # NFS_UTILS_IPK_VERSION should be incremented when the ipk changes.
 #
-NFS_UTILS_IPK_VERSION=1
+NFS_UTILS_IPK_VERSION=2
 
 #
 # NFS_UTILS_CONFFILES should be a list of user-editable files
