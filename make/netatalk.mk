@@ -71,6 +71,7 @@ ifeq ($(OPTWARE_TARGET), $(filter cs05q3armel, $(OPTWARE_TARGET)))
 NETATALK_LDFLAGS += -L$(TARGET_USRLIBDIR)
 endif
 ifeq (uclibc, $(LIBC_STYLE))
+NETATALK_CPPFLAGS += -I$(STAGING_INCLUDE_DIR)/rpc-uclibc
 NETATALK_LDFLAGS += -lrpc-uclibc
 endif
 

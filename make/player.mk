@@ -68,6 +68,7 @@ PLAYER_CPPFLAGS+=-fno-builtin-round -fno-builtin-rint \
 endif
 PLAYER_LDFLAGS=-lboost_system -lm
 ifeq (uclibc, $(LIBC_STYLE))
+PLAYER_CPPFLAGS += -I$(STAGING_INCLUDE_DIR)/rpc-uclibc
 PLAYER_LDFLAGS += -lrpc-uclibc
 endif
 

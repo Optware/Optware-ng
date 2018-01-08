@@ -66,6 +66,7 @@ XINETD_PATCHES=$(XINETD_SOURCE_DIR)/xconfig.patch
 XINETD_CPPFLAGS=
 XINETD_LDFLAGS=
 ifeq (uclibc, $(LIBC_STYLE))
+XINETD_CPPFLAGS += -I$(STAGING_INCLUDE_DIR)/rpc-uclibc
 XINETD_LDFLAGS += -lrpc-uclibc
 endif
 

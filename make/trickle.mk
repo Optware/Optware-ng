@@ -41,6 +41,7 @@ $(TRICKLE_SOURCE_DIR)/Makefile.am.patch \
 TRICKLE_CPPFLAGS=
 TRICKLE_LDFLAGS=
 ifeq (uclibc, $(LIBC_STYLE))
+TRICKLE_CPPFLAGS += -I$(STAGING_INCLUDE_DIR)/rpc-uclibc
 TRICKLE_LDFLAGS += -lrpc-uclibc
 endif
 

@@ -37,7 +37,7 @@ LIBRPC_UCLIBC_CONFLICTS=
 #
 # LIBRPC_UCLIBC_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBRPC_UCLIBC_IPK_VERSION=1
+LIBRPC_UCLIBC_IPK_VERSION=2
 
 #
 # LIBRPC_UCLIBC_CONFFILES should be a list of user-editable files
@@ -150,8 +150,8 @@ librpc-uclibc: $(LIBRPC_UCLIBC_BUILD_DIR)/.built
 #
 $(LIBRPC_UCLIBC_BUILD_DIR)/.staged: $(LIBRPC_UCLIBC_BUILD_DIR)/.built
 	rm -f $@
-	mkdir -p $(STAGING_LIB_DIR) $(STAGING_INCLUDE_DIR)
-	cp -af $(@D)/rpc $(STAGING_INCLUDE_DIR)
+	mkdir -p $(STAGING_LIB_DIR) $(STAGING_INCLUDE_DIR)/rpc-uclibc
+	cp -af $(@D)/rpc $(STAGING_INCLUDE_DIR)/rpc-uclibc
 	cp -af $(@D)/librpc-uclibc.so* $(STAGING_LIB_DIR)
 	touch $@
 
@@ -190,8 +190,8 @@ $(LIBRPC_UCLIBC_IPK_DIR)/CONTROL/control:
 #
 $(LIBRPC_UCLIBC_IPK): $(LIBRPC_UCLIBC_BUILD_DIR)/.built
 	rm -rf $(LIBRPC_UCLIBC_IPK_DIR) $(BUILD_DIR)/librpc-uclibc_*_$(TARGET_ARCH).ipk
-	mkdir -p $(LIBRPC_UCLIBC_IPK_DIR)$(TARGET_PREFIX)/{lib,include}
-	cp -af $(LIBRPC_UCLIBC_BUILD_DIR)/rpc $(LIBRPC_UCLIBC_IPK_DIR)$(TARGET_PREFIX)/include
+	mkdir -p $(LIBRPC_UCLIBC_IPK_DIR)$(TARGET_PREFIX)/{lib,include/rpc-uclibc}
+	cp -af $(LIBRPC_UCLIBC_BUILD_DIR)/rpc $(LIBRPC_UCLIBC_IPK_DIR)$(TARGET_PREFIX)/include/rpc-uclibc
 	cp -af $(LIBRPC_UCLIBC_BUILD_DIR)/librpc-uclibc.so* $(LIBRPC_UCLIBC_IPK_DIR)$(TARGET_PREFIX)/lib
 	$(STRIP_COMMAND) $(LIBRPC_UCLIBC_IPK_DIR)$(TARGET_PREFIX)/lib/librpc-uclibc.so
 #	$(INSTALL) -d $(LIBRPC_UCLIBC_IPK_DIR)$(TARGET_PREFIX)/etc/
