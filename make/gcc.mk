@@ -40,7 +40,7 @@ GCC_DESCRIPTION=The GNU Compiler Collection. C and C++ compilers are included in
 GCCGO_DESCRIPTION=GNU Go Compiler.
 GCC_SECTION=base
 GCC_PRIORITY=optional
-GCC_DEPENDS=binutils, libc-dev, libgo, libgmp, libmpfr, libmpc
+GCC_DEPENDS=binutils, libc-dev, libgmp, libmpfr, libmpc
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 GCC_DEPENDS+=, libiconv
 endif
@@ -57,7 +57,7 @@ endif
 #
 # GCC_IPK_VERSION should be incremented when the ipk changes.
 #
-GCC_IPK_VERSION ?= 6
+GCC_IPK_VERSION ?= 7
 
 GCC_HOST_VERSION=7.2.0
 GCC_HOST_SOURCE=gcc-$(GCC_HOST_VERSION).tar.xz
@@ -335,8 +335,10 @@ $(GCC_IPK) $(GCCGO_IPK): $(GCC_BUILD_DIR)/.built
 		$(GCCGO_IPK_DIR)$(TARGET_PREFIX)/share/man/man1 \
 		$(GCCGO_IPK_DIR)$(TARGET_PREFIX)/share/info \
 		$(GCCGO_IPK_DIR)$(TARGET_PREFIX)/libexec/gcc/$(GCC_TARGET_NAME)/$(GCC_VERSION)
-	cd $(GCC_IPK_DIR)$(TARGET_PREFIX)/bin; mv -f $(GCC_TARGET_NAME)-gccgo gccgo go gofmt \
-		$(GCCGO_IPK_DIR)$(TARGET_PREFIX)/bin
+	cd $(GCC_IPK_DIR)$(TARGET_PREFIX)/bin; mv -f $(GCC_TARGET_NAME)-gccgo gccgo \
+		$(GCCGO_IPK_DIR)$(TARGET_PREFIX)/bin && \
+		mv -f go $(GCCGO_IPK_DIR)$(TARGET_PREFIX)/bin/gccgo-go && \
+		mv -f gofmt $(GCCGO_IPK_DIR)$(TARGET_PREFIX)/bin/gccgo-gofmt
 	cd $(GCC_IPK_DIR)$(TARGET_PREFIX)/lib; mv -f go libgo.la libgobegin.a libgolibbegin.a \
 		$(GCCGO_IPK_DIR)$(TARGET_PREFIX)/lib
 	cd $(GCC_IPK_DIR)$(TARGET_PREFIX)/share/man/man1; mv -f gccgo.1 go.1 gofmt.1 \
@@ -347,6 +349,18 @@ $(GCC_IPK) $(GCCGO_IPK): $(GCC_BUILD_DIR)/.built
 		mv -f cgo go1 \
 		$(GCCGO_IPK_DIR)$(TARGET_PREFIX)/libexec/gcc/$(GCC_TARGET_NAME)/$(GCC_VERSION)
 	$(MAKE) $(GCCGO_IPK_DIR)/CONTROL/control $(GCC_IPK_DIR)/CONTROL/control
+	( \
+		echo "update-alternatives --install $(TARGET_PREFIX)/bin/go go $(TARGET_PREFIX)/bin/gccgo-go 80"; \
+		echo "update-alternatives --install $(TARGET_PREFIX)/bin/gofmt gofmt $(TARGET_PREFIX)/bin/gccgo-gofmt 80"; \
+	) > $(GCCGO_IPK_DIR)/CONTROL/postinst
+	( \
+		echo "update-alternatives --remove go $(TARGET_PREFIX)/bin/gccgo-go"; \
+		echo "update-alternatives --remove gofmt $(TARGET_PREFIX)/bin/gccgo-gofmt"; \
+	) > $(GCCGO_IPK_DIR)/CONTROL/prerm
+	if test -n "$(UPD-ALT_PREFIX)"; then \
+		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \
+			$(GCCGO_IPK_DIR)/CONTROL/postinst $(GCCGO_IPK_DIR)/CONTROL/prerm; \
+	fi
 	echo $(GCC_CONFFILES) | sed -e 's/ /\n/g' > $(GCC_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GCC_IPK_DIR)
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GCCGO_IPK_DIR)
