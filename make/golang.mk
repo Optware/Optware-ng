@@ -47,10 +47,10 @@ GOLANG_DESCRIPTION=A systems programming language - expressive, concurrent, garb
 GOLANG_SECTION=lang
 GOLANG_PRIORITY=optional
 GOLANG_DEPENDS=
-GOLANG_SUGGESTS=gcc, pkgconfig
+GOLANG_SUGGESTS=git, gcc, pkgconfig
 GOLANG_CONFLICTS=
 
-GOLANG_IPK_VERSION=2
+GOLANG_IPK_VERSION=3
 
 GOLANG_CONFFILES=
 
@@ -70,7 +70,8 @@ $(if $(filter buildroot-mipsel-ng, $(OPTWARE_TARGET)), softfloat, \
 ))
 
 GOLANG_PATCHES=\
-$(GOLANG_SOURCE_DIR)/default-target-cc-cxx-pkgconfig.patch
+$(GOLANG_SOURCE_DIR)/default-target-cc-cxx-pkgconfig.patch \
+$(GOLANG_SOURCE_DIR)/mips_no_pipe2.patch \
 
 GOLANG_CPPFLAGS=
 
@@ -185,6 +186,18 @@ $(GOLANG_IPK): $(GOLANG_BUILD_DIR)/.built
 	cp -af $(GOLANG_BUILD_DIR)/src \
 		$(GOLANG_IPK_DIR)$(TARGET_PREFIX)/lib/golang
 	$(MAKE) $(GOLANG_IPK_DIR)/CONTROL/control
+	( \
+		echo "update-alternatives --install $(TARGET_PREFIX)/bin/go go $(TARGET_PREFIX)/lib/golang/bin/go 90"; \
+		echo "update-alternatives --install $(TARGET_PREFIX)/bin/gofmt gofmt $(TARGET_PREFIX)/lib/golang/bin/gofmt 90"; \
+	) > $(GOLANG_IPK_DIR)/CONTROL/postinst
+	( \
+		echo "update-alternatives --remove go $(TARGET_PREFIX)/lib/golang/bin/go"; \
+		echo "update-alternatives --remove gofmt $(TARGET_PREFIX)/lib/golang/bin/gofmt"; \
+	) > $(GOLANG_IPK_DIR)/CONTROL/prerm
+	if test -n "$(UPD-ALT_PREFIX)"; then \
+		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \
+			$(GOLANG_IPK_DIR)/CONTROL/postinst $(GOLANG_IPK_DIR)/CONTROL/prerm; \
+	fi
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(GOLANG_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(GOLANG_IPK_DIR)
 
