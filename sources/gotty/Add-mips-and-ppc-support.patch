@@ -1,0 +1,30 @@
+--- /dev/null
++++ b/vendor/github.com/kr/pty/ztypes_mipsx.go
+@@ -0,0 +1,12 @@
++// Created by cgo -godefs - DO NOT EDIT
++// cgo -godefs types.go
++
++// +build linux
++// +build mips mipsle mips64 mips64le
++
++package pty
++
++type (
++	_C_int  int32
++	_C_uint uint32
++)
+--- /dev/null
++++ b/vendor/github.com/kr/pty/ztypes_ppc.go
+@@ -0,0 +1,12 @@
++// Created by cgo -godefs - DO NOT EDIT
++// cgo -godefs types.go
++
++// +build linux
++// +build ppc ppcle
++
++package pty
++
++type (
++	_C_int  int32
++	_C_uint uint32
++)

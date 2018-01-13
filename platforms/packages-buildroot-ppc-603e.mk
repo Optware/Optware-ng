@@ -27,3 +27,6 @@ BOOST_ADDITIONAL_LIBS:= atomic \
 			exception \
 			serialization \
 			wave
+
+GOTTY_VERSION:=0.0.13
+GOTTY_IPK_VERSION:=1
