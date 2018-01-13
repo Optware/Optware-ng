@@ -656,6 +656,7 @@ PERL_CPAN_SITE=ftp.auckland.ac.nz
 
 TARGET_CXX=$(TARGET_CROSS)g++
 TARGET_CC=$(TARGET_CROSS)gcc
+TARGET_GCCGO=$(TARGET_CROSS)gccgo
 TARGET_CPP="$(TARGET_CC) -E"
 TARGET_LD=$(TARGET_CROSS)ld
 TARGET_AR=$(TARGET_CROSS)ar
@@ -710,6 +711,22 @@ CMAKE_CONFIGURE_OPTS= \
 	-DDL_LIBRARY=$(STAGING_DIR) \
 	-DCMAKE_PREFIX_PATH=$(STAGING_DIR) \
 	-DCMAKE_SKIP_RPATH=TRUE
+
+TARGET_GOARCH=$(strip \
+$(if $(filter buildroot-armeabi-ng buildroot-armeabihf buildroot-armv5eabi-ng buildroot-armv5eabi-ng-legacy, $(OPTWARE_TARGET)), arm, \
+$(if $(filter buildroot-i686, $(OPTWARE_TARGET)), 386, \
+$(if $(filter buildroot-mipsel-ng, $(OPTWARE_TARGET)), mipsle, \
+$(if $(filter buildroot-ppc-603e ct-ng-ppc-e500v2, $(OPTWARE_TARGET)), ppc, \
+$(TARGET_ARCH))))))
+
+CROSS_GCCGO_GOROOT ?= $(TARGET_CROSS_TOP)/$(EXACT_TARGET_NAME)
+
+TARGET_GCCGO_GO_ENV= \
+	GCCGO=$(TARGET_GCCGO) \
+	GOROOT=$(CROSS_GCCGO_GOROOT) \
+	GOARCH=$(TARGET_GOARCH) \
+	CC=$(TARGET_CC) \
+	CXX=$(TARGET_CXX)
 
 TARGET_PATH=$(STAGING_PREFIX)/bin:$(STAGING_DIR)/bin:$(TARGET_PREFIX)/bin:$(TARGET_PREFIX)/sbin:/bin:/sbin:/usr/bin:/usr/sbin
 
