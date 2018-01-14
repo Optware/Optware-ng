@@ -3,6 +3,7 @@ SPECIFIC_PACKAGES = \
 # lm-sensors: No rule to make target `sys/io.h'
 # inferno: inferno/Linux/power/include/fpuctl.h:31:2: error: impossible constraint in 'asm'
 BROKEN_PACKAGES = \
+	$(GOLANG_PACKAGES) \
 	ecl \
 	gnu-smalltalk \
 	golang \

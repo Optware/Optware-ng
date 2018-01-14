@@ -3,6 +3,7 @@ SPECIFIC_PACKAGES = \
 # lm-sensors: No rule to make target `sys/io.h'
 # libmemcache: memcache.c: error: invalid application of ‘sizeof’ to incomplete type ‘struct addrinfo’
 BROKEN_PACKAGES = \
+	$(GOLANG_PACKAGES) \
 	ecl \
 	gnu-smalltalk \
 	golang \

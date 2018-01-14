@@ -1,0 +1,11 @@
+--- a/fs/config.go
++++ b/fs/config.go
+@@ -63,7 +63,7 @@ var (
+ 	configData *goconfig.ConfigFile
+ 
+ 	// ConfigPath points to the config file
+-	ConfigPath = makeConfigPath()
++	ConfigPath = "%OPTWARE_TARGET_PREFIX%/etc/rclone.config"
+ 
+ 	// CacheDir points to the cache directory.  Users of this
+ 	// should make a subdirectory and use MkdirAll() to create it

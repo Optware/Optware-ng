@@ -250,6 +250,9 @@ OPENJDK_PACKAGES = \
 GCCGO_PACKAGES = \
 	gotty \
 
+GOLANG_PACKAGES = \
+	rclone \
+
 # libao - has runtime trouble?
 COMMON_PACKAGES = \
 	$(PACKAGES_REQUIRE_LINUX26) \
@@ -305,7 +308,7 @@ COMMON_PACKAGES = \
 	gnome-icon-theme-symbolic \
 	gnu-httptunnel gnu-smalltalk gnugo \
 	gnupg1 gnupg gnuplot gnutls gpgme \
-	gloox gobject-introspection golang $(GCCGO_PACKAGES) gpsd \
+	gloox gobject-introspection golang $(GCCGO_PACKAGES) $(GOLANG_PACKAGES) gpsd \
 	grep groff gsasl gsnmp gtmess gtypist gutenprint gzip \
 	gphoto2 libgphoto2 \
 	gift giftcurs gift-ares gift-fasttrack gift-gnutella \
