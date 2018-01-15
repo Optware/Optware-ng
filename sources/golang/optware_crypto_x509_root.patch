@@ -1,0 +1,10 @@
+--- a/src/crypto/x509/root_linux.go
++++ b/src/crypto/x509/root_linux.go
+@@ -6,6 +6,7 @@ package x509
+ 
+ // Possible certificate files; stop after finding one.
+ var certFiles = []string{
++	"%OPTWARE_TARGET_PREFIX%/etc/ssl/ca-bundle.crt",     // Optware-ng
+ 	"/etc/ssl/certs/ca-certificates.crt",                // Debian/Ubuntu/Gentoo etc.
+ 	"/etc/pki/tls/certs/ca-bundle.crt",                  // Fedora/RHEL 6
+ 	"/etc/ssl/ca-bundle.pem",                            // OpenSUSE
