@@ -29,14 +29,14 @@ RCLONE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 RCLONE_DESCRIPTION=Rclone is a command line program to sync files and directories to and from cloud storages.
 RCLONE_SECTION=net
 RCLONE_PRIORITY=optional
-RCLONE_DEPENDS=
+RCLONE_DEPENDS=cacerts
 RCLONE_SUGGESTS=
 RCLONE_CONFLICTS=
 
 #
 # RCLONE_IPK_VERSION should be incremented when the ipk changes.
 #
-RCLONE_IPK_VERSION=1
+RCLONE_IPK_VERSION=2
 
 #
 # RCLONE_CONFFILES should be a list of user-editable files
