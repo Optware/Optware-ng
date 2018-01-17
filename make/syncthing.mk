@@ -29,14 +29,14 @@ SYNCTHING_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SYNCTHING_DESCRIPTION=Utility for synchronization of a folder between a number of collaborating devices.
 SYNCTHING_SECTION=net
 SYNCTHING_PRIORITY=optional
-SYNCTHING_DEPENDS=
+SYNCTHING_DEPENDS=libgo
 SYNCTHING_SUGGESTS=
 SYNCTHING_CONFLICTS=
 
 #
 # SYNCTHING_IPK_VERSION should be incremented when the ipk changes.
 #
-SYNCTHING_IPK_VERSION=1
+SYNCTHING_IPK_VERSION=2
 
 #
 # SYNCTHING_CONFFILES should be a list of user-editable files
@@ -49,6 +49,7 @@ SYNCTHING_IPK_VERSION=1
 SYNCTHING_PATCHES=\
 $(SYNCTHING_SOURCE_DIR)/optware_paths.patch \
 $(SYNCTHING_SOURCE_DIR)/targetcc.patch \
+$(SYNCTHING_SOURCE_DIR)/gccgo.patch \
 
 #
 # If the compilation of the package requires additional
@@ -111,7 +112,7 @@ syncthing-source: $(DL_DIR)/$(SYNCTHING_SOURCE) $(SYNCTHING_PATCHES)
 # shown below to make various patches to it.
 #
 $(SYNCTHING_BUILD_DIR)/.configured: $(DL_DIR)/$(SYNCTHING_SOURCE) $(SYNCTHING_PATCHES) make/syncthing.mk
-	$(MAKE) golang
+	$(MAKE) gcc-host golang-host
 	rm -rf $(BUILD_DIR)/$(SYNCTHING_DIR) $(@D)
 	$(SYNCTHING_UNZIP) $(DL_DIR)/$(SYNCTHING_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SYNCTHING_PATCHES)" ; \
@@ -129,10 +130,13 @@ syncthing-unpack: $(SYNCTHING_BUILD_DIR)/.configured
 #
 $(SYNCTHING_BUILD_DIR)/.built: $(SYNCTHING_BUILD_DIR)/.configured
 	rm -f $@
+	GOPATH=$(@D) GCCGO=$(TARGET_GCCGO) CC=$(TARGET_CC) \
+		GOARCH=$(GOLANG_ARCH) GOOS=linux\
+		$(GOLANG_HOST_BUILD_DIR)/bin/go install -v -compiler gccgo github.com/syncthing/syncthing/vendor/golang.org/x/sys/unix
 	cd $(@D)/src/github.com/syncthing/syncthing; \
-		PATH=$(GOLANG_BUILD_DIR)/bin:$$PATH \
+		PATH=$(GCC_HOST_BIN_DIR):$$PATH \
 		GOPATH=$(@D) \
-		go run build.go -goos linux -goarch $(GOLANG_ARCH) -targetcc $(TARGET_CC) -version v$(SYNCTHING_VERSION) -no-upgrade build
+		go run build.go -goos linux -goarch $(GOLANG_ARCH) -targetcc $(TARGET_CC) -gccgo $(TARGET_GCCGO) -version v$(SYNCTHING_VERSION) -no-upgrade build
 	touch $@
 
 #

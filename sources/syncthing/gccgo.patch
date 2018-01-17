@@ -1,0 +1,38 @@
+--- a/build.go
++++ b/build.go
+@@ -38,6 +38,7 @@ var (
+ 	goarch        string
+ 	goos          string
+ 	targetcc      string
++	gccgo         string
+ 	noupgrade     bool
+ 	version       string
+ 	goVersion     float64
+@@ -353,6 +354,7 @@ func parseFlags() {
+ 	flag.StringVar(&goarch, "goarch", runtime.GOARCH, "GOARCH")
+ 	flag.StringVar(&goos, "goos", runtime.GOOS, "GOOS")
+ 	flag.StringVar(&targetcc, "targetcc", "", "CC")
++	flag.StringVar(&gccgo, "gccgo", "", "GCCGO")
+ 	flag.BoolVar(&noupgrade, "no-upgrade", noupgrade, "Disable upgrade functionality")
+ 	flag.StringVar(&version, "version", getVersion(), "Set compiled in version string")
+ 	flag.BoolVar(&race, "race", race, "Use race detector")
+@@ -441,6 +443,9 @@ func install(target target, tags []string) {
+ 	if targetcc != "" {
+ 		os.Setenv("CC", targetcc)
+ 	}
++	if gccgo != "" {
++		os.Setenv("GCCGO", gccgo)
++	}
+ 	runPrint("go", args...)
+ }
+ 
+@@ -470,6 +475,9 @@ func build(target target, tags []string) {
+ 	if targetcc != "" {
+ 		os.Setenv("CC", targetcc)
+ 	}
++	if gccgo != "" {
++		os.Setenv("GCCGO", gccgo)
++	}
+ 	runPrint("go", args...)
+ }
+ 
