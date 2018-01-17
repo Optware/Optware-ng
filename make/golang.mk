@@ -82,10 +82,11 @@ GOLANG_LDFLAGS=
 GOLANG_SOURCE_DIR=$(SOURCE_DIR)/golang
 
 GOLANG_BUILD_DIR=$(BUILD_DIR)/golang
+GOLANG_HOST_BUILD_DIR=$(HOST_BUILD_DIR)/golang
 GOLANG_IPK_DIR=$(BUILD_DIR)/golang-$(GOLANG_VERSION)-ipk
 GOLANG_IPK=$(BUILD_DIR)/golang_$(GOLANG_VERSION)-$(GOLANG_IPK_VERSION)_$(TARGET_ARCH).ipk
 
-.PHONY: golang-source golang-unpack golang golang-stage golang-ipk golang-clean golang-dirclean golang-check
+.PHONY: golang-source golang-unpack golang golang-stage golang-ipk golang-clean golang-dirclean golang-check golang-host
 
 ifdef GOLANG_GIT_TREEISH
 $(DL_DIR)/$(GOLANG_SOURCE):
@@ -103,6 +104,22 @@ $(DL_DIR)/$(GOLANG_SOURCE):
 endif
 
 golang-source: $(DL_DIR)/$(GOLANG_SOURCE) $(GOLANG_PATCHES)
+
+$(GOLANG_HOST_BUILD_DIR)/.built: $(DL_DIR)/$(GOLANG_SOURCE)
+	# build bootstrap gccgo-go:
+	$(MAKE) gcc-host
+	rm -rf $(HOST_BUILD_DIR)/$(GOLANG_DIR) $(@D)
+	$(GOLANG_UNZIP) $(DL_DIR)/$(GOLANG_SOURCE) | tar -C $(HOST_BUILD_DIR) -xf -
+	if test "$(HOST_BUILD_DIR)/$(GOLANG_DIR)" != "$(@D)" ; \
+		then mv $(HOST_BUILD_DIR)/$(GOLANG_DIR) $(@D) ; \
+	fi
+	(cd $(@D)/src; \
+		CGO_ENABLED=1 \
+		GOROOT_BOOTSTRAP=$(GCC_HOST_BIN_DIR)/.. ./make.bash \
+	)
+	touch $@
+
+golang-host: $(GOLANG_HOST_BUILD_DIR)/.built
 
 $(GOLANG_BUILD_DIR)/.configured: $(DL_DIR)/$(GOLANG_SOURCE) $(GOLANG_PATCHES) make/golang.mk
 	# build bootstrap gccgo-go:
