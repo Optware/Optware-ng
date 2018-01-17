@@ -50,7 +50,7 @@ GOLANG_DEPENDS=
 GOLANG_SUGGESTS=git, gcc, pkgconfig
 GOLANG_CONFLICTS=
 
-GOLANG_IPK_VERSION=1
+GOLANG_IPK_VERSION=2
 
 GOLANG_CONFFILES=
 
@@ -72,6 +72,7 @@ $(if $(filter buildroot-mipsel-ng, $(OPTWARE_TARGET)), softfloat, \
 GOLANG_PATCHES=\
 $(GOLANG_SOURCE_DIR)/default-target-cc-cxx-pkgconfig.patch \
 $(GOLANG_SOURCE_DIR)/mips_no_pipe2.patch \
+$(GOLANG_SOURCE_DIR)/mips_no_accept4.patch \
 $(GOLANG_SOURCE_DIR)/optware_crypto_x509_root.patch \
 
 GOLANG_CPPFLAGS=
