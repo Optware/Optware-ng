@@ -30,13 +30,16 @@ RCLONE_DESCRIPTION=Rclone is a command line program to sync files and directorie
 RCLONE_SECTION=net
 RCLONE_PRIORITY=optional
 RCLONE_DEPENDS=cacerts
+ifeq ($(OPTWARE_TARGET), $(filter buildroot-mipsel-ng, $(OPTWARE_TARGET)))
+RCLONE_DEPENDS += , libgo
+endif
 RCLONE_SUGGESTS=
 RCLONE_CONFLICTS=
 
 #
 # RCLONE_IPK_VERSION should be incremented when the ipk changes.
 #
-RCLONE_IPK_VERSION=2
+RCLONE_IPK_VERSION=3
 
 #
 # RCLONE_CONFFILES should be a list of user-editable files
@@ -110,7 +113,11 @@ rclone-source: $(DL_DIR)/$(RCLONE_SOURCE) $(RCLONE_PATCHES)
 # shown below to make various patches to it.
 #
 $(RCLONE_BUILD_DIR)/.configured: $(DL_DIR)/$(RCLONE_SOURCE) $(RCLONE_PATCHES) make/rclone.mk
+ifeq ($(OPTWARE_TARGET), $(filter buildroot-mipsel-ng, $(OPTWARE_TARGET)))
+	$(MAKE) gcc-host golang-host
+else
 	$(MAKE) golang
+endif
 	rm -rf $(BUILD_DIR)/$(RCLONE_DIR) $(@D)
 	$(RCLONE_UNZIP) $(DL_DIR)/$(RCLONE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(RCLONE_PATCHES)" ; \
@@ -128,12 +135,19 @@ rclone-unpack: $(RCLONE_BUILD_DIR)/.configured
 #
 $(RCLONE_BUILD_DIR)/.built: $(RCLONE_BUILD_DIR)/.configured
 	rm -f $@
+ifeq ($(OPTWARE_TARGET), $(filter buildroot-mipsel-ng, $(OPTWARE_TARGET)))
+	GOPATH=$(@D) GCCGO=$(TARGET_GCCGO) CC=$(TARGET_CC) \
+		GOARCH=$(GOLANG_ARCH) GOOS=linux\
+		$(GOLANG_HOST_BUILD_DIR)/bin/go install -v -compiler gccgo github.com/ncw/rclone/vendor/golang.org/x/sys/unix
+	$(TARGET_GCCGO_GO_ENV) GOPATH=$(@D) $(GCC_HOST_BIN_DIR)/go install -v github.com/ncw/rclone
+else
 	CC=$(TARGET_CC) \
 	CXX=$(TARGET_CXX) \
 	GOOS=linux \
 	GOARCH=$(GOLANG_ARCH) \
 	GOPATH=$(@D) \
 	$(GOLANG_BUILD_DIR)/bin/go install -v github.com/ncw/rclone
+endif
 	touch $@
 
 #
