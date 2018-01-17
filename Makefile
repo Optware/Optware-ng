@@ -252,6 +252,7 @@ GCCGO_PACKAGES = \
 
 GOLANG_PACKAGES = \
 	rclone \
+	syncthing \
 
 # libao - has runtime trouble?
 COMMON_PACKAGES = \

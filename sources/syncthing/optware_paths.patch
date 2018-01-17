@@ -1,0 +1,55 @@
+Patch originally taken from Entware-ng
+--- a/cmd/syncthing/locations.go
++++ b/cmd/syncthing/locations.go
+@@ -7,9 +7,6 @@
+ package main
+ 
+ import (
+-	"os"
+-	"path/filepath"
+-	"runtime"
+ 	"strings"
+ 	"time"
+ 
+@@ -78,39 +75,12 @@
+ // out by various the environment variables present on each platform, or dies
+ // trying.
+ func defaultConfigDir() string {
+-	switch runtime.GOOS {
+-	case "windows":
+-		if p := os.Getenv("LocalAppData"); p != "" {
+-			return filepath.Join(p, "Syncthing")
+-		}
+-		return filepath.Join(os.Getenv("AppData"), "Syncthing")
+-
+-	case "darwin":
+-		dir, err := fs.ExpandTilde("~/Library/Application Support/Syncthing")
+-		if err != nil {
+-			l.Fatalln(err)
+-		}
+-		return dir
+-
+-	default:
+-		if xdgCfg := os.Getenv("XDG_CONFIG_HOME"); xdgCfg != "" {
+-			return filepath.Join(xdgCfg, "syncthing")
+-		}
+-		dir, err := fs.ExpandTilde("~/.config/syncthing")
+-		if err != nil {
+-			l.Fatalln(err)
+-		}
+-		return dir
+-	}
++	return "%OPTWARE_TARGET_PREFIX%/etc/syncthing"
+ }
+ 
+ // homeDir returns the user's home directory, or dies trying.
+ func homeDir() string {
+-	home, err := fs.ExpandTilde("~")
+-	if err != nil {
+-		l.Fatalln(err)
+-	}
+-	return home
++	return "%OPTWARE_TARGET_PREFIX%"
+ }
+ 
+ func timestampedLoc(key locationEnum) string {
