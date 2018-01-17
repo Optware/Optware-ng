@@ -12,7 +12,7 @@
  func parseFlags() {
  	flag.StringVar(&goarch, "goarch", runtime.GOARCH, "GOARCH")
  	flag.StringVar(&goos, "goos", runtime.GOOS, "GOOS")
-+	flag.StringVar(&targetcc, "targetcc", "gcc", "CC")
++	flag.StringVar(&targetcc, "targetcc", "", "CC")
  	flag.BoolVar(&noupgrade, "no-upgrade", noupgrade, "Disable upgrade functionality")
  	flag.StringVar(&version, "version", getVersion(), "Set compiled in version string")
  	flag.BoolVar(&race, "race", race, "Use race detector")
@@ -20,7 +20,7 @@
  
  	os.Setenv("GOOS", goos)
  	os.Setenv("GOARCH", goarch)
-+	if (runtime.GOARCH != goarch) || (runtime.GOOS != goos) {
++	if targetcc != "" {
 +		os.Setenv("CC", targetcc)
 +	}
  	runPrint("go", args...)
@@ -30,7 +30,7 @@
  
  	os.Setenv("GOOS", goos)
  	os.Setenv("GOARCH", goarch)
-+	if (runtime.GOARCH != goarch) || (runtime.GOOS != goos) {
++	if targetcc != "" {
 +		os.Setenv("CC", targetcc)
 +	}
  	runPrint("go", args...)
