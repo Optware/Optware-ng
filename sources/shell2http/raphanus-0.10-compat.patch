@@ -1,0 +1,11 @@
+--- a/src/github.com/msoap/shell2http/shell2http.go
++++ b/src/github.com/msoap/shell2http/shell2http.go
+@@ -684,7 +684,7 @@ func main() {
+ 
+ 	var cacheTTL raphanus.DB
+ 	if appConfig.cache > 0 {
+-		cacheTTL = raphanus.New("", 0)
++		cacheTTL = raphanus.New()
+ 	}
+ 
+ 	cmdHandlers, err = setupHandlers(cmdHandlers, appConfig, cacheTTL)

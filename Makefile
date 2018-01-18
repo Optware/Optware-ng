@@ -249,6 +249,7 @@ OPENJDK_PACKAGES = \
 
 GCCGO_PACKAGES = \
 	gotty \
+	shell2http \
 
 GOLANG_PACKAGES = \
 	rclone \
