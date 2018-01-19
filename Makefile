@@ -173,7 +173,7 @@ PYTHON_PACKAGES = \
 	py-cryptography py-cython py-enum34 py-hgdistver py-ordereddict py-service-identity py-six \
 	py-beaker py-bittorrent py-bluez py-boto py-buildutils \
 	py-celementtree py-chardet py-cheetah py-cherrypy py-cherrytemplate py-cjson \
-	py-clips py-configobj py-constraint py-crypto py-curl \
+	py-clips py-configobj py-constraint py-crypto py-cups py-curl \
 	py-decorator py-decoratortools py-dispatcher py-django py-docutils py-duplicity \
 	py-elementtree py-feedparser py-flup py-formencode \
 	py-gdchart2 py-gd py-genshi py-geoip py-gnosis-utils py-gobject2 py-gtk \
