@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SPEEX_SITE=http://downloads.us.xiph.org/releases/speex
-SPEEX_VERSION ?= 1.2rc1
+SPEEX_VERSION ?= 1.2.0
 SPEEX_SOURCE=speex-$(SPEEX_VERSION).tar.gz
 SPEEX_DIR=speex-$(SPEEX_VERSION)
 SPEEX_UNZIP=zcat
@@ -36,7 +36,7 @@ SPEEX_CONFLICTS=
 #
 # SPEEX_IPK_VERSION should be incremented when the ipk changes.
 #
-SPEEX_IPK_VERSION ?= 3
+SPEEX_IPK_VERSION ?= 1
 
 #
 # SPEEX_CONFFILES should be a list of user-editable files
