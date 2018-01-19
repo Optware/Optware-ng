@@ -20,11 +20,11 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-IRSSI_SITE=http://www.irssi.org/files
-IRSSI_VERSION=0.8.14
-IRSSI_SOURCE=irssi-$(IRSSI_VERSION).tar.gz
+IRSSI_SITE=https://github.com/irssi/irssi/releases/download/$(IRSSI_VERSION)/
+IRSSI_VERSION=1.1.0
+IRSSI_SOURCE=irssi-$(IRSSI_VERSION).tar.xz
 IRSSI_DIR=irssi-$(IRSSI_VERSION)
-IRSSI_UNZIP=zcat
+IRSSI_UNZIP=xzcat
 IRSSI_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 IRSSI_DESCRIPTION=A terminal based IRC client for UNIX systems.
 IRSSI_SECTION=net
@@ -50,7 +50,7 @@ IRSSI_CONFLICTS=
 #
 # IRSSI_IPK_VERSION should be incremented when the ipk changes.
 #
-IRSSI_IPK_VERSION=3
+IRSSI_IPK_VERSION=1
 
 #
 # IRSSI_CONFFILES should be a list of user-editable files
@@ -60,8 +60,8 @@ IRSSI_IPK_VERSION=3
 # IRSSI_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-IRSSI_PATCHES=$(IRSSI_SOURCE_DIR)/configure.in.patch \
-	$(IRSSI_SOURCE_DIR)/src-perl-Makefile.in.patch \
+IRSSI_PATCHES=$(IRSSI_SOURCE_DIR)/configure.ac.patch \
+	$(IRSSI_SOURCE_DIR)/src-perl-Makefile.am.patch \
 
 #
 # If the compilation of the package requires additional
