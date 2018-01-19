@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LIBTHEORA_SITE=http://downloads.xiph.org/releases/theora
-LIBTHEORA_VERSION=1.1.0
+LIBTHEORA_VERSION=1.1.1
 LIBTHEORA_SOURCE=libtheora-$(LIBTHEORA_VERSION).tar.bz2
 LIBTHEORA_DIR=libtheora-$(LIBTHEORA_VERSION)
 LIBTHEORA_UNZIP=bzcat
