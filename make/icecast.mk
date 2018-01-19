@@ -46,7 +46,7 @@ ICECAST_IPK_VERSION=1
 # ICECAST_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-ICECAST_PATCHES=\
+#ICECAST_PATCHES=\
 $(ICECAST_SOURCE_DIR)/configure.patch \
 
 #
@@ -106,12 +106,7 @@ icecast-source: $(DL_DIR)/$(ICECAST_SOURCE) $(ICECAST_PATCHES)
 # shown below to make various patches to it.
 #
 $(ICECAST_BUILD_DIR)/.configured: $(DL_DIR)/$(ICECAST_SOURCE) $(ICECAST_PATCHES) make/icecast.mk
-	$(MAKE) libcurl-stage
-	$(MAKE) libogg-stage
-	$(MAKE) libtheora-stage
-	$(MAKE) libvorbis-stage
-	$(MAKE) libxslt-stage
-	$(MAKE) speex-stage
+	$(MAKE) libcurl-stage libogg-stage libtheora-stage libvorbis-stage libxslt-stage speex-stage
 	rm -rf $(BUILD_DIR)/$(ICECAST_DIR) $(@D)
 	$(ICECAST_UNZIP) $(DL_DIR)/$(ICECAST_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(ICECAST_PATCHES)" ; \
