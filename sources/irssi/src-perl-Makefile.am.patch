@@ -1,0 +1,15 @@
+--- irssi/src/perl/Makefile.am.orig	2018-01-07 21:39:41.000000000 +0000
++++ irssi/src/perl/Makefile.am	2018-01-19 19:14:16.108065021 +0000
+@@ -136,9 +136,10 @@
+ 	$(AM_V_GEN)for dir in $(perl_dirs); do \
+ 	  cd $$dir && \
+ 	  if [ ! -f Makefile ]; then \
+-	    $(am_v_pl__show_gen)$(perlpath) Makefile.PL $(PERL_MM_PARAMS) $(am_v_pl__hide_gen); \
++	    $(perlpath) Makefile.PL $(PERL_MM_PARAMS); \
+ 	  fi && \
+-	  ($(MAKE) CC="$(CC)" CCFLAGS="$(PERL_CFLAGS) $(CFLAGS)" $(PERL_EXTRA_OPTS) || \
++	  ($(MAKE) CC="$(CC)" CCFLAGS="$(PERL_CFLAGS) $(CFLAGS)" $(PERL_EXTRA_OPTS) \
++	   CCLD="$(CC)" LDFLAGS="$(PERL_LINK_FLAGS)"  || \
+ 	   $(MAKE) CC="$(CC)" CCFLAGS="$(PERL_CFLAGS) $(CFLAGS)" $(PERL_EXTRA_OPTS)) && \
+ 	  cd ..; \
+ 	done
