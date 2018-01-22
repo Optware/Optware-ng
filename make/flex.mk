@@ -4,11 +4,11 @@
 #
 ###########################################################
 
-FLEX_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/flex
-FLEX_VERSION=2.5.39
-FLEX_SOURCE=flex-$(FLEX_VERSION).tar.xz
+FLEX_SITE=https://github.com/westes/flex/releases/download/v$(FLEX_VERSION)
+FLEX_VERSION=2.6.4
+FLEX_SOURCE=flex-$(FLEX_VERSION).tar.gz
 FLEX_DIR=flex-$(FLEX_VERSION)
-FLEX_UNZIP=xzcat
+FLEX_UNZIP=zcat
 FLEX_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 FLEX_DESCRIPTION=Generates programs that perform pattern-matching on text.
 FLEX_SECTION=devel
@@ -16,7 +16,7 @@ FLEX_PRIORITY=optional
 FLEX_DEPENDS=m4
 FLEX_CONFLICTS=
 
-FLEX_IPK_VERSION=4
+FLEX_IPK_VERSION=1
 
 FLEX_BUILD_DIR=$(BUILD_DIR)/flex
 FLEX_SOURCE_DIR=$(SOURCE_DIR)/flex
@@ -76,7 +76,7 @@ $(FLEX_BUILD_DIR)/.configured: $(DL_DIR)/$(FLEX_SOURCE) make/flex.mk
 		--disable-static \
 		--disable-nls \
 	)
-	sed -i -e 's|/usr/bin|$(TARGET_PREFIX)/bin|'  $(@D)/config.h
+	sed -i -e 's|/usr/bin|$(TARGET_PREFIX)/bin|'  $(@D)/src/config.h
 	touch $@
 
 flex-unpack: $(FLEX_BUILD_DIR)/.configured
