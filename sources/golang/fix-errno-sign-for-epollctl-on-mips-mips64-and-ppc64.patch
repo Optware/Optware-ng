@@ -1,0 +1,83 @@
+From 01326d3a39e6f497ba121e4a68b9ee2f1ee62733 Mon Sep 17 00:00:00 2001
+From: Wèi Cōngruì <crvv.mail@gmail.com>
+Date: Tue, 23 Jan 2018 15:56:24 +0800
+Subject: [PATCH] runtime: fix errno sign for epollctl on mips, mips64 and ppc64
+
+The caller of epollctl expects it to return a negative errno value,
+but it returns a positive errno value on mips, mips64 and ppc64.
+The change fixes this.
+
+Updates #23446
+
+Change-Id: Ie6372eca6c23de21964caaaa433c9a45ef93531e
+---
+
+diff --git a/src/runtime/export_linux_test.go b/src/runtime/export_linux_test.go
+index ef0c111..c73f2f3 100644
+--- a/src/runtime/export_linux_test.go
++++ b/src/runtime/export_linux_test.go
+@@ -6,5 +6,11 @@
+ 
+ package runtime
+ 
++import "unsafe"
++
+ var NewOSProc0 = newosproc0
+ var Mincore = mincore
++
++func Epollctl(epfd, op, fd int32, ev unsafe.Pointer) int32 {
++	return epollctl(epfd, op, fd, (*epollevent)(ev))
++}
+diff --git a/src/runtime/runtime_linux_test.go b/src/runtime/runtime_linux_test.go
+index 6123972..17d6fbd 100644
+--- a/src/runtime/runtime_linux_test.go
++++ b/src/runtime/runtime_linux_test.go
+@@ -52,3 +52,12 @@
+ 		t.Errorf("mincore = %v, want %v", v, -EINVAL)
+ 	}
+ }
++
++func TestEpollctlErrorSign(t *testing.T) {
++	v := Epollctl(-1, 1, -1, unsafe.Pointer(&struct{}{}))
++
++	const EBADF = 0x09
++	if v != -EBADF {
++		t.Errorf("epollctl = %v, want %v", v, -EBADF)
++	}
++}
+diff --git a/src/runtime/sys_linux_mips64x.s b/src/runtime/sys_linux_mips64x.s
+index 7402ae2..e7d70b7 100644
+--- a/src/runtime/sys_linux_mips64x.s
++++ b/src/runtime/sys_linux_mips64x.s
+@@ -418,6 +418,7 @@
+ 	MOVV	ev+16(FP), R7
+ 	MOVV	$SYS_epoll_ctl, R2
+ 	SYSCALL
++	SUBVU	R2, R0, R2	// caller expects negative errno
+ 	MOVW	R2, ret+24(FP)
+ 	RET
+ 
+diff --git a/src/runtime/sys_linux_mipsx.s b/src/runtime/sys_linux_mipsx.s
+index 6bd0267..2a59006 100644
+--- a/src/runtime/sys_linux_mipsx.s
++++ b/src/runtime/sys_linux_mipsx.s
+@@ -457,6 +457,7 @@
+ 	MOVW	ev+12(FP), R7
+ 	MOVW	$SYS_epoll_ctl, R2
+ 	SYSCALL
++	SUBU	R2, R0, R2	// caller expects negative errno
+ 	MOVW	R2, ret+16(FP)
+ 	RET
+ 
+diff --git a/src/runtime/sys_linux_ppc64x.s b/src/runtime/sys_linux_ppc64x.s
+index 9b45f94..10a2f76 100644
+--- a/src/runtime/sys_linux_ppc64x.s
++++ b/src/runtime/sys_linux_ppc64x.s
+@@ -508,6 +508,7 @@
+ 	MOVW	fd+8(FP), R5
+ 	MOVD	ev+16(FP), R6
+ 	SYSCALL	$SYS_epoll_ctl
++	NEG	R3	// caller expects negative errno
+ 	MOVW	R3, ret+24(FP)
+ 	RET
+ 
