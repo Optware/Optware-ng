@@ -1,154 +1,6 @@
-diff --git a/icons.h b/icons.h
-new file mode 100644
-index 0000000..715234e
---- /dev/null
-+++ b/icons.h
-@@ -0,0 +1,24 @@
-+#ifndef __ICONS_H__
-+#define __ICONG_H__
-+
-+#define ICON_FIRST 0
-+#define ICON_LAST 3
-+#define ICON_PNG_LRG 0
-+#define ICON_PNG_SM 1
-+#define ICON_JPEG_LRG 2
-+#define ICON_JPEG_SM 3
-+
-+struct icon_struct {
-+    unsigned char *icon[4];
-+    int size[4];
-+    int dynamic[4];
-+};
-+
-+extern unsigned char png_sm[];
-+extern unsigned char png_lrg[];
-+extern unsigned char jpeg_sm[];
-+extern unsigned char jpeg_lrg[];
-+
-+extern struct icon_struct icons;
-+
-+#endif
-diff --git a/tagutils/tagutils-ops.c b/tagutils/tagutils-ops.c
-new file mode 100644
-index 0000000..1ea8297
---- /dev/null
-+++ b/tagutils/tagutils-ops.c
-@@ -0,0 +1,60 @@
-+//=========================================================================
-+// FILENAME	: tagutils-ops.c
-+// DESCRIPTION	: Opus metadata reader
-+//=========================================================================
-+
-+static int
-+_get_opusfileinfo(char *filename, struct song_metadata *psong)
-+{
-+	OggOpusFile *opusfile;
-+	const OpusTags *tags;
-+	char **comment;
-+	int *commentlen;
-+	int j, e;
-+
-+
-+	opusfile = op_open_file (filename, &e);
-+	if(!opusfile)
-+	{
-+		DPRINTF(E_WARN, L_SCANNER,
-+			"Error opening input file \"%s\"\n", filename);
-+		return -1;
-+	}
-+
-+	DPRINTF(E_MAXDEBUG, L_SCANNER, "Processing file \"%s\"...\n", filename);
-+
-+	psong->song_length = op_pcm_total (opusfile, -1);
-+	if (psong->song_length < 0)
-+	{
-+		DPRINTF(E_WARN, L_SCANNER,
-+				"Unable to obtain length of %s\n", filename);
-+		psong->song_length = 0;
-+	} else
-+		/* Sample rate is always 48k, so length in ms is just samples/48 */
-+		psong->song_length /= 48;
-+
-+	/* Note that this gives only the first link's channel count. */
-+	psong->channels = op_channel_count (opusfile, -1);
-+
-+	psong->samplerate = 48000;
-+	psong->bitrate = op_bitrate (opusfile, -1);
-+
-+	tags = op_tags (opusfile, -1);
-+
-+	if (!tags)
-+	{
-+		DPRINTF(E_WARN, L_SCANNER, "Unable to obtain tags from %s\n",
-+				filename);
-+		op_free (opusfile);
-+		return 0;
-+	}
-+
-+	comment = tags->user_comments;
-+	commentlen = tags->comment_lengths;
-+
-+	for (j = 0; j < tags->comments; j++)
-+		vc_scan (psong, *(comment++), *(commentlen++));
-+
-+	op_free (opusfile);
-+	return 0;
-+}
-diff --git a/tagutils/tagutils-ops.h b/tagutils/tagutils-ops.h
-new file mode 100644
-index 0000000..73e2d32
---- /dev/null
-+++ b/tagutils/tagutils-ops.h
-@@ -0,0 +1,6 @@
-+//=========================================================================
-+// FILENAME	: tagutils-ops.h
-+// DESCRIPTION	: Opus metadata reader
-+//=========================================================================
-+
-+static int _get_opusfileinfo(char *filename, struct song_metadata *psong);
-diff --git a/Makefile.am b/Makefile.am
-index 9273aa5..59b0f70 100644
---- a/Makefile.am
-+++ b/Makefile.am
-@@ -15,13 +15,14 @@
- # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
- # USA.
- 
--AM_CFLAGS = -Wall -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 @STATIC_CFLAGS@
-+AM_CFLAGS = -Wall -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 @STATIC_CFLAGS@ \
-+	    @libpng_CFLAGS@ @opus_CFLAGS@
- 
- SUBDIRS=po
- 
- sbin_PROGRAMS = minidlnad
- check_PROGRAMS = testupnpdescgen
--minidlnad_SOURCES = minidlna.c upnphttp.c upnpdescgen.c upnpsoap.c \
-+minidlnad_SOURCES = minidlna.c icons.c upnphttp.c upnpdescgen.c upnpsoap.c \
- 			upnpreplyparse.c minixml.c clients.c \
- 			getifaddr.c process.c upnpglobalvars.c \
- 			options.c minissdp.c uuid.c upnpevents.c \
-@@ -40,6 +41,7 @@ flacoggflag = -logg
- 
- minidlnad_LDADD = \
- 	@LIBJPEG_LIBS@ \
-+	@libpng_LIBS@ \
- 	@LIBID3TAG_LIBS@ \
- 	@LIBSQLITE3_LIBS@ \
- 	@LIBAVFORMAT_LIBS@ \
-@@ -47,7 +49,8 @@ minidlnad_LDADD = \
- 	@LIBEXIF_LIBS@ \
- 	@LIBINTL@ \
- 	@LIBICONV@ \
--	-lFLAC  $(flacoggflag) $(vorbisflag)
-+	-lFLAC  $(flacoggflag) $(vorbisflag) \
-+	@opus_LIBS@
- 
- minidlnad_LDFLAGS = @STATIC_LDFLAGS@
- 
-diff --git a/albumart.c b/albumart.c
-index 20ed14e..96b21fd 100644
---- a/albumart.c
-+++ b/albumart.c
+diff --new-file --recursive --unified minidlna-1.2.1.orig/albumart.c minidlna-1.2.1/albumart.c
+--- minidlna-1.2.1.orig/albumart.c	2017-08-24 17:28:25.000000000 +0000
++++ minidlna-1.2.1/albumart.c	2018-01-24 17:47:55.665178044 +0000
 @@ -39,19 +39,30 @@
  #include "image_utils.h"
  #include "log.h"
@@ -182,7 +34,7 @@ index 20ed14e..96b21fd 100644
  {
  	int dstw, dsth;
  	image_s *imdst;
-@@ -84,6 +95,11 @@ save_resized_album_art(image_s *imsrc, const char *path)
+@@ -84,6 +95,11 @@
  		return NULL;
  	}
  
@@ -194,7 +46,7 @@ index 20ed14e..96b21fd 100644
  	cache_file = image_save_to_jpeg_file(imdst, cache_file);
  	image_free(imdst);
  	
-@@ -170,6 +186,7 @@ check_embedded_art(const char *path, uint8_t *image_data, int image_size)
+@@ -173,6 +189,7 @@
  	static unsigned int last_hash = 0;
  	static int last_success = 0;
  	unsigned int hash;
@@ -202,7 +54,7 @@ index 20ed14e..96b21fd 100644
  
  	if( !image_data || !image_size || !path )
  	{
-@@ -204,6 +221,15 @@ check_embedded_art(const char *path, uint8_t *image_data, int image_size)
+@@ -207,6 +224,15 @@
  	}
  	last_hash = hash;
  
@@ -218,7 +70,7 @@ index 20ed14e..96b21fd 100644
  	imsrc = image_new_from_jpeg(NULL, 0, image_data, image_size, 1, ROTATE_NONE);
  	if( !imsrc )
  	{
-@@ -215,7 +241,7 @@ check_embedded_art(const char *path, uint8_t *image_data, int image_size)
+@@ -218,7 +244,7 @@
  
  	if( width > 160 || height > 160 )
  	{
@@ -227,7 +79,7 @@ index 20ed14e..96b21fd 100644
  	}
  	else if( width > 0 && height > 0 )
  	{
-@@ -271,6 +297,9 @@ check_for_album_file(const char *path)
+@@ -274,6 +300,9 @@
  	const char *dir;
  	struct stat st;
  	int ret;
@@ -237,7 +89,7 @@ index 20ed14e..96b21fd 100644
  
  	if( stat(path, &st) != 0 )
  		return NULL;
-@@ -328,14 +357,24 @@ existing_file:
+@@ -331,14 +360,24 @@
  				return art_file;
  			}
  			free(art_file);
@@ -263,10 +115,9 @@ index 20ed14e..96b21fd 100644
  			else
  				art_file = strdup(file);
  			image_free(imsrc);
-diff --git a/clients.c b/clients.c
-index a8609d2..dcba210 100644
---- a/clients.c
-+++ b/clients.c
+diff --new-file --recursive --unified minidlna-1.2.1.orig/clients.c minidlna-1.2.1/clients.c
+--- minidlna-1.2.1.orig/clients.c	2017-08-24 17:28:25.000000000 +0000
++++ minidlna-1.2.1/clients.c	2018-01-24 17:47:55.665178044 +0000
 @@ -15,6 +15,8 @@
   * You should have received a copy of the GNU General Public License
   * along with MiniDLNA. If not, see <http://www.gnu.org/licenses/>.
@@ -276,11 +127,10 @@ index a8609d2..dcba210 100644
  #include <stdio.h>
  #include <string.h>
  #include <time.h>
-diff --git a/configure.ac b/configure.ac
-index 3a8a54c..8dda43e 100644
---- a/configure.ac
-+++ b/configure.ac
-@@ -405,6 +405,11 @@ done
+diff --new-file --recursive --unified minidlna-1.2.1.orig/configure.ac minidlna-1.2.1/configure.ac
+--- minidlna-1.2.1.orig/configure.ac	2017-08-24 17:28:25.000000000 +0000
++++ minidlna-1.2.1/configure.ac	2018-01-24 17:47:55.665178044 +0000
+@@ -405,6 +405,11 @@
  test x"$ac_cv_lib_jpeg_jpeg_set_defaults" = x"yes" || AC_MSG_ERROR([Could not find libexif])
  AC_SUBST(LIBEXIF_LIBS)
  
@@ -292,9 +142,9 @@ index 3a8a54c..8dda43e 100644
  LDFLAGS_SAVE="$LDFLAGS"
  for dir in "" /usr/local $SEARCH_DIR; do
      if test -n "$dir"; then
-@@ -478,6 +483,13 @@ AC_CHECK_LIB(vorbisfile, vorbis_comment_query,
-         AM_CONDITIONAL(NEED_VORBIS, true),
-         -logg)
+@@ -485,6 +490,13 @@
+          AM_CONDITIONAL(HAVE_AVAHI, false),
+         -lavahi-client -lavahi-common)
  
 +#test if we have opusfile
 +
@@ -306,10 +156,9 @@ index 3a8a54c..8dda43e 100644
  ################################################################################################################
  ### Header checks
  
-diff --git a/getifaddr.c b/getifaddr.c
-index f0d3af3..5c9a481 100644
---- a/getifaddr.c
-+++ b/getifaddr.c
+diff --new-file --recursive --unified minidlna-1.2.1.orig/getifaddr.c minidlna-1.2.1/getifaddr.c
+--- minidlna-1.2.1.orig/getifaddr.c	2017-08-24 17:28:25.000000000 +0000
++++ minidlna-1.2.1/getifaddr.c	2018-01-24 17:47:55.665178044 +0000
 @@ -26,6 +26,8 @@
   * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
   * POSSIBILITY OF SUCH DAMAGE.
@@ -327,10 +176,9 @@ index f0d3af3..5c9a481 100644
  #if HAVE_GETIFADDRS
  # include <ifaddrs.h>
  # ifdef __linux__
-diff --git a/icons.c b/icons.c
-index 0161a2c..23c4e91 100644
---- a/icons.c
-+++ b/icons.c
+diff --new-file --recursive --unified minidlna-1.2.1.orig/icons.c minidlna-1.2.1/icons.c
+--- minidlna-1.2.1.orig/icons.c	2017-08-24 17:28:25.000000000 +0000
++++ minidlna-1.2.1/icons.c	2018-01-24 17:47:55.669178044 +0000
 @@ -18,6 +18,8 @@
   * along with MiniDLNA. If not, see <http://www.gnu.org/licenses/>.
   */
@@ -340,7 +188,7 @@ index 0161a2c..23c4e91 100644
  #ifdef NETGEAR
  /* NG_Icon_48x48.png */
  unsigned char
-@@ -2929,3 +2931,10 @@ jpeg_lrg[] = "\xff\xd8\xff\xe0\x00\x10\x4a\x46\x49\x46\x00\x01\x01\x01\x00\x5a\x
+@@ -2929,3 +2931,10 @@
               "\x1e\x88\x20\xa8\xd8\xba\xe2\x7e\xdc\x26\x9a\x69\x08\xf7\x22\x22\x02\x82\x28\x82\x29\xe8\x88\x9e"
               "\xda\x69\xa6\x90\x8f\xff\xd9";
  #endif
@@ -351,10 +199,37 @@ index 0161a2c..23c4e91 100644
 +		sizeof (jpeg_lrg)-1, sizeof (jpeg_sm)-1 },
 +	{ 0, 0, 0, 0 }
 +};
-diff --git a/image_utils.c b/image_utils.c
-index d90875a..a8ca871 100644
---- a/image_utils.c
-+++ b/image_utils.c
+diff --new-file --recursive --unified minidlna-1.2.1.orig/icons.h minidlna-1.2.1/icons.h
+--- minidlna-1.2.1.orig/icons.h	1970-01-01 00:00:00.000000000 +0000
++++ minidlna-1.2.1/icons.h	2018-01-24 17:47:55.657178044 +0000
+@@ -0,0 +1,24 @@
++#ifndef __ICONS_H__
++#define __ICONG_H__
++
++#define ICON_FIRST 0
++#define ICON_LAST 3
++#define ICON_PNG_LRG 0
++#define ICON_PNG_SM 1
++#define ICON_JPEG_LRG 2
++#define ICON_JPEG_SM 3
++
++struct icon_struct {
++    unsigned char *icon[4];
++    int size[4];
++    int dynamic[4];
++};
++
++extern unsigned char png_sm[];
++extern unsigned char png_lrg[];
++extern unsigned char jpeg_sm[];
++extern unsigned char jpeg_lrg[];
++
++extern struct icon_struct icons;
++
++#endif
+diff --new-file --recursive --unified minidlna-1.2.1.orig/image_utils.c minidlna-1.2.1/image_utils.c
+--- minidlna-1.2.1.orig/image_utils.c	2017-08-24 17:28:25.000000000 +0000
++++ minidlna-1.2.1/image_utils.c	2018-01-24 17:47:55.669178044 +0000
 @@ -31,7 +31,15 @@
  #include <stdlib.h>
  #include <string.h>
@@ -371,7 +246,7 @@ index d90875a..a8ca871 100644
  #include <jpeglib.h>
  #ifdef HAVE_MACHINE_ENDIAN_H
  #include <machine/endian.h>
-@@ -68,6 +76,9 @@ struct my_dst_mgr {
+@@ -68,6 +76,9 @@
  	size_t used;
  };
  
@@ -381,7 +256,7 @@ index d90875a..a8ca871 100644
  /* Destination manager to store data in a buffer */
  static void
  my_dst_mgr_init(j_compress_ptr cinfo)
-@@ -573,6 +584,472 @@ image_new_from_jpeg(const char *path, int is_file, const uint8_t *buf, int size,
+@@ -573,6 +584,472 @@
  	return vimage;
  }
  
@@ -854,10 +729,9 @@ index d90875a..a8ca871 100644
  void
  image_upsize(image_s * pdest, image_s * psrc, int32_t width, int32_t height)
  {
-diff --git a/image_utils.h b/image_utils.h
-index 7011c73..47ef89f 100644
---- a/image_utils.h
-+++ b/image_utils.h
+diff --new-file --recursive --unified minidlna-1.2.1.orig/image_utils.h minidlna-1.2.1/image_utils.h
+--- minidlna-1.2.1.orig/image_utils.h	2017-08-24 17:28:25.000000000 +0000
++++ minidlna-1.2.1/image_utils.h	2018-01-24 17:47:55.669178044 +0000
 @@ -28,6 +28,16 @@
  #define ROTATE_180  0x2
  #define ROTATE_270  0x4
@@ -875,7 +749,7 @@ index 7011c73..47ef89f 100644
  typedef uint32_t pix;
  
  typedef struct {
-@@ -46,7 +56,27 @@ int
+@@ -46,7 +56,27 @@
  image_get_jpeg_resolution(const char * path, int * width, int * height);
  
  image_s *
@@ -904,23 +778,67 @@ index 7011c73..47ef89f 100644
  
  image_s *
  image_resize(image_s * src_image, int32_t width, int32_t height);
-@@ -56,3 +86,6 @@ image_save_to_jpeg_buf(image_s * pimage, int * size);
+@@ -56,3 +86,6 @@
  
  char *
  image_save_to_jpeg_file(image_s * pimage, char * path);
 +
 +void
 +image_bgcolor_composite (image_s *img, int32_t bgcolor1, int32_t bgcolor2);
-diff --git a/metadata.c b/metadata.c
-index c08ca3f..09df44c 100644
---- a/metadata.c
-+++ b/metadata.c
-@@ -327,11 +327,55 @@ GetAudioMetadata(const char *path, char *name)
- 		strcpy(type, "wav");
- 		m.mime = strdup("audio/x-wav");
+diff --new-file --recursive --unified minidlna-1.2.1.orig/Makefile.am minidlna-1.2.1/Makefile.am
+--- minidlna-1.2.1.orig/Makefile.am	2017-08-24 17:28:25.000000000 +0000
++++ minidlna-1.2.1/Makefile.am	2018-01-24 19:26:23.551448618 +0000
+@@ -15,13 +15,14 @@
+ # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
+ # USA.
+ 
+-AM_CFLAGS = -Wall -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 @STATIC_CFLAGS@
++AM_CFLAGS = -Wall -D_LARGEFILE_SOURCE -D_FILE_OFFSET_BITS=64 @STATIC_CFLAGS@ \
++	    @libpng_CFLAGS@ @opus_CFLAGS@
+ 
+ SUBDIRS=po
+ 
+ sbin_PROGRAMS = minidlnad
+ check_PROGRAMS = testupnpdescgen
+-minidlnad_SOURCES = minidlna.c upnphttp.c upnpdescgen.c upnpsoap.c \
++minidlnad_SOURCES = minidlna.c icons.c upnphttp.c upnpdescgen.c upnpsoap.c \
+ 			upnpreplyparse.c minixml.c clients.c \
+ 			getifaddr.c process.c upnpglobalvars.c \
+ 			options.c minissdp.c uuid.c upnpevents.c \
+@@ -46,6 +47,7 @@
+ 
+ minidlnad_LDADD = \
+ 	@LIBJPEG_LIBS@ \
++	@libpng_LIBS@ \
+ 	@LIBID3TAG_LIBS@ \
+ 	@LIBSQLITE3_LIBS@ \
+ 	@LIBAVFORMAT_LIBS@ \
+@@ -53,7 +55,8 @@
+ 	@LIBEXIF_LIBS@ \
+ 	@LIBINTL@ \
+ 	@LIBICONV@ \
+-	-lFLAC $(flacogglibs) $(vorbislibs) $(avahilibs)
++	-lFLAC $(flacogglibs) $(vorbislibs) $(avahilibs) \
++	@opus_LIBS@
+ 
+ minidlnad_LDFLAGS = @STATIC_LDFLAGS@
+ 
+@@ -65,7 +68,8 @@
+ 	@LIBAVFORMAT_LIBS@ \
+ 	@LIBAVUTIL_LIBS@ \
+ 	@LIBEXIF_LIBS@ \
+-	-lFLAC $(flacogglibs) $(vorbislibs) $(avahilibs)
++	-lFLAC $(flacogglibs) $(vorbislibs) $(avahilibs) \
++	@opus_LIBS@
+ 
+ SUFFIXES = .tmpl .
+ 
+diff --new-file --recursive --unified minidlna-1.2.1.orig/metadata.c minidlna-1.2.1/metadata.c
+--- minidlna-1.2.1.orig/metadata.c	2017-08-24 17:28:25.000000000 +0000
++++ minidlna-1.2.1/metadata.c	2018-01-24 18:31:46.174475471 +0000
+@@ -337,9 +337,53 @@
  	}
--	else if( ends_with(path, ".ogg") || ends_with(path, ".oga") )
-+	else if( ends_with(path,".oga") || ends_with(path,".ogg"))
+ 	else if( ends_with(path, ".ogg") || ends_with(path, ".oga") )
  	{
 +		/* The .ogg/.oga file extensions present something of a problem.
 +		 * ".ogg" has been deprecated in favor of ".oga" for some time, but
@@ -973,18 +891,18 @@ index c08ca3f..09df44c 100644
  	else if( ends_with(path, ".pcm") )
  	{
  		strcpy(type, "pcm");
-@@ -487,8 +531,8 @@ libjpeg_error_handler(j_common_ptr cinfo)
+@@ -493,8 +537,8 @@
  	return;
  }
  
 -int64_t
--GetImageMetadata(const char *path, char *name)
+-GetImageMetadata(const char *path, const char *name)
 +static int64_t
 +_get_jpeg_metadata(const char *path, char *name)
  {
  	ExifData *ed;
  	ExifEntry *e = NULL;
-@@ -656,6 +700,298 @@ no_exifdata:
+@@ -663,6 +707,298 @@
  	return ret;
  }
  
@@ -1266,7 +1184,7 @@ index c08ca3f..09df44c 100644
 +
 +
 +int64_t
-+GetImageMetadata(const char *path, char *name)
++GetImageMetadata(const char *path, const char *name)
 +{
 +	if (ends_with (path, ".jpg") || ends_with (path, ".jpeg"))
 +	{
@@ -1281,9 +1199,9 @@ index c08ca3f..09df44c 100644
 +}
 +
  int64_t
- GetVideoMetadata(const char *path, char *name)
+ GetVideoMetadata(const char *path, const char *name)
  {
-@@ -846,6 +1182,8 @@ GetVideoMetadata(const char *path, char *name)
+@@ -844,6 +1180,8 @@
  			xasprintf(&m.mime, "video/x-matroska");
  		else if( strcmp(ctx->iformat->name, "flv") == 0 )
  			xasprintf(&m.mime, "video/x-flv");
@@ -1292,10 +1210,9 @@ index c08ca3f..09df44c 100644
  		if( m.mime )
  			goto video_no_dlna;
  
-diff --git a/minidlna.c b/minidlna.c
-index c9303b1..1e4f536 100644
---- a/minidlna.c
-+++ b/minidlna.c
+diff --new-file --recursive --unified minidlna-1.2.1.orig/minidlna.c minidlna-1.2.1/minidlna.c
+--- minidlna-1.2.1.orig/minidlna.c	2017-08-24 17:28:25.000000000 +0000
++++ minidlna-1.2.1/minidlna.c	2018-01-24 17:53:53.409178044 +0000
 @@ -46,6 +46,8 @@
   * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
   * POSSIBILITY OF SUCH DAMAGE.
@@ -1314,17 +1231,17 @@ index c9303b1..1e4f536 100644
  #ifdef ENABLE_NLS
  #include <locale.h>
  #include <libintl.h>
-@@ -94,6 +94,8 @@
- #include "log.h"
+@@ -95,6 +95,8 @@
  #include "tivo_beacon.h"
  #include "tivo_utils.h"
+ #include "avahi.h"
 +#include "icons.h"
 +#include "image_utils.h"
  
  #if SQLITE_VERSION_NUMBER < 3005001
  # warning "Your SQLite3 library appears to be too old!  Please use 3.5.1 or newer."
-@@ -278,6 +280,127 @@ getfriendlyname(char *buf, int len)
- #endif
+@@ -267,6 +269,127 @@
+ 	return st.st_mtime;
  }
  
 +#define DESTROY_ICON(s,i) \
@@ -1451,9 +1368,9 @@ index c9303b1..1e4f536 100644
  static int
  open_db(sqlite3 **sq3)
  {
-@@ -737,6 +860,34 @@ init(int argc, char **argv)
- 			if (strtobool(ary_options[i].value))
- 				SETFLAG(MERGE_MEDIA_DIRS_MASK);
+@@ -752,6 +875,34 @@
+ 			if (strcasecmp(ary_options[i].value, "beacon") == 0)
+ 				CLEARFLAG(TIVO_BONJOUR_MASK);
  			break;
 +#ifdef HAVE_LIBPNG
 +		case ICON:
@@ -1486,14 +1403,13 @@ index c9303b1..1e4f536 100644
  		default:
  			DPRINTF(E_ERROR, L_GENERAL, "Unknown option in file %s\n",
  				optionsfile);
-diff --git a/minidlna.conf b/minidlna.conf
-index 7e00e89..ec8a70c 100644
---- a/minidlna.conf
-+++ b/minidlna.conf
-@@ -81,3 +81,12 @@ model_number=1
- # maximum number of simultaneous connections
- # note: many clients open several simultaneous connections while streaming
- #max_connections=50
+diff --new-file --recursive --unified minidlna-1.2.1.orig/minidlna.conf minidlna-1.2.1/minidlna.conf
+--- minidlna-1.2.1.orig/minidlna.conf	2017-08-24 17:28:25.000000000 +0000
++++ minidlna-1.2.1/minidlna.conf	2018-01-24 17:54:44.381178044 +0000
+@@ -88,3 +88,12 @@
+ 
+ # set this to yes to allow symlinks that point outside user-defined media_dirs.
+ #wide_links=no
 +
 +# PNG image to use for an icon, optionally followed by a hex background
 +# color
@@ -1503,40 +1419,37 @@ index 7e00e89..ec8a70c 100644
 +# colors indicate that a checkerboard background, in those colors, should
 +# be used.
 +#bgcolor=666666,999999
-diff --git a/options.c b/options.c
-index 2fa8c06..225aca9 100644
---- a/options.c
-+++ b/options.c
-@@ -65,6 +65,10 @@ static const struct {
- 	{ FORCE_SORT_CRITERIA, "force_sort_criteria" },
- 	{ MAX_CONNECTIONS, "max_connections" },
- 	{ MERGE_MEDIA_DIRS, "merge_media_dirs" }
+diff --new-file --recursive --unified minidlna-1.2.1.orig/options.c minidlna-1.2.1/options.c
+--- minidlna-1.2.1.orig/options.c	2017-08-24 17:28:25.000000000 +0000
++++ minidlna-1.2.1/options.c	2018-01-24 17:57:31.661500480 +0000
+@@ -67,6 +67,10 @@
+ 	{ MERGE_MEDIA_DIRS, "merge_media_dirs" },
+ 	{ WIDE_LINKS, "wide_links" },
+ 	{ TIVO_DISCOVERY, "tivo_discovery" },
 +#ifdef HAVE_LIBPNG
-+	,{ ICON, "icon" },
-+	{ BGCOLOR, "bgcolor" }
++	{ ICON, "icon" },
++	{ BGCOLOR, "bgcolor" },
 +#endif
  };
  
  int
-diff --git a/options.h b/options.h
-index 159255f..8fbfdc9 100644
---- a/options.h
-+++ b/options.h
-@@ -58,6 +58,10 @@ enum upnpconfigoptions {
- 	FORCE_SORT_CRITERIA,		/* force sorting by a given sort criteria */
- 	MAX_CONNECTIONS,		/* maximum number of simultaneous connections */
- 	MERGE_MEDIA_DIRS		/* don't add an extra directory level when there are multiple media dirs */
+diff --new-file --recursive --unified minidlna-1.2.1.orig/options.h minidlna-1.2.1/options.h
+--- minidlna-1.2.1.orig/options.h	2017-08-24 17:28:25.000000000 +0000
++++ minidlna-1.2.1/options.h	2018-01-24 17:56:01.133178044 +0000
+@@ -60,6 +60,10 @@
+ 	MERGE_MEDIA_DIRS,		/* don't add an extra directory level when there are multiple media dirs */
+ 	WIDE_LINKS,			/* allow following symlinks outside the defined media_dirs */
+ 	TIVO_DISCOVERY,			/* TiVo discovery protocol: bonjour or beacon. Defaults to bonjour if supported */
 +#ifdef HAVE_LIBPNG
-+	,ICON,					/* user-supplied PNG icon */
-+	BGCOLOR					/* user-supplied BG color */
++	ICON,				/* user-supplied PNG icon */
++	BGCOLOR,			/* user-supplied BG color */
 +#endif
  };
  
  /* readoptionsfile()
-diff --git a/process.c b/process.c
-index 96ec1c3..926183d 100644
---- a/process.c
-+++ b/process.c
+diff --new-file --recursive --unified minidlna-1.2.1.orig/process.c minidlna-1.2.1/process.c
+--- minidlna-1.2.1.orig/process.c	2017-08-24 17:28:25.000000000 +0000
++++ minidlna-1.2.1/process.c	2018-01-24 17:47:55.677178044 +0000
 @@ -27,6 +27,8 @@
   * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
   * POSSIBILITY OF SUCH DAMAGE.
@@ -1554,7 +1467,7 @@ index 96ec1c3..926183d 100644
  #include "log.h"
  
  struct child *children = NULL;
-@@ -109,8 +110,9 @@ void
+@@ -109,8 +110,9 @@
  process_handle_child_termination(int signal)
  {
  	pid_t pid;
@@ -1565,7 +1478,7 @@ index 96ec1c3..926183d 100644
  	{
  		if (pid == -1)
  		{
-@@ -119,8 +121,29 @@ process_handle_child_termination(int signal)
+@@ -119,8 +121,29 @@
  			else
  				break;
  		}
@@ -1595,10 +1508,9 @@ index 96ec1c3..926183d 100644
  	}
  }
  
-diff --git a/scanner.c b/scanner.c
-index ee3af48..25fbaad 100644
---- a/scanner.c
-+++ b/scanner.c
+diff --new-file --recursive --unified minidlna-1.2.1.orig/scanner.c minidlna-1.2.1/scanner.c
+--- minidlna-1.2.1.orig/scanner.c	2017-08-24 17:28:25.000000000 +0000
++++ minidlna-1.2.1/scanner.c	2018-01-24 17:47:55.677178044 +0000
 @@ -15,6 +15,8 @@
   * You should have received a copy of the GNU General Public License
   * along with MiniDLNA. If not, see <http://www.gnu.org/licenses/>.
@@ -1617,11 +1529,10 @@ index ee3af48..25fbaad 100644
  #ifdef ENABLE_NLS
  #include <libintl.h>
  #endif
-diff --git a/tagutils/tagutils-asf.c b/tagutils/tagutils-asf.c
-index fca0597..bca6a83 100644
---- a/tagutils/tagutils-asf.c
-+++ b/tagutils/tagutils-asf.c
-@@ -470,7 +470,12 @@ _asf_load_picture(FILE *fp, int size, void *bm, int *bm_size)
+diff --new-file --recursive --unified minidlna-1.2.1.orig/tagutils/tagutils-asf.c minidlna-1.2.1/tagutils/tagutils-asf.c
+--- minidlna-1.2.1.orig/tagutils/tagutils-asf.c	2017-08-24 17:28:25.000000000 +0000
++++ minidlna-1.2.1/tagutils/tagutils-asf.c	2018-01-24 17:47:55.677178044 +0000
+@@ -470,7 +470,12 @@
  
  	if(!strcasecmp(buf, "image/jpeg") ||
  	   !strcasecmp(buf, "image/jpg") ||
@@ -1635,11 +1546,82 @@ index fca0597..bca6a83 100644
  	{
  
  		while(0 != fget_le16(fp))
-diff --git a/tagutils/tagutils-misc.c b/tagutils/tagutils-misc.c
-index 9f9436b..0b28b87 100644
---- a/tagutils/tagutils-misc.c
-+++ b/tagutils/tagutils-misc.c
-@@ -180,12 +180,236 @@ _get_utf8_text(const id3_ucs4_t* native_text)
+diff --new-file --recursive --unified minidlna-1.2.1.orig/tagutils/tagutils.c minidlna-1.2.1/tagutils/tagutils.c
+--- minidlna-1.2.1.orig/tagutils/tagutils.c	2017-08-24 17:28:25.000000000 +0000
++++ minidlna-1.2.1/tagutils/tagutils.c	2018-01-24 18:02:34.698475471 +0000
+@@ -22,6 +22,7 @@
+ /* This file is derived from mt-daapd project */
+ 
+ #include "config.h"
++
+ #include <ctype.h>
+ #include <errno.h>
+ #include <id3tag.h>
+@@ -37,8 +38,10 @@
+ #include <ogg/ogg.h>
+ #include <vorbis/codec.h>
+ #endif
++#ifdef HAVE_OPUS
++#include <opusfile.h>
++#endif
+ #include <FLAC/metadata.h>
+-
+ #ifdef HAVE_ICONV
+ #include <iconv.h>
+ #endif
+@@ -47,6 +50,7 @@
+ #include "../metadata.h"
+ #include "../utils.h"
+ #include "../log.h"
++#include "../image_utils.h"
+ 
+ struct id3header {
+ 	unsigned char id[3];
+@@ -107,6 +111,9 @@
+ #ifdef HAVE_VORBISFILE
+ #include "tagutils-ogg.h"
+ #endif
++#ifdef HAVE_OPUS
++#include "tagutils-ops.h"
++#endif
+ #include "tagutils-flc.h"
+ #include "tagutils-asf.h"
+ #include "tagutils-wav.h"
+@@ -133,6 +140,9 @@
+ #ifdef HAVE_VORBISFILE
+ 	{ "ogg", 0,            _get_oggfileinfo                                  },
+ #endif
++#ifdef HAVE_OPUS
++	{ "ops", 0,            _get_opusfileinfo                                 },
++#endif
+ 	{ "asf", 0,            _get_asffileinfo                                  },
+ 	{ "wav", _get_wavtags, _get_wavfileinfo                                  },
+ 	{ "pcm", 0,            _get_pcmfileinfo                                  },
+@@ -148,6 +158,9 @@
+ #ifdef HAVE_VORBISFILE
+ #include "tagutils-ogg.c"
+ #endif
++#ifdef HAVE_OPUS
++#include "tagutils-ops.c"
++#endif
+ #include "tagutils-flc.c"
+ #include "tagutils-asf.c"
+ #include "tagutils-wav.c"
+diff --new-file --recursive --unified minidlna-1.2.1.orig/tagutils/tagutils.h minidlna-1.2.1/tagutils/tagutils.h
+--- minidlna-1.2.1.orig/tagutils/tagutils.h	2017-08-24 17:28:25.000000000 +0000
++++ minidlna-1.2.1/tagutils/tagutils.h	2018-01-24 17:47:55.681178044 +0000
+@@ -54,6 +54,7 @@
+ 
+ 	uint8_t *image;                         // coverart
+ 	int image_size;
++	int image_type;				// APIC picture type
+ 
+ 	char *title;                            // TIT2
+ 	char *album;                            // TALB
+diff --new-file --recursive --unified minidlna-1.2.1.orig/tagutils/tagutils-misc.c minidlna-1.2.1/tagutils/tagutils-misc.c
+--- minidlna-1.2.1.orig/tagutils/tagutils-misc.c	2017-08-24 17:28:25.000000000 +0000
++++ minidlna-1.2.1/tagutils/tagutils-misc.c	2018-01-24 17:47:55.677178044 +0000
+@@ -180,12 +180,236 @@
  	return utf8_text;
  }
  
@@ -1876,11 +1858,10 @@ index 9f9436b..0b28b87 100644
  	if(length > (sizeof(strbuf) - 1))
  	{
  		if( strncasecmp(comment, "LYRICS=", 7) != 0 )
-diff --git a/tagutils/tagutils-mp3.c b/tagutils/tagutils-mp3.c
-index c87a065..876dd86 100644
---- a/tagutils/tagutils-mp3.c
-+++ b/tagutils/tagutils-mp3.c
-@@ -79,7 +79,12 @@ _get_mp3tags(char *file, struct song_metadata *psong)
+diff --new-file --recursive --unified minidlna-1.2.1.orig/tagutils/tagutils-mp3.c minidlna-1.2.1/tagutils/tagutils-mp3.c
+--- minidlna-1.2.1.orig/tagutils/tagutils-mp3.c	2017-08-24 17:28:25.000000000 +0000
++++ minidlna-1.2.1/tagutils/tagutils-mp3.c	2018-01-24 17:47:55.677178044 +0000
+@@ -79,7 +79,12 @@
  		{
  			if( (strcmp((char*)id3_field_getlatin1(&pid3frame->fields[1]), "image/jpeg") == 0) ||
  			    (strcmp((char*)id3_field_getlatin1(&pid3frame->fields[1]), "image/jpg") == 0) ||
@@ -1894,11 +1875,10 @@ index c87a065..876dd86 100644
  			{
  				image = id3_field_getbinarydata(&pid3frame->fields[4], &image_size);
  				if( image_size )
-diff --git a/tagutils/tagutils-ogg.c b/tagutils/tagutils-ogg.c
-index 3e1417f..bc4f417 100644
---- a/tagutils/tagutils-ogg.c
-+++ b/tagutils/tagutils-ogg.c
-@@ -429,7 +429,9 @@ _get_oggfileinfo(char *filename, struct song_metadata *psong)
+diff --new-file --recursive --unified minidlna-1.2.1.orig/tagutils/tagutils-ogg.c minidlna-1.2.1/tagutils/tagutils-ogg.c
+--- minidlna-1.2.1.orig/tagutils/tagutils-ogg.c	2017-08-24 17:28:25.000000000 +0000
++++ minidlna-1.2.1/tagutils/tagutils-ogg.c	2018-01-24 17:47:55.681178044 +0000
+@@ -429,7 +429,9 @@
  
  	if(!file)
  	{
@@ -1909,84 +1889,83 @@ index 3e1417f..bc4f417 100644
  			"Error opening input file \"%s\": %s\n", filename,  strerror(errno));
  		_ogg_free_stream_set(processors);
  		return -1;
-diff --git a/tagutils/tagutils.c b/tagutils/tagutils.c
-index 794e7b9..9739064 100644
---- a/tagutils/tagutils.c
-+++ b/tagutils/tagutils.c
-@@ -21,6 +21,8 @@
- 
- /* This file is derived from mt-daapd project */
- 
-+#include "config.h"
+diff --new-file --recursive --unified minidlna-1.2.1.orig/tagutils/tagutils-ops.c minidlna-1.2.1/tagutils/tagutils-ops.c
+--- minidlna-1.2.1.orig/tagutils/tagutils-ops.c	1970-01-01 00:00:00.000000000 +0000
++++ minidlna-1.2.1/tagutils/tagutils-ops.c	2018-01-24 17:47:55.657178044 +0000
+@@ -0,0 +1,60 @@
++//=========================================================================
++// FILENAME	: tagutils-ops.c
++// DESCRIPTION	: Opus metadata reader
++//=========================================================================
 +
- #include <ctype.h>
- #include <errno.h>
- #include <id3tag.h>
-@@ -36,7 +38,9 @@
- #include <vorbis/codec.h>
- #include <FLAC/metadata.h>
- 
--#include "config.h"
-+#ifdef HAVE_OPUS
-+#include <opusfile.h>
-+#endif
- #ifdef HAVE_ICONV
- #include <iconv.h>
- #endif
-@@ -45,6 +49,7 @@
- #include "../metadata.h"
- #include "../utils.h"
- #include "../log.h"
-+#include "../image_utils.h"
- 
- struct id3header {
- 	unsigned char id[3];
-@@ -103,6 +108,9 @@ char *winamp_genre[] = {
- #include "tagutils-mp3.h"
- #include "tagutils-aac.h"
- #include "tagutils-ogg.h"
-+#ifdef HAVE_OPUS
-+#include "tagutils-ops.h"
-+#endif
- #include "tagutils-flc.h"
- #include "tagutils-asf.h"
- #include "tagutils-wav.h"
-@@ -127,6 +135,9 @@ static taghandler taghandlers[] = {
- 	{ "mp3", _get_mp3tags, _get_mp3fileinfo                                  },
- 	{ "flc", _get_flctags, _get_flcfileinfo                                  },
- 	{ "ogg", 0,            _get_oggfileinfo                                  },
-+#ifdef HAVE_OPUS
-+	{ "ops", 0,				_get_opusfileinfo								 },
-+#endif
- 	{ "asf", 0,            _get_asffileinfo                                  },
- 	{ "wav", _get_wavtags, _get_wavfileinfo                                  },
- 	{ "pcm", 0,            _get_pcmfileinfo                                  },
-@@ -140,6 +151,9 @@ static taghandler taghandlers[] = {
- #include "tagutils-mp3.c"
- #include "tagutils-aac.c"
- #include "tagutils-ogg.c"
-+#ifdef HAVE_OPUS
-+#include "tagutils-ops.c"
-+#endif
- #include "tagutils-flc.c"
- #include "tagutils-asf.c"
- #include "tagutils-wav.c"
-diff --git a/tagutils/tagutils.h b/tagutils/tagutils.h
-index 4daf5d4..87ebad9 100644
---- a/tagutils/tagutils.h
-+++ b/tagutils/tagutils.h
-@@ -54,6 +54,7 @@ struct song_metadata {
- 
- 	uint8_t *image;                         // coverart
- 	int image_size;
-+	int image_type;				// APIC picture type
- 
- 	char *title;                            // TIT2
- 	char *album;                            // TALB
-diff --git a/testupnpdescgen.c b/testupnpdescgen.c
-index 5d88443..1f4beb5 100644
---- a/testupnpdescgen.c
-+++ b/testupnpdescgen.c
++static int
++_get_opusfileinfo(char *filename, struct song_metadata *psong)
++{
++	OggOpusFile *opusfile;
++	const OpusTags *tags;
++	char **comment;
++	int *commentlen;
++	int j, e;
++
++
++	opusfile = op_open_file (filename, &e);
++	if(!opusfile)
++	{
++		DPRINTF(E_WARN, L_SCANNER,
++			"Error opening input file \"%s\"\n", filename);
++		return -1;
++	}
++
++	DPRINTF(E_MAXDEBUG, L_SCANNER, "Processing file \"%s\"...\n", filename);
++
++	psong->song_length = op_pcm_total (opusfile, -1);
++	if (psong->song_length < 0)
++	{
++		DPRINTF(E_WARN, L_SCANNER,
++				"Unable to obtain length of %s\n", filename);
++		psong->song_length = 0;
++	} else
++		/* Sample rate is always 48k, so length in ms is just samples/48 */
++		psong->song_length /= 48;
++
++	/* Note that this gives only the first link's channel count. */
++	psong->channels = op_channel_count (opusfile, -1);
++
++	psong->samplerate = 48000;
++	psong->bitrate = op_bitrate (opusfile, -1);
++
++	tags = op_tags (opusfile, -1);
++
++	if (!tags)
++	{
++		DPRINTF(E_WARN, L_SCANNER, "Unable to obtain tags from %s\n",
++				filename);
++		op_free (opusfile);
++		return 0;
++	}
++
++	comment = tags->user_comments;
++	commentlen = tags->comment_lengths;
++
++	for (j = 0; j < tags->comments; j++)
++		vc_scan (psong, *(comment++), *(commentlen++));
++
++	op_free (opusfile);
++	return 0;
++}
+diff --new-file --recursive --unified minidlna-1.2.1.orig/tagutils/tagutils-ops.h minidlna-1.2.1/tagutils/tagutils-ops.h
+--- minidlna-1.2.1.orig/tagutils/tagutils-ops.h	1970-01-01 00:00:00.000000000 +0000
++++ minidlna-1.2.1/tagutils/tagutils-ops.h	2018-01-24 17:47:55.657178044 +0000
+@@ -0,0 +1,6 @@
++//=========================================================================
++// FILENAME	: tagutils-ops.h
++// DESCRIPTION	: Opus metadata reader
++//=========================================================================
++
++static int _get_opusfileinfo(char *filename, struct song_metadata *psong);
+diff --new-file --recursive --unified minidlna-1.2.1.orig/testupnpdescgen.c minidlna-1.2.1/testupnpdescgen.c
+--- minidlna-1.2.1.orig/testupnpdescgen.c	2017-08-24 17:28:25.000000000 +0000
++++ minidlna-1.2.1/testupnpdescgen.c	2018-01-24 17:47:55.681178044 +0000
 @@ -26,11 +26,12 @@
   * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
   * POSSIBILITY OF SUCH DAMAGE.
@@ -2001,10 +1980,9 @@ index 5d88443..1f4beb5 100644
  #include "upnpdescgen.h"
  
  char uuidvalue[] = "uuid:12345678-0000-0000-0000-00000000abcd";
-diff --git a/upnpdescgen.c b/upnpdescgen.c
-index c00cee0..09f14f5 100644
---- a/upnpdescgen.c
-+++ b/upnpdescgen.c
+diff --new-file --recursive --unified minidlna-1.2.1.orig/upnpdescgen.c minidlna-1.2.1/upnpdescgen.c
+--- minidlna-1.2.1.orig/upnpdescgen.c	2017-08-24 17:28:25.000000000 +0000
++++ minidlna-1.2.1/upnpdescgen.c	2018-01-24 17:47:55.681178044 +0000
 @@ -26,11 +26,12 @@
   * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
   * POSSIBILITY OF SUCH DAMAGE.
@@ -2019,10 +1997,9 @@ index c00cee0..09f14f5 100644
  #include "getifaddr.h"
  #include "upnpdescgen.h"
  #include "minidlnapath.h"
-diff --git a/upnpglobalvars.c b/upnpglobalvars.c
-index fff02c8..555820c 100644
---- a/upnpglobalvars.c
-+++ b/upnpglobalvars.c
+diff --new-file --recursive --unified minidlna-1.2.1.orig/upnpglobalvars.c minidlna-1.2.1/upnpglobalvars.c
+--- minidlna-1.2.1.orig/upnpglobalvars.c	2017-08-24 17:28:25.000000000 +0000
++++ minidlna-1.2.1/upnpglobalvars.c	2018-01-24 17:47:55.681178044 +0000
 @@ -46,12 +46,13 @@
   * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
   * POSSIBILITY OF SUCH DAMAGE.
@@ -2038,10 +2015,9 @@ index fff02c8..555820c 100644
  #include "upnpglobalvars.h"
  
  /* startup time */
-diff --git a/upnphttp.c b/upnphttp.c
-index 418cde4..ee27245 100644
---- a/upnphttp.c
-+++ b/upnphttp.c
+diff --new-file --recursive --unified minidlna-1.2.1.orig/upnphttp.c minidlna-1.2.1/upnphttp.c
+--- minidlna-1.2.1.orig/upnphttp.c	2017-08-24 17:28:25.000000000 +0000
++++ minidlna-1.2.1/upnphttp.c	2018-01-24 17:47:55.685178044 +0000
 @@ -46,6 +46,8 @@
   * ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED OF THE
   * POSSIBILITY OF SUCH DAMAGE.
@@ -2075,7 +2051,7 @@ index 418cde4..ee27245 100644
  enum event_type {
  	E_INVALID,
  	E_SUBSCRIBE,
-@@ -1340,29 +1340,29 @@ SendResp_icon(struct upnphttp * h, char * icon)
+@@ -1389,29 +1389,29 @@
  	if( strcmp(icon, "sm.png") == 0 )
  	{
  		DPRINTF(E_DEBUG, L_HTTP, "Sending small PNG icon\n");
@@ -2113,7 +2089,7 @@ index 418cde4..ee27245 100644
  		strcpy(mime+6, "jpeg");
  	}
  	else
-@@ -1575,8 +1575,10 @@ SendResp_resizedimg(struct upnphttp * h, char * object)
+@@ -1628,8 +1628,10 @@
  	int scale = 1;
  	const char *tmode;
  
@@ -2125,7 +2101,7 @@ index 418cde4..ee27245 100644
  	ret = sql_get_table(db, buf, &result, &rows, NULL);
  	if( ret != SQLITE_OK )
  	{
-@@ -1585,9 +1587,9 @@ SendResp_resizedimg(struct upnphttp * h, char * object)
+@@ -1638,9 +1640,9 @@
  	}
  	if( rows )
  	{
@@ -2138,7 +2114,7 @@ index 418cde4..ee27245 100644
  	}
  	if( !file_path || !resolution || (access(file_path, F_OK) != 0) )
  	{
-@@ -1597,6 +1599,20 @@ SendResp_resizedimg(struct upnphttp * h, char * object)
+@@ -1650,6 +1652,20 @@
  		return;
  	}
  
@@ -2159,7 +2135,7 @@ index 418cde4..ee27245 100644
  	if( saveptr )
  		saveptr = strchr(saveptr, '?');
  	path = saveptr ? saveptr + 1 : object;
-@@ -1720,7 +1736,12 @@ SendResp_resizedimg(struct upnphttp * h, char * object)
+@@ -1773,7 +1789,12 @@
  	if( strcmp(h->HttpVer, "HTTP/1.0") == 0 )
  	{
  		chunked = 0;
@@ -2173,7 +2149,7 @@ index 418cde4..ee27245 100644
  	}
  	else
  	{
-@@ -1738,6 +1759,10 @@ SendResp_resizedimg(struct upnphttp * h, char * object)
+@@ -1791,6 +1812,10 @@
  		}
  
  		imdst = image_resize(imsrc, dstw, dsth);
@@ -2184,7 +2160,7 @@ index 418cde4..ee27245 100644
  		data = image_save_to_jpeg_buf(imdst, &size);
  
  		strcatf(&str, "Content-Length: %d\r\n\r\n", size);
-@@ -1747,7 +1772,12 @@ SendResp_resizedimg(struct upnphttp * h, char * object)
+@@ -1800,7 +1825,12 @@
  	{
  		if( chunked )
  		{
@@ -2198,7 +2174,7 @@ index 418cde4..ee27245 100644
  			if( !imsrc )
  			{
  				DPRINTF(E_WARN, L_HTTP, "Unable to open image %s!\n", file_path);
-@@ -1755,6 +1785,10 @@ SendResp_resizedimg(struct upnphttp * h, char * object)
+@@ -1808,6 +1838,10 @@
  				goto resized_error;
  			}
  			imdst = image_resize(imsrc, dstw, dsth);
@@ -2209,11 +2185,10 @@ index 418cde4..ee27245 100644
  			data = image_save_to_jpeg_buf(imdst, &size);
  
  			ret = sprintf(buf, "%x\r\n", size);
-diff --git a/utils.c b/utils.c
-index 5a233dc..1fb7a02 100644
---- a/utils.c
-+++ b/utils.c
-@@ -329,8 +329,15 @@ mime_to_ext(const char * mime)
+diff --new-file --recursive --unified minidlna-1.2.1.orig/utils.c minidlna-1.2.1/utils.c
+--- minidlna-1.2.1.orig/utils.c	2017-08-24 17:28:25.000000000 +0000
++++ minidlna-1.2.1/utils.c	2018-01-24 17:47:55.685178044 +0000
+@@ -345,8 +345,15 @@
  				return "pcm";
  			else if( strcmp(mime+6, "3gpp") == 0 )
  				return "3gp";
@@ -2231,7 +2206,7 @@ index 5a233dc..1fb7a02 100644
  			break;
  		case 'v':
  			if( strcmp(mime+6, "avi") == 0 )
-@@ -359,6 +366,8 @@ mime_to_ext(const char * mime)
+@@ -375,6 +382,8 @@
  				return "3gp";
  			else if( strncmp(mime+6, "x-tivo-mpeg", 11) == 0 )
  				return "TiVo";
@@ -2240,7 +2215,7 @@ index 5a233dc..1fb7a02 100644
  			break;
  		case 'i':
  			if( strcmp(mime+6, "jpeg") == 0 )
-@@ -383,6 +392,7 @@ is_video(const char * file)
+@@ -399,6 +408,7 @@
  		ends_with(file, ".m2t") || ends_with(file, ".mkv")   ||
  		ends_with(file, ".vob") || ends_with(file, ".ts")    ||
  		ends_with(file, ".flv") || ends_with(file, ".xvid")  ||
@@ -2248,7 +2223,7 @@ index 5a233dc..1fb7a02 100644
  #ifdef TIVO_SUPPORT
  		ends_with(file, ".TiVo") ||
  #endif
-@@ -398,13 +408,18 @@ is_audio(const char * file)
+@@ -414,13 +424,18 @@
  		ends_with(file, ".m4a") || ends_with(file, ".aac")  ||
  		ends_with(file, ".mp4") || ends_with(file, ".m4p")  ||
  		ends_with(file, ".wav") || ends_with(file, ".ogg")  ||

@@ -1,0 +1,72 @@
+diff --recursive --unified minidlna-1.2.1.orig/minidlna.c minidlna-1.2.1/minidlna.c
+--- minidlna-1.2.1.orig/minidlna.c	2018-01-24 18:54:02.963591686 +0000
++++ minidlna-1.2.1/minidlna.c	2018-01-24 19:18:05.311591686 +0000
+@@ -1066,6 +1066,9 @@
+ 			printf("Version " MINIDLNA_VERSION "\n");
+ 			exit(0);
+ 			break;
++		case SEARCH_LIMIT:
++			search_limit = atoi(ary_options[i].value);
++			break;
+ 		default:
+ 			DPRINTF(E_ERROR, L_GENERAL, "Unknown option: %s\n", argv[i]);
+ 			runtime_vars.port = -1; // triggers help display
+diff --recursive --unified minidlna-1.2.1.orig/options.c minidlna-1.2.1/options.c
+--- minidlna-1.2.1.orig/options.c	2018-01-24 18:58:45.807591686 +0000
++++ minidlna-1.2.1/options.c	2018-01-24 19:20:25.175591686 +0000
+@@ -77,6 +77,7 @@
+ 	{ ICON, "icon" },
+ 	{ BGCOLOR, "bgcolor" },
+ #endif
++	{ SEARCH_LIMIT, "search_limit" },
+ };
+ 
+ int
+diff --recursive --unified minidlna-1.2.1.orig/options.h minidlna-1.2.1/options.h
+--- minidlna-1.2.1.orig/options.h	2018-01-24 18:56:31.071591686 +0000
++++ minidlna-1.2.1/options.h	2018-01-24 19:20:01.471591686 +0000
+@@ -70,6 +70,7 @@
+ 	THUMB_QUALITY,                  /* thumnail image quality */
+ 	ENABLE_THUMB_FILMSTRIP,         /* film strip overlay */
+ #endif
++	SEARCH_LIMIT, 		        /* limit search object results */
+ };
+ 
+ /* readoptionsfile()
+diff --recursive --unified minidlna-1.2.1.orig/upnpglobalvars.c minidlna-1.2.1/upnpglobalvars.c
+--- minidlna-1.2.1.orig/upnpglobalvars.c	2018-01-24 17:47:55.681178044 +0000
++++ minidlna-1.2.1/upnpglobalvars.c	2018-01-24 19:18:05.315591686 +0000
+@@ -89,3 +89,4 @@
+ volatile short int quitting = 0;
+ volatile uint32_t updateID = 0;
+ const char *force_sort_criteria = NULL;
++int search_limit = -1;
+diff --recursive --unified minidlna-1.2.1.orig/upnpglobalvars.h minidlna-1.2.1/upnpglobalvars.h
+--- minidlna-1.2.1.orig/upnpglobalvars.h	2018-01-24 19:07:31.355591686 +0000
++++ minidlna-1.2.1/upnpglobalvars.h	2018-01-24 19:18:05.319591686 +0000
+@@ -238,5 +238,6 @@
+ extern volatile short int quitting;
+ extern volatile uint32_t updateID;
+ extern const char *force_sort_criteria;
++extern int search_limit;
+ 
+ #endif
+diff --recursive --unified minidlna-1.2.1.orig/upnpsoap.c minidlna-1.2.1/upnpsoap.c
+--- minidlna-1.2.1.orig/upnpsoap.c	2017-08-24 17:28:25.000000000 +0000
++++ minidlna-1.2.1/upnpsoap.c	2018-01-24 19:18:05.319591686 +0000
+@@ -1828,6 +1828,15 @@
+ 			goto search_error;
+ 		}
+ 	}
++        /* Search limit check */
++	if (search_limit >= 0) 
++	{
++         if (totalMatches > search_limit)
++          totalMatches = search_limit;
++
++         if ((StartingIndex + RequestedCount) > search_limit)
++          RequestedCount = search_limit - StartingIndex;
++        }
+ 	ret = 0;
+ 	__SORT_LIMIT
+ 	orderBy = parse_sort_criteria(SortCriteria, &ret);
