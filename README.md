@@ -11,7 +11,7 @@ Now that Optware-ng is official, we're looking for developers and wiki writers. 
 If you are having issues with installing packages, similar to [#106](https://github.com/Optware/Optware-ng/issues/106), you need to upgrade your `ipkg` package manager.
 
 Some changes have been recently made to the packaging system:
-* sha256 checksum added
+* sha512 checksum added
 * Installed-Size field added to the ipk files and to the index
 * opkg is now used as the package manager. To provide backward compatibility, it's patched to use ipkg pathes
 
