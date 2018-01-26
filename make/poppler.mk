@@ -47,7 +47,7 @@ POPPLER_CONFLICTS=
 #
 # POPPLER_IPK_VERSION should be incremented when the ipk changes.
 #
-POPPLER_IPK_VERSION=2
+POPPLER_IPK_VERSION=3
 
 #
 # POPPLER_CONFFILES should be a list of user-editable files

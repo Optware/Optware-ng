@@ -36,7 +36,7 @@ LIBNXML_CONFLICTS=
 #
 # LIBNXML_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBNXML_IPK_VERSION=1
+LIBNXML_IPK_VERSION=2
 
 #
 # LIBNXML_CONFFILES should be a list of user-editable files

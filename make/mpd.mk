@@ -59,10 +59,10 @@ MPD_CONFLICTS=
 #
 ifeq (, $(filter buildroot-armv5eabi-ng buildroot-armv5eabi-ng-legacy, $(OPTWARE_TARGET)))
 # All except ARMv5
-MPD_IPK_VERSION=4
+MPD_IPK_VERSION=5
 else
 # ARMv5
-MPD_IPK_VERSION=4
+MPD_IPK_VERSION=5
 endif
 
 #

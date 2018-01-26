@@ -46,7 +46,7 @@ KAMAILIO_CONFLICTS=
 #
 # KAMAILIO_IPK_VERSION should be incremented when the ipk changes.
 #
-KAMAILIO_IPK_VERSION=3
+KAMAILIO_IPK_VERSION=4
 
 #
 # KAMAILIO_CONFFILES should be a list of user-editable files

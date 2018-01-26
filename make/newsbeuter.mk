@@ -43,7 +43,7 @@ NEWSBEUTER_CONFLICTS=
 #
 # NEWSBEUTER_IPK_VERSION should be incremented when the ipk changes.
 #
-NEWSBEUTER_IPK_VERSION=1
+NEWSBEUTER_IPK_VERSION=2
 
 #
 # NEWSBEUTER_CONFFILES should be a list of user-editable files

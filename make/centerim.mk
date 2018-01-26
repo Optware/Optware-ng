@@ -36,7 +36,7 @@ CENTERIM_CONFLICTS=
 #
 # CENTERIM_IPK_VERSION should be incremented when the ipk changes.
 #
-CENTERIM_IPK_VERSION=4
+CENTERIM_IPK_VERSION=5
 
 #
 # CENTERIM_CONFFILES should be a list of user-editable files

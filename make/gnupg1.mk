@@ -37,7 +37,7 @@ GNUPG1_CONFLICTS=
 #
 # GNUPG1_IPK_VERSION should be incremented when the ipk changes.
 #
-GNUPG1_IPK_VERSION=2
+GNUPG1_IPK_VERSION=3
 
 #
 # GNUPG1_CONFFILES should be a list of user-editable files

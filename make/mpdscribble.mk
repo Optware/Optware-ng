@@ -36,7 +36,7 @@ MPDSCRIBBLE_CONFLICTS=
 #
 # MPDSCRIBBLE_IPK_VERSION should be incremented when the ipk changes.
 #
-MPDSCRIBBLE_IPK_VERSION=1
+MPDSCRIBBLE_IPK_VERSION=2
 
 #
 # MPDSCRIBBLE_CONFFILES should be a list of user-editable files

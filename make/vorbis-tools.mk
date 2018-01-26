@@ -41,7 +41,7 @@ VORBIS-TOOLS_CONFLICTS=
 #
 # VORBIS-TOOLS_IPK_VERSION should be incremented when the ipk changes.
 #
-VORBIS-TOOLS_IPK_VERSION=7
+VORBIS-TOOLS_IPK_VERSION=8
 
 #
 # VORBIS-TOOLS_CONFFILES should be a list of user-editable files

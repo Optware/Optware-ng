@@ -30,7 +30,7 @@ LIBBT_CONFLICTS=
 #
 # LIBBT_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBBT_IPK_VERSION=7
+LIBBT_IPK_VERSION=8
 
 #
 # LIBBT_PATCHES should list any patches, in the the order in

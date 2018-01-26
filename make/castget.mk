@@ -37,7 +37,7 @@ CASTGET_CONFLICTS=
 #
 # CASTGET_IPK_VERSION should be incremented when the ipk changes.
 #
-CASTGET_IPK_VERSION=3
+CASTGET_IPK_VERSION=4
 
 #
 # CASTGET_CONFFILES should be a list of user-editable files

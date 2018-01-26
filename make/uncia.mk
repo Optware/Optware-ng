@@ -40,7 +40,7 @@ UNCIA_CONFLICTS=
 #
 # UNCIA_IPK_VERSION should be incremented when the ipk changes.
 #
-UNCIA_IPK_VERSION=3
+UNCIA_IPK_VERSION=4
 
 #
 # UNCIA_CONFFILES should be a list of user-editable files

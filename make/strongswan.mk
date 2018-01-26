@@ -42,7 +42,7 @@ STRONGSWAN_CONFLICTS=
 #
 # STRONGSWAN_IPK_VERSION should be incremented when the ipk changes.
 #
-STRONGSWAN_IPK_VERSION=3
+STRONGSWAN_IPK_VERSION=4
 
 #
 # STRONGSWAN_CONFFILES should be a list of user-editable files

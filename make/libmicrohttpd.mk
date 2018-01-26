@@ -36,7 +36,7 @@ LIBMICROHTTPD_CONFLICTS=
 #
 # LIBMICROHTTPD_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBMICROHTTPD_IPK_VERSION=3
+LIBMICROHTTPD_IPK_VERSION=4
 
 #
 # LIBMICROHTTPD_CONFFILES should be a list of user-editable files

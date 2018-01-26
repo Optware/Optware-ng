@@ -36,7 +36,7 @@ YOUGRABBER_CONFLICTS=
 #
 # YOUGRABBER_IPK_VERSION should be incremented when the ipk changes.
 #
-YOUGRABBER_IPK_VERSION=5
+YOUGRABBER_IPK_VERSION=6
 
 #
 # YOUGRABBER_CONFFILES should be a list of user-editable files

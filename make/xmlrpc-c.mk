@@ -39,7 +39,7 @@ XMLRPC-C_CONFLICTS=
 #
 # XMLRPC-C_IPK_VERSION should be incremented when the ipk changes.
 #
-XMLRPC-C_IPK_VERSION=4
+XMLRPC-C_IPK_VERSION=5
 
 #
 # XMLRPC-C_CONFFILES should be a list of user-editable files

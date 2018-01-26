@@ -36,7 +36,7 @@ LIBMRSS_CONFLICTS=
 #
 # LIBMRSS_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBMRSS_IPK_VERSION=1
+LIBMRSS_IPK_VERSION=2
 
 #
 # LIBMRSS_CONFFILES should be a list of user-editable files

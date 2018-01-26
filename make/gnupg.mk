@@ -40,7 +40,7 @@ GNUPG_CONFLICTS=
 #
 # GNUPG_IPK_VERSION should be incremented when the ipk changes.
 #
-GNUPG_IPK_VERSION=3
+GNUPG_IPK_VERSION=4
 
 #
 # GNUPG_CONFFILES should be a list of user-editable files
