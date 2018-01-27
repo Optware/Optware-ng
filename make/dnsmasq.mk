@@ -5,7 +5,7 @@
 #############################################################
 
 DNSMASQ_SITE=http://www.thekelleys.org.uk/dnsmasq
-DNSMASQ_VERSION=2.62
+DNSMASQ_VERSION=2.78
 DNSMASQ_SOURCE:=dnsmasq-$(DNSMASQ_VERSION).tar.gz
 DNSMASQ_DIR:=dnsmasq-$(DNSMASQ_VERSION)
 DNSMASQ_UNZIP=zcat
@@ -21,10 +21,21 @@ DNSMASQ_IPK_VERSION=1
 # DNSMASQ_CONFFILES should be a list of user-editable files
 DNSMASQ_CONFFILES=$(TARGET_PREFIX)/etc/dnsmasq.conf
 
-DNSMASQ_PATCHES=$(DNSMASQ_SOURCE_DIR)/conffile.patch $(DNSMASQ_SOURCE_DIR)/src-dnsmasq.h.patch
+DNSMASQ_PATCHES=\
+$(DNSMASQ_SOURCE_DIR)/conffile.patch \
+$(DNSMASQ_SOURCE_DIR)/src-dnsmasq.h.patch \
 
-DNSMASQ_MAKE_FLAGS=$(strip \
-$(if $(or $(filter no, $(IPV6)), $(filter oleg, $(OPTWARE_TARGET))), COPTS=-DNO_IPV6, ))
+#
+# If the compilation of the package requires additional
+# compilation or linking flags, then list them here.
+#
+DNSMASQ_CPPFLAGS=$(strip \
+$(if $(filter no, $(IPV6)), COPTS=-DNO_IPV6, ))
+DNSMASQ_LDFLAGS=
+
+DNSMASQ_MAKE_FLAGS=\
+COPTS="$(STAGING_CPPFLAGS) $(DNSMASQ_CPPFLAGS)" \
+LDFLAGS="$(STAGING_LDFLAGS) $(DNSMASQ_LDFLAGS)" \
 
 DNSMASQ_BUILD_DIR=$(BUILD_DIR)/dnsmasq
 DNSMASQ_SOURCE_DIR=$(SOURCE_DIR)/dnsmasq
@@ -39,7 +50,7 @@ $(DL_DIR)/$(DNSMASQ_SOURCE):
 
 dnsmasq-source: $(DL_DIR)/$(DNSMASQ_SOURCE)
 
-$(DNSMASQ_BUILD_DIR)/.configured: $(DL_DIR)/$(DNSMASQ_SOURCE) $(DNSMASQ_PATCHES)
+$(DNSMASQ_BUILD_DIR)/.configured: $(DL_DIR)/$(DNSMASQ_SOURCE) $(DNSMASQ_PATCHES) make/dnsmasq.mk
 	rm -rf $(BUILD_DIR)/$(DNSMASQ_DIR) $(@D)
 	$(DNSMASQ_UNZIP) $(DL_DIR)/$(DNSMASQ_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(DNSMASQ_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(DNSMASQ_DIR) -p0
