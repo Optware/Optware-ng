@@ -30,7 +30,9 @@ $(DNSMASQ_SOURCE_DIR)/src-dnsmasq.h.patch \
 # compilation or linking flags, then list them here.
 #
 DNSMASQ_CPPFLAGS=$(strip \
-$(if $(filter no, $(IPV6)), COPTS=-DNO_IPV6, ))
+$(if $(filter no, $(IPV6)), -DNO_IPV6, )) \
+$(strip \
+$(if $(filter buildroot-armv5eabi-ng-legacy, $(OPTWARE_TARGET)), -DNO_INOTIFY, ))
 DNSMASQ_LDFLAGS=
 
 DNSMASQ_MAKE_FLAGS=\
