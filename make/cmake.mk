@@ -3,12 +3,6 @@
 # cmake
 #
 ###########################################################
-
-#
-# TODO: host staging, cross-compile, cross-compile-ready replacements for some
-#	of the more common .cmake files
-#
-
 #
 # CMAKE_VERSION, CMAKE_SITE and CMAKE_SOURCE define
 # the upstream location of the source code for the package.
@@ -26,16 +20,16 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-CMAKE_SITE=http://www.cmake.org/files/v2.8
-CMAKE_VERSION=2.8.1
+CMAKE_SITE=http://www.cmake.org/files/v3.10
+CMAKE_VERSION=3.10.2
 CMAKE_SOURCE=cmake-$(CMAKE_VERSION).tar.gz
 CMAKE_DIR=cmake-$(CMAKE_VERSION)
 CMAKE_UNZIP=zcat
-CMAKE_MAINTAINER=Andrew Mahone <andrew.mahone@gmail.com>
+CMAKE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 CMAKE_DESCRIPTION=CMake build configuration tool.
 CMAKE_SECTION=misc
 CMAKE_PRIORITY=optional
-CMAKE_DEPENDS=
+CMAKE_DEPENDS=libstdc++, libcurl, zlib, ncurses
 CMAKE_SUGGESTS=
 CMAKE_CONFLICTS=
 
@@ -111,7 +105,7 @@ cmake-source: $(DL_DIR)/$(CMAKE_SOURCE) $(CMAKE_PATCHES)
 # shown below to make various patches to it.
 #
 $(CMAKE_BUILD_DIR)/.configured: $(DL_DIR)/$(CMAKE_SOURCE) $(CMAKE_PATCHES) make/cmake.mk
-#	$(MAKE) <bar>-stage <baz>-stage
+	$(MAKE) libcurl-stage zlib-stage ncurses-stage
 	rm -rf $(BUILD_DIR)/$(CMAKE_DIR) $(@D)
 	$(CMAKE_UNZIP) $(DL_DIR)/$(CMAKE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(CMAKE_PATCHES)" ; \
@@ -121,14 +115,29 @@ $(CMAKE_BUILD_DIR)/.configured: $(DL_DIR)/$(CMAKE_SOURCE) $(CMAKE_PATCHES) make/
 	if test "$(BUILD_DIR)/$(CMAKE_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(CMAKE_DIR) $(@D) ; \
 	fi
-	(cd $(@D); \
-		$(TARGET_CONFIGURE_OPTS) \
-		CPPFLAGS="$(STAGING_CPPFLAGS) $(CMAKE_CPPFLAGS)" \
+	cd $(@D); \
+		CFLAGS="$(STAGING_CPPFLAGS) $(CMAKE_CPPFLAGS)" \
+		CXXFLAGS="$(STAGING_CPPFLAGS) $(CMAKE_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(CMAKE_LDFLAGS)" \
-		./configure \
-		--prefix=$(TARGET_PREFIX) \
-		--no-qt-gui \
-	)
+		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
+		cmake \
+		$(CMAKE_CONFIGURE_OPTS) \
+		-DCMAKE_C_FLAGS="$(STAGING_CPPFLAGS) $(CMAKE_CPPFLAGS)" \
+		-DCMAKE_CXX_FLAGS="$(STAGING_CPPFLAGS) $(CMAKE_CPPFLAGS)" \
+		-DCMAKE_EXE_LINKER_FLAGS:STRING="$(STAGING_LDFLAGS) $(CMAKE_LDFLAGS)" \
+		-DCMAKE_MODULE_LINKER_FLAGS:STRING="$(STAGING_LDFLAGS) $(CMAKE_LDFLAGS)" \
+		-DCMAKE_SHARED_LINKER_FLAGS:STRING="$(STAGING_LDFLAGS) $(CMAKE_LDFLAGS)" \
+		-DCMAKE_C_LINK_FLAGS:STRING="$(STAGING_LDFLAGS) $(CMAKE_LDFLAGS)" \
+		-DCMAKE_CXX_LINK_FLAGS:STRING="$(STAGING_LDFLAGS) $(CMAKE_LDFLAGS)" \
+		-DCMAKE_SHARED_LIBRARY_C_FLAGS:STRING="$(STAGING_LDFLAGS) $(CMAKE_LDFLAGS)" \
+		-DCMAKE_USE_SYSTEM_CURL=ON \
+		-DZLIB_INCLUDE_DIR=$(STAGING_INCLUDE_DIR)/ \
+		-DZLIB_LIBRARY=$(STAGING_LIB_DIR)/libz.so \
+		-DCURL_INCLUDE_DIR=$(STAGING_INCLUDE_DIR)/ \
+		-DCURL_LIBRARY=$(STAGING_LIB_DIR)/libcurl.so \
+		-DKWSYS_LFS_WORKS=1 \
+		-DCMake_TEST_Qt4=0 \
+		-DCMake_TEST_Qt5=0
 	touch $@
 
 cmake-unpack: $(CMAKE_BUILD_DIR)/.configured
@@ -190,6 +199,8 @@ $(CMAKE_IPK_DIR)/CONTROL/control:
 $(CMAKE_IPK): $(CMAKE_BUILD_DIR)/.built
 	rm -rf $(CMAKE_IPK_DIR) $(BUILD_DIR)/cmake_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(CMAKE_BUILD_DIR) DESTDIR=$(CMAKE_IPK_DIR) install
+	cd $(CMAKE_IPK_DIR)$(TARGET_PREFIX)/bin; \
+		$(STRIP_COMMAND) ccmake cmake cpack ctest
 #	$(INSTALL) -d $(CMAKE_IPK_DIR)$(TARGET_PREFIX)/etc/
 #	$(INSTALL) -m 644 $(CMAKE_SOURCE_DIR)/cmake.conf $(CMAKE_IPK_DIR)$(TARGET_PREFIX)/etc/cmake.conf
 #	$(INSTALL) -d $(CMAKE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
@@ -206,6 +217,7 @@ $(CMAKE_IPK): $(CMAKE_BUILD_DIR)/.built
 	fi
 	echo $(CMAKE_CONFFILES) | sed -e 's/ /\n/g' > $(CMAKE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CMAKE_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(CMAKE_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.

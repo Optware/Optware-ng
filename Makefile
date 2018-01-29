@@ -278,7 +278,7 @@ COMMON_PACKAGES = \
 	catdoc ccollect ccrypt ccxstream cdargs \
 	cdrtools centerim cuetools \
 	cherokee chicken chillispot chromaprint chrpath cksfv \
-	classpath clamav clearsilver climm clips cmdftp collectd \
+	classpath clamav clearsilver climm clips cmake cmdftp collectd \
 	confuse connect coreutils corkscrew cpio cppunit cpufrequtils cron cryptcat \
 	cscope ctags ctcs ctorrent ctrlproxy \
 	cups cups-filters cups-pdf cvs \
