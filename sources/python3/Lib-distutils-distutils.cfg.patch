@@ -5,4 +5,4 @@
 +prefix = %OPTWARE_TARGET_PREFIX%/local
 +
 +[easy_install]
-+site-dirs  = %OPTWARE_TARGET_PREFIX%/local/lib/python2.5/site-packages
++site-dirs  = %OPTWARE_TARGET_PREFIX%/local/lib/python3.5/site-packages

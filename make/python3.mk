@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PYTHON3_VERSION=3.5.2
+PYTHON3_VERSION=3.5.4
 PYTHON3_VERSION_MAJOR:=$(shell echo $(PYTHON3_VERSION) | cut -d'.' -f1-2)
 PYTHON3_SITE=http://www.python.org/ftp/python/$(PYTHON3_VERSION)
 PYTHON3_DIR=Python-$(PYTHON3_VERSION)
@@ -42,7 +42,7 @@ PYTHON3_SUGGESTS=
 #
 # PYTHON3_IPK_VERSION should be incremented when the ipk changes.
 #
-PYTHON3_IPK_VERSION=3
+PYTHON3_IPK_VERSION=1
 
 #
 # PYTHON3_CONFFILES should be a list of user-editable files
@@ -84,13 +84,12 @@ PYTHON3_IPK=$(BUILD_DIR)/python3_$(PYTHON3_VERSION)-$(PYTHON3_IPK_VERSION)_$(TAR
 #
 # http://mail.python.org/pipermail/patches/2004-October/016312.html
 PYTHON3_PATCHES=\
-	$(PYTHON3_SOURCE_DIR)/Makefile.pre.in.patch \
-	$(PYTHON3_SOURCE_DIR)/configure.ac.patch \
+	$(PYTHON3_SOURCE_DIR)/configure_EXT_SUFFIX.patch \
 	$(PYTHON3_SOURCE_DIR)/setup.py.patch \
 	$(PYTHON3_SOURCE_DIR)/Lib-site.py.patch \
 	$(PYTHON3_SOURCE_DIR)/Lib-distutils-distutils.cfg.patch \
 	$(PYTHON3_SOURCE_DIR)/with-libintl.patch \
-	$(PYTHON3_SOURCE_DIR)/Setup.dist.$(LIBC_STYLE).patch
+	$(PYTHON3_SOURCE_DIR)/Setup.dist.$(LIBC_STYLE).patch \
 #	$(PYTHON3_SOURCE_DIR)/O_CLOEXEC.patch
 
 ifeq ($(NCURSES_FOR_OPTWARE_TARGET), ncurses)
@@ -146,20 +145,30 @@ endif
 	$(PYTHON3_UNZIP) $(DL_DIR)/$(PYTHON3_SOURCE) | tar -C $(BUILD_DIR) -xf -
 	cat $(PYTHON3_PATCHES) | $(PATCH) -bd $(BUILD_DIR)/$(PYTHON3_DIR) -p1
 	sed -i -e 's/MIPS_LINUX/MIPS/' $(BUILD_DIR)/$(PYTHON3_DIR)/Modules/_ctypes/libffi/configure.ac
-	sed -i -e '/\$$absconfigcommand/s|.*|    AS="" LD="" CC="" CPP="" CXX="" AR="" STRIP="" RANLIB="" READELF="" LDFLAGS="-L$(HOST_STAGING_LIB_DIR)" CPPFLAGS="-I$(HOST_STAGING_INCLUDE_DIR)" \$$absconfigcommand --prefix=/opt --with-system-ffi|' $(BUILD_DIR)/$(PYTHON3_DIR)/configure.ac
 	$(AUTORECONF1.10) -vif $(BUILD_DIR)/$(PYTHON3_DIR)
-	sed -i -e 's|@STAGING_INCLUDE@|$(STAGING_INCLUDE_DIR)|g' -e 's|@TOOLCHAIN_TARGET_INCLUDE@|$(TARGET_INCDIR)|g' $(BUILD_DIR)/$(PYTHON3_DIR)/setup.py
-	mkdir -p $(@D)
+	sed -i -e 's|@STAGING_INCLUDE@|$(STAGING_INCLUDE_DIR)|g' -e \
+		's|@TOOLCHAIN_TARGET_INCLUDE@|$(TARGET_INCDIR)|g' $(BUILD_DIR)/$(PYTHON3_DIR)/setup.py
+	mkdir -p $(@D)/buildpython3
+	(cd $(@D)/buildpython3; \
+		LDFLAGS="-L$(HOST_STAGING_LIB_DIR)" \
+		CPPFLAGS="-I$(HOST_STAGING_INCLUDE_DIR)" \
+		../../$(PYTHON3_DIR)/configure \
+		--prefix=$(HOST_STAGING_PREFIX) \
+		--with-system-ffi \
+	)
 	( \
 	echo "[build_ext]"; \
 	echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/ncurses"; \
 	echo "library-dirs=$(STAGING_LIB_DIR)"; \
 	echo "rpath=$(TARGET_PREFIX)/lib") > $(@D)/setup.cfg
 	(cd $(@D); \
-	 $(TARGET_CONFIGURE_OPTS) \
-	 READELF=$(TARGET_CROSS)readelf \
+	 	$(TARGET_CONFIGURE_OPTS) \
+	 	READELF=$(TARGET_CROSS)readelf \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PYTHON3_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(PYTHON3_LDFLAGS)" \
+		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
+		PYTHON_FOR_REGEN=$(@D)/buildpython3/python \
+		PYTHON_FOR_BUILD=$(@D)/buildpython3/python \
 		ac_cv_sizeof_off_t=8 \
 		ac_cv_file__dev_ptmx=yes \
 		ac_cv_file__dev_ptc=no \
@@ -168,6 +177,7 @@ endif
 		ac_cv_broken_sem_getvalue=no \
 		ac_cv_have_size_t_format=yes \
 		ac_cv_have_long_long_format=yes \
+		ac_cv_buggy_getaddrinfo=no \
 		$(PYTHON3_CONFIGURE_ENV) \
 		../$(PYTHON3_DIR)/configure \
 		--build=$(GNU_HOST_NAME) \
@@ -192,7 +202,7 @@ python3-unpack: $(PYTHON3_BUILD_DIR)/.configured
 $(PYTHON3_BUILD_DIR)/.built: $(PYTHON3_BUILD_DIR)/.configured
 	rm -f $@
 	$(MAKE) -C $(@D)/buildpython3
-	GNU_TARGET_NAME=$(GNU_TARGET_NAME) $(MAKE) -C $(@D)
+	$(MAKE) -C $(@D)
 	touch $@
 
 #
@@ -212,7 +222,7 @@ python3-stage: $(PYTHON3_BUILD_DIR)/.staged
 
 $(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR): host/.configured make/python3.mk
 	$(MAKE) $(PYTHON3_BUILD_DIR)/.built
-	$(MAKE) -C $(PYTHON3_BUILD_DIR)/buildpython3 DESTDIR=$(HOST_STAGING_DIR) install
+	$(MAKE) -C $(PYTHON3_BUILD_DIR)/buildpython3 install
 	rm -f $(@D)/bin/python
 
 python3-host-stage: $(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR)

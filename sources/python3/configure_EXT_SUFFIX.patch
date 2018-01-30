@@ -1,0 +1,22 @@
+--- a/configure
++++ b/configure
+@@ -14758,7 +14758,7 @@ $as_echo "$SOABI" >&6; }
+ 
+ case $ac_sys_system in
+     Linux*|GNU*|Darwin)
+-	EXT_SUFFIX=.${SOABI}${SHLIB_SUFFIX};;
++	EXT_SUFFIX=${SHLIB_SUFFIX};;
+     *)
+ 	EXT_SUFFIX=${SHLIB_SUFFIX};;
+ esac
+--- a/configure.ac
++++ b/configure.ac
+@@ -4524,7 +4524,7 @@ AC_MSG_RESULT($SOABI)
+ AC_SUBST(EXT_SUFFIX)
+ case $ac_sys_system in
+     Linux*|GNU*|Darwin)
+-	EXT_SUFFIX=.${SOABI}${SHLIB_SUFFIX};;
++	EXT_SUFFIX=${SHLIB_SUFFIX};;
+     *)
+ 	EXT_SUFFIX=${SHLIB_SUFFIX};;
+ esac
