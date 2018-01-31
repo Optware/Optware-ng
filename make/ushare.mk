@@ -13,7 +13,7 @@ USHARE_MAINTAINER=Peter Enzerink <nslu2-ushare@enzerink.net>
 USHARE_DESCRIPTION=A free UPnP A/V Media Server for Linux.
 USHARE_SECTION=net
 USHARE_PRIORITY=optional
-USHARE_DEPENDS=libdlna, libupnp
+USHARE_DEPENDS=libdlna, libupnp6
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 USHARE_DEPENDS+=, libiconv
 endif
@@ -23,7 +23,7 @@ USHARE_CONFLICTS=
 #
 # USHARE_IPK_VERSION should be incremented when the ipk changes.
 #
-USHARE_IPK_VERSION=2
+USHARE_IPK_VERSION=3
 
 #
 # USHARE_CONFFILES should be a list of user-editable files
@@ -33,14 +33,15 @@ USHARE_CONFFILES=$(TARGET_PREFIX)/etc/ushare.conf
 # USHARE_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#USHARE_PATCHES=$(USHARE_SOURCE_DIR)/ushare.conf.patch $(USHARE_SOURCE_DIR)/cfgparser.h.patch
+USHARE_PATCHES=\
+$(USHARE_SOURCE_DIR)/latest-upnp-api.patch \
 
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-USHARE_CPPFLAGS=-I$(USHARE_BUILD_DIR) -std=gnu89
-USHARE_LDFLAGS=
+USHARE_CPPFLAGS=-std=gnu89 -I$(STAGING_DIR)/libupnp6$(TARGET_PREFIX)/include
+USHARE_LDFLAGS=-L$(STAGING_DIR)/libupnp6$(TARGET_PREFIX)/lib -Wl,-rpath-link,$(STAGING_DIR)/libupnp6$(TARGET_PREFIX)/lib
 ifeq (uclibc, $(LIBC_STYLE))
 USHARE_LDFLAGS +=-lpthread
 endif
@@ -93,12 +94,12 @@ $(USHARE_BUILD_DIR)/.configured: $(DL_DIR)/$(USHARE_SOURCE) $(USHARE_PATCHES) ma
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
 endif
-	$(MAKE) libdlna-stage libupnp-stage
+	$(MAKE) libdlna-stage libupnp6-stage
 	rm -rf $(BUILD_DIR)/$(USHARE_DIR) $(USHARE_BUILD_DIR)
 	$(USHARE_UNZIP) $(DL_DIR)/$(USHARE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(USHARE_PATCHES)" ; \
 		then cat $(USHARE_PATCHES) | \
-		$(PATCH) -d $(BUILD_DIR)/$(USHARE_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(USHARE_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(USHARE_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(USHARE_DIR) $(@D) ; \
@@ -108,10 +109,10 @@ endif
 		$(@D)/scripts/ushare.conf
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
-		CPPFLAGS="$(STAGING_CPPFLAGS) $(USHARE_CPPFLAGS)" \
-		CFLAGS="$(STAGING_CPPFLAGS) $(USHARE_CPPFLAGS)" \
-		LDFLAGS="$(STAGING_LDFLAGS) $(USHARE_LDFLAGS)" \
-		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
+		CPPFLAGS="$(USHARE_CPPFLAGS) $(STAGING_CPPFLAGS) -I$(@D)" \
+		CFLAGS="$(USHARE_CPPFLAGS) $(STAGING_CPPFLAGS) -I$(@D)" \
+		LDFLAGS="$(USHARE_LDFLAGS) $(STAGING_LDFLAGS)" \
+		PKG_CONFIG_PATH="$(STAGING_DIR)/libupnp6$(TARGET_PREFIX)/lib/pkgconfig:$(STAGING_LIB_DIR)/pkgconfig" \
 		PKG_CONFIG_LIBDIR="$(STAGING_LIB_DIR)/pkgconfig" \
 		ac_cv_func_malloc_0_nonnull=yes \
 		ac_cv_func_realloc_0_nonnull=yes \
@@ -134,7 +135,6 @@ ushare-unpack: $(USHARE_BUILD_DIR)/.configured
 #
 $(USHARE_BUILD_DIR)/.built: $(USHARE_BUILD_DIR)/.configured
 	rm -f $@
-		CFLAGS="$(STAGING_CPPFLAGS) $(USHARE_CPPFLAGS)" \
 	$(MAKE) -C $(@D)
 	touch $@
 
@@ -196,6 +196,7 @@ $(USHARE_IPK): $(USHARE_BUILD_DIR)/.built
 	$(INSTALL) -m 755 $(USHARE_SOURCE_DIR)/prerm $(USHARE_IPK_DIR)/CONTROL/prerm
 	echo $(USHARE_CONFFILES) | sed -e 's/ /\n/g' > $(USHARE_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(USHARE_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(USHARE_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.

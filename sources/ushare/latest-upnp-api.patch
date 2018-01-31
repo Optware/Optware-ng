@@ -1,0 +1,35 @@
+Description: Drop some debugging code that uses API that has changed
+
+Index: ushare-1.1a/src/ushare.c
+===================================================================
+--- ushare-1.1a.orig/src/ushare.c	2012-07-02 18:54:22.641403181 -0400
++++ ushare-1.1a/src/ushare.c	2012-07-02 18:55:16.849403754 -0400
+@@ -176,8 +176,6 @@
+ {
+   struct service_t *service;
+   struct service_action_t *action;
+-  char val[256];
+-  uint32_t ip;
+ 
+   if (!request || !ut)
+     return;
+@@ -188,11 +186,6 @@
+   if (strcmp (request->DevUDN + 5, ut->udn))
+     return;
+ 
+-  ip = request->CtrlPtIPAddr.s_addr;
+-  ip = ntohl (ip);
+-  sprintf (val, "%d.%d.%d.%d",
+-           (ip >> 24) & 0xFF, (ip >> 16) & 0xFF, (ip >> 8) & 0xFF, ip & 0xFF);
+-
+   if (ut->verbose)
+   {
+     DOMString str = ixmlPrintDocument (request->ActionRequest);
+@@ -201,7 +194,6 @@
+     log_verbose ("***************************************************\n");
+     log_verbose ("ServiceID: %s\n", request->ServiceID);
+     log_verbose ("ActionName: %s\n", request->ActionName);
+-    log_verbose ("CtrlPtIP: %s\n", val);
+     log_verbose ("Action Request:\n%s\n", str);
+     ixmlFreeDOMString (str);
+   }
