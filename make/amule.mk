@@ -40,7 +40,7 @@ AMULE_CONFLICTS=
 #
 # AMULE_IPK_VERSION should be incremented when the ipk changes.
 #
-AMULE_IPK_VERSION=2
+AMULE_IPK_VERSION=3
 
 #
 # AMULE_CONFFILES should be a list of user-editable files
@@ -50,7 +50,9 @@ AMULE_IPK_VERSION=2
 # AMULE_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-AMULE_PATCHES=#$(AMULE_SOURCE_DIR)/uintptr_t.patch \
+AMULE_PATCHES=\
+$(AMULE_SOURCE_DIR)/libupnp1.8.patch \
+#$(AMULE_SOURCE_DIR)/uintptr_t.patch \
 #$(AMULE_SOURCE_DIR)/libupnp-cross.patch
 
 ifeq ($(LIBC_STYLE), uclibc)
