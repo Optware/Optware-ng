@@ -289,7 +289,7 @@ COMMON_PACKAGES = \
 	dhcp dialog dict digitemp dircproxy distcc \
 	diffstat diffutils discount \
 	dmsetup dnscrypt-proxy dnsmasq dnstracer dokuwiki dos2unix dosfstools dovecot \
-	dropbear dropbear-android drraw dspam dtach dump \
+	dropbear dropbear-android drraw dspam dtach duktape dump \
 	e2fsprogs e2tools eaccelerator easy-rsa ed ecl electric-fence elinks \
 	elementary-xfce-icon-theme \
 	emacs22 encfs endian enhanced-ctorrent enscript esmtp esniper \
