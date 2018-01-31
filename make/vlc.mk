@@ -32,7 +32,7 @@ VLC_VERSION=2.1.5
 VLC_UNZIP=xzcat
 VLC_SOURCE_SUFFIX=tar.xz
 endif
-VLC_IPK_VERSION=5
+VLC_IPK_VERSION=6
 VLC_SITE=http://download.videolan.org/pub/videolan/vlc/$(VLC_VERSION)
 VLC_SOURCE=vlc-$(VLC_VERSION).$(VLC_SOURCE_SUFFIX)
 VLC_DIR=vlc-$(VLC_VERSION)
@@ -100,6 +100,7 @@ VLC_CONFLICTS=
 # which they should be applied to the source code.
 #
 VLC_PATCHES=\
+$(VLC_SOURCE_DIR)/libupnp-1.8.patch \
 $(VLC_SOURCE_DIR)/vlc_filter.h.patch \
 $(VLC_SOURCE_DIR)/libvlc_media.h.patch
 ifeq ($(LIBC_STYLE), uclibc)

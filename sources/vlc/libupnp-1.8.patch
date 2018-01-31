@@ -1,0 +1,76 @@
+--- a/modules/services_discovery/upnp.cpp
++++ b/modules/services_discovery/upnp.cpp
+@@ -459,7 +459,7 @@ void MediaServerList::removeServer( const std::string& udn )
+ /*
+  * Handles servers listing UPnP events
+  */
+-int MediaServerList::Callback( Upnp_EventType event_type, void* p_event, void* p_user_data )
++int MediaServerList::Callback( Upnp_EventType event_type, const void* p_event, void* p_user_data )
+ {
+     MediaServerList* self = static_cast<MediaServerList*>( p_user_data );
+     services_discovery_t* p_sd = self->p_sd_;
+@@ -469,29 +469,29 @@ int MediaServerList::Callback( Upnp_EventType event_type, void* p_event, void* p
+     case UPNP_DISCOVERY_ADVERTISEMENT_ALIVE:
+     case UPNP_DISCOVERY_SEARCH_RESULT:
+     {
+-        struct Upnp_Discovery* p_discovery = ( struct Upnp_Discovery* )p_event;
++        const UpnpDiscovery* p_discovery = ( const UpnpDiscovery* )p_event;
+ 
+         IXML_Document *p_description_doc = NULL;
+ 
+         int i_res;
+-        i_res = UpnpDownloadXmlDoc( p_discovery->Location, &p_description_doc );
++        i_res = UpnpDownloadXmlDoc( UpnpDiscovery_get_Location_cstr( p_discovery ), &p_description_doc );
+         if ( i_res != UPNP_E_SUCCESS )
+         {
+             msg_Warn( p_sd, "Could not download device description! "
+                             "Fetching data from %s failed: %s",
+-                            p_discovery->Location, UpnpGetErrorMessage( i_res ) );
++                            UpnpDiscovery_get_Location_cstr( p_discovery ), UpnpGetErrorMessage( i_res ) );
+             return i_res;
+         }
+-        self->parseNewServer( p_description_doc, p_discovery->Location );
++        self->parseNewServer( p_description_doc, UpnpDiscovery_get_Location_cstr( p_discovery ) );
+         ixmlDocument_free( p_description_doc );
+     }
+     break;
+ 
+     case UPNP_DISCOVERY_ADVERTISEMENT_BYEBYE:
+     {
+-        struct Upnp_Discovery* p_discovery = ( struct Upnp_Discovery* )p_event;
++        const UpnpDiscovery* p_discovery = ( const UpnpDiscovery* )p_event;
+ 
+-        self->removeServer( p_discovery->DeviceId );
++        self->removeServer( UpnpDiscovery_get_DeviceID_cstr( p_discovery ) );
+     }
+     break;
+ 
+@@ -960,7 +960,7 @@ UpnpClient_Handle UpnpInstanceWrapper::handle() const
+     return handle_;
+ }
+ 
+-int UpnpInstanceWrapper::Callback(Upnp_EventType event_type, void *p_event, void *p_user_data)
++int UpnpInstanceWrapper::Callback(Upnp_EventType event_type, const void *p_event, void *p_user_data)
+ {
+     UpnpInstanceWrapper* self = static_cast<UpnpInstanceWrapper*>( p_user_data );
+     vlc_mutex_locker lock( &self->s_lock );
+--- a/modules/services_discovery/upnp.hpp
++++ b/modules/services_discovery/upnp.hpp
+@@ -62,7 +62,7 @@ public:
+     UpnpClient_Handle handle() const;
+ 
+ private:
+-    static int Callback( Upnp_EventType event_type, void* p_event, void* p_user_data );
++    static int Callback( Upnp_EventType event_type, const void* p_event, void* p_user_data );
+ 
+     UpnpInstanceWrapper();
+     ~UpnpInstanceWrapper();
+@@ -100,7 +100,7 @@ public:
+     bool addServer(MediaServerDesc *desc );
+     void removeServer(const std::string &udn );
+     MediaServerDesc* getServer( const std::string& udn );
+-    static int Callback( Upnp_EventType event_type, void* p_event, void* p_user_data );
++    static int Callback( Upnp_EventType event_type, const void* p_event, void* p_user_data );
+ 
+ private:
+     void parseNewServer( IXML_Document* doc, const std::string& location );
