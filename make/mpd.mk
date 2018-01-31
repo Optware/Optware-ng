@@ -26,7 +26,7 @@ MPD_SITE=http://www.musicpd.org/download/mpd/$(shell echo $(MPD_VERSION)|cut -d 
 #MPD_SVN_REV=5324
 ifeq (, $(filter buildroot-armv5eabi-ng buildroot-armv5eabi-ng-legacy, $(OPTWARE_TARGET)))
 # All except ARMv5
-MPD_VERSION=0.20.10
+MPD_VERSION=0.20.15
 else
 # ARMv5
 MPD_VERSION=0.19.13
@@ -59,10 +59,10 @@ MPD_CONFLICTS=
 #
 ifeq (, $(filter buildroot-armv5eabi-ng buildroot-armv5eabi-ng-legacy, $(OPTWARE_TARGET)))
 # All except ARMv5
-MPD_IPK_VERSION=5
+MPD_IPK_VERSION=1
 else
 # ARMv5
-MPD_IPK_VERSION=5
+MPD_IPK_VERSION=6
 endif
 
 #
@@ -75,12 +75,14 @@ endif
 #
 ifeq (, $(filter buildroot-armv5eabi-ng buildroot-armv5eabi-ng-legacy, $(OPTWARE_TARGET)))
 # All except ARMv5
-MPD_PATCHES=$(MPD_SOURCE_DIR)/fix_build_with_no_ioprio_set_syscall.patch
+MPD_PATCHES=\
+#$(MPD_SOURCE_DIR)/fix_build_with_no_ioprio_set_syscall.patch
 else
 # ARMv5
 MPD_PATCHES=\
 $(MPD_SOURCE_DIR)/0.19.13.fix_build_with_no_ioprio_set_syscall.patch \
-$(MPD_SOURCE_DIR)/0.19.13.DecodeBuffer.hxx.patch
+$(MPD_SOURCE_DIR)/0.19.13.DecodeBuffer.hxx.patch \
+$(MPD_SOURCE_DIR)/0.19.13.libupnp-1.8.patch
 endif
 
 #
@@ -194,6 +196,10 @@ endif
 		then mv $(BUILD_DIR)/$(MPD_DIR) $(@D) ; \
 	fi
 #	sed -i -e '/LIBFLAC_LIBS="$$LIBFLAC_LIBS/s|-lFLAC|-lFLAC -logg|' $(@D)/configure
+ifneq (, $(filter buildroot-armv5eabi-ng buildroot-armv5eabi-ng-legacy, $(OPTWARE_TARGET)))
+# ARMv5
+	$(AUTORECONF1.15) -vif $(@D)
+endif
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(MPD_CPPFLAGS)" \

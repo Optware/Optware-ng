@@ -1,0 +1,242 @@
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -225,6 +225,7 @@ libmpd_a_SOURCES += \
+ endif
+ 
+ UPNP_SOURCES = \
++	src/lib/upnp/Compat.hxx \
+ 	src/lib/upnp/Init.cxx src/lib/upnp/Init.hxx \
+ 	src/lib/upnp/ClientInit.cxx src/lib/upnp/ClientInit.hxx \
+ 	src/lib/upnp/Device.cxx src/lib/upnp/Device.hxx \
+--- a/src/lib/upnp/ClientInit.cxx
++++ b/src/lib/upnp/ClientInit.cxx
+@@ -32,7 +32,12 @@ static unsigned upnp_client_ref;
+ static UpnpClient_Handle upnp_client_handle;
+ 
+ static int
+-UpnpClientCallback(Upnp_EventType et, void *evp, void *cookie)
++UpnpClientCallback(Upnp_EventType et,
++#if UPNP_VERSION >= 10800
++		   const
++#endif
++		   void *evp,
++		   void *cookie)
+ {
+ 	if (cookie == nullptr)
+ 		/* this is the cookie passed to UpnpRegisterClient();
+--- /dev/null
++++ b/src/lib/upnp/Compat.hxx
+@@ -0,0 +1,69 @@
++/*
++ * Copyright 2003-2017 The Music Player Daemon Project
++ * http://www.musicpd.org
++ *
++ * This program is free software; you can redistribute it and/or modify
++ * it under the terms of the GNU General Public License as published by
++ * the Free Software Foundation; either version 2 of the License, or
++ * (at your option) any later version.
++ *
++ * This program is distributed in the hope that it will be useful,
++ * but WITHOUT ANY WARRANTY; without even the implied warranty of
++ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ * GNU General Public License for more details.
++ *
++ * You should have received a copy of the GNU General Public License along
++ * with this program; if not, write to the Free Software Foundation, Inc.,
++ * 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
++ */
++
++#ifndef MPD_UPNP_COMPAT_HXX
++#define MPD_UPNP_COMPAT_HXX
++
++#include <upnp/upnp.h>
++
++#if UPNP_VERSION < 10800
++#include "Compiler.h"
++
++/* emulate the libupnp 1.8 API with older versions */
++
++using UpnpDiscovery = Upnp_Discovery;
++
++gcc_pure
++static inline int
++UpnpDiscovery_get_Expires(const UpnpDiscovery *disco) noexcept
++{
++  return disco->Expires;
++}
++
++gcc_pure
++static inline const char *
++UpnpDiscovery_get_DeviceID_cstr(const UpnpDiscovery *disco) noexcept
++{
++  return disco->DeviceId;
++}
++
++gcc_pure
++static inline const char *
++UpnpDiscovery_get_DeviceType_cstr(const UpnpDiscovery *disco) noexcept
++{
++  return disco->DeviceType;
++}
++
++gcc_pure
++static inline const char *
++UpnpDiscovery_get_ServiceType_cstr(const UpnpDiscovery *disco) noexcept
++{
++  return disco->ServiceType;
++}
++
++gcc_pure
++static inline const char *
++UpnpDiscovery_get_Location_cstr(const UpnpDiscovery *disco) noexcept
++{
++  return disco->Location;
++}
++
++#endif
++
++#endif
+--- a/src/lib/upnp/Discovery.cxx
++++ b/src/lib/upnp/Discovery.cxx
+@@ -156,10 +156,10 @@ UPnPDeviceDirectory::discoExplorer(void *ctx)
+ }
+ 
+ inline int
+-UPnPDeviceDirectory::OnAlive(Upnp_Discovery *disco)
++UPnPDeviceDirectory::OnAlive(UpnpDiscovery *disco)
+ {
+-	if (isMSDevice(disco->DeviceType) ||
+-	    isCDService(disco->ServiceType)) {
++	if (isMSDevice(UpnpDiscovery_get_DeviceType_cstr(disco)) ||
++	    isCDService(UpnpDiscovery_get_ServiceType_cstr(disco))) {
+ 		DiscoveredTask *tp = new DiscoveredTask(disco);
+ 		if (discoveredQueue.put(tp))
+ 			return UPNP_E_FINISH;
+@@ -169,12 +169,12 @@ UPnPDeviceDirectory::OnAlive(Upnp_Discovery *disco)
+ }
+ 
+ inline int
+-UPnPDeviceDirectory::OnByeBye(Upnp_Discovery *disco)
++UPnPDeviceDirectory::OnByeBye(UpnpDiscovery *disco)
+ {
+-	if (isMSDevice(disco->DeviceType) ||
+-	    isCDService(disco->ServiceType)) {
++	if (isMSDevice(UpnpDiscovery_get_DeviceType_cstr(disco)) ||
++	    isCDService(UpnpDiscovery_get_ServiceType_cstr(disco))) {
+ 		// Device signals it is going off.
+-		LockRemove(disco->DeviceId);
++		LockRemove(UpnpDiscovery_get_DeviceID_cstr(disco));
+ 	}
+ 
+ 	return UPNP_E_SUCCESS;
+@@ -191,13 +191,13 @@ UPnPDeviceDirectory::Invoke(Upnp_EventType et, void *evp)
+ 	case UPNP_DISCOVERY_SEARCH_RESULT:
+ 	case UPNP_DISCOVERY_ADVERTISEMENT_ALIVE:
+ 		{
+-			Upnp_Discovery *disco = (Upnp_Discovery *)evp;
++			UpnpDiscovery *disco = (UpnpDiscovery *)evp;
+ 			return OnAlive(disco);
+ 		}
+ 
+ 	case UPNP_DISCOVERY_ADVERTISEMENT_BYEBYE:
+ 		{
+-			Upnp_Discovery *disco = (Upnp_Discovery *)evp;
++			UpnpDiscovery *disco = (UpnpDiscovery *)evp;
+ 			return OnByeBye(disco);
+ 		}
+ 
+--- a/src/lib/upnp/Discovery.hxx
++++ b/src/lib/upnp/Discovery.hxx
+@@ -20,6 +20,7 @@
+ #ifndef _UPNPPDISC_H_X_INCLUDED_
+ #define _UPNPPDISC_H_X_INCLUDED_
+ 
++#include "Compat.hxx"
+ #include "Callback.hxx"
+ #include "Device.hxx"
+ #include "WorkQueue.hxx"
+@@ -33,6 +34,10 @@
+ #include <vector>
+ #include <string>
+ 
++#if UPNP_VERSION < 10800
++#define UpnpDiscovery Upnp_Discovery
++#endif
++
+ class ContentDirectoryService;
+ 
+ class UPnPDiscoveryListener {
+@@ -58,10 +63,10 @@ class UPnPDeviceDirectory final : UpnpCallback {
+ 		std::string deviceId;
+ 		unsigned expires; // Seconds valid
+ 
+-		DiscoveredTask(const Upnp_Discovery *disco)
+-			:url(disco->Location),
+-			  deviceId(disco->DeviceId),
+-			  expires(disco->Expires) {}
++		DiscoveredTask(const UpnpDiscovery *disco)
++			:url(UpnpDiscovery_get_Location_cstr(disco)),
++			  deviceId(UpnpDiscovery_get_DeviceID_cstr(disco)),
++			  expires(UpnpDiscovery_get_Expires(disco)) {}
+ 	};
+ 
+ 	/**
+@@ -152,8 +157,8 @@ private:
+ 	static void *discoExplorer(void *);
+ 	void discoExplorer();
+ 
+-	int OnAlive(Upnp_Discovery *disco);
+-	int OnByeBye(Upnp_Discovery *disco);
++	int OnAlive(UpnpDiscovery *disco);
++	int OnByeBye(UpnpDiscovery *disco);
+ 	int cluCallBack(Upnp_EventType et, void *evp);
+ 
+ 	/* virtual methods from class UpnpCallback */
+-- 
+2.7.4
+
+--- a/src/lib/upnp/Callback.hxx
++++ b/src/lib/upnp/Callback.hxx
+@@ -40,7 +40,11 @@ public:
+ 		return *(UpnpCallback *)cookie;
+ 	}
+ 
+-	virtual int Invoke(Upnp_EventType et, void *evp) = 0;
++	virtual int Invoke(Upnp_EventType et,
++#if UPNP_VERSION >= 10800
++			  const
++#endif
++			  void *evp) = 0;
+ };
+ 
+ #endif
+--- a/src/lib/upnp/Discovery.cxx
++++ b/src/lib/upnp/Discovery.cxx
+@@ -185,7 +185,11 @@ UPnPDeviceDirectory::OnByeBye(UpnpDiscovery *disco)
+ // Example: ContentDirectories appearing and disappearing from the network
+ // We queue a task for our worker thread(s)
+ int
+-UPnPDeviceDirectory::Invoke(Upnp_EventType et, void *evp)
++UPnPDeviceDirectory::Invoke(Upnp_EventType et,
++#if UPNP_VERSION >= 10800
++			   const
++#endif
++			   void *evp)
+ {
+ 	switch (et) {
+ 	case UPNP_DISCOVERY_SEARCH_RESULT:
+--- a/src/lib/upnp/Discovery.hxx
++++ b/src/lib/upnp/Discovery.hxx
+@@ -162,7 +162,11 @@ private:
+ 	int cluCallBack(Upnp_EventType et, void *evp);
+ 
+ 	/* virtual methods from class UpnpCallback */
+-	virtual int Invoke(Upnp_EventType et, void *evp) override;
++	virtual int Invoke(Upnp_EventType et,
++#if UPNP_VERSION >= 10800
++			  const
++#endif
++			  void *evp) override;
+ };
+ 
+ 
