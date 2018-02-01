@@ -1,0 +1,105 @@
+#!/bin/sh
+
+# Source defaults file; edit that file to configure this script.
+ENABLED=1
+PARAMS=""
+if [ -e %OPTWARE_TARGET_PREFIX%/etc/default/gerbera ]; then
+  . %OPTWARE_TARGET_PREFIX%/etc/default/gerbera
+fi
+
+test "$ENABLED" != "0" || exit 0
+
+PATH=%OPTWARE_TARGET_PREFIX%/bin:%OPTWARE_TARGET_PREFIX%/sbin:${PATH}
+DESC="UPnP Media Server 2018"
+NAME=gerbera
+DAEMON=%OPTWARE_TARGET_PREFIX%/bin/$NAME
+pidfile=%OPTWARE_TARGET_PREFIX%/var/run/gerbera.pid
+DAEMON_OPTS="$PARAMS -l %OPTWARE_TARGET_PREFIX%/var/log/gerbera.log -m %OPTWARE_TARGET_PREFIX%/etc/gerbera"
+START_STOP_DAEMON=%OPTWARE_TARGET_PREFIX%/sbin/start-stop-daemon-start-stop-daemon
+
+
+
+case "$1" in
+  start)
+	if ${START_STOP_DAEMON} --status --name $NAME --pidfile ${pidfile}
+	  then
+	    echo "Error: $DESC already running" >&2
+	    exit 1
+	  fi
+	echo "Starting $DESC"
+	rm -f ${pidfile}
+	${START_STOP_DAEMON} --background -d / --make-pidfile --pidfile ${pidfile} --name $NAME --start --exec ${DAEMON} -- ${DAEMON_OPTS}
+	;;
+  stop)
+	case `${START_STOP_DAEMON} --status --pidfile ${pidfile} --name $NAME; echo $?` in
+	0)
+	  echo "Stopping $DESC"
+	  ${START_STOP_DAEMON} --remove-pidfile --pidfile ${pidfile} --name $NAME --stop --retry=TERM/30/KILL/5
+	  ;;
+	1)
+	  echo "$DESC is not running and the pid file ${pidfile} exists: removing the pid file"
+	  rm -f ${pidfile}
+	  ;;
+	3)
+	  echo "$DESC is not running"
+	  ;;
+	4)
+	  echo "Unable to determine $DESC status"
+	  ;;
+	*)
+	  echo "Unknown start-stop-daemon exit code"
+	  ;;
+	esac
+        ;;
+  restart)
+	case `${START_STOP_DAEMON} --status --pidfile ${pidfile} --name $NAME; echo $?` in
+	0)
+	  echo "Restarting $DESC"
+	  ${START_STOP_DAEMON} --remove-pidfile --pidfile ${pidfile} --name $NAME --stop --retry=TERM/30/KILL/5
+	  "$0" start
+	  ;;
+	1)
+	  echo "$DESC is not running and the pid file ${pidfile} exists: removing the pid file"
+	  rm -f ${pidfile}
+	  "$0" start
+	  ;;
+	3)
+	  echo "$DESC is not running"
+	  "$0" start
+	  ;;
+	4)
+	  echo "Unable to determine $DESC status" >&2
+	  exit 1
+	  ;;
+	*)
+	  echo "Unknown start-stop-daemon exit code" >&2
+	  exit 1
+	  ;;
+	esac
+        ;;
+  status)
+	case `${START_STOP_DAEMON} --status --pidfile ${pidfile}; echo $?` in
+	0)
+	  echo "$DESC running"
+	  ;;
+	1)
+	  echo "$DESC is not running and the pid file ${pidfile} exists"
+	  ;;
+	3)
+	  echo "$DESC is not running"
+	  ;;
+	4)
+	  echo "Unable to determine $DESC status" >&2
+	  ;;
+	*)
+	  echo "Unknown exit start-stop-daemon code" >&2
+	  ;;
+	esac
+        ;;
+  *)
+	echo "Usage: $0 {start|stop|restart|status}"
+	exit 1
+	;;
+esac
+
+exit 0

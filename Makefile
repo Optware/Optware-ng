@@ -305,7 +305,7 @@ COMMON_PACKAGES = \
 	freecell freeradius freetds freetype freeze \
 	fribidi ftpcopy fslint ftpd-topfield fuppes fuse fuse-exfat \
 	gambit-c gawk gcal gconv-modules gdb gdbm gdchart \
-	ged gedit geoip gettext gdk-pixbuf \
+	ged gedit geoip gerbera gettext gdk-pixbuf \
 	ggrab ghostscript ghostscript-fonts git gkrellmd glib glib-networking gnet gnokii gnome-icon-theme \
 	gnome-icon-theme-symbolic \
 	gnu-httptunnel gnu-smalltalk gnugo \

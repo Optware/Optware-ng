@@ -1,0 +1,16 @@
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -317,13 +317,6 @@ endif()
+ find_package(Threads REQUIRED)
+ target_link_libraries(gerbera ${CMAKE_THREAD_LIBS_INIT})
+ 
+-find_package(Iconv REQUIRED)
+-include_directories(${ICONV_INCLUDE_DIR})
+-target_link_libraries(gerbera ${ICONV_LIBRARIES})
+-if (ICONV_SECOND_ARGUMENT_IS_CONST)
+-    add_definitions(-DICONV_CONST)
+-endif()
+-
+ find_package(UUID REQUIRED)
+ include_directories(${UUID_INCLUDE_DIRS})
+ target_link_libraries(gerbera ${UUID_LIBRARIES})
