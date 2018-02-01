@@ -41,7 +41,8 @@ GERBERA_SECTION=media
 GERBERA_PRIORITY=optional
 GERBERA_DEPENDS=start-stop-daemon, ffmpeg, duktape, libupnp, \
 		sqlite, libcurl, libtheora, file, libexif, \
-		expat, libvorbis, e2fslibs, libstdc++
+		expat, libvorbis, e2fslibs, ffmpegthumbnailer, \
+		libstdc++
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 GERBERA_DEPENDS +=, libiconv
 endif
@@ -142,7 +143,7 @@ gerbera-source: $(DL_DIR)/$(GERBERA_SOURCE) $(GERBERA_PATCHES)
 $(GERBERA_BUILD_DIR)/.configured: $(DL_DIR)/$(GERBERA_SOURCE) $(GERBERA_PATCHES) make/gerbera.mk
 	$(MAKE) ffmpeg-stage duktape-stage libupnp-stage sqlite-stage libcurl-stage \
 		libtheora-stage file-stage libexif-stage expat-stage libvorbis-stage \
-		e2fsprogs-stage
+		e2fsprogs-stage ffmpegthumbnailer-stage
 ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
 	$(MAKE) libiconv-stage
 endif
@@ -173,6 +174,7 @@ endif
 		-DWITH_MYSQL=0 \
 		-DWITH_TAGLIB=0 \
 		-DWITH_AVCODEC=1 \
+		-DWITH_FFMPEGTHUMBNAILER=1 \
 		-DWITH_DEBUG_LOGGING=0 \
 		-DWITH_SYSTEMD=0
 	touch $@
