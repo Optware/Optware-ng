@@ -160,9 +160,11 @@ $(LIBC-DEV_IPK): make/libc-dev.mk
 	cp -f $(LIBC-DEV_LIBGCC_STATIC) $(LIBC-DEV_IPK_DIR)$(TARGET_PREFIX)/lib
 	rm -rf $(LIBC-DEV_IPK_DIR)$(TARGET_PREFIX)/include/zlib.h \
 		$(LIBC-DEV_IPK_DIR)$(TARGET_PREFIX)/include/zconf.h \
-		$(LIBC-DEV_IPK_DIR)$(TARGET_PREFIX)/include/iconv.h \
 		$(LIBC-DEV_IPK_DIR)$(TARGET_PREFIX)/include/libintl.h \
 		$(LIBC-DEV_IPK_DIR)$(TARGET_PREFIX)/include/openssl
+ifeq (libiconv, $(filter libiconv, $(PACKAGES)))
+	rm -f $(LIBC-DEV_IPK_DIR)$(TARGET_PREFIX)/include/iconv.h
+endif
 	$(INSTALL) -d $(LIBC-DEV_IPK_DIR)/$(LIBC-DEV_CRT_DIR)
 	rsync -l $(LIBC-DEV_USRLIBDIR)/*crt*.o $(LIBC-DEV_IPK_DIR)/$(LIBC-DEV_CRT_DIR)
 	cp -af $(LIBC-DEV_SOURCE_DIR)/libgcc_s.so $(LIBC-DEV_IPK_DIR)$(TARGET_PREFIX)/lib/
