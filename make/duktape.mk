@@ -36,7 +36,7 @@ DUKTAPE_CONFLICTS=
 #
 # DUKTAPE_IPK_VERSION should be incremented when the ipk changes.
 #
-DUKTAPE_IPK_VERSION=1
+DUKTAPE_IPK_VERSION=2
 
 #
 # DUKTAPE_CONFFILES should be a list of user-editable files
@@ -187,6 +187,8 @@ $(DUKTAPE_IPK): $(DUKTAPE_BUILD_DIR)/.built
 	$(MAKE) -C $(DUKTAPE_BUILD_DIR) DESTDIR=$(DUKTAPE_IPK_DIR) install
 	$(STRIP_COMMAND) $(DUKTAPE_IPK_DIR)$(TARGET_PREFIX)/lib/libduktape.so \
 			$(DUKTAPE_IPK_DIR)$(TARGET_PREFIX)/bin/duk
+	# avoid conflict with ossp-js
+	rm -f $(DUKTAPE_IPK_DIR)$(TARGET_PREFIX)/bin/js
 #	$(INSTALL) -d $(DUKTAPE_IPK_DIR)$(TARGET_PREFIX)/etc/
 #	$(INSTALL) -m 644 $(DUKTAPE_SOURCE_DIR)/duktape.conf $(DUKTAPE_IPK_DIR)$(TARGET_PREFIX)/etc/duktape.conf
 #	$(INSTALL) -d $(DUKTAPE_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
