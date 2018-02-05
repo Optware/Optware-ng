@@ -1,0 +1,13 @@
+--- a/base/models.py
++++ b/base/models.py
+@@ -326,7 +326,9 @@ class ModelData:
+         self.eq = re.compile(r'^([^=]+)=(.*)')
+         self.date = re.compile(r'^(\d{1,2})/(\d{1,2})/(\d{4,4})')
+ 
+-        files = [(os.path.join(self.root_path, "models.dat"),
++        files = [("%OPTWARE_TARGET_PREFIX%/share/hplip/data/models/models.dat",
++                  "%OPTWARE_TARGET_PREFIX%/share/hplip/data/models/unreleased/unreleased.dat"),
++                 (os.path.join(self.root_path, "models.dat"),
+                   os.path.join(self.root_path, "unreleased", "unreleased.dat")),
+                  (os.path.join(os.getcwd(), 'data', 'models', 'models.dat'),
+                   os.path.join(os.getcwd(), 'data', 'models', 'unreleased', 'unreleased.dat'))]

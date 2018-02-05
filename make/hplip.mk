@@ -29,7 +29,7 @@ HPLIP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 HPLIP_DESCRIPTION=HP Linux Imaging and Printing
 HPLIP_SECTION=misc
 HPLIP_PRIORITY=optional
-HPLIP_DEPENDS=sane-backends, python27, libstdc++, libusb1, libcups, libcupsimage
+HPLIP_DEPENDS=sane-backends, python27, libstdc++, libusb1, libcups, libcupsimage, libjbigkit, libidn
 ifneq (, $(filter net-snmp, $(PACKAGES)))
 HPLIP_DEPENDS +=, net-snmp
 endif
@@ -39,7 +39,7 @@ HPLIP_CONFLICTS=
 #
 # HPLIP_IPK_VERSION should be incremented when the ipk changes.
 #
-HPLIP_IPK_VERSION=1
+HPLIP_IPK_VERSION=2
 
 #
 # HPLIP_CONFFILES should be a list of user-editable files
@@ -59,6 +59,7 @@ $(HPLIP_SOURCE_DIR)/cross-compile.patch \
 $(HPLIP_SOURCE_DIR)/libhpdiscovery.patch \
 $(HPLIP_SOURCE_DIR)/force_PYTHONINCLUDEDIR.patch \
 $(HPLIP_SOURCE_DIR)/boolean.patch \
+$(HPLIP_SOURCE_DIR)/models.dat-location.patch \
 
 #
 # If the compilation of the package requires additional
@@ -122,7 +123,7 @@ hplip-source: $(DL_DIR)/$(HPLIP_SOURCE) $(HPLIP_PATCHES)
 #
 $(HPLIP_BUILD_DIR)/.configured: $(DL_DIR)/$(HPLIP_SOURCE) $(HPLIP_PATCHES) make/hplip.mk
 	$(MAKE) cups-stage dbus-stage python27-stage python27-host-stage \
-		sane-backends-stage libusb1-stage
+		sane-backends-stage libusb1-stage libjbigkit-stage libidn-stage
 ifneq (, $(filter net-snmp, $(PACKAGES)))
 	$(MAKE) net-snmp-stage
 endif
@@ -173,7 +174,7 @@ hplip-unpack: $(HPLIP_BUILD_DIR)/.configured
 #
 $(HPLIP_BUILD_DIR)/.built: $(HPLIP_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(@D) PYTHONINCLUDEDIR="$(STAGING_INCLUDE_DIR)/python2.7"
+	$(MAKE) -C $(@D)
 	### use $(TARGET_PREFIX)/bin/python2.7
 	sed -i -e 's|^#!.*|#!$(TARGET_PREFIX)/bin/python2.7|' `find $(@D) -type f -name "*.py"`
 	touch $@
