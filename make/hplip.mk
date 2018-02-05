@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 HPLIP_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/hplip
-HPLIP_VERSION=3.17.9
+HPLIP_VERSION=3.17.11
 HPLIP_SOURCE=hplip-$(HPLIP_VERSION).tar.gz
 HPLIP_DIR=hplip-$(HPLIP_VERSION)
 HPLIP_UNZIP=zcat
@@ -54,13 +54,18 @@ HPLIP_CONFFILES=$(TARGET_PREFIX)/etc/hp/hplip.conf \
 #
 HPLIP_PATCHES=\
 $(HPLIP_SOURCE_DIR)/configure.in.patch \
+$(HPLIP_SOURCE_DIR)/state-dir.patch \
+$(HPLIP_SOURCE_DIR)/cross-compile.patch \
+$(HPLIP_SOURCE_DIR)/libhpdiscovery.patch \
+$(HPLIP_SOURCE_DIR)/force_PYTHONINCLUDEDIR.patch \
+$(HPLIP_SOURCE_DIR)/boolean.patch \
 
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-HPLIP_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/libusb-1.0
-HPLIP_LDFLAGS=-lm
+HPLIP_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/libusb-1.0 -I$(STAGING_INCLUDE_DIR)/python2.7
+HPLIP_LDFLAGS=-lz -ljpeg -lusb-1.0 -lcups -lpng -ltiff
 
 ifeq (, $(filter net-snmp, $(PACKAGES)))
 HPLIP_CONFIG_ARGS += --disable-network-build
@@ -130,11 +135,9 @@ endif
 	if test "$(BUILD_DIR)/$(HPLIP_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(HPLIP_DIR) $(@D) ; \
 	fi
-#	sed -i -e 's|/etc/|$(TARGET_PREFIX)&|; /halpredir/s|/usr/share|$(TARGET_PREFIX)/share|' $(@D)/Makefile.am ; \
 
 	cd $(@D); touch INSTALL NEWS README AUTHORS ChangeLog
 	$(AUTORECONF1.14) -vif $(@D)
-	sed -e "s|-I/usr/local/include||" -i "$(@D)/configure"
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(HPLIP_CPPFLAGS)" \
@@ -142,6 +145,7 @@ endif
 		PYTHON=$(HOST_STAGING_PREFIX)/bin/python2.7 \
 		PYTHONPATH=$(STAGING_LIB_DIR)/python2.7/site-packages \
 		PKG_CONFIG_PATH=$(STAGING_LIB_DIR)/pkgconfig \
+		PYTHONINCLUDEDIR=$(STAGING_INCLUDE_DIR)/python2.7 \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -159,37 +163,6 @@ endif
 		--with-systraydir=$(TARGET_PREFIX)/etc/xdg/autostart \
 		--with-cupsfilterdir=$(TARGET_PREFIX)/lib/cups/filter \
 	)
-	sed -i -e 's| /etc| $(TARGET_PREFIX)/etc|' -e 's|\$$(DESTDIR)/etc|\$$(DESTDIR)$(TARGET_PREFIX)/etc|' -e 's|/var/lib/hp|$(TARGET_PREFIX)/var/lib/hp|' -e \
-		's|/usr/share/cups/mime|$(TARGET_PREFIX)/share/cups/mime|' -e 's|/usr/share/hal/fdi|$(TARGET_PREFIX)/share/hal/fdi|' -e 's|/usr/lib/systemd/system|$(TARGET_PREFIX)/lib/systemd/system|' $(@D)/Makefile
-	sed -i -e 's|/etc|$(TARGET_PREFIX)/etc|' $(@D)/check.py \
-					$(@D)/logcapture.py \
-					$(@D)/ui4/devmgr5.py \
-					$(@D)/prnt/cups.py \
-					$(@D)/ui/devmgr4.py \
-					$(@D)/installer/core_install.py \
-					$(@D)/installer/pluginhandler.py \
-					$(@D)/base/password.py \
-					$(@D)/base/services.py \
-					$(@D)/base/codes.py \
-					$(@D)/base/g.py \
-					$(@D)/base/queues.py \
-					$(@D)/base/utils.py \
-					$(@D)/prnt/filters/hpps \
-					$(@D)/prnt/hpijs/globals.cpp \
-					$(@D)/prnt/hpijs/hpcupsfax.cpp \
-					$(@D)/prnt/hpijs/hpijs.cpp \
-					$(@D)/prnt/hpcups/HPCupsFilter.cpp \
-					$(@D)/fax/backend/hpfax.py
-	sed -i -e 's|/etc|$(TARGET_PREFIX)/etc|g' $(@D)/data/rules/56-hpmud.rules
-	sed -i -e 's|/var/lib/hp|$(TARGET_PREFIX)/var/lib/hp|' $(@D)/installer/core_install.py \
-							$(@D)/installer/pluginhandler.py \
-							$(@D)/base/g.py \
-							$(@D)/check.py \
-							$(@D)/common/utils.c \
-							$(@D)/common/utils.h
-	sed -i -e 's|/usr/lib/systemd/system|$(TARGET_PREFIX)/lib/systemd/system|' $(@D)/installer/core_install.py
-	sed -i -e 's|filename\.startswith("$(TARGET_PREFIX)/etc/")|filename.startswith("/etc/") or filename.startswith("$(TARGET_PREFIX)/etc/")|' $(@D)/base/g.py
-	sed -i -e 's|/usr/share/cups/mime|$(TARGET_PREFIX)/share/cups/mime|' $(@D)/prnt/cups.py
 	$(PATCH_LIBTOOL) $(@D)/libtool
 	touch $@
 
@@ -257,6 +230,8 @@ $(HPLIP_IPK): $(HPLIP_BUILD_DIR)/.built
 	rm -rf $(HPLIP_IPK_DIR)$(TARGET_PREFIX)/lib/*.la $(HPLIP_IPK_DIR)$(TARGET_PREFIX)/lib/*/*.la
 	chmod 755 $(HPLIP_IPK_DIR)$(TARGET_PREFIX)/lib/cups/*
 #	$(INSTALL) -d $(HPLIP_IPK_DIR)$(TARGET_PREFIX)/etc/
+	mv -f $(HPLIP_IPK_DIR)/etc/* $(HPLIP_IPK_DIR)$(TARGET_PREFIX)/etc/
+	rm -rf $(HPLIP_IPK_DIR)/etc
 #	$(INSTALL) -m 644 $(HPLIP_SOURCE_DIR)/hplip.conf $(HPLIP_IPK_DIR)$(TARGET_PREFIX)/etc/hplip.conf
 #	$(INSTALL) -d $(HPLIP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
 #	$(INSTALL) -m 755 $(HPLIP_SOURCE_DIR)/rc.hplip $(HPLIP_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXhplip

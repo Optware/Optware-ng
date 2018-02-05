@@ -2,10 +2,18 @@
 +++ b/configure.in
 @@ -28,7 +28,7 @@
  #AC_PREREQ(2.59)
- AC_INIT([HP Linux Imaging and Printing], [3.17.9], [3.17.9], [hplip])
+ AC_INIT([HP Linux Imaging and Printing], [3.17.11], [3.17.11], [hplip])
  #AM_INIT_AUTOMAKE([1.9 foreign])
 -AM_INIT_AUTOMAKE
 +AM_INIT_AUTOMAKE([subdir-objects])
  AC_DISABLE_STATIC
- 
+
  # Checks for programs.
+@@ -255,7 +255,6 @@
+    test `sh ./createPPD.sh -f` == 0
+ else
+    AC_MSG_RESULT(no)
+-   test `sh ./createPPD.sh -q` == 0
+ fi
+ AM_CONDITIONAL(HPLIP_CLASS_DRIVER, test x$class_driver = xyes)
+ 

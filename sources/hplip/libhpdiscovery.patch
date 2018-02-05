@@ -1,0 +1,11 @@
+--- a/Makefile.am
++++ b/Makefile.am
+@@ -85,7 +85,7 @@
+ libhpdiscovery_la_SOURCES = protocol/discovery/mdns.c protocol/discovery/mdns.h
+ libhpdiscovery_la_CFLAGS  = -DCONFDIR=\"$(hplip_confdir)\"
+ libhpdiscovery_la_LDFLAGS = -version-info 0:1:0
+-libhpdiscovery_la_LIBADD  = -l$(SNMPLIB) -lcrypto
++libhpdiscovery_la_LIBADD  = -l$(SNMPLIB)
+ endif #NETWORK_BUILD
+ 
+ 

@@ -1,0 +1,11 @@
+--- a/hplip.conf.in
++++ b/hplip.conf.in
+@@ -5,7 +5,7 @@
+ 
+ [dirs]
+ home=@abs_datadir@/hplip
+-run=/var/run
++run=@localstatedir@/run
+ ppd=@abs_hpppddir@
+ ppdbase=@abs_ppddir@
+ doc=@abs_docdir@
