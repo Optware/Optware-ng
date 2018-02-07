@@ -1,0 +1,355 @@
+diff --recursive --unified minidlna-1.2.1.orig/albumart.c minidlna-1.2.1/albumart.c
+--- minidlna-1.2.1.orig/albumart.c	2018-01-24 17:47:55.665178044 +0000
++++ minidlna-1.2.1/albumart.c	2018-01-24 18:52:06.911591686 +0000
+@@ -31,6 +31,9 @@
+ #include <errno.h>
+ 
+ #include <jpeglib.h>
++#ifdef THUMBNAIL_CREATION
++#include <libffmpegthumbnailer/videothumbnailerc.h>
++#endif
+ 
+ #include "upnpglobalvars.h"
+ #include "albumart.h"
+@@ -387,6 +390,50 @@
+ 	return NULL;
+ }
+ 
++#ifdef THUMBNAIL_CREATION
++char *
++generate_thumbnail(const char * path)
++{
++	char *tfile = NULL;
++	video_thumbnailer *vt = NULL;
++	char cache_dir[MAXPATHLEN];
++
++	if( art_cache_exists(path, &tfile) )
++		return tfile;
++
++	if ( is_video(path) )
++	{
++
++		vt = video_thumbnailer_create();
++		if ( !vt )
++		{
++			free(tfile);
++			return 0;
++		}
++		vt->thumbnail_image_type = Jpeg;
++		vt->thumbnail_image_quality = runtime_vars.thumb_quality;
++		vt->thumbnail_size = runtime_vars.thumb_width;
++		vt->seek_percentage = 20;
++		vt->overlay_film_strip = (GETFLAG(THUMB_FILMSTRIP))?1:0;
++
++		DPRINTF(E_DEBUG, L_METADATA, "generating thumbnail: %s\n", path);
++
++		strncpyt(cache_dir, tfile, sizeof(cache_dir));
++		if ( !make_dir(dirname(cache_dir), S_IRWXU|S_IRGRP|S_IXGRP|S_IROTH|S_IXOTH) &&
++			!video_thumbnailer_generate_thumbnail_to_file(vt, path, tfile) )
++		{
++			video_thumbnailer_destroy(vt);
++			return tfile;
++		}
++
++		video_thumbnailer_destroy(vt);
++	}
++	free(tfile);
++
++	return 0;
++}
++#endif
++
+ int64_t
+ find_album_art(const char *path, uint8_t *image_data, int image_size)
+ {
+@@ -395,6 +442,18 @@
+ 
+ 	if( (image_size && (album_art = check_embedded_art(path, image_data, image_size))) ||
+ 	    (album_art = check_for_album_file(path)) )
++	if(image_size)
++		album_art = check_embedded_art(path, image_data, image_size);
++
++	if(!album_art)
++		album_art = check_for_album_file(path);
++
++#ifdef THUMBNAIL_CREATION
++	if(!album_art && GETFLAG(THUMB_MASK))
++		album_art = generate_thumbnail(path);
++#endif
++
++	if(album_art)		
+ 	{
+ 		ret = sql_get_int_field(db, "SELECT ID from ALBUM_ART where PATH = '%q'", album_art);
+ 		if( !ret )
+diff --recursive --unified minidlna-1.2.1.orig/configure.ac minidlna-1.2.1/configure.ac
+--- minidlna-1.2.1.orig/configure.ac	2018-01-24 17:47:55.665178044 +0000
++++ minidlna-1.2.1/configure.ac	2018-01-24 18:52:06.911591686 +0000
+@@ -629,7 +629,22 @@
+         ]
+ )
+ 
+-
++AC_ARG_ENABLE(thumbnail,
++	[  --enable-thumbnail       enable video thumbnail generation using libffmpegthumbnailer],[
++	if test "$enableval" = "yes"; then
++		AC_DEFINE([THUMBNAIL_CREATION],[1],[Define to 1 if you want to enable video thumbnail generation])
++		PKG_CHECK_MODULES([LIBFFMPEGTHUMBNAILER], libffmpegthumbnailer, ,
++			AC_MSG_ERROR([Unable to find libffmpegthumbnailer]))
++		AC_SUBST([LIBFFMPEGTHUMBNAILER_CFLAGS])
++		AC_SUBST([LIBFFMPEGTHUMBNAILER_LIBS])
++        else
++                AC_MSG_RESULT([no])
++        fi
++        ],[
++                AC_MSG_RESULT([no])
++        ]
++)
++ 
+ case "$target_os" in
+ 	darwin*)
+ 		;;
+diff --recursive --unified minidlna-1.2.1.orig/Makefile.am minidlna-1.2.1/Makefile.am
+--- minidlna-1.2.1.orig/Makefile.am	2018-01-24 17:49:48.181178044 +0000
++++ minidlna-1.2.1/Makefile.am	2018-01-24 19:01:10.879591686 +0000
+@@ -56,6 +56,7 @@
+ 	@LIBINTL@ \
+ 	@LIBICONV@ \
+ 	-lFLAC $(flacogglibs) $(vorbislibs) $(avahilibs) \
++	@LIBFFMPEGTHUMBNAILER_LIBS@ \
+ 	@opus_LIBS@
+ 
+ minidlnad_LDFLAGS = @STATIC_LDFLAGS@
+@@ -69,6 +70,7 @@
+ 	@LIBAVUTIL_LIBS@ \
+ 	@LIBEXIF_LIBS@ \
+ 	-lFLAC $(flacogglibs) $(vorbislibs) $(avahilibs) \
++	@LIBFFMPEGTHUMBNAILER_LIBS@ \
+ 	@opus_LIBS@
+ 
+ SUFFIXES = .tmpl .
+diff --recursive --unified minidlna-1.2.1.orig/minidlna.c minidlna-1.2.1/minidlna.c
+--- minidlna-1.2.1.orig/minidlna.c	2018-01-24 17:53:53.409178044 +0000
++++ minidlna-1.2.1/minidlna.c	2018-01-24 18:54:02.963591686 +0000
+@@ -661,6 +661,11 @@
+ 	runtime_vars.max_connections = 50;
+ 	runtime_vars.root_container = NULL;
+ 	runtime_vars.ifaces[0] = NULL;
++	
++#ifdef THUMBNAIL_CREATION
++	runtime_vars.thumb_width = 160;
++	runtime_vars.thumb_quality = 8;
++#endif
+ 
+ 	/* read options file first since
+ 	 * command line arguments have final say */
+@@ -875,6 +880,30 @@
+ 			if (strcasecmp(ary_options[i].value, "beacon") == 0)
+ 				CLEARFLAG(TIVO_BONJOUR_MASK);
+ 			break;
++#ifdef THUMBNAIL_CREATION
++		case ENABLE_THUMB:
++			if( (strcmp(ary_options[i].value, "yes") == 0) || atoi(ary_options[i].value) )
++				SETFLAG(THUMB_MASK);
++		break;
++		case THUMB_WIDTH:
++			runtime_vars.thumb_width = atoi(ary_options[i].value);
++			if (runtime_vars.thumb_width < 120)
++				runtime_vars.thumb_width = 120;
++			if (runtime_vars.thumb_width > 480)
++				runtime_vars.thumb_width = 480;
++			break;
++		case THUMB_QUALITY:
++			runtime_vars.thumb_quality = atoi(ary_options[i].value);
++			if (runtime_vars.thumb_quality < 5)
++				runtime_vars.thumb_quality = 5;
++			if (runtime_vars.thumb_quality > 30)
++				runtime_vars.thumb_quality = 30;
++		break;
++		case ENABLE_THUMB_FILMSTRIP:
++			if( (strcmp(ary_options[i].value, "yes") == 0) || atoi(ary_options[i].value) )
++				SETFLAG(THUMB_FILMSTRIP);
++		break;
++#endif			
+ #ifdef HAVE_LIBPNG
+ 		case ICON:
+ 			{
+diff --recursive --unified minidlna-1.2.1.orig/minidlna.conf minidlna-1.2.1/minidlna.conf
+--- minidlna-1.2.1.orig/minidlna.conf	2018-01-24 17:54:44.381178044 +0000
++++ minidlna-1.2.1/minidlna.conf	2018-01-24 18:54:02.963591686 +0000
+@@ -97,3 +97,15 @@
+ # colors indicate that a checkerboard background, in those colors, should
+ # be used.
+ #bgcolor=666666,999999
++
++# Suport to Movie Thumbnail generation. To use this option, thumbnail generation must be enable at compile time.
++enable_thumbnail=yes
++
++# The width of the thumbnail image. Large images takes more time to generate.  To use this option, thumbnail generation must be enable at compile time.
++thumbnail_width=160
++
++# Thumbnail Image quality. To use this option, thumbnail generation must be enable at compile time.
++thumbnail_quality=8
++
++# Should the thumbnail have a film strip? To use this option, thumbnail generation must be enable at compile time.
++enable_thumbnail_filmstrip=yes
+diff --recursive --unified minidlna-1.2.1.orig/minidlnatypes.h minidlna-1.2.1/minidlnatypes.h
+--- minidlna-1.2.1.orig/minidlnatypes.h	2017-08-24 17:28:25.000000000 +0000
++++ minidlna-1.2.1/minidlnatypes.h	2018-01-24 18:54:02.963591686 +0000
+@@ -51,6 +51,10 @@
+ 	int max_connections;	/* max number of simultaneous conenctions */
+ 	const char *root_container;	/* root ObjectID (instead of "0") */
+ 	const char *ifaces[MAX_LAN_ADDR];	/* list of configured network interfaces */
++#ifdef THUMBNAIL_CREATION
++	int thumb_width;
++	int thumb_quality;
++#endif	
+ };
+ 
+ struct string_s {
+diff --recursive --unified minidlna-1.2.1.orig/monitor.c minidlna-1.2.1/monitor.c
+--- minidlna-1.2.1.orig/monitor.c	2017-08-24 17:28:25.000000000 +0000
++++ minidlna-1.2.1/monitor.c	2018-01-24 19:15:24.439591686 +0000
+@@ -322,6 +322,16 @@
+ 		sql_exec(db, "DELETE from OBJECTS where DETAIL_ID = %lld", detailID);
+ 	}
+ 	snprintf(art_cache, sizeof(art_cache), "%s/art_cache%s", db_path, path);
++
++#ifdef THUMBNAIL_CREATION
++	/* Remove video thumbnails */
++	if ( is_video(path) )
++	{
++		char *vthumb = art_cache;
++		strcpy(strchr(vthumb, '\0')-4, ".jpg");
++	}
++#endif
++	
+ 	remove(art_cache);
+ 
+ 	return 0;
+@@ -612,6 +622,11 @@
+ 	struct stat st;
+ 	sigset_t set;
+ 
++#ifdef THUMBNAIL_CREATION
++	char renpath_buf[PATH_MAX];
++	int cookie = 0;
++#endif
++
+ 	sigfillset(&set);
+ 	sigdelset(&set, SIGCHLD);
+ 	pthread_sigmask(SIG_BLOCK, &set, NULL);
+@@ -685,6 +700,16 @@
+ 				{
+ 					DPRINTF(E_DEBUG, L_INOTIFY,  "The directory %s was %s.\n",
+ 						path_buf, (event->mask & IN_MOVED_TO ? "moved here" : "created"));
++#ifdef THUMBNAIL_CREATION
++					/* We do not want to regenerate the thumbnails if e rename a directory.
++					   We should keep at least four cookies/olddir since IN_MOVED_FROM/IN_MOVED_TO may
++					   not arrive in sequence, but one should cover most cases */
++					if (event->cookie == cookie && event->mask & IN_MOVED_TO)
++					{
++						DPRINTF(E_DEBUG, L_INOTIFY, "Directory rename: %s -> %s \n", renpath_buf, path_buf);
++						rename_artcache_dir(renpath_buf, path_buf);
++					}
++#endif						
+ 					monitor_insert_directory(pollfds[0].fd, esc_name, path_buf);
+ 				}
+ 				else if ( (event->mask & (IN_CLOSE_WRITE|IN_MOVED_TO|IN_CREATE)) &&
+@@ -717,7 +742,18 @@
+ 						(event->mask & IN_ISDIR ? "directory" : "file"),
+ 						path_buf, (event->mask & IN_MOVED_FROM ? "moved away" : "deleted"));
+ 					if ( event->mask & IN_ISDIR )
++#ifdef THUMBNAIL_CREATION
++					{
++						if ( event->mask & IN_MOVED_FROM )
++						{
++							strncpy(renpath_buf, path_buf, sizeof(renpath_buf));
++							cookie = event->cookie;
++						}
++#endif						
+ 						monitor_remove_directory(pollfds[0].fd, path_buf);
++#ifdef THUMBNAIL_CREATION
++					}
++#endif						
+ 					else
+ 						monitor_remove_file(path_buf);
+ 				}
+diff --recursive --unified minidlna-1.2.1.orig/options.c minidlna-1.2.1/options.c
+--- minidlna-1.2.1.orig/options.c	2018-01-24 17:57:31.661500480 +0000
++++ minidlna-1.2.1/options.c	2018-01-24 18:58:45.807591686 +0000
+@@ -67,6 +67,12 @@
+ 	{ MERGE_MEDIA_DIRS, "merge_media_dirs" },
+ 	{ WIDE_LINKS, "wide_links" },
+ 	{ TIVO_DISCOVERY, "tivo_discovery" },
++#ifdef THUMBNAIL_CREATION	
++	{ ENABLE_THUMB, "enable_thumbnail" },
++	{ THUMB_WIDTH, "thumbnail_width" },
++	{ THUMB_QUALITY, "thumbnail_quality" },
++	{ ENABLE_THUMB_FILMSTRIP, "enable_thumbnail_filmstrip" },
++#endif	
+ #ifdef HAVE_LIBPNG
+ 	{ ICON, "icon" },
+ 	{ BGCOLOR, "bgcolor" },
+diff --recursive --unified minidlna-1.2.1.orig/options.h minidlna-1.2.1/options.h
+--- minidlna-1.2.1.orig/options.h	2018-01-24 17:56:01.133178044 +0000
++++ minidlna-1.2.1/options.h	2018-01-24 18:56:31.071591686 +0000
+@@ -64,6 +64,12 @@
+ 	ICON,				/* user-supplied PNG icon */
+ 	BGCOLOR,			/* user-supplied BG color */
+ #endif
++#ifdef THUMBNAIL_CREATION	
++	ENABLE_THUMB,                   /* enable thumbnail generation */
++	THUMB_WIDTH,                    /* thunbnail image with */
++	THUMB_QUALITY,                  /* thumnail image quality */
++	ENABLE_THUMB_FILMSTRIP,         /* film strip overlay */
++#endif
+ };
+ 
+ /* readoptionsfile()
+diff --recursive --unified minidlna-1.2.1.orig/upnpglobalvars.h minidlna-1.2.1/upnpglobalvars.h
+--- minidlna-1.2.1.orig/upnpglobalvars.h	2017-08-24 17:28:25.000000000 +0000
++++ minidlna-1.2.1/upnpglobalvars.h	2018-01-24 19:07:31.355591686 +0000
+@@ -195,6 +195,10 @@
+ #endif
+ #define SCANNING_MASK         0x0100
+ #define RESCAN_MASK           0x0200
++#ifdef THUMBNAIL_CREATION
++#define THUMB_MASK            0x0400
++#define THUMB_FILMSTRIP       0x0800
++#endif
+ 
+ #define SETFLAG(mask)	runtime_flags |= mask
+ #define GETFLAG(mask)	(runtime_flags & mask)
+diff --recursive --unified minidlna-1.2.1.orig/utils.c minidlna-1.2.1/utils.c
+--- minidlna-1.2.1.orig/utils.c	2018-01-24 17:47:55.685178044 +0000
++++ minidlna-1.2.1/utils.c	2018-01-24 18:55:01.511591686 +0000
+@@ -546,3 +546,17 @@
+ 
+ 	return ALL_MEDIA;
+ }
++
++#ifdef THUMBNAIL_CREATION
++int
++rename_artcache_dir(const char * oldpath, const char * newpath)
++{
++	char old_artcache[PATH_MAX];
++	char new_artcache[PATH_MAX];
++
++	snprintf(old_artcache, sizeof(old_artcache), "%s/art_cache%s", db_path, oldpath);
++	snprintf(new_artcache, sizeof(old_artcache), "%s/art_cache%s", db_path, newpath);
++
++	return rename(old_artcache, new_artcache);
++}
++#endif
+diff --recursive --unified minidlna-1.2.1.orig/utils.h minidlna-1.2.1/utils.h
+--- minidlna-1.2.1.orig/utils.h	2017-08-24 17:28:25.000000000 +0000
++++ minidlna-1.2.1/utils.h	2018-01-24 18:54:02.967591686 +0000
+@@ -100,5 +100,8 @@
+ /* Others */
+ int make_dir(char * path, mode_t mode);
+ unsigned int DJBHash(uint8_t *data, int len);
++#ifdef THUMBNAIL_CREATION
++int rename_artcache_dir(const char * oldpath, const char * newpath);
++#endif
+ 
+ #endif

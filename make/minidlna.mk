@@ -13,10 +13,10 @@
 #MINIDLNA_REPOSITORY=git://git.code.sf.net/p/minidlna/git
 MINIDLNA_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/minidlna
 ifndef MINIDLNA_REPOSITORY
-MINIDLNA_VERSION=1.1.5
+MINIDLNA_VERSION=1.2.1
 else
-MINIDLNA_VERSION=1.1.4+git20150805
-MINIDLNA_TREEISH=`git rev-list --max-count=1 --until=2015-08-05 HEAD`
+MINIDLNA_VERSION=1.2.1+git20180124
+MINIDLNA_TREEISH=`git rev-list --max-count=1 --until=2018-01-24 HEAD`
 endif
 MINIDLNA_SOURCE=minidlna-$(MINIDLNA_VERSION).tar.gz
 MINIDLNA_DIR=minidlna-$(MINIDLNA_VERSION)
@@ -26,8 +26,8 @@ MINIDLNA_DESCRIPTION=MiniDLNA (aka ReadyDLNA) is server software with the aim of
 MINIDLNA_THUMBNAIL_DESCRIPTION=MiniDLNA (aka ReadyDLNA) is server software with the aim of being fully compliant with DLNA/UPnP-AV clients. Version with thumbnail generation support.
 MINIDLNA_SECTION=media
 MINIDLNA_PRIORITY=optional
-MINIDLNA_DEPENDS=libexif, libid3tag, libjpeg, libvorbis, e2fslibs, ffmpeg, flac, sqlite, bzip2, liblzma0, libpng
-MINIDLNA_THUMBNAIL_DEPENDS=libexif, libid3tag, libjpeg, libvorbis, e2fslibs, ffmpeg, flac, sqlite, bzip2, liblzma0, libpng, ffmpegthumbnailer
+MINIDLNA_DEPENDS=libexif, libid3tag, libjpeg, libvorbis, e2fslibs, ffmpeg, flac, sqlite, bzip2, liblzma0, libpng, libopus
+MINIDLNA_THUMBNAIL_DEPENDS=$(MINIDLNA_DEPENDS), ffmpegthumbnailer
 ifneq (, $(filter libiconv, $(PACKAGES)))
 MINIDLNA_DEPENDS +=, libiconv
 MINIDLNA_THUMBNAIL_DEPENDS +=, libiconv
@@ -43,7 +43,7 @@ MINIDLNA_THUMBNAIL_CONFLICTS=minidlna, minidlna-rescan, minidlna-rescan-thumbnai
 #
 # MINIDLNA_IPK_VERSION should be incremented when the ipk changes.
 #
-MINIDLNA_IPK_VERSION=5
+MINIDLNA_IPK_VERSION=1
 
 #
 # MINIDLNA_CONFFILES should be a list of user-editable files
@@ -54,10 +54,9 @@ MINIDLNA_CONFFILES=$(TARGET_PREFIX)/etc/minidlna.conf $(TARGET_PREFIX)/etc/init.
 # which they should be applied to the source code.
 #
 MINIDLNA_PATCHES=\
-$(MINIDLNA_SOURCE_DIR)/minidlna-1.1.4-git.R.L.Horn.patch \
-$(MINIDLNA_SOURCE_DIR)/video_thumbnail-1.1.4-R.L.Horn.patch \
-$(MINIDLNA_SOURCE_DIR)/minidlna-1.1.4_video_album_art_samsung_f-series_fix.patch \
-$(MINIDLNA_SOURCE_DIR)/lg_searchlim.patch
+$(MINIDLNA_SOURCE_DIR)/001-png-icon-libopus.patch \
+$(MINIDLNA_SOURCE_DIR)/002-thumbnail-creation.patch \
+$(MINIDLNA_SOURCE_DIR)/003-lg-search-limit.patch
 
 #
 # If the compilation of the package requires additional
