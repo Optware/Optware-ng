@@ -39,7 +39,7 @@ HPLIP_CONFLICTS=
 #
 # HPLIP_IPK_VERSION should be incremented when the ipk changes.
 #
-HPLIP_IPK_VERSION=3
+HPLIP_IPK_VERSION=4
 
 #
 # HPLIP_CONFFILES should be a list of user-editable files
@@ -61,6 +61,7 @@ $(HPLIP_SOURCE_DIR)/force_PYTHONINCLUDEDIR.patch \
 $(HPLIP_SOURCE_DIR)/boolean.patch \
 $(HPLIP_SOURCE_DIR)/models.dat-location.patch \
 $(HPLIP_SOURCE_DIR)/optware-paths.patch \
+$(HPLIP_SOURCE_DIR)/magic.py.patch \
 
 #
 # If the compilation of the package requires additional
@@ -178,7 +179,8 @@ $(HPLIP_BUILD_DIR)/.built: $(HPLIP_BUILD_DIR)/.configured
 	rm -f $@
 	$(MAKE) -C $(@D)
 	### use $(TARGET_PREFIX)/bin/python2.7
-	sed -i -e 's|^#!.*|#!$(TARGET_PREFIX)/bin/python2.7|' `find $(@D) -type f -name "*.py"`
+	sed -i -e 's|^#!.*|#!$(TARGET_PREFIX)/bin/python2.7|' `find $(@D) -type f -name "*.py"` \
+		$(@D)/fax/filters/pstotiff $(@D)/prnt/filters/hpps
 	touch $@
 
 #

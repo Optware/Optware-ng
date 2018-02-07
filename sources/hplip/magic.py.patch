@@ -1,0 +1,16 @@
+--- a/base/magic.py
++++ b/base/magic.py
+@@ -247,6 +247,13 @@ magic = [
+     [0, 'string', '=', b'#! /usr/local/bin/perl', 'application/x-perl'],
+     [0, 'string', '=', b'#! /usr/local/bin/perl', 'application/x-perl'],
+     [0, 'string', '=', b'eval "exec /usr/local/bin/perl', 'application/x-perl'],
++    [0, 'string', '=', b'#!%OPTWARE_TARGET_PREFIX%/bin/python2.7', 'application/x-python'],
++    [0, 'string', '=', b'#!%OPTWARE_TARGET_PREFIX%/bin/python2.6', 'application/x-python'],
++    [0, 'string', '=', b'#!%OPTWARE_TARGET_PREFIX%/bin/python2.5', 'application/x-python'],
++    [0, 'string', '=', b'#!%OPTWARE_TARGET_PREFIX%/bin/python2.4', 'application/x-python'],
++    [0, 'string', '=', b'#!%OPTWARE_TARGET_PREFIX%/bin/python3', 'application/x-python'],
++    [0, 'string', '=', b'#!%OPTWARE_TARGET_PREFIX%/bin/python3.5', 'application/x-python'],
++    [0, 'string', '=', b'#!%OPTWARE_TARGET_PREFIX%/bin/python3.6', 'application/x-python'],
+     [0, 'string', '=', b'#!/bin/python', 'application/x-python'],
+     [0, 'string', '=', b'#! /bin/python', 'application/x-python'],
+     [0, 'string', '=', b'#! /bin/python', 'application/x-python'],
