@@ -29,7 +29,7 @@ HPLIP_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 HPLIP_DESCRIPTION=HP Linux Imaging and Printing
 HPLIP_SECTION=misc
 HPLIP_PRIORITY=optional
-HPLIP_DEPENDS=sane-backends, python27, libstdc++, libusb1, libcups, libcupsimage, libjbigkit, libidn
+HPLIP_DEPENDS=sane-backends, python27, py27-dbus-python, libstdc++, libusb1, libcups, libcupsimage, libjbigkit, libidn
 ifneq (, $(filter net-snmp, $(PACKAGES)))
 HPLIP_DEPENDS +=, net-snmp
 endif
@@ -39,7 +39,7 @@ HPLIP_CONFLICTS=
 #
 # HPLIP_IPK_VERSION should be incremented when the ipk changes.
 #
-HPLIP_IPK_VERSION=2
+HPLIP_IPK_VERSION=3
 
 #
 # HPLIP_CONFFILES should be a list of user-editable files
@@ -60,6 +60,7 @@ $(HPLIP_SOURCE_DIR)/libhpdiscovery.patch \
 $(HPLIP_SOURCE_DIR)/force_PYTHONINCLUDEDIR.patch \
 $(HPLIP_SOURCE_DIR)/boolean.patch \
 $(HPLIP_SOURCE_DIR)/models.dat-location.patch \
+$(HPLIP_SOURCE_DIR)/optware-paths.patch \
 
 #
 # If the compilation of the package requires additional
@@ -153,6 +154,7 @@ endif
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=$(TARGET_PREFIX) \
 		--sysconfdir=$(TARGET_PREFIX)/etc \
+		--with-mimedir=$(TARGET_PREFIX)/etc \
 		--disable-nls \
 		--disable-static \
 		$(HPLIP_CONFIG_ARGS) \
