@@ -7,6 +7,7 @@
 # $Id$
 #
 
+ifndef DROPBEAR_SITE
 DROPBEAR_SITE=http://matt.ucc.asn.au/dropbear/releases
 DROPBEAR_VERSION=2015.68
 DROPBEAR_SOURCE=dropbear-$(DROPBEAR_VERSION).tar.bz2
@@ -132,3 +133,4 @@ dropbear-dirclean:
 #
 dropbear-check: $(DROPBEAR_IPK)
 	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(DROPBEAR_IPK)
+endif

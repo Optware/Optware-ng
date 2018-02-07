@@ -12,6 +12,7 @@
 # PHP_UNZIP is the command used to unzip the source.
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
+ifndef PHP_SITE
 PHP_SITE=http://static.php.net/www.php.net/distributions
 PHP_VERSION=5.6.33
 PHP_SOURCE=php-$(PHP_VERSION).tar.bz2
@@ -974,3 +975,4 @@ endif
 #
 php-check: $(PHP_TARGET_IPKS)
 	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
+endif

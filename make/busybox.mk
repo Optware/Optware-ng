@@ -19,6 +19,7 @@
 #
 # You should change all these variables to suit your package.
 #
+ifndef BUSYBOX_SITE
 BUSYBOX_SITE=http://www.busybox.net/downloads
 # If you change this version, you must check the adduser package as well.
 BUSYBOX_VERSION=1.25.0
@@ -344,3 +345,4 @@ busybox-dirclean:
 #
 busybox-check: $(BUSYBOX_IPK) $(BUSYBOX-BASE_IPK) $(BUSYBOX-LINKS_IPK)
 	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
+endif

@@ -34,7 +34,8 @@ ADDUSER_DEPENDS=
 ADDUSER_SUGGESTS=
 ADDUSER_CONFLICTS=
 # The defconfig will need to be reviewed after changes in version of busybox.
-ADDUSER_VERSION:=$(shell sed -n -e 's/^BUSYBOX_VERSION *=\([0-9]\)/\1/p' make/busybox.mk)
+include make/busybox.mk
+ADDUSER_VERSION=$(BUSYBOX_VERSION)
 #
 # ADDUSER_IPK_VERSION should be incremented when the ipk changes.
 #

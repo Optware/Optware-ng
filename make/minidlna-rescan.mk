@@ -12,11 +12,8 @@
 
 #MINIDLNA_RESCAN_REPOSITORY=git://git.code.sf.net/p/minidlna/git
 MINIDLNA_RESCAN_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/minidlna
-ifndef MINIDLNA_RESCAN_REPOSITORY
-MINIDLNA_RESCAN_VERSION:=$(shell sed -n -e 's/^MINIDLNA_VERSION *=//p' make/minidlna.mk | head -1)
-else
-MINIDLNA_RESCAN_VERSION:=$(shell sed -n -e 's/^MINIDLNA_VERSION *=//p' make/minidlna.mk | tail -1)
-endif
+include make/minidlna.mk
+MINIDLNA_RESCAN_VERSION=$(MINIDLNA_VERSION)
 MINIDLNA_RESCAN_SOURCE=minidlna-$(MINIDLNA_RESCAN_VERSION).tar.gz
 MINIDLNA_RESCAN_DIR=minidlna-$(MINIDLNA_RESCAN_VERSION)
 MINIDLNA_RESCAN_UNZIP=zcat

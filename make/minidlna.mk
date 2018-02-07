@@ -10,6 +10,7 @@
 # this cvs module is checked out.
 #
 
+ifndef MINIDLNA_SITE
 #MINIDLNA_REPOSITORY=git://git.code.sf.net/p/minidlna/git
 MINIDLNA_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/minidlna
 ifndef MINIDLNA_REPOSITORY
@@ -358,3 +359,4 @@ minidlna-dirclean:
 #
 minidlna-check: $(MINIDLNA_IPK) $(MINIDLNA_THUMBNAIL_IPK)
 	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
+endif

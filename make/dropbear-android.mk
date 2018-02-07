@@ -8,7 +8,8 @@
 #
 
 DROPBEAR_ANDROID_SITE=http://matt.ucc.asn.au/dropbear/releases
-DROPBEAR_ANDROID_VERSION:=$(shell sed -n -e 's/^DROPBEAR_VERSION *=//p' make/dropbear.mk | head -1)
+include make/dropbear.mk
+DROPBEAR_ANDROID_VERSION=$(DROPBEAR_VERSION)
 DROPBEAR_ANDROID_SOURCE=dropbear-$(DROPBEAR_ANDROID_VERSION).tar.bz2
 DROPBEAR_ANDROID_DIR=dropbear-$(DROPBEAR_ANDROID_VERSION)
 DROPBEAR_ANDROID_UNZIP=bzcat
