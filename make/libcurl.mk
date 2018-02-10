@@ -35,13 +35,13 @@ LIBCURL_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 LIBCURL_DESCRIPTION=Curl is a command line tool for transferring files with URL syntax, supporting FTP, FTPS, HTTP, HTTPS, GOPHER, TELNET, DICT, FILE and LDAP. Curl supports HTTPS certificates, HTTP POST, HTTP PUT, FTP uploading, kerberos, HTTP form based upload, proxies, cookies, user+password authentication, file transfer resume, http proxy tunneling and a busload of other useful tricks.
 LIBCURL_SECTION=libs
 LIBCURL_PRIORITY=optional
-LIBCURL_DEPENDS=openssl, zlib
+LIBCURL_DEPENDS=openssl, zlib, rtmpdump
 LIBCURL_CONFLICTS=
 
 #
 # LIBCURL_IPK_VERSION should be incremented when the ipk changes.
 #
-LIBCURL_IPK_VERSION=1
+LIBCURL_IPK_VERSION=2
 
 #
 # LIBCURL_CONFFILES should be a list of user-editable files
@@ -110,7 +110,7 @@ libcurl-source: $(DL_DIR)/$(LIBCURL_SOURCE) $(LIBCURL_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(LIBCURL_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBCURL_SOURCE) $(LIBCURL_PATCHES) make/libcurl.mk
-	$(MAKE) openssl-stage zlib-stage
+	$(MAKE) openssl-stage zlib-stage rtmpdump-stage
 	rm -rf $(BUILD_DIR)/$(LIBCURL_DIR) $(@D)
 	$(LIBCURL_UNZIP) $(DL_DIR)/$(LIBCURL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LIBCURL_PATCHES)"; then \
@@ -151,11 +151,12 @@ endif
 		--disable-telnet \
 		--disable-verbose \
 		--with-random="/dev/urandom" \
-		--with-ssl="$(STAGING_DIR)" \
+		--with-ssl="$(STAGING_PREFIX)" \
 		--without-gnutls \
 		--without-krb4 \
 		--without-libidn \
-		--with-zlib="$(STAGING_DIR)" \
+		--with-zlib="$(STAGING_PREFIX)" \
+		--with-librtmp=$(STAGING_PREFIX) \
 		--with-ca-bundle=$(TARGET_PREFIX)/share/curl/curl-ca-bundle.crt \
 	)
 	$(PATCH_LIBTOOL) $(@D)/libtool
