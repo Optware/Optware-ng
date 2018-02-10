@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SYNCTHING_URL=https://github.com/syncthing/syncthing/archive/v$(SYNCTHING_VERSION).tar.gz
-SYNCTHING_VERSION=0.14.43
+SYNCTHING_VERSION=0.14.44
 SYNCTHING_SOURCE=syncthing-$(SYNCTHING_VERSION).tar.gz
 SYNCTHING_DIR=syncthing-$(SYNCTHING_VERSION)
 SYNCTHING_UNZIP=zcat
@@ -40,7 +40,7 @@ SYNCTHING_CONFLICTS=
 #
 # SYNCTHING_IPK_VERSION should be incremented when the ipk changes.
 #
-SYNCTHING_IPK_VERSION=2
+SYNCTHING_IPK_VERSION=1
 
 #
 # SYNCTHING_CONFFILES should be a list of user-editable files
