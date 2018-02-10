@@ -30,14 +30,15 @@ LDDTREE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 LDDTREE_DESCRIPTION=Fork of pax-utils' bash utility to view hierarchy of shared library dependencies.
 LDDTREE_SECTION=system
 LDDTREE_PRIORITY=optional
-LDDTREE_DEPENDS=bash, sed, binutils
+# coreutils: for readlink command
+LDDTREE_DEPENDS=bash, sed, binutils, coreutils
 LDDTREE_SUGGESTS=
 LDDTREE_CONFLICTS=
 
 #
 # LDDTREE_IPK_VERSION should be incremented when the ipk changes.
 #
-LDDTREE_IPK_VERSION=1
+LDDTREE_IPK_VERSION=2
 
 #
 # LDDTREE_CONFFILES should be a list of user-editable files
