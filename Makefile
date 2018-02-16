@@ -384,7 +384,7 @@ COMMON_PACKAGES = \
 	par2cmdline patch patchutils \
 	pcal pcapsipdump pciutils pcre pcsc-lite pen perltgd $(PERL_PACKAGES) pinentry pixman \
 	phoneme-advanced \
-	php php-apache php-geoip php-opcache php-thttpd php-memcached phpmyadmin \
+	php php-apache php-geoip php-imagick php-opcache php-thttpd php-memcached phpmyadmin \
 	picocom picolisp pkgconfig plowshare poco polipo pop3proxy poppler \
 	popt poptop portmap postgresql postfix pound powertop \
 	ppower ppp printproto privoxy procmail \
