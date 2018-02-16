@@ -134,26 +134,17 @@ $(IMAGEMAGICK_BUILD_DIR)/.configured: $(DL_DIR)/$(IMAGEMAGICK_SOURCE) $(IMAGEMAG
 imagemagick-unpack: $(IMAGEMAGICK_BUILD_DIR)/.configured
 
 #
-# If you are building a library, then you need to stage it too.
-#
-#$(STAGING_LIB_DIR)/libimagemagick.so.$(IMAGEMAGICK_VERSION): $(IMAGEMAGICK_BUILD_DIR)/libimagemagick.so.$(IMAGEMAGICK_VERSION)
-#	$(INSTALL) -d $(STAGING_INCLUDE_DIR)
-#	$(INSTALL) -m 644 $(IMAGEMAGICK_BUILD_DIR)/imagemagick.h $(STAGING_INCLUDE_DIR)
-#	$(INSTALL) -d $(STAGING_LIB_DIR)
-#	$(INSTALL) -m 644 $(IMAGEMAGICK_BUILD_DIR)/libimagemagick.a $(STAGING_LIB_DIR)
-#	$(INSTALL) -m 644 $(IMAGEMAGICK_BUILD_DIR)/libimagemagick.so.$(IMAGEMAGICK_VERSION) $(STAGING_LIB_DIR)
-#	cd $(STAGING_LIB_DIR) && ln -fs libimagemagick.so.$(IMAGEMAGICK_VERSION) libimagemagick.so.1
-#	cd $(STAGING_LIB_DIR) && ln -fs libimagemagick.so.$(IMAGEMAGICK_VERSION) libimagemagick.so
-# 
-#imagemagick-stage: $(STAGING_LIB_DIR)/libimagemagick.so.$(IMAGEMAGICK_VERSION)
-
-#
 # This builds the actual binary.  You should change the target to refer
 # directly to the main binary which is built.
 #
 $(IMAGEMAGICK_BUILD_DIR)/.built: $(IMAGEMAGICK_BUILD_DIR)/.configured
 	rm -f $@
 	$(MAKE) -C $(@D)
+	$(MAKE) -C $(@D) DESTDIR=$(@D)/install transform='' install-am
+	sed -i -e '/^prefix=/s|=.*|=$(STAGING_PREFIX)|' -e \
+		  '/^includearchdir=/s/=.*/=\$${includedir}/' \
+				$(@D)/install/$(TARGET_PREFIX)/lib/pkgconfig/*.pc
+	sed -i -e '/^prefix=/s|=.*|=$(STAGING_PREFIX)|' $(@D)/install/$(TARGET_PREFIX)/bin/*-config
 	touch $@
 
 
@@ -162,6 +153,28 @@ $(IMAGEMAGICK_BUILD_DIR)/.built: $(IMAGEMAGICK_BUILD_DIR)/.configured
 # which is built.
 #
 imagemagick: $(IMAGEMAGICK_BUILD_DIR)/.built
+
+#
+# If you are building a library, then you need to stage it too.
+#
+$(IMAGEMAGICK_BUILD_DIR)/.staged: $(IMAGEMAGICK_BUILD_DIR)/.built
+	rm -f $@
+	# libs
+	mkdir -p $(STAGING_LIB_DIR)
+	cp -af $(@D)/install/$(TARGET_PREFIX)/lib/*.so* $(STAGING_LIB_DIR)
+	# headers
+	mkdir -p $(STAGING_INCLUDE_DIR)
+	rm -rf $(STAGING_INCLUDE_DIR)/ImageMagick-6
+	cp -af $(@D)/install/$(TARGET_PREFIX)/include/ImageMagick-6 $(STAGING_INCLUDE_DIR)
+	# pkgconfig files
+	mkdir -p $(STAGING_LIB_DIR)/pkgconfig
+	cp -af $(@D)/install/$(TARGET_PREFIX)/lib/pkgconfig/*.pc $(STAGING_LIB_DIR)/pkgconfig
+	# *-config files
+	mkdir -p $(STAGING_DIR)/bin
+	cp -af $(@D)/install/$(TARGET_PREFIX)/bin/*-config $(STAGING_DIR)/bin
+	touch $@
+
+imagemagick-stage: $(IMAGEMAGICK_BUILD_DIR)/.staged
 
 #
 # This rule creates a control file for ipkg.  It is no longer
