@@ -36,7 +36,7 @@ PHP_IMAGICK_CONFLICTS=
 #
 # PHP_IMAGICK_IPK_VERSION should be incremented when the ipk changes.
 #
-PHP_IMAGICK_IPK_VERSION=1
+PHP_IMAGICK_IPK_VERSION=2
 
 #
 # PHP_IMAGICK_CONFFILES should be a list of user-editable files
@@ -53,7 +53,7 @@ PHP_IMAGICK_IPK_VERSION=1
 # compilation or linking flags, then list them here.
 #
 PHP_IMAGICK_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/ImageMagick-6
-PHP_IMAGICK_LDFLAGS=
+PHP_IMAGICK_LDFLAGS=-lMagickWand-6.Q16
 
 #
 # PHP_IMAGICK_BUILD_DIR is the directory in which the build is done.
