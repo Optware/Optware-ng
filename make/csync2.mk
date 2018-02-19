@@ -37,11 +37,11 @@ CSYNC2_CONFLICTS=
 #
 # CSYNC2_IPK_VERSION should be incremented when the ipk changes.
 #
-CSYNC2_IPK_VERSION=1
+CSYNC2_IPK_VERSION=2
 
 #
 # CSYNC2_CONFFILES should be a list of user-editable files
-#CSYNC2_CONFFILES=$(TARGET_PREFIX)/etc/csync2.conf $(TARGET_PREFIX)/etc/init.d/SXXcsync2
+CSYNC2_CONFFILES=$(TARGET_PREFIX)/etc/csync2.cfg
 
 #
 # CSYNC2_PATCHES should list any patches, in the the order in
