@@ -1,0 +1,14 @@
+Patch from Debian
+
+Fix library name: libsqlite3.so => libsqlite3.so.0
+--- a/db_sqlite.c
++++ b/db_sqlite.c
+@@ -56,7 +56,7 @@ static void *dl_handle;
+ 
+ static void db_sqlite3_dlopen(void)
+ {
+-	csync_debug(2, "Opening shared library libsqlite3.so\n");
++	csync_debug(2, "Opening shared library libsqlite3.so.0\n");
+ 
+ 	dl_handle = dlopen("libsqlite3.so", RTLD_LAZY);
+ 	if (dl_handle == NULL) {

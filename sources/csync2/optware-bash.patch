@@ -1,0 +1,8 @@
+--- a/csync2-compare
++++ b/csync2-compare
+@@ -1,4 +1,4 @@
+-#!/bin/bash
++#!%OPTWARE_TARGET_PREFIX%/bin/bash
+ 
+ verbose=0
+ 

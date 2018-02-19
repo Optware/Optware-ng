@@ -1,0 +1,59 @@
+--- a/rsync.c
++++ b/rsync.c
+@@ -49,7 +49,7 @@
+  *
+  * @return index of the terminating byte.
+  **/
+-static size_t strlcpy(char *d, const char *s, size_t bufsize)
++static size_t _strlcpy_compat(char *d, const char *s, size_t bufsize)
+ {
+         size_t len = strlen(s);
+         size_t ret = len;
+@@ -91,9 +91,9 @@ void split_dirname_basename(char *dirname, char* basename, const char *filepath)
+ 		--dirlen;
+ 
+ 	if (dirname)
+-		strlcpy(dirname, filepath, dirlen + 1);
++		_strlcpy_compat(dirname, filepath, dirlen + 1);
+ 	if (basename)
+-		strlcpy(basename, base, baselen + 1);
++		_strlcpy_compat(basename, base, baselen + 1);
+ }
+ 
+ /*
+@@ -117,7 +117,7 @@ int mkpath(const char *path, mode_t mode) {
+ 		return -1;
+ 	}
+ 
+-	strlcpy(temp,path,strlen(path));
++	_strlcpy_compat(temp,path,strlen(path));
+ 	csync_debug(1,"mkpath full path: %s",temp);
+ 	for( remaining=strchr(temp+1, '/'); remaining!=NULL; remaining=strchr(remaining+1, '/') ){
+ 		*remaining='\0';
+@@ -261,7 +261,7 @@ static int get_tmpname(char *fnametmp, const char *tempdir, const char *fname)
+ 
+ 	if (tempdir) {
+ 		/* Note: this can't overflow, so the return value is safe */
+-		length = strlcpy(fnametmp, tempdir, MAXPATHLEN - 2);
++		length = _strlcpy_compat(fnametmp, tempdir, MAXPATHLEN - 2);
+ 		fnametmp[length++] = '/';
+ 	}
+ 
+@@ -270,7 +270,7 @@ static int get_tmpname(char *fnametmp, const char *tempdir, const char *fname)
+ 		if (!tempdir) {
+ 			length = f - fname;
+ 			/* copy up to and including the slash */
+-			strlcpy(fnametmp, fname, length + 1);
++			_strlcpy_compat(fnametmp, fname, length + 1);
+ 		}
+ 	} else
+ 		f = fname;
+@@ -290,7 +290,7 @@ static int get_tmpname(char *fnametmp, const char *tempdir, const char *fname)
+ 	}
+ 
+ 	if (maxname) {
+-		int added = strlcpy(fnametmp + length, f, maxname);
++		int added = _strlcpy_compat(fnametmp + length, f, maxname);
+ 		if (added >= maxname)
+ 			added = maxname - 1;
+ 		suf = fnametmp + length + added;

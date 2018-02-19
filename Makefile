@@ -280,7 +280,7 @@ COMMON_PACKAGES = \
 	cherokee chicken chillispot chromaprint chrpath cksfv \
 	classpath clamav clearsilver climm clips cmake cmdftp collectd \
 	confuse connect coreutils corkscrew cpio cppunit cpufrequtils cron cryptcat \
-	cscope ctags ctcs ctorrent ctrlproxy \
+	cscope csync2 ctags ctcs ctorrent ctrlproxy \
 	cups cups-filters cups-pdf cvs \
 	cyrus-imapd cyrus-sasl \
 	daemonize dansguardian dash davtools \
