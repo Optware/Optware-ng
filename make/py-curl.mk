@@ -42,7 +42,7 @@ PY-CURL_CONFLICTS=
 #
 # PY-CURL_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-CURL_IPK_VERSION=5
+PY-CURL_IPK_VERSION=6
 
 #
 # PY-CURL_CONFFILES should be a list of user-editable files
@@ -210,18 +210,22 @@ $(PY-CURL_BUILD_DIR)/.built: $(PY-CURL_BUILD_DIR)/.configured
 	cd $(@D)/2.5; \
 	    CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.5 setup.py build \
+	    --with-openssl \
 	    --curl-config=$(STAGING_PREFIX)/bin/curl-config
 	cd $(@D)/2.6; \
 	    CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py build \
+	    --with-openssl \
 	    --curl-config=$(STAGING_PREFIX)/bin/curl-config
 	cd $(@D)/2.7; \
 	    CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python2.7 setup.py build \
+	    --with-openssl \
 	    --curl-config=$(STAGING_PREFIX)/bin/curl-config
 	cd $(@D)/3; \
 	    CC='$(TARGET_CC)' LDSHARED='$(TARGET_CC) -shared' \
 	    $(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py build \
+	    --with-openssl \
 	    --curl-config=$(STAGING_PREFIX)/bin/curl-config
 	touch $@
 
