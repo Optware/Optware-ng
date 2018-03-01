@@ -22,12 +22,12 @@
 #
 
 GOLANG_SITE=https://redirector.gvt1.com/edgedl/go
-GOLANG_VERSION:=1.9.2
+GOLANG_VERSION:=1.10
 GOLANG_SOURCE=go$(GOLANG_VERSION).src.tar.gz
 GOLANG_DIR=go
 
 GOLANG_GIT=https://github.com/golang/go.git
-GOLANG_GIT_TAG=go1.10beta2
+#GOLANG_GIT_TAG=go1.10beta2
 #GOLANG_GIT_DATE=20171207
 
 ifdef GOLANG_GIT_TAG
@@ -50,7 +50,7 @@ GOLANG_DEPENDS=
 GOLANG_SUGGESTS=git, gcc, pkgconfig
 GOLANG_CONFLICTS=
 
-GOLANG_IPK_VERSION=3
+GOLANG_IPK_VERSION=1
 
 GOLANG_CONFFILES=
 
@@ -71,8 +71,6 @@ $(if $(filter buildroot-mipsel-ng, $(OPTWARE_TARGET)), softfloat, \
 
 GOLANG_PATCHES=\
 $(GOLANG_SOURCE_DIR)/default-target-cc-cxx-pkgconfig.patch \
-$(GOLANG_SOURCE_DIR)/mips_no_pipe2.patch \
-$(GOLANG_SOURCE_DIR)/mips_no_accept4.patch \
 $(GOLANG_SOURCE_DIR)/fix-errno-sign-for-epollctl-on-mips-mips64-and-ppc64.patch \
 $(GOLANG_SOURCE_DIR)/optware_crypto_x509_root.patch \
 
