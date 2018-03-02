@@ -29,7 +29,7 @@ DOVECOT_MAINTAINER=Marcel Nijenhof <nslu2@pion.xs4all.nl>
 DOVECOT_DESCRIPTION=Dovecot secure IMAP server
 DOVECOT_SECTION=net
 DOVECOT_PRIORITY=optional
-DOVECOT_DEPENDS=openssl
+DOVECOT_DEPENDS=openssl, libcap
 DOVECOT_SUGGESTS=
 DOVECOT_CONFLICTS=cyrus-imapd, imap
 
@@ -43,7 +43,7 @@ DOVECOT_DOC_CONFLICTS=
 #
 # DOVECOT_IPK_VERSION should be incremented when the ipk changes.
 #
-DOVECOT_IPK_VERSION=4
+DOVECOT_IPK_VERSION=5
 
 #
 # DOVECOT_CONFFILES should be a list of user-editable files
@@ -126,7 +126,7 @@ dovecot-source: $(DL_DIR)/$(DOVECOT_SOURCE) $(DOVECOT_PATCHES)
 # shown below to make various patches to it.
 #
 $(DOVECOT_BUILD_DIR)/.configured: $(DL_DIR)/$(DOVECOT_SOURCE) $(DOVECOT_PATCHES) make/dovecot.mk
-	$(MAKE) openssl-stage
+	$(MAKE) openssl-stage libcap-stage
 	rm -rf $(BUILD_DIR)/$(DOVECOT_DIR) $(@D)
 	$(DOVECOT_UNZIP) $(DL_DIR)/$(DOVECOT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(DOVECOT_PATCHES)" ; \
@@ -151,6 +151,7 @@ $(DOVECOT_BUILD_DIR)/.configured: $(DL_DIR)/$(DOVECOT_SOURCE) $(DOVECOT_PATCHES)
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=$(TARGET_PREFIX) \
 		--disable-static \
+		--disable-rpath \
 		--without-gssapi \
 		--without-pam \
 		--with-notify=dnotify \
