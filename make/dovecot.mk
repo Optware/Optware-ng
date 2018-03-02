@@ -43,7 +43,7 @@ DOVECOT_DOC_CONFLICTS=
 #
 # DOVECOT_IPK_VERSION should be incremented when the ipk changes.
 #
-DOVECOT_IPK_VERSION=5
+DOVECOT_IPK_VERSION=6
 
 #
 # DOVECOT_CONFFILES should be a list of user-editable files
