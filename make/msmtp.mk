@@ -39,7 +39,7 @@ MSMTP_CONFLICTS=
 #
 # MSMTP_IPK_VERSION should be incremented when the ipk changes.
 #
-MSMTP_IPK_VERSION=1
+MSMTP_IPK_VERSION=2
 
 #
 # MSMTP_CONFFILES should be a list of user-editable files
