@@ -14,13 +14,16 @@ SENDMAIL_DESCRIPTION=The most classic SMTP server.
 SENDMAIL_SECTION=network
 SENDMAIL_PRIORITY=optional
 SENDMAIL_DEPENDS=procmail, openssl, libdb
+ifeq (uclibc, $(LIBC_STYLE))
+SENDMAIL_DEPENDS +=, librpc-uclibc
+endif
 SENDMAIL_SUGGESTS=
 SENDMAIL_CONFLICTS=postfix
 
 #
 # SENDMAIL_IPK_VERSION should be incremented when the ipk changes.
 #
-SENDMAIL_IPK_VERSION=9
+SENDMAIL_IPK_VERSION=10
 
 #
 # SENDMAIL_CONFFILES should be a list of user-editable files
@@ -48,6 +51,9 @@ SENDMAIL_PATCHES += $(SENDMAIL_SOURCE_DIR)/config.patch
 endif
 SENDMAIL_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/openssl
 SENDMAIL_LDFLAGS=-lresolv
+ifeq (uclibc, $(LIBC_STYLE))
+SENDMAIL_LDFLAGS += -lrpc-uclibc
+endif
 
 #
 # SENDMAIL_BUILD_DIR is the directory in which the build is done.
@@ -97,18 +103,21 @@ sendmail-source: $(DL_DIR)/$(SENDMAIL_SOURCE) $(SENDMAIL_PATCHES)
 #
 $(SENDMAIL_BUILD_DIR)/.configured: $(DL_DIR)/$(SENDMAIL_SOURCE) $(SENDMAIL_PATCHES) make/sendmail.mk
 	$(MAKE) openssl-stage libdb-stage
-	rm -rf $(BUILD_DIR)/$(SENDMAIL_DIR) $(SENDMAIL_BUILD_DIR)
+ifeq (uclibc, $(LIBC_STYLE))
+	$(MAKE) librpc-uclibc-stage
+endif
+	rm -rf $(BUILD_DIR)/$(SENDMAIL_DIR) $(@D)
 	$(SENDMAIL_UNZIP) $(DL_DIR)/$(SENDMAIL_SOURCE) | tar -C $(BUILD_DIR) -xf -
 	if test -n "$(SENDMAIL_PATCHES)" ; then  \
 		cat $(SENDMAIL_PATCHES) |\
-		$(PATCH) -d "$(BUILD_DIR)/$(SENDMAIL_DIR)"  -p0 ; \
+		$(PATCH) -d "$(BUILD_DIR)/$(SENDMAIL_DIR)" -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(SENDMAIL_DIR)" != "$(SENDMAIL_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(SENDMAIL_DIR) $(SENDMAIL_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(SENDMAIL_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(SENDMAIL_DIR) $(@D) ; \
 	fi
 	sed -i -e '/APPENDDEF/s/-ldb/&-$(LIBDB_LIB_VERSION)/' $(@D)/devtools/Site/site.config.m4
 	sed -i -e 's|".*/spool/mail"|"$(TARGET_PREFIX)/var/spool/mail"|' $(@D)/include/*/*.h
-	touch $(SENDMAIL_BUILD_DIR)/.configured
+	touch $@
 
 sendmail-unpack: $(SENDMAIL_BUILD_DIR)/.configured
 
@@ -116,12 +125,12 @@ sendmail-unpack: $(SENDMAIL_BUILD_DIR)/.configured
 # This builds the actual binary.
 #
 $(SENDMAIL_BUILD_DIR)/.built: $(SENDMAIL_BUILD_DIR)/.configured
-	rm -f $(SENDMAIL_BUILD_DIR)/.built
-	$(MAKE) -C $(SENDMAIL_BUILD_DIR) \
+	rm -f $@
+	$(MAKE) -C $(@D) \
 		CC=$(TARGET_CC)	CCLINK=$(TARGET_CC) \
 	CCOPTS="-D_PATH_SENDMAILCF=\\\"$(TARGET_PREFIX)/etc/mail/sendmail.cf\\\" $(STAGING_CPPFLAGS) $(SENDMAIL_CPPFLAGS)" \
 		LIBDIRS="$(STAGING_LDFLAGS) $(SENDMAIL_LDFLAGS)"
-	touch $(SENDMAIL_BUILD_DIR)/.built
+	touch $@
 
 #
 # This is the build convenience target.
@@ -132,9 +141,9 @@ sendmail: $(SENDMAIL_BUILD_DIR)/.built
 # If you are building a library, then you need to stage it too.
 #
 $(SENDMAIL_BUILD_DIR)/.staged: $(SENDMAIL_BUILD_DIR)/.built
-	rm -f $(SENDMAIL_BUILD_DIR)/.staged
-	$(MAKE) -C $(SENDMAIL_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
-	touch $(SENDMAIL_BUILD_DIR)/.staged
+	rm -f $@
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	touch $@
 
 sendmail-stage: $(SENDMAIL_BUILD_DIR)/.staged
 
@@ -143,7 +152,7 @@ sendmail-stage: $(SENDMAIL_BUILD_DIR)/.staged
 # necessary to create a seperate control file under sources/sendmail
 #
 $(SENDMAIL_IPK_DIR)/CONTROL/control:
-	@$(INSTALL) -d $(SENDMAIL_IPK_DIR)/CONTROL
+	@$(INSTALL) -d $(@D)
 	@rm -f $@
 	@echo "Package: sendmail" >>$@
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
@@ -211,7 +220,7 @@ $(SENDMAIL_IPK): $(SENDMAIL_BUILD_DIR)/.built
 	$(INSTALL) -m 755 $(SENDMAIL_SOURCE_DIR)/postinst $(SENDMAIL_IPK_DIR)/CONTROL/postinst
 	echo $(SENDMAIL_CONFFILES) | sed -e 's/ /\n/g' > $(SENDMAIL_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SENDMAIL_IPK_DIR)
-#	$(WHAT_TO_DO_WITH_IPK_DIR) $(SENDMAIL_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(SENDMAIL_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
@@ -236,4 +245,4 @@ sendmail-dirclean:
 # Some sanity check for the package.
 #
 sendmail-check: $(SENDMAIL_IPK)
-	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $(SENDMAIL_IPK)
+	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
