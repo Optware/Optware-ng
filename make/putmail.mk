@@ -37,7 +37,7 @@ PUTMAIL_CONFLICTS=
 #
 # PUTMAIL_IPK_VERSION should be incremented when the ipk changes.
 #
-PUTMAIL_IPK_VERSION=1
+PUTMAIL_IPK_VERSION=2
 
 #
 # PUTMAIL_CONFFILES should be a list of user-editable files
@@ -153,7 +153,7 @@ $(PUTMAIL_IPK_DIR)/CONTROL/control:
 	@echo "Maintainer: $(PUTMAIL_MAINTAINER)" >>$@
 	@echo "Source: $(PUTMAIL_SITE)/$(PUTMAIL_SOURCE)" >>$@
 	@echo "Description: $(PUTMAIL_DESCRIPTION)" >>$@
-	@echo "Depends: py-putmail-common $(PUTMAIL_DEPENDS)" >>$@
+	@echo "Depends: $(PUTMAIL_DEPENDS)" >>$@
 	@echo "Suggests: $(PUTMAIL_SUGGESTS)" >>$@
 	@echo "Conflicts: $(PUTMAIL_CONFLICTS)" >>$@
 
