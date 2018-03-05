@@ -5,7 +5,7 @@
 ###########################################################
 
 RSYNC_SITE=http://www.samba.org/ftp/rsync/src/
-RSYNC_VERSION=3.1.2
+RSYNC_VERSION=3.1.3
 RSYNC_SOURCE=rsync-$(RSYNC_VERSION).tar.gz
 RSYNC_DIR=rsync-$(RSYNC_VERSION)
 RSYNC_UNZIP=zcat
@@ -136,6 +136,7 @@ $(RSYNC_IPK): $(RSYNC_BUILD_DIR)/.built
 	$(INSTALL) -m 755 $(RSYNC_SOURCE_DIR)/prerm $(RSYNC_IPK_DIR)/CONTROL/prerm
 	echo $(RSYNC_CONFFILES) | sed -e 's/ /\n/g' > $(RSYNC_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(RSYNC_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(RSYNC_IPK_DIR)
 
 rsync-ipk: $(RSYNC_IPK)
 
