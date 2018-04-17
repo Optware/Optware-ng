@@ -21,8 +21,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-PIP_VERSION=9.0.1
-PY-PIP_SITE=https://pypi.python.org/packages/11/b6/abcb525026a4be042b486df43905d6893fb04f05aac21c32c638e939e447
+PY-PIP_VERSION=10.0.0
+PY-PIP_SITE=https://files.pythonhosted.org/packages/e0/69/983a8e47d3dfb51e1463c1e962b2ccd1d74ec4e236e232625e353d830ed2
 PY-PIP_SOURCE=pip-$(PY-PIP_VERSION).tar.gz
 PY-PIP_DIR=pip-$(PY-PIP_VERSION)
 PY-PIP_UNZIP=zcat
