@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 IPTRAF_SITE=ftp://iptraf.seul.org/pub/iptraf
-IPTRAF_VERSION=3.0.0
+IPTRAF_VERSION=3.0.1
 IPTRAF_SOURCE=iptraf-$(IPTRAF_VERSION).tar.gz
 IPTRAF_DIR=iptraf-$(IPTRAF_VERSION)
 IPTRAF_UNZIP=zcat
@@ -29,7 +29,7 @@ IPTRAF_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 IPTRAF_DESCRIPTION=IPTraf is a console-based network statistics utility for Linux.
 IPTRAF_SECTION=net
 IPTRAF_PRIORITY=optional
-IPTRAF_DEPENDS=ncurses
+IPTRAF_DEPENDS=ncursesw
 IPTRAF_SUGGESTS=
 IPTRAF_CONFLICTS=
 
@@ -47,17 +47,19 @@ IPTRAF_IPK_VERSION=1
 # which they should be applied to the source code.
 #
 IPTRAF_PATCHES=\
-$(IPTRAF_SOURCE_DIR)/src-Makefile.patch \
+$(IPTRAF_SOURCE_DIR)/iptraf-3.0.1-compile.fix.patch \
+$(IPTRAF_SOURCE_DIR)/iptraf-3.0.0-setlocale.patch \
 $(IPTRAF_SOURCE_DIR)/support-Makefile.patch \
 $(IPTRAF_SOURCE_DIR)/src-install.sh.patch \
-$(IPTRAF_SOURCE_DIR)/ixp.patch \
-$(IPTRAF_SOURCE_DIR)/includes_fix.patch \
+$(IPTRAF_SOURCE_DIR)/ixp.patch
+
+#$(IPTRAF_SOURCE_DIR)/src-Makefile.patch 
 
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-IPTRAF_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/ncurses
+IPTRAF_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/ncursesw -I$(STAGING_INCLUDE_DIR)
 IPTRAF_LDFLAGS=
 
 #
@@ -110,7 +112,7 @@ iptraf-source: $(DL_DIR)/$(IPTRAF_SOURCE) $(IPTRAF_PATCHES)
 # shown below to make various patches to it.
 #
 $(IPTRAF_BUILD_DIR)/.configured: $(DL_DIR)/$(IPTRAF_SOURCE) $(IPTRAF_PATCHES) make/iptraf.mk
-	$(MAKE) ncurses-stage
+	$(MAKE) ncursesw-stage
 	rm -rf $(BUILD_DIR)/$(IPTRAF_DIR) $(IPTRAF_BUILD_DIR)
 	$(IPTRAF_UNZIP) $(DL_DIR)/$(IPTRAF_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(IPTRAF_PATCHES)" ; \
@@ -123,6 +125,9 @@ $(IPTRAF_BUILD_DIR)/.configured: $(DL_DIR)/$(IPTRAF_SOURCE) $(IPTRAF_PATCHES) ma
 ifeq ($(OPTWARE_TARGET), $(filter mbwe-bluering, $(OPTWARE_TARGET))) 
 	sed -i -e 's|^\(#include <net/if.h>\)|//#include <net/if.h>|' $(@D)/src/tcptable.h
 endif
+	sed -i 's@/usr/include/ncursesw@$(STAGING_INCLUDE_DIR)/ncursesw -I$(STAGING_INCLUDE_DIR)@g' $(@D)/src/Makefile
+	sed -i 's@/usr/include/ncurses@$(STAGING_INCLUDE_DIR)/ncursesw -I$(STAGING_INCLUDE_DIR)@g' $(@D)/support/Makefile
+	sed -i 's@/usr/lib/libpanelw.a /usr/lib/libncursesw.a@$(STAGING_LIB_DIR)/libpanelw.a $(STAGING_LIB_DIR)/libncursesw.a@g' $(@D)/src/Makefile
 #	(cd $(IPTRAF_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(IPTRAF_CPPFLAGS)" \
