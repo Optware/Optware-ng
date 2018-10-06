@@ -93,6 +93,10 @@ $(GLIBC-OPT_IPK): make/glibc-opt.mk
 	# these are provided by libc-dev
 	rm -f `ls $(GLIBC-OPT_IPK_DIR)$(TARGET_PREFIX)/lib/*{.so,.a} | egrep -v -- '-[0-9\.]*\.so$$'` \
 		$(GLIBC-OPT_IPK_DIR)$(TARGET_PREFIX)/lib/libgcc_s.so
+	# create $(TARGET_PREFIX)/lib64 -> lib symlink for 64-bit archs
+	if $(TARGET_CC) -E -P $(SOURCE_DIR)/common/bits.c | grep -q puts.*64-bit; then \
+		ln -s lib $(GLIBC-OPT_IPK_DIR)$(TARGET_PREFIX)/lib64; \
+	fi
 	$(MAKE) $(GLIBC-OPT_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(BUILDROOT_SOURCE_DIR)/prerm $(GLIBC-OPT_IPK_DIR)/CONTROL/prerm
 #	echo $(GLIBC-OPT_CONFFILES) | sed -e 's/ /\n/g' > $(GLIBC-OPT_IPK_DIR)/CONTROL/conffiles

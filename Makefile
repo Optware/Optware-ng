@@ -844,7 +844,7 @@ include $(shell ls make/*.mk)
 
 directories: $(DL_DIR) $(BUILD_DIR) $(STAGING_DIR) $(STAGING_PREFIX) \
 	$(STAGING_LIB_DIR) $(STAGING_INCLUDE_DIR) $(TOOL_BUILD_DIR) \
-	$(PACKAGE_DIR) $(TMPDIR)
+	$(PACKAGE_DIR) $(TMPDIR) $(STAGING_PREFIX)/lib64
 
 $(DL_DIR):
 	mkdir $(DL_DIR)
@@ -872,6 +872,9 @@ $(PACKAGE_DIR):
 
 $(TMPDIR):
 	mkdir $(TMPDIR)
+
+$(STAGING_PREFIX)/lib64:
+	ln -sf lib $(STAGING_PREFIX)/lib64
 
 source: $(PACKAGES_SOURCE)
 
