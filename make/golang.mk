@@ -58,7 +58,8 @@ GOLANG_ARCH=$(strip \
 $(if $(filter buildroot-armeabi-ng buildroot-armeabihf buildroot-armv5eabi-ng buildroot-armv5eabi-ng-legacy, $(OPTWARE_TARGET)), arm, \
 $(if $(filter buildroot-i686, $(OPTWARE_TARGET)), 386, \
 $(if $(filter buildroot-mipsel-ng, $(OPTWARE_TARGET)), mipsle, \
-$(error unsupported arch)))))
+$(if $(filter buildroot-x86_64, $(OPTWARE_TARGET)), amd64, \
+$(error unsupported arch))))))
 
 GOLANG_GOARM:=$(strip \
 $(if $(filter buildroot-armeabi-ng buildroot-armv5eabi-ng buildroot-armv5eabi-ng-legacy, $(OPTWARE_TARGET)), 5, \
