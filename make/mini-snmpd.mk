@@ -122,7 +122,7 @@ $(MINI-SNMPD_BUILD_DIR)/.configured: $(DL_DIR)/$(MINI-SNMPD_SOURCE) $(MINI-SNMPD
 	if test "$(BUILD_DIR)/$(MINI-SNMPD_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(MINI-SNMPD_DIR) $(@D) ; \
 	fi
-	sed -i -e 's|-O2|$$(CPPFLAGS)|' $(@D)/Makefile
+	sed -i -e 's|-O2|$$(CPPFLAGS)|' -e '/^CFLAGS\t=/s/ -Werror / /' $(@D)/Makefile
 	touch $@
 
 mini-snmpd-unpack: $(MINI-SNMPD_BUILD_DIR)/.configured
