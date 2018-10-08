@@ -127,7 +127,7 @@ $(BSDGAMES_BUILD_DIR)/.configured: $(DL_DIR)/$(BSDGAMES_SOURCE) $(BSDGAMES_PATCH
 	sed -i -e 's|strfile -rs|strfile.host -rs|g' \
 		$(@D)/fortune/datfiles/Makefrag
 	$(INSTALL) -m 644 $(BSDGAMES_SOURCE_DIR)/config.params $(@D)/config.params
-ifeq (uclibc, $(LIBC_STYLE))
+ifneq (, $(filter buildroot-x86_64 uclibc, $(OPTWARE_TARGET) $(LIBC_STYLE)))
 	sed -i -e "/bsd_games_cfg_no_build_dirs/s/='/='dm /" $(@D)/config.params
 endif
 	sed -i -e 's|/usr/share/games|$$(SHAREDIR)|' $(@D)/*/Makefrag
