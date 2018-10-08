@@ -402,7 +402,7 @@ COMMON_PACKAGES = \
 	sharutils shellinabox shntool silc-client simh sipcalc siproxd sispmctl \
 	slang slrn slsc \
 	sm smartmontools smstools3 snort snownews \
-	socat softethervpn softflowd sox spandsp spawn-fcgi speex spindown splix \
+	socat softethervpn softflowd sox spandsp spawn-fcgi speex speexdsp spindown splix \
 	sqlite sqlite2 \
 	sqsh squeak squid squid3 squeezelite \
 	srelay srecord srtp ssam sslh sslwrap start-stop-daemon \
