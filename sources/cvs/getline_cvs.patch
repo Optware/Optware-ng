@@ -1,0 +1,383 @@
+diff --git a/lib/getline.c b/lib/getline.c
+index 9830b4d..ef35c60 100644
+--- a/lib/getline.c
++++ b/lib/getline.c
+@@ -155,7 +155,7 @@ getstr (lineptr, n, stream, terminator, offset, limit)
+ }
+ 
+ int
+-getline (lineptr, n, stream)
++getline_cvs (lineptr, n, stream)
+      char **lineptr;
+      size_t *n;
+      FILE *stream;
+diff --git a/lib/getline.h b/lib/getline.h
+index 3bbad56..2d56667 100644
+--- a/lib/getline.h
++++ b/lib/getline.h
+@@ -12,7 +12,7 @@
+ #define GETLINE_NO_LIMIT -1
+ 
+ int
+-  getline __PROTO ((char **_lineptr, size_t *_n, FILE *_stream));
++  getline_cvs __PROTO ((char **_lineptr, size_t *_n, FILE *_stream));
+ int
+   getline_safe __PROTO ((char **_lineptr, size_t *_n, FILE *_stream,
+                          int limit));
+diff --git a/lib/getpass.c b/lib/getpass.c
+index 31c7460..88b1a22 100644
+--- a/lib/getpass.c
++++ b/lib/getpass.c
+@@ -81,7 +81,7 @@ getpass (prompt)
+   fflush (out);
+ 
+   /* Read the password.  */
+-  nread = getline (&buf, &bufsize, in);
++  nread = getline_cvs (&buf, &bufsize, in);
+   if (buf != NULL)
+     {
+       if (nread < 0)
+diff --git a/src/client.c b/src/client.c
+index 1091378..763f008 100644
+--- a/src/client.c
++++ b/src/client.c
+@@ -5781,7 +5781,7 @@ notified_a_file (data, ent_list, short_pathname, filename)
+     char *p;
+ 
+     fp = open_file (CVSADM_NOTIFY, "r");
+-    if (getline (&line, &line_len, fp) < 0)
++    if (getline_cvs (&line, &line_len, fp) < 0)
+     {
+ 	if (feof (fp))
+ 	    error (0, 0, "cannot read %s: end of file", CVSADM_NOTIFY);
+@@ -5802,7 +5802,7 @@ notified_a_file (data, ent_list, short_pathname, filename)
+ 	       line + 1);
+     }
+ 
+-    if (getline (&line, &line_len, fp) < 0)
++    if (getline_cvs (&line, &line_len, fp) < 0)
+     {
+ 	if (feof (fp))
+ 	{
+diff --git a/src/cvsrc.c b/src/cvsrc.c
+index 0941eba..6bbc331 100644
+--- a/src/cvsrc.c
++++ b/src/cvsrc.c
+@@ -92,7 +92,7 @@ read_cvsrc (argc, argv, cmdname)
+     line_chars_allocated = 0;
+     command_len = strlen (cmdname);
+     cvsrcfile = open_file (homeinit, "r");
+-    while ((line_length = getline (&line, &line_chars_allocated, cvsrcfile))
++    while ((line_length = getline_cvs (&line, &line_chars_allocated, cvsrcfile))
+ 	   >= 0)
+     {
+ 	/* skip over comment lines */
+diff --git a/src/edit.c b/src/edit.c
+index d3e2894..84b90be 100644
+--- a/src/edit.c
++++ b/src/edit.c
+@@ -187,7 +187,7 @@ ncheck_fileproc (callerdat, finfo)
+ 	return 0;
+     }
+ 
+-    while (getline (&line, &line_len, fp) > 0)
++    while (getline_cvs (&line, &line_len, fp) > 0)
+     {
+ 	notif_type = line[0];
+ 	if (notif_type == '\0')
+@@ -906,7 +906,7 @@ notify_do (type, filename, who, val, watches, repository)
+ 		error (0, errno, "cannot read %s", usersname);
+ 	    if (fp != NULL)
+ 	    {
+-		while (getline (&line, &line_len, fp) >= 0)
++		while (getline_cvs (&line, &line_len, fp) >= 0)
+ 		{
+ 		    if (strncmp (line, p, len) == 0
+ 			&& line[len] == ':')
+@@ -1018,7 +1018,7 @@ cvs_notify_check (repository, update_dir)
+ 	    error (0, errno, "cannot open %s", CVSADM_NOTIFY);
+ 	return;
+     }
+-    while (getline (&line, &line_len, fp) > 0)
++    while (getline_cvs (&line, &line_len, fp) > 0)
+     {
+ 	int notif_type;
+ 	char *filename;
+diff --git a/src/entries.c b/src/entries.c
+index 79389d1..678c397 100644
+--- a/src/entries.c
++++ b/src/entries.c
+@@ -312,7 +312,7 @@ fgetentent(fpin, cmd, sawdir)
+     line_chars_allocated = 0;
+ 
+     ent = NULL;
+-    while ((line_length = getline (&line, &line_chars_allocated, fpin)) > 0)
++    while ((line_length = getline_cvs (&line, &line_chars_allocated, fpin)) > 0)
+     {
+ 	l = line;
+ 
+@@ -748,7 +748,7 @@ ParseTag (tagp, datep, nonbranchp)
+ 	line = NULL;
+ 	line_chars_allocated = 0;
+ 
+-	if ((line_length = getline (&line, &line_chars_allocated, fp)) > 0)
++	if ((line_length = getline_cvs (&line, &line_chars_allocated, fp)) > 0)
+ 	{
+ 	    /* Remove any trailing newline.  */
+ 	    if (line[line_length - 1] == '\n')
+@@ -1084,7 +1084,7 @@ base_walk (code, finfo, rev)
+ 
+     if (fp != NULL)
+     {
+-	while (getline (&line, &line_allocated, fp) >= 0)
++	while (getline_cvs (&line, &line_allocated, fp) >= 0)
+ 	{
+ 	    char *linefile;
+ 	    char *p;
+diff --git a/src/fileattr.c b/src/fileattr.c
+index 63fff38..b5ff66d 100644
+--- a/src/fileattr.c
++++ b/src/fileattr.c
+@@ -101,7 +101,7 @@ fileattr_read ()
+     attrlist = getlist ();
+     while (1) {
+ 	int nread;
+-	nread = getline (&line, &line_len, fp);
++	nread = getline_cvs (&line, &line_len, fp);
+ 	if (nread < 0)
+ 	    break;
+ 	/* Remove trailing newline.  */
+diff --git a/src/ignore.c b/src/ignore.c
+index eae9c16..60c3bc2 100644
+--- a/src/ignore.c
++++ b/src/ignore.c
+@@ -159,7 +159,7 @@ ign_add_file (file, hold)
+ 	    error (0, errno, "cannot open %s", file);
+ 	return;
+     }
+-    while (getline (&line, &line_allocated, fp) >= 0)
++    while (getline_cvs (&line, &line_allocated, fp) >= 0)
+ 	ign_add (line, hold);
+     if (ferror (fp))
+ 	error (0, errno, "cannot read %s", file);
+diff --git a/src/login.c b/src/login.c
+index 50b292b..7e4d287 100644
+--- a/src/login.c
++++ b/src/login.c
+@@ -321,7 +321,7 @@ internal error: can only call password_entry_operation with pserver method");
+ 
+     /* Check each line to see if we have this entry already. */
+     line = 0;
+-    while ((line_length = getline (&linebuf, &linebuf_len, fp)) >= 0)
++    while ((line_length = getline_cvs (&linebuf, &linebuf_len, fp)) >= 0)
+     {
+ 	line++;
+ 	password = password_entry_parseline (cvsroot_canonical, 1, line,
+@@ -394,7 +394,7 @@ process:
+ 		   tmp_name ? tmp_name : "(null)");
+ 
+ 	line = 0;
+-	while ((line_length = getline (&linebuf, &linebuf_len, fp)) >= 0)
++	while ((line_length = getline_cvs (&linebuf, &linebuf_len, fp)) >= 0)
+ 	{
+ 	    line++;
+ 	    if (line < found_at
+diff --git a/src/logmsg.c b/src/logmsg.c
+index 741231b..9864ec8 100644
+--- a/src/logmsg.c
++++ b/src/logmsg.c
+@@ -334,7 +334,7 @@ do_editor (dir, messagep, repository, changes)
+ 	size_t offset = 0;
+ 	while (1)
+ 	{
+-	    line_length = getline (&line, &line_chars_allocated, fp);
++	    line_length = getline_cvs (&line, &line_chars_allocated, fp);
+ 	    if (line_length == -1)
+ 	    {
+ 		if (ferror (fp))
+@@ -369,7 +369,7 @@ do_editor (dir, messagep, repository, changes)
+ 	    (void) printf ("a)bort, c)ontinue, e)dit, !)reuse this message unchanged for remaining dirs\n");
+ 	    (void) printf ("Action: (continue) ");
+ 	    (void) fflush (stdout);
+-	    line_length = getline (&line, &line_chars_allocated, stdin);
++	    line_length = getline_cvs (&line, &line_chars_allocated, stdin);
+ 	    if (line_length < 0)
+ 	    {
+ 		error (0, errno, "cannot read from stdin");
+@@ -520,9 +520,9 @@ do_verify (messagep, repository)
+ 
+ 	    while (1)
+ 	    {
+-		line_length = getline (&line,
+-				       &line_chars_allocated,
+-				       fp);
++		line_length = getline_cvs (&line,
++				           &line_chars_allocated,
++				           fp);
+ 		if (line_length == -1)
+ 		{
+ 		    if (ferror (fp))
+@@ -579,7 +579,7 @@ rcsinfo_proc (repository, template)
+ 	char *line = NULL;
+ 	size_t line_chars_allocated = 0;
+ 
+-	while (getline (&line, &line_chars_allocated, tfp) >= 0)
++	while (getline_cvs (&line, &line_chars_allocated, tfp) >= 0)
+ 	    (void) fputs (line, fp);
+ 	if (ferror (tfp))
+ 	    error (0, errno, "warning: cannot read %s", template);
+diff --git a/src/mkmodules.c b/src/mkmodules.c
+index 8db5f03..abdca83 100644
+--- a/src/mkmodules.c
++++ b/src/mkmodules.c
+@@ -482,7 +482,7 @@ mkmodules (dir)
+ 	 *
+ 	 * comment lines begin with '#'
+ 	 */
+-	while (getline (&line, &line_allocated, fp) >= 0)
++	while (getline_cvs (&line, &line_allocated, fp) >= 0)
+ 	{
+ 	    /* skip lines starting with # */
+ 	    if (line[0] == '#')
+diff --git a/src/parseinfo.c b/src/parseinfo.c
+index 86fc6d6..e690b95 100644
+--- a/src/parseinfo.c
++++ b/src/parseinfo.c
+@@ -87,7 +87,7 @@ Parse_Info (infofile, repository, callproc, all)
+ 
+     /* search the info file for lines that match */
+     callback_done = line_number = 0;
+-    while (getline (&line, &line_allocated, fp_info) >= 0)
++    while (getline_cvs (&line, &line_allocated, fp_info) >= 0)
+     {
+ 	line_number++;
+ 
+@@ -284,7 +284,7 @@ parse_config (cvsroot)
+ 	goto set_defaults_and_return;
+     }
+ 
+-    while (getline (&line, &line_allocated, fp_info) >= 0)
++    while (getline_cvs (&line, &line_allocated, fp_info) >= 0)
+     {
+ 	/* Skip comments.  */
+ 	if (line[0] == '#')
+diff --git a/src/patch.c b/src/patch.c
+index 0b5522a..31dd050 100644
+--- a/src/patch.c
++++ b/src/patch.c
+@@ -628,8 +628,8 @@ patch_fileproc (callerdat, finfo)
+ 
+ 	    /* Now the munging. */
+ 	    fp = open_file (tmpfile3, "r");
+-	    if (getline (&line1, &line1_chars_allocated, fp) < 0 ||
+-		getline (&line2, &line2_chars_allocated, fp) < 0)
++	    if (getline_cvs (&line1, &line1_chars_allocated, fp) < 0 ||
++		getline_cvs (&line2, &line2_chars_allocated, fp) < 0)
+ 	    {
+ 		if (feof (fp))
+ 		    error (0, 0, "\
+@@ -736,7 +736,7 @@ failed to read diff file header %s for %s: end of file", tmpfile3, rcs);
+ 
+ 	    /* spew the rest of the diff out */
+ 	    while ((line_length
+-		    = getline (&line1, &line1_chars_allocated, fp))
++		    = getline_cvs (&line1, &line1_chars_allocated, fp))
+ 		   >= 0)
+ 		cvs_output (line1, 0);
+ 	    if (line_length < 0 && !feof (fp))
+diff --git a/src/release.c b/src/release.c
+index 27a16c0..fb3e16e 100644
+--- a/src/release.c
++++ b/src/release.c
+@@ -206,7 +206,7 @@ release (argc, argv)
+ 
+ 	    c = 0;
+ 
+-	    while ((line_length = getline (&line, &line_allocated, fp)) >= 0)
++	    while ((line_length = getline_cvs (&line, &line_allocated, fp)) >= 0)
+ 	    {
+ 		if (strchr ("MARCZ", *line))
+ 		    c++;
+diff --git a/src/repos.c b/src/repos.c
+index b444abb..174706a 100644
+--- a/src/repos.c
++++ b/src/repos.c
+@@ -94,7 +94,7 @@ Name_Repository (dir, update_dir)
+ 	error (1, save_errno, "cannot open %s", tmp);
+     }
+ 
+-    if (getline (&repos, &repos_allocated, fpin) < 0)
++    if (getline_cvs (&repos, &repos_allocated, fpin) < 0)
+     {
+ 	/* FIXME: should be checking for end of file separately.  */
+ 	error (0, 0, "in directory %s:", xupdate_dir);
+diff --git a/src/root.c b/src/root.c
+index 44d1f9a..a5323e6 100644
+--- a/src/root.c
++++ b/src/root.c
+@@ -81,7 +81,7 @@ Name_Root (dir, update_dir)
+      */
+     fpin = open_file (tmp, "r");
+ 
+-    if ((len = getline (&root, &root_allocated, fpin)) < 0)
++    if ((len = getline_cvs (&root, &root_allocated, fpin)) < 0)
+     {
+ 	int saved_errno = errno;
+ 	/* FIXME: should be checking for end of file separately; errno
+diff --git a/src/server.c b/src/server.c
+index a694a5b..8b8a654 100644
+--- a/src/server.c
++++ b/src/server.c
+@@ -2599,7 +2599,7 @@ check_command_legal_p (cmd_name)
+ 	 }
+ 	 else  /* successfully opened readers file */
+ 	 {
+-	     while ((num_red = getline (&linebuf, &linebuf_len, fp)) >= 0)
++	     while ((num_red = getline_cvs (&linebuf, &linebuf_len, fp)) >= 0)
+ 	     {
+ 		 /* Hmmm, is it worth importing my own readline
+ 		    library into CVS?  It takes care of chopping
+@@ -2660,7 +2660,7 @@ check_command_legal_p (cmd_name)
+ 	 }
+ 
+ 	 found_it = 0;
+-	 while ((num_red = getline (&linebuf, &linebuf_len, fp)) >= 0)
++	 while ((num_red = getline_cvs (&linebuf, &linebuf_len, fp)) >= 0)
+ 	 {
+ 	     /* Chop newline by hand, for strcmp()'s sake. */
+ 	     if (num_red > 0 && linebuf[num_red - 1] == '\n')
+@@ -5555,7 +5555,7 @@ check_repository_password (username, password, repository, host_user_ptr)
+ 
+     /* Look for a relevant line -- one with this user's name. */
+     namelen = strlen (username);
+-    while (getline (&linebuf, &linebuf_len, fp) >= 0)
++    while (getline_cvs (&linebuf, &linebuf_len, fp) >= 0)
+     {
+ 	if ((strncmp (linebuf, username, namelen) == 0)
+ 	    && (linebuf[namelen] == ':'))
+diff --git a/src/subr.c b/src/subr.c
+index 0725503..a286049 100644
+--- a/src/subr.c
++++ b/src/subr.c
+@@ -668,7 +668,7 @@ file_has_markers (finfo)
+     fp = CVS_FOPEN (finfo->file, "r");
+     if (fp == NULL)
+ 	error (1, errno, "cannot open %s", finfo->fullname);
+-    while (getline (&line, &line_allocated, fp) > 0)
++    while (getline_cvs (&line, &line_allocated, fp) > 0)
+     {
+ 	if (strncmp (line, RCS_MERGE_PAT_1, sizeof RCS_MERGE_PAT_1 - 1) == 0 ||
+ 	    strncmp (line, RCS_MERGE_PAT_2, sizeof RCS_MERGE_PAT_2 - 1) == 0 ||
+diff --git a/src/wrapper.c b/src/wrapper.c
+index 35adf14..a9e7345 100644
+--- a/src/wrapper.c
++++ b/src/wrapper.c
+@@ -284,7 +284,7 @@ wrap_add_file (file, temp)
+ 	    error (0, errno, "cannot open %s", file);
+ 	return;
+     }
+-    while (getline (&line, &line_allocated, fp) >= 0)
++    while (getline_cvs (&line, &line_allocated, fp) >= 0)
+ 	wrap_add (line, temp);
+     if (line)
+         free (line);
