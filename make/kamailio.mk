@@ -77,7 +77,8 @@ KAMAILIO_MAKEFLAGS=$(strip \
         $(if $(filter slugosbe, $(OPTWARE_TARGET)), ARCH=arm OS=linux OSREL=2.6.16, \
         $(if $(filter mipsel, $(TARGET_ARCH)), ARCH=mips OS=linux OSREL=2.4.20, \
         $(if $(filter i386 i686, $(TARGET_ARCH)), ARCH=i386 OS=linux, \
-        ARCH=arm OS=linux OSREL=2.4.22))))))
+        $(if $(filter x86_64, $(TARGET_ARCH)), ARCH=x86_64 OS=linux, \
+        ARCH=arm OS=linux OSREL=2.4.22)))))))
 # disable IPV6 support
 KAMAILIO_MAKEFLAGS+=DEFS_RM=-DUSE_IPV6
 
@@ -269,6 +270,11 @@ $(KAMAILIO_IPK): $(KAMAILIO_BUILD_DIR)/.built
 	LOCALBASE=$(STAGING_PREFIX) SYSBASE=$(STAGING_PREFIX) CC="$(TARGET_CC)" \
 	$(MAKE) $(KAMAILIO_NOISY_BUILD) -C $(KAMAILIO_BUILD_DIR) $(KAMAILIO_MAKEFLAGS) -j1 \
 	prefix=$(KAMAILIO_IPK_DIR)$(TARGET_PREFIX) cfg-prefix=$(KAMAILIO_IPK_DIR)$(TARGET_PREFIX) install
+
+	if $(TARGET_CC) -E -P $(SOURCE_DIR)/common/bits.c | grep -q puts.*64-bit; then \
+		cd $(KAMAILIO_IPK_DIR)$(TARGET_PREFIX) && \
+		mv -f lib64 lib; \
+	fi
 
 	$(MAKE) $(KAMAILIO_IPK_DIR)/CONTROL/control
 	echo $(KAMAILIO_CONFFILES) | sed -e 's/ /\n/g' > $(KAMAILIO_IPK_DIR)/CONTROL/conffiles
