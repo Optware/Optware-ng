@@ -1,0 +1,26 @@
+diff --git a/getline.c b/getline.c
+index 54b1242..e40f3e7 100644
+--- a/getline.c
++++ b/getline.c
+@@ -36,7 +36,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA. */
+ #if defined __GNU_LIBRARY__ && HAVE_GETDELIM
+ 
+ int
+-getline (lineptr, n, stream)
++getline_own (lineptr, n, stream)
+      char **lineptr;
+      size_t *n;
+      FILE *stream;
+diff --git a/getline.h b/getline.h
+index e8415db..8c3fec7 100644
+--- a/getline.h
++++ b/getline.h
+@@ -34,7 +34,7 @@ Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.  */
+ # if __GLIBC__ < 2
+ 
+ int
+-getline PARAMS ((char **_lineptr, size_t *_n, FILE *_stream));
++getline_own PARAMS ((char **_lineptr, size_t *_n, FILE *_stream));
+ 
+ int
+ getdelim PARAMS ((char **_lineptr, size_t *_n, int _delimiter, FILE *_stream));
