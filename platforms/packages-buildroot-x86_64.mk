@@ -2,6 +2,7 @@ SPECIFIC_PACKAGES = \
 
 BROKEN_PACKAGES = \
 	ecl \
+	erlang \
 	gnu-smalltalk \
 	qemu \
 	qemu-libc-i386 \
