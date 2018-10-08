@@ -52,7 +52,7 @@ BIP_CONFFILES=$(TARGET_PREFIX)/etc/bip.conf $(TARGET_PREFIX)/etc/init.d/S99bip $
 # BIP_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-# BIP_PATCHES=$(BIP_SOURCE_DIR)/configure.patch
+BIP_PATCHES=$(BIP_SOURCE_DIR)/log.c.patch
 
 #
 # If the compilation of the package requires additional
@@ -114,7 +114,7 @@ $(BIP_BUILD_DIR)/.configured: $(DL_DIR)/$(BIP_SOURCE) $(BIP_PATCHES) make/bip.mk
 	$(BIP_UNZIP) $(DL_DIR)/$(BIP_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(BIP_PATCHES)" ; \
 		then cat $(BIP_PATCHES) | \
-		$(PATCH) -d $(BUILD_DIR)/$(BIP_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(BIP_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(BIP_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(BIP_DIR) $(@D) ; \
