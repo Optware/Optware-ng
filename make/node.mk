@@ -59,7 +59,8 @@ NODE_LDFLAGS=
 NODE_ARCH=$(strip \
 	$(if $(filter powerpc, $(TARGET_ARCH)), ppc, \
 	$(if $(filter i386 i686, $(TARGET_ARCH)), ia32, \
-	$(TARGET_ARCH))))
+	$(if $(filter x86_64, $(TARGET_ARCH)), x64, \
+	$(TARGET_ARCH)))))
 
 NODE_CONFIGURE_ARCH_OPTS=--dest-cpu=$(NODE_ARCH)
 
