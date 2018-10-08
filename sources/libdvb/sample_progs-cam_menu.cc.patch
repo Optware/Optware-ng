@@ -1,0 +1,13 @@
+diff --git a/sample_progs/cam_menu.cc b/sample_progs/cam_menu.cc
+index ce0df61..56cb9a8 100644
+--- a/sample_progs/cam_menu.cc
++++ b/sample_progs/cam_menu.cc
+@@ -46,7 +46,7 @@ void reset_keypress()
+ 
+ void byebye(int i, void *f)
+ {
+-	int fd = (int) f;
++	int fd = (intptr_t) f;
+ 
+ 	CamPacket cp(fd, CMENU_CLOSE, 0, NULL);
+ 	cp.psend();
