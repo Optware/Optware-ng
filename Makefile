@@ -725,7 +725,8 @@ $(if $(filter buildroot-armeabi-ng buildroot-armeabihf buildroot-armv5eabi-ng bu
 $(if $(filter buildroot-i686, $(OPTWARE_TARGET)), 386, \
 $(if $(filter buildroot-mipsel-ng, $(OPTWARE_TARGET)), mipsle, \
 $(if $(filter buildroot-ppc-603e ct-ng-ppc-e500v2, $(OPTWARE_TARGET)), ppc, \
-$(TARGET_ARCH))))))
+$(if $(filter buildroot-x86_64, $(OPTWARE_TARGET)), amd64, \
+$(TARGET_ARCH)))))))
 
 CROSS_GCCGO_GOROOT ?= $(TARGET_CROSS_TOP)/$(EXACT_TARGET_NAME)
 
