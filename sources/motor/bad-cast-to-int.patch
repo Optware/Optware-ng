@@ -1,0 +1,135 @@
+diff --git a/kkstrtext/kkstrtext.cc b/kkstrtext/kkstrtext.cc
+index 808b811..6d14517 100644
+--- a/kkstrtext/kkstrtext.cc
++++ b/kkstrtext/kkstrtext.cc
+@@ -24,6 +24,7 @@
+ 
+ #include "kkstrtext.h"
+ #include <errno.h>
++#include <stdint.h>
+ 
+ char *strcut(char *strin, int frompos, int count) {
+     if(count > 0) {
+@@ -431,7 +432,7 @@ int stringcompare(void *s1, void *s2) {
+ }
+ 
+ int intcompare(void *s1, void *s2) {
+-    return (int) s1 != (int) s2;
++    return (intptr_t) s1 != (intptr_t) s2;
+ }
+ 
+ string i2str(int i) {
+diff --git a/kkconsui/src/texteditor.cc b/kkconsui/src/texteditor.cc
+index 1e747cc..313bc61 100644
+--- a/kkconsui/src/texteditor.cc
++++ b/kkconsui/src/texteditor.cc
+@@ -44,6 +44,7 @@
+ */
+ 
+ #include "texteditor.h"
++#include <stdint.h>
+ 
+ #define CURLINE       (curfile ? (curfile->sy+curfile->y) : 0)
+ #define CURCOL        (curfile ? (curfile->sx+curfile->x) : 0)
+@@ -1940,7 +1941,7 @@ void texteditor::undorecordfree(void *p) {
+ }
+ 
+ int texteditor::findint(void *p1, void *p2) {
+-    return *(int *) p1 != (int) p2;
++    return *(int *) p1 != (intptr_t) p2;
+ }
+ 
+ int texteditor::findhighline(void *p1, void *p2) {
+diff --git a/src/ui/ncurses/ncursesui.cc b/src/ui/ncurses/ncursesui.cc
+index 50721c6..48dcd4a 100644
+--- a/src/ui/ncurses/ncursesui.cc
++++ b/src/ui/ncurses/ncursesui.cc
+@@ -18,6 +18,8 @@
+ 
+ #include <sys/wait.h>
+ 
++#include <stdint.h>
++
+ ncursesui thisui;
+ 
+ #define LOOKER_HEIGHT		(LINES-2)
+@@ -1242,7 +1244,7 @@ bool ncursesui::projectsettings() {
+ 	populatesettingstree(*db.gettree());
+         if(fin = !db.open(n, b, &p)) break;
+ 
+-        switch((int) p) {
++        switch((intptr_t) p) {
+             case 10:
+ 		if(input(motorui::text, buf = project.getversion(),
+ 		_("version: ")) == motorui::yes) {
+@@ -1368,7 +1370,7 @@ void ncursesui::populatecontentstree(treeview &tree, motorproject &mp, projedita
+ 	    id = tree.getid(i);
+ 
+ 	    if(tree.isnode(id))
+-		if(sid = (int) tree.getref(id))
++		if(sid = (intptr_t) tree.getref(id))
+ 		    if(!tree.isnodeopen(id))
+ 			cnodes.push_back(treeshit[sid-1].second->gettagname());
+ 	}
+diff --git a/src/ui/ncurses/uitagbrowser.cc b/src/ui/ncurses/uitagbrowser.cc
+index 77dc33e..47b7911 100644
+--- a/src/ui/ncurses/uitagbrowser.cc
++++ b/src/ui/ncurses/uitagbrowser.cc
+@@ -1,6 +1,8 @@
+ #include "uitagbrowser.h"
+ #include "uieditor.h"
+ 
++#include <stdint.h>
++
+ uitagbrowser uitb;
+ 
+ static string getscopename(motortagbrowser::viewscope nscope) {
+@@ -95,7 +97,7 @@ void uitagbrowser::changemode() {
+     cm.close();
+ 
+     if(n) {
+-	int c = (int) cm.getref(n-1);
++	int c = (intptr_t) cm.getref(n-1);
+ 
+ 	if(c != tagbrowser.getscope()) {
+ 	    tagbrowser.setscope((motortagbrowser::viewscope) c);
+@@ -142,7 +144,7 @@ void uitagbrowser::changefilter() {
+ 	switch(cm.open()) {
+ 	    case -2:
+ 		iter = false;
+-		c = (char) (int) cm.getref(cm.getpos());
++		c = (char) (intptr_t) cm.getref(cm.getpos());
+ 
+ 		while((pos = nfilter.find(c)) != -1) {
+ 		    nfilter.erase(pos, 1);
+@@ -240,7 +242,7 @@ void uitagbrowser::exec() {
+     m.setpos(mpos);
+ 
+     if(r = (n = m.open())) {
+-        k = (int) m.getref(n-1);
++        k = (intptr_t) m.getref(n-1);
+         mpos = n-1;
+     }
+ 
+diff --git a/src/ui/ncurses/uivcs.cc b/src/ui/ncurses/uivcs.cc
+index f4a704b..768c155 100644
+--- a/src/ui/ncurses/uivcs.cc
++++ b/src/ui/ncurses/uivcs.cc
+@@ -3,6 +3,8 @@
+ #include "motormisc.h"
+ #include "motormanager.h"
+ 
++#include <stdint.h>
++
+ #define getcolor(c)	uiconf.getcolor(c)
+ 
+ uivcs uv;
+@@ -98,7 +100,7 @@ void uivcs::check() {
+ 	switch(b) {
+ 	    case 0:
+ 		if(!i) {
+-                    i = (int) tree.getref(tree.getid(n));
++                    i = (intptr_t) tree.getref(tree.getid(n));
+ 		    ic = ch.begin()+i-1;
+ 
+                     found = (ik = find(naffect.begin(), naffect.end(),

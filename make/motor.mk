@@ -55,7 +55,9 @@ MOTOR_IPK_VERSION=2
 # MOTOR_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-MOTOR_PATCHES=$(MOTOR_SOURCE_DIR)/share-Makefile.in.patch
+MOTOR_PATCHES=\
+$(MOTOR_SOURCE_DIR)/share-Makefile.in.patch \
+$(MOTOR_SOURCE_DIR)/bad-cast-to-int.patch \
 
 #
 # If the compilation of the package requires additional
@@ -122,7 +124,7 @@ endif
 	$(MOTOR_UNZIP) $(DL_DIR)/$(MOTOR_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MOTOR_PATCHES)" ; \
 		then cat $(MOTOR_PATCHES) | \
-		$(PATCH) -d $(BUILD_DIR)/$(MOTOR_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(MOTOR_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(MOTOR_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(MOTOR_DIR) $(@D) ; \
