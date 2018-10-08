@@ -166,6 +166,7 @@ endif
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=$(TARGET_PREFIX) \
 		--disable-nls \
+		--disable-werror \
 	)
 ifeq (0.4, $(LTRACE_VERSION))
 	sed -i -e 's/-o root -g root //' $(@D)/Makefile
