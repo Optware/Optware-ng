@@ -2,7 +2,7 @@ SPECIFIC_PACKAGES = \
 
 BROKEN_PACKAGES = \
 	ecl \
-	erlang \
+	erlang erl-yaws erl-ejabberd \
 	gnu-smalltalk \
 	qemu \
 	qemu-libc-i386 \
