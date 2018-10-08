@@ -21,7 +21,7 @@ ATFTP_IPK_VERSION=11
 ATFTP_CONFFILES=$(TARGET_PREFIX)/etc/xinetd.d/atftp
 
 ATFTP_PATCHES = $(ATFTP_SOURCE_DIR)/CLK_TCK.patch
-ifeq ($(OPTWARE_TARGET), $(filter buildroot-i686 buildroot-ppc-603e ct-ng-ppc-e500v2, $(OPTWARE_TARGET)))
+ifeq ($(OPTWARE_TARGET), $(filter buildroot-i686 buildroot-ppc-603e buildroot-x86_64 ct-ng-ppc-e500v2, $(OPTWARE_TARGET)))
 ATFTP_PATCHES += $(ATFTP_SOURCE_DIR)/argz.h.patch
 endif
 ifdef ATFTP_EXTRA_PATCHES
