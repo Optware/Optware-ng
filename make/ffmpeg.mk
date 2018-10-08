@@ -72,7 +72,9 @@ FFMPEG_IPK_VERSION ?= 4
 # which they should be applied to the source code.
 #
 FFMPEG_PATCHES=
-FFMPEG_OLD_PATCHES=$(FFMPEG_SOURCE_DIR)/include_linux_types_h.patch
+FFMPEG_OLD_PATCHES=\
+$(FFMPEG_SOURCE_DIR)/include_linux_types_h.patch \
+$(FFMPEG_SOURCE_DIR)/old_visibility_hidden.patch \
 
 #
 # If the compilation of the package requires additional
