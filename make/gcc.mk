@@ -319,6 +319,11 @@ $(GCC_IPK) $(GCCGO_IPK): $(GCC_BUILD_DIR)/.built
 	PATH=`dirname $(TARGET_CC)`:$(STAGING_DIR)/bin:$(PATH) \
 	$(GCC_BUILD_EXTRA_ENV) \
 		$(MAKE) -C $(GCC_BUILD_DIR) DESTDIR=$(GCC_IPK_DIR) install
+	if $(TARGET_CC) -E -P $(SOURCE_DIR)/common/bits.c | grep -q puts.*64-bit; then \
+		cd $(GCC_IPK_DIR)$(TARGET_PREFIX) && \
+		mv -f lib64/* lib/ && \
+		rm -rf lib64; \
+	fi
 	ln -s gcc $(GCC_IPK_DIR)$(TARGET_PREFIX)/bin/cc
 	rm -f $(GCC_IPK_DIR)$(TARGET_PREFIX)/lib/libiberty.a \
 		$(GCC_IPK_DIR)$(TARGET_PREFIX)/share/info/dir \
