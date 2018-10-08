@@ -5,6 +5,7 @@ BROKEN_PACKAGES = \
 	erlang erl-yaws erl-ejabberd \
 	gnu-smalltalk \
 	inferno \
+	littlesmalltalk \
 	qemu \
 	qemu-libc-i386 \
 	syx \
