@@ -29,14 +29,14 @@ AT_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 AT_DESCRIPTION=Delayed job execution and batch processing.
 AT_SECTION=misc
 AT_PRIORITY=optional
-AT_DEPENDS=psmisc
+AT_DEPENDS=psmisc, flex
 AT_SUGGESTS=
 AT_CONFLICTS=
 
 #
 # AT_IPK_VERSION should be incremented when the ipk changes.
 #
-AT_IPK_VERSION=5
+AT_IPK_VERSION=6
 
 #
 # AT_CONFFILES should be a list of user-editable files
@@ -115,16 +115,16 @@ at-source: $(DL_DIR)/$(AT_SOURCE) $(AT_PATCHES)
 #
 $(AT_BUILD_DIR)/.configured: $(DL_DIR)/$(AT_SOURCE) $(AT_PATCHES) make/at.mk
 	$(MAKE) flex-stage
-	rm -rf $(BUILD_DIR)/$(AT_DIR) $(AT_BUILD_DIR)
+	rm -rf $(BUILD_DIR)/$(AT_DIR) $(@D)
 	$(AT_UNZIP) $(DL_DIR)/$(AT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(AT_PATCHES)" ; \
 		then cat $(AT_PATCHES) | \
 		$(PATCH) -bd $(BUILD_DIR)/$(AT_DIR) -p0 ; \
 	fi
-	if test "$(BUILD_DIR)/$(AT_DIR)" != "$(AT_BUILD_DIR)" ; \
-		then mv $(BUILD_DIR)/$(AT_DIR) $(AT_BUILD_DIR) ; \
+	if test "$(BUILD_DIR)/$(AT_DIR)" != "$(@D)" ; \
+		then mv $(BUILD_DIR)/$(AT_DIR) $(@D) ; \
 	fi
-	(cd $(AT_BUILD_DIR); \
+	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(AT_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(AT_LDFLAGS)" \
@@ -145,7 +145,7 @@ $(AT_BUILD_DIR)/.configured: $(DL_DIR)/$(AT_SOURCE) $(AT_PATCHES) make/at.mk
 		--disable-static \
 	)
 #	sed -i -e '/^LIBS/s|$$| $$(LDFLAGS)|' \
-		$(AT_BUILD_DIR)/Makefile
+		$(@D)/Makefile
 	touch $@
 
 at-unpack: $(AT_BUILD_DIR)/.configured
@@ -155,7 +155,7 @@ at-unpack: $(AT_BUILD_DIR)/.configured
 #
 $(AT_BUILD_DIR)/.built: $(AT_BUILD_DIR)/.configured
 	rm -f $@
-	$(MAKE) -C $(AT_BUILD_DIR)
+	$(MAKE) -C $(@D) LEXLIB="-lfl"
 	touch $@
 
 #
@@ -168,7 +168,7 @@ at: $(AT_BUILD_DIR)/.built
 #
 $(AT_BUILD_DIR)/.staged: $(AT_BUILD_DIR)/.built
 	rm -f $@
-	$(MAKE) -C $(AT_BUILD_DIR) DESTDIR=$(STAGING_DIR) install
+	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	touch $@
 
 at-stage: $(AT_BUILD_DIR)/.staged
