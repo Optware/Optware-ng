@@ -108,6 +108,8 @@ $(SYSLOG-NG_BUILD_DIR)/.configured: $(DL_DIR)/$(SYSLOG-NG_SOURCE) $(SYSLOG-NG_PA
 		cat $(SYSLOG-NG_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(SYSLOG-NG_DIR) -p0; \
 	fi
 	mv $(BUILD_DIR)/$(SYSLOG-NG_DIR) $(@D)
+	# no LEXLIB
+	sed -i -e 's/ -lfl / /' $(@D)/configure
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SYSLOG-NG_CPPFLAGS)" \
