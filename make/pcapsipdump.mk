@@ -20,8 +20,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PCAPSIPDUMP_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/psipdump
-PCAPSIPDUMP_VERSION=0.1.2
+PCAPSIPDUMP_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/pcapsipdump
+PCAPSIPDUMP_VERSION=0.2
 PCAPSIPDUMP_SOURCE=pcapsipdump-$(PCAPSIPDUMP_VERSION).tar.gz
 PCAPSIPDUMP_DIR=pcapsipdump-$(PCAPSIPDUMP_VERSION)
 PCAPSIPDUMP_UNZIP=zcat
@@ -36,7 +36,7 @@ PCAPSIPDUMP_CONFLICTS=
 #
 # PCAPSIPDUMP_IPK_VERSION should be incremented when the ipk changes.
 #
-PCAPSIPDUMP_IPK_VERSION=3
+PCAPSIPDUMP_IPK_VERSION=1
 
 #
 # PCAPSIPDUMP_CONFFILES should be a list of user-editable files
@@ -46,13 +46,13 @@ PCAPSIPDUMP_IPK_VERSION=3
 # PCAPSIPDUMP_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-PCAPSIPDUMP_PATCHES=$(PCAPSIPDUMP_SOURCE_DIR)/Makefile.patch
+#PCAPSIPDUMP_PATCHES=$(PCAPSIPDUMP_SOURCE_DIR)/Makefile.patch
 
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
 #
-PCAPSIPDUMP_CPPFLAGS=-fsigned-char
+PCAPSIPDUMP_CPPFLAGS=
 PCAPSIPDUMP_LDFLAGS=
 
 #
@@ -115,7 +115,6 @@ $(PCAPSIPDUMP_BUILD_DIR)/.configured: $(DL_DIR)/$(PCAPSIPDUMP_SOURCE) $(PCAPSIPD
 	if test "$(BUILD_DIR)/$(PCAPSIPDUMP_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(PCAPSIPDUMP_DIR) $(@D) ; \
 	fi
-	sed -i -e "s/^#elif$$/#else/" $(@D)/pcapsipdump.h
 	touch $@
 
 pcapsipdump-unpack: $(PCAPSIPDUMP_BUILD_DIR)/.configured
@@ -183,6 +182,7 @@ $(PCAPSIPDUMP_IPK): $(PCAPSIPDUMP_BUILD_DIR)/.built
 	$(INSTALL) -m 755 $(PCAPSIPDUMP_BUILD_DIR)/pcapsipdump $(PCAPSIPDUMP_IPK_DIR)$(TARGET_PREFIX)/sbin/
 	$(MAKE) $(PCAPSIPDUMP_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(PCAPSIPDUMP_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(PCAPSIPDUMP_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
