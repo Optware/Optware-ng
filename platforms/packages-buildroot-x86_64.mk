@@ -10,6 +10,7 @@ BROKEN_PACKAGES = \
 	php-thttpd \
 	qemu \
 	qemu-libc-i386 \
+	swi-prolog \
 	syx \
 	ldconfig modutils samba2
 
