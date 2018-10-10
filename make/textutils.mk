@@ -51,7 +51,8 @@ TEXTUTILS_CONFFILES=
 # TEXTUTILS_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-TEXTUTILS_PATCHES=
+TEXTUTILS_PATCHES=\
+$(TEXTUTILS_SOURCE_DIR)/getline.patch \
 
 #
 # If the compilation of the package requires additional
@@ -111,7 +112,7 @@ $(TEXTUTILS_BUILD_DIR)/.configured: $(DL_DIR)/$(TEXTUTILS_SOURCE) $(TEXTUTILS_PA
 #	$(MAKE) <bar>-stage <baz>-stage
 	rm -rf $(BUILD_DIR)/$(TEXTUTILS_DIR) $(TEXTUTILS_BUILD_DIR)
 	$(TEXTUTILS_UNZIP) $(DL_DIR)/$(TEXTUTILS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-#	cat $(TEXTUTILS_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(TEXTUTILS_DIR) -p1
+	cat $(TEXTUTILS_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(TEXTUTILS_DIR) -p1
 	mv $(BUILD_DIR)/$(TEXTUTILS_DIR) $(TEXTUTILS_BUILD_DIR)
 	sed -i -e '/\*malloc *()/d' $(TEXTUTILS_BUILD_DIR)/lib/putenv.c
 	(cd $(TEXTUTILS_BUILD_DIR); \
