@@ -142,15 +142,15 @@ golang-unpack: $(GOLANG_BUILD_DIR)/.configured
 #
 $(GOLANG_BUILD_DIR)/.built: $(GOLANG_BUILD_DIR)/.configured
 	rm -f $@
-ifeq ($(GOLANG_ARCH), amd64)
-	@if [ ! -e $(TARGET_PREFIX)/lib64/ld-linux-x86-64.so.2 ]; then \
+	@if [ "$(GOLANG_ARCH)" = amd64 ]; then \
+	if [ ! -e $(TARGET_PREFIX)/lib64/ld-linux-x86-64.so.2 ]; then \
 		echo "Warning: $(TARGET_PREFIX)/lib64/ld-linux-x86-64.so.2 does not exist" >&2; \
 		echo ">>>>>>>> golang build will probably fail." >&2; \
 		echo ">>>>>>>> You can try something like this (as root)" >&2; \
 		echo ">>>>>>>> # mkdir -p $(TARGET_PREFIX)/lib64" >&2; \
 		echo ">>>>>>>> # ln -s /lib64/ld-linux-x86-64.so.2 $(TARGET_PREFIX)/lib64/" >&2; \
+	fi; \
 	fi
-endif
 	(cd $(@D)/src; \
 		CC_FOR_TARGET=$(TARGET_CC) \
 		CXX_FOR_TARGET=$(TARGET_CXX) \
@@ -158,10 +158,10 @@ endif
 		GOARM=$(GOLANG_GOARM) GOMIPS=$(GOLANG_GOMIPS) CGO_ENABLED=1 \
 		GOROOT_BOOTSTRAP=$(GCC_HOST_BIN_DIR)/.. ./make.bash \
 	)
-ifeq ($(GOLANG_ARCH), amd64)
-	mkdir -p $(@D)/bin/linux_amd64
-	cp -af $(@D)/bin/{go,gofmt} $(@D)/bin/linux_amd64
-endif
+	@if [ "$(GOLANG_ARCH)" = amd64 ]; then \
+	mkdir -p $(@D)/bin/linux_amd64 && \
+	cp -af $(@D)/bin/{go,gofmt} $(@D)/bin/linux_amd64; \
+	fi
 	touch $@
 
 #

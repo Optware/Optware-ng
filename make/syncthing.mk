@@ -119,11 +119,11 @@ $(SYNCTHING_BUILD_DIR)/.configured: $(DL_DIR)/$(SYNCTHING_SOURCE) $(SYNCTHING_PA
 ifeq ($(OPTWARE_TARGET), $(filter buildroot-mipsel-ng, $(OPTWARE_TARGET)))
 	$(MAKE) gcc-host golang-host
 else
- ifeq ($(GOLANG_ARCH), amd64)
-	$(MAKE) golang-host
- else
-	$(MAKE) golang
- endif
+	if [ "$(GOLANG_ARCH)" = amd64 ]; then \
+		$(MAKE) golang-host; \
+	else \
+		$(MAKE) golang; \
+	fi
 endif
 	rm -rf $(BUILD_DIR)/$(SYNCTHING_DIR) $(@D)
 	$(SYNCTHING_UNZIP) $(DL_DIR)/$(SYNCTHING_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -151,17 +151,17 @@ ifeq ($(OPTWARE_TARGET), $(filter buildroot-mipsel-ng, $(OPTWARE_TARGET)))
 		GOPATH=$(@D) \
 		go run build.go -goos linux -goarch $(GOLANG_ARCH) -targetcc $(TARGET_CC) -gccgo $(TARGET_GCCGO) -version v$(SYNCTHING_VERSION) -no-upgrade build
 else
- ifeq ($(GOLANG_ARCH), amd64)
+	if [ "$(GOLANG_ARCH)" = amd64 ]; then \
 	cd $(@D)/src/github.com/syncthing/syncthing; \
 		PATH=$(GOLANG_HOST_BUILD_DIR)/bin:$$PATH \
 		GOPATH=$(@D) \
-		go run build.go -goos linux -goarch $(GOLANG_ARCH) -targetcc $(TARGET_CC) -version v$(SYNCTHING_VERSION) -no-upgrade build
- else
+		go run build.go -goos linux -goarch $(GOLANG_ARCH) -targetcc $(TARGET_CC) -version v$(SYNCTHING_VERSION) -no-upgrade build ;\
+	else \
 	cd $(@D)/src/github.com/syncthing/syncthing; \
 		PATH=$(GOLANG_BUILD_DIR)/bin:$$PATH \
 		GOPATH=$(@D) \
-		go run build.go -goos linux -goarch $(GOLANG_ARCH) -targetcc $(TARGET_CC) -version v$(SYNCTHING_VERSION) -no-upgrade build
- endif
+		go run build.go -goos linux -goarch $(GOLANG_ARCH) -targetcc $(TARGET_CC) -version v$(SYNCTHING_VERSION) -no-upgrade build; \
+	fi
 endif
 	touch $@
 
