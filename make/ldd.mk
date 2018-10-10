@@ -79,8 +79,9 @@ LDD_IPK=$(BUILD_DIR)/ldd_$(LDD_VERSION)-$(LDD_IPK_VERSION)_$(TARGET_ARCH).ipk
 LDD_LD=$(strip \
     $(if $(filter buildroot-armeabihf, $(OPTWARE_TARGET)), ld-linux-armhf.so.3, \
     $(if $(filter buildroot-i686, $(OPTWARE_TARGET)), ld-linux.so.2, \
+    $(if $(filter buildroot-x86_64, $(OPTWARE_TARGET)), ld-linux-x86-64.so.2, \
     $(if $(filter ct-ng-ppc-e500v2 buildroot-ppc-603e, $(OPTWARE_TARGET)), ld.so.1, \
-    ld-uClibc.so.1))))
+    ld-uClibc.so.1)))))
 
 .PHONY: ldd-source ldd-unpack ldd ldd-ipk ldd-clean ldd-dirclean ldd-check
 
