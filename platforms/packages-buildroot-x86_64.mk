@@ -6,6 +6,7 @@ BROKEN_PACKAGES = \
 	gnu-smalltalk \
 	inferno \
 	littlesmalltalk \
+	phoneme-advanced \
 	qemu \
 	qemu-libc-i386 \
 	syx \
