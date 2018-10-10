@@ -7,6 +7,7 @@ BROKEN_PACKAGES = \
 	inferno \
 	littlesmalltalk \
 	phoneme-advanced \
+	php-thttpd \
 	qemu \
 	qemu-libc-i386 \
 	syx \
