@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SYNCTHING_URL=https://github.com/syncthing/syncthing/archive/v$(SYNCTHING_VERSION).tar.gz
-SYNCTHING_VERSION=0.14.44
+SYNCTHING_VERSION=0.14.51
 SYNCTHING_SOURCE=syncthing-$(SYNCTHING_VERSION).tar.gz
 SYNCTHING_DIR=syncthing-$(SYNCTHING_VERSION)
 SYNCTHING_UNZIP=zcat

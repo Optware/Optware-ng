@@ -1,3 +1,5 @@
+diff --git a/build.go b/build.go
+index 5fb4761..3b6531f 100644
 --- a/build.go
 +++ b/build.go
 @@ -37,6 +37,7 @@ var (
@@ -8,7 +10,7 @@
  	noupgrade     bool
  	version       string
  	goVersion     float64
-@@ -351,6 +352,7 @@ func runCommand(cmd string, target target) {
+@@ -344,6 +345,7 @@ func runCommand(cmd string, target target) {
  func parseFlags() {
  	flag.StringVar(&goarch, "goarch", runtime.GOARCH, "GOARCH")
  	flag.StringVar(&goos, "goos", runtime.GOOS, "GOOS")
@@ -16,23 +18,23 @@
  	flag.BoolVar(&noupgrade, "no-upgrade", noupgrade, "Disable upgrade functionality")
  	flag.StringVar(&version, "version", getVersion(), "Set compiled in version string")
  	flag.BoolVar(&race, "race", race, "Use race detector")
-@@ -436,6 +438,9 @@ func install(target target, tags []string) {
+@@ -420,6 +422,9 @@ func install(target target, tags []string) {
  
  	os.Setenv("GOOS", goos)
  	os.Setenv("GOARCH", goarch)
 +	if targetcc != "" {
 +		os.Setenv("CC", targetcc)
 +	}
- 	runPrint("go", args...)
- }
  
-@@ -462,6 +467,9 @@ func build(target target, tags []string) {
+ 	// On Windows generate a special file which the Go compiler will
+ 	// automatically use when generating Windows binaries to set things like
+@@ -447,6 +452,9 @@ func build(target target, tags []string) {
  
  	os.Setenv("GOOS", goos)
  	os.Setenv("GOARCH", goarch)
 +	if targetcc != "" {
 +		os.Setenv("CC", targetcc)
 +	}
- 	runPrint("go", args...)
- }
  
+ 	// On Windows generate a special file which the Go compiler will
+ 	// automatically use when generating Windows binaries to set things like
