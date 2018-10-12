@@ -133,6 +133,10 @@ endif
 	fi
 	mkdir -p $(@D)/src/github.com/syncthing
 	mv -f $(BUILD_DIR)/$(SYNCTHING_DIR) $(@D)/src/github.com/syncthing/syncthing
+ifeq ($(OPTWARE_TARGET), $(filter buildroot-mipsel-ng, $(OPTWARE_TARGET)))
+	mkdir -p $(@D)/src/math
+	cp -af $(GOLANG_HOST_BUILD_DIR)/src/math/bits $(@D)/src/math/
+endif
 	touch $@
 
 syncthing-unpack: $(SYNCTHING_BUILD_DIR)/.configured
