@@ -36,7 +36,7 @@ IPTRAF_CONFLICTS=
 #
 # IPTRAF_IPK_VERSION should be incremented when the ipk changes.
 #
-IPTRAF_IPK_VERSION=1
+IPTRAF_IPK_VERSION=2
 
 #
 # IPTRAF_CONFFILES should be a list of user-editable files
@@ -60,7 +60,7 @@ $(IPTRAF_SOURCE_DIR)/ixp.patch
 # compilation or linking flags, then list them here.
 #
 IPTRAF_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/ncursesw -I$(STAGING_INCLUDE_DIR)
-IPTRAF_LDFLAGS=
+IPTRAF_LDFLAGS=-ltinfow
 
 #
 # IPTRAF_BUILD_DIR is the directory in which the build is done.

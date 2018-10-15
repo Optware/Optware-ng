@@ -13,10 +13,10 @@ NANO_MAINTAINER=Mark Donszelmann <mark@donszelmann.com>
 NANO_DESCRIPTION=A pico like editor
 NANO_SECTION=editor
 NANO_PRIORITY=optional
-NANO_DEPENDS=ncurses, ncursesw, zlib, file
+NANO_DEPENDS=ncursesw, zlib, file
 NANO_CONFLICTS=
 
-NANO_IPK_VERSION=1
+NANO_IPK_VERSION=2
 
 #NANO_CONFFILES=$(TARGET_PREFIX)/etc/nanorc
 
@@ -39,7 +39,7 @@ $(DL_DIR)/$(NANO_SOURCE):
 nano-source: $(DL_DIR)/$(NANO_SOURCE) $(NANO_PATCHES)
 
 $(NANO_BUILD_DIR)/.configured: $(DL_DIR)/$(NANO_SOURCE) $(NANO_PATCHES) make/nano.mk
-	$(MAKE) ncurses-stage ncursesw-stage zlib-stage file-stage
+	$(MAKE) ncursesw-stage zlib-stage file-stage
 	rm -rf $(BUILD_DIR)/$(NANO_DIR) $(@D)
 	$(NANO_UNZIP) $(DL_DIR)/$(NANO_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NANO_PATCHES)"; \
@@ -50,6 +50,9 @@ $(NANO_BUILD_DIR)/.configured: $(DL_DIR)/$(NANO_SOURCE) $(NANO_PATCHES) make/nan
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(NANO_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(NANO_LDFLAGS)" \
+		ac_cv_lib_ncursesw_get_wch=yes \
+		ac_cv_lib_magic_magic_open=yes \
+		ac_cv_lib_z_inflate=yes \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -65,6 +68,8 @@ nano-unpack: $(NANO_BUILD_DIR)/.configured
 
 $(NANO_BUILD_DIR)/.built: $(NANO_BUILD_DIR)/.configured
 	rm -f $@
+	# A dirty fix to link with ltinfow
+	find $(@D) -type f -name 'Makefile' -exec sed -i 's@-ltinfo@-ltinfow@g' {} \;
 	$(MAKE) -C $(@D)
 	touch $@
 

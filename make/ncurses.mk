@@ -29,7 +29,7 @@ else
 NCURSES_FOR_OPTWARE_TARGET=ncurses
 endif
 
-NCURSES_IPK_VERSION=8
+NCURSES_IPK_VERSION=7
 
 NCURSES_PATCHES=$(NCURSES_SOURCE_DIR)/MKlib_gen_sh.patch
 
@@ -90,7 +90,6 @@ $(NCURSES_DIR)/.configured: $(DL_DIR)/$(NCURSES_SOURCE) $(NCURSES_PATCHES) make/
 		$(STAGING_LIB_DIR)/libmenu.* \
 		$(STAGING_LIB_DIR)/libncurses.* \
 		$(STAGING_LIB_DIR)/libpanel.* \
-		$(STAGING_LIB_DIR)/libtinfo.* \
 		$(STAGING_LIB_DIR)/libtinfo.*
 	$(NCURSES_UNZIP) $(DL_DIR)/$(NCURSES_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NCURSES_PATCHES)" ; \

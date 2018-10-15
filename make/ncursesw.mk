@@ -18,7 +18,7 @@ NCURSESW_PRIORITY=optional
 NCURSESW_DEPENDS=ncurses
 NCURSESW_CONFLICTS=
 
-NCURSESW_IPK_VERSION=3
+NCURSESW_IPK_VERSION=4
 
 NCURSESW_PATCHES=$(NCURSESW_SOURCE_DIR)/MKlib_gen_sh.patch
 
@@ -35,10 +35,11 @@ $(NCURSESW_DIR)/.configured: $(DL_DIR)/$(NCURSESW_SOURCE) make/ncursesw.mk
 	$(MAKE) zlib-stage
 	rm -rf $(BUILD_DIR)/$(NCURSES) $(@D)
 	rm -rf  $(STAGING_INCLUDE_DIR)/ncursesw \
-		$(STAGING_LIB_DIR)/libformw.* \
-		$(STAGING_LIB_DIR)/libmenuw.* \
-		$(STAGING_LIB_DIR)/libncursesw.* \
-		$(STAGING_LIB_DIR)/libpanelw.*
+		$(STAGING_LIB_DIR)/libformw* \
+		$(STAGING_LIB_DIR)/libmenuw* \
+		$(STAGING_LIB_DIR)/libncursesw* \
+		$(STAGING_LIB_DIR)/libpanelw* \
+		$(STAGING_LIB_DIR)/libtinfow*
 	$(NCURSESW_UNZIP) $(DL_DIR)/$(NCURSESW_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NCURSESW_PATCHES)" ; \
 		then cat $(NCURSESW_PATCHES) | \
@@ -76,6 +77,7 @@ endif
 		--without-ada		\
 		--enable-widec		\
 		--enable-safe-sprintf	\
+		--with-termlib		\
 	);
 ifneq ($(HOSTCC), $(TARGET_CC))
 	sed -i -e '/^CPPFLAGS/s| -I$$[{(]includedir[)}]||' $(@D)/*/Makefile
