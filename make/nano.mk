@@ -16,13 +16,13 @@ NANO_PRIORITY=optional
 NANO_DEPENDS=ncursesw, zlib, file
 NANO_CONFLICTS=
 
-NANO_IPK_VERSION=2
+NANO_IPK_VERSION=1
 
 #NANO_CONFFILES=$(TARGET_PREFIX)/etc/nanorc
 
 #NANO_PATCHES=$(NANO_SOURCE_DIR)/broken_regex.patch
 
-NANO_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/ncursesw
+NANO_CPPFLAGS=
 NANO_LDFLAGS=
 
 NANO_BUILD_DIR=$(BUILD_DIR)/nano
@@ -50,9 +50,7 @@ $(NANO_BUILD_DIR)/.configured: $(DL_DIR)/$(NANO_SOURCE) $(NANO_PATCHES) make/nan
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(NANO_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(NANO_LDFLAGS)" \
-		ac_cv_lib_ncursesw_get_wch=yes \
-		ac_cv_lib_magic_magic_open=yes \
-		ac_cv_lib_z_inflate=yes \
+		ac_cv_prog_NCURSESW_CONFIG=$(STAGING_PREFIX)/bin/ncursesw5-config \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -68,8 +66,6 @@ nano-unpack: $(NANO_BUILD_DIR)/.configured
 
 $(NANO_BUILD_DIR)/.built: $(NANO_BUILD_DIR)/.configured
 	rm -f $@
-	# A dirty fix to link with ltinfow
-	find $(@D) -type f -name 'Makefile' -exec sed -i 's@-ltinfo@-ltinfow@g' {} \;
 	$(MAKE) -C $(@D)
 	touch $@
 

@@ -105,7 +105,6 @@ $(NCURSES_DIR)/.configured: $(DL_DIR)/$(NCURSES_SOURCE) $(NCURSES_PATCHES) make/
 		--host=$(GNU_TARGET_NAME) \
 		--build=$(GNU_HOST_NAME) \
 		--prefix=$(TARGET_PREFIX)	\
-		--with-termlib		\
 		--with-shared		\
 		--enable-symlinks	\
 		--disable-big-core	\
