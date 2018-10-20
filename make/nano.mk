@@ -4,25 +4,25 @@
 #
 ###########################################################
 
-NANO_SITE=http://www.nano-editor.org/dist/v2.3
-NANO_VERSION=2.3.6
-NANO_SOURCE=nano-$(NANO_VERSION).tar.gz
+NANO_SITE=http://www.nano-editor.org/dist/v3
+NANO_VERSION=3.1
+NANO_SOURCE=nano-$(NANO_VERSION).tar.xz
 NANO_DIR=nano-$(NANO_VERSION)
-NANO_UNZIP=zcat
+NANO_UNZIP=xzcat
 NANO_MAINTAINER=Mark Donszelmann <mark@donszelmann.com>
 NANO_DESCRIPTION=A pico like editor
 NANO_SECTION=editor
 NANO_PRIORITY=optional
-NANO_DEPENDS=ncurses, zlib, file
+NANO_DEPENDS=ncursesw, zlib, file
 NANO_CONFLICTS=
 
-NANO_IPK_VERSION=2
+NANO_IPK_VERSION=1
 
 #NANO_CONFFILES=$(TARGET_PREFIX)/etc/nanorc
 
 #NANO_PATCHES=$(NANO_SOURCE_DIR)/broken_regex.patch
 
-NANO_CPPFLAGS=-I$(STAGING_INCLUDE_DIR)/ncurses
+NANO_CPPFLAGS=
 NANO_LDFLAGS=
 
 NANO_BUILD_DIR=$(BUILD_DIR)/nano
@@ -39,7 +39,7 @@ $(DL_DIR)/$(NANO_SOURCE):
 nano-source: $(DL_DIR)/$(NANO_SOURCE) $(NANO_PATCHES)
 
 $(NANO_BUILD_DIR)/.configured: $(DL_DIR)/$(NANO_SOURCE) $(NANO_PATCHES) make/nano.mk
-	$(MAKE) ncurses-stage zlib-stage file-stage
+	$(MAKE) ncursesw-stage zlib-stage file-stage
 	rm -rf $(BUILD_DIR)/$(NANO_DIR) $(@D)
 	$(NANO_UNZIP) $(DL_DIR)/$(NANO_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(NANO_PATCHES)"; \
@@ -50,15 +50,14 @@ $(NANO_BUILD_DIR)/.configured: $(DL_DIR)/$(NANO_SOURCE) $(NANO_PATCHES) make/nan
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(NANO_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(NANO_LDFLAGS)" \
-		ac_cv_lib_ncursesw_get_wch=no \
+		ac_cv_prog_NCURSESW_CONFIG=$(STAGING_PREFIX)/bin/ncursesw5-config \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=$(TARGET_PREFIX) \
-		--enable-all \
 		--without-libiconv-prefix \
-		--disable-utf8 \
+		--enable-utf8 \
 		--disable-nls \
 	)
 	touch $@
@@ -97,9 +96,10 @@ $(NANO_IPK): $(NANO_BUILD_DIR)/.built
 	rm -rf $(NANO_IPK_DIR) $(BUILD_DIR)/nano_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(NANO_BUILD_DIR) DESTDIR=$(NANO_IPK_DIR) program_transform_name="" install-strip
 	$(INSTALL) -d $(NANO_IPK_DIR)$(TARGET_PREFIX)/etc/
-	$(INSTALL) -m 644 $(NANO_BUILD_DIR)/doc/nanorc.sample $(NANO_IPK_DIR)$(TARGET_PREFIX)/etc/nanorc
+	$(INSTALL) -m 644 $(NANO_BUILD_DIR)/doc/sample.nanorc $(NANO_IPK_DIR)$(TARGET_PREFIX)/etc/nanorc
 	rm -f $(NANO_IPK_DIR)$(TARGET_PREFIX)/share/info/dir
 	$(MAKE) $(NANO_IPK_DIR)/CONTROL/control
+	$(INSTALL) -m 644 $(NANO_SOURCE_DIR)/postinst $(NANO_IPK_DIR)/CONTROL/postinst
 	echo $(NANO_CONFFILES) | sed -e 's/ /\n/g' > $(NANO_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(NANO_IPK_DIR)
 	$(WHAT_TO_DO_WITH_IPK_DIR) $(NANO_IPK_DIR)
