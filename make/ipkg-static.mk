@@ -24,7 +24,7 @@ IPKG-STATIC_CONFLICTS=ipkg-opt
 #
 # IPKG-STATIC_IPK_VERSION should be incremented when the ipk changes.
 #
-IPKG-STATIC_IPK_VERSION=2
+IPKG-STATIC_IPK_VERSION=3
 
 #
 # IPKG-STATIC_CONFFILES should be a list of user-editable files
@@ -66,7 +66,7 @@ $(IPKG-STATIC_SOURCE_DIR)/add-case-insensitive-flag.patch \
 $(IPKG-STATIC_SOURCE_DIR)/add-find-command.patch \
 $(IPKG-STATIC_SOURCE_DIR)/add-print-package-size.patch \
 $(IPKG-STATIC_SOURCE_DIR)/add-print-package-installed-size.patch \
-$(IPKG-STATIC_SOURCE_DIR)/use-fork-instead-of-vfork.patch \
+$(IPKG-STATIC_SOURCE_DIR)/change-internal-name-to-ipkg.patch \
 
 #
 # In this case there is no tarball, instead we fetch the sources
