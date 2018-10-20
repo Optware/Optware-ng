@@ -21,14 +21,14 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PYTHON3_VERSION=3.5.4
+PYTHON3_VERSION=3.5.6
 PYTHON3_VERSION_MAJOR:=$(shell echo $(PYTHON3_VERSION) | cut -d'.' -f1-2)
 PYTHON3_SITE=http://www.python.org/ftp/python/$(PYTHON3_VERSION)
 PYTHON3_DIR=Python-$(PYTHON3_VERSION)
 PYTHON3_SOURCE=$(PYTHON3_DIR).tgz
 PYTHON3_UNZIP=zcat
 
-PYTHON3_MAINTAINER=Brian Zhou<bzhou@users.sf.net>
+PYTHON3_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 PYTHON3_DESCRIPTION=Python is an interpreted, interactive, object-oriented programming language.
 PYTHON3_SECTION=misc
 PYTHON3_PRIORITY=optional
@@ -56,7 +56,6 @@ PYTHON3_CPPFLAGS=
 ifeq (vt4, $(OPTWARE_TARGET))
 PYTHON3_CPPFLAGS+=-DPATH_MAX=4096
 endif
-# workaround for uclibc bug, see http://www.geocities.com/robm351/uclibc/index-8.html?20063#sec:ldso-python
 # as for -lgcc_s flag, see: http://bugs.python.org/issue23340
 ifeq ($(LIBC_STYLE),uclibc)
 PYTHON3_LDFLAGS=-lgcc_s -lbz2 -lcrypt -ldb-$(LIBDB_LIB_VERSION) -lncurses -lreadline -lssl -lz -lffi
@@ -82,7 +81,6 @@ PYTHON3_IPK=$(BUILD_DIR)/python3_$(PYTHON3_VERSION)-$(PYTHON3_IPK_VERSION)_$(TAR
 # PYTHON3_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-# http://mail.python.org/pipermail/patches/2004-October/016312.html
 PYTHON3_PATCHES=\
 	$(PYTHON3_SOURCE_DIR)/configure_EXT_SUFFIX.patch \
 	$(PYTHON3_SOURCE_DIR)/setup.py.patch \
