@@ -20,7 +20,7 @@
 # You should change all these variables to suit your package.
 #
 GZIP_SITE=http://ftp.gnu.org/pub/gnu/gzip
-GZIP_VERSION=1.8
+GZIP_VERSION=1.9
 GZIP_SOURCE=gzip-$(GZIP_VERSION).tar.xz
 GZIP_DIR=gzip-$(GZIP_VERSION)
 GZIP_UNZIP=xzcat
@@ -110,7 +110,6 @@ $(GZIP_BUILD_DIR)/.configured: $(DL_DIR)/$(GZIP_SOURCE) $(GZIP_PATCHES) make/gzi
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=$(TARGET_PREFIX) \
-		--disable-nls \
 		; \
 	else \
 		$(TARGET_CONFIGURE_OPTS) \
@@ -121,7 +120,6 @@ $(GZIP_BUILD_DIR)/.configured: $(DL_DIR)/$(GZIP_SOURCE) $(GZIP_PATCHES) make/gzi
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=$(TARGET_PREFIX) \
-		--disable-nls \
 		; \
 	fi \
 	)
@@ -175,11 +173,12 @@ $(GZIP_IPK_DIR)/CONTROL/control:
 $(GZIP_IPK): $(GZIP_BUILD_DIR)/.built
 	rm -rf $(GZIP_IPK_DIR) $(BUILD_DIR)/gzip_*_$(TARGET_ARCH).ipk
 	$(INSTALL) -d $(GZIP_IPK_DIR)$(TARGET_PREFIX)/bin
-	$(INSTALL) -d $(GZIP_IPK_DIR)$(TARGET_PREFIX)/lib
-	$(INSTALL) -d $(GZIP_IPK_DIR)$(TARGET_PREFIX)/info
+#	$(INSTALL) -d $(GZIP_IPK_DIR)$(TARGET_PREFIX)/lib
+#	$(INSTALL) -d $(GZIP_IPK_DIR)$(TARGET_PREFIX)/info
 	$(INSTALL) -d $(GZIP_IPK_DIR)$(TARGET_PREFIX)/man/man1
 	$(MAKE) -C $(GZIP_BUILD_DIR) prefix=$(GZIP_IPK_DIR)$(TARGET_PREFIX) install
-	rm -f $(GZIP_IPK_DIR)$(TARGET_PREFIX)/share/info/dir
+	rm -fr	$(GZIP_IPK_DIR)$(TARGET_PREFIX)/share/info \
+		$(GZIP_IPK_DIR)$(TARGET_PREFIX)/man
 	$(MAKE) $(GZIP_IPK_DIR)/CONTROL/control
 	echo "#!/bin/sh" > $(GZIP_IPK_DIR)/CONTROL/postinst
 	echo "#!/bin/sh" > $(GZIP_IPK_DIR)/CONTROL/prerm

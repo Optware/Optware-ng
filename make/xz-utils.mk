@@ -4,10 +4,10 @@
 #
 ###########################################################
 XZ_UTILS_SITE=http://tukaani.org/xz
-XZ_UTILS_VERSION=5.2.3
-XZ_UTILS_SOURCE=xz-$(XZ_UTILS_VERSION).tar.bz2
+XZ_UTILS_VERSION=5.2.4
+XZ_UTILS_SOURCE=xz-$(XZ_UTILS_VERSION).tar.xz
 XZ_UTILS_DIR=xz-$(XZ_UTILS_VERSION)
-XZ_UTILS_UNZIP=bzcat
+XZ_UTILS_UNZIP=xzcat
 XZ_UTILS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 XZ_UTILS_DESCRIPTION=A free general-purpose data compression software with high compression ratio
 XZ_UTILS_SECTION=utils
@@ -154,6 +154,10 @@ $(XZ_UTILS_IPK) $(LIBLZMA0_IPK): $(XZ_UTILS_BUILD_DIR)/.built
 	$(MAKE) -C $(XZ_UTILS_BUILD_DIR) DESTDIR=$(XZ_UTILS_IPK_DIR) install-strip
 	$(INSTALL) -d $(LIBLZMA0_IPK_DIR)$(TARGET_PREFIX)
 	mv $(XZ_UTILS_IPK_DIR)$(TARGET_PREFIX)/include $(XZ_UTILS_IPK_DIR)$(TARGET_PREFIX)/lib $(LIBLZMA0_IPK_DIR)$(TARGET_PREFIX)/
+	rm -fr	$(LIBLZMA0_IPK_DIR)$(TARGET_PREFIX)/lib/*.la \
+		$(LIBLZMA0_IPK_DIR)$(TARGET_PREFIX)/lib/pkgconfig \
+		$(LIBLZMA0_IPK_DIR)$(TARGET_PREFIX)/include
+	rm -fr	$(XZ_UTILS_IPK_DIR)$(TARGET_PREFIX)/share/doc
 	$(MAKE) $(XZ_UTILS_IPK_DIR)/CONTROL/control $(LIBLZMA0_IPK_DIR)/CONTROL/control
 #	echo $(XZ_UTILS_CONFFILES) | sed -e 's/ /\n/g' > $(XZ_UTILS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(XZ_UTILS_IPK_DIR)
