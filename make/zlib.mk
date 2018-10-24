@@ -148,13 +148,13 @@ $(ZLIB_IPK_DIR)/CONTROL/control:
 
 $(ZLIB_IPK): $(ZLIB_BUILD_DIR)/.built
 	rm -rf $(ZLIB_IPK_DIR) $(BUILD_DIR)/zlib_*_$(TARGET_ARCH).ipk
-#	$(INSTALL) -d $(ZLIB_IPK_DIR)$(TARGET_PREFIX)/include
-#	$(INSTALL) -m 644 $(ZLIB_BUILD_DIR)/zlib.h $(ZLIB_IPK_DIR)$(TARGET_PREFIX)/include
-#	$(INSTALL) -m 644 $(ZLIB_BUILD_DIR)/zconf.h $(ZLIB_IPK_DIR)$(TARGET_PREFIX)/include
-#	$(INSTALL) -d $(ZLIB_IPK_DIR)$(TARGET_PREFIX)/lib/pkgconfig
+	$(INSTALL) -d $(ZLIB_IPK_DIR)$(TARGET_PREFIX)/include
+	$(INSTALL) -m 644 $(ZLIB_BUILD_DIR)/zlib.h $(ZLIB_IPK_DIR)$(TARGET_PREFIX)/include
+	$(INSTALL) -m 644 $(ZLIB_BUILD_DIR)/zconf.h $(ZLIB_IPK_DIR)$(TARGET_PREFIX)/include
+	$(INSTALL) -d $(ZLIB_IPK_DIR)$(TARGET_PREFIX)/lib/pkgconfig
 	$(INSTALL) -d $(ZLIB_IPK_DIR)$(TARGET_PREFIX)/lib
 	$(INSTALL) -m 644 $(ZLIB_BUILD_DIR)/libz$(SO).$(ZLIB_LIB_VERSION)$(DYLIB) $(ZLIB_IPK_DIR)$(TARGET_PREFIX)/lib
-#	$(INSTALL) -m 644 $(ZLIB_BUILD_DIR)/zlib.pc $(ZLIB_IPK_DIR)$(TARGET_PREFIX)/lib/pkgconfig/zlib.pc
+	$(INSTALL) -m 644 $(ZLIB_BUILD_DIR)/zlib.pc $(ZLIB_IPK_DIR)$(TARGET_PREFIX)/lib/pkgconfig/zlib.pc
 ifneq ($(OPTWARE_TARGET), $(filter buildroot-i686, $(OPTWARE_TARGET)))
 # workaround for native gcc warning
 # as: $(TARGET_PREFIX)/lib/libz.so.1: no version information available (required by .../as)
