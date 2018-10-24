@@ -20,11 +20,11 @@
 # You should change all these variables to suit your package.
 #
 TAR_SITE=http://ftp.gnu.org/gnu/tar
-TAR_VERSION=1.29
-TAR_IPK_VERSION=3
-TAR_SOURCE=tar-$(TAR_VERSION).tar.bz2
+TAR_VERSION=1.30
+TAR_IPK_VERSION=1
+TAR_SOURCE=tar-$(TAR_VERSION).tar.xz
 TAR_DIR=tar-$(TAR_VERSION)
-TAR_UNZIP=bzcat
+TAR_UNZIP=xzcat
 TAR_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 TAR_DESCRIPTION=heavyweight version of the Tape ARchiver
 TAR_SECTION=util
@@ -156,7 +156,7 @@ $(TAR_IPK_DIR)/CONTROL/control:
 $(TAR_IPK): $(TAR_BUILD_DIR)/.built
 	rm -rf $(TAR_IPK_DIR) $(BUILD_DIR)/tar_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(TAR_BUILD_DIR) DESTDIR=$(TAR_IPK_DIR) install-strip
-	rm -f $(TAR_IPK_DIR)$(TARGET_PREFIX)/share/info/dir
+	rm -fr $(TAR_IPK_DIR)$(TARGET_PREFIX)/share/info
 	mv $(TAR_IPK_DIR)$(TARGET_PREFIX)/bin/tar $(TAR_IPK_DIR)$(TARGET_PREFIX)/bin/gnutar
 	mv $(TAR_IPK_DIR)$(TARGET_PREFIX)/libexec/rmt $(TAR_IPK_DIR)$(TARGET_PREFIX)/libexec/rmt-tar
 	$(MAKE) $(TAR_IPK_DIR)/CONTROL/control
