@@ -120,6 +120,7 @@ $(GZIP_BUILD_DIR)/.configured: $(DL_DIR)/$(GZIP_SOURCE) $(GZIP_PATCHES) make/gzi
 		--host=$(GNU_TARGET_NAME) \
 		--target=$(GNU_TARGET_NAME) \
 		--prefix=$(TARGET_PREFIX) \
+		--disable-nls \
 		; \
 	fi \
 	)
@@ -177,8 +178,7 @@ $(GZIP_IPK): $(GZIP_BUILD_DIR)/.built
 #	$(INSTALL) -d $(GZIP_IPK_DIR)$(TARGET_PREFIX)/info
 	$(INSTALL) -d $(GZIP_IPK_DIR)$(TARGET_PREFIX)/man/man1
 	$(MAKE) -C $(GZIP_BUILD_DIR) prefix=$(GZIP_IPK_DIR)$(TARGET_PREFIX) install
-	rm -fr	$(GZIP_IPK_DIR)$(TARGET_PREFIX)/share/info \
-		$(GZIP_IPK_DIR)$(TARGET_PREFIX)/man
+	rm -f $(GZIP_IPK_DIR)$(TARGET_PREFIX)/share/info/dir
 	$(MAKE) $(GZIP_IPK_DIR)/CONTROL/control
 	echo "#!/bin/sh" > $(GZIP_IPK_DIR)/CONTROL/postinst
 	echo "#!/bin/sh" > $(GZIP_IPK_DIR)/CONTROL/prerm

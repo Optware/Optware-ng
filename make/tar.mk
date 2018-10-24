@@ -88,7 +88,7 @@ tar-source: $(DL_DIR)/$(TAR_SOURCE) $(TAR_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(TAR_BUILD_DIR)/.configured: $(DL_DIR)/$(TAR_SOURCE) $(TAR_PATCHES) make/tar.mk
-	$(MAKE) libacl-stage bzip2-stage gzip-stage xz-utils-stage
+	$(MAKE) libacl-stage
 	rm -rf $(BUILD_DIR)/$(TAR_DIR) $(@D)
 	$(TAR_UNZIP) $(DL_DIR)/$(TAR_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(TAR_DIR) $(@D)
