@@ -6,11 +6,11 @@
 
 ZLIB_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/libpng
 ZLIB_SITE2=http://zlib.net
-ZLIB_VERSION:=1.2.8
-ZLIB_LIB_VERSION:=1.2.8
-ZLIB_SOURCE=zlib-$(ZLIB_VERSION).tar.gz
+ZLIB_VERSION:=1.2.11
+ZLIB_LIB_VERSION:=1.2.11
+ZLIB_SOURCE=zlib-$(ZLIB_VERSION).tar.xz
 ZLIB_DIR=zlib-$(ZLIB_VERSION)
-ZLIB_UNZIP=zcat
+ZLIB_UNZIP=xzcat
 ZLIB_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 ZLIB_DESCRIPTION=zlib is a library implementing the 'deflate' compression system.
 ZLIB_SECTION=libs
@@ -18,7 +18,7 @@ ZLIB_PRIORITY=optional
 ZLIB_DEPENDS=
 ZLIB_CONFLICTS=
 
-ZLIB_IPK_VERSION=2
+ZLIB_IPK_VERSION=1
 
 ZLIB_CFLAGS= $(TARGET_CFLAGS) -fPIC
 ifeq ($(strip $(BUILD_WITH_LARGEFILE)),true)
@@ -148,12 +148,13 @@ $(ZLIB_IPK_DIR)/CONTROL/control:
 
 $(ZLIB_IPK): $(ZLIB_BUILD_DIR)/.built
 	rm -rf $(ZLIB_IPK_DIR) $(BUILD_DIR)/zlib_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(ZLIB_IPK_DIR)$(TARGET_PREFIX)/include
-	$(INSTALL) -m 644 $(ZLIB_BUILD_DIR)/zlib.h $(ZLIB_IPK_DIR)$(TARGET_PREFIX)/include
-	$(INSTALL) -m 644 $(ZLIB_BUILD_DIR)/zconf.h $(ZLIB_IPK_DIR)$(TARGET_PREFIX)/include
-	$(INSTALL) -d $(ZLIB_IPK_DIR)$(TARGET_PREFIX)/lib/pkgconfig
+#	$(INSTALL) -d $(ZLIB_IPK_DIR)$(TARGET_PREFIX)/include
+#	$(INSTALL) -m 644 $(ZLIB_BUILD_DIR)/zlib.h $(ZLIB_IPK_DIR)$(TARGET_PREFIX)/include
+#	$(INSTALL) -m 644 $(ZLIB_BUILD_DIR)/zconf.h $(ZLIB_IPK_DIR)$(TARGET_PREFIX)/include
+#	$(INSTALL) -d $(ZLIB_IPK_DIR)$(TARGET_PREFIX)/lib/pkgconfig
+	$(INSTALL) -d $(ZLIB_IPK_DIR)$(TARGET_PREFIX)/lib
 	$(INSTALL) -m 644 $(ZLIB_BUILD_DIR)/libz$(SO).$(ZLIB_LIB_VERSION)$(DYLIB) $(ZLIB_IPK_DIR)$(TARGET_PREFIX)/lib
-	$(INSTALL) -m 644 $(ZLIB_BUILD_DIR)/zlib.pc $(ZLIB_IPK_DIR)$(TARGET_PREFIX)/lib/pkgconfig/zlib.pc
+#	$(INSTALL) -m 644 $(ZLIB_BUILD_DIR)/zlib.pc $(ZLIB_IPK_DIR)$(TARGET_PREFIX)/lib/pkgconfig/zlib.pc
 ifneq ($(OPTWARE_TARGET), $(filter buildroot-i686, $(OPTWARE_TARGET)))
 # workaround for native gcc warning
 # as: $(TARGET_PREFIX)/lib/libz.so.1: no version information available (required by .../as)
