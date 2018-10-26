@@ -18,7 +18,7 @@ ZLIB_PRIORITY=optional
 ZLIB_DEPENDS=
 ZLIB_CONFLICTS=
 
-ZLIB_IPK_VERSION=1
+ZLIB_IPK_VERSION=2
 
 ZLIB_CFLAGS= $(TARGET_CFLAGS) -fPIC
 ifeq ($(strip $(BUILD_WITH_LARGEFILE)),true)
@@ -36,7 +36,8 @@ ZLIB_SOURCE_DIR=$(SOURCE_DIR)/zlib
 
 ZLIB_IPK_DIR=$(BUILD_DIR)/zlib-$(ZLIB_VERSION)-ipk
 ZLIB_IPK=$(BUILD_DIR)/zlib_$(ZLIB_VERSION)-$(ZLIB_IPK_VERSION)_$(TARGET_ARCH).ipk
-
+ZLIB-DEV_IPK_DIR=$(BUILD_DIR)/zlib-dev-$(ZLIB_VERSION)-ipk
+ZLIB-DEV_IPK=$(BUILD_DIR)/zlib-dev_$(ZLIB_VERSION)-$(ZLIB_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 .PHONY: zlib-source zlib-unpack zlib zlib-stage zlib-ipk zlib-clean \
 zlib-dirclean zlib-check zlib-host zlib-host-stage zlib-unstage
@@ -145,16 +146,31 @@ $(ZLIB_IPK_DIR)/CONTROL/control:
 	@echo "Description: $(ZLIB_DESCRIPTION)" >>$@
 	@echo "Depends: $(ZLIB_DEPENDS)" >>$@
 	@echo "Conflicts: $(ZLIB_CONFLICTS)" >>$@
+	
+$(ZLIB-DEV_IPK_DIR)/CONTROL/control:
+	@$(INSTALL) -d $(@D)
+	@rm -f $@
+	@echo "Package: zlib-dev" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(ZLIB_PRIORITY)" >>$@
+	@echo "Section: $(ZLIB_SECTION)" >>$@
+	@echo "Version: $(ZLIB_VERSION)-$(ZLIB_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(ZLIB_MAINTAINER)" >>$@
+	@echo "Source: $(ZLIB_SITE)/$(ZLIB_SOURCE)" >>$@
+	@echo "Description: Development files for ZLIB" >>$@
+	@echo "Depends: zlib" >>$@
+	@echo "Conflicts: " >>$@	
 
-$(ZLIB_IPK): $(ZLIB_BUILD_DIR)/.built
+$(ZLIB_IPK) $(ZLIB-DEV_IPK): $(ZLIB_BUILD_DIR)/.built
 	rm -rf $(ZLIB_IPK_DIR) $(BUILD_DIR)/zlib_*_$(TARGET_ARCH).ipk
-	$(INSTALL) -d $(ZLIB_IPK_DIR)$(TARGET_PREFIX)/include
-	$(INSTALL) -m 644 $(ZLIB_BUILD_DIR)/zlib.h $(ZLIB_IPK_DIR)$(TARGET_PREFIX)/include
-	$(INSTALL) -m 644 $(ZLIB_BUILD_DIR)/zconf.h $(ZLIB_IPK_DIR)$(TARGET_PREFIX)/include
-	$(INSTALL) -d $(ZLIB_IPK_DIR)$(TARGET_PREFIX)/lib/pkgconfig
-	$(INSTALL) -d $(ZLIB_IPK_DIR)$(TARGET_PREFIX)/lib
-	$(INSTALL) -m 644 $(ZLIB_BUILD_DIR)/libz$(SO).$(ZLIB_LIB_VERSION)$(DYLIB) $(ZLIB_IPK_DIR)$(TARGET_PREFIX)/lib
-	$(INSTALL) -m 644 $(ZLIB_BUILD_DIR)/zlib.pc $(ZLIB_IPK_DIR)$(TARGET_PREFIX)/lib/pkgconfig/zlib.pc
+	rm -rf $(ZLIB-DEV_IPK_DIR) $(BUILD_DIR)/zlib-dev_*_$(TARGET_ARCH).ipk
+	$(INSTALL) -d $(ZLIB_IPK_DIR)$(TARGET_PREFIX)/lib	
+	$(INSTALL) -m 644 $(ZLIB_BUILD_DIR)/libz$(SO).$(ZLIB_LIB_VERSION)$(DYLIB) $(ZLIB_IPK_DIR)$(TARGET_PREFIX)/lib	
+	$(INSTALL) -d $(ZLIB-DEV_IPK_DIR)$(TARGET_PREFIX)/include
+	$(INSTALL) -m 644 $(ZLIB_BUILD_DIR)/zlib.h $(ZLIB-DEV_IPK_DIR)$(TARGET_PREFIX)/include
+	$(INSTALL) -m 644 $(ZLIB_BUILD_DIR)/zconf.h $(ZLIB-DEV_IPK_DIR)$(TARGET_PREFIX)/include
+	$(INSTALL) -d $(ZLIB-DEV_IPK_DIR)$(TARGET_PREFIX)/lib/pkgconfig
+	$(INSTALL) -m 644 $(ZLIB_BUILD_DIR)/zlib.pc $(ZLIB-DEV_IPK_DIR)$(TARGET_PREFIX)/lib/pkgconfig/zlib.pc
 ifneq ($(OPTWARE_TARGET), $(filter buildroot-i686, $(OPTWARE_TARGET)))
 # workaround for native gcc warning
 # as: $(TARGET_PREFIX)/lib/libz.so.1: no version information available (required by .../as)
@@ -164,8 +180,11 @@ endif
 	cd $(ZLIB_IPK_DIR)$(TARGET_PREFIX)/lib && ln -fs libz$(SO).$(ZLIB_LIB_VERSION)$(DYLIB) libz.$(SHLIB_EXT)
 	$(MAKE) $(ZLIB_IPK_DIR)/CONTROL/control
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(ZLIB_IPK_DIR)
+	$(MAKE) $(ZLIB-DEV_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(ZLIB-DEV_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(ZLIB_IPK_DIR) $(ZLIB-DEV_IPK_DIR)
 
-zlib-ipk: $(ZLIB_IPK)
+zlib-ipk: $(ZLIB_IPK) $(ZLIB-DEV_IPK)
 
 zlib-clean: zlib-unstage
 	rm -f $(ZLIB_BUILD_DIR)/.built
@@ -173,10 +192,10 @@ zlib-clean: zlib-unstage
 	-$(MAKE) -C $(ZLIB_BUILD_DIR) clean
 
 zlib-dirclean: zlib-unstage
-	rm -rf $(BUILD_DIR)/$(ZLIB_DIR) $(ZLIB_BUILD_DIR) $(ZLIB_IPK_DIR) $(ZLIB_IPK)
+	rm -rf $(BUILD_DIR)/$(ZLIB_DIR) $(ZLIB_BUILD_DIR) $(ZLIB_IPK_DIR) $(ZLIB-DEV_IPK_DIR) $(ZLIB_IPK) $(ZLIB-DEV_IPK)
 
 #
 # Some sanity check for the package.
 #
-zlib-check: $(ZLIB_IPK)
+zlib-check: $(ZLIB_IPK) $(ZLIB-DEV_IPK)
 	perl scripts/optware-check-package.pl --target=$(OPTWARE_TARGET) $^
