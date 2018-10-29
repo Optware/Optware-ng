@@ -24,8 +24,8 @@
 #
 # SVN releases also include transmissiond-dbg while official releases does not.
 #
-TRANSMISSION_SITE=https://transmission.cachefly.net
-TRANSMISSION_VERSION=2.92
+TRANSMISSION_SITE=https://github.com/transmission/transmission-releases/raw/master
+TRANSMISSION_VERSION=2.94
 
 #TRANSMISSION_SVN_REV=8696
 
@@ -53,7 +53,7 @@ TRANSMISSION_CONFLICTS=
 #
 # TRANSMISSION_IPK_VERSION should be incremented when the ipk changes.
 #
-TRANSMISSION_IPK_VERSION=5
+TRANSMISSION_IPK_VERSION=1
 
 #
 # TRANSMISSION_CONFFILES should be a list of user-editable files
