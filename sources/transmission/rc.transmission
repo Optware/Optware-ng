@@ -103,12 +103,12 @@ func_start()
 		if [ -n "${DIR_DL}" ]; then
 			${START_STOP_DAEMON} -S -N $SVC_PRIORITY -x $SVC_PATH -- -a "$RPC_ACL" \
 				-g "$DIR_CONF" -w "$DIR_DL1" \
-				-e ${DIR_LOG}${SVC_NAME} \
+				-e ${DIR_LOG}/${SVC_NAME} \
 				-x /var/run/${SVC_NAME}.pid ${AUTH_INFO}
 		else
 			${START_STOP_DAEMON} -S -N $SVC_PRIORITY -x $SVC_PATH -- -a "$RPC_ACL" \
 				-g "$DIR_CONF" \
-				-e ${DIR_LOG}${SVC_NAME} \
+				-e ${DIR_LOG}/${SVC_NAME} \
 				-x /var/run/${SVC_NAME}.pid ${AUTH_INFO}
 		fi
 	fi
