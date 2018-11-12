@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 SYNCTHING_URL=https://github.com/syncthing/syncthing/archive/v$(SYNCTHING_VERSION).tar.gz
-SYNCTHING_VERSION=0.14.51
+SYNCTHING_VERSION=0.14.52
 SYNCTHING_SOURCE=syncthing-$(SYNCTHING_VERSION).tar.gz
 SYNCTHING_DIR=syncthing-$(SYNCTHING_VERSION)
 SYNCTHING_UNZIP=zcat
@@ -29,7 +29,8 @@ SYNCTHING_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SYNCTHING_DESCRIPTION=Utility for synchronization of a folder between a number of collaborating devices.
 SYNCTHING_SECTION=net
 SYNCTHING_PRIORITY=optional
-ifeq ($(OPTWARE_TARGET), $(filter buildroot-mipsel-ng, $(OPTWARE_TARGET)))
+#ifeq ($(OPTWARE_TARGET), $(filter buildroot-mipsel-ng, $(OPTWARE_TARGET)))
+ifeq ($(OPTWARE_TARGET), $(filter , $(OPTWARE_TARGET)))
 SYNCTHING_DEPENDS=libgo
 else
 SYNCTHING_DEPENDS=
@@ -116,7 +117,8 @@ syncthing-source: $(DL_DIR)/$(SYNCTHING_SOURCE) $(SYNCTHING_PATCHES)
 # shown below to make various patches to it.
 #
 $(SYNCTHING_BUILD_DIR)/.configured: $(DL_DIR)/$(SYNCTHING_SOURCE) $(SYNCTHING_PATCHES) make/syncthing.mk
-ifeq ($(OPTWARE_TARGET), $(filter buildroot-mipsel-ng, $(OPTWARE_TARGET)))
+#ifeq ($(OPTWARE_TARGET), $(filter buildroot-mipsel-ng, $(OPTWARE_TARGET)))
+ifeq ($(OPTWARE_TARGET), $(filter , $(OPTWARE_TARGET)))
 	$(MAKE) gcc-host golang-host
 else
 	if [ "$(GOLANG_ARCH)" = amd64 ]; then \
@@ -133,7 +135,8 @@ endif
 	fi
 	mkdir -p $(@D)/src/github.com/syncthing
 	mv -f $(BUILD_DIR)/$(SYNCTHING_DIR) $(@D)/src/github.com/syncthing/syncthing
-ifeq ($(OPTWARE_TARGET), $(filter buildroot-mipsel-ng, $(OPTWARE_TARGET)))
+#ifeq ($(OPTWARE_TARGET), $(filter buildroot-mipsel-ng, $(OPTWARE_TARGET)))
+ifeq ($(OPTWARE_TARGET), $(filter , $(OPTWARE_TARGET)))
 	mkdir -p $(@D)/src/math
 	cp -af $(GOLANG_HOST_BUILD_DIR)/src/math/bits $(@D)/src/math/
 endif
@@ -146,7 +149,8 @@ syncthing-unpack: $(SYNCTHING_BUILD_DIR)/.configured
 #
 $(SYNCTHING_BUILD_DIR)/.built: $(SYNCTHING_BUILD_DIR)/.configured
 	rm -f $@
-ifeq ($(OPTWARE_TARGET), $(filter buildroot-mipsel-ng, $(OPTWARE_TARGET)))
+#ifeq ($(OPTWARE_TARGET), $(filter buildroot-mipsel-ng, $(OPTWARE_TARGET)))
+ifeq ($(OPTWARE_TARGET), $(filter , $(OPTWARE_TARGET)))
 	GOPATH=$(@D) GCCGO=$(TARGET_GCCGO) CC=$(TARGET_CC) \
 		GOARCH=$(GOLANG_ARCH) GOOS=linux\
 		$(GOLANG_HOST_BUILD_DIR)/bin/go install -v -compiler gccgo github.com/syncthing/syncthing/vendor/golang.org/x/sys/unix
