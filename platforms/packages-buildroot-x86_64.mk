@@ -19,7 +19,6 @@ BOOST_ADDITIONAL_LIBS:= atomic \
 			container \
 			context \
 			coroutine \
-			coroutine2 \
 			graph-parallel \
 			locale \
 			log \
