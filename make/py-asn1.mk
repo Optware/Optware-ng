@@ -43,7 +43,7 @@ PY-ASN1_CONFLICTS=
 #
 # PY-ASN1_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-ASN1_IPK_VERSION=3
+PY-ASN1_IPK_VERSION=4
 
 #
 # PY-ASN1_CONFFILES should be a list of user-editable files

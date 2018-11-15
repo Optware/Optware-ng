@@ -1,0 +1,28 @@
+diff --git a/configure b/configure
+index 2431cce..bd44905 100755
+--- a/configure
++++ b/configure
+@@ -5343,6 +5343,9 @@ elif test x$PLATFORM_TRIPLET != x && test x$MULTIARCH = x; then
+   MULTIARCH=$PLATFORM_TRIPLET
+ fi
+ 
++PLATFORM_TRIPLET=""
++MULTIARCH=""
++
+ if test x$MULTIARCH != x; then
+   MULTIARCH_CPPFLAGS="-DMULTIARCH=\\\"$MULTIARCH\\\""
+ fi
+diff --git a/configure.ac b/configure.ac
+index cbd529f..c4df1d4 100644
+--- a/configure.ac
++++ b/configure.ac
+@@ -887,7 +887,9 @@ if test x$PLATFORM_TRIPLET != x && test x$MULTIARCH != x; then
+ elif test x$PLATFORM_TRIPLET != x && test x$MULTIARCH = x; then
+   MULTIARCH=$PLATFORM_TRIPLET
+ fi
++PLATFORM_TRIPLET=""
+ AC_SUBST(PLATFORM_TRIPLET)
++MULTIARCH=""
+ if test x$MULTIARCH != x; then
+   MULTIARCH_CPPFLAGS="-DMULTIARCH=\\\"$MULTIARCH\\\""
+ fi

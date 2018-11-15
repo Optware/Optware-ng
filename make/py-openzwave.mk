@@ -37,7 +37,7 @@ PY-OPENZWAVE_CONFLICTS=
 #
 # PY-OPENZWAVE_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-OPENZWAVE_IPK_VERSION=9
+PY-OPENZWAVE_IPK_VERSION=10
 
 #
 # PY-OPENZWAVE_CONFFILES should be a list of user-editable files
@@ -97,7 +97,8 @@ $(DL_DIR)/$(PY-OPENZWAVE_SOURCE):
 # This target will be called by the top level Makefile to download the
 # source code's archive (.tar.gz, .bz2, etc.)
 #
-py-openzwave-source: $(DL_DIR)/$(PY-OPENZWAVE_SOURCE) $(PY-OPENZWAVE_PATCHES)
+py-openzwave-source: $(DL_DIR)/$(PY-OPENZWAVE_SOURCE) $(PY-OPENZWAVE_PATCHES) \
+			$(PY-OPENZWAVE_SOURCE_DIR)/libopenzwave.cpp.tar.xz
 
 #
 # This target unpacks the source code in the build directory.
@@ -117,7 +118,9 @@ py-openzwave-source: $(DL_DIR)/$(PY-OPENZWAVE_SOURCE) $(PY-OPENZWAVE_PATCHES)
 # If the package uses  GNU libtool, you should invoke $(PATCH_LIBTOOL) as
 # shown below to make various patches to it.
 #
-$(PY-OPENZWAVE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-OPENZWAVE_SOURCE) $(PY-OPENZWAVE_PATCHES) make/py-openzwave.mk
+$(PY-OPENZWAVE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-OPENZWAVE_SOURCE) \
+		$(PY-OPENZWAVE_SOURCE_DIR)/libopenzwave.cpp.tar.xz $(PY-OPENZWAVE_PATCHES) \
+									make/py-openzwave.mk
 	$(MAKE) python27-host-stage python3-host-stage py-cython-host-stage \
 		python27-stage python3-stage libopenzwave-stage
 	rm -rf $(@D)
@@ -131,6 +134,12 @@ $(PY-OPENZWAVE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-OPENZWAVE_SOURCE) $(PY-OPE
 		$(PATCH) -d $(@D)/$(PY-OPENZWAVE_DIR) -p1 ; \
 	fi
 	mv -f $(@D)/$(PY-OPENZWAVE_DIR) $(@D)/2.7
+	### A temporary workaround for:
+	### ValueError: Cython.Compiler.Scanning.CompileTimeScope has the wrong size, try recompiling. Expected 32, got 40
+	tar -xJvf $(PY-OPENZWAVE_SOURCE_DIR)/libopenzwave.cpp.tar.xz -C $(@D)/2.7/src-lib/libopenzwave
+	rm -f $(@D)/2.7/src-lib/libopenzwave/libopenzwave.pyx
+	sed -i -e 's|src-lib/libopenzwave/libopenzwave.pyx|src-lib/libopenzwave/libopenzwave.cpp|g' $(@D)/2.7/setup-lib.py
+	### end of workaround
 	(cd $(@D)/2.7; \
 	    ( \
 		echo "[build_ext]"; \
@@ -167,7 +176,8 @@ $(PY-OPENZWAVE_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-OPENZWAVE_SOURCE) $(PY-OPE
 	mkdir -p $(@D)/3/openzwave/cpp
 	ln -s ../../../openzwave $(@D)/3/openzwave/cpp/src
 #
-	mkdir -p $(@D)/{2.7,3}/.git
+#	mkdir -p $(@D)/{2.7,3}/.git
+	mkdir -p $(@D)/3/.git
 	touch $@
 
 py-openzwave-unpack: $(PY-OPENZWAVE_BUILD_DIR)/.configured

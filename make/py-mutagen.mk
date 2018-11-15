@@ -37,7 +37,7 @@ PY_MUTAGEN_CONFLICTS=
 #
 # PY_MUTAGEN_IPK_VERSION should be incremented when the ipk changes.
 #
-PY_MUTAGEN_IPK_VERSION=1
+PY_MUTAGEN_IPK_VERSION=2
 
 #
 # PY_MUTAGEN_CONFFILES should be a list of user-editable files

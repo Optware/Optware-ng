@@ -21,8 +21,8 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PY-CYTHON_VERSION=0.24
-PY-CYTHON_SITE=https://pypi.python.org/packages/source/C/Cython
+PY-CYTHON_VERSION=0.29
+PY-CYTHON_SITE=https://files.pythonhosted.org/packages/f0/66/6309291b19b498b672817bd237caec787d1b18013ee659f17b1ec5844887
 PY-CYTHON_SOURCE=Cython-$(PY-CYTHON_VERSION).tar.gz
 PY-CYTHON_DIR=Cython-$(PY-CYTHON_VERSION)
 PY-CYTHON_UNZIP=zcat
@@ -38,7 +38,7 @@ PY-CYTHON_CONFLICTS=
 #
 # PY-CYTHON_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-CYTHON_IPK_VERSION=4
+PY-CYTHON_IPK_VERSION=1
 
 #
 # PY-CYTHON_CONFFILES should be a list of user-editable files

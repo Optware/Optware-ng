@@ -21,7 +21,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-PYTHON3_VERSION=3.5.6
+PYTHON3_VERSION=3.7.1
 PYTHON3_VERSION_MAJOR:=$(shell echo $(PYTHON3_VERSION) | cut -d'.' -f1-2)
 PYTHON3_SITE=http://www.python.org/ftp/python/$(PYTHON3_VERSION)
 PYTHON3_DIR=Python-$(PYTHON3_VERSION)
@@ -58,7 +58,7 @@ PYTHON3_CPPFLAGS+=-DPATH_MAX=4096
 endif
 # as for -lgcc_s flag, see: http://bugs.python.org/issue23340
 ifeq ($(LIBC_STYLE),uclibc)
-PYTHON3_LDFLAGS=-lgcc_s -lbz2 -lcrypt -ldb-$(LIBDB_LIB_VERSION) -lncurses -lreadline -lssl -lz -lffi
+PYTHON3_LDFLAGS=-lgcc_s -lbz2 -lcrypt -ldb-$(LIBDB_LIB_VERSION) -l$(NCURSES_FOR_OPTWARE_TARGET) -lreadline -lssl -lz -lffi
 else
 PYTHON3_LDFLAGS=
 endif
@@ -83,11 +83,14 @@ PYTHON3_IPK=$(BUILD_DIR)/python3_$(PYTHON3_VERSION)-$(PYTHON3_IPK_VERSION)_$(TAR
 #
 PYTHON3_PATCHES=\
 	$(PYTHON3_SOURCE_DIR)/configure_EXT_SUFFIX.patch \
+	$(PYTHON3_SOURCE_DIR)/configure_PLATFORM_TRIPLET_MULTIARCH.patch \
 	$(PYTHON3_SOURCE_DIR)/setup.py.patch \
+	$(PYTHON3_SOURCE_DIR)/Makefile.pre.in.patch \
 	$(PYTHON3_SOURCE_DIR)/Lib-site.py.patch \
 	$(PYTHON3_SOURCE_DIR)/Lib-distutils-distutils.cfg.patch \
 	$(PYTHON3_SOURCE_DIR)/with-libintl.patch \
 	$(PYTHON3_SOURCE_DIR)/Setup.dist.$(LIBC_STYLE).patch \
+	$(PYTHON3_SOURCE_DIR)/_cursesmodule.c.patch \
 #	$(PYTHON3_SOURCE_DIR)/O_CLOEXEC.patch
 
 ifeq ($(NCURSES_FOR_OPTWARE_TARGET), ncurses)
@@ -142,8 +145,9 @@ endif
 	rm -rf $(BUILD_DIR)/$(PYTHON3_DIR) $(@D) $(HOST_STAGING_PREFIX)/bin/python3
 	$(PYTHON3_UNZIP) $(DL_DIR)/$(PYTHON3_SOURCE) | tar -C $(BUILD_DIR) -xf -
 	cat $(PYTHON3_PATCHES) | $(PATCH) -bd $(BUILD_DIR)/$(PYTHON3_DIR) -p1
-	sed -i -e 's/MIPS_LINUX/MIPS/' $(BUILD_DIR)/$(PYTHON3_DIR)/Modules/_ctypes/libffi/configure.ac
-	$(AUTORECONF1.10) -vif $(BUILD_DIR)/$(PYTHON3_DIR)
+	touch $(BUILD_DIR)/$(PYTHON3_DIR)/configure
+#	sed -i -e 's/MIPS_LINUX/MIPS/' $(BUILD_DIR)/$(PYTHON3_DIR)/Modules/_ctypes/libffi/configure.ac
+#	$(AUTORECONF1.10) -vif $(BUILD_DIR)/$(PYTHON3_DIR)
 	sed -i -e 's|@STAGING_INCLUDE@|$(STAGING_INCLUDE_DIR)|g' -e \
 		's|@TOOLCHAIN_TARGET_INCLUDE@|$(TARGET_INCDIR)|g' $(BUILD_DIR)/$(PYTHON3_DIR)/setup.py
 	mkdir -p $(@D)/buildpython3
@@ -153,15 +157,16 @@ endif
 		../../$(PYTHON3_DIR)/configure \
 		--prefix=$(HOST_STAGING_PREFIX) \
 		--with-system-ffi \
+		--without-ensurepip \
 	)
 	( \
 	echo "[build_ext]"; \
-	echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/ncurses"; \
+	echo "include-dirs=$(STAGING_INCLUDE_DIR):$(STAGING_INCLUDE_DIR)/$(NCURSES_FOR_OPTWARE_TARGET):$(STAGING_INCLUDE_DIR)/openssl"; \
 	echo "library-dirs=$(STAGING_LIB_DIR)"; \
 	echo "rpath=$(TARGET_PREFIX)/lib") > $(@D)/setup.cfg
 	(cd $(@D); \
-	 	$(TARGET_CONFIGURE_OPTS) \
-	 	READELF=$(TARGET_CROSS)readelf \
+		$(TARGET_CONFIGURE_OPTS) \
+		READELF=$(TARGET_CROSS)readelf \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(PYTHON3_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(PYTHON3_LDFLAGS)" \
 		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
@@ -185,6 +190,8 @@ endif
 		--mandir=$(TARGET_PREFIX)/man \
 		--enable-shared \
 		--with-system-ffi \
+		--enable-optimizations \
+		--without-ensurepip \
 	)
 	sed -i -e 's|^\t\.\(/Programs/\)|\t./buildpython3\1|' $(@D)/Makefile
 ifeq ($(LIBC_STYLE),uclibc)
@@ -265,7 +272,8 @@ $(PYTHON3_IPK): $(PYTHON3_BUILD_DIR)/.built
 	    do mv $(PYTHON3_IPK_DIR)$(TARGET_PREFIX)/$$f $(PYTHON3_IPK_DIR)$(TARGET_PREFIX)/`echo $$f | sed -e 's/\(\.\|$$\)/-3.1\1/'`; done
 	$(INSTALL) -d $(PYTHON3_IPK_DIR)$(TARGET_PREFIX)/local/bin
 	$(INSTALL) -d $(PYTHON3_IPK_DIR)$(TARGET_PREFIX)/local/lib/python$(PYTHON3_VERSION_MAJOR)/site-packages
-	sed -i -e 's|$(TARGET_CROSS)|$(TARGET_PREFIX)/bin/|g' $(PYTHON3_IPK_DIR)$(TARGET_PREFIX)/lib/python$(PYTHON3_VERSION_MAJOR)/config-$(PYTHON3_VERSION_MAJOR)m/Makefile
+	sed -i -e 's|$(TARGET_CROSS)|$(TARGET_PREFIX)/bin/|g' \
+		$(PYTHON3_IPK_DIR)$(TARGET_PREFIX)/lib/python$(PYTHON3_VERSION_MAJOR)/config-$(PYTHON3_VERSION_MAJOR)m/Makefile
 	$(MAKE) $(PYTHON3_IPK_DIR)/CONTROL/control
 #	$(INSTALL) -m 755 $(PYTHON3_SOURCE_DIR)/postinst $(PYTHON3_IPK_DIR)/CONTROL/postinst
 #	$(INSTALL) -m 755 $(PYTHON3_SOURCE_DIR)/prerm $(PYTHON3_IPK_DIR)/CONTROL/prerm

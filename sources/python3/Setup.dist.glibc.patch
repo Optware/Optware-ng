@@ -1,8 +1,10 @@
+diff --git a/Modules/Setup.dist b/Modules/Setup.dist
+index f0eff5d..ea0e6cf 100644
 --- a/Modules/Setup.dist
 +++ b/Modules/Setup.dist
-@@ -214,13 +214,13 @@
- #
- # First, look at Setup.config; configure may have set this for you.
+@@ -216,13 +216,13 @@ _symtable symtablemodule.c
+ # The crypt module is now disabled by default because it breaks builds
+ # on many systems (where -lcrypt is needed), e.g. Linux (I believe).
  
 -#_crypt _cryptmodule.c # -lcrypt	# crypt(3); needs -lcrypt on some systems
 +_crypt _cryptmodule.c -lcrypt	# crypt(3); needs -lcrypt on some systems

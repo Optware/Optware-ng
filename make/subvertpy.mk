@@ -39,7 +39,7 @@ SUBVERTPY_CONFLICTS=
 #
 # SUBVERTPY_IPK_VERSION should be incremented when the ipk changes.
 #
-SUBVERTPY_IPK_VERSION=2
+SUBVERTPY_IPK_VERSION=3
 
 #
 # SUBVERTPY_CONFFILES should be a list of user-editable files

@@ -21,8 +21,9 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
+PY-SETUPTOOLS_URL=https://github.com/pypa/setuptools/archive/v$(PY-SETUPTOOLS_VERSION).tar.gz
 PY-SETUPTOOLS_SITE=http://pypi.python.org/packages/source/s/setuptools
-PY-SETUPTOOLS_VERSION=12.0.1
+PY-SETUPTOOLS_VERSION=40.6.2
 PY-SETUPTOOLS_VERSION_OLD=1.4.2
 PY-SETUPTOOLS_SOURCE=setuptools-$(PY-SETUPTOOLS_VERSION).tar.gz
 PY-SETUPTOOLS_SOURCE_OLD=setuptools-$(PY-SETUPTOOLS_VERSION_OLD).tar.gz
@@ -43,7 +44,7 @@ PY-SETUPTOOLS_CONFLICTS=
 #
 # PY-SETUPTOOLS_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-SETUPTOOLS_IPK_VERSION=3
+PY-SETUPTOOLS_IPK_VERSION=4
 PY-SETUPTOOLS_IPK_VERSION_OLD=1
 
 #
@@ -98,7 +99,7 @@ PY3-SETUPTOOLS_IPK=$(BUILD_DIR)/py3-setuptools_$(PY-SETUPTOOLS_VERSION)-$(PY-SET
 # then it will be fetched from the site using wget.
 #
 $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE):
-	$(WGET) -P $(@D) $(PY-SETUPTOOLS_SITE)/$(@F) || \
+	$(WGET) -O $@ $(PY-SETUPTOOLS_URL) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
 $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE_OLD):
@@ -158,9 +159,9 @@ $(PY-SETUPTOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE) $(DL_D
 	    ) >> setup.cfg \
 	)
 #	cd $(BUILD_DIR); $(PY-SETUPTOOLS_UNZIP) $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE)
-	$(PY-SETUPTOOLS_UNZIP) $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	$(PY-SETUPTOOLS_UNZIP) $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE_OLD) | tar -C $(BUILD_DIR) -xvf -
 #	cat $(PY-SETUPTOOLS_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(PY-SETUPTOOLS_DIR) -p1
-	mv $(BUILD_DIR)/$(PY-SETUPTOOLS_DIR) $(@D)/2.6
+	mv $(BUILD_DIR)/$(PY-SETUPTOOLS_DIR_OLD) $(@D)/2.6
 	(cd $(@D)/2.6; \
 	    ( \
 		echo "[install]"; \
@@ -179,7 +180,8 @@ $(PY-SETUPTOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE) $(DL_D
 		echo "install_scripts = $(TARGET_PREFIX)/bin"; \
 		echo "[build_scripts]"; \
 		echo "executable=$(TARGET_PREFIX)/bin/python2.7"; \
-	    ) >> setup.cfg \
+	    ) >> setup.cfg; \
+	    $(HOST_STAGING_PREFIX)/bin/python2.7 bootstrap.py; \
 	)
 #	cd $(BUILD_DIR); $(PY-SETUPTOOLS_UNZIP) $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE)
 	$(PY-SETUPTOOLS_UNZIP) $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
@@ -191,7 +193,8 @@ $(PY-SETUPTOOLS_BUILD_DIR)/.configured: $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE) $(DL_D
 		echo "install_scripts = $(TARGET_PREFIX)/bin"; \
 		echo "[build_scripts]"; \
 		echo "executable=$(TARGET_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR)"; \
-	    ) >> setup.cfg \
+	    ) >> setup.cfg; \
+	    $(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) bootstrap.py; \
 	)
 	touch $@
 
@@ -244,8 +247,8 @@ $(PY-SETUPTOOLS_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(PY-SETUPTO
 	mv $(HOST_BUILD_DIR)/$(PY-SETUPTOOLS_DIR_OLD) $(@D)/2.4
 	$(PY-SETUPTOOLS_UNZIP) $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE_OLD) | tar -C $(HOST_BUILD_DIR) -xvf -
 	mv $(HOST_BUILD_DIR)/$(PY-SETUPTOOLS_DIR_OLD) $(@D)/2.5
-	$(PY-SETUPTOOLS_UNZIP) $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
-	mv $(HOST_BUILD_DIR)/$(PY-SETUPTOOLS_DIR) $(@D)/2.6
+	$(PY-SETUPTOOLS_UNZIP) $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE_OLD) | tar -C $(HOST_BUILD_DIR) -xvf -
+	mv $(HOST_BUILD_DIR)/$(PY-SETUPTOOLS_DIR_OLD) $(@D)/2.6
 	$(PY-SETUPTOOLS_UNZIP) $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
 	mv $(HOST_BUILD_DIR)/$(PY-SETUPTOOLS_DIR) $(@D)/2.7
 	$(PY-SETUPTOOLS_UNZIP) $(DL_DIR)/$(PY-SETUPTOOLS_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
@@ -259,9 +262,11 @@ $(PY-SETUPTOOLS_HOST_BUILD_DIR)/.staged: host/.configured $(DL_DIR)/$(PY-SETUPTO
 	(cd $(@D)/2.6; $(HOST_STAGING_PREFIX)/bin/python2.6 setup.py build)
 	(cd $(@D)/2.6; \
 	$(HOST_STAGING_PREFIX)/bin/python2.6 setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+	(cd $(@D)/2.7; $(HOST_STAGING_PREFIX)/bin/python2.7 bootstrap.py)
 	(cd $(@D)/2.7; $(HOST_STAGING_PREFIX)/bin/python2.7 setup.py build)
 	(cd $(@D)/2.7; \
 	$(HOST_STAGING_PREFIX)/bin/python2.7 setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
+	(cd $(@D)/3; $(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) bootstrap.py)
 	(cd $(@D)/3; $(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py build)
 	(cd $(@D)/3; \
 	$(HOST_STAGING_PREFIX)/bin/python$(PYTHON3_VERSION_MAJOR) setup.py install --root=$(HOST_STAGING_DIR) --prefix=/opt)
@@ -310,9 +315,9 @@ $(PY26-SETUPTOOLS_IPK_DIR)/CONTROL/control:
 	@echo "Architecture: $(TARGET_ARCH)" >>$@
 	@echo "Priority: $(PY-SETUPTOOLS_PRIORITY)" >>$@
 	@echo "Section: $(PY-SETUPTOOLS_SECTION)" >>$@
-	@echo "Version: $(PY-SETUPTOOLS_VERSION)-$(PY-SETUPTOOLS_IPK_VERSION)" >>$@
+	@echo "Version: $(PY-SETUPTOOLS_VERSION_OLD)-$(PY-SETUPTOOLS_IPK_VERSION_OLD)" >>$@
 	@echo "Maintainer: $(PY-SETUPTOOLS_MAINTAINER)" >>$@
-	@echo "Source: $(PY-SETUPTOOLS_SITE)/$(PY-SETUPTOOLS_SOURCE)" >>$@
+	@echo "Source: $(PY-SETUPTOOLS_SITE)/$(PY-SETUPTOOLS_SOURCE_OLD)" >>$@
 	@echo "Description: $(PY-SETUPTOOLS_DESCRIPTION)" >>$@
 	@echo "Depends: $(PY26-SETUPTOOLS_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-SETUPTOOLS_CONFLICTS)" >>$@
@@ -326,7 +331,7 @@ $(PY27-SETUPTOOLS_IPK_DIR)/CONTROL/control:
 	@echo "Section: $(PY-SETUPTOOLS_SECTION)" >>$@
 	@echo "Version: $(PY-SETUPTOOLS_VERSION)-$(PY-SETUPTOOLS_IPK_VERSION)" >>$@
 	@echo "Maintainer: $(PY-SETUPTOOLS_MAINTAINER)" >>$@
-	@echo "Source: $(PY-SETUPTOOLS_SITE)/$(PY-SETUPTOOLS_SOURCE)" >>$@
+	@echo "Source: $(PY-SETUPTOOLS_URL)" >>$@
 	@echo "Description: $(PY-SETUPTOOLS_DESCRIPTION)" >>$@
 	@echo "Depends: $(PY27-SETUPTOOLS_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-SETUPTOOLS_CONFLICTS)" >>$@
@@ -340,7 +345,7 @@ $(PY3-SETUPTOOLS_IPK_DIR)/CONTROL/control:
 	@echo "Section: $(PY-SETUPTOOLS_SECTION)" >>$@
 	@echo "Version: $(PY-SETUPTOOLS_VERSION)-$(PY-SETUPTOOLS_IPK_VERSION)" >>$@
 	@echo "Maintainer: $(PY-SETUPTOOLS_MAINTAINER)" >>$@
-	@echo "Source: $(PY-SETUPTOOLS_SITE)/$(PY-SETUPTOOLS_SOURCE)" >>$@
+	@echo "Source: $(PY-SETUPTOOLS_URL)" >>$@
 	@echo "Description: $(PY-SETUPTOOLS_DESCRIPTION)" >>$@
 	@echo "Depends: $(PY3-SETUPTOOLS_DEPENDS)" >>$@
 	@echo "Conflicts: $(PY-SETUPTOOLS_CONFLICTS)" >>$@

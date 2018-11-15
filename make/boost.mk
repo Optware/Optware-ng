@@ -27,7 +27,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 BOOST_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/boost
-BOOST_VERSION ?= 1_61_0
+BOOST_VERSION ?= 1_68_0
 BOOST_VERSION_DOTTED=$(shell echo $(BOOST_VERSION)|sed s/_/\./g)
 BOOST_SOURCE=boost_$(BOOST_VERSION).tar.gz
 BOOST_DIR=boost_$(BOOST_VERSION)
@@ -106,7 +106,7 @@ BOOST_ADDITIONAL_LIBS ?= serialization test wave
 #
 # BOOST_IPK_VERSION should be incremented when the ipk changes.
 #
-BOOST_IPK_VERSION ?= 2
+BOOST_IPK_VERSION ?= 1
 
 #
 # BOOST_CONFFILES should be a list of user-editable files
@@ -116,7 +116,9 @@ BOOST_IPK_VERSION ?= 2
 # BOOST_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#BOOST_PATCHES=$(BOOST_SOURCE_DIR)/atomic_count_gcc.patch
+BOOST_PATCHES=\
+$(BOOST_SOURCE_DIR)/skip-unit-test-binaries-execution.patch \
+#$(BOOST_SOURCE_DIR)/atomic_count_gcc.patch
 
 #
 # If the compilation of the package requires additional
@@ -361,7 +363,7 @@ endif
 	$(BOOST_UNZIP) $(DL_DIR)/$(BOOST_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(BOOST_PATCHES)" ; \
 		then cat $(BOOST_PATCHES) | \
-		$(PATCH) -d $(BUILD_DIR)/$(BOOST_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(BOOST_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(BOOST_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(BOOST_DIR) $(@D) ; \
@@ -381,7 +383,7 @@ endif
 	sed -i -e 's|: ar :|: $(TARGET_AR) :|' -e 's/-Wl,\$$(RPATH_OPTION:E=-R)\$$(SPACE)-Wl,\$$(RPATH)//' $(@D)/$(BOOST_GCC_CONF).jam
 	sed -i -e 's/-Wl,\$$(RPATH_OPTION:E=-R)\$$(SPACE)-Wl,"\$$(RPATH)" //' $(@D)/$(BOOST_GCC_CONF).py
 	### add PYVER env variable to libboost_python soname, e.g.: libboost_python.so.1.45.0 --> libboost_python${PYVER}.so.1.45.0
-	sed -i -e 's;\$$(SONAME_OPTION)\$$(SPACE)-Wl,\$$(<\[-1\]:D=);\$$(SONAME_OPTION)\$$(SPACE)-Wl,`echo \$$(<\[-1\]:D=)|sed s/python/python\$${PYVER}/`;' $(@D)/$(BOOST_GCC_CONF).jam
+	sed -i -e 's;\$$(SONAME_OPTION)\$$(SPACE)-Wl,\$$(<\[-1\]:D=);\$$(SONAME_OPTION)\$$(SPACE)-Wl,`echo \$$(<\[-1\]:D=)|sed s/python[0-9]*/python\$${PYVER}/`;' $(@D)/$(BOOST_GCC_CONF).jam
 	### set compilation and linking flags
 	echo "using gcc : `$(TARGET_CC) -dumpversion` : $(TARGET_CXX) :" '<cxxflags>"$(STAGING_CPPFLAGS) $(BOOST_CPPFLAGS)" <linkflags>"$(STAGING_LDFLAGS) $(BOOST_LDFLAGS)" ;' > $(@D)/user-config.jam
 	echo "using gcc : `$(TARGET_CC) -dumpversion` : $(TARGET_CXX) :" '<cxxflags>"$(STAGING_CPPFLAGS) $(BOOST_PYTHON26_CPPFLAGS)" <linkflags>"$(STAGING_LDFLAGS) $(BOOST_PYTHON26_LDFLAGS)" ;' > $(@D)/user-config-py2.6.jam
@@ -421,7 +423,7 @@ $(BOOST_BUILD_DIR)/.py26built: $(BOOST_BUILD_DIR)/.configured
 	rm -f $@
 	rm -rf $(@D)/bin.v2/libs/python
 	(cd $(@D); $(BOOST_JAM_PYTHON26) $(BOOST_JAM_PYTHON26_ARGS))
-	mv $(@D)/stage/lib/libboost_python.so.$(BOOST_VERSION_DOTTED) $(@D)/stage/lib/libboost_python-py26.so.$(BOOST_VERSION_DOTTED)
+	mv $(@D)/stage/lib/libboost_python27.so.$(BOOST_VERSION_DOTTED) $(@D)/stage/lib/libboost_python-py26.so.$(BOOST_VERSION_DOTTED)
 	rm -f $(@D)/stage/lib/libboost_python-py26.so
 	ln -s libboost_python-py26.so.$(BOOST_VERSION_DOTTED) $(@D)/stage/lib/libboost_python-py26.so
 	rm -f $(@D)/stage/lib/libboost_python.so
@@ -431,7 +433,7 @@ $(BOOST_BUILD_DIR)/.py27built: $(BOOST_BUILD_DIR)/.configured
 	rm -f $@
 	rm -rf $(@D)/bin.v2/libs/python
 	(cd $(@D); $(BOOST_JAM_PYTHON27) $(BOOST_JAM_PYTHON27_ARGS))
-	mv $(@D)/stage/lib/libboost_python.so.$(BOOST_VERSION_DOTTED) $(@D)/stage/lib/libboost_python-py27.so.$(BOOST_VERSION_DOTTED)
+	mv $(@D)/stage/lib/libboost_python27.so.$(BOOST_VERSION_DOTTED) $(@D)/stage/lib/libboost_python-py27.so.$(BOOST_VERSION_DOTTED)
 	rm -f $(@D)/stage/lib/libboost_python-py27.so
 	ln -s libboost_python-py27.so.$(BOOST_VERSION_DOTTED) $(@D)/stage/lib/libboost_python-py27.so
 	rm -f $(@D)/stage/lib/libboost_python.so
@@ -441,7 +443,7 @@ $(BOOST_BUILD_DIR)/.py3built: $(BOOST_BUILD_DIR)/.configured
 	rm -f $@
 	rm -rf $(@D)/bin.v2/libs/python
 	(cd $(@D); $(BOOST_JAM_PYTHON3) $(BOOST_JAM_PYTHON3_ARGS))
-	mv -f $(@D)/stage/lib/libboost_python.so.$(BOOST_VERSION_DOTTED) $(@D)/stage/lib/libboost_python-py$(shell echo $(PYTHON3_VERSION_MAJOR)|sed 's/\.//g').so.$(BOOST_VERSION_DOTTED)
+	mv -f $(@D)/stage/lib/libboost_python27.so.$(BOOST_VERSION_DOTTED) $(@D)/stage/lib/libboost_python-py$(shell echo $(PYTHON3_VERSION_MAJOR)|sed 's/\.//g').so.$(BOOST_VERSION_DOTTED)
 	rm -f $(@D)/stage/lib/libboost_python-py$(shell echo $(PYTHON3_VERSION_MAJOR)|sed 's/\.//g').so
 	ln -s libboost_python-py$(shell echo $(PYTHON3_VERSION_MAJOR)|sed 's/\.//g').so.$(BOOST_VERSION_DOTTED) $(@D)/stage/lib/libboost_python-py$(shell echo $(PYTHON3_VERSION_MAJOR)|sed 's/\.//g').so
 	rm -f $(@D)/stage/lib/libboost_python.so

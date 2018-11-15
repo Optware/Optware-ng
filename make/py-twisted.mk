@@ -50,7 +50,7 @@ PY-TWISTED_CONFLICTS=
 #
 # PY-TWISTED_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-TWISTED_IPK_VERSION=3
+PY-TWISTED_IPK_VERSION=4
 
 #
 # PY-TWISTED_CONFFILES should be a list of user-editable files
