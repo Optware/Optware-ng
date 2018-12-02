@@ -35,14 +35,14 @@ GNUTLS_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 GNUTLS_DESCRIPTION=GNU Transport Layer Security Library.
 GNUTLS_SECTION=libs
 GNUTLS_PRIORITY=optional
-GNUTLS_DEPENDS=libtasn1, libgcrypt, libgpg-error, zlib, libnettle, libunistring
+GNUTLS_DEPENDS=libtasn1, libgcrypt, libgpg-error, zlib, libnettle, libunistring, libidn
 GNUTLS_SUGGESTS=
 GNUTLS_CONFLICTS=
 
 #
 # GNUTLS_IPK_VERSION should be incremented when the ipk changes.
 #
-GNUTLS_IPK_VERSION=2
+GNUTLS_IPK_VERSION=3
 
 #
 # GNUTLS_CONFFILES should be a list of user-editable files
@@ -112,7 +112,7 @@ gnutls-source: $(DL_DIR)/$(GNUTLS_SOURCE) $(GNUTLS_PATCHES)
 # first, then do that first (e.g. "$(MAKE) <bar>-stage <baz>-stage").
 #
 $(GNUTLS_BUILD_DIR)/.configured: $(DL_DIR)/$(GNUTLS_SOURCE) $(GNUTLS_PATCHES) make/gnutls.mk
-	$(MAKE) libgcrypt-stage libtasn1-stage libnettle-stage libunistring-stage
+	$(MAKE) libgcrypt-stage libtasn1-stage libnettle-stage libunistring-stage libidn-stage
 	rm -rf $(BUILD_DIR)/$(GNUTLS_DIR) $(GNUTLS_BUILD_DIR)
 	$(GNUTLS_UNZIP) $(DL_DIR)/$(GNUTLS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(GNUTLS_PATCHES)"; \
