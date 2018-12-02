@@ -358,7 +358,7 @@ $(SAMBA36-SWAT_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(SAMBA36_IPK) $(SAMBA36-DEV_IPK) $(SAMBA36-SWAT_IPK): $(SAMBA36_BUILD_DIR)/.built
-	rm -rf $(SAMBA36_IPK_DIR) $(BUILD_DIR)/SAMBA36_*_$(TARGET_ARCH).ipk
+	rm -rf $(SAMBA36_IPK_DIR) $(BUILD_DIR)/samba36_*_$(TARGET_ARCH).ipk
 	rm -rf $(SAMBA36-DEV_IPK_DIR) $(BUILD_DIR)/samba36-dev_*_$(TARGET_ARCH).ipk
 	rm -rf $(SAMBA36-SWAT_IPK_DIR) $(BUILD_DIR)/samba36-swat_*_$(TARGET_ARCH).ipk
 	# samba3
