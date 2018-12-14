@@ -1,0 +1,13 @@
+--- a/update-smart-drivedb.in	2018-12-14 12:25:11.218540161 +0300
++++ b/update-smart-drivedb.in	2018-12-14 12:26:00.538229214 +0300
+@@ -43,8 +43,8 @@
+ #SRCEXPR='http://sourceforge.net/apps/trac/smartmontools/export/HEAD/$location/smartmontools/drivedb.h'
+ 
+ # ViewVC repository browser
+-SRCEXPR='http://smartmontools.svn.sourceforge.net/viewvc/smartmontools/$location/smartmontools/drivedb.h?revision=HEAD'
+-
++#SRCEXPR='http://smartmontools.svn.sourceforge.net/viewvc/smartmontools/$location/smartmontools/drivedb.h?revision=HEAD'
++SRCEXPR='https://www.smartmontools.org/export/HEAD/branches/$BRANCH/smartmontools/drivedb.h'
+ 
+ # Parse options
+ q="-q "

@@ -12,7 +12,7 @@ SMARTMONTOOLS_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/smartmontools
 #SMARTMONTOOLS_VERSION=5.38+cvs$(SMARTMONTOOLS_CVS_DATE)
 #SMARTMONTOOLS_DIR=sm5
 #else
-SMARTMONTOOLS_VERSION=5.40
+SMARTMONTOOLS_VERSION=5.43
 SMARTMONTOOLS_DIR=smartmontools-$(SMARTMONTOOLS_VERSION)
 #endif
 SMARTMONTOOLS_SOURCE=smartmontools-$(SMARTMONTOOLS_VERSION).tar.gz
@@ -29,7 +29,7 @@ SMARTMONTOOLS_CONFLICTS=
 #
 # SMARTMONTOOLS_IPK_VERSION should be incremented when the ipk changes.
 #
-SMARTMONTOOLS_IPK_VERSION=5
+SMARTMONTOOLS_IPK_VERSION=1
 
 #
 # SMARTMONTOOLS_CONFFILES should be a list of user-editable files
@@ -39,7 +39,7 @@ SMARTMONTOOLS_CONFFILES=$(TARGET_PREFIX)/etc/smartd.conf $(TARGET_PREFIX)/etc/in
 # SMARTMONTOOLS_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#SMARTMONTOOLS_PATCHES=
+SMARTMONTOOLS_PATCHES=$(SMARTMONTOOLS_SOURCE_DIR)/update-smart-drivedb.in.patch
 
 #
 # If the compilation of the package requires additional
@@ -179,6 +179,7 @@ $(SMARTMONTOOLS_IPK): $(SMARTMONTOOLS_BUILD_DIR)/.built
 	$(INSTALL) -m 755 $(SMARTMONTOOLS_SOURCE_DIR)/prerm $(SMARTMONTOOLS_IPK_DIR)/CONTROL/prerm
 	echo $(SMARTMONTOOLS_CONFFILES) | sed -e 's/ /\n/g' > $(SMARTMONTOOLS_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(SMARTMONTOOLS_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(SMARTMONTOOLS_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
