@@ -1,5 +1,5 @@
 --- share/Makefile.in.orig	2005-02-12 15:07:17.000000000 +0000
-+++ share/Makefile.in	2009-04-04 23:13:42.205176624 +0000
++++ b/share/Makefile.in	2009-04-04 23:13:42.205176624 +0000
 @@ -225,7 +225,7 @@
  	-if test -d templates; then rm -f tmpl.tar.gz; fi
  

@@ -148,6 +148,10 @@ else
 	GOPATH=$(@D) \
 	$(GOLANG_BUILD_DIR)/bin/go install -v github.com/ncw/rclone
 endif
+	@if [ ! -f $(@D)/bin/linux_$(TARGET_GOARCH)/rclone ]; then \
+		mkdir -p $(@D)/bin/linux_$(TARGET_GOARCH); \
+		cp -af $(@D)/bin/rclone $(@D)/bin/linux_$(TARGET_GOARCH)/; \
+	fi
 	touch $@
 
 #

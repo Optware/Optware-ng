@@ -29,14 +29,14 @@ SPEEX_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SPEEX_DESCRIPTION=Speex is an Open Source/Free Software  patent-free audio compression format designed for speech.
 SPEEX_SECTION=audio
 SPEEX_PRIORITY=optional
-SPEEX_DEPENDS=libogg
+SPEEX_DEPENDS=libogg, speexdsp
 SPEEX_SUGGESTS=
 SPEEX_CONFLICTS=
 
 #
 # SPEEX_IPK_VERSION should be incremented when the ipk changes.
 #
-SPEEX_IPK_VERSION ?= 1
+SPEEX_IPK_VERSION ?= 2
 
 #
 # SPEEX_CONFFILES should be a list of user-editable files
@@ -60,17 +60,6 @@ SPEEX_LDFLAGS=
 
 ifeq (, $(filter i686, $(TARGET_ARCH)))
 SPEEX_CONFIG_ARGS=--enable-fixed-point
-endif
-
-ifeq ($(TARGET_ARCH), armeb)
-ifeq ($(OPTWARE_TARGET), $(filter fsg3v4 openwrt-ixp4xx slugosbe, $(OPTWARE_TARGET)))
-SPEEX_CONFIG_ARGS+=--enable-arm4-asm
-else
-SPEEX_CONFIG_ARGS+=--enable-arm5e-asm
-endif
-endif
-ifeq ($(TARGET_ARCH), arm)
-SPEEX_CONFIG_ARGS+=--enable-arm4-asm
 endif
 
 #
@@ -123,7 +112,7 @@ speex-source: $(DL_DIR)/$(SPEEX_SOURCE) $(SPEEX_PATCHES)
 # shown below to make various patches to it.
 #
 $(SPEEX_BUILD_DIR)/.configured: $(DL_DIR)/$(SPEEX_SOURCE) $(SPEEX_PATCHES) make/speex.mk
-	$(MAKE) libogg-stage
+	$(MAKE) libogg-stage speexdsp-stage
 	rm -rf $(BUILD_DIR)/$(SPEEX_DIR) $(SPEEX_BUILD_DIR)
 	$(SPEEX_UNZIP) $(DL_DIR)/$(SPEEX_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(SPEEX_PATCHES)" ; \
@@ -137,6 +126,7 @@ $(SPEEX_BUILD_DIR)/.configured: $(DL_DIR)/$(SPEEX_SOURCE) $(SPEEX_PATCHES) make/
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(SPEEX_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(SPEEX_LDFLAGS)" \
+		PKG_CONFIG_PATH=$(STAGING_LIB_DIR)/pkgconfig \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -173,7 +163,7 @@ $(SPEEX_BUILD_DIR)/.staged: $(SPEEX_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
 	sed -i -e 's|^prefix=.*|prefix=$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/speex.pc
-	rm -f $(STAGING_LIB_DIR)/libspeex.la $(STAGING_LIB_DIR)/libspeexdsp.la
+	rm -f $(STAGING_LIB_DIR)/libspeex.la
 	touch $@
 
 speex-stage: $(SPEEX_BUILD_DIR)/.staged
@@ -212,6 +202,7 @@ $(SPEEX_IPK_DIR)/CONTROL/control:
 $(SPEEX_IPK): $(SPEEX_BUILD_DIR)/.built
 	rm -rf $(SPEEX_IPK_DIR) $(BUILD_DIR)/speex_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(SPEEX_BUILD_DIR) DESTDIR=$(SPEEX_IPK_DIR) install-strip
+	rm -f $(SPEEX_IPK_DIR)$(TARGET_PREFIX)/lib/libspeex.la
 #	$(INSTALL) -d $(SPEEX_IPK_DIR)$(TARGET_PREFIX)/etc/
 #	$(INSTALL) -m 644 $(SPEEX_SOURCE_DIR)/speex.conf $(SPEEX_IPK_DIR)$(TARGET_PREFIX)/etc/speex.conf
 #	$(INSTALL) -d $(SPEEX_IPK_DIR)$(TARGET_PREFIX)/etc/init.d

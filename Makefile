@@ -402,7 +402,7 @@ COMMON_PACKAGES = \
 	sharutils shellinabox shntool silc-client simh sipcalc siproxd sispmctl \
 	slang slrn slsc \
 	sm smartmontools smstools3 snort snownews \
-	socat softethervpn softflowd sox spandsp spawn-fcgi speex spindown splix \
+	socat softethervpn softflowd sox spandsp spawn-fcgi speex speexdsp spindown splix \
 	sqlite sqlite2 \
 	sqsh squeak squid squid3 squeezelite \
 	srelay srecord srtp ssam sslh sslwrap start-stop-daemon \
@@ -725,7 +725,8 @@ $(if $(filter buildroot-armeabi-ng buildroot-armeabihf buildroot-armv5eabi-ng bu
 $(if $(filter buildroot-i686, $(OPTWARE_TARGET)), 386, \
 $(if $(filter buildroot-mipsel-ng, $(OPTWARE_TARGET)), mipsle, \
 $(if $(filter buildroot-ppc-603e ct-ng-ppc-e500v2, $(OPTWARE_TARGET)), ppc, \
-$(TARGET_ARCH))))))
+$(if $(filter buildroot-x86_64, $(OPTWARE_TARGET)), amd64, \
+$(TARGET_ARCH)))))))
 
 CROSS_GCCGO_GOROOT ?= $(TARGET_CROSS_TOP)/$(EXACT_TARGET_NAME)
 
@@ -844,7 +845,7 @@ include $(shell ls make/*.mk)
 
 directories: $(DL_DIR) $(BUILD_DIR) $(STAGING_DIR) $(STAGING_PREFIX) \
 	$(STAGING_LIB_DIR) $(STAGING_INCLUDE_DIR) $(TOOL_BUILD_DIR) \
-	$(PACKAGE_DIR) $(TMPDIR)
+	$(PACKAGE_DIR) $(TMPDIR) $(STAGING_PREFIX)/lib64
 
 $(DL_DIR):
 	mkdir $(DL_DIR)
@@ -872,6 +873,9 @@ $(PACKAGE_DIR):
 
 $(TMPDIR):
 	mkdir $(TMPDIR)
+
+$(STAGING_PREFIX)/lib64:
+	ln -sf lib $(STAGING_PREFIX)/lib64
 
 source: $(PACKAGES_SOURCE)
 

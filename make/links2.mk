@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 LINKS2_SITE=http://links.twibright.com/download
-LINKS2_VERSION=2.2
+LINKS2_VERSION=2.17
 LINKS2_SOURCE=links-$(LINKS2_VERSION).tar.bz2
 LINKS2_DIR=links-$(LINKS2_VERSION)
 LINKS2_UNZIP=bzcat
@@ -29,14 +29,14 @@ LINKS2_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 LINKS2_DESCRIPTION=Links is a web browser that can run in text mode.
 LINKS2_SECTION=web
 LINKS2_PRIORITY=optional
-LINKS2_DEPENDS=bzip2, openssl, zlib
+LINKS2_DEPENDS=bzip2, openssl, zlib, xz-utils, libevent
 LINKS2_SUGGESTS=
 LINKS2_CONFLICTS=
 
 #
 # LINKS2_IPK_VERSION should be incremented when the ipk changes.
 #
-LINKS2_IPK_VERSION=3
+LINKS2_IPK_VERSION=1
 
 #
 # LINKS2_CONFFILES should be a list of user-editable files
@@ -105,7 +105,7 @@ links2-source: $(DL_DIR)/$(LINKS2_SOURCE) $(LINKS2_PATCHES)
 # shown below to make various patches to it.
 #
 $(LINKS2_BUILD_DIR)/.configured: $(DL_DIR)/$(LINKS2_SOURCE) $(LINKS2_PATCHES) make/links2.mk
-	$(MAKE) bzip2-stage openssl-stage zlib-stage
+	$(MAKE) bzip2-stage openssl-stage zlib-stage xz-utils-stage libevent-stage
 	rm -rf $(BUILD_DIR)/$(LINKS2_DIR) $(@D)
 	$(LINKS2_UNZIP) $(DL_DIR)/$(LINKS2_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LINKS2_PATCHES)" ; \
@@ -119,6 +119,7 @@ $(LINKS2_BUILD_DIR)/.configured: $(DL_DIR)/$(LINKS2_SOURCE) $(LINKS2_PATCHES) ma
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LINKS2_CPPFLAGS)" \
 		LDFLAGS="$(STAGING_LDFLAGS) $(LINKS2_LDFLAGS)" \
+		PKG_CONFIG_PATH="$(STAGING_LIB_DIR)/pkgconfig" \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -208,6 +209,7 @@ $(LINKS2_IPK): $(LINKS2_BUILD_DIR)/.built
 	fi
 	echo $(LINKS2_CONFFILES) | sed -e 's/ /\n/g' > $(LINKS2_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(LINKS2_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(LINKS2_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.

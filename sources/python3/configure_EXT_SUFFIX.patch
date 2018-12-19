@@ -1,6 +1,8 @@
+diff --git a/configure b/configure
+index 36e117a..2431cce 100755
 --- a/configure
 +++ b/configure
-@@ -14758,7 +14758,7 @@ $as_echo "$SOABI" >&6; }
+@@ -14969,7 +14969,7 @@ $as_echo "$SOABI" >&6; }
  
  case $ac_sys_system in
      Linux*|GNU*|Darwin)
@@ -9,9 +11,11 @@
      *)
  	EXT_SUFFIX=${SHLIB_SUFFIX};;
  esac
+diff --git a/configure.ac b/configure.ac
+index 620b48a..cbd529f 100644
 --- a/configure.ac
 +++ b/configure.ac
-@@ -4524,7 +4524,7 @@ AC_MSG_RESULT($SOABI)
+@@ -4669,7 +4669,7 @@ AC_MSG_RESULT($SOABI)
  AC_SUBST(EXT_SUFFIX)
  case $ac_sys_system in
      Linux*|GNU*|Darwin)

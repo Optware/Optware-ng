@@ -38,7 +38,7 @@ PY-TORNADO_CONFLICTS=
 #
 # PY-TORNADO_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-TORNADO_IPK_VERSION=3
+PY-TORNADO_IPK_VERSION=4
 
 #
 # PY-TORNADO_CONFFILES should be a list of user-editable files

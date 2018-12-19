@@ -37,7 +37,7 @@ PY-IMAPLIB2_CONFLICTS=
 #
 # PY-IMAPLIB2_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-IMAPLIB2_IPK_VERSION=3
+PY-IMAPLIB2_IPK_VERSION=4
 
 #
 # PY-IMAPLIB2_CONFFILES should be a list of user-editable files

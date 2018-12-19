@@ -1,0 +1,29 @@
+This fixes has_icu test during cross build
+diff --git a/tools/build/src/tools/testing-aux.jam b/tools/build/src/tools/testing-aux.jam
+index 30309fb..2957c4b 100644
+--- a/tools/build/src/tools/testing-aux.jam
++++ b/tools/build/src/tools/testing-aux.jam
+@@ -278,7 +278,8 @@ rule unit-test ( target : source : properties * )
+ actions unit-test
+ {
+     $(PATH_SETUP)
+-    $(LAUNCHER) "$(>)" $(ARGS) && $(.MAKE_FILE) "$(<)"
++#    $(LAUNCHER) "$(>)" $(ARGS) && 
++    $(.MAKE_FILE) "$(<)"
+ }
+ 
+ if [ os.name ] = VMS
+diff --git a/tools/build/src/tools/testing.jam b/tools/build/src/tools/testing.jam
+index a6c5cc3..cea57f8 100644
+--- a/tools/build/src/tools/testing.jam
++++ b/tools/build/src/tools/testing.jam
+@@ -738,7 +738,8 @@ rule unit-test ( target : source : properties * )
+ actions unit-test
+ {
+     $(PATH_SETUP)
+-    $(LAUNCHER) "$(>)" $(ARGS) && $(.MAKE_FILE) "$(<)"
++#    $(LAUNCHER) "$(>)" $(ARGS) && 
++    $(.MAKE_FILE) "$(<)"
+ }
+ 
+ if [ os.name ] = VMS

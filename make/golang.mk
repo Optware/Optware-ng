@@ -58,7 +58,8 @@ GOLANG_ARCH=$(strip \
 $(if $(filter buildroot-armeabi-ng buildroot-armeabihf buildroot-armv5eabi-ng buildroot-armv5eabi-ng-legacy, $(OPTWARE_TARGET)), arm, \
 $(if $(filter buildroot-i686, $(OPTWARE_TARGET)), 386, \
 $(if $(filter buildroot-mipsel-ng, $(OPTWARE_TARGET)), mipsle, \
-$(error unsupported arch)))))
+$(if $(filter buildroot-x86_64, $(OPTWARE_TARGET)), amd64, \
+$(error unsupported arch))))))
 
 GOLANG_GOARM:=$(strip \
 $(if $(filter buildroot-armeabi-ng buildroot-armv5eabi-ng buildroot-armv5eabi-ng-legacy, $(OPTWARE_TARGET)), 5, \
@@ -141,6 +142,15 @@ golang-unpack: $(GOLANG_BUILD_DIR)/.configured
 #
 $(GOLANG_BUILD_DIR)/.built: $(GOLANG_BUILD_DIR)/.configured
 	rm -f $@
+	@if [ "$(GOLANG_ARCH)" = amd64 ]; then \
+	if [ ! -e $(TARGET_PREFIX)/lib64/ld-linux-x86-64.so.2 ]; then \
+		echo "Warning: $(TARGET_PREFIX)/lib64/ld-linux-x86-64.so.2 does not exist" >&2; \
+		echo ">>>>>>>> golang build will probably fail." >&2; \
+		echo ">>>>>>>> You can try something like this (as root)" >&2; \
+		echo ">>>>>>>> # mkdir -p $(TARGET_PREFIX)/lib64" >&2; \
+		echo ">>>>>>>> # ln -s /lib64/ld-linux-x86-64.so.2 $(TARGET_PREFIX)/lib64/" >&2; \
+	fi; \
+	fi
 	(cd $(@D)/src; \
 		CC_FOR_TARGET=$(TARGET_CC) \
 		CXX_FOR_TARGET=$(TARGET_CXX) \
@@ -148,6 +158,10 @@ $(GOLANG_BUILD_DIR)/.built: $(GOLANG_BUILD_DIR)/.configured
 		GOARM=$(GOLANG_GOARM) GOMIPS=$(GOLANG_GOMIPS) CGO_ENABLED=1 \
 		GOROOT_BOOTSTRAP=$(GCC_HOST_BIN_DIR)/.. ./make.bash \
 	)
+	@if [ "$(GOLANG_ARCH)" = amd64 ]; then \
+	mkdir -p $(@D)/bin/linux_amd64 && \
+	cp -af $(@D)/bin/{go,gofmt} $(@D)/bin/linux_amd64; \
+	fi
 	touch $@
 
 #

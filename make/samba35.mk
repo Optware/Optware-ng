@@ -21,7 +21,7 @@
 #
 SAMBA35_SITE=http://www.samba.org/samba/ftp/stable
 SAMBA35_VERSION ?= 3.5.22
-SAMBA35_IPK_VERSION ?= 4
+SAMBA35_IPK_VERSION ?= 5
 SAMBA35_SOURCE=samba-$(SAMBA35_VERSION).tar.gz
 SAMBA35_DIR=samba-$(SAMBA35_VERSION)
 SAMBA35_UNZIP=zcat
@@ -29,7 +29,7 @@ SAMBA35_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SAMBA35_DESCRIPTION=Samba suite provides file and print services to SMB/CIFS clients. This is a newer version.
 SAMBA35_SECTION=net
 SAMBA35_PRIORITY=optional
-SAMBA35_DEPENDS=avahi, popt, readline, zlib, e2fsprogs, libacl, cups, libintl
+SAMBA35_DEPENDS=avahi, popt, readline, zlib, e2fsprogs, libacl, cups, libintl, libpam
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
 SAMBA35_DEPENDS +=, openldap-libs
 endif
@@ -214,7 +214,7 @@ ifeq (openldap, $(filter openldap, $(PACKAGES)))
 	$(MAKE) openldap-stage 
 endif
 	$(MAKE) avahi-stage cups-stage popt-stage readline-stage zlib-stage e2fsprogs-stage \
-		libacl-stage gettext-stage
+		libacl-stage gettext-stage libpam-stage
 	rm -rf $(BUILD_DIR)/$(SAMBA35_DIR) $(@D)
 	$(SAMBA35_UNZIP) $(DL_DIR)/$(SAMBA35_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	cat $(SAMBA35_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(SAMBA35_DIR) -p1
@@ -362,7 +362,7 @@ $(SAMBA35-SWAT_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(SAMBA35_IPK) $(SAMBA35-DEV_IPK) $(SAMBA35-SWAT_IPK): $(SAMBA35_BUILD_DIR)/.built
-	rm -rf $(SAMBA35_IPK_DIR) $(BUILD_DIR)/SAMBA35_*_$(TARGET_ARCH).ipk
+	rm -rf $(SAMBA35_IPK_DIR) $(BUILD_DIR)/samba35_*_$(TARGET_ARCH).ipk
 	rm -rf $(SAMBA35-DEV_IPK_DIR) $(BUILD_DIR)/samba35-dev_*_$(TARGET_ARCH).ipk
 	rm -rf $(SAMBA35-SWAT_IPK_DIR) $(BUILD_DIR)/samba35-swat_*_$(TARGET_ARCH).ipk
 	# samba3

@@ -37,7 +37,7 @@ PY-LEPL_CONFLICTS=
 #
 # PY-LEPL_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-LEPL_IPK_VERSION=1
+PY-LEPL_IPK_VERSION=2
 
 #
 # PY-LEPL_CONFFILES should be a list of user-editable files

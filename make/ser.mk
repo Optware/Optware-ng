@@ -58,7 +58,7 @@ SER_LDFLAGS=
 SER_MAKEFLAGS=$(strip \
         $(if $(filter powerpc, $(TARGET_ARCH)), ARCH=ppc, \
         $(if $(filter mipsel mips, $(TARGET_ARCH)), ARCH=mips, \
-        $(if $(filter i386 i686, $(TARGET_ARCH)), ARCH=i386, \
+        $(if $(filter i386 i686 x86_64, $(TARGET_ARCH)), ARCH=i386, \
         ARCH=arm)))) OS=linux
 
 #

@@ -84,7 +84,7 @@ OPENSIPS_MAKEFLAGS=$(strip \
         $(if $(filter slugosbe, $(OPTWARE_TARGET)), ARCH=arm OS=linux OSREL=2.6.16, \
         $(if $(filter mipsel, $(TARGET_ARCH)), ARCH=mips OS=linux OSREL=2.4.20, \
         $(if $(filter i386 i686, $(TARGET_ARCH)), ARCH=i386 OS=linux, \
-        ARCH=arm OS=linux OSREL=2.4.22))))))
+        ARCH=$(TARGET_ARCH) OS=linux))))))
 
 #
 # Excluded modules:

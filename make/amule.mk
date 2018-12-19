@@ -40,7 +40,7 @@ AMULE_CONFLICTS=
 #
 # AMULE_IPK_VERSION should be incremented when the ipk changes.
 #
-AMULE_IPK_VERSION=3
+AMULE_IPK_VERSION=4
 
 #
 # AMULE_CONFFILES should be a list of user-editable files
@@ -67,7 +67,7 @@ AMULE_CPPFLAGS=-pthread -I$(STAGING_INCLUDE_DIR)/upnp -DENABLE_UPNP=1
 ifeq ($(OPTWARE_TARGET), ts101)
 AMULE_CPPFLAGS+= -fno-builtin-log -fno-builtin-exp
 endif
-AMULE_LDFLAGS=-pthread -lupnp -lthreadutil -lixml
+AMULE_LDFLAGS=-pthread -lupnp -lixml
 AMULE_CONFIGURE_OPTS = ac_cv_func_malloc_0_nonnull=yes ac_cv_func_realloc_0_nonnull=yes
 ifeq ($(LIBC_STYLE), uclibc)
 ifdef TARGET_GXX

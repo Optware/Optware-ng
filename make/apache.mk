@@ -14,7 +14,7 @@
 # It is usually "zcat" (for .gz) or "bzcat" (for .bz2)
 #
 APACHE_SITE=http://archive.apache.org/dist/httpd
-APACHE_VERSION=2.4.27
+APACHE_VERSION=2.4.37
 APACHE_SOURCE=httpd-$(APACHE_VERSION).tar.bz2
 APACHE_DIR=httpd-$(APACHE_VERSION)
 APACHE_UNZIP=bzcat
@@ -31,7 +31,7 @@ APACHE_MPM=worker
 #
 # APACHE_IPK_VERSION should be incremented when the ipk changes.
 #
-APACHE_IPK_VERSION=2
+APACHE_IPK_VERSION=1
 
 #
 # APACHE_CONFFILES should be a list of user-editable files
@@ -191,7 +191,7 @@ $(APACHE_BUILD_DIR)/.configured: $(DL_DIR)/$(APACHE_SOURCE) $(APACHE_PATCHES) ma
 		--prefix=$(TARGET_PREFIX) \
 		--enable-layout=GNU \
 		--with-mpm=$(APACHE_MPM) \
-		--enable-mods-shared=all \
+		--enable-mods-shared=reallyall \
 		--enable-ssl \
 		--enable-proxy \
 		--enable-cache \

@@ -38,7 +38,7 @@ PY_CUPS_CONFLICTS=
 #
 # PY_CUPS_IPK_VERSION should be incremented when the ipk changes.
 #
-PY_CUPS_IPK_VERSION=1
+PY_CUPS_IPK_VERSION=2
 
 #
 # PY_CUPS_CONFFILES should be a list of user-editable files

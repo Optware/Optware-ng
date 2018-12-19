@@ -117,6 +117,8 @@ $(LIBFFI_BUILD_DIR)/.configured: $(DL_DIR)/$(LIBFFI_SOURCE) $(LIBFFI_PATCHES) ma
 	if test "$(BUILD_DIR)/$(LIBFFI_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(LIBFFI_DIR) $(@D) ; \
 	fi
+	# we don't want lib64 dir for 64bit target
+	sed -i -e 's/multi_os_directory=.*/multi_os_directory=""/' $(@D)/configure
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(LIBFFI_CPPFLAGS)" \

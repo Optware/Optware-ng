@@ -57,7 +57,7 @@ LIBGPG-ERROR_PATCHES=#$(LIBGPG-ERROR_SOURCE_DIR)/configure.patch
 LIBGPG-ERROR_ARCH = $(strip \
     $(if $(filter buildroot-armeabihf, $(OPTWARE_TARGET)), arm-unknown-linux-gnueabihf, \
     $(if $(filter arm, $(TARGET_ARCH)), arm-unknown-linux-gnueabi, \
-    $(if $(filter i686, $(TARGET_ARCH)), i686-pc-linux-gnu, \
+    $(if $(filter i686 x86_64, $(TARGET_ARCH)), $(TARGET_ARCH)-pc-linux-gnu, \
     $(TARGET_ARCH)-unknown-linux-gnu))))
 
 #

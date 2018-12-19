@@ -129,6 +129,10 @@ gotty-unpack: $(GOTTY_BUILD_DIR)/.configured
 $(GOTTY_BUILD_DIR)/.built: $(GOTTY_BUILD_DIR)/.configured
 	rm -f $@
 	$(TARGET_GCCGO_GO_ENV) GOPATH=$(@D) $(GCC_HOST_BIN_DIR)/go install -v github.com/yudai/gotty
+	@if [ ! -f $(@D)/bin/linux_$(TARGET_GOARCH)/gotty ]; then \
+		mkdir -p $(@D)/bin/linux_$(TARGET_GOARCH); \
+		cp -af $(@D)/bin/gotty $(@D)/bin/linux_$(TARGET_GOARCH)/; \
+	fi
 	touch $@
 
 #

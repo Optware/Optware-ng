@@ -22,8 +22,10 @@
 MDADM_SITE=https://www.kernel.org/pub/linux/utils/raid/mdadm
 ifneq ($(OPTWARE_TARGET), $(filter buildroot-mipsel-ng buildroot-armv5eabi-ng-legacy, $(OPTWARE_TARGET)))
 MDADM_VERSION=3.4
+MDADM_IPK_VERSION=2
 else
 MDADM_VERSION=3.2.6
+MDADM_IPK_VERSION=3
 endif
 MDADM_SOURCE=mdadm-$(MDADM_VERSION).tar.gz
 MDADM_DIR=mdadm-$(MDADM_VERSION)
@@ -39,7 +41,7 @@ MDADM_CONFLICTS=
 #
 # MDADM_IPK_VERSION should be incremented when the ipk changes.
 #
-MDADM_IPK_VERSION=2
+#MDADM_IPK_VERSION=2 # set above
 
 #
 # MDADM_PATCHES should list any patches, in the the order in

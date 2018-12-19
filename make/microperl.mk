@@ -24,12 +24,12 @@ MICROPERL_IPK=$(BUILD_DIR)/microperl_$(MICROPERL_VERSION)-$(MICROPERL_IPK_VERSIO
 
 $(MICROPERL_BUILD_DIR)/.configured: $(DL_DIR)/$(MICROPERL_SOURCE) $(MICROPERL_PATCHES) make/microperl.mk
 	rm -rf $(BUILD_DIR)/$(PERL_DIR) $(@D)
-	$(PERL_UNZIP) $(DL_DIR)/$(PERL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	$(PERL_UNZIP) $(DL_DIR)/$(MICROPERL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(MICROPERL_PATCHES)"; then \
 		cat $(MICROPERL_PATCHES) | \
 		$(PATCH) -d $(BUILD_DIR)/$(MICROPERL_DIR) -p1 ; \
 	fi
-	mv $(BUILD_DIR)/$(PERL_DIR) $(@D)
+	mv $(BUILD_DIR)/$(MICROPERL_DIR) $(@D)
 	touch $@
 
 microperl-unpack: $(MICROPERL_BUILD_DIR)/.configured

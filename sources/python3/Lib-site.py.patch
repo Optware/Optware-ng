@@ -1,6 +1,8 @@
---- Python-3.4.2/Lib/site.py.orig	2014-10-08 11:18:12.000000000 +0300
-+++ Python-3.4.2/Lib/site.py	2015-01-22 15:10:07.673061126 +0200
-@@ -74,7 +74,7 @@
+diff --git a/Lib/site.py b/Lib/site.py
+index ffd132b..25efc21 100644
+--- a/Lib/site.py
++++ b/Lib/site.py
+@@ -75,7 +75,7 @@ import builtins
  import _sitebuiltins
  
  # Prefixes for site-packages; add additional prefixes like /usr/local here

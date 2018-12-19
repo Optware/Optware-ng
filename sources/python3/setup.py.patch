@@ -1,6 +1,6 @@
---- Python-3.4.2/setup.py.orig	2014-10-08 11:18:16.000000000 +0300
-+++ Python-3.4.2/setup.py	2015-01-29 18:21:49.830306956 +0200
-@@ -17,7 +17,7 @@
+--- a/setup.py
++++ b/setup.py
+@@ -16,7 +16,7 @@ from distutils.command.install_lib import install_lib
  from distutils.command.build_scripts import build_scripts
  from distutils.spawn import find_executable
  
@@ -9,7 +9,7 @@
  
  # Add special CFLAGS reserved for building the interpreter and the stdlib
  # modules (Issue #21121).
-@@ -39,7 +39,7 @@
+@@ -43,7 +43,7 @@ host_platform = get_platform()
  COMPILED_WITH_PYDEBUG = ('--with-pydebug' in sysconfig.get_config_var("CONFIG_ARGS"))
  
  # This global variable is used to hold the list of modules to be disabled.
@@ -18,7 +18,7 @@
  
  def add_dir_to_list(dirlist, dir):
      """Add the directory 'dir' to the list 'dirlist' (after any relative
-@@ -321,6 +321,10 @@
+@@ -422,6 +422,10 @@ class PyBuildExt(build_ext):
              self.announce('WARNING: skipping import check for Cygwin-based "%s"'
                  % ext.name)
              return
@@ -29,7 +29,7 @@
          ext_filename = os.path.join(
              self.build_lib,
              self.get_ext_filename(self.get_ext_fullname(ext.name)))
-@@ -447,16 +451,19 @@
+@@ -537,16 +541,19 @@ class PyBuildExt(build_ext):
              os.unlink(tmpfile)
  
      def detect_modules(self):
@@ -54,7 +54,7 @@
  
          # Add paths specified in the environment variables LDFLAGS and
          # CPPFLAGS for header and library files.
-@@ -469,7 +476,7 @@
+@@ -559,7 +566,7 @@ class PyBuildExt(build_ext):
                  ('LDFLAGS', '-L', self.compiler.library_dirs),
                  ('CPPFLAGS', '-I', self.compiler.include_dirs)):
              env_val = sysconfig.get_config_var(env_var)
@@ -63,12 +63,13 @@
                  # To prevent optparse from raising an exception about any
                  # options in env_val that it doesn't know about we strip out
                  # all double dashes and any dashes followed by a character
-@@ -492,17 +499,6 @@
+@@ -582,18 +589,6 @@ class PyBuildExt(build_ext):
                      for directory in reversed(options.dirs):
                          add_dir_to_list(dir_list, directory)
  
--        if os.path.normpath(sys.base_prefix) != '/usr' \
--                and not sysconfig.get_config_var('PYTHONFRAMEWORK'):
+-        if (not cross_compiling and
+-                os.path.normpath(sys.base_prefix) != '/usr' and
+-                not sysconfig.get_config_var('PYTHONFRAMEWORK')):
 -            # OSX note: Don't add LIBDIR and INCLUDEDIR to building a framework
 -            # (PYTHONFRAMEWORK is set) to avoid # linking problems when
 -            # building a framework with different architectures than
@@ -78,10 +79,23 @@
 -            add_dir_to_list(self.compiler.include_dirs,
 -                            sysconfig.get_config_var("INCLUDEDIR"))
 -
+         system_lib_dirs = ['/lib64', '/usr/lib64', '/lib', '/usr/lib']
+         system_include_dirs = ['/usr/include']
          # lib_dirs and inc_dirs are used to search for files;
-         # if a file is found in one of those directories, it can
-         # be assumed that no additional -I,-L directives are needed.
-@@ -1225,7 +1221,6 @@
+@@ -1241,8 +1236,10 @@ class PyBuildExt(build_ext):
+         dbm_order = ['gdbm']
+         # The standard Unix dbm module:
+         if host_platform not in ['cygwin']:
+-            config_args = [arg.strip("'")
+-                           for arg in sysconfig.get_config_var("CONFIG_ARGS").split()]
++            if ("GNU_TARGET_NAME" in os.environ):
++                config_args = [ '--host=%s' % os.environ["GNU_TARGET_NAME"] ]
++            else:
++                config_args = [ ]
+             dbm_args = [arg for arg in config_args
+                         if arg.startswith('--with-dbmliborder=')]
+             if dbm_args:
+@@ -1300,7 +1297,6 @@ class PyBuildExt(build_ext):
                          if dbm_setup_debug: print("building dbm using bdb")
                          dbmext = Extension('_dbm', ['_dbmmodule.c'],
                                             library_dirs=dblib_dir,
@@ -89,15 +103,26 @@
                                             include_dirs=db_incs,
                                             define_macros=[
                                                 ('HAVE_BERKDB_H', None),
-@@ -1853,10 +1848,7 @@
-                                          ffi_configfile):
-                 from distutils.dir_util import mkpath
-                 mkpath(ffi_builddir)
--                config_args = [arg for arg in sysconfig.get_config_var("CONFIG_ARGS").split()
--                               if (('--host=' in arg) or ('--build=' in arg))]
--                if not self.verbose:
--                    config_args.append("-q")
-+                config_args = [ '--host=%s' % os.environ["GNU_TARGET_NAME"] ]
+@@ -2125,6 +2121,22 @@ class PyBuildExt(build_ext):
+         return ext
  
-                 # Pass empty CFLAGS because we'll just append the resulting
-                 # CFLAGS to Python's; -g or -O2 is to be avoided.
+     def _detect_openssl(self, inc_dirs, lib_dirs):
++        if cross_compiling:
++            ssl_ext = Extension(
++                '_ssl', ['_ssl.c'],
++                include_dirs=(),
++                library_dirs=(),
++                libraries=('ssl','crypto'),
++                depends=['socketmodule.h']
++            )
++            hashlib_ext = Extension(
++                '_hashlib', ['_hashopenssl.c'],
++                depends=['hashlib.h'],
++                include_dirs=(),
++                library_dirs=(),
++                libraries=('ssl','crypto'),
++            )
++            return ssl_ext, hashlib_ext
+         config_vars = sysconfig.get_config_vars()
+ 
+         def split_var(name, sep):

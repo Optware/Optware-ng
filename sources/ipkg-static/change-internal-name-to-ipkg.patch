@@ -1,0 +1,141 @@
+diff --git a/libopkg/opkg.c b/libopkg/opkg.c
+index 8aa3268..d2e6231 100644
+--- a/libopkg/opkg.c
++++ b/libopkg/opkg.c
+@@ -36,7 +36,7 @@
+ #include <libbb/libbb.h>
+ 
+ #define opkg_assert(expr) if (!(expr)) { \
+-    printf ("opkg: file %s: line %d (%s): Assertation '%s' failed",\
++    printf ("ipkg: file %s: line %d (%s): Assertation '%s' failed",\
+             __FILE__, __LINE__, __PRETTY_FUNCTION__, # expr); abort (); }
+ 
+ #define progress(d, p) d.percentage = p; if (progress_callback) progress_callback (&d, user_data);
+diff --git a/libopkg/opkg_cmd.c b/libopkg/opkg_cmd.c
+index 2516252..2f41bb6 100644
+--- a/libopkg/opkg_cmd.c
++++ b/libopkg/opkg_cmd.c
+@@ -265,8 +265,8 @@ opkg_prep_intercepts(void)
+ 
+     ctx = xcalloc(1, sizeof (*ctx));
+     ctx->oldpath = xstrdup(getenv("PATH"));
+-    sprintf_alloc(&newpath, "%s/opkg/intercept:%s", DATADIR, ctx->oldpath);
+-    sprintf_alloc(&ctx->statedir, "%s/opkg-intercept-XXXXXX", conf->tmp_dir);
++    sprintf_alloc(&newpath, "%s/ipkg/intercept:%s", DATADIR, ctx->oldpath);
++    sprintf_alloc(&ctx->statedir, "%s/ipkg-intercept-XXXXXX", conf->tmp_dir);
+ 
+     if (mkdtemp(ctx->statedir) == NULL) {
+         opkg_perror(ERROR,"Failed to make temp dir %s", ctx->statedir);
+@@ -1296,7 +1296,7 @@ opkg_compare_versions_cmd(int argc, char **argv)
+ 	  return pkg_version_satisfied(&p1, &p2, argv[1]);
+      } else {
+ 	  opkg_msg(ERROR,
+-		       "opkg compare_versions <v1> <op> <v2>\n"
++		       "ipkg compare_versions <v1> <op> <v2>\n"
+ 		       "<op> is one of <= >= << >> =\n");
+ 	  return -1;
+      }
+diff --git a/libopkg/opkg_defines.h b/libopkg/opkg_defines.h
+index a1e0c05..a84d695 100644
+--- a/libopkg/opkg_defines.h
++++ b/libopkg/opkg_defines.h
+@@ -28,7 +28,7 @@
+ #define OPKG_INFO_DIR_SUFFIX "info"
+ #define OPKG_STATUS_FILE_SUFFIX "status"
+ 
+-#define OPKG_BACKUP_SUFFIX "-opkg.backup"
++#define OPKG_BACKUP_SUFFIX "-ipkg.backup"
+ 
+ #define OPKG_LIST_DESCRIPTION_LENGTH 128
+ 
+diff --git a/libopkg/opkg_download.c b/libopkg/opkg_download.c
+index e4cbe49..a22d96d 100644
+--- a/libopkg/opkg_download.c
++++ b/libopkg/opkg_download.c
+@@ -379,7 +379,7 @@ opkg_verify_file (char *text_file, char *sig_file)
+     if (err)
+ 	return -1;
+ 
+-    trusted_path = root_filename_alloc("/etc/opkg/trusted.gpg");
++    trusted_path = root_filename_alloc("/etc/ipkg/trusted.gpg");
+     err = gpgme_data_new_from_file (&key, trusted_path, 1);
+     free (trusted_path);
+     if (err)
+diff --git a/libopkg/opkg_install.c b/libopkg/opkg_install.c
+index bbeadbc..f0a96b7 100644
+--- a/libopkg/opkg_install.c
++++ b/libopkg/opkg_install.c
+@@ -1151,7 +1151,7 @@ resolve_conffiles(pkg_t *pkg)
+ 				      cf_backup);
+                   } else {
+                       char *new_conffile;
+-                      sprintf_alloc(&new_conffile, "%s-opkg", root_filename);
++                      sprintf_alloc(&new_conffile, "%s-ipkg", root_filename);
+                       opkg_msg(ERROR, "Existing conffile %s "
+                            "is different from the conffile in the new package."
+                            " The new conffile will be placed at %s.\n",
+diff --git a/libopkg/opkg_remove.c b/libopkg/opkg_remove.c
+index 1c3840e..48a77f6 100644
+--- a/libopkg/opkg_remove.c
++++ b/libopkg/opkg_remove.c
+@@ -243,7 +243,7 @@ opkg_remove_pkg(pkg_t *pkg, int from_upgrade)
+ 	  } else {
+ 	       opkg_msg(NOTICE, "Refusing to remove essential package %s.\n"
+ 		       "\tRemoving an essential package may lead to an unusable system, but if\n"
+-		       "\tyou enjoy that kind of pain, you can force opkg to proceed against\n"
++		       "\tyou enjoy that kind of pain, you can force ipkg to proceed against\n"
+ 		       "\tits will with the option: --force-removal-of-essential-packages\n",
+ 		       pkg->name);
+ 	       return -1;
+diff --git a/src/opkg-cl.c b/src/opkg-cl.c
+index 2df5f16..5cdf741 100644
+--- a/src/opkg-cl.c
++++ b/src/opkg-cl.c
+@@ -251,7 +251,7 @@ args_parse(int argc, char *argv[])
+ static void
+ usage()
+ {
+-	printf("usage: opkg [options...] sub-command [arguments...]\n");
++	printf("usage: ipkg [options...] sub-command [arguments...]\n");
+ 	printf("where sub-command is one of:\n");
+ 
+ 	printf("\nPackage Manipulation:\n");
+@@ -295,7 +295,7 @@ usage()
+ 	printf("\t                                  2 informative messages\n");
+ 	printf("\t                                  3 debug\n");
+ 	printf("\t                                  4 debug level 2\n");
+-	printf("\t-f <conf_file>                  Use <conf_file> as the opkg configuration file\n");
++	printf("\t-f <conf_file>                  Use <conf_file> as the ipkg configuration file\n");
+ 	printf("\t--conf <conf_file>\n");
+ 	printf("\t--cache <directory>             Use a package cache\n");
+ 	printf("\t-d <dest_name>                  Use <dest_name> as the the root directory for\n");
+@@ -318,7 +318,7 @@ usage()
+ 	printf("\t--force-maintainer              Overwrite preexisting config files\n");
+ 	printf("\t--force-reinstall               Reinstall package(s)\n");
+ 	printf("\t--force-overwrite               Overwrite files from other package(s)\n");
+-	printf("\t--force-downgrade               Allow opkg to downgrade packages\n");
++	printf("\t--force-downgrade               Allow ipkg to downgrade packages\n");
+ 	printf("\t--force-space                   Disable free space checks\n");
+ 	printf("\t--force-postinstall             Run postinstall scripts even in offline mode\n");
+ 	printf("\t--force-remove                  Remove package even if prerm script fails\n");
+@@ -340,9 +340,9 @@ usage()
+ 	printf("\n");
+ 
+ 	printf(" glob could be something like 'pkgname*' '*file*' or similar\n");
+-	printf(" e.g. opkg info 'libstd*' or opkg search '*libop*' or opkg remove 'libncur*'\n");
++	printf(" e.g. ipkg info 'libstd*' or ipkg search '*libop*' or ipkg remove 'libncur*'\n");
+ 
+-	/* --force-removal-of-essential-packages	Let opkg remove essential packages.
++	/* --force-removal-of-essential-packages	Let ipkg remove essential packages.
+ 		Using this option is almost guaranteed to break your system, hence this option
+ 		is not even advertised in the usage statement. */
+ 
+@@ -365,7 +365,7 @@ main(int argc, char *argv[])
+ 
+ 	opts = args_parse(argc, argv);
+ 	if (opts == argc || opts < 0) {
+-		fprintf(stderr, "opkg must have one sub-command argument\n");
++		fprintf(stderr, "ipkg must have one sub-command argument\n");
+ 		usage();
+ 	}
+ 

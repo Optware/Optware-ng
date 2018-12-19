@@ -205,6 +205,10 @@ $(CLAMAV_IPK): $(CLAMAV_BUILD_DIR)/.built
 	rm -rf $(CLAMAV_IPK_DIR) $(BUILD_DIR)/clamav_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(CLAMAV_BUILD_DIR) install-strip \
 		DESTDIR=$(CLAMAV_IPK_DIR) transform=""
+	if $(TARGET_CC) -E -P $(SOURCE_DIR)/common/bits.c | grep -q puts.*64-bit; then \
+		cd $(CLAMAV_IPK_DIR)$(TARGET_PREFIX) && \
+		mv -f lib64 lib; \
+	fi
 	$(INSTALL) -d $(CLAMAV_IPK_DIR)$(TARGET_PREFIX)/tmp/
 	$(INSTALL) -d $(CLAMAV_IPK_DIR)$(TARGET_PREFIX)/etc/
 	$(INSTALL) -m 644 $(CLAMAV_SOURCE_DIR)/clamd.conf $(CLAMAV_IPK_DIR)$(TARGET_PREFIX)/etc/clamd.conf

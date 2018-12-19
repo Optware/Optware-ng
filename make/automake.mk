@@ -17,7 +17,7 @@ AUTOMAKE_PRIORITY=optional
 AUTOMAKE_DEPENDS=autoconf
 AUTOMAKE_CONFLICTS=
 
-AUTOMAKE_IPK_VERSION=4
+AUTOMAKE_IPK_VERSION=5
 
 AUTOMAKE_BUILD_DIR=$(BUILD_DIR)/automake
 AUTOMAKE_SOURCE_DIR=$(SOURCE_DIR)/automake
@@ -32,12 +32,19 @@ $(DL_DIR)/$(AUTOMAKE_SOURCE):
 	$(WGET) -P $(@D) $(AUTOMAKE_SITE)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
 
+AUTOMAKE_PATCHES=\
+$(AUTOMAKE_SOURCE_DIR)/automake-escape_left_brace.patch \
+
 automake-source: $(DL_DIR)/$(AUTOMAKE_SOURCE) $(AUTOMAKE_PATCHES)
 
 $(AUTOMAKE_HOST_BUILD_DIR)/.built: host/.configured $(DL_DIR)/$(AUTOMAKE_SOURCE) make/automake.mk
 	$(MAKE) xz-utils-host-stage autoconf-host-stage
 	rm -rf $(HOST_BUILD_DIR)/$(AUTOMAKE_DIR) $(@D)
 	$(AUTOMAKE_UNZIP) $(DL_DIR)/$(AUTOMAKE_SOURCE) | tar -C $(HOST_BUILD_DIR) -xvf -
+	if test -n "$(AUTOMAKE_PATCHES)" ; \
+		then cat $(AUTOMAKE_PATCHES) | \
+		$(PATCH) -d $(HOST_BUILD_DIR)/$(AUTOMAKE_DIR) -p1 ; \
+	fi
 	mv $(HOST_BUILD_DIR)/$(AUTOMAKE_DIR) $(@D)
 	(cd $(@D); \
 		AUTOCONF="$(HOST_STAGING_PREFIX)/bin/autoconf" \
@@ -62,6 +69,10 @@ $(AUTOMAKE_BUILD_DIR)/.configured: $(DL_DIR)/$(AUTOMAKE_SOURCE) $(AUTOMAKE_PATCH
 	$(MAKE) xz-utils-host-stage autoconf-host-stage
 	rm -rf $(BUILD_DIR)/$(AUTOMAKE_DIR) $(@D)
 	$(AUTOMAKE_UNZIP) $(DL_DIR)/$(AUTOMAKE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
+	if test -n "$(AUTOMAKE_PATCHES)" ; \
+		then cat $(AUTOMAKE_PATCHES) | \
+		$(PATCH) -d $(BUILD_DIR)/$(AUTOMAKE_DIR) -p1 ; \
+	fi
 	mv $(BUILD_DIR)/$(AUTOMAKE_DIR) $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \

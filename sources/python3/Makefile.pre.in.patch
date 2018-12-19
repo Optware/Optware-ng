@@ -1,0 +1,13 @@
+diff --git a/Makefile.pre.in b/Makefile.pre.in
+index 4c23c0e..b99d3b0 100644
+--- a/Makefile.pre.in
++++ b/Makefile.pre.in
+@@ -241,6 +241,8 @@ _PYTHON_HOST_PLATFORM=@_PYTHON_HOST_PLATFORM@
+ BUILD_GNU_TYPE=	@build@
+ HOST_GNU_TYPE=	@host@
+ 
++export _PYTHON_HOST_PLATFORM
++
+ # Tcl and Tk config info from --with-tcltk-includes and -libs options
+ TCLTK_INCLUDES=	@TCLTK_INCLUDES@
+ TCLTK_LIBS=	@TCLTK_LIBS@

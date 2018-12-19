@@ -51,7 +51,7 @@ PY-GOBJECT2_DEV_CONFLICTS=
 #
 # PY-GOBJECT2_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-GOBJECT2_IPK_VERSION=5
+PY-GOBJECT2_IPK_VERSION=6
 
 #
 # PY-GOBJECT2_CONFFILES should be a list of user-editable files

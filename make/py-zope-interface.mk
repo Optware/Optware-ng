@@ -43,7 +43,7 @@ PY-ZOPE-INTERFACE_CONFLICTS=
 #
 # PY-ZOPE-INTERFACE_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-ZOPE-INTERFACE_IPK_VERSION=3
+PY-ZOPE-INTERFACE_IPK_VERSION=4
 
 #
 # PY-ZOPE-INTERFACE_CONFFILES should be a list of user-editable files

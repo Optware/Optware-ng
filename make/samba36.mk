@@ -21,7 +21,7 @@
 #
 SAMBA36_SITE=http://www.samba.org/samba/ftp/stable
 SAMBA36_VERSION ?= 3.6.24
-SAMBA36_IPK_VERSION ?= 3
+SAMBA36_IPK_VERSION ?= 4
 SAMBA36_SOURCE=samba-$(SAMBA36_VERSION).tar.gz
 SAMBA36_DIR=samba-$(SAMBA36_VERSION)
 SAMBA36_UNZIP=zcat
@@ -29,7 +29,7 @@ SAMBA36_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 SAMBA36_DESCRIPTION=Samba suite provides file and print services to SMB/CIFS clients. This is a newer version.
 SAMBA36_SECTION=net
 SAMBA36_PRIORITY=optional
-SAMBA36_DEPENDS=avahi, popt, readline, zlib, e2fsprogs, libacl, cups
+SAMBA36_DEPENDS=avahi, popt, readline, zlib, e2fsprogs, libacl, cups, libpam
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
 SAMBA36_DEPENDS +=, openldap-libs
 endif
@@ -209,7 +209,7 @@ $(SAMBA36_BUILD_DIR)/.configured: $(DL_DIR)/$(SAMBA36_SOURCE) $(SAMBA36_PATCHES)
 ifeq (openldap, $(filter openldap, $(PACKAGES)))
 	$(MAKE) openldap-stage 
 endif
-	$(MAKE) avahi-stage cups-stage popt-stage readline-stage zlib-stage e2fsprogs-stage libacl-stage
+	$(MAKE) avahi-stage cups-stage popt-stage readline-stage zlib-stage e2fsprogs-stage libacl-stage libpam-stage
 	rm -rf $(BUILD_DIR)/$(SAMBA36_DIR) $(@D)
 	$(SAMBA36_UNZIP) $(DL_DIR)/$(SAMBA36_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	mv $(BUILD_DIR)/$(SAMBA36_DIR) $(@D)
@@ -358,7 +358,7 @@ $(SAMBA36-SWAT_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(SAMBA36_IPK) $(SAMBA36-DEV_IPK) $(SAMBA36-SWAT_IPK): $(SAMBA36_BUILD_DIR)/.built
-	rm -rf $(SAMBA36_IPK_DIR) $(BUILD_DIR)/SAMBA36_*_$(TARGET_ARCH).ipk
+	rm -rf $(SAMBA36_IPK_DIR) $(BUILD_DIR)/samba36_*_$(TARGET_ARCH).ipk
 	rm -rf $(SAMBA36-DEV_IPK_DIR) $(BUILD_DIR)/samba36-dev_*_$(TARGET_ARCH).ipk
 	rm -rf $(SAMBA36-SWAT_IPK_DIR) $(BUILD_DIR)/samba36-swat_*_$(TARGET_ARCH).ipk
 	# samba3

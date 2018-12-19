@@ -39,7 +39,7 @@ PY-GEOIP_CONFLICTS=
 #
 # PY-GEOIP_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-GEOIP_IPK_VERSION=1
+PY-GEOIP_IPK_VERSION=2
 
 #
 # PY-GEOIP_CONFFILES should be a list of user-editable files

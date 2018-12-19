@@ -29,14 +29,14 @@ LINPHONE_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 LINPHONE_DESCRIPTION=Open source SIP VOIP phone.
 LINPHONE_SECTION=util
 LINPHONE_PRIORITY=optional
-LINPHONE_DEPENDS=libosip2, libexosip2, ncurses, readline, speex, alsa-lib
+LINPHONE_DEPENDS=libosip2, libexosip2, ncurses, readline, speex, speexdsp, alsa-lib
 LINPHONE_SUGGESTS=
 LINPHONE_CONFLICTS=
 
 #
 # LINPHONE_IPK_VERSION should be incremented when the ipk changes.
 #
-LINPHONE_IPK_VERSION=3
+LINPHONE_IPK_VERSION=4
 
 #
 # LINPHONE_CONFFILES should be a list of user-editable files
@@ -113,7 +113,7 @@ linphone-source: $(DL_DIR)/$(LINPHONE_SOURCE) $(LINPHONE_PATCHES)
 # shown below to make various patches to it.
 #
 $(LINPHONE_BUILD_DIR)/.configured: $(DL_DIR)/$(LINPHONE_SOURCE) $(LINPHONE_PATCHES) make/linphone.mk
-	$(MAKE) libosip2-stage libexosip2-stage ncurses-stage readline-stage speex-stage alsa-lib-stage
+	$(MAKE) libosip2-stage libexosip2-stage ncurses-stage readline-stage speex-stage speexdsp-stage alsa-lib-stage
 	rm -rf $(BUILD_DIR)/$(LINPHONE_DIR) $(@D)
 	$(LINPHONE_UNZIP) $(DL_DIR)/$(LINPHONE_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LINPHONE_PATCHES)" ; \

@@ -19,6 +19,12 @@ CVS_CONFLICTS=
 
 CVS_IPK_VERSION=2
 
+#
+# CVS_PATCHES should list any patches, in the the order in
+# which they should be applied to the source code.
+#
+CVS_PATCHES=$(CVS_SOURCE_DIR)/getline_cvs.patch
+
 CVS_IPK=$(BUILD_DIR)/cvs_$(CVS_VERSION)-$(CVS_IPK_VERSION)_$(TARGET_ARCH).ipk
 CVS_IPK_DIR=$(BUILD_DIR)/cvs-$(CVS_VERSION)-ipk
 
@@ -69,7 +75,7 @@ $(CVS_BUILD_DIR)/.configured: $(DL_DIR)/$(CVS_SOURCE) $(CVS_PATCHES) make/cvs.mk
 	$(CVS_UNZIP) $(DL_DIR)/$(CVS_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(CVS_PATCHES)" ; \
 		then cat $(CVS_PATCHES) | \
-		$(PATCH) -d $(BUILD_DIR)/$(CVS_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(CVS_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(CVS_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(CVS_DIR) $(@D) ; \

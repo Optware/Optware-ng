@@ -38,7 +38,7 @@ PY-PIP_CONFLICTS=
 #
 # PY-PIP_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-PIP_IPK_VERSION=1
+PY-PIP_IPK_VERSION=2
 
 #
 # PY-PIP_CONFFILES should be a list of user-editable files

@@ -38,7 +38,7 @@ PY-CFFI_CONFLICTS=
 #
 # PY-CFFI_IPK_VERSION should be incremented when the ipk changes.
 #
-PY-CFFI_IPK_VERSION=1
+PY-CFFI_IPK_VERSION=2
 
 #
 # PY-CFFI_CONFFILES should be a list of user-editable files

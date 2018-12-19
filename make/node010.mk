@@ -59,7 +59,8 @@ NODE010_LDFLAGS=
 NODE010_ARCH=$(strip \
 	$(if $(filter powerpc, $(TARGET_ARCH)), ppc, \
 	$(if $(filter i386 i686, $(TARGET_ARCH)), ia32, \
-	$(TARGET_ARCH))))
+	$(if $(filter x86_64, $(TARGET_ARCH)), x64, \
+	$(TARGET_ARCH)))))
 
 NODE010_CONFIGURE_ARCH_OPTS=--dest-cpu=$(NODE010_ARCH)
 
@@ -217,7 +218,7 @@ $(NODE010_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(NODE010_IPK): $(NODE010_BUILD_DIR)/.built
-	rm -rf $(NODE010_IPK_DIR) $(BUILD_DIR)/node_*_$(TARGET_ARCH).ipk
+	rm -rf $(NODE010_IPK_DIR) $(BUILD_DIR)/node010_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(NODE010_BUILD_DIR) DESTDIR=$(NODE010_IPK_DIR) install
 	$(STRIP_COMMAND) $(NODE010_IPK_DIR)$(TARGET_PREFIX)/bin/node
 #	$(INSTALL) -d $(NODE010_IPK_DIR)$(TARGET_PREFIX)/etc/

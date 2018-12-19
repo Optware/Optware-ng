@@ -46,7 +46,8 @@ SDL_CONFFILES=
 # SDL_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#SDL_PATCHES=$(SDL_SOURCE_DIR)/configure.patch
+SDL_PATCHES=\
+$(SDL_SOURCE_DIR)/64it_fix.patch \
 
 #
 # If the compilation of the package requires additional
@@ -104,11 +105,10 @@ sdl-source: $(DL_DIR)/$(SDL_SOURCE) $(SDL_PATCHES)
 # shown below to make various patches to it.
 #
 $(SDL_BUILD_DIR)/.configured: $(DL_DIR)/$(SDL_SOURCE) $(SDL_PATCHES) make/sdl.mk
-	$(MAKE) x11-stage
-	$(MAKE) xext-stage
+	$(MAKE) x11-stage xext-stage
 	rm -rf $(BUILD_DIR)/$(SDL_DIR) $(SDL_BUILD_DIR)
 	$(SDL_UNZIP) $(DL_DIR)/$(SDL_SOURCE) | tar -C $(BUILD_DIR) -xvf -
-	#cat $(SDL_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(SDL_DIR) -p1
+	cat $(SDL_PATCHES) | $(PATCH) -d $(BUILD_DIR)/$(SDL_DIR) -p1
 	mv $(BUILD_DIR)/$(SDL_DIR) $(SDL_BUILD_DIR)
 	(cd $(SDL_BUILD_DIR); \
 		$(TARGET_CONFIGURE_OPTS) \

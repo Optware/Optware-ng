@@ -22,22 +22,22 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 CASTGET_SITE=http://savannah.nongnu.org/download/castget
-CASTGET_VERSION=1.0.1
-CASTGET_SOURCE=castget-$(CASTGET_VERSION).tar.gz
+CASTGET_VERSION=1.2.4
+CASTGET_SOURCE=castget-$(CASTGET_VERSION).tar.bz2
 CASTGET_DIR=castget-$(CASTGET_VERSION)
-CASTGET_UNZIP=zcat
+CASTGET_UNZIP=bzcat
 CASTGET_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 CASTGET_DESCRIPTION=castget is a simple, command-line based RSS enclosure downloader, primarily intended for automatic, unattended downloading of podcasts.
 CASTGET_SECTION=net
 CASTGET_PRIORITY=optional
-CASTGET_DEPENDS=libxml2, libcurl, id3lib, glib, libstdc++
+CASTGET_DEPENDS=libxml2, libcurl, id3lib, glib, zlib, libstdc++
 CASTGET_SUGGESTS=
 CASTGET_CONFLICTS=
 
 #
 # CASTGET_IPK_VERSION should be incremented when the ipk changes.
 #
-CASTGET_IPK_VERSION=4
+CASTGET_IPK_VERSION=1
 
 #
 # CASTGET_CONFFILES should be a list of user-editable files
@@ -112,7 +112,7 @@ castget-source: $(DL_DIR)/$(CASTGET_SOURCE) $(CASTGET_PATCHES)
 # of a GNU-compatible malloc even when cross compiling.
 #
 $(CASTGET_BUILD_DIR)/.configured: $(DL_DIR)/$(CASTGET_SOURCE) $(CASTGET_PATCHES) make/castget.mk
-	$(MAKE) libxml2-stage libcurl-stage glib-stage id3lib-stage libstdc++-stage
+	$(MAKE) libxml2-stage libcurl-stage glib-stage id3lib-stage libstdc++-stage zlib-stage
 	rm -rf $(BUILD_DIR)/$(CASTGET_DIR) $(@D)
 	$(CASTGET_UNZIP) $(DL_DIR)/$(CASTGET_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(CASTGET_PATCHES)" ; \
@@ -209,6 +209,7 @@ $(CASTGET_IPK): $(CASTGET_BUILD_DIR)/.built
 	#sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(CASTGET_IPK_DIR)/CONTROL/prerm
 	echo $(CASTGET_CONFFILES) | sed -e 's/ /\n/g' > $(CASTGET_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(CASTGET_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(CASTGET_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.

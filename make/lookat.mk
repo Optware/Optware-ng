@@ -46,7 +46,8 @@ LOOKAT_CONFFILES=$(TARGET_PREFIX)/etc/lookat.conf
 # LOOKAT_PATCHES should list any patches, in the the order in
 # which they should be applied to the source code.
 #
-#LOOKAT_PATCHES=$(LOOKAT_SOURCE_DIR)/configure.patch
+LOOKAT_PATCHES=\
+$(LOOKAT_SOURCE_DIR)/getline.patch \
 
 #
 # If the compilation of the package requires additional
@@ -113,7 +114,7 @@ $(LOOKAT_BUILD_DIR)/.configured: $(DL_DIR)/$(LOOKAT_SOURCE) $(LOOKAT_PATCHES) ma
 	$(LOOKAT_UNZIP) $(DL_DIR)/$(LOOKAT_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(LOOKAT_PATCHES)" ; \
 		then cat $(LOOKAT_PATCHES) | \
-		$(PATCH) -d $(BUILD_DIR)/$(LOOKAT_DIR) -p0 ; \
+		$(PATCH) -d $(BUILD_DIR)/$(LOOKAT_DIR) -p1 ; \
 	fi
 	if test "$(BUILD_DIR)/$(LOOKAT_DIR)" != "$(LOOKAT_BUILD_DIR)" ; \
 		then mv $(BUILD_DIR)/$(LOOKAT_DIR) $(LOOKAT_BUILD_DIR) ; \
