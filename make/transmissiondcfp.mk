@@ -24,11 +24,11 @@
 #
 # SVN releases also include transmissiond-dbg while official releases does not.
 #
-TRANSMISSIONDCFP_SITE=http://$(SOURCEFORGE_MIRROR)/project/transmissiondaemon/embedded-2018-07-09
-TRANSMISSIONDCFP_VERSION=2.77+14734-14
-TRANSMISSIONDCFP_ALT_VERSION=2.77plus14734-14
-TRANSMISSIONDCFP_ALT2_VERSION=2.77plus14734-14
-TRANSMISSIONDCFP_ALT_SITE=https://github.com/cfpp2p/transmission/releases/download/$(TRANSMISSIONDCFP_ALT_VERSION)
+TRANSMISSIONDCFP_SITE=http://$(SOURCEFORGE_MIRROR)/project/transmissiondaemon/embedded-2018-12-19
+TRANSMISSIONDCFP_VERSION=2.77+14734-17
+TRANSMISSIONDCFP_ALT_VERSION=2.77plus14734-17
+TRANSMISSIONDCFP_ALT2_VERSION=2.77plus14734-17
+TRANSMISSIONDCFP_ALT_SITE=https://raw.githubusercontent.com/cfpp2p/transmission/Windows_Daemon_%26_Clients/nslu2-unslung-embeded
 TRANSMISSIONDCFP_ALT2_SITE=http://transmissionbt.net
 
 
