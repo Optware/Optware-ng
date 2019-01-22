@@ -20,7 +20,7 @@
 # from your name or email address.  If you leave MAINTAINER set to
 # "NSLU2 Linux" other developers will feel free to edit.
 #
-XMLSTARLET_URL=https://downloads.sourceforge.net/project/xmlstar/xmlstarlet/$(XMLSTARLET_VERSION)/xmlstarlet-$(XMLSTARLET_VERSION).tar.gz
+XMLSTARLET_URL=https://sourceforge.net/projects/xmlstar/files/xmlstarlet/$(XMLSTARLET_VERSION)/xmlstarlet-$(XMLSTARLET_VERSION).tar.gz/download
 XMLSTARLET_VERSION=1.6.1
 XMLSTARLET_SOURCE=xmlstarlet-$(XMLSTARLET_VERSION).tar.gz
 XMLSTARLET_DIR=xmlstarlet-$(XMLSTARLET_VERSION)
