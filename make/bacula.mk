@@ -21,7 +21,7 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 BACULA_SITE=http://$(SOURCEFORGE_MIRROR)/sourceforge/bacula
-BACULA_VERSION=7.0.5
+BACULA_VERSION=9.4.2
 BACULA_SOURCE=bacula-$(BACULA_VERSION).tar.gz
 BACULA_DIR=bacula-$(BACULA_VERSION)
 BACULA_UNZIP=zcat
