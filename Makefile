@@ -42,7 +42,7 @@ PACKAGES_READY_FOR_TESTING = qt-embedded \
 # bpalogin - for some reason it can't find 'sed' on the build machine
 # btg - needs old boost and libtorrent-rasterbar
 # clinkcc - fails to build with GCC 7:
-#	../../src/cybergarage/upnp/Service.cpp: In member function ‘bool CyberLink::Service::loadSCPD(CyberIO::File*)’:
+#	../../src/cybergarage/upnp/Service.cpp: In member function â€˜bool CyberLink::Service::loadSCPD(CyberIO::File*)â€™:
 #	../../src/cybergarage/upnp/Service.cpp:349:33: error: ISO C++ forbids comparison between pointer and integer [-fpermissive]
 #
 PACKAGES_THAT_NEED_TO_BE_FIXED = lumikki \
@@ -425,7 +425,7 @@ COMMON_PACKAGES = \
 	vnstat vorbis-tools vorbisgain vpnc vsftpd vte vtun \
 	w3cam w3m wayland wakelan wavpack webalizer weechat werc wget \
 	which whois wizd wpa-supplicant wput wxbase \
-	xerces-c xmlrpc-c \
+	xerces-c xmlrpc-c xmlstarlet \
 	x11 xau xauth xaw xbitmaps compositeproto libxcomposite xcursor xdg-utils xdmcp xdpyinfo xext xdamage xinerama xineramaproto xshmfence \
 	xextensions xfixes xfixesproto xft xi xinetd pciaccess \
 	xmu xp xpdf xpm xcb-proto xcb xextproto xfconf xorg-macros xproto xrender xt xterm xtrans xtst \
