@@ -30,7 +30,7 @@ BACULA_DESCRIPTION=A set of Open Source, enterprise ready, computer programs to 
 BACULA_SECTION=sysadmin
 BACULA_PRIORITY=optional
 BACULA_DEPENDS=libstdc++, openssl, readline, sqlite, tcpwrappers, zlib, lzo, libacl
-BACULA_SUGGESTS=python27
+BACULA_SUGGESTS=
 BACULA_CONFLICTS=
 
 #
@@ -111,7 +111,7 @@ bacula-source: $(DL_DIR)/$(BACULA_SOURCE) $(BACULA_PATCHES)
 #
 $(BACULA_BUILD_DIR)/.configured: $(DL_DIR)/$(BACULA_SOURCE) $(BACULA_PATCHES) make/bacula.mk
 	$(MAKE) libstdc++-stage openssl-stage readline-stage sqlite-stage tcpwrappers-stage \
-		zlib-stage libacl-stage lzo-stage python27-stage
+		zlib-stage libacl-stage lzo-stage
 	rm -rf $(BUILD_DIR)/$(BACULA_DIR) $(@D)
 	$(BACULA_UNZIP) $(DL_DIR)/$(BACULA_SOURCE) | tar -C $(BUILD_DIR) -xvf -
 	if test -n "$(BACULA_PATCHES)" ; \
@@ -121,7 +121,6 @@ $(BACULA_BUILD_DIR)/.configured: $(DL_DIR)/$(BACULA_SOURCE) $(BACULA_PATCHES) ma
 	if test "$(BUILD_DIR)/$(BACULA_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(BACULA_DIR) $(@D) ; \
 	fi
-	sed -i -e '/PYTHON_LIBS=.* -lpython/s|=.*|="-lpython2.7"|' -e 's/-lzo2/-llzo2/' $(@D)/configure
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(BACULA_CPPFLAGS)" \
@@ -129,6 +128,7 @@ $(BACULA_BUILD_DIR)/.configured: $(DL_DIR)/$(BACULA_SOURCE) $(BACULA_PATCHES) ma
 		$(BACULA_CONFIGURE_ENVS) \
 		ac_cv_func_setpgrp_void=yes \
 		ac_cv_func_chflags=no \
+		ac_cv_path_PYTHON=$(HOST_STAGING_PREFIX)/bin//python2.7 \
 		./configure \
 		--build=$(GNU_HOST_NAME) \
 		--host=$(GNU_TARGET_NAME) \
@@ -142,7 +142,6 @@ $(BACULA_BUILD_DIR)/.configured: $(DL_DIR)/$(BACULA_SOURCE) $(BACULA_PATCHES) ma
 		--enable-acl \
 		--with-readline=$(STAGING_PREFIX) \
 		--with-openssl=$(STAGING_PREFIX) \
-		--with-python=$(STAGING_INCLUDE_DIR)/python2.5 \
 		--with-sqlite3=$(STAGING_PREFIX) \
 		--with-tcp-wrappers=$(STAGING_PREFIX) \
 		--with-lzo=$(STAGING_PREFIX) \
@@ -212,11 +211,14 @@ $(BACULA_IPK_DIR)/CONTROL/control:
 $(BACULA_IPK): $(BACULA_BUILD_DIR)/.built
 	rm -rf $(BACULA_IPK_DIR) $(BUILD_DIR)/bacula_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(BACULA_BUILD_DIR) DESTDIR=$(BACULA_IPK_DIR) archivedir=$(TARGET_PREFIX)/tmp install
+	mv -f $(BACULA_IPK_DIR)/usr/share/man $(BACULA_IPK_DIR)$(TARGET_PREFIX)/share
+	rm -rf $(BACULA_IPK_DIR)/usr
 	find $(BACULA_IPK_DIR)$(TARGET_PREFIX)/sbin -type f \! -name btraceback \! -name bacula | xargs $(STRIP_COMMAND)
 	$(STRIP_COMMAND) $(BACULA_IPK_DIR)$(TARGET_PREFIX)/lib/lib*.so* $(BACULA_IPK_DIR)$(TARGET_PREFIX)/lib/bpipe-fd.so
 	$(MAKE) $(BACULA_IPK_DIR)/CONTROL/control
 	echo $(BACULA_CONFFILES) | sed -e 's/ /\n/g' > $(BACULA_IPK_DIR)/CONTROL/conffiles
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(BACULA_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(BACULA_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
