@@ -156,6 +156,8 @@ oniguruma: $(ONIGURUMA_BUILD_DIR)/.built
 $(ONIGURUMA_BUILD_DIR)/.staged: $(ONIGURUMA_BUILD_DIR)/.built
 	rm -f $@
 	$(MAKE) -C $(@D) DESTDIR=$(STAGING_DIR) install
+	rm -f $(STAGING_LIB_DIR)/libonig.la
+	sed -i -e 's|$(TARGET_PREFIX)|$(STAGING_PREFIX)|' $(STAGING_LIB_DIR)/pkgconfig/oniguruma.pc
 	touch $@
 
 oniguruma-stage: $(ONIGURUMA_BUILD_DIR)/.staged
