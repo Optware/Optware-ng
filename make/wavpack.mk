@@ -21,9 +21,18 @@
 # "NSLU2 Linux" other developers will feel free to edit.
 #
 WAVPACK_SITE=http://www.wavpack.com
-WAVPACK_VERSION=4.70.0
+WAVPACK_VERSION=5.1.0
 WAVPACK_SOURCE=wavpack-$(WAVPACK_VERSION).tar.bz2
 WAVPACK_DIR=wavpack-$(WAVPACK_VERSION)
+
+WAVPACK_GIT=https://github.com/dbry/WavPack.git
+WAVPACK_GIT_DATE=20190420
+
+ifdef WAVPACK_GIT_DATE
+  WAVPACK_VERSION:=$(WAVPACK_VERSION)+git$(WAVPACK_GIT_DATE)
+  WAVPACK_GIT_TREEISH=22977b29c20f55fb27decfb9ad40d531599fa2b1
+endif
+
 WAVPACK_UNZIP=bzcat
 WAVPACK_MAINTAINER=NSLU2 Linux <nslu2-linux@yahoogroups.com>
 WAVPACK_DESCRIPTION=WavPack is a completely open audio compression format providing lossless, high-quality lossy, and a unique hybrid compression mode.
@@ -40,7 +49,7 @@ WAVPACK_CONFLICTS=
 #
 # WAVPACK_IPK_VERSION should be incremented when the ipk changes.
 #
-WAVPACK_IPK_VERSION=2
+WAVPACK_IPK_VERSION=1
 
 #
 # WAVPACK_CONFFILES should be a list of user-editable files
@@ -51,7 +60,6 @@ WAVPACK_IPK_VERSION=2
 # which they should be applied to the source code.
 #
 #WAVPACK_PATCHES=$(WAVPACK_SOURCE_DIR)/configure.patch
-
 #
 # If the compilation of the package requires additional
 # compilation or linking flags, then list them here.
@@ -75,6 +83,8 @@ WAVPACK_BUILD_DIR=$(BUILD_DIR)/wavpack
 WAVPACK_SOURCE_DIR=$(SOURCE_DIR)/wavpack
 WAVPACK_IPK_DIR=$(BUILD_DIR)/wavpack-$(WAVPACK_VERSION)-ipk
 WAVPACK_IPK=$(BUILD_DIR)/wavpack_$(WAVPACK_VERSION)-$(WAVPACK_IPK_VERSION)_$(TARGET_ARCH).ipk
+WAVPACK_DEV_IPK_DIR=$(BUILD_DIR)/wavpack-dev-$(WAVPACK_VERSION)-ipk
+WAVPACK_DEV_IPK=$(BUILD_DIR)/wavpack-dev_$(WAVPACK_VERSION)-$(WAVPACK_IPK_VERSION)_$(TARGET_ARCH).ipk
 
 .PHONY: wavpack-source wavpack-unpack wavpack wavpack-stage wavpack-ipk wavpack-clean wavpack-dirclean wavpack-check
 
@@ -82,9 +92,22 @@ WAVPACK_IPK=$(BUILD_DIR)/wavpack_$(WAVPACK_VERSION)-$(WAVPACK_IPK_VERSION)_$(TAR
 # This is the dependency on the source code.  If the source is missing,
 # then it will be fetched from the site using wget.
 #
+ifdef WAVPACK_GIT_TREEISH
+$(DL_DIR)/$(WAVPACK_SOURCE):
+	(cd $(BUILD_DIR) ; \
+		rm -rf wavpack && \
+		git clone --bare $(WAVPACK_GIT) wavpack && \
+		(cd wavpack && \
+		git archive --format=tar --prefix=$(WAVPACK_DIR)/ $(WAVPACK_GIT_TREEISH) | bzip2 > $@) && \
+		rm -rf golang ; \
+	)
+
+else
 $(DL_DIR)/$(WAVPACK_SOURCE):
 	$(WGET) -P $(@D) $(WAVPACK_SITE)/$(@F) || \
 	$(WGET) -P $(@D) $(SOURCES_NLO_SITE)/$(@F)
+
+endif
 
 #
 # The source code depends on it existing within the download directory.
@@ -124,6 +147,7 @@ endif
 	if test "$(BUILD_DIR)/$(WAVPACK_DIR)" != "$(@D)" ; \
 		then mv $(BUILD_DIR)/$(WAVPACK_DIR) $(@D) ; \
 	fi
+	$(AUTORECONF1.14) -vif $(@D)
 	(cd $(@D); \
 		$(TARGET_CONFIGURE_OPTS) \
 		CPPFLAGS="$(STAGING_CPPFLAGS) $(WAVPACK_CPPFLAGS)" \
@@ -163,6 +187,7 @@ $(WAVPACK_BUILD_DIR)/.staged: $(WAVPACK_BUILD_DIR)/.built
 	sed -i -e '/^prefix=/s|=.*|=$(STAGING_PREFIX)|' -e '/^exec_prefix=/d' \
 		-e '/^prefix=/s/$$/\nexec_prefix=\$${prefix}/' \
 					$(STAGING_LIB_DIR)/pkgconfig/wavpack.pc
+	rm $(STAGING_LIB_DIR)/libwavpack.la
 	touch $@
 
 wavpack-stage: $(WAVPACK_BUILD_DIR)/.staged
@@ -186,6 +211,21 @@ $(WAVPACK_IPK_DIR)/CONTROL/control:
 	@echo "Suggests: $(WAVPACK_SUGGESTS)" >>$@
 	@echo "Conflicts: $(WAVPACK_CONFLICTS)" >>$@
 
+$(WAVPACK_DEV_IPK_DIR)/CONTROL/control:
+	@$(INSTALL) -d $(@D)
+	@rm -f $@
+	@echo "Package: wavpack-dev" >>$@
+	@echo "Architecture: $(TARGET_ARCH)" >>$@
+	@echo "Priority: $(WAVPACK_PRIORITY)" >>$@
+	@echo "Section: $(WAVPACK_SECTION)" >>$@
+	@echo "Version: $(WAVPACK_VERSION)-$(WAVPACK_IPK_VERSION)" >>$@
+	@echo "Maintainer: $(WAVPACK_MAINTAINER)" >>$@
+	@echo "Source: $(WAVPACK_SITE)/$(WAVPACK_SOURCE)" >>$@
+	@echo "Description: Development files for wavpack" >>$@
+	@echo "Depends: wavpack" >>$@
+	@echo "Suggests: $(WAVPACK_SUGGESTS)" >>$@
+	@echo "Conflicts: $(WAVPACK_CONFLICTS)" >>$@
+
 #
 # This builds the IPK file.
 #
@@ -199,26 +239,22 @@ $(WAVPACK_IPK_DIR)/CONTROL/control:
 # You may need to patch your application to make it use these locations.
 #
 $(WAVPACK_IPK): $(WAVPACK_BUILD_DIR)/.built
-	rm -rf $(WAVPACK_IPK_DIR) $(BUILD_DIR)/wavpack_*_$(TARGET_ARCH).ipk
+	rm -rf	$(WAVPACK_IPK_DIR) $(BUILD_DIR)/wavpack_*_$(TARGET_ARCH).ipk \
+		$(WAVPACK_DEV_IPK_DIR) $(BUILD_DIR)/wavpack-dev_*_$(TARGET_ARCH).ipk
 	$(MAKE) -C $(WAVPACK_BUILD_DIR) DESTDIR=$(WAVPACK_IPK_DIR) install-strip
+	rm -f $(WAVPACK_IPK_DIR)$(TARGET_PREFIX)/lib/libwavpack.la
 	sed -i -e '/^exec_prefix=/d' -e '/^prefix=/s/$$/\nexec_prefix=\$${prefix}/' \
 					$(WAVPACK_IPK_DIR)$(TARGET_PREFIX)/lib/pkgconfig/wavpack.pc
-#	$(INSTALL) -d $(WAVPACK_IPK_DIR)$(TARGET_PREFIX)/etc/
-#	$(INSTALL) -m 644 $(WAVPACK_SOURCE_DIR)/wavpack.conf $(WAVPACK_IPK_DIR)$(TARGET_PREFIX)/etc/wavpack.conf
-#	$(INSTALL) -d $(WAVPACK_IPK_DIR)$(TARGET_PREFIX)/etc/init.d
-#	$(INSTALL) -m 755 $(WAVPACK_SOURCE_DIR)/rc.wavpack $(WAVPACK_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXwavpack
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(WAVPACK_IPK_DIR)$(TARGET_PREFIX)/etc/init.d/SXXwavpack
 	$(MAKE) $(WAVPACK_IPK_DIR)/CONTROL/control
-#	$(INSTALL) -m 755 $(WAVPACK_SOURCE_DIR)/postinst $(WAVPACK_IPK_DIR)/CONTROL/postinst
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(WAVPACK_IPK_DIR)/CONTROL/postinst
-#	$(INSTALL) -m 755 $(WAVPACK_SOURCE_DIR)/prerm $(WAVPACK_IPK_DIR)/CONTROL/prerm
-#	sed -i -e '/^#!/aOPTWARE_TARGET=${OPTWARE_TARGET}' $(WAVPACK_IPK_DIR)/CONTROL/prerm
-#	if test -n "$(UPD-ALT_PREFIX)"; then \
-		sed -i -e '/^[ 	]*update-alternatives /s|update-alternatives|$(UPD-ALT_PREFIX)/bin/&|' \
-			$(WAVPACK_IPK_DIR)/CONTROL/postinst $(WAVPACK_IPK_DIR)/CONTROL/prerm; \
-	fi
 	echo $(WAVPACK_CONFFILES) | sed -e 's/ /\n/g' > $(WAVPACK_IPK_DIR)/CONTROL/conffiles
+	$(INSTALL) -d $(WAVPACK_DEV_IPK_DIR)$(TARGET_PREFIX)/lib
+	mv $(WAVPACK_IPK_DIR)$(TARGET_PREFIX)/include $(WAVPACK_DEV_IPK_DIR)$(TARGET_PREFIX)/
+	mv $(WAVPACK_IPK_DIR)$(TARGET_PREFIX)/lib/pkgconfig $(WAVPACK_DEV_IPK_DIR)$(TARGET_PREFIX)/lib/
+	mv $(WAVPACK_IPK_DIR)$(TARGET_PREFIX)/lib/libwavpack.so $(WAVPACK_DEV_IPK_DIR)$(TARGET_PREFIX)/lib/
 	cd $(BUILD_DIR); $(IPKG_BUILD) $(WAVPACK_IPK_DIR)
+	$(MAKE) $(WAVPACK_DEV_IPK_DIR)/CONTROL/control
+	cd $(BUILD_DIR); $(IPKG_BUILD) $(WAVPACK_DEV_IPK_DIR)
+	$(WHAT_TO_DO_WITH_IPK_DIR) $(WAVPACK_IPK_DIR) $(WAVPACK_DEV_IPK_DIR)
 
 #
 # This is called from the top level makefile to create the IPK file.
