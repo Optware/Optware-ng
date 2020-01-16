@@ -36,7 +36,7 @@ NGINX_CONFLICTS=
 #
 # NGINX_IPK_VERSION should be incremented when the ipk changes.
 #
-NGINX_IPK_VERSION?=1
+NGINX_IPK_VERSION?=2
 
 #
 # NGINX_CONFFILES should be a list of user-editable files
@@ -184,6 +184,10 @@ ifneq (,$(filter nslu2 cs05q3armel, $(OPTWARE_TARGET)))
 endif
 ifeq ($(LIBC_STYLE), uclibc)
 	sed -i -e 's/#ifndef NGX_HAVE_GNU_CRYPT_R/#if 0/' $(@D)/src/os/unix/ngx_linux_config.h
+endif
+ifeq ($(OPTWARE_TARGET), $(filter buildroot-armv5eabi-ng-legacy, $(OPTWARE_TARGET)))
+#	no accept4() in 2.6.24.4 kernel
+	sed -i -e 's@#define NGX_HAVE_ACCEPT4 1@#define NGX_HAVE_ACCEPT4 0@' $(@D)/objs/ngx_auto_config.h
 endif
 	touch $@
 
