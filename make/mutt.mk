@@ -14,8 +14,8 @@
 #
 # You should change all these variables to suit your package.
 #
-MUTT_SITE=ftp://ftp.mutt.org/mutt/devel
-MUTT_VERSION=1.9.5
+MUTT_SITE=ftp://ftp.mutt.org/pub/mutt
+MUTT_VERSION=1.13.3
 MUTT_SOURCE=mutt-$(MUTT_VERSION).tar.gz
 MUTT_DIR=mutt-$(MUTT_VERSION)
 MUTT_UNZIP=zcat
