@@ -15,7 +15,7 @@
 # You should change all these variables to suit your package.
 #
 MUTT_SITE=ftp://ftp.mutt.org/mutt/devel
-MUTT_VERSION=1.5.17
+MUTT_VERSION=1.9.5
 MUTT_SOURCE=mutt-$(MUTT_VERSION).tar.gz
 MUTT_DIR=mutt-$(MUTT_VERSION)
 MUTT_UNZIP=zcat
@@ -30,7 +30,7 @@ MUTT_CONFLICTS=
 #
 # MUTT_IPK_VERSION should be incremented when the ipk changes.
 #
-MUTT_IPK_VERSION=3
+MUTT_IPK_VERSION=4
 
 #
 # MUTT_CONFFILES should be a list of user-editable files
@@ -120,6 +120,7 @@ $(MUTT_BUILD_DIR)/.configured: $(DL_DIR)/$(MUTT_SOURCE) $(MUTT_PATCHES) make/mut
 		--disable-nls \
 		--with-mailpath=$(TARGET_PREFIX)/var/spool/mail \
 		--enable-imap \
+		--enable-smtp \
 		--with-ssl \
 		--with-sasl2 \
 		--with-bdb \
